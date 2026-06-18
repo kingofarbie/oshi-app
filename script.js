@@ -653,7 +653,7 @@ function renderCalendar(){
 
     const area =
         document.getElementById(
-            'calendar'
+            'calendar-box'
         );
 
 
