@@ -647,29 +647,25 @@ function deleteOshi(id,name){
    カレンダー生成
 ===================== */
 
+/* =====================
+   カレンダー生成
+===================== */
 
 function renderCalendar(){
-
 
     const area =
         document.getElementById(
             'calendar'
         );
 
-
     if(!area) return;
 
 
-
     const year =
-        currentCalendarDate
-        .getFullYear();
-
+        currentCalendarDate.getFullYear();
 
     const month =
-        currentCalendarDate
-        .getMonth();
-
+        currentCalendarDate.getMonth();
 
 
     const first =
@@ -683,19 +679,21 @@ function renderCalendar(){
     const last =
         new Date(
             year,
-            month+1,
+            month + 1,
             0
         );
-
 
 
     const today =
         new Date();
 
 
+    const events =
+        db.load().events;
 
-    let html=`
 
+
+    let html = `
 
 <div class="calendar-header">
 
@@ -705,9 +703,7 @@ function renderCalendar(){
 
 
 <div class="calendar-title">
-
-${year}年 ${month+1}月
-
+${year}年 ${month + 1}月
 </div>
 
 
@@ -715,104 +711,86 @@ ${year}年 ${month+1}月
 ▶
 </button>
 
-
 </div>
 
 
 <div class="calendar-grid">
 
 
-<div class="calendar-week">
-日
-</div>
-
-<div class="calendar-week">
-月
-</div>
-
-<div class="calendar-week">
-火
-</div>
-
-<div class="calendar-week">
-水
-</div>
-
-<div class="calendar-week">
-木
-</div>
-
-<div class="calendar-week">
-金
-</div>
-
-<div class="calendar-week">
-土
-</div>
+<div class="calendar-week">日</div>
+<div class="calendar-week">月</div>
+<div class="calendar-week">火</div>
+<div class="calendar-week">水</div>
+<div class="calendar-week">木</div>
+<div class="calendar-week">金</div>
+<div class="calendar-week">土</div>
 
 `;
 
 
 
     for(
-        let i=0;
-        i<first.getDay();
+        let i = 0;
+        i < first.getDay();
         i++
     ){
 
-        html+=`
-        <div></div>
-        `;
+        html += `<div></div>`;
 
     }
 
 
 
-    const events =
-        db.load().events;
-
-
 
     for(
-        let d=1;
-        d<=last.getDate();
+        let d = 1;
+        d <= last.getDate();
         d++
     ){
 
 
         const date =
-            `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
 
 
 
-        const has =
+        const hasEvent =
             events.some(
-                e=>
+                e =>
                 e.date.startsWith(date)
             );
 
 
 
         const isToday =
-            today.getFullYear()===year
+            today.getFullYear() === year
             &&
-            today.getMonth()===month
+            today.getMonth() === month
             &&
-            today.getDate()===d;
+            today.getDate() === d;
 
 
 
-        html+=`
+        const isSelected =
+            selectedCalendarDate === date;
+
+
+
+        html += `
+
 
 <div
 class="calendar-day
-${isToday?'today':''}
-${has?'has-event':''}"
+${isToday ? 'today' : ''}
+${hasEvent ? 'has-event' : ''}
+${isSelected ? 'selected-day' : ''}
+"
 onclick="selectCalendarDate('${date}')">
 
 ${d}
 
 </div>
+
 
 `;
 
@@ -820,15 +798,7 @@ ${d}
 
 
 
-    html+=`
-
-</div>
-
-
-<div class="selected-date">
-
-選択日：
-${selectedCalendarDate || '未選択'}
+    html += `
 
 </div>
 
@@ -836,8 +806,11 @@ ${selectedCalendarDate || '未選択'}
 
 
 
-    area.innerHTML=html;
+    area.innerHTML = html;
 
+
+
+    updateSelectedDateArea();
 
 }
 
@@ -845,11 +818,14 @@ ${selectedCalendarDate || '未選択'}
 
 
 
+/* =====================
+   月変更
+===================== */
 
 function changeMonth(value){
 
-    currentCalendarDate
-    .setMonth(
+
+    currentCalendarDate.setMonth(
         currentCalendarDate.getMonth()
         +
         value
@@ -863,9 +839,16 @@ function changeMonth(value){
 
 
 
+
+/* =====================
+   日付選択
+===================== */
+
 function selectCalendarDate(date){
 
+
     selectedCalendarDate = date;
+
 
 
     document
@@ -876,72 +859,53 @@ function selectCalendarDate(date){
         date + "T12:00";
 
 
-    // 予定入力フォーム表示
-    const form =
-        document.getElementById(
-            'event-form-card'
-        );
-
-
-    if(form){
-
-        form.style.display = 'block';
-
-    }
-
 
     renderCalendar();
+
 
 }
 
 
-
-function selectCalendarDate(date){
-
-    selectedCalendarDate = date;
-
-
-    document
-    .getElementById(
-        'event-date'
-    )
-    .value =
-        date + "T12:00";
-
-
-    // 予定入力フォーム表示
-    const form =
-        document.getElementById(
-            'event-form-card'
-        );
-
-
-    if(form){
-
-        form.style.display = 'block';
-
-    }
-
-
-    renderCalendar();
-
-}
 
 
 
 /* =====================
-   予定追加
+   選択日の表示更新
 ===================== */
 
+function updateSelectedDateArea(){
 
-function addEvent(){
+
+    const area =
+        document.getElementById(
+            'selected-event-area'
+        );
+
+
+    const btn =
+        document.getElementById(
+            'add-event-open-btn'
+        );
+
+
+
+    if(!area || !btn)
+        return;
+
 
 
     if(!selectedCalendarDate){
 
-        alert(
-            'カレンダーから日付を選択してください'
-        );
+
+        area.innerHTML =
+        `
+        📌 日付を選択してください
+        `;
+
+
+        btn.style.display =
+            "none";
+
 
         return;
 
@@ -949,80 +913,138 @@ function addEvent(){
 
 
 
-    const data={
+
+    area.innerHTML =
+    `
+    📅 ${selectedCalendarDate}
+    `;
+
+
+
+    btn.style.display =
+        "block";
+
+
+
+    displaySelectedDateEvents();
+
+}
+
+
+
+
+
+/* =====================
+   予定追加フォーム開閉
+===================== */
+
+function openEventForm(){
+
+
+    if(!selectedCalendarDate){
+
+        return;
+
+    }
+
+
+
+    document
+    .getElementById(
+        'event-form-card'
+    )
+    .style.display =
+        "block";
+
+}
+
+
+
+function closeEventForm(){
+
+
+    document
+    .getElementById(
+        'event-form-card'
+    )
+    .style.display =
+        "none";
+
+
+}
+
+
+
+
+
+
+/* =====================
+   保存
+===================== */
+
+function saveEvent(){
+
+
+    const data = {
 
 
         category:
-        document
-        .getElementById(
+        document.getElementById(
             'event-category'
-        )
-        .value,
+        ).value,
 
 
         title:
-        document
-        .getElementById(
+        document.getElementById(
             'event-title'
-        )
-        .value,
+        ).value,
 
 
         date:
-        document
-        .getElementById(
+        document.getElementById(
             'event-date'
-        )
-        .value,
+        ).value,
 
 
         place:
-        document
-        .getElementById(
+        document.getElementById(
             'event-place'
-        )
-        .value,
+        ).value,
 
 
         meeting:
-        document
-        .getElementById(
+        document.getElementById(
             'meeting-time'
-        )
-        .value,
+        ).value,
 
 
         companion:
-        document
-        .getElementById(
+        document.getElementById(
             'companions'
-        )
-        .value,
+        ).value,
 
 
         map:
-        document
-        .getElementById(
+        document.getElementById(
             'map-url'
-        )
-        .value,
+        ).value,
 
 
         ticket:
-        document
-        .getElementById(
+        document.getElementById(
             'ticket-url'
-        )
-        .value
+        ).value
+
 
     };
+
 
 
 
     if(!data.title){
 
         alert(
-            'イベント名を入力してください'
+            "イベント名を入力してください"
         );
 
         return;
@@ -1031,22 +1053,30 @@ function addEvent(){
 
 
 
-    if(
-        db.addEvent(data)
-    ){
 
-        alert(
-            '予定を追加しました'
-        );
+    if(db.addEvent(data)){
+
+
+        closeEventForm();
+
+
+        clearEventForm();
 
 
         displayEventList();
 
+
+        displaySelectedDateEvents();
+
+
         renderCalendar();
+
 
         displayHomeSchedule();
 
+
     }
+
 
 }
 
@@ -1054,20 +1084,70 @@ function addEvent(){
 
 
 
+
+
+function clearEventForm(){
+
+
+    document
+    .getElementById(
+        'event-title'
+    ).value = "";
+
+
+    document
+    .getElementById(
+        'event-place'
+    ).value = "";
+
+
+    document
+    .getElementById(
+        'meeting-time'
+    ).value = "";
+
+
+    document
+    .getElementById(
+        'companions'
+    ).value = "";
+
+
+    document
+    .getElementById(
+        'map-url'
+    ).value = "";
+
+
+    document
+    .getElementById(
+        'ticket-url'
+    ).value = "";
+
+
+}
+
+
+
+
+
+
+
 /* =====================
-   登録済み予定表示
+   選択日の予定表示
 ===================== */
 
+function displaySelectedDateEvents(){
 
-function displayEventList(){
 
     const box =
         document.getElementById(
-            'event-list'
+            'selected-date-events'
         );
 
 
-    if(!box) return;
+    if(!box)
+        return;
 
 
 
@@ -1076,20 +1156,34 @@ function displayEventList(){
 
 
 
+    const list =
+        events.filter(
+            e =>
+            selectedCalendarDate
+            &&
+            e.date.startsWith(
+                selectedCalendarDate
+            )
+        );
+
+
+
     box.innerHTML =
 
 
-    events.length
+    list.length
 
     ?
 
-    events.map(e=>`
+    list.map(e=>`
 
 <div class="event-card">
 
 <div class="event-card-title">
+
 ${e.category}
 ${e.title}
+
 </div>
 
 
@@ -1099,38 +1193,7 @@ ${e.title}
 
 
 <div>
-📍 ${e.place}
-</div>
-
-
-<div>
-👥 ${e.companion}
-</div>
-
-
-<div class="event-button-area">
-
-
-<button
-onclick="deleteEvent(${e.id})">
-削除
-</button>
-
-
-${
-e.map
-?
-`
-<button
-class="map-btn"
-onclick="location.href='${e.map}'">
-地図
-</button>
-`
-:''
-}
-
-
+📍 ${e.place || ''}
 </div>
 
 
@@ -1144,10 +1207,8 @@ onclick="location.href='${e.map}'">
 '該当なし';
 
 
+
 }
-
-
-
 
 
 function deleteEvent(id){
