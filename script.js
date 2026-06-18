@@ -309,6 +309,15 @@ function switchTab(pageId,event){
     }
 
 
+    if(pageId==='home'){
+
+    alert("ホーム更新");
+
+    displayHomeSchedule();
+
+}
+
+
 }
 
 
