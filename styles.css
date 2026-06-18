@@ -1,263 +1,821 @@
 /* =========================
-   基本スタイル
+   推し活手帳 v1.6
+   styles.css
+========================= */
+
+
+/* =========================
+   基本
 ========================= */
 
 *{
     box-sizing:border-box;
 }
 
+
 body{
+
     margin:0;
+
     font-family:sans-serif;
+
     background:#0f0f10;
+
     color:white;
+
     padding-bottom:80px;
+
 }
 
+
+
 .header{
+
     background:linear-gradient(
         135deg,
         #ff2d55,
         #ff6fa5
     );
+
     padding:16px;
+
     text-align:center;
+
 }
+
+
 
 .header h1{
+
     margin:0;
+
     font-size:22px;
+
 }
+
+
+
+/* =========================
+   ページ
+========================= */
+
 
 .page{
+
     display:none;
+
     padding:15px;
+
 }
+
+
 
 .page.active{
+
     display:block;
+
 }
+
+
+
+/* =========================
+   カード
+========================= */
+
 
 .card{
+
     background:#1c1c1e;
+
     border-radius:18px;
+
     padding:15px;
+
     margin-bottom:15px;
+
 }
+
+
 
 .card h2{
+
     margin-top:0;
+
     font-size:18px;
+
     color:#ff6fa5;
+
 }
+
+
 
 .item{
+
     padding:10px;
+
     border-bottom:1px solid #333;
+
 }
 
+
+
 .item:last-child{
+
     border-bottom:none;
+
 }
+
+
 
 /* =========================
    フォーム
 ========================= */
 
+
 input,
 select,
 button{
+
     width:100%;
+
     padding:12px;
+
     margin:6px 0;
+
     border:none;
+
     border-radius:10px;
+
 }
+
+
 
 input,
 select{
+
     background:#2a2a2d;
+
     color:white;
+
 }
+
+
 
 input::placeholder{
+
     color:#888;
+
 }
+
+
 
 select{
+
     appearance:none;
+
     -webkit-appearance:none;
+
 }
+
+
 
 button{
+
     background:#ff2d55;
+
     color:white;
+
     font-weight:bold;
+
     cursor:pointer;
+
 }
+
+
 
 button:hover{
+
     opacity:0.95;
+
 }
 
+
+
 /* =========================
-   推し検索候補
+   推し検索
 ========================= */
+
 
 #search-results{
+
     margin-top:10px;
+
     max-height:250px;
+
     overflow-y:auto;
+
 }
+
+
 
 .master-item{
+
     background:#2a2a2d;
+
     padding:12px;
+
     border-radius:10px;
+
     margin-bottom:6px;
+
     cursor:pointer;
+
     transition:0.15s;
+
 }
+
+
 
 .master-item:hover{
+
     background:#38383d;
+
 }
+
+
 
 .master-item:active{
+
     transform:scale(0.98);
+
 }
+
+
 
 /* =========================
-   タブバー
+   タブ
 ========================= */
 
+
 .tabbar{
+
     position:fixed;
+
     bottom:0;
+
     left:0;
+
     width:100%;
+
     height:65px;
+
     background:#1c1c1e;
+
     border-top:1px solid #333;
+
     display:flex;
+
 }
+
+
 
 .tab{
+
     flex:1;
+
     text-align:center;
+
     color:#999;
+
     font-size:12px;
+
     padding-top:10px;
+
     cursor:pointer;
+
 }
 
+
+
 .tab.active{
+
     color:#ff6fa5;
+
 }
+
+
 
 /* =========================
    推し一覧
 ========================= */
 
+
 .oshi-item{
+
     display:flex;
+
     justify-content:space-between;
+
     align-items:flex-start;
+
     gap:10px;
+
 }
+
+
 
 .oshi-info{
+
     flex:1;
+
 }
+
+
 
 .oshi-name{
+
     font-size:16px;
+
     font-weight:bold;
+
     margin-bottom:6px;
+
 }
+
+
 
 .oshi-link{
+
     font-size:12px;
+
     color:#aaa;
+
     margin-bottom:3px;
+
 }
 
-/* =========================
-   削除ボタン
-========================= */
+
 
 .oshi-actions{
+
     display:flex;
+
     gap:6px;
+
     flex-shrink:0;
+
 }
+
+
 
 .icon-btn{
+
     width:32px;
+
     height:32px;
+
     min-width:32px;
+
     padding:0;
+
     margin:0;
+
     border:none;
+
     border-radius:50%;
+
     font-size:14px;
+
     cursor:pointer;
+
 }
+
+
 
 .delete-btn{
+
     background:#6b1d2d;
+
 }
 
+
+
 .delete-btn:hover{
+
     opacity:0.85;
+
 }
+
 
 
 /* =========================
    イベント一覧
 ========================= */
 
+
 .event-item{
+
     padding:12px;
+
     border-bottom:1px solid #333;
+
 }
+
+
 
 .event-title{
+
     font-weight:bold;
+
     margin-bottom:6px;
+
 }
+
+
 
 .event-meta{
+
     font-size:13px;
+
     color:#aaa;
+
     margin-bottom:3px;
+
 }
+
+
 
 .event-actions{
+
     margin-top:8px;
+
 }
 
+/* =========================
+   カレンダー
+========================= */
+
+
+/* 月移動ヘッダー */
+
+.calendar-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:10px;
+
+}
+
+
+
+.calendar-header button{
+
+    width:auto;
+
+    padding:8px 14px;
+
+    margin:0;
+
+}
+
+
+
+.calendar-title{
+
+    text-align:center;
+
+    font-size:18px;
+
+    font-weight:bold;
+
+}
+
+
+
+/* 曜日 */
+
+.calendar-week{
+
+    display:grid;
+
+    grid-template-columns:repeat(7,1fr);
+
+    text-align:center;
+
+    font-size:12px;
+
+    color:#aaa;
+
+    margin-bottom:5px;
+
+}
+
+
+
+/* 日付グリッド */
+
+.calendar-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(7,1fr);
+
+    gap:5px;
+
+}
+
+
+
+/* 日付 */
+
+.calendar-day{
+
+    height:45px;
+
+    background:#2a2a2d;
+
+    border-radius:10px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    cursor:pointer;
+
+    position:relative;
+
+}
+
+
+
+.calendar-day:hover{
+
+    background:#38383d;
+
+}
+
+
+
+/* 今日 */
+
+.today{
+
+    border:2px solid #ff6fa5;
+
+    color:#ff6fa5;
+
+    font-weight:bold;
+
+}
+
+
+
+/* 予定あり */
+
+.has-event::after{
+
+    content:"";
+
+    width:7px;
+
+    height:7px;
+
+    background:#ff2d55;
+
+    border-radius:50%;
+
+    position:absolute;
+
+    bottom:5px;
+
+}
+
+
+
+/* 選択中 */
+
+.selected-day{
+
+    background:#ff2d55;
+
+    color:white;
+
+}
+
+
+
+/* 空白日 */
+
+.empty-day{
+
+    background:transparent;
+
+    cursor:default;
+
+}
 
 
 
 /* =========================
-   スマホ最適化
+   選択日表示
 ========================= */
 
-@media (max-width:480px){
+
+.selected-date{
+
+    margin-top:12px;
+
+    padding:10px;
+
+    background:#2a2a2d;
+
+    border-radius:10px;
+
+    text-align:center;
+
+}
+
+
+
+/* =========================
+   予定カード
+========================= */
+
+
+.event-card{
+
+    background:#2a2a2d;
+
+    border-radius:12px;
+
+    padding:12px;
+
+    margin-bottom:8px;
+
+}
+
+
+
+.event-card-title{
+
+    font-weight:bold;
+
+    color:#ff6fa5;
+
+    margin-bottom:8px;
+
+}
+
+
+
+.event-card-info{
+
+    font-size:13px;
+
+    color:#ddd;
+
+    line-height:1.5;
+
+}
+
+
+
+/* ボタンエリア */
+
+.event-button-area{
+
+    display:flex;
+
+    gap:8px;
+
+}
+
+
+
+.event-button-area button{
+
+    margin-top:8px;
+
+}
+
+
+
+/* 編集 */
+
+.edit-btn{
+
+    background:#444;
+
+}
+
+
+
+/* 地図 */
+
+.map-btn{
+
+    background:#1976d2;
+
+}
+
+
+
+/* 削除 */
+
+.event-delete-btn{
+
+    background:#6b1d2d;
+
+}
+
+
+
+/* =========================
+   ホーム予定表示
+========================= */
+
+
+.schedule-item{
+
+    background:#2a2a2d;
+
+    border-radius:10px;
+
+    padding:10px;
+
+    margin-bottom:6px;
+
+}
+
+
+
+.schedule-title{
+
+    font-weight:bold;
+
+}
+
+
+
+.schedule-time{
+
+    font-size:12px;
+
+    color:#aaa;
+
+}
+
+
+
+/* =========================
+   スマホ対応
+========================= */
+
+
+@media(max-width:480px){
+
 
     .card{
+
         padding:12px;
+
     }
+
+
 
     .oshi-name{
+
         font-size:15px;
+
     }
 
+
+
     .icon-btn{
+
         width:30px;
+
         height:30px;
+
         min-width:30px;
+
     }
+
+
+
+    .calendar-day{
+
+        height:40px;
+
+        font-size:14px;
+
+    }
+
 
 }

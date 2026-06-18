@@ -1,399 +1,613 @@
 const DB_KEY = 'oshi_app_data';
 
 let oshiMaster = {
-artists: [],
-sports: []
+    artists: [],
+    sports: []
 };
 
 let selectedOshiId = null;
 
+
 /* =====================
-DB
+   カレンダー状態
+===================== */
+
+let currentCalendarDate = new Date();
+
+let selectedCalendarDate = null;
+
+
+/* =====================
+   DB
 ===================== */
 
 const db = {
 
-load() {
+    load(){
 
-    const data =
-        localStorage.getItem(DB_KEY);
+        const data =
+            localStorage.getItem(DB_KEY);
 
-    return data
-        ? JSON.parse(data)
-        : {
-            settings:{
-                plan:'free'
-            },
-            oshiList:[],
-            events:[]
-        };
-},
 
-save(data){
+        return data
+            ? JSON.parse(data)
+            :
+            {
+                settings:{
+                    plan:'free'
+                },
 
-    localStorage.setItem(
-        DB_KEY,
-        JSON.stringify(data)
-    );
-},
+                oshiList:[],
 
-addOshi(masterId){
+                events:[]
+            };
 
-    const data = this.load();
+    },
 
-    if(
-        data.settings.plan === 'free' &&
-        data.oshiList.length >= 3
-    ){
-        alert('無料版は3件までです');
-        return false;
-    }
 
-    const exists =
-        data.oshiList.some(
-            o => o.masterId === masterId
+    save(data){
+
+        localStorage.setItem(
+            DB_KEY,
+            JSON.stringify(data)
         );
 
-    if(exists){
-        alert('既に登録されています');
-        return false;
-    }
+    },
 
-    data.oshiList.push({
-        id:Date.now(),
-        masterId
-    });
 
-    this.save(data);
+    /* =====================
+       推し追加
+    ===================== */
 
-    return true;
-},
+    addOshi(masterId){
 
-deleteOshi(id){
+        const data=this.load();
 
-    const data = this.load();
 
-    data.oshiList =
-        data.oshiList.filter(
-            o => o.id !== id
+        if(
+            data.settings.plan==='free'
+            &&
+            data.oshiList.length>=3
+        ){
+
+            alert(
+                '無料版は3件までです'
+            );
+
+            return false;
+
+        }
+
+
+        const exists =
+            data.oshiList.some(
+                o=>o.masterId===masterId
+            );
+
+
+        if(exists){
+
+            alert(
+                '既に登録されています'
+            );
+
+            return false;
+
+        }
+
+
+        data.oshiList.push({
+
+            id:Date.now(),
+
+            masterId
+
+        });
+
+
+        this.save(data);
+
+
+        return true;
+
+    },
+
+
+
+    deleteOshi(id){
+
+        const data=this.load();
+
+
+        data.oshiList =
+            data.oshiList.filter(
+                o=>o.id!==id
+            );
+
+
+        this.save(data);
+
+    },
+
+
+
+    /* =====================
+       予定追加
+    ===================== */
+
+    addEvent(eventData){
+
+        const data=this.load();
+
+
+        if(
+            data.settings.plan==='free'
+            &&
+            data.events.length>=5
+        ){
+
+            alert(
+                '無料版は予定5件までです'
+            );
+
+            return false;
+
+        }
+
+
+        eventData.id =
+            Date.now();
+
+
+        data.events.push(
+            eventData
         );
 
-    this.save(data);
-},
 
-addEvent(eventData){
+        this.save(data);
 
-    const data = this.load();
 
-    if(
-        data.settings.plan === 'free' &&
-        data.events.length >= 5
-    ){
-        alert('無料版は予定5件までです');
-        return false;
+        return true;
+
+    },
+
+
+    deleteEvent(id){
+
+        const data=this.load();
+
+
+        data.events =
+            data.events.filter(
+                e=>e.id!==id
+            );
+
+
+        this.save(data);
+
+    },
+
+
+    updateEvent(eventData){
+
+        const data=this.load();
+
+
+        const index =
+            data.events.findIndex(
+                e=>e.id===eventData.id
+            );
+
+
+        if(index!==-1){
+
+            data.events[index]
+                =
+                eventData;
+
+        }
+
+
+        this.save(data);
+
     }
-
-    data.events.push(eventData);
-
-    this.save(data);
-
-    return true;
-},
-
-deleteEvent(id){
-
-    const data = this.load();
-
-    data.events =
-        data.events.filter(
-            e => e.id !== id
-        );
-
-    this.save(data);
-}
 
 };
 
+
+
+
+
 /* =====================
-推しマスタ読込
+   推しマスタ読込
 ===================== */
 
 async function loadMaster(){
 
-try{
+    try{
 
-    const response =
-        await fetch('./oshi-master.json');
+        const response =
+            await fetch(
+                './oshi-master.json'
+            );
 
-    oshiMaster =
-        await response.json();
 
-}catch(error){
+        oshiMaster =
+            await response.json();
 
-    console.error(
-        '推しマスタ読込失敗',
-        error
-    );
+
+    }
+    catch(error){
+
+        console.error(
+            '推しマスタ読込失敗',
+            error
+        );
+
+    }
+
 }
 
-}
+
+
 
 /* =====================
-タブ切替
+   タブ切替
 ===================== */
 
 function switchTab(pageId,event){
 
-document
+
+    document
     .querySelectorAll('.page')
-    .forEach(page =>
-        page.classList.remove('active')
+    .forEach(
+        page=>
+            page.classList.remove(
+                'active'
+            )
     );
 
-document
+
+    document
     .getElementById(pageId)
-    .classList.add('active');
-
-document
-    .querySelectorAll('.tab')
-    .forEach(tab =>
-        tab.classList.remove('active')
+    .classList.add(
+        'active'
     );
 
-event.currentTarget
-    .classList.add('active');
+
+
+    document
+    .querySelectorAll('.tab')
+    .forEach(
+        tab=>
+            tab.classList.remove(
+                'active'
+            )
+    );
+
+
+    event.currentTarget
+    .classList.add(
+        'active'
+    );
+
+
+
+    if(pageId==='calendarPage'){
+
+        renderCalendar();
+
+        displayEventList();
+
+    }
+
 
 }
 
+
+
+
+
+
 /* =====================
-推し候補表示
+   推し候補表示
 ===================== */
 
 function showCandidates(){
 
-const category =
-    document.getElementById(
-        'category-select'
-    ).value;
 
-const list =
-    oshiMaster[category] || [];
+    const category =
+        document
+        .getElementById(
+            'category-select'
+        )
+        .value;
 
-const results =
-    document.getElementById(
-        'search-results'
-    );
 
-results.innerHTML =
-    list.map(oshi => `
 
-<div
-class="master-item"
-onclick="selectOshi(${oshi.id}, '${oshi.name.replace(/'/g,"\\'")}')">${oshi.name}
+    const results =
+        document
+        .getElementById(
+            'search-results'
+        );
 
-</div>`).join('');
+
+
+    const list =
+        oshiMaster[category] || [];
+
+
+
+    results.innerHTML =
+
+        list.map(oshi=>`
+
+<div class="master-item"
+onclick="selectOshi(
+${oshi.id},
+'${oshi.name.replace(/'/g,"\\'")}'
+)">
+
+${oshi.name}
+
+</div>
+
+`).join('');
+
 }
 
+
+
+
 /* =====================
-推し検索
+   推し検索
 ===================== */
 
 function searchOshi(){
 
-const category =
-    document.getElementById(
-        'category-select'
-    ).value;
 
-const keyword =
-    document.getElementById(
-        'oshi-search'
-    )
-    .value
-    .trim()
-    .toLowerCase();
+    const category =
+        document
+        .getElementById(
+            'category-select'
+        )
+        .value;
 
-const list =
-    oshiMaster[category] || [];
 
-const matched =
-    keyword === ''
-    ? list
-    : list.filter(
-        o =>
+
+    const keyword =
+        document
+        .getElementById(
+            'oshi-search'
+        )
+        .value
+        .trim()
+        .toLowerCase();
+
+
+
+    const list =
+        oshiMaster[category] || [];
+
+
+
+    const matched =
+        keyword===''
+
+        ?
+        list
+
+        :
+
+        list.filter(
+            o=>
             o.name
             .toLowerCase()
             .includes(keyword)
-    );
+        );
 
-document
+
+
+    document
     .getElementById(
         'search-results'
     )
     .innerHTML =
-        matched.map(oshi => `
 
-<div
-class="master-item"
-onclick="selectOshi(${oshi.id}, '${oshi.name.replace(/'/g,"\\'")}')">${oshi.name}
 
-</div>`).join('');
+    matched.map(oshi=>`
+
+<div class="master-item"
+onclick="selectOshi(
+${oshi.id},
+'${oshi.name.replace(/'/g,"\\'")}'
+)">
+
+${oshi.name}
+
+</div>
+
+`).join('');
+
 }
 
+
+
+
 /* =====================
-推し選択
+   推し選択
 ===================== */
 
 function selectOshi(id,name){
 
-selectedOshiId = id;
+    selectedOshiId=id;
 
-document
+
+    document
     .getElementById(
         'oshi-search'
     )
-    .value = name;
+    .value=name;
 
 }
 
 /* =====================
-推し追加
+   推し追加
 ===================== */
 
 function addSelectedOshi(){
 
-if(!selectedOshiId){
+    if(!selectedOshiId){
 
-    alert('推しを選択してください');
-    return;
-}
+        alert(
+            '推しを選択してください'
+        );
 
-const success =
-    db.addOshi(selectedOshiId);
+        return;
 
-if(!success) return;
+    }
 
-selectedOshiId = null;
 
-document
+    const success =
+        db.addOshi(
+            selectedOshiId
+        );
+
+
+    if(!success) return;
+
+
+
+    selectedOshiId=null;
+
+
+    document
     .getElementById(
         'oshi-search'
     )
-    .value = '';
+    .value='';
 
-document
+
+
+    document
     .getElementById(
         'search-results'
     )
-    .innerHTML = '';
+    .innerHTML='';
 
-displayOshiList();
+
+
+    displayOshiList();
 
 }
+
+
+
 /* =====================
-マスタ検索
+   推し検索
 ===================== */
 
 function findMasterById(id){
 
-const all = [
+    const all=[
 
-    ...oshiMaster.artists,
-    ...oshiMaster.sports
+        ...oshiMaster.artists,
 
-];
+        ...oshiMaster.sports
 
-return all.find(
-    o => o.id === id
-);
+    ];
 
-}
 
-/* =====================
-推し削除
-===================== */
-
-function deleteOshi(id,name){
-
-const ok =
-    confirm(
-        `「${name}」を削除しますか？`
+    return all.find(
+        o=>o.id===id
     );
 
-if(!ok) return;
-
-db.deleteOshi(id);
-
-displayOshiList();
-
 }
 
+
+
+
 /* =====================
-推し一覧
+   推し一覧
 ===================== */
 
 function displayOshiList(){
 
-const data = db.load();
+    const data=db.load();
 
-const html =
-    data.oshiList.map(item => {
 
-        const oshi =
-            findMasterById(
-                item.masterId
-            );
+    const html =
+        data.oshiList.map(item=>{
 
-        if(!oshi) return '';
 
-        return `
+            const oshi =
+                findMasterById(
+                    item.masterId
+                );
 
-<div class="item oshi-item"><div class="oshi-info">
 
-    <div class="oshi-name">
-        ${oshi.name}
-    </div>
+            if(!oshi) return '';
 
-    ${
-        oshi.website
-        ? `<div class="oshi-link">🌐 HP</div>`
-        : ''
-    }
 
-    ${
-        oshi.instagram
-        ? `<div class="oshi-link">📷 Instagram</div>`
-        : ''
-    }
 
-    ${
-        oshi.x
-        ? `<div class="oshi-link">𝕏 X</div>`
-        : ''
-    }
+            return `
+
+<div class="item oshi-item">
+
+<div class="oshi-info">
+
+<div class="oshi-name">
+${oshi.name}
+</div>
+
+${
+oshi.website
+?
+`<div class="oshi-link">🌐 HP</div>`
+:''
+}
+
+${
+oshi.instagram
+?
+`<div class="oshi-link">📷 Instagram</div>`
+:''
+}
+
+${
+oshi.x
+?
+`<div class="oshi-link">𝕏 X</div>`
+:''
+}
 
 </div>
+
 
 <div class="oshi-actions">
 
-    <button
-        class="icon-btn delete-btn"
-        onclick="deleteOshi(
-            ${item.id},
-            '${oshi.name.replace(/'/g,"\\'")}'
-        )">
+<button
+class="icon-btn delete-btn"
+onclick="deleteOshi(
+${item.id},
+'${oshi.name.replace(/'/g,"\\'")}'
+)">
+✕
+</button>
 
-        ✕
-
-    </button>
 
 </div>
 
-</div>`;
 
-    }).join('');
+</div>
 
-document
+`;
+
+        }).join('');
+
+
+
+    document
     .getElementById(
         'oshi-list'
     )
@@ -402,306 +616,635 @@ document
 
 }
 
+
+
+
+
+function deleteOshi(id,name){
+
+    if(
+        !confirm(
+            `「${name}」を削除しますか？`
+        )
+    )
+    return;
+
+
+    db.deleteOshi(id);
+
+
+    displayOshiList();
+
+}
+
+
+
+
+
+
+
 /* =====================
-イベント追加
+   カレンダー生成
 ===================== */
+
+
+function renderCalendar(){
+
+
+    const area =
+        document.getElementById(
+            'calendar'
+        );
+
+
+    if(!area) return;
+
+
+
+    const year =
+        currentCalendarDate
+        .getFullYear();
+
+
+    const month =
+        currentCalendarDate
+        .getMonth();
+
+
+
+    const first =
+        new Date(
+            year,
+            month,
+            1
+        );
+
+
+    const last =
+        new Date(
+            year,
+            month+1,
+            0
+        );
+
+
+
+    const today =
+        new Date();
+
+
+
+    let html=`
+
+
+<div class="calendar-header">
+
+<button onclick="changeMonth(-1)">
+◀
+</button>
+
+
+<div class="calendar-title">
+
+${year}年 ${month+1}月
+
+</div>
+
+
+<button onclick="changeMonth(1)">
+▶
+</button>
+
+
+</div>
+
+
+<div class="calendar-grid">
+
+
+<div class="calendar-week">
+日
+</div>
+
+<div class="calendar-week">
+月
+</div>
+
+<div class="calendar-week">
+火
+</div>
+
+<div class="calendar-week">
+水
+</div>
+
+<div class="calendar-week">
+木
+</div>
+
+<div class="calendar-week">
+金
+</div>
+
+<div class="calendar-week">
+土
+</div>
+
+`;
+
+
+
+    for(
+        let i=0;
+        i<first.getDay();
+        i++
+    ){
+
+        html+=`
+        <div></div>
+        `;
+
+    }
+
+
+
+    const events =
+        db.load().events;
+
+
+
+    for(
+        let d=1;
+        d<=last.getDate();
+        d++
+    ){
+
+
+        const date =
+            `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+
+
+
+        const has =
+            events.some(
+                e=>
+                e.date.startsWith(date)
+            );
+
+
+
+        const isToday =
+            today.getFullYear()===year
+            &&
+            today.getMonth()===month
+            &&
+            today.getDate()===d;
+
+
+
+        html+=`
+
+<div
+class="calendar-day
+${isToday?'today':''}
+${has?'has-event':''}"
+onclick="selectCalendarDate('${date}')">
+
+${d}
+
+</div>
+
+`;
+
+    }
+
+
+
+    html+=`
+
+</div>
+
+
+<div class="selected-date">
+
+選択日：
+${selectedCalendarDate || '未選択'}
+
+</div>
+
+`;
+
+
+
+    area.innerHTML=html;
+
+
+}
+
+
+
+
+
+
+function changeMonth(value){
+
+    currentCalendarDate
+    .setMonth(
+        currentCalendarDate.getMonth()
+        +
+        value
+    );
+
+
+    renderCalendar();
+
+}
+
+
+
+
+function selectCalendarDate(date){
+
+    selectedCalendarDate=date;
+
+
+    document
+    .getElementById(
+        'event-date'
+    )
+    .value =
+        date+"T12:00";
+
+
+    renderCalendar();
+
+}
+
+
+
+
+
+
+
+/* =====================
+   予定追加
+===================== */
+
 
 function addEvent(){
 
-const category =
-    document.getElementById(
-        'event-category'
-    ).value;
 
-const title =
-    document.getElementById(
-        'event-title'
-    ).value.trim();
+    if(!selectedCalendarDate){
 
-const date =
-    document.getElementById(
-        'event-date'
-    ).value;
+        alert(
+            'カレンダーから日付を選択してください'
+        );
 
-const place =
-    document.getElementById(
-        'event-place'
-    ).value.trim();
+        return;
 
-const meetingTime =
-    document.getElementById(
-        'meeting-time'
-    ).value.trim();
+    }
 
-const companions =
-    document.getElementById(
-        'companions'
-    ).value.trim();
 
-const mapUrl =
-    document.getElementById(
-        'map-url'
-    ).value.trim();
 
-const ticketUrl =
-    document.getElementById(
-        'ticket-url'
-    ).value.trim();
+    const data={
 
-if(!title || !date){
 
-    alert(
-        'イベント名と日時は必須です'
-    );
+        category:
+        document
+        .getElementById(
+            'event-category'
+        )
+        .value,
 
-    return;
+
+        title:
+        document
+        .getElementById(
+            'event-title'
+        )
+        .value,
+
+
+        date:
+        document
+        .getElementById(
+            'event-date'
+        )
+        .value,
+
+
+        place:
+        document
+        .getElementById(
+            'event-place'
+        )
+        .value,
+
+
+        meeting:
+        document
+        .getElementById(
+            'meeting-time'
+        )
+        .value,
+
+
+        companion:
+        document
+        .getElementById(
+            'companions'
+        )
+        .value,
+
+
+        map:
+        document
+        .getElementById(
+            'map-url'
+        )
+        .value,
+
+
+        ticket:
+        document
+        .getElementById(
+            'ticket-url'
+        )
+        .value
+
+    };
+
+
+
+    if(!data.title){
+
+        alert(
+            'イベント名を入力してください'
+        );
+
+        return;
+
+    }
+
+
+
+    if(
+        db.addEvent(data)
+    ){
+
+        alert(
+            '予定を追加しました'
+        );
+
+
+        displayEventList();
+
+        renderCalendar();
+
+        displayHomeSchedule();
+
+    }
+
 }
 
-const success =
-    db.addEvent({
 
-        id: Date.now(),
 
-        category,
-        title,
-        date,
-        place,
-        meetingTime,
-        companions,
-        mapUrl,
-        ticketUrl
 
-    });
-
-if(!success) return;
-
-displayEventList();
-displayEvents();
-
-document.getElementById('event-title').value='';
-document.getElementById('event-date').value='';
-document.getElementById('event-place').value='';
-document.getElementById('meeting-time').value='';
-document.getElementById('companions').value='';
-document.getElementById('map-url').value='';
-document.getElementById('ticket-url').value='';
-
-}
 
 /* =====================
-イベント削除
+   登録済み予定表示
 ===================== */
 
-function deleteEvent(id){
-
-if(!confirm('削除しますか？'))
-    return;
-
-db.deleteEvent(id);
-
-displayEventList();
-displayEvents();
-
-}
-
-/* =====================
-イベント一覧
-===================== */
 
 function displayEventList(){
 
-const data = db.load();
+    const box =
+        document.getElementById(
+            'event-list'
+        );
 
-const html =
-    data.events
-    .sort(
-        (a,b)=>
-            new Date(a.date)
-            -
-            new Date(b.date)
-    )
-    .map(event => `
 
-<div class="event-item"><div class="event-title">
-${event.category}
- ${event.title}
-</div><div class="event-meta">
-📅 ${event.date}
-</div><div class="event-meta">
-📍 ${event.place || '-'}
-</div><div class="event-meta">
-🤝 ${event.companions || '-'}
-</div><div class="event-actions"><button
-onclick="deleteEvent(${event.id})">
+    if(!box) return;
 
+
+
+    const events =
+        db.load().events;
+
+
+
+    box.innerHTML =
+
+
+    events.length
+
+    ?
+
+    events.map(e=>`
+
+<div class="event-card">
+
+<div class="event-card-title">
+${e.category}
+${e.title}
+</div>
+
+
+<div>
+📅 ${e.date}
+</div>
+
+
+<div>
+📍 ${e.place}
+</div>
+
+
+<div>
+👥 ${e.companion}
+</div>
+
+
+<div class="event-button-area">
+
+
+<button
+onclick="deleteEvent(${e.id})">
 削除
+</button>
 
-</button></div></div>`).join('');
 
-document
-    .getElementById(
-        'event-list'
-    )
-    .innerHTML =
-        html || '該当なし';
+${
+e.map
+?
+`
+<button
+class="map-btn"
+onclick="location.href='${e.map}'">
+地図
+</button>
+`
+:''
+}
+
+
+</div>
+
+
+</div>
+
+`).join('')
+
+
+:
+
+'該当なし';
+
 
 }
 
+
+
+
+
+function deleteEvent(id){
+
+    db.deleteEvent(id);
+
+
+    displayEventList();
+
+    renderCalendar();
+
+    displayHomeSchedule();
+
+}
+
+
+
+
+
+
+
 /* =====================
-ホーム表示
+   ホーム予定表示
 ===================== */
 
-function displayEvents(){
 
-const data = db.load();
+function displayHomeSchedule(){
 
-const today = new Date();
+    const events =
+        db.load().events;
 
-const weekLater =
-    new Date();
 
-weekLater.setDate(
-    today.getDate() + 7
-);
+    const now =
+        new Date();
 
-const nextWeekLater =
-    new Date();
 
-nextWeekLater.setDate(
-    today.getDate() + 14
-);
 
-const todayEvents = [];
-const thisWeekEvents = [];
-const nextWeekEvents = [];
+    const today =
+        events.filter(
+            e=>
+            e.date.slice(0,10)
+            ===
+            now.toISOString()
+            .slice(0,10)
+        );
 
-data.events.forEach(event => {
 
-    const d =
-        new Date(event.date);
 
-    const diff =
-        (d - today)
-        /
-        86400000;
-
-    if(
-        d.toDateString()
-        ===
-        today.toDateString()
-    ){
-        todayEvents.push(event);
-    }
-
-    if(
-        diff >= 0 &&
-        diff <= 7
-    ){
-        thisWeekEvents.push(event);
-    }
-
-    if(
-        diff > 7 &&
-        diff <= 14
-    ){
-        nextWeekEvents.push(event);
-    }
-});
-
-document
+    document
     .getElementById(
         'today-schedule'
     )
     .innerHTML =
-        todayEvents.length
-        ? todayEvents.map(
-            e => `${e.title}`
-          ).join('<br>')
-        : '該当なし';
+        today.length
+        ?
+        today.map(e=>e.title).join('<br>')
+        :
+        '該当なし';
 
-document
-    .getElementById(
-        'this-week-schedule'
-    )
-    .innerHTML =
-        thisWeekEvents.length
-        ? thisWeekEvents.map(
-            e => `${e.title}`
-          ).join('<br>')
-        : '該当なし';
-
-document
-    .getElementById(
-        'next-week-schedule'
-    )
-    .innerHTML =
-        nextWeekEvents.length
-        ? nextWeekEvents.map(
-            e => `${e.title}`
-          ).join('<br>')
-        : '該当なし';
-
-document
-    .getElementById(
-        'today-events'
-    )
-    .innerHTML =
-        todayEvents.length
-        ? `本日 ${todayEvents.length}件`
-        : '該当なし';
 
 }
 
+
+
+
+
 /* =====================
-起動
+   起動
 ===================== */
 
-window.onload = async function(){
 
-await loadMaster();
+window.onload =
+async function(){
 
-displayOshiList();
 
-displayEventList();
+    await loadMaster();
 
-displayEvents();
 
-document
-    .getElementById(
-        'oshi-search'
-    )
-    .addEventListener(
-        'focus',
-        showCandidates
-    );
+    displayOshiList();
 
-document
-    .getElementById(
-        'oshi-search'
-    )
-    .addEventListener(
-        'input',
-        searchOshi
-    );
 
-document
-    .getElementById(
-        'category-select'
-    )
-    .addEventListener(
-        'change',
-        () => {
+    displayHomeSchedule();
 
-            selectedOshiId = null;
 
-            document
-                .getElementById(
-                    'oshi-search'
-                )
-                .value = '';
 
-            showCandidates();
-        }
-    );
+    const search =
+        document
+        .getElementById(
+            'oshi-search'
+        );
+
+
+    if(search){
+
+
+        search.addEventListener(
+            'focus',
+            showCandidates
+        );
+
+
+        search.addEventListener(
+            'input',
+            searchOshi
+        );
+
+    }
+
+
+
+
+    const category =
+        document
+        .getElementById(
+            'category-select'
+        );
+
+
+    if(category){
+
+        category.addEventListener(
+            'change',
+            function(){
+
+                selectedOshiId=null;
+
+                search.value='';
+
+                showCandidates();
+
+            }
+        );
+
+    }
+
+
+
+    displayEventList();
+
+
+    renderCalendar();
 
 };
