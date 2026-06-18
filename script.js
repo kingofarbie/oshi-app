@@ -1398,6 +1398,7 @@ function deleteEvent(id){
 ===================== */
 
 
+
 function displayHomeSchedule(){
 
     const events =
@@ -1408,154 +1409,87 @@ function displayHomeSchedule(){
         new Date();
 
 
-    // 日付だけ取得
     const today =
-        new Date(
-            now.getFullYear(),
-            now.getMonth(),
-            now.getDate()
-        );
-
-
-    // 今週（月曜始まり）
-    const day =
-        today.getDay();
-
-
-    const monday =
-        new Date(today);
-
-    monday.setDate(
-        today.getDate()
-        -
-        (day === 0 ? 6 : day - 1)
-    );
-
-
-    // 来週
-    const nextMonday =
-        new Date(monday);
-
-    nextMonday.setDate(
-        monday.getDate()+7
-    );
-
-
-    const nextSunday =
-        new Date(nextMonday);
-
-    nextSunday.setDate(
-        nextMonday.getDate()+6
-    );
+        `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
 
 
 
-    // 日付比較用
-    function getDate(e){
-
-        return new Date(
-            e.date.slice(0,10)
-        );
-
-    }
-
-
-
-    // 本日
-    const todayList =
+    const list =
         events.filter(
             e =>
-            getDate(e).getTime()
+            e.date
+            &&
+            e.date.slice(0,10)
             ===
-            today.getTime()
+            today
         );
+
+
+
+    const box =
+        document.getElementById(
+            'today-schedule'
+        );
+
+
+    if(!box) return;
+
+
+
+    box.innerHTML =
+
+    list.length
+
+    ?
+
+    list.map(
+        e =>
+        `
+        ${e.category}
+        ${e.title}
+        `
+    ).join('<br>')
+
+
+    :
+
+    '該当なし';
 
 
 
     // 今週
-    const weekList =
-        events.filter(
-            e => {
-
-                const d=getDate(e);
-
-                return d>=monday
-                &&
-                d<nextMonday;
-
-            }
+    const weekBox =
+        document.getElementById(
+            'this-week-schedule'
         );
 
 
+    if(weekBox){
 
-    // 来週
-    const nextWeekList =
-        events.filter(
-            e => {
-
-                const d=getDate(e);
-
-                return d>=nextMonday
-                &&
-                d<=nextSunday;
-
-            }
-        );
-
-
-
-
-    function render(id,list){
-
-        const box =
-            document.getElementById(id);
-
-
-        if(!box) return;
-
-
-        box.innerHTML =
-
-        list.length
-
-        ?
-
-        list.map(
-            e=>
-            `
-            ${e.category}
-            ${e.title}
-            `
-        ).join('<br>')
-
-
-        :
-
-        '該当なし';
+        weekBox.innerHTML =
+        '準備中';
 
     }
 
 
 
-    render(
-        'today-schedule',
-        todayList
-    );
+    // 来週
+    const nextBox =
+        document.getElementById(
+            'next-week-schedule'
+        );
 
 
-    render(
-        'this-week-schedule',
-        weekList
-    );
+    if(nextBox){
 
+        nextBox.innerHTML =
+        '準備中';
 
-    render(
-        'next-week-schedule',
-        nextWeekList
-    );
+    }
 
 
 }
+
 
 
 
