@@ -91,16 +91,33 @@
      カレンダー
 ===================== 
 
+ -->
+
+<!-- =====================
+     カレンダー
+===================== -->
+<!-- =====================
+     カレンダー
+===================== -->
+
 
 <div id="calendarPage" class="page">
 
 
+
+<!-- =====================
+     カレンダー本体
+===================== -->
+
 <div class="card">
 
-<h2>📅 カレンダー</h2>
+
+<h2>
+📅 カレンダー
+</h2>
 
 
-<div id="calendar-box">
+<div id="calendar">
 
 </div>
 
@@ -109,11 +126,61 @@
 
 
 
+
+
+
+<!-- =====================
+     選択日の操作
+===================== -->
+
+
+<div class="card">
+
+
+<div id="selected-event-area">
+
+
+<p>
+📌 日付を選択してください
+</p>
+
+
+</div>
+
+
+
+
+<button
+id="add-event-open-btn"
+style="display:none;"
+onclick="openEventForm()">
+
+
+➕ この日に予定追加
+
+
+</button>
+
+
+</div>
+
+
+
+
+
+
+
+
+<!-- =====================
+     予定追加フォーム
+     （選択後表示）
+===================== -->
 
 
 <div class="card"
 id="event-form-card"
 style="display:none;">
+
 
 
 <h2>
@@ -122,24 +189,38 @@ style="display:none;">
 
 
 
+
 <select id="event-category">
 
+
 <option value="イベント">
+
 🎫 イベント
+
 </option>
+
 
 
 <option value="フェス">
+
 🎵 フェス
+
 </option>
+
 
 
 <option value="試合">
+
 ⚽ 試合
+
 </option>
 
 
+
 </select>
+
+
+
 
 
 
@@ -153,9 +234,14 @@ placeholder="イベント名">
 
 
 
+
+
+
 <input
 type="datetime-local"
 id="event-date">
+
+
 
 
 
@@ -170,10 +256,15 @@ placeholder="場所">
 
 
 
+
+
 <input
 type="text"
 id="meeting-time"
 placeholder="待ち合わせ時間">
+
+
+
 
 
 
@@ -188,10 +279,16 @@ placeholder="同伴者">
 
 
 
+
+
+
 <input
 type="url"
 id="map-url"
 placeholder="GoogleマップURL">
+
+
+
 
 
 
@@ -206,18 +303,27 @@ placeholder="チケットURL">
 
 
 
-<button onclick="saveEvent()">
+
+
+<button
+onclick="saveEvent()">
+
 
 💾 保存
+
 
 </button>
 
 
 
+
+
 <button
-onclick="cancelEventEdit()">
+onclick="closeEventForm()">
+
 
 キャンセル
+
 
 </button>
 
@@ -229,246 +335,129 @@ onclick="cancelEventEdit()">
 
 
 
+
+
+
+
+<!-- =====================
+     選択日の登録予定
+===================== -->
 
 
 <div class="card">
 
 
 <h2>
-📋 登録済み予定
+
+📌 選択日の予定
+
 </h2>
+
+
+
+<div id="selected-date-events">
+
+
+該当なし
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- =====================
+     全イベント一覧
+===================== -->
+
+
+<div class="card">
+
+
+
+<h2>
+
+📋 登録済みイベント
+
+</h2>
+
+
+
+
+
+<select
+id="event-filter"
+onchange="displayEventList()">
+
+
+
+<option value="all">
+
+すべて
+
+</option>
+
+
+
+
+<option value="イベント">
+
+🎫 イベント
+
+</option>
+
+
+
+
+<option value="フェス">
+
+🎵 フェス
+
+</option>
+
+
+
+
+<option value="試合">
+
+⚽ 試合
+
+</option>
+
+
+
+</select>
+
+
+
+
+
 
 
 <div id="event-list">
 
+
 該当なし
 
-</div>
-
 
 </div>
 
 
 
+
 </div>
- -->
 
-<!-- =====================
-     カレンダー
-===================== -->
 
-<div id="calendarPage" class="page">
 
-
-    <!-- カレンダー本体 -->
-    <div class="card">
-
-        <h2>📅 カレンダー</h2>
-
-        <div id="calendar"></div>
-
-    </div>
-
-
-
-    <!-- 選択日の操作 -->
-    <div class="card">
-
-        <div id="selected-event-area">
-
-            <p>
-            📌 日付を選択してください
-            </p>
-
-        </div>
-
-
-        <button
-        id="add-event-open-btn"
-        style="display:none;"
-        onclick="openEventForm()">
-
-        ➕ この日に予定追加
-
-        </button>
-
-
-    </div>
-
-
-
-
-    <!-- 予定追加ポップアップ -->
-
-    <div class="card"
-    id="event-form-card"
-    style="display:none;">
-
-
-        <h2>
-        ➕ 予定追加
-        </h2>
-
-
-
-        <select id="event-category">
-
-            <option value="イベント">
-            🎫 イベント
-            </option>
-
-            <option value="フェス">
-            🎵 フェス
-            </option>
-
-            <option value="試合">
-            ⚽ 試合
-            </option>
-
-        </select>
-
-
-
-        <input
-        type="text"
-        id="event-title"
-        placeholder="イベント名">
-
-
-
-        <input
-        type="datetime-local"
-        id="event-date">
-
-
-
-        <input
-        type="text"
-        id="event-place"
-        placeholder="場所">
-
-
-
-        <input
-        type="text"
-        id="meeting-time"
-        placeholder="待ち合わせ時間">
-
-
-
-        <input
-        type="text"
-        id="companions"
-        placeholder="同伴者">
-
-
-
-        <input
-        type="url"
-        id="map-url"
-        placeholder="GoogleマップURL">
-
-
-
-        <input
-        type="url"
-        id="ticket-url"
-        placeholder="チケットURL">
-
-
-
-        <button onclick="saveEvent()">
-
-        💾 保存
-
-        </button>
-
-
-
-        <button
-        onclick="closeEventForm()">
-
-        キャンセル
-
-        </button>
-
-
-    </div>
-
-
-
-
-
-
-    <!-- 選択日の予定 -->
-
-    <div class="card">
-
-        <h2>
-        📌 選択日の予定
-        </h2>
-
-
-        <div id="selected-date-events">
-
-        該当なし
-
-        </div>
-
-
-    </div>
-
-
-
-
-
-
-    <!-- 全イベント -->
-
-    <div class="card">
-
-
-        <h2>
-        📋 登録済みイベント
-        </h2>
-
-
-
-        <select id="event-filter"
-        onchange="displayEventList()">
-
-            <option value="all">
-            すべて
-            </option>
-
-
-            <option value="イベント">
-            🎫イベント
-            </option>
-
-
-            <option value="フェス">
-            🎵フェス
-            </option>
-
-
-            <option value="試合">
-            ⚽試合
-            </option>
-
-
-        </select>
-
-
-
-        <div id="event-list">
-
-        該当なし
-
-        </div>
-
-
-    </div>
 
 
 </div>
