@@ -639,14 +639,6 @@ function deleteOshi(id,name){
 
 
 
-
-
-
-
-/* =====================
-   カレンダー生成
-===================== */
-
 /* =====================
    カレンダー生成
 ===================== */
@@ -884,7 +876,6 @@ function selectCalendarDate(date){
 /* =====================
    選択日の表示更新
 ===================== */
-
 function updateSelectedDateArea(){
 
 
@@ -925,11 +916,9 @@ function updateSelectedDateArea(){
 
 
 
+    // 選択日の文字表示は削除
 
-    area.innerHTML =
-    `
-    📅 ${selectedCalendarDate}
-    `;
+    area.innerHTML = "";
 
 
 
@@ -940,9 +929,8 @@ function updateSelectedDateArea(){
 
     displaySelectedDateEvents();
 
+
 }
-
-
 
 
 
