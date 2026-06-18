@@ -1211,7 +1211,11 @@ function displayHomeSchedule(){
 }
 
 
+function saveEvent(){
 
+    addEvent();
+
+}
 
 
 /* =====================
