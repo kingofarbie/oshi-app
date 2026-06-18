@@ -257,6 +257,8 @@ async function loadMaster(){
 
 function switchTab(pageId,event){
 
+    alert("タブ切替：" + pageId);
+
 
     document
     .querySelectorAll('.page')
