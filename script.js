@@ -1241,9 +1241,18 @@ async function(){
 
 
 
-    displayEventList();
+    
 
 
-    renderCalendar();
+　displayEventList();
+
+console.log(
+    "calendar確認",
+    document.getElementById("calendar-box")
+);
+
+renderCalendar();
+
+};
 
 };
