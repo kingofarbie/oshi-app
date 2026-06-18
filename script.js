@@ -302,6 +302,13 @@ function switchTab(pageId,event){
     }
 
 
+    if(pageId==='home'){
+
+    displayHomeSchedule();
+
+    }
+
+
 }
 
 
@@ -1392,159 +1399,96 @@ function displayHomeSchedule(){
         new Date();
 
 
-    // 今日
-    const todayStr =
-        now.toISOString()
-        .slice(0,10);
-
-
-
+    // 日付だけ取得
     const today =
+        new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate()
+        );
+
+
+    // 今週（月曜始まり）
+    const day =
+        today.getDay();
+
+
+    const monday =
+        new Date(today);
+
+    monday.setDate(
+        today.getDate()
+        -
+        (day === 0 ? 6 : day - 1)
+    );
+
+
+    // 来週
+    const nextMonday =
+        new Date(monday);
+
+    nextMonday.setDate(
+        monday.getDate()+7
+    );
+
+
+    const nextSunday =
+        new Date(nextMonday);
+
+    nextSunday.setDate(
+        nextMonday.getDate()+6
+    );
+
+
+
+    // 日付比較用
+    function getDate(e){
+
+        return new Date(
+            e.date.slice(0,10)
+        );
+
+    }
+
+
+
+    // 本日
+    const todayList =
         events.filter(
             e =>
-            e.date.slice(0,10)
-            === todayStr
+            getDate(e).getTime()
+            ===
+            today.getTime()
         );
 
 
 
-    document
-    .getElementById(
-        'today-schedule'
-    )
-    .innerHTML =
-
-        today.length
-
-        ?
-
-        today.map(
-            e =>
-            `📅 ${e.title}`
-        )
-        .join('<br>')
-
-        :
-
-        '該当なし';
-
-
-
-
-    // 今週（月曜開始）
-
-    const startWeek =
-        new Date(now);
-
-
-    startWeek.setDate(
-        now.getDate()
-        -
-        now.getDay()
-        +
-        1
-    );
-
-
-    startWeek.setHours(
-        0,0,0,0
-    );
-
-
-
-    const endWeek =
-        new Date(startWeek);
-
-
-    endWeek.setDate(
-        startWeek.getDate()
-        +6
-    );
-
-
-
-
-    const thisWeek =
+    // 今週
+    const weekList =
         events.filter(
-            e=>{
+            e => {
 
-                const d =
-                new Date(e.date);
+                const d=getDate(e);
 
-
-                return d>=startWeek
+                return d>=monday
                 &&
-                d<=endWeek;
+                d<nextMonday;
 
             }
         );
-
-
-
-    document
-    .getElementById(
-        'this-week-schedule'
-    )
-    .innerHTML =
-
-
-        thisWeek.length
-
-        ?
-
-        thisWeek.map(
-            e =>
-            `📅 ${e.date.slice(0,10)} ${e.title}`
-        )
-        .join('<br>')
-
-        :
-
-        '該当なし';
-
-
-
-
 
 
 
     // 来週
-
-    const startNext =
-        new Date(endWeek);
-
-
-    startNext.setDate(
-        endWeek.getDate()
-        +1
-    );
-
-
-
-    const endNext =
-        new Date(startNext);
-
-
-    endNext.setDate(
-        startNext.getDate()
-        +6
-    );
-
-
-
-
-
-    const nextWeek =
+    const nextWeekList =
         events.filter(
-            e=>{
+            e => {
 
-                const d =
-                new Date(e.date);
+                const d=getDate(e);
 
-
-                return d>=startNext
+                return d>=nextMonday
                 &&
-                d<=endNext;
+                d<=nextSunday;
 
             }
         );
@@ -1552,30 +1496,58 @@ function displayHomeSchedule(){
 
 
 
-    document
-    .getElementById(
-        'next-week-schedule'
-    )
-    .innerHTML =
+    function render(id,list){
+
+        const box =
+            document.getElementById(id);
 
 
-        nextWeek.length
+        if(!box) return;
+
+
+        box.innerHTML =
+
+        list.length
 
         ?
 
-        nextWeek.map(
-            e =>
-            `📅 ${e.date.slice(0,10)} ${e.title}`
-        )
-        .join('<br>')
+        list.map(
+            e=>
+            `
+            ${e.category}
+            ${e.title}
+            `
+        ).join('<br>')
+
 
         :
 
         '該当なし';
 
+    }
+
+
+
+    render(
+        'today-schedule',
+        todayList
+    );
+
+
+    render(
+        'this-week-schedule',
+        weekList
+    );
+
+
+    render(
+        'next-week-schedule',
+        nextWeekList
+    );
 
 
 }
+
 
 
 /* =====================
