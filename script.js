@@ -257,32 +257,54 @@ async function loadMaster(){
 
 function switchTab(pageId,event){
 
-    document.querySelectorAll('.page')
-    .forEach(page=>{
-        page.classList.remove('active');
-    });
+
+    document
+    .querySelectorAll('.page')
+    .forEach(
+        page=>
+            page.classList.remove(
+                'active'
+            )
+    );
 
 
-    const target =
-        document.getElementById(pageId);
+    document
+    .getElementById(pageId)
+    .classList.add(
+        'active'
+    );
 
 
-    if(target){
-        target.classList.add('active');
+
+    document
+    .querySelectorAll('.tab')
+    .forEach(
+        tab=>
+            tab.classList.remove(
+                'active'
+            )
+    );
+
+
+    event.currentTarget
+    .classList.add(
+        'active'
+    );
+
+
+
+    if(pageId==='calendarPage'){
+
+        renderCalendar();
+
+        displayEventList();
+
     }
 
-
-    document.querySelectorAll('.tab')
-    .forEach(tab=>{
-        tab.classList.remove('active');
-    });
-
-
-    if(event){
-        event.currentTarget.classList.add('active');
-    }
 
 }
+
+
 
 
 
@@ -625,19 +647,18 @@ function deleteOshi(id,name){
    カレンダー生成
 ===================== */
 
-
 
 function renderCalendar(){
 
-    alert("カレンダー実行");
 
     const area =
         document.getElementById(
-            'calendar-box'
+            'calendar'
         );
 
 
     if(!area) return;
+
 
 
     const year =
@@ -1221,18 +1242,9 @@ async function(){
 
 
 
-    
+    displayEventList();
 
 
-　displayEventList();
-
-console.log(
-    "calendar確認",
-    document.getElementById("calendar-box")
-);
-
-renderCalendar();
-
-};
+    renderCalendar();
 
 };
