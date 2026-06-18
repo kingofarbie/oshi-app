@@ -1392,14 +1392,18 @@ function displayHomeSchedule(){
         new Date();
 
 
+    // 今日
+    const todayStr =
+        now.toISOString()
+        .slice(0,10);
+
+
 
     const today =
         events.filter(
-            e=>
+            e =>
             e.date.slice(0,10)
-            ===
-            now.toISOString()
-            .slice(0,10)
+            === todayStr
         );
 
 
@@ -1409,17 +1413,169 @@ function displayHomeSchedule(){
         'today-schedule'
     )
     .innerHTML =
+
         today.length
+
         ?
-        today.map(e=>e.title).join('<br>')
+
+        today.map(
+            e =>
+            `📅 ${e.title}`
+        )
+        .join('<br>')
+
         :
+
         '該当なし';
 
 
+
+
+    // 今週（月曜開始）
+
+    const startWeek =
+        new Date(now);
+
+
+    startWeek.setDate(
+        now.getDate()
+        -
+        now.getDay()
+        +
+        1
+    );
+
+
+    startWeek.setHours(
+        0,0,0,0
+    );
+
+
+
+    const endWeek =
+        new Date(startWeek);
+
+
+    endWeek.setDate(
+        startWeek.getDate()
+        +6
+    );
+
+
+
+
+    const thisWeek =
+        events.filter(
+            e=>{
+
+                const d =
+                new Date(e.date);
+
+
+                return d>=startWeek
+                &&
+                d<=endWeek;
+
+            }
+        );
+
+
+
+    document
+    .getElementById(
+        'this-week-schedule'
+    )
+    .innerHTML =
+
+
+        thisWeek.length
+
+        ?
+
+        thisWeek.map(
+            e =>
+            `📅 ${e.date.slice(0,10)} ${e.title}`
+        )
+        .join('<br>')
+
+        :
+
+        '該当なし';
+
+
+
+
+
+
+
+    // 来週
+
+    const startNext =
+        new Date(endWeek);
+
+
+    startNext.setDate(
+        endWeek.getDate()
+        +1
+    );
+
+
+
+    const endNext =
+        new Date(startNext);
+
+
+    endNext.setDate(
+        startNext.getDate()
+        +6
+    );
+
+
+
+
+
+    const nextWeek =
+        events.filter(
+            e=>{
+
+                const d =
+                new Date(e.date);
+
+
+                return d>=startNext
+                &&
+                d<=endNext;
+
+            }
+        );
+
+
+
+
+    document
+    .getElementById(
+        'next-week-schedule'
+    )
+    .innerHTML =
+
+
+        nextWeek.length
+
+        ?
+
+        nextWeek.map(
+            e =>
+            `📅 ${e.date.slice(0,10)} ${e.title}`
+        )
+        .join('<br>')
+
+        :
+
+        '該当なし';
+
+
+
 }
-
-
-
 
 
 /* =====================
