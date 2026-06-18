@@ -865,7 +865,7 @@ function changeMonth(value){
 
 function selectCalendarDate(date){
 
-    selectedCalendarDate=date;
+    selectedCalendarDate = date;
 
 
     document
@@ -873,16 +873,26 @@ function selectCalendarDate(date){
         'event-date'
     )
     .value =
-        date+"T12:00";
+        date + "T12:00";
+
+
+    // 予定入力フォーム表示
+    const form =
+        document.getElementById(
+            'event-form-card'
+        );
+
+
+    if(form){
+
+        form.style.display = 'block';
+
+    }
 
 
     renderCalendar();
 
 }
-
-
-
-
 
 
 
