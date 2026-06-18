@@ -648,8 +648,10 @@ function deleteOshi(id,name){
 ===================== */
 
 
+
 function renderCalendar(){
 
+    alert("カレンダー実行");
 
     const area =
         document.getElementById(
