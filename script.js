@@ -309,14 +309,6 @@ function switchTab(pageId,event){
     }
 
 
-    if(pageId==='home'){
-
-    alert("ホーム更新");
-
-    displayHomeSchedule();
-
-}
-
 
 }
 
@@ -1409,87 +1401,156 @@ function displayHomeSchedule(){
         new Date();
 
 
-    const today =
-        `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+    const todayStart =
+        new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate()
+        );
+
+
+    const tomorrow =
+        new Date(todayStart);
+
+    tomorrow.setDate(
+        todayStart.getDate()+1
+    );
 
 
 
-    const list =
-        events.filter(
-            e =>
+    // 今週（日曜始まり）
+    const weekStart =
+        new Date(todayStart);
+
+    weekStart.setDate(
+        todayStart.getDate()
+        -
+        todayStart.getDay()
+    );
+
+
+    const nextWeekStart =
+        new Date(weekStart);
+
+    nextWeekStart.setDate(
+        weekStart.getDate()+7
+    );
+
+
+    const nextWeekEnd =
+        new Date(nextWeekStart);
+
+    nextWeekEnd.setDate(
+        nextWeekStart.getDate()+7
+    );
+
+
+
+    function eventDate(e){
+
+        return new Date(
             e.date
-            &&
-            e.date.slice(0,10)
-            ===
-            today
         );
-
-
-
-    const box =
-        document.getElementById(
-            'today-schedule'
-        );
-
-
-    if(!box) return;
-
-
-
-    box.innerHTML =
-
-    list.length
-
-    ?
-
-    list.map(
-        e =>
-        `
-        ${e.category}
-        ${e.title}
-        `
-    ).join('<br>')
-
-
-    :
-
-    '該当なし';
-
-
-
-    // 今週
-    const weekBox =
-        document.getElementById(
-            'this-week-schedule'
-        );
-
-
-    if(weekBox){
-
-        weekBox.innerHTML =
-        '準備中';
 
     }
 
 
 
-    // 来週
-    const nextBox =
-        document.getElementById(
-            'next-week-schedule'
+    const todayList =
+        events.filter(
+            e=>{
+
+                const d=eventDate(e);
+
+                return d >= todayStart
+                &&
+                d < tomorrow;
+
+            }
         );
 
 
-    if(nextBox){
 
-        nextBox.innerHTML =
-        '準備中';
+    const weekList =
+        events.filter(
+            e=>{
+
+                const d=eventDate(e);
+
+                return d >= weekStart
+                &&
+                d < nextWeekStart;
+
+            }
+        );
+
+
+
+    const nextWeekList =
+        events.filter(
+            e=>{
+
+                const d=eventDate(e);
+
+                return d >= nextWeekStart
+                &&
+                d < nextWeekEnd;
+
+            }
+        );
+
+
+
+    function render(id,list){
+
+        const box =
+            document.getElementById(id);
+
+
+        if(!box) return;
+
+
+        box.innerHTML =
+
+        list.length
+
+        ?
+
+        list.map(
+            e=>
+            `
+            ${e.category}
+            ${e.title}
+            `
+        ).join('<br>')
+
+
+        :
+
+        '該当なし';
 
     }
 
+
+
+    render(
+        'today-schedule',
+        todayList
+    );
+
+
+    render(
+        'this-week-schedule',
+        weekList
+    );
+
+
+    render(
+        'next-week-schedule',
+        nextWeekList
+    );
 
 }
-
 
 
 
