@@ -1,0 +1,81 @@
+{
+
+      "version":"1.0",
+        "updated":"2026-06-18",
+            
+  "artists": [
+    {
+      "id": 1,
+      "name": "Ado",
+      "website": "https://ado.jp",
+      "instagram": "https://www.instagram.com/ado1024imokenp/",
+      "x": "https://x.com/ado1024imokenp"
+    },
+    {
+      "id": 2,
+      "name": "YOASOBI",
+      "website": "https://www.yoasobi-music.jp",
+      "instagram": "https://www.instagram.com/yoasobi_staff_/",
+      "x": "https://x.com/YOASOBI_staff"
+    },
+    {
+      "id": 3,
+      "name": "Mrs. GREEN APPLE",
+      "website": "https://mrsgreenapple.com",
+      "instagram": "https://www.instagram.com/mrsgreenappleofficial/",
+      "x": "https://x.com/AORINGOHUZIN"
+    },
+    {
+      "id": 4,
+      "name": "Official髭男dism",
+      "website": "https://higedan.com",
+      "instagram": "https://www.instagram.com/officialhigedandism/",
+      "x": "https://x.com/officialhige"
+    },
+    {
+      "id": 5,
+      "name": "King Gnu",
+      "website": "https://kinggnu.jp",
+      "instagram": "https://www.instagram.com/kinggnu.jp/",
+      "x": "https://x.com/KingGnu_JP"
+    }
+  ],
+
+  "sports": [
+    {
+      "id": 1001,
+      "name": "大谷翔平",
+      "website": "",
+      "instagram": "https://www.instagram.com/shoheiohtani/",
+      "x": ""
+    },
+    {
+      "id": 1002,
+      "name": "三笘薫",
+      "website": "",
+      "instagram": "https://www.instagram.com/kaoru.m.0520/",
+      "x": ""
+    },
+    {
+      "id": 1003,
+      "name": "久保建英",
+      "website": "",
+      "instagram": "https://www.instagram.com/takefusa.kubo/",
+      "x": ""
+    },
+    {
+      "id": 1004,
+      "name": "井上尚弥",
+      "website": "",
+      "instagram": "https://www.instagram.com/naoyainoue_410/",
+      "x": ""
+    },
+    {
+      "id": 1005,
+      "name": "羽生結弦",
+      "website": "",
+      "instagram": "",
+      "x": ""
+    }
+  ]
+}

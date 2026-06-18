@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>推し活手帳 v1.5.1</title>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="header">
+    <h1>推し活手帳</h1>
+</div>
+
+<!-- ホーム -->
+<div id="home" class="page active">
+
+    <div class="card">
+        <h2>🔔 新着通知</h2>
+        <div id="today-events" class="item">
+            該当なし
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>📅 本日の予定</h2>
+        <div id="today-schedule" class="item">
+            該当なし
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>🗓️ 今週の予定</h2>
+        <div id="this-week-schedule" class="item">
+            該当なし
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>📅 来週の予定</h2>
+        <div id="next-week-schedule" class="item">
+            該当なし
+        </div>
+    </div>
+
+</div>
+
+<!-- カレンダー -->
+<div id="calendarPage" class="page">
+
+    <div class="card">
+        <h2>📅 カレンダー</h2>
+        <p>予定管理機能が入ります</p>
+    </div>
+
+</div>
+
+<!-- 推し管理 -->
+<div id="oshiPage" class="page">
+
+    <div class="card">
+
+        <h2>⭐ 推し追加</h2>
+
+        <select id="category-select">
+
+            <option value="artists">
+                🎤 アーティスト
+            </option>
+
+            <option value="sports">
+                ⚽ スポーツ
+            </option>
+
+        </select>
+
+        <input
+            type="text"
+            id="oshi-search"
+            placeholder="推しを検索">
+
+        <button
+            id="add-oshi-btn"
+            onclick="addSelectedOshi()">
+            ➕ 追加
+        </button>
+
+        <div id="search-results"></div>
+
+    </div>
+
+    <div class="card">
+
+        <h2>📚 推し一覧</h2>
+
+        <div id="oshi-list">
+            該当なし
+        </div>
+
+    </div>
+
+</div>
+
+<!-- 設定 -->
+<div id="settingsPage" class="page">
+
+    <div class="card">
+        <h2>⚙️ 設定</h2>
+        <p>現在無料プランです（上限3件）</p>
+    </div>
+
+</div>
+
+<!-- タブバー -->
+<div class="tabbar">
+
+    <div
+        class="tab active"
+        onclick="switchTab('home',event)">
+        🏠<br>ホーム
+    </div>
+
+    <div
+        class="tab"
+        onclick="switchTab('calendarPage',event)">
+        📅<br>カレンダー
+    </div>
+
+    <div
+        class="tab"
+        onclick="switchTab('oshiPage',event)">
+        ⭐<br>推し
+    </div>
+
+    <div
+        class="tab"
+        onclick="switchTab('settingsPage',event)">
+        ⚙️<br>設定
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
