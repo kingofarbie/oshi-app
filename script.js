@@ -647,7 +647,7 @@ function deleteOshi(id,name){
    カレンダー生成
 ===================== */
 
-
+
 function renderCalendar(){
 
 
@@ -658,7 +658,6 @@ function renderCalendar(){
 
 
     if(!area) return;
-
 
 
     const year =
