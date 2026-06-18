@@ -846,9 +846,7 @@ function changeMonth(value){
 
 function selectCalendarDate(date){
 
-
     selectedCalendarDate = date;
-
 
 
     document
@@ -858,6 +856,13 @@ function selectCalendarDate(date){
     .value =
         date + "T12:00";
 
+
+    // 日付変更時は追加ボタンだけ再表示
+    document
+    .getElementById(
+        'event-form-card'
+    )
+    .style.display = "none";
 
 
     renderCalendar();
@@ -1211,6 +1216,153 @@ ${e.title}
 }
 
 
+function displayEventList(){
+
+    const box =
+        document.getElementById(
+            'event-list'
+        );
+
+
+    if(!box) return;
+
+
+
+    let events =
+        db.load().events;
+
+
+
+    const filter =
+        document
+        .getElementById(
+            'event-filter'
+        )
+        ?.value || 'all';
+
+
+
+    // カテゴリー絞り込み
+
+    if(filter !== 'all'){
+
+        events =
+        events.filter(
+            e =>
+            e.category === filter
+        );
+
+    }
+
+
+
+    // 日付順
+
+    events.sort(
+        (a,b)=>
+        new Date(a.date)
+        -
+        new Date(b.date)
+    );
+
+
+
+
+    if(events.length===0){
+
+        box.innerHTML =
+        '該当なし';
+
+        return;
+
+    }
+
+
+
+
+    box.innerHTML =
+
+
+    events.map(e=>`
+
+
+<div class="event-card">
+
+
+<div class="event-card-title">
+
+${e.category}
+${e.title}
+
+</div>
+
+
+
+<div>
+📅 ${e.date}
+</div>
+
+
+<div>
+📍 ${e.place || ''}
+</div>
+
+
+<div>
+⏰ ${e.meeting || ''}
+</div>
+
+
+<div>
+👥 ${e.companion || ''}
+</div>
+
+
+
+
+<div class="event-button-area">
+
+
+${
+e.map
+?
+`
+<button
+class="map-btn"
+onclick="location.href='${e.map}'">
+
+🗺 地図
+
+</button>
+`
+:''
+}
+
+
+
+<button
+onclick="deleteEvent(${e.id})">
+
+🗑 削除
+
+</button>
+
+
+
+</div>
+
+
+
+</div>
+
+
+`).join('');
+
+}
+
+
+
+
 function deleteEvent(id){
 
     db.deleteEvent(id);
@@ -1272,11 +1424,7 @@ function displayHomeSchedule(){
 }
 
 
-function saveEvent(){
 
-    addEvent();
-
-}
 
 
 /* =====================
