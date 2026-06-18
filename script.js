@@ -257,53 +257,32 @@ async function loadMaster(){
 
 function switchTab(pageId,event){
 
-    document
-    .querySelectorAll('.page')
-    .forEach(
-        page=>
-            page.classList.remove(
-                'active'
-            )
-    );
+    document.querySelectorAll('.page')
+    .forEach(page=>{
+        page.classList.remove('active');
+    });
 
 
-    document
-    .getElementById(pageId)
-    .classList.add(
-        'active'
-    );
+    const target =
+        document.getElementById(pageId);
 
 
-
-    document
-    .querySelectorAll('.tab')
-    .forEach(
-        tab=>
-            tab.classList.remove(
-                'active'
-            )
-    );
-
-
-    event.currentTarget
-    .classList.add(
-        'active'
-    );
-
-
-
-    if(pageId==='calendarPage'){
-
-        renderCalendar();
-
-        displayEventList();
-
+    if(target){
+        target.classList.add('active');
     }
 
 
+    document.querySelectorAll('.tab')
+    .forEach(tab=>{
+        tab.classList.remove('active');
+    });
+
+
+    if(event){
+        event.currentTarget.classList.add('active');
+    }
+
 }
-
-
 
 
 
