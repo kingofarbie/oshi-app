@@ -896,6 +896,39 @@ function selectCalendarDate(date){
 
 
 
+function selectCalendarDate(date){
+
+    selectedCalendarDate = date;
+
+
+    document
+    .getElementById(
+        'event-date'
+    )
+    .value =
+        date + "T12:00";
+
+
+    // 予定入力フォーム表示
+    const form =
+        document.getElementById(
+            'event-form-card'
+        );
+
+
+    if(form){
+
+        form.style.display = 'block';
+
+    }
+
+
+    renderCalendar();
+
+}
+
+
+
 /* =====================
    予定追加
 ===================== */
