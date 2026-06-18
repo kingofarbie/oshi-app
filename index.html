@@ -56,6 +56,78 @@
 
 </div>
 
+<!-- カレンダー -->
+<div id="calendarPage" class="page">
+
+    <div class="card">
+
+        <h2>📅 予定追加</h2>
+
+        <select id="event-category">
+            <option value="イベント">🎤 イベント</option>
+            <option value="フェス">🎪 フェス</option>
+            <option value="試合">⚽ 試合</option>
+        </select>
+
+        <input
+            type="text"
+            id="event-title"
+            placeholder="イベント名">
+
+        <input
+            type="date"
+            id="event-date">
+
+        <input
+            type="time"
+            id="event-time">
+
+        <input
+            type="text"
+            id="event-location"
+            placeholder="会場">
+
+        <input
+            type="time"
+            id="event-meet-time"
+            placeholder="待ち合わせ時間">
+
+        <input
+            type="text"
+            id="event-companion"
+            placeholder="同伴者">
+
+        <input
+            type="url"
+            id="event-map"
+            placeholder="GoogleMap URL">
+
+        <input
+            type="text"
+            id="event-ticket"
+            placeholder="チケット情報">
+
+        <button onclick="saveEvent()">
+            ➕ 予定を追加
+        </button>
+
+    </div>
+
+    <div class="card">
+
+        <h2>📚 登録済み予定</h2>
+
+        <div id="event-list">
+            該当なし
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
 <!-- 推し管理 -->
 <div id="oshiPage" class="page">
 
