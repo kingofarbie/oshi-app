@@ -844,6 +844,7 @@ function changeMonth(value){
    日付選択
 ===================== */
 
+
 function selectCalendarDate(date){
 
     selectedCalendarDate = date;
@@ -857,21 +858,27 @@ function selectCalendarDate(date){
         date + "T12:00";
 
 
-    // 日付変更時は追加ボタンだけ再表示
-    document
-    .getElementById(
-        'event-form-card'
-    )
-    .style.display = "none";
+    // 日付変更時は予定追加フォームを閉じる
+    const form =
+        document.getElementById(
+            'event-form-card'
+        );
+
+    if(form){
+
+        form.style.display = "none";
+
+    }
+
+
+    // 入力途中の内容も消す
+    clearEventForm();
 
 
     renderCalendar();
 
 
 }
-
-
-
 
 
 /* =====================
