@@ -306,7 +306,9 @@ function switchTab(pageId,event){
 
     displayHomeSchedule();
 
-    }
+    displayUpcomingEvents();
+
+}
 
 
 
@@ -1554,6 +1556,64 @@ function displayHomeSchedule(){
 
 
 
+
+
+function displayUpcomingEvents(){
+
+const box =
+    document.getElementById(
+        'upcoming-events'
+    );
+
+if(!box) return;
+
+
+const now = new Date();
+
+
+const events =
+    db.load().events
+
+    .filter(
+        e =>
+        new Date(e.date) >= now
+    )
+
+    .sort(
+        (a,b)=>
+        new Date(a.date)
+        -
+        new Date(b.date)
+    )
+
+    .slice(0,3);
+
+
+box.innerHTML =
+
+    events.length
+
+    ?
+
+    events.map(
+        e =>
+
+        `${e.category}
+        ${e.title}<br>
+        ${e.date.slice(0,10)}`
+    ).join('<hr>')
+
+    :
+
+    '該当なし';
+
+}
+
+
+
+
+
+
 /* =====================
    起動
 ===================== */
@@ -1629,5 +1689,7 @@ async function(){
 
 
     renderCalendar();
+    
+    displayUpcomingEvents();
 
 };
