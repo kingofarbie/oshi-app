@@ -3,6 +3,36 @@
    styles.css
 ========================= */
 
+:root{
+
+    --bg:#0f0f10;
+
+    --card:#1c1c1e;
+
+    --surface:#2a2a2d;
+
+    --border:#333333;
+
+    --text:#ffffff;
+
+    --text-sub:#aaaaaa;
+
+    --accent:#ff2d55;
+
+    --accent-light:#ff6fa5;
+
+    --danger:#6b1d2d;
+
+    --header-gradient:
+    linear-gradient(
+        135deg,
+        #ff2d55,
+        #ff6fa5
+    );
+
+}
+
+
 
 /* =========================
    基本
@@ -859,4 +889,111 @@ button:hover{
     }
 
 
+}
+
+
+
+
+
+/* =====================================
+   Theme System Override
+   最後に追加
+===================================== */
+
+body{
+    background:var(--bg);
+    color:var(--text);
+}
+
+.header{
+    background:var(--header-gradient);
+}
+
+.card{
+    background:var(--card);
+}
+
+.card h2{
+    color:var(--accent-light);
+}
+
+.item{
+    border-bottom:1px solid var(--border);
+}
+
+input,
+select{
+    background:var(--surface);
+    color:var(--text);
+}
+
+button{
+    background:var(--accent);
+    color:var(--text);
+}
+
+.tabbar{
+    background:var(--card);
+    border-top:1px solid var(--border);
+}
+
+.tab.active{
+    color:var(--accent-light);
+}
+
+.today{
+    border:2px solid var(--accent-light);
+    color:var(--accent-light);
+}
+
+.has-event::after{
+    background:var(--accent);
+}
+
+.selected-day{
+    background:var(--accent);
+    color:var(--text);
+}
+
+.event-card-title{
+    color:var(--accent-light);
+}
+
+.master-item{
+    background:var(--surface);
+}
+
+
+
+.master-item:hover{
+    opacity:0.9;
+}
+
+
+.calendar-day{
+    background:var(--surface);
+}
+
+.calendar-day:hover{
+    opacity:0.9;
+}
+
+
+
+
+.selected-date{
+    background:var(--surface);
+}
+
+.event-card{
+    background:var(--surface);
+}
+
+.schedule-item{
+    background:var(--surface);
+}
+
+.delete-btn,
+.event-delete-btn{
+    background:var(--danger);
 }

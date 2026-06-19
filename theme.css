@@ -1,0 +1,132 @@
+/* =========================
+   Theme System
+========================= */
+
+/* Neon Pink */
+.theme-neon-pink{
+
+    --bg:#0f0f10;
+    --card:#1c1c1e;
+    --surface:#2a2a2d;
+
+    --border:#333333;
+
+    --text:#ffffff;
+
+    --accent:#ff2d55;
+    --accent-light:#ff6fa5;
+
+    --danger:#6b1d2d;
+
+    --header-gradient:
+    linear-gradient(
+        135deg,
+        #ff2d55,
+        #ff6fa5
+    );
+
+}
+
+/* Neon Blue */
+
+.theme-neon-blue{
+
+    --bg:#08111f;
+    --card:#0f1c33;
+    --surface:#172745;
+
+    --border:#29406d;
+
+    --text:#ffffff;
+
+    --accent:#00c8ff;
+    --accent-light:#79e4ff;
+
+    --danger:#6b1d2d;
+
+    --header-gradient:
+    linear-gradient(
+        135deg,
+        #0078ff,
+        #00c8ff
+    );
+
+}
+
+/* Neon Purple */
+
+.theme-neon-purple{
+
+    --bg:#14081f;
+    --card:#231033;
+    --surface:#34184b;
+
+    --border:#513072;
+
+    --text:#ffffff;
+
+    --accent:#b54cff;
+    --accent-light:#d9a4ff;
+
+    --danger:#6b1d2d;
+
+    --header-gradient:
+    linear-gradient(
+        135deg,
+        #7b2fff,
+        #d05dff
+    );
+
+}
+
+/* Neon Green */
+
+.theme-neon-green{
+
+    --bg:#07140a;
+    --card:#102817;
+    --surface:#173b22;
+
+    --border:#275536;
+
+    --text:#ffffff;
+
+    --accent:#00ff7f;
+    --accent-light:#6cffb1;
+
+    --danger:#6b1d2d;
+
+    --header-gradient:
+    linear-gradient(
+        135deg,
+        #00b85c,
+        #00ff7f
+    );
+
+}
+
+/* Neon Orange */
+
+.theme-neon-orange{
+
+    --bg:#1a0f07;
+    --card:#2c180d;
+    --surface:#402313;
+
+    --border:#6b3a1f;
+
+    --text:#ffffff;
+
+    --accent:#ff8c00;
+    --accent-light:#ffbf66;
+
+    --danger:#6b1d2d;
+
+    --header-gradient:
+    linear-gradient(
+        135deg,
+        #ff5a00,
+        #ffb000
+    );
+
+}
