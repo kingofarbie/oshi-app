@@ -130,3 +130,61 @@
     );
 
 }
+
+
+
+
+/* =========================
+   宇宙テーマ
+========================= */
+
+.theme-space{
+
+    --bg:#050816;
+
+    --card:#12153d;
+
+    --surface:#1b2255;
+
+    --border:#384080;
+
+    --text:#ffffff;
+
+    --accent:#60a5fa;
+
+    --accent-light:#93c5fd;
+
+    --danger:#6b1d2d;
+
+    --header-gradient:
+    linear-gradient(
+        135deg,
+        #1e3a8a,
+        #60a5fa
+    );
+
+    background-image:url("space.svg");
+
+    background-size:cover;
+
+    background-position:center;
+
+    background-attachment:fixed;
+
+}
+
+.theme-space .card{
+
+    background:
+    rgba(18,21,61,0.82);
+
+    backdrop-filter:blur(10px);
+
+}
+
+.theme-space button{
+
+    box-shadow:
+    0 0 10px rgba(96,165,250,.5);
+
+}
