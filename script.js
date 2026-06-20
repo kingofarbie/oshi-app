@@ -1611,7 +1611,22 @@ box.innerHTML =
 
 
 
+function toggleThemeMenu(){
 
+    const menu =
+        document.getElementById("themeMenu");
+
+    if(menu.style.display === "none"){
+
+        menu.style.display = "block";
+
+    }else{
+
+        menu.style.display = "none";
+
+    }
+
+}
 
 
 /* =====================
