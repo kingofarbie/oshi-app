@@ -1797,37 +1797,49 @@ function updateNotificationButtons(){
         );
 
 
-
-    if(eventBtn){
-
-        eventBtn.textContent =
-            n.event ? "ON" : "OFF";
-
-    }
-
-
-
     if(beforeBtn){
 
         beforeBtn.textContent =
             n.before ? "ON" : "OFF";
 
     }
+    
+    if(todayBtn){
 
-
-
-    const time =
-        document.getElementById(
-            "notificationTime"
-        );
-
-
-    if(time){
-
-        time.value =
-            n.time || "20:00";
+        todayBtn.textContent =
+            n.today ? "ON" : "OFF";
 
     }
+
+
+
+const beforeTime =
+    document.getElementById(
+        "beforeNotificationTime"
+    );
+
+if(beforeTime){
+
+    beforeTime.value =
+        n.beforeTime || "20:00";
+
+}
+
+
+const todayTime =
+    document.getElementById(
+        "todayNotificationTime"
+    );
+
+if(todayTime){
+
+    todayTime.value =
+        n.todayTime || "09:00";
+
+}
+
+
+    
 
 }
 
@@ -1839,35 +1851,34 @@ document.addEventListener(
 function(e){
 
 
-    if(
-        e.target.id ===
-        "notificationTime"
-    ){
+  if(
+    e.target.id ===
+    "beforeNotificationTime"
+){
+
+    const data = db.load();
+
+    data.settings.notifications.beforeTime =
+        e.target.value;
+
+    db.save(data);
+
+}
 
 
-        const data =
-            db.load();
+if(
+    e.target.id ===
+    "todayNotificationTime"
+){
 
+    const data = db.load();
 
+    data.settings.notifications.todayTime =
+        e.target.value;
 
-        if(
-            !data.settings.notifications
-        ){
+    db.save(data);
 
-            data.settings.notifications={};
-
-        }
-
-
-
-        data.settings.notifications.time =
-            e.target.value;
-
-
-
-        db.save(data);
-
-    }
+}  
 
 
 });
