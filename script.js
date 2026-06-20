@@ -1611,22 +1611,110 @@ box.innerHTML =
 
 
 
-function toggleThemeMenu(){
+/* =====================
+   設定メニュー開閉
+===================== */
 
-    const menu =
-        document.getElementById("themeMenu");
+let openSettingMenu = null;
 
-    if(menu.style.display === "none"){
 
-        menu.style.display = "block";
+function toggleSetting(menuId){
 
-    }else{
+    const menus = [
+        "planMenu",
+        "themeMenu",
+        "notificationMenu"
+    ];
 
-        menu.style.display = "none";
 
-    }
+    menus.forEach(id=>{
+
+        const menu =
+            document.getElementById(id);
+
+
+        if(!menu) return;
+
+
+        const icon =
+            document.getElementById(
+                id.replace("Menu","Icon")
+            );
+
+
+        if(id === menuId){
+
+            if(
+                menu.style.display === "block"
+            ){
+
+                menu.style.display =
+                    "none";
+
+
+                if(icon)
+                    icon.textContent = "＋";
+
+
+                openSettingMenu = null;
+
+
+            }else{
+
+                // 他を閉じる
+                menus.forEach(otherId=>{
+
+                    const other =
+                        document.getElementById(otherId);
+
+
+                    if(other){
+
+                        other.style.display =
+                            "none";
+
+                    }
+
+
+                    const otherIcon =
+                        document.getElementById(
+                            otherId.replace("Menu","Icon")
+                        );
+
+
+                    if(otherIcon){
+
+                        otherIcon.textContent =
+                            "＋";
+
+                    }
+
+                });
+
+
+
+                menu.style.display =
+                    "block";
+
+
+                if(icon)
+                    icon.textContent =
+                        "−";
+
+
+                openSettingMenu =
+                    menuId;
+
+            }
+
+
+        }
+
+    });
 
 }
+
+
 
 
 /* =====================

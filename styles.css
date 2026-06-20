@@ -997,3 +997,106 @@ button{
 .event-delete-btn{
     background:var(--danger);
 }
+
+
+
+/* =========================
+   設定画面
+========================= */
+
+
+.settings-title{
+
+    margin:10px 5px;
+
+    font-size:22px;
+
+    font-weight:bold;
+
+    color:var(--text);
+
+}
+
+
+
+
+
+.setting-item button{
+
+    width:100%;
+
+    text-align:left;
+
+    background:transparent;
+
+    color:var(--text);
+
+    font-size:16px;
+
+    font-weight:bold;
+
+    padding:8px 5px;
+
+    margin:0;
+
+}
+
+
+
+.setting-item button:hover{
+
+    opacity:0.8;
+
+}
+
+
+
+
+
+.setting-content{
+
+    margin-top:12px;
+
+    padding-top:10px;
+
+    border-top:1px solid var(--border);
+
+}
+
+
+
+
+
+.setting-content button{
+
+    margin:5px 0;
+
+    text-align:center;
+
+    background:var(--surface);
+
+    border:1px solid var(--border);
+
+}
+
+
+
+
+
+.setting-content button:hover{
+
+    background:var(--accent);
+
+}
+
+
+
+
+
+#themeMenu button{
+
+    font-size:14px;
+
+    padding:10px;
+
+}

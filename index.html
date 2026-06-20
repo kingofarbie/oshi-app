@@ -580,84 +580,165 @@ onclick="addSelectedOshi()">
 ===================== -->
 
 
+<!-- =====================
+     設定
+===================== -->
+
+
 <div id="settingsPage" class="page">
 
 
+<!-- 現在プラン表示 -->
 <div class="card">
-
-
-<h2>
-⚙️ 設定
-</h2>
-
 
 <p>
 現在無料プランです（予定5件・推し3件）
+</p>
+
+</div>
+
+
+<!-- 設定タイトル -->
+<h2 class="settings-title">
+設定
+</h2>
+
+
+
+<!-- プラン -->
+<div class="card setting-item">
+
+
+<button onclick="toggleSetting('planMenu')">
+
+<span id="planIcon">＋</span>
+プラン
+
+</button>
+
+
+<div id="planMenu" class="setting-content" style="display:none;">
+
+<p>
+無料プラン
+</p>
+
+</div>
+
+
+</div>
+
+
+
+
+
+<!-- 背景テーマ -->
+<div class="card setting-item">
+
+
+<button onclick="toggleSetting('themeMenu')">
+
+<span id="themeIcon">＋</span>
+背景テーマ
+
+</button>
+
+<div id="currentTheme">
+現在：🌸 Pink
+</div>
+
+
+<div id="themeMenu" class="setting-content" style="display:none;">
+
+
+<button onclick="setTheme('neon-pink')">
+🩷 Pink
+</button>
+
+
+<button onclick="setTheme('neon-blue')">
+💙 Blue
+</button>
+
+
+<button onclick="setTheme('neon-purple')">
+💜 Purple
+</button>
+
+
+<button onclick="setTheme('neon-green')">
+💚 Green
+</button>
+
+
+<button onclick="setTheme('neon-orange')">
+🧡 Orange
+</button>
+
+
+<button onclick="setTheme('love')">
+💕 恋愛
+</button>
+
+
+<button onclick="setTheme('space')">
+🌌 宇宙
+</button>
+
+
+<button onclick="setTheme('passion')">
+🔥 情熱
+</button>
+
+
+<button onclick="setTheme('cool')">
+❄️ クール
+</button>
+
+
+<button onclick="setTheme('friendship')">
+🤝 友情
+</button>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<!-- 通知設定 -->
+<div class="card setting-item">
+
+
+<button onclick="toggleSetting('notificationMenu')">
+
+<span id="notificationIcon">＋</span>
+通知設定
+
+</button>
+
+
+<div id="notificationMenu" class="setting-content" style="display:none;">
+
+
+<p>
+通知設定（準備中）
 </p>
 
 
 </div>
 
 
-
-<div class="card">
-
-<button onclick="toggleThemeMenu()">
-🎨 背景テーマ
-</button>
-
-<div id="themeMenu" style="display:none;">
-
-<button onclick="setTheme('neon-pink')">
-🩷 Pink
-</button>
-
-<button onclick="setTheme('neon-blue')">
-💙 Blue
-</button>
-
-<button onclick="setTheme('neon-purple')">
-💜 Purple
-</button>
-
-<button onclick="setTheme('neon-green')">
-💚 Green
-</button>
-
-<button onclick="setTheme('neon-orange')">
-🧡 Orange
-</button>
-
-<button onclick="setTheme('love')">
-💕 恋愛
-</button>
-
-<button onclick="setTheme('space')">
-🌌 宇宙
-</button>
-
-<button onclick="setTheme('passion')">
-🔥 情熱
-</button>
-
-<button onclick="setTheme('cool')">
-❄️ クール
-</button>
-
-<button onclick="setTheme('friendship')">
-🤝 友情
-</button>
-
-</div>
-
 </div>
 
 
 
+
 </div>
-
-
-
 
 
 
