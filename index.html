@@ -709,7 +709,6 @@ onclick="addSelectedOshi()">
 
 
 
-
 <!-- 通知設定 -->
 <div class="card setting-item">
 
@@ -722,20 +721,57 @@ onclick="addSelectedOshi()">
 </button>
 
 
+
 <div id="notificationMenu" class="setting-content" style="display:none;">
 
 
 <p>
-通知設定（準備中）
+🔔 イベント通知
 </p>
 
 
+<button
+onclick="toggleNotification('event')"
+id="eventNotificationBtn">
+
+OFF
+
+</button>
+
+
+
+<p>
+📅 前日通知
+</p>
+
+
+<button
+onclick="toggleNotification('before')"
+id="beforeNotificationBtn">
+
+OFF
+
+</button>
+
+
+
+<p>
+⏰ 通知時間
+
+</p>
+
+
+<input
+type="time"
+id="notificationTime"
+value="20:00">
+
+
+
 </div>
 
 
 </div>
-
-
 
 
 </div>
