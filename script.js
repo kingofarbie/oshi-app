@@ -33,9 +33,15 @@ const db = {
             ? JSON.parse(data)
             :
             {
-                settings:{
-                    plan:'free'
-                },
+            settings:{
+                plan:'free',
+                
+                notifications:{
+                    event:false,
+                    before:false,
+                    time:"20:00"
+                }
+            },
 
                 oshiList:[],
 
@@ -1715,6 +1721,157 @@ function toggleSetting(menuId){
 }
 
 
+/* =====================
+   通知設定
+===================== */
+
+
+function toggleNotification(type){
+
+
+    const data = db.load();
+
+
+    if(!data.settings.notifications){
+
+        data.settings.notifications = {
+
+            event:false,
+
+            before:false,
+
+            time:"20:00"
+
+        };
+
+    }
+
+
+
+    data.settings.notifications[type] =
+        !data.settings.notifications[type];
+
+
+
+    db.save(data);
+
+
+    updateNotificationButtons();
+
+}
+
+
+
+
+
+function updateNotificationButtons(){
+
+
+    const data = db.load();
+
+
+    if(
+        !data.settings.notifications
+    )
+        return;
+
+
+
+    const n =
+        data.settings.notifications;
+
+
+
+    const eventBtn =
+        document.getElementById(
+            "eventNotificationBtn"
+        );
+
+
+    const beforeBtn =
+        document.getElementById(
+            "beforeNotificationBtn"
+        );
+
+
+
+    if(eventBtn){
+
+        eventBtn.textContent =
+            n.event ? "ON" : "OFF";
+
+    }
+
+
+
+    if(beforeBtn){
+
+        beforeBtn.textContent =
+            n.before ? "ON" : "OFF";
+
+    }
+
+
+
+    const time =
+        document.getElementById(
+            "notificationTime"
+        );
+
+
+    if(time){
+
+        time.value =
+            n.time || "20:00";
+
+    }
+
+}
+
+
+
+
+document.addEventListener(
+"change",
+function(e){
+
+
+    if(
+        e.target.id ===
+        "notificationTime"
+    ){
+
+
+        const data =
+            db.load();
+
+
+
+        if(
+            !data.settings.notifications
+        ){
+
+            data.settings.notifications={};
+
+        }
+
+
+
+        data.settings.notifications.time =
+            e.target.value;
+
+
+
+        db.save(data);
+
+    }
+
+
+});
+
+
+
+
 
 
 /* =====================
@@ -1794,5 +1951,10 @@ async function(){
     renderCalendar();
     
     displayUpcomingEvents();
+
+
+updateNotificationButtons();
+
+};
 
 };
