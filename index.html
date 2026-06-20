@@ -722,28 +722,14 @@ onclick="addSelectedOshi()">
 
 
 
-<div id="notificationMenu" class="setting-content" style="display:none;">
 
-
-<p>
-🔔 イベント通知
-</p>
-
-
-<button
-onclick="toggleNotification('event')"
-id="eventNotificationBtn">
-
-OFF
-
-</button>
-
-
+<div id="notificationMenu"
+class="setting-content"
+style="display:none;">
 
 <p>
 📅 前日通知
 </p>
-
 
 <button
 onclick="toggleNotification('before')"
@@ -753,22 +739,37 @@ OFF
 
 </button>
 
-
-
-<p>
-⏰ 通知時間
-
-</p>
-
-
 <input
 type="time"
-id="notificationTime"
+id="beforeNotificationTime"
 value="20:00">
 
 
 
+<hr>
+
+
+
+<p>
+🔔 当日通知
+</p>
+
+<button
+onclick="toggleNotification('today')"
+id="todayNotificationBtn">
+
+OFF
+
+</button>
+
+<input
+type="time"
+id="todayNotificationTime"
+value="09:00">
+
 </div>
+
+
 
 
 </div>
