@@ -1784,16 +1784,16 @@ function updateNotificationButtons(){
         data.settings.notifications;
 
 
-
-    const eventBtn =
-        document.getElementById(
-            "eventNotificationBtn"
-        );
-
-
     const beforeBtn =
         document.getElementById(
             "beforeNotificationBtn"
+        );
+    
+    
+
+    const todayBtn =
+        document.getElementById(
+            "todayNotificationBtn"
         );
 
 
