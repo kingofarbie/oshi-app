@@ -37,9 +37,12 @@ const db = {
                 plan:'free',
                 
                 notifications:{
-                    event:false,
                     before:false,
-                    time:"20:00"
+                    beforeTime:"20:00",
+                    
+                    today:false,
+                    todayTime:"09:00"
+
                 }
             },
 
