@@ -13,3 +13,5 @@ firebase.initializeApp(firebaseConfig);
 
 const messaging =
     firebase.messaging();
+
+    console.log("Firebase接続OK");
