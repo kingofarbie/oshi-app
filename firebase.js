@@ -54,61 +54,34 @@ if ('serviceWorker' in navigator) {
             'Service Worker登録成功'
         );
 
+        return messaging.getToken({
+
+            vapidKey:
+            "BN1-_Xmg_3Ghv0gk1sJ_HuQPcl33BoHA8RzMbI0pKC3Shvet0-eLI6WI6MgKI7CQylJy7yCRBgtSpUmwcLPmtn0",
+
+            serviceWorkerRegistration:
+            reg
+
+        });
+
+    })
+
+    .then(function(token){
+
+        console.log(
+            "FCMトークン:",
+            token
+        );
+
     })
 
     .catch(function(err){
 
         console.error(
-            'Service Worker登録失敗',
+            'FCMエラー:',
             err
         );
 
     });
 
 }
-
-
-
-
-
-
-console.log("ここまで来た");
-
-
-
-/* =====================
-   FCMトークン取得
-===================== */
-
-messaging.getToken({
-
-    vapidKey:
-    "BN1-_Xmg_3Ghv0gk1sJ_HuQPcl33BoHA8RzMbI0pKC3Shvet0-eLI6WI6MgKI7CQylJy7yCRBgtSpUmwcLPmtn0"
-
-})
-.then((currentToken)=>{
-
-    if(currentToken){
-
-        console.log(
-            "FCMトークン:",
-            currentToken
-        );
-
-    }else{
-
-        console.log(
-            "トークン取得失敗"
-        );
-
-    }
-
-})
-.catch((err)=>{
-
-    console.error(
-        "FCMエラー:",
-        err
-    );
-
-});
