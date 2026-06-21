@@ -1100,3 +1100,13 @@ button{
     padding:10px;
 
 }
+
+
+
+
+/* 選択日を最優先 */
+.calendar-day.selected-day{
+    background:#ff2d55;
+    color:white;
+    border:2px solid #ff6fa5;
+}
