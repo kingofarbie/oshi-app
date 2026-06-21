@@ -27,6 +27,11 @@ const messaging =
     firebase.messaging();
 
 
+    
+/* =====================
+   一時コメントアウト
+
+
 messaging.onBackgroundMessage(
     function(payload){
 
@@ -41,6 +46,39 @@ messaging.onBackgroundMessage(
             {
                 body:
                 payload.notification.body
+            }
+        );
+
+    }
+);
+
+===================== */
+
+
+
+messaging.onBackgroundMessage(
+    function(payload){
+
+        console.log(
+            "FCM受信:",
+            payload
+        );
+
+
+        const title =
+            payload.notification?.title
+            || "推し活手帳";
+
+
+        const body =
+            payload.notification?.body
+            || "通知テストです🎉";
+
+
+        self.registration.showNotification(
+            title,
+            {
+                body: body
             }
         );
 
