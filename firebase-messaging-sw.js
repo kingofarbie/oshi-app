@@ -11,7 +11,6 @@ importScripts(
 
 
 
-
 const firebaseConfig = {
   apiKey: "AIzaSyAw4krU9eVoUQegnxTCS02G_rKFCT9HlA0",
   authDomain: "oshi-app-737c0.firebaseapp.com",
