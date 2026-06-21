@@ -1,4 +1,3 @@
-alert("firebase.js読込成功");
 
 const firebaseConfig = {
   apiKey: "AIzaSyAw4krU9eVoUQegnxTCS02G_rKFCT9HlA0",
