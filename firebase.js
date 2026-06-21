@@ -14,3 +14,30 @@ firebase.initializeApp(firebaseConfig);
 
 const messaging =
     firebase.messaging();
+
+
+
+    if ('serviceWorker' in navigator) {
+
+    navigator.serviceWorker
+    .register('./firebase-messaging-sw.js')
+
+    .then(function(reg){
+
+        console.log(
+            'Service Worker登録成功',
+            reg
+        );
+
+    })
+
+    .catch(function(err){
+
+        console.error(
+            'Service Worker登録失敗',
+            err
+        );
+
+    });
+
+}
