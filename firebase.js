@@ -17,3 +17,14 @@ const messaging =
     firebase.messaging();
 
     console.log("Firebase接続OK");
+
+
+    Notification.requestPermission()
+.then(permission => {
+
+    console.log(
+        "通知権限:",
+        permission
+    );
+
+});
