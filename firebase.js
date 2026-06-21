@@ -14,24 +14,3 @@ firebase.initializeApp(firebaseConfig);
 
 const messaging =
     firebase.messaging();
-
-    Notification.requestPermission()
-.then(permission => {
-
-    console.log(
-        "通知権限:",
-        permission
-    );
-
-    if(permission === "granted"){
-
-        new Notification(
-            "推し活手帳",
-            {
-                body:"通知テストです🎉"
-            }
-        );
-
-    }
-
-});
