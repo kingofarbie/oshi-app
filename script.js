@@ -1202,7 +1202,7 @@ function displaySelectedDateEvents(){
 
 <div class="event-card-title">
 
-${e.category}
+${getCategoryInfo(e.category)?.icon || "📌"}
 ${e.title}
 
 </div>
@@ -1307,10 +1307,12 @@ function displayEventList(){
 
 <div class="event-card-title">
 
-${e.category}
+${getCategoryInfo(e.category)?.icon || "📌"}
 ${e.title}
 
 </div>
+
+
 
 
 
@@ -1532,7 +1534,7 @@ function displayHomeSchedule(){
         list.map(
             e=>
             `
-            ${e.category}
+            ${getCategoryInfo(e.category)?.icon || "📌"}
             ${e.title}
             `
         ).join('<br>')
@@ -1609,7 +1611,8 @@ box.innerHTML =
     events.map(
         e =>
 
-        `${e.category}
+        `
+        ${getCategoryInfo(e.category)?.icon || "📌"}
         ${e.title}<br>
         ${e.date.slice(0,10)}`
     ).join('<hr>')
@@ -2204,32 +2207,24 @@ select.innerHTML = html;
 
 
 
+
 /* =====================
-カテゴリ削除
+カテゴリ情報取得
 ===================== */
 
-function deleteCategory(id){
+function getCategoryInfo(name){
 
-if(
-    !confirm(
-        "このカテゴリを削除しますか？"
-    )
-){
-    return;
-}
+const data = db.load();
 
-const data =
-    db.load();
+const categories =
+    data.categories || [];
 
-data.categories =
-    data.categories.filter(
-        c => c.id !== id
+const category =
+    categories.find(
+        c => c.name === name
     );
 
-db.save(data);
-
-displayCategories();
+return category || null;
 
 }
-
 
