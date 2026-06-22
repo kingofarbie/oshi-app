@@ -1972,6 +1972,8 @@ async function(){
     updateNotificationButtons();
     
     displayCategories();
+    
+    updateEventCategoryOptions();
 
 };
 
@@ -2049,6 +2051,8 @@ function addCategory(){
 
     displayCategories();
 
+    updateEventCategoryOptions();
+
 
 
     alert(
@@ -2095,6 +2099,8 @@ function deleteCategory(id){
 
 
     displayCategories();
+    
+    updateEventCategoryOptions();
 
 }
 
@@ -2153,6 +2159,49 @@ margin-left:8px;
 
 
 }
+
+
+
+/* =====================
+イベントカテゴリ更新
+===================== */
+
+function updateEventCategoryOptions(){
+
+const select =
+    document.getElementById(
+        "event-category"
+    );
+
+if(!select)
+    return;
+
+const data =
+    db.load();
+
+const categories =
+    data.categories || [];
+
+let html = `
+    <option value="イベント">🎫 イベント</option>
+    <option value="フェス">🎵 フェス</option>
+    <option value="試合">⚽ 試合</option>
+`;
+
+categories.forEach(c=>{
+
+    html += `
+    <option value="${c.name}">
+        ${c.icon} ${c.name}
+    </option>
+    `;
+
+});
+
+select.innerHTML = html;
+
+}
+
 
 
 /* =====================
