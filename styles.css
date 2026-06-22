@@ -1112,23 +1112,28 @@ button{
 }
 
 
-/* 小さいアイコンボタン */
+
+
+
+/* アイコンだけの操作ボタン */
 
 .icon-btn{
 
-    width:36px;
-    height:36px;
+    width:auto;
+    height:auto;
 
     padding:0;
 
-    border-radius:50%;
+    border:none;
+
+    background:none;
 
     font-size:18px;
 
-    display:inline-flex;
+    cursor:pointer;
 
-    align-items:center;
+}
 
-    justify-content:center;
-
+.icon-btn:hover{
+    opacity:0.6;
 }
