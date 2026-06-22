@@ -788,9 +788,32 @@ ${year}年 ${month + 1}月
             selectedCalendarDate === date;
 
 
+const dayEvents =
+    events.filter(
+        e => e.date.startsWith(date)
+    );
 
-        html += `
+const preview =
+    dayEvents
+    .slice(0,3)
+    .map(e=>`
+        <div class="calendar-event-preview">
+            ${getCategoryInfo(e.category)?.icon || "📌"}
+            ${e.title.substring(0,5)}
+        </div>
+    `)
+    .join('');
 
+const more =
+    dayEvents.length > 2
+    ? `
+        <div class="calendar-more">
+            +${dayEvents.length - 2}
+        </div>
+      `
+    : '';
+
+html += `
 
 <div
 class="calendar-day
@@ -800,12 +823,18 @@ ${isSelected ? 'selected-day' : ''}
 "
 onclick="selectCalendarDate('${date}')">
 
+<div class="calendar-date">
 ${d}
+</div>
+
+${preview}
+
+${more}
 
 </div>
 
-
 `;
+
 
     }
 

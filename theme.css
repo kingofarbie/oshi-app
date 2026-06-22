@@ -188,3 +188,28 @@
     0 0 10px rgba(96,165,250,.5);
 
 }
+
+.calendar-day{
+    min-height:90px;
+    padding:4px;
+    overflow:hidden;
+}
+
+.calendar-date{
+    font-size:12px;
+    font-weight:bold;
+    margin-bottom:2px;
+}
+
+.calendar-event-preview{
+    font-size:10px;
+    line-height:1.2;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.calendar-more{
+    font-size:10px;
+    opacity:0.7;
+}
