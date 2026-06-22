@@ -1634,7 +1634,8 @@ function toggleSetting(menuId){
     const menus = [
         "planMenu",
         "themeMenu",
-        "notificationMenu"
+        "notificationMenu",
+        "categoryMenu"
     ];
 
 
