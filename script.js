@@ -48,7 +48,7 @@ const db = {
 
                 oshiList:[],
 
-                events:[]
+                events:[],
 
                 categories:[]
             };
