@@ -2129,34 +2129,28 @@ if(categories.length===0){
 
 }
 
+
 box.innerHTML =
 
 categories.map(c=>`
 
-    <div style="
-        display:flex;
-        justify-content:space-between;
-        align-items:center;
-        margin:8px 0;
-        color:${c.color};
-    ">
+<div style="
+color:${c.color};
+margin:8px 0;
+">${c.icon}
+${c.name}
 
-        <span>
-            ${c.icon}
-            ${c.name}
-        </span>
+<span
+onclick="deleteCategory(${c.id})"
+style="
+cursor:pointer;
+margin-left:8px;
+">
 
-        <button
-            class="icon-btn delete-btn"
-            onclick="deleteCategory(${c.id})">
+🗑
 
-            🗑
+</span></div>`).join("");
 
-        </button>
-
-    </div>
-
-`).join("");
 
 }
 
