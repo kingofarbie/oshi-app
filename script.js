@@ -2156,16 +2156,12 @@ function displayCategories(){
         ${c.icon}
         ${c.name}
         </span>
-
-
-
+        
         <button
+        class="icon-btn"
         onclick="deleteCategory(${c.id})">
-
-        🗑削除
-
+        🗑️
         </button>
-
 
 
         </div>
