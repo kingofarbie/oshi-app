@@ -523,7 +523,7 @@ button:hover{
 
 .calendar-day{
 
-    height:45px;
+    height:65px;
 
     background:var(--surface);
 
@@ -905,5 +905,37 @@ button:hover{
     font-size:14px;
 
     padding:10px;
+
+}
+
+
+/* =========================
+   スマホ対応
+========================= */
+
+@media(max-width:480px){
+
+    .card{
+        padding:12px;
+    }
+
+
+    .oshi-name{
+        font-size:15px;
+    }
+
+
+    .icon-btn{
+        width:30px;
+        height:30px;
+        min-width:30px;
+    }
+
+
+    .calendar-day{
+
+        height:60px;
+
+    }
 
 }
