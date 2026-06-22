@@ -2271,3 +2271,43 @@ border-bottom:1px solid var(--border);
 border-bottom:none;
 
 }
+
+
+/* =========================
+   アイコンボタン最終上書き
+========================= */
+
+.icon-btn{
+
+    width:36px !important;
+    height:36px !important;
+
+    min-width:36px !important;
+
+    padding:0 !important;
+    margin:0 !important;
+
+    background:none !important;
+
+    border:none !important;
+
+    border-radius:0 !important;
+
+    display:flex !important;
+
+    align-items:center !important;
+
+    justify-content:center !important;
+
+    font-size:18px;
+
+    box-shadow:none !important;
+
+}
+
+
+.delete-btn{
+
+    background:none !important;
+
+}
