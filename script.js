@@ -1975,7 +1975,6 @@ async function(){
 
 };
 
-
 /* =====================
    カテゴリ追加
 ===================== */
@@ -2000,7 +1999,6 @@ function addCategory(){
         ).value;
 
 
-
     if(!name){
 
         alert(
@@ -2010,7 +2008,6 @@ function addCategory(){
         return;
 
     }
-
 
 
     const data =
@@ -2053,11 +2050,54 @@ function addCategory(){
     displayCategories();
 
 
+
     alert(
         "カテゴリを追加しました"
     );
 
 }
+
+
+
+/* =====================
+   カテゴリ削除
+===================== */
+
+function deleteCategory(id){
+
+
+    if(
+        !confirm(
+            "このカテゴリを削除しますか？"
+        )
+    ){
+
+        return;
+
+    }
+
+
+
+    const data =
+        db.load();
+
+
+
+    data.categories =
+        data.categories.filter(
+            c=>c.id !== id
+        );
+
+
+
+    db.save(data);
+
+
+
+    displayCategories();
+
+}
+
 
 
 /* =====================
@@ -2074,6 +2114,7 @@ function displayCategories(){
 
     if(!box)
         return;
+
 
 
     const data =
@@ -2099,17 +2140,36 @@ function displayCategories(){
 
     box.innerHTML =
 
+
     categories.map(c=>`
 
         <div style="
         color:${c.color};
         margin:8px;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
         ">
 
+
+        <span>
         ${c.icon}
         ${c.name}
+        </span>
+
+
+
+        <button
+        onclick="deleteCategory(${c.id})">
+
+        🗑削除
+
+        </button>
+
+
 
         </div>
+
 
     `).join("");
 

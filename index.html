@@ -783,6 +783,9 @@ value="09:00">
 <!-- =====================
      カテゴリ管理
 ===================== -->
+<!-- =====================
+     カテゴリ管理
+===================== -->
 
 <div class="card setting-item">
 
@@ -801,24 +804,28 @@ class="setting-content"
 style="display:none;">
 
 
-
-
 <p>
-予定を分類するカテゴリを作成できます
+予定を分類するカテゴリを管理できます
 </p>
 
 
+
 <div id="category-list">
+
 現在カテゴリなし
+
 </div>
+
+
+
 <hr>
+
+
 
 <input
 type="text"
 id="category-name"
-placeholder="例：推し活、仕事、旅行">
-
-
+placeholder="カテゴリ名（例：推し活、仕事、旅行）">
 
 
 
@@ -842,6 +849,14 @@ placeholder="例：推し活、仕事、旅行">
 
 <option value="✈️">
 ✈️ 旅行
+</option>
+
+<option value="🍚">
+🍚 食事
+</option>
+
+<option value="📚">
+📚 勉強
 </option>
 
 </select>
@@ -876,16 +891,16 @@ placeholder="例：推し活、仕事、旅行">
 
 <button onclick="addCategory()">
 
-➕ 追加
+➕ カテゴリ追加
 
 </button>
 
 
-
 </div>
 
 
 </div>
+
 
 </div>
 
