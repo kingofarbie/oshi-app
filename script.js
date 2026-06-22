@@ -1355,11 +1355,11 @@ onclick="location.href='${e.map}'">
 }
 
 
-
 <button
+class="icon-btn delete-btn"
 onclick="deleteEvent(${e.id})">
 
-🗑 削除
+🗑
 
 </button>
 
@@ -2106,67 +2106,87 @@ function deleteCategory(id){
 
 function displayCategories(){
 
-    const box =
-        document.getElementById(
-            "category-list"
-        );
+const box =
+    document.getElementById(
+        "category-list"
+    );
 
+if(!box)
+    return;
 
-    if(!box)
-        return;
+const data =
+    db.load();
 
+const categories =
+    data.categories || [];
 
-
-    const data =
-        db.load();
-
-
-
-    const categories =
-        data.categories || [];
-
-
-
-    if(categories.length===0){
-
-        box.innerHTML =
-        "現在カテゴリなし";
-
-        return;
-
-    }
-
-
+if(categories.length===0){
 
     box.innerHTML =
+    "現在カテゴリなし";
 
+    return;
 
-    categories.map(c=>`
+}
 
-        <div style="
-        color:${c.color};
-        margin:8px;
+box.innerHTML =
+
+categories.map(c=>`
+
+    <div style="
         display:flex;
         justify-content:space-between;
         align-items:center;
-        ">
-
+        margin:8px 0;
+        color:${c.color};
+    ">
 
         <span>
-        ${c.icon}
-        ${c.name}
+            ${c.icon}
+            ${c.name}
         </span>
-        
+
         <button
-        class="icon-btn"
-        onclick="deleteCategory(${c.id})">
-        🗑️
+            class="icon-btn delete-btn"
+            onclick="deleteCategory(${c.id})">
+
+            🗑
+
         </button>
 
+    </div>
 
-        </div>
-
-
-    `).join("");
+`).join("");
 
 }
+
+
+/* =====================
+カテゴリ削除
+===================== */
+
+function deleteCategory(id){
+
+if(
+    !confirm(
+        "このカテゴリを削除しますか？"
+    )
+){
+    return;
+}
+
+const data =
+    db.load();
+
+data.categories =
+    data.categories.filter(
+        c => c.id !== id
+    );
+
+db.save(data);
+
+displayCategories();
+
+}
+
+
