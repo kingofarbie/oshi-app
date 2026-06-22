@@ -775,10 +775,122 @@ value="09:00">
 </div>
 
 
+
+
+
+
+
+<!-- =====================
+     カテゴリ管理
+===================== -->
+
+<div class="card setting-item">
+
+
+<button onclick="toggleSetting('categoryMenu')">
+
+<span id="categoryIcon">＋</span>
+🏷 カテゴリ管理
+
+</button>
+
+
+
+<div id="categoryMenu"
+class="setting-content"
+style="display:none;">
+
+
+<p>
+自分専用の予定カテゴリを作成できます
+</p>
+
+
+<div id="category-list">
+
+現在カテゴリなし
+
 </div>
 
 
 
+<hr>
+
+
+
+<input
+type="text"
+id="category-name"
+placeholder="カテゴリ名">
+
+
+
+<select id="category-icon">
+
+<option value="🎤">
+🎤 推し活
+</option>
+
+<option value="💼">
+💼 仕事
+</option>
+
+<option value="🏥">
+🏥 病院
+</option>
+
+<option value="🏠">
+🏠 家
+</option>
+
+<option value="✈️">
+✈️ 旅行
+</option>
+
+</select>
+
+
+
+<select id="category-color">
+
+<option value="#ff66aa">
+🩷 ピンク
+</option>
+
+<option value="#3399ff">
+💙 ブルー
+</option>
+
+<option value="#33cc66">
+💚 グリーン
+</option>
+
+<option value="#9966ff">
+💜 パープル
+</option>
+
+<option value="#ff9933">
+🧡 オレンジ
+</option>
+
+</select>
+
+
+
+<button onclick="addCategory()">
+
+➕ 追加
+
+</button>
+
+
+
+</div>
+
+
+</div>
+
+</div>
 
 <!-- =====================
      タブ

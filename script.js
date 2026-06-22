@@ -49,6 +49,8 @@ const db = {
                 oshiList:[],
 
                 events:[]
+
+                categories:[]
             };
 
     },
@@ -1965,10 +1967,149 @@ async function(){
     renderCalendar();
     
     displayUpcomingEvents();
-
-
-updateNotificationButtons();
+    
+    updateNotificationButtons();
+    
+    displayCategories();
 
 };
 
 
+/* =====================
+   カテゴリ追加
+===================== */
+
+function addCategory(){
+
+    const name =
+        document.getElementById(
+            "category-name"
+        ).value.trim();
+
+
+    const icon =
+        document.getElementById(
+            "category-icon"
+        ).value;
+
+
+    const color =
+        document.getElementById(
+            "category-color"
+        ).value;
+
+
+
+    if(!name){
+
+        alert(
+            "カテゴリ名を入力してください"
+        );
+
+        return;
+
+    }
+
+
+
+    const data =
+        db.load();
+
+
+
+    if(!data.categories){
+
+        data.categories=[];
+
+    }
+
+
+
+    data.categories.push({
+
+        id:Date.now(),
+
+        name:name,
+
+        icon:icon,
+
+        color:color
+
+    });
+
+
+
+    db.save(data);
+
+
+
+    document.getElementById(
+        "category-name"
+    ).value="";
+
+
+
+    displayCategories();
+
+
+    alert(
+        "カテゴリを追加しました"
+    );
+
+}
+
+
+/* =====================
+   カテゴリ表示
+===================== */
+
+function displayCategories(){
+
+    const box =
+        document.getElementById(
+            "category-list"
+        );
+
+
+    if(!box)
+        return;
+
+
+    const data =
+        db.load();
+
+
+
+    const categories =
+        data.categories || [];
+
+
+
+    if(categories.length===0){
+
+        box.innerHTML =
+        "現在カテゴリなし";
+
+        return;
+
+    }
+
+
+
+    box.innerHTML =
+
+    categories.map(c=>`
+
+        <div style="
+        color:${c.color};
+        margin:8px;
+        ">
+
+        ${c.icon}
+        ${c.name}
+
+        </div>
+
+    `).join("");
+
+}
