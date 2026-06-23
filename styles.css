@@ -546,8 +546,13 @@ button:hover{
 
 }
 
+.calendar-week.sunday{
+    color:#ff8aa0;
+}
 
-
+.calendar-week.saturday{
+    color:#6aa9ff;
+}
 /* 予定表示 */
 
 .calendar-event-preview{

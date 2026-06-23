@@ -730,14 +730,13 @@ ${year}年 ${month + 1}月
 <div class="calendar-grid">
 
 
-<div class="calendar-week">日</div>
+<div class="calendar-week sunday">日</div>
 <div class="calendar-week">月</div>
 <div class="calendar-week">火</div>
 <div class="calendar-week">水</div>
 <div class="calendar-week">木</div>
 <div class="calendar-week">金</div>
-<div class="calendar-week">土</div>
-
+<div class="calendar-week saturday">土</div>
 `;
 
 
@@ -788,6 +787,19 @@ ${year}年 ${month + 1}月
             selectedCalendarDate === date;
 
 
+            const dayOfWeek =
+    new Date(year, month, d).getDay();
+
+let dateClass = '';
+
+if(dayOfWeek === 0){
+    dateClass = 'sunday';
+}
+else if(dayOfWeek === 6){
+    dateClass = 'saturday';
+}
+
+
 const dayEvents =
     events.filter(
         e => e.date.startsWith(date)
@@ -822,7 +834,7 @@ ${isSelected ? 'selected-day' : ''}
 "
 onclick="selectCalendarDate('${date}')">
 
-<div class="calendar-date">
+<div class="calendar-date ${dateClass}">
 ${d}
 </div>
 
