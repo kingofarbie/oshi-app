@@ -798,17 +798,16 @@ const preview =
     .slice(0,3)
     .map(e=>`
         <div class="calendar-event-preview">
-            ${getCategoryInfo(e.category)?.icon || "📌"}
-            ${e.title.substring(0,5)}
+            ${e.title.substring(0,6)}
         </div>
     `)
     .join('');
 
 const more =
-    dayEvents.length > 2
+    dayEvents.length > 3
     ? `
         <div class="calendar-more">
-            +${dayEvents.length - 2}
+            +${dayEvents.length - 3}
         </div>
       `
     : '';
