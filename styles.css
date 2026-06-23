@@ -472,8 +472,9 @@ button:hover{
 
     margin:0;
 
-}
+    border-radius:4px;
 
+}
 
 .calendar-title{
 
@@ -568,7 +569,7 @@ button:hover{
 
 .calendar-more{
 
-    font-size:8px;
+    font-size:10px;
 
     opacity:.7;
 
