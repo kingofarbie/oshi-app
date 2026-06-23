@@ -505,15 +505,15 @@ button:hover{
 
     grid-template-columns:repeat(7, minmax(0, 1fr));
 
-    gap:2px;
+    gap:1px;
 
 }
 
 
 .calendar-day{
-    height:75px;
+    height:82px;
     background:var(--surface);
-    border-radius:5px;
+    border-radius:3px;
     display:flex;
     flex-direction:column;
     justify-content:flex-start;
@@ -553,9 +553,9 @@ button:hover{
 
     width:100%;
 
-    font-size:9px;
+    font-size:8px;
 
-    line-height:1.2;
+    line-height:1.1;
 
     overflow:hidden;
 
@@ -566,12 +566,13 @@ button:hover{
 }
 
 
-
 .calendar-more{
 
-    font-size:10px;
+    font-size:8px;
 
     opacity:.7;
+
+    font-weight:bold;
 
 }
 
@@ -889,7 +890,7 @@ button:hover{
 
     .calendar-day{
 
-        height:65px;
+        height:82px;
 
     }
 
