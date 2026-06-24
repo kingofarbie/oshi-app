@@ -98,15 +98,6 @@
 
 <!-- =====================
      カレンダー
-===================== 
-
- -->
-
-<!-- =====================
-     カレンダー
-===================== -->
-<!-- =====================
-     カレンダー
 ===================== -->
 
 
@@ -134,6 +125,35 @@
 </div>
 
 
+
+
+<div id="dayMenuModal" class="modal">
+
+    <div class="modal-content">
+
+        <div id="dayMenuDate" class="modal-title">
+            日付
+        </div>
+
+        <button onclick="addEventFromMenu()">
+            ➕ 予定追加
+        </button>
+
+        <button onclick="editEventFromMenu()">
+            ✏️ 予定編集
+        </button>
+
+        <button onclick="deleteEventFromMenu()">
+            🗑 予定削除
+        </button>
+
+        <button onclick="closeDayMenu()">
+            ❌ 閉じる
+        </button>
+
+    </div>
+
+</div>
 
 
 
@@ -172,12 +192,6 @@ onclick="openEventForm()">
 
 
 </div>
-
-
-
-
-
-
 
 
 <!-- =====================

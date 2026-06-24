@@ -652,6 +652,31 @@ const HOLIDAYS = {
 
 }
 
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.5);
+    z-index:9999;
+}
+
+.modal-content{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    width:280px;
+    background:#fff;
+    border-radius:16px;
+    padding:20px;
+}
+
+.modal-content button{
+    width:100%;
+    margin:6px 0;
+    padding:12px;
+}
+
 
 
 /* =========================

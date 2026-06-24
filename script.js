@@ -893,6 +893,8 @@ function changeMonth(value){
 
 
 let pressTimer;
+let menuDate = null;
+
 
 function startPress(date){
 
@@ -912,24 +914,17 @@ function cancelPress(){
 
 function showDayMenu(date){
 
-    const action = prompt(
-`日付: ${date}
+    menuDate = date;
 
-1 = 予定追加
-2 = 予定編集
-3 = 予定削除`
-    );
+    document.getElementById(
+        "dayMenuDate"
+    ).textContent = date;
 
-    if(action==="1"){
-
-        selectedCalendarDate = date;
-
-        openEventForm();
-
-    }
+    document.getElementById(
+        "dayMenuModal"
+    ).style.display = "block";
 
 }
-
 
 
 
@@ -2308,3 +2303,51 @@ return category || null;
 
 }
 
+
+
+function closeDayMenu(){
+
+    document.getElementById(
+        "dayMenuModal"
+    ).style.display = "none";
+
+}
+
+
+function addEventFromMenu(){
+
+    closeDayMenu();
+
+    selectedCalendarDate =
+        menuDate;
+
+    document.getElementById(
+        'event-date'
+    ).value =
+        menuDate + "T12:00";
+
+    openEventForm();
+
+}
+
+
+function editEventFromMenu(){
+
+    closeDayMenu();
+
+    alert(
+        "次で編集機能を実装します"
+    );
+
+}
+
+
+function deleteEventFromMenu(){
+
+    closeDayMenu();
+
+    alert(
+        "次で削除機能を実装します"
+    );
+
+}
