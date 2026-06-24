@@ -764,7 +764,8 @@ ${year}年 ${month + 1}月
         const date =
         `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
 
-
+const holiday =
+    HOLIDAYS[date] || '';
 
         const hasEvent =
             events.some(
@@ -836,6 +837,7 @@ onclick="selectCalendarDate('${date}')">
 
 <div class="calendar-date ${dateClass}">
 ${d}
+${holiday ? `<span class="holiday-label">${holiday}</span>` : ''}
 </div>
 
 ${preview}
