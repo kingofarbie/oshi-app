@@ -837,7 +837,6 @@ onclick="selectCalendarDate('${date}')">
 
 <div class="calendar-date ${dateClass}">
 ${d}
-${holiday ? `<span class="holiday-label">${holiday}</span>` : ''}
 </div>
 
 ${preview}
