@@ -16,6 +16,7 @@ let currentCalendarDate = new Date();
 
 let selectedCalendarDate = null;
 
+let editingEventId = null;
 
 /* =====================
    DB
@@ -1127,8 +1128,21 @@ function saveEvent(){
 
 
 
-    if(db.addEvent(data)){
+if(editingEventId){
 
+    data.id = editingEventId;
+
+    db.updateEvent(data);
+
+    editingEventId = null;
+
+}else{
+
+    if(!db.addEvent(data)){
+        return;
+    }
+
+}
 
         closeEventModal();
 
@@ -1146,9 +1160,7 @@ function saveEvent(){
 
 
         displayHomeSchedule();
-
-
-    }
+        displayUpcomingEvents();
 
 
 }
@@ -2322,15 +2334,6 @@ function addEventFromMenu(){
 }
 
 
-function editEventFromMenu(){
-
-    closeDayMenu();
-
-    alert(
-        "次で編集機能を実装します"
-    );
-
-}
 
 function copyEventFromMenu(){
 
@@ -2350,5 +2353,64 @@ function deleteEventFromMenu(){
     alert(
         "次で削除機能を実装します"
     );
+
+}
+
+function editEventFromMenu(){
+
+    closeDayMenu();
+
+    const events =
+        db.load().events.filter(
+            e => e.date.startsWith(menuDate)
+        );
+
+    if(events.length === 0){
+
+        alert("予定がありません");
+
+        return;
+
+    }
+
+    const event = events[0];
+
+    editingEventId = event.id;
+
+    document.getElementById(
+        "event-category"
+    ).value = event.category;
+
+    document.getElementById(
+        "event-title"
+    ).value = event.title;
+
+    document.getElementById(
+        "event-date"
+    ).value = event.date;
+
+    document.getElementById(
+        "event-place"
+    ).value = event.place || "";
+
+    document.getElementById(
+        "meeting-time"
+    ).value = event.meeting || "";
+
+    document.getElementById(
+        "companions"
+    ).value = event.companion || "";
+
+    document.getElementById(
+        "map-url"
+    ).value = event.map || "";
+
+    document.getElementById(
+        "ticket-url"
+    ).value = event.ticket || "";
+
+    document.getElementById(
+        "eventFormModal"
+    ).style.display = "block";
 
 }
