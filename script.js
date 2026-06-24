@@ -1276,22 +1276,43 @@ function displaySelectedDateEvents(){
 <div class="event-card">
 
 <div class="event-card-title">
-
 ${getCategoryInfo(e.category)?.icon || "📌"}
 ${e.title}
-
 </div>
-
 
 <div>
 📅 ${e.date}
 </div>
 
-
+${e.place ? `
 <div>
-📍 ${e.place || ''}
+📍 ${e.place}
 </div>
+` : ''}
 
+${e.meeting ? `
+<div>
+⏰ ${e.meeting}
+</div>
+` : ''}
+
+${e.companion ? `
+<div>
+👥 ${e.companion}
+</div>
+` : ''}
+
+${e.map ? `
+<div>
+🗺 地図登録済み
+</div>
+` : ''}
+
+${e.ticket ? `
+<div>
+🎫 チケット登録済み
+</div>
+` : ''}
 
 </div>
 
@@ -1379,75 +1400,60 @@ function displayEventList(){
 
 <div class="event-card">
 
-
 <div class="event-card-title">
-
 ${getCategoryInfo(e.category)?.icon || "📌"}
 ${e.title}
-
 </div>
-
-
-
-
 
 <div>
 📅 ${e.date}
 </div>
 
-
+${e.place ? `
 <div>
-📍 ${e.place || ''}
+📍 ${e.place}
 </div>
+` : ''}
 
-
+${e.meeting ? `
 <div>
-⏰ ${e.meeting || ''}
+⏰ ${e.meeting}
 </div>
+` : ''}
 
-
+${e.companion ? `
 <div>
-👥 ${e.companion || ''}
+👥 ${e.companion}
 </div>
-
-
-
+` : ''}
 
 <div class="event-button-area">
 
-
-${
-e.map
-?
-`
+${e.map ? `
 <button
 class="map-btn"
 onclick="location.href='${e.map}'">
-
 🗺 地図
-
 </button>
-`
-:''
-}
+` : ''}
 
+${e.ticket ? `
+<button
+class="map-btn"
+onclick="location.href='${e.ticket}'">
+🎫 チケット
+</button>
+` : ''}
 
 <button
 class="icon-btn delete-btn"
 onclick="deleteEvent(${e.id})">
-
 🗑
-
 </button>
 
-
-
 </div>
 
-
-
 </div>
-
 
 `).join('');
 
@@ -2337,6 +2343,16 @@ function editEventFromMenu(){
 
     alert(
         "次で編集機能を実装します"
+    );
+
+}
+
+function copyEventFromMenu(){
+
+    closeDayMenu();
+
+    alert(
+        "次でコピー機能を実装します"
     );
 
 }
