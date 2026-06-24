@@ -832,6 +832,10 @@ ${hasEvent ? 'has-event' : ''}
 ${isSelected ? 'selected-day' : ''}
 "
 onclick="selectCalendarDate('${date}')">
+ontouchstart="startPress('${date}')"
+ontouchend="cancelPress()"
+ontouchmove="cancelPress()"
+
 
 <div class="calendar-date ${dateClass}">
 ${d}
@@ -888,6 +892,44 @@ function changeMonth(value){
 
 }
 
+
+let pressTimer;
+
+function startPress(date){
+
+    pressTimer = setTimeout(()=>{
+
+        showDayMenu(date);
+
+    },500);
+
+}
+
+function cancelPress(){
+
+    clearTimeout(pressTimer);
+
+}
+
+function showDayMenu(date){
+
+    const action = prompt(
+`日付: ${date}
+
+1 = 予定追加
+2 = 予定編集
+3 = 予定削除`
+    );
+
+    if(action==="1"){
+
+        selectedCalendarDate = date;
+
+        openEventForm();
+
+    }
+
+}
 
 
 
