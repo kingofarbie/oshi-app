@@ -764,8 +764,6 @@ ${year}年 ${month + 1}月
         const date =
         `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
 
-const holiday =
-    HOLIDAYS[date] || '';
 
         const hasEvent =
             events.some(
