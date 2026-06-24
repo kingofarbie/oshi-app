@@ -588,14 +588,13 @@ button:hover{
 
 .today{
 
-    border:2px solid var(--accent-light);
+    background:rgba(255,111,165,0.12);
 
-    color:var(--accent-light);
+    border:1px solid rgba(255,111,165,0.35);
 
     font-weight:bold;
 
 }
-
 
 /* 選択日 */
 
