@@ -600,14 +600,13 @@ button:hover{
 
 .calendar-day.selected-day{
 
-    background:var(--accent);
+    background:rgba(255,45,85,0.15);
 
     color:white;
 
-    border:2px solid var(--accent-light);
+    border:1px solid rgba(255,111,165,0.5);
 
 }
-
 
 
 /* 空白 */
