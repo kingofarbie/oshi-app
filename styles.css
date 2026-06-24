@@ -977,3 +977,10 @@ button:hover{
     text-align:center;
 
 }
+
+.event-modal input,
+.event-modal select{
+
+    margin-bottom:10px;
+
+}

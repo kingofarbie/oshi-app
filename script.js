@@ -1047,15 +1047,6 @@ function openEventForm(){
 }
 
 
-function closeEventForm(){
-
-    document
-    .getElementById(
-        "eventFormModal"
-    ).style.display = "none";
-
-}
-
 
 
 
@@ -1139,7 +1130,7 @@ function saveEvent(){
     if(db.addEvent(data)){
 
 
-        closeEventForm();
+        closeEventModal();
 
 
         clearEventForm();
@@ -2301,6 +2292,14 @@ function closeDayMenu(){
 
     document.getElementById(
         "dayMenuModal"
+    ).style.display = "none";
+
+}
+
+function closeEventModal(){
+
+    document.getElementById(
+        "eventFormModal"
     ).style.display = "none";
 
 }
