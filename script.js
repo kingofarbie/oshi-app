@@ -834,7 +834,7 @@ ${isSelected ? 'selected-day' : ''}
 onclick="selectCalendarDate('${date}')"
 ontouchstart="startPress('${date}')"
 ontouchend="cancelPress()"
-ontouchmove="cancelPress()"
+ontouchmove="cancelPress()">
 
 <div class="calendar-date ${dateClass}">
 ${d}
