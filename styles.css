@@ -942,3 +942,38 @@ button:hover{
     }
 
 }
+
+
+
+
+
+/* =====================
+   イベント入力ポップアップ
+===================== */
+
+.event-modal{
+
+    width:90%;
+    max-width:420px;
+
+    background:var(--card);
+
+    color:var(--text);
+
+    border-radius:18px;
+
+    padding:20px;
+
+    max-height:85vh;
+
+    overflow-y:auto;
+
+}
+
+.event-modal h2{
+
+    margin-top:0;
+
+    text-align:center;
+
+}

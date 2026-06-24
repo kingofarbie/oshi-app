@@ -1033,42 +1033,28 @@ function updateSelectedDateArea(){
 /* =====================
    予定追加フォーム開閉
 ===================== */
-
 function openEventForm(){
 
-
     if(!selectedCalendarDate){
-
         return;
-
     }
-
-
 
     document
     .getElementById(
-        'event-form-card'
-    )
-    .style.display =
-        "block";
+        "eventFormModal"
+    ).style.display = "block";
 
 }
-
 
 
 function closeEventForm(){
 
-
     document
     .getElementById(
-        'event-form-card'
-    )
-    .style.display =
-        "none";
-
+        "eventFormModal"
+    ).style.display = "none";
 
 }
-
 
 
 

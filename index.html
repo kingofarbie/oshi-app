@@ -199,170 +199,78 @@ onclick="openEventForm()">
 
 
 <!-- =====================
-     予定追加フォーム
-     （選択後表示）
+     イベント入力ポップアップ
 ===================== -->
 
+<div id="eventFormModal" class="modal">
 
-<div class="card"
-id="event-form-card"
-style="display:none;">
+    <div class="modal-content event-modal">
 
+        <h2 id="eventFormTitle">
+            ➕ 予定追加
+        </h2>
 
+        <select id="event-category">
 
-<h2>
-➕ 予定追加
-</h2>
+            <option value="イベント">
+                🎫 イベント
+            </option>
 
+            <option value="フェス">
+                🎵 フェス
+            </option>
 
+            <option value="試合">
+                ⚽ 試合
+            </option>
 
+        </select>
 
-<select id="event-category">
+        <input
+        type="text"
+        id="event-title"
+        placeholder="イベント名">
 
+        <input
+        type="datetime-local"
+        id="event-date">
 
-<option value="イベント">
+        <input
+        type="text"
+        id="event-place"
+        placeholder="場所">
 
-🎫 イベント
+        <input
+        type="text"
+        id="meeting-time"
+        placeholder="待ち合わせ時間">
 
-</option>
+        <input
+        type="text"
+        id="companions"
+        placeholder="同伴者">
 
+        <input
+        type="url"
+        id="map-url"
+        placeholder="GoogleマップURL">
 
+        <input
+        type="url"
+        id="ticket-url"
+        placeholder="チケットURL">
 
-<option value="フェス">
+        <button onclick="saveEvent()">
+            💾 保存
+        </button>
 
-🎵 フェス
+        <button onclick="closeEventForm()">
+            ❌ キャンセル
+        </button>
 
-</option>
-
-
-
-<option value="試合">
-
-⚽ 試合
-
-</option>
-
-
-
-</select>
-
-
-
-
-
-
-
-<input
-type="text"
-id="event-title"
-placeholder="イベント名">
-
-
-
-
-
-
-
-
-<input
-type="datetime-local"
-id="event-date">
-
-
-
-
-
-
-
-<input
-type="text"
-id="event-place"
-placeholder="場所">
-
-
-
-
-
-
-
-<input
-type="text"
-id="meeting-time"
-placeholder="待ち合わせ時間">
-
-
-
-
-
-
-
-
-<input
-type="text"
-id="companions"
-placeholder="同伴者">
-
-
-
-
-
-
-
-
-<input
-type="url"
-id="map-url"
-placeholder="GoogleマップURL">
-
-
-
-
-
-
-
-
-<input
-type="url"
-id="ticket-url"
-placeholder="チケットURL">
-
-
-
-
-
-
-
-<button
-onclick="saveEvent()">
-
-
-💾 保存
-
-
-</button>
-
-
-
-
-
-<button
-onclick="closeEventForm()">
-
-
-キャンセル
-
-
-</button>
-
-
+    </div>
 
 </div>
-
-
-
-
-
-
 
 
 
