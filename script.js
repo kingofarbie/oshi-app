@@ -2357,11 +2357,139 @@ function openEventSelectModal(){
 
 function closeEventSelectModal(){
 
+
+
     document.getElementById(
         "eventSelectModal"
     ).style.display = "none";
 
 }
+
+function openDeleteSelectModal(){
+
+    const list =
+        document.getElementById(
+            "deleteEventList"
+        );
+
+
+    const events =
+        db.load().events.filter(
+            e => e.date.startsWith(menuDate)
+        );
+
+
+    if(events.length === 0){
+
+        alert("予定がありません");
+
+        return;
+
+    }
+
+
+    list.innerHTML =
+
+    events.map(e=>`
+
+    <label>
+
+    <input
+    type="checkbox"
+    value="${e.id}"
+    class="delete-check">
+
+    ${getCategoryInfo(e.category)?.icon || "📌"}
+    ${e.title}
+
+    </label>
+
+    <br>
+
+    `).join('');
+
+
+    document.getElementById(
+        "deleteSelectModal"
+    ).style.display="block";
+
+}
+
+
+
+function closeDeleteSelectModal(){
+
+    document.getElementById(
+        "deleteSelectModal"
+    ).style.display="none";
+
+}
+
+
+
+function deleteSelectedEvents(){
+
+    const checks =
+        document.querySelectorAll(
+            ".delete-check:checked"
+        );
+
+
+    if(checks.length === 0){
+
+        alert("削除する予定を選択してください");
+
+        return;
+
+    }
+
+
+    if(!confirm(
+        "選択した予定を削除しますか？"
+    )){
+
+        return;
+
+    }
+
+
+    const ids =
+        Array.from(checks)
+        .map(
+            c=>Number(c.value)
+        );
+
+
+    const data =
+        db.load();
+
+
+    data.events =
+        data.events.filter(
+            e=>!ids.includes(e.id)
+        );
+
+
+    db.save(data);
+
+
+    closeDeleteSelectModal();
+
+
+    displayEventList();
+
+    displaySelectedDateEvents();
+
+    renderCalendar();
+
+    displayHomeSchedule();
+
+    displayUpcomingEvents();
+
+}
+
+
+
 
 
 
@@ -2436,8 +2564,11 @@ function closeEventModal(){
         "eventFormModal"
     ).style.display = "none";
 
-}
+    editingEventId = null;
 
+    clearEventForm();
+
+}
 
 function addEventFromMenu(){
 
@@ -2476,41 +2607,11 @@ function editEventFromMenu(){
 
 }
 
+
 function deleteEventFromMenu(){
 
     closeDayMenu();
 
-    const events =
-        db.load().events.filter(
-            e => e.date.startsWith(menuDate)
-        );
-
-    if(events.length === 0){
-
-        alert("予定がありません");
-
-        return;
-
-    }
-
-    const event = events[0];
-
-    if(!confirm(
-        `「${event.title}」を削除しますか？`
-    )){
-        return;
-    }
-
-    db.deleteEvent(event.id);
-
-    displayEventList();
-
-    displaySelectedDateEvents();
-
-    renderCalendar();
-
-    displayHomeSchedule();
-
-    displayUpcomingEvents();
+    openDeleteSelectModal();
 
 }
