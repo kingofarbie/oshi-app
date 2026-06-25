@@ -915,6 +915,8 @@ function cancelPress(){
 
 function showDayMenu(date){
 
+    console.log("長押し:", date);
+
     menuDate = date;
 
     document.getElementById(
@@ -926,7 +928,6 @@ function showDayMenu(date){
     ).style.display = "block";
 
 }
-
 
 
 /* =====================
@@ -2609,6 +2610,9 @@ function editEventFromMenu(){
 
 
 function deleteEventFromMenu(){
+
+    console.log("削除押下");
+    console.log(menuDate);
 
     closeDayMenu();
 
