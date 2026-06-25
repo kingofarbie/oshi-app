@@ -984,3 +984,14 @@ button:hover{
     margin-bottom:10px;
 
 }
+
+.delete-item{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin:8px 0;
+}
+
+.delete-item input{
+    margin:0;
+}

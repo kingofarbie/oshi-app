@@ -2388,26 +2388,22 @@ function openDeleteSelectModal(){
 
     }
 
-
     list.innerHTML =
 
     events.map(e=>`
 
-    <label>
+<label class="delete-item">
+<input
+type="checkbox"
+value="${e.id}"
+class="delete-check">
 
-    <input
-    type="checkbox"
-    value="${e.id}"
-    class="delete-check">
+${getCategoryInfo(e.category)?.icon || "📌"}
+${e.title}
 
-    ${getCategoryInfo(e.category)?.icon || "📌"}
-    ${e.title}
+</label>
 
-    </label>
-
-    <br>
-
-    `).join('');
+`).join('');
 
 
     document.getElementById(
