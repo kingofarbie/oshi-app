@@ -893,9 +893,13 @@ function changeMonth(value){
 }
 
 
+
 let pressTimer;
 let menuDate = null;
 let selectedEventId = null;
+
+let copyEventId = null;
+let copyMode = false;
 
 function startPress(date){
 
@@ -937,6 +941,49 @@ function showDayMenu(date){
 
 function selectCalendarDate(date){
 
+    if(copyMode){
+
+    const event =
+        db.load().events.find(
+            e => e.id === copyEventId
+        );
+
+    if(event){
+
+        const newEvent = {
+
+            ...event,
+
+            id: Date.now(),
+
+            date:
+                date +
+                event.date.substring(10)
+
+        };
+
+        const data = db.load();
+
+        data.events.push(newEvent);
+
+        db.save(data);
+
+    }
+
+    copyMode = false;
+    copyEventId = null;
+
+    renderCalendar();
+    displayEventList();
+    displayHomeSchedule();
+    displayUpcomingEvents();
+
+    alert("コピーしました");
+
+    return;
+
+}
+
     selectedCalendarDate = date;
 
 
@@ -973,7 +1020,7 @@ function selectCalendarDate(date){
 
 /* =====================
    選択日の表示更新
-===================== */
+===================== *
 function updateSelectedDateArea(){
 
 
@@ -2589,12 +2636,22 @@ function copyEventFromMenu(){
 
     closeDayMenu();
 
-    alert(
-        "次でコピー機能を実装します"
-    );
+    const events =
+        db.load().events.filter(
+            e => e.date.startsWith(menuDate)
+        );
+
+    if(events.length === 0){
+
+        alert("予定がありません");
+
+        return;
+
+    }
+
+    openCopySelectModal();
 
 }
-
 
 function editEventFromMenu(){
 
@@ -2615,3 +2672,62 @@ function deleteEventFromMenu(){
     openDeleteSelectModal();
 
 }
+
+function openCopySelectModal(){
+
+    const list =
+        document.getElementById(
+            "copyEventList"
+        );
+
+    const events =
+        db.load().events.filter(
+            e => e.date.startsWith(menuDate)
+        );
+
+    list.innerHTML =
+
+    events.map(e=>`
+
+    <button
+    onclick="copyEvent(${e.id})">
+
+    ${getCategoryInfo(e.category)?.icon || "📌"}
+    ${e.title}
+
+    </button>
+
+    <br>
+
+    `).join('');
+
+    document.getElementById(
+        "copySelectModal"
+    ).style.display = "block";
+
+}
+
+
+
+function closeCopySelectModal(){
+
+    document.getElementById(
+        "copySelectModal"
+    ).style.display = "none";
+
+}
+
+
+
+function copyEvent(id){
+
+    copyEventId = id;
+
+    copyMode = true;
+
+    closeCopySelectModal();
+
+    alert("コピー先の日付を選択してください");
+
+}
+
