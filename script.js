@@ -895,7 +895,7 @@ function changeMonth(value){
 
 let pressTimer;
 let menuDate = null;
-
+let selectedEventId = null;
 
 function startPress(date){
 
@@ -2308,6 +2308,128 @@ function closeDayMenu(){
 
 }
 
+function openEventSelectModal(){
+
+    const list =
+        document.getElementById(
+            "eventSelectList"
+        );
+
+
+    const events =
+        db.load().events.filter(
+            e => e.date.startsWith(menuDate)
+        );
+
+
+    if(events.length === 0){
+
+        alert("予定がありません");
+
+        return;
+
+    }
+
+
+    list.innerHTML =
+
+    events.map(e=>`
+
+        <button
+        onclick="selectEvent(${e.id})">
+
+        ${getCategoryInfo(e.category)?.icon || "📌"}
+        ${e.title}
+
+        </button>
+        <br>
+
+    `).join('');
+
+
+    document.getElementById(
+        "eventSelectModal"
+    ).style.display = "block";
+
+}
+
+
+
+function closeEventSelectModal(){
+
+    document.getElementById(
+        "eventSelectModal"
+    ).style.display = "none";
+
+}
+
+
+
+function selectEvent(id){
+
+    selectedEventId = id;
+
+    closeEventSelectModal();
+
+    const event =
+        db.load().events.find(
+            e=>e.id===selectedEventId
+        );
+
+
+    if(!event)
+        return;
+
+
+    editingEventId = event.id;
+
+
+    document.getElementById(
+        "event-category"
+    ).value = event.category;
+
+
+    document.getElementById(
+        "event-title"
+    ).value = event.title;
+
+
+    document.getElementById(
+        "event-date"
+    ).value = event.date;
+
+
+    document.getElementById(
+        "event-place"
+    ).value = event.place || "";
+
+
+    document.getElementById(
+        "meeting-time"
+    ).value = event.meeting || "";
+
+
+    document.getElementById(
+        "companions"
+    ).value = event.companion || "";
+
+
+    document.getElementById(
+        "map-url"
+    ).value = event.map || "";
+
+
+    document.getElementById(
+        "ticket-url"
+    ).value = event.ticket || "";
+
+
+    document.getElementById(
+        "eventFormModal"
+    ).style.display="block";
+
+}
+
 function closeEventModal(){
 
     document.getElementById(
@@ -2346,17 +2468,15 @@ function copyEventFromMenu(){
 }
 
 
-function deleteEventFromMenu(){
+function editEventFromMenu(){
 
     closeDayMenu();
 
-    alert(
-        "次で削除機能を実装します"
-    );
+    openEventSelectModal();
 
 }
 
-function editEventFromMenu(){
+function deleteEventFromMenu(){
 
     closeDayMenu();
 
@@ -2375,42 +2495,22 @@ function editEventFromMenu(){
 
     const event = events[0];
 
-    editingEventId = event.id;
+    if(!confirm(
+        `「${event.title}」を削除しますか？`
+    )){
+        return;
+    }
 
-    document.getElementById(
-        "event-category"
-    ).value = event.category;
+    db.deleteEvent(event.id);
 
-    document.getElementById(
-        "event-title"
-    ).value = event.title;
+    displayEventList();
 
-    document.getElementById(
-        "event-date"
-    ).value = event.date;
+    displaySelectedDateEvents();
 
-    document.getElementById(
-        "event-place"
-    ).value = event.place || "";
+    renderCalendar();
 
-    document.getElementById(
-        "meeting-time"
-    ).value = event.meeting || "";
+    displayHomeSchedule();
 
-    document.getElementById(
-        "companions"
-    ).value = event.companion || "";
-
-    document.getElementById(
-        "map-url"
-    ).value = event.map || "";
-
-    document.getElementById(
-        "ticket-url"
-    ).value = event.ticket || "";
-
-    document.getElementById(
-        "eventFormModal"
-    ).style.display = "block";
+    displayUpcomingEvents();
 
 }
