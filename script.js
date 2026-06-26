@@ -2339,42 +2339,41 @@ margin-left:8px;
 
 function updateEventCategoryOptions(){
 
-const select =
-    document.getElementById(
-        "event-category"
-    );
+    const eventSelect =
+        document.getElementById("event-category");
 
-if(!select)
-    return;
+    const filterSelect =
+        document.getElementById("event-filter");
 
-const data =
-    db.load();
+    const data = db.load();
+    const categories = data.categories || [];
 
-const categories =
-    data.categories || [];
+    let html =
+        `<option value="イベント">🎫 イベント</option>
+         <option value="フェス">🎵 フェス</option>
+         <option value="試合">⚽ 試合</option>`;
 
-let html = `
-    <option value="イベント">🎫 イベント</option>
-    <option value="フェス">🎵 フェス</option>
-    <option value="試合">⚽ 試合</option>
-`;
+    categories.forEach(c=>{
 
-categories.forEach(c=>{
+        html += `
+        <option value="${c.name}">
+            ${c.icon} ${c.name}
+        </option>`;
 
-    html += `
-    <option value="${c.name}">
-        ${c.icon} ${c.name}
-    </option>
-    `;
+    });
 
-});
+    if(eventSelect){
+        eventSelect.innerHTML = html;
+    }
 
-select.innerHTML = html;
+    if(filterSelect){
+
+        filterSelect.innerHTML =
+            `<option value="all">すべて</option>` + html;
+
+    }
 
 }
-
-
-
 
 /* =====================
 カテゴリ情報取得
