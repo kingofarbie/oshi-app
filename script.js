@@ -1,12 +1,3 @@
-const DB_KEY = 'oshi_app_data';
-
-let oshiMaster = {
-    artists: [],
-    sports: []
-};
-
-let selectedOshiId = null;
-
 
 const DB_KEY = 'oshi_app_data';
 
@@ -1040,7 +1031,7 @@ db.save(data);
 
 /* =====================
    選択日の表示更新
-===================== *
+===================== */
 function updateSelectedDateArea(){
 
 
