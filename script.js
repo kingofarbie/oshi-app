@@ -898,7 +898,7 @@ let pressTimer;
 let menuDate = null;
 let selectedEventId = null;
 
-let copyEventId = null;
+let copyEventId = [];
 let copyMode = false;
 
 function startPress(date){
@@ -943,32 +943,35 @@ function selectCalendarDate(date){
 
     if(copyMode){
 
+const data = db.load();
+
+copyEventId.forEach(id=>{
+
     const event =
-        db.load().events.find(
-            e => e.id === copyEventId
+        data.events.find(
+            e=>e.id===id
         );
 
-    if(event){
+    if(!event)
+        return;
 
-        const newEvent = {
+    data.events.push({
 
-            ...event,
+        ...event,
 
-            id: Date.now(),
+        id: Date.now() + Math.random(),
 
-            date:
-                date +
-                event.date.substring(10)
+        date:
+            date +
+            event.date.substring(10)
 
-        };
+    });
 
-        const data = db.load();
+});
 
-        data.events.push(newEvent);
+db.save(data);
 
-        db.save(data);
 
-    }
 
     copyMode = false;
     copyEventId = null;
@@ -2685,17 +2688,29 @@ function openCopySelectModal(){
             e => e.date.startsWith(menuDate)
         );
 
+    if(events.length === 0){
+
+        alert("予定がありません");
+
+        return;
+
+    }
+
     list.innerHTML =
 
     events.map(e=>`
 
-    <button
-    onclick="copyEvent(${e.id})">
+    <label>
+
+    <input
+    type="checkbox"
+    value="${e.id}"
+    class="copy-check">
 
     ${getCategoryInfo(e.category)?.icon || "📌"}
     ${e.title}
 
-    </button>
+    </label>
 
     <br>
 
@@ -2703,7 +2718,15 @@ function openCopySelectModal(){
 
     document.getElementById(
         "copySelectModal"
-    ).style.display = "block";
+    ).style.display="block";
+
+}
+
+function closeCopySelectModal(){
+
+    document.getElementById(
+        "copySelectModal"
+    ).style.display = "none";
 
 }
 
@@ -2717,11 +2740,24 @@ function closeCopySelectModal(){
 
 }
 
+function copySelectedEvents(){
 
+    const checks =
+        document.querySelectorAll(
+            ".copy-check:checked"
+        );
 
-function copyEvent(id){
+    if(checks.length===0){
 
-    copyEventId = id;
+        alert("コピーする予定を選択してください");
+
+        return;
+
+    }
+
+    copyEventId =
+        Array.from(checks)
+        .map(c=>Number(c.value));
 
     copyMode = true;
 
@@ -2730,4 +2766,3 @@ function copyEvent(id){
     alert("コピー先の日付を選択してください");
 
 }
-
