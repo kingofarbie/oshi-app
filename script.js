@@ -953,15 +953,42 @@ function selectCalendarDate(date){
 
 const data = db.load();
 
-copyEventId.forEach(id=>{
+const plan = PLAN[data.settings.plan];
+
+const remain =
+    plan.eventLimit === Infinity
+    ? Infinity
+    : plan.eventLimit - data.events.length;
+
+if(remain <= 0){
+
+    alert(
+        `${plan.name}は予定${plan.eventLimit}件までです`
+    );
+
+    copyMode = false;
+    copyEventId = [];
+
+    return;
+
+}
+
+const ids =
+    copyEventId.slice(
+        0,
+        remain === Infinity
+        ? copyEventId.length
+        : remain
+    );
+
+ids.forEach(id=>{
 
     const event =
         data.events.find(
             e=>e.id===id
         );
 
-    if(!event)
-        return;
+    if(!event) return;
 
     data.events.push({
 
@@ -979,6 +1006,12 @@ copyEventId.forEach(id=>{
 
 db.save(data);
 
+if(ids.length < copyEventId.length){
+
+    alert(
+`上限のため${ids.length}件のみ貼り付けました`    );
+
+}
 
 
     copyMode = false;
@@ -989,8 +1022,10 @@ db.save(data);
     displayHomeSchedule();
     displayUpcomingEvents();
 
-    alert("コピーしました");
+if(ids.length === copyEventId.length){
 
+alert("予定を貼り付けました");
+}
     return;
 
 }
