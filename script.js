@@ -2118,6 +2118,8 @@ async function(){
 
     updatePlanDisplay();
 
+    displayPlans();
+
 };
 
 /* =====================
@@ -2803,5 +2805,89 @@ function updatePlanDisplay(){
     document.getElementById(
         "current-plan"
     ).textContent = text;
+
+}
+
+
+
+function displayPlans(){
+
+    const data = db.load();
+
+    const current = data.settings.plan;
+
+    const box =
+        document.getElementById("planList");
+
+    if(!box) return;
+
+    box.innerHTML = "";
+
+    Object.keys(PLAN).forEach(key=>{
+
+        const p = PLAN[key];
+
+        const eventText =
+            p.eventLimit === Infinity
+            ? "無制限"
+            : p.eventLimit + "件";
+
+        const oshiText =
+            p.oshiLimit === Infinity
+            ? "無制限"
+            : p.oshiLimit + "件";
+
+        box.innerHTML += `
+
+<div class="plan-card">
+
+<h3>${p.name}</h3>
+
+<p>
+料金：${p.price}円 / 30日
+</p>
+
+<p>
+予定：${eventText}
+</p>
+
+<p>
+推し：${oshiText}
+</p>
+
+${
+current===key
+
+?
+
+`<button disabled>現在利用中</button>`
+
+:
+
+`<button onclick="changePlan('${key}')">
+このプランを見る
+</button>`
+
+}
+
+</div>
+
+`;
+
+    });
+
+}
+
+function changePlan(plan){
+
+    const data = db.load();
+
+    data.settings.plan = plan;
+
+    db.save(data);
+
+    updatePlanDisplay();
+
+    displayPlans();
 
 }
