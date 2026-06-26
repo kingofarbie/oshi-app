@@ -8,6 +8,42 @@ let oshiMaster = {
 let selectedOshiId = null;
 
 
+const DB_KEY = 'oshi_app_data';
+
+const PLAN = {
+
+    free:{
+        name:"無料",
+        price:0,
+        eventLimit:5,
+        oshiLimit:3
+    },
+
+    premium:{
+        name:"プレミアム",
+        price:300,
+        eventLimit:100,
+        oshiLimit:10
+    },
+
+    vip:{
+        name:"VIP",
+        price:500,
+        eventLimit:Infinity,
+        oshiLimit:Infinity
+    }
+
+};
+
+let oshiMaster = {
+    artists: [],
+    sports: []
+};
+
+let selectedOshiId = null;
+
+
+
 /* =====================
    カレンダー状態
 ===================== */
@@ -71,60 +107,50 @@ const db = {
        推し追加
     ===================== */
 
-    addOshi(masterId){
+addOshi(masterId){
 
-        const data=this.load();
+    const data = this.load();
 
+    const plan = PLAN[data.settings.plan];
 
-        if(
-            data.settings.plan==='free'
-            &&
-            data.oshiList.length>=3
-        ){
+    if(data.oshiList.length >= plan.oshiLimit){
 
-            alert(
-                '無料版は3件までです'
-            );
+        alert(
+            `${plan.name}は推し${plan.oshiLimit}件までです`
+        );
 
-            return false;
+        return false;
 
-        }
+    }
 
+    const exists =
+        data.oshiList.some(
+            o=>o.masterId===masterId
+        );
 
-        const exists =
-            data.oshiList.some(
-                o=>o.masterId===masterId
-            );
+    if(exists){
 
+        alert(
+            '既に登録されています'
+        );
 
-        if(exists){
+        return false;
 
-            alert(
-                '既に登録されています'
-            );
+    }
 
-            return false;
+    data.oshiList.push({
 
-        }
+        id:Date.now(),
 
+        masterId
 
-        data.oshiList.push({
+    });
 
-            id:Date.now(),
+    this.save(data);
 
-            masterId
+    return true;
 
-        });
-
-
-        this.save(data);
-
-
-        return true;
-
-    },
-
-
+},
 
     deleteOshi(id){
 
@@ -147,43 +173,34 @@ const db = {
        予定追加
     ===================== */
 
-    addEvent(eventData){
+addEvent(eventData){
 
-        const data=this.load();
+    const data = this.load();
 
+    const plan = PLAN[data.settings.plan];
 
-        if(
-            data.settings.plan==='free'
-            &&
-            data.events.length>=5
-        ){
+    if(data.events.length >= plan.eventLimit){
 
-            alert(
-                '無料版は予定5件までです'
-            );
-
-            return false;
-
-        }
-
-
-        eventData.id =
-            Date.now();
-
-
-        data.events.push(
-            eventData
+        alert(
+            `${plan.name}は予定${plan.eventLimit}件までです`
         );
 
+        return false;
 
-        this.save(data);
+    }
 
+    eventData.id =
+        Date.now();
 
-        return true;
+    data.events.push(
+        eventData
+    );
 
-    },
+    this.save(data);
 
+    return true;
 
+},
     deleteEvent(id){
 
         const data=this.load();
@@ -2099,6 +2116,8 @@ async function(){
     
     updateEventCategoryOptions();
 
+    updatePlanDisplay();
+
 };
 
 /* =====================
@@ -2764,5 +2783,25 @@ function copySelectedEvents(){
     closeCopySelectModal();
 
     alert("コピー先の日付を選択してください");
+
+}
+
+
+function updatePlanDisplay(){
+
+    const data = db.load();
+
+    const plan = PLAN[data.settings.plan];
+
+    const text =
+        plan.eventLimit === Infinity
+
+        ? `現在${plan.name}プランです（予定無制限・推し無制限）`
+
+        : `現在${plan.name}プランです（予定${plan.eventLimit}件・推し${plan.oshiLimit}件）`;
+
+    document.getElementById(
+        "current-plan"
+    ).textContent = text;
 
 }
