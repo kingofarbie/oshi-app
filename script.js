@@ -36,16 +36,6 @@ let selectedOshiId = null;
 
 
 /* =====================
-   カレンダー状態
-===================== */
-
-let currentCalendarDate = new Date();
-
-let selectedCalendarDate = null;
-
-let editingEventId = null;
-
-/* =====================
    DB
 ===================== */
 
@@ -670,13 +660,6 @@ function deleteOshi(id,name){
 
 
 
-let pressTimer;
-let menuDate = null;
-let selectedEventId = null;
-
-let copyEventId = [];
-let copyMode = false;
-
 
 
 /* =====================
@@ -694,10 +677,6 @@ function openEventForm(){
     ).style.display = "block";
 
 }
-
-
-
-
 
 
 /* =====================
@@ -814,11 +793,6 @@ if(editingEventId){
 }
 
 
-
-
-
-
-
 function clearEventForm(){
 
 
@@ -859,12 +833,6 @@ function clearEventForm(){
 
 
 }
-
-
-
-
-
-
 
 
 function displayEventList(){
@@ -999,8 +967,6 @@ onclick="deleteEvent(${e.id})">
 }
 
 
-
-
 function deleteEvent(id){
 
     db.deleteEvent(id);
@@ -1015,16 +981,9 @@ function deleteEvent(id){
 }
 
 
-
-
-
-
-
 /* =====================
    ホーム予定表示
 ===================== */
-
-
 
 function displayHomeSchedule(){
 
@@ -1187,10 +1146,6 @@ function displayHomeSchedule(){
 
 }
 
-
-
-
-
 function displayUpcomingEvents(){
 
 const box =
@@ -1242,7 +1197,6 @@ box.innerHTML =
     '該当なし';
 
 }
-
 
 
 /* =====================
@@ -1389,10 +1343,6 @@ function toggleNotification(type){
 
 }
 
-
-
-
-
 function updateNotificationButtons(){
 
 
@@ -1469,9 +1419,6 @@ if(todayTime){
 
 }
 
-
-
-
 document.addEventListener(
 "change",
 function(e){
@@ -1508,9 +1455,6 @@ if(
 
 
 });
-
-
-
 
 
 
@@ -1605,13 +1549,6 @@ async function(){
 };
 
 
-function closeDayMenu(){
-
-    document.getElementById(
-        "dayMenuModal"
-    ).style.display = "none";
-
-}
 
 function openEventSelectModal(){
 
@@ -1670,123 +1607,6 @@ function closeEventSelectModal(){
 
 }
 
-function openDeleteSelectModal(){
-
-    const list =
-        document.getElementById(
-            "deleteEventList"
-        );
-
-
-    const events =
-        db.load().events.filter(
-            e => e.date.startsWith(menuDate)
-        );
-
-
-    if(events.length === 0){
-
-        alert("予定がありません");
-
-        return;
-
-    }
-
-    list.innerHTML =
-
-    events.map(e=>`
-
-<label class="delete-item">
-<input
-type="checkbox"
-value="${e.id}"
-class="delete-check">
-
-${getCategoryInfo(e.category)?.icon || "📌"}
-${e.title}
-
-</label>
-
-`).join('');
-
-
-    document.getElementById(
-        "deleteSelectModal"
-    ).style.display="block";
-
-}
-
-
-
-function closeDeleteSelectModal(){
-
-    document.getElementById(
-        "deleteSelectModal"
-    ).style.display="none";
-
-}
-
-
-function deleteSelectedEvents(){
-
-    const checks =
-        document.querySelectorAll(
-            ".delete-check:checked"
-        );
-
-
-    if(checks.length === 0){
-
-        alert("削除する予定を選択してください");
-
-        return;
-
-    }
-
-
-    if(!confirm(
-        "選択した予定を削除しますか？"
-    )){
-
-        return;
-
-    }
-
-
-    const ids =
-        Array.from(checks)
-        .map(
-            c=>Number(c.value)
-        );
-
-
-    const data =
-        db.load();
-
-
-    data.events =
-        data.events.filter(
-            e=>!ids.includes(e.id)
-        );
-
-
-    db.save(data);
-
-
-    closeDeleteSelectModal();
-
-
-    displayEventList();
-
-    displaySelectedDateEvents();
-
-    renderCalendar();
-
-    displayHomeSchedule();
-
-    displayUpcomingEvents();
-
-}
 
 
 function selectEvent(id){
@@ -1866,118 +1686,7 @@ function closeEventModal(){
 
 }
 
-function addEventFromMenu(){
 
-    closeDayMenu();
-
-    selectedCalendarDate =
-        menuDate;
-
-    document.getElementById(
-        'event-date'
-    ).value =
-        menuDate + "T12:00";
-
-    openEventForm();
-
-}
-
-
-
-function copyEventFromMenu(){
-
-    closeDayMenu();
-
-    const events =
-        db.load().events.filter(
-            e => e.date.startsWith(menuDate)
-        );
-
-    if(events.length === 0){
-
-        alert("予定がありません");
-
-        return;
-
-    }
-
-    openCopySelectModal();
-
-}
-
-function editEventFromMenu(){
-
-    closeDayMenu();
-
-    openEventSelectModal();
-
-}
-
-
-function deleteEventFromMenu(){
-
-    console.log("削除押下");
-    console.log(menuDate);
-
-    closeDayMenu();
-
-    openDeleteSelectModal();
-
-}
-
-function openCopySelectModal(){
-
-    const list =
-        document.getElementById(
-            "copyEventList"
-        );
-
-    const events =
-        db.load().events.filter(
-            e => e.date.startsWith(menuDate)
-        );
-
-    if(events.length === 0){
-
-        alert("予定がありません");
-
-        return;
-
-    }
-
-    list.innerHTML =
-
-    events.map(e=>`
-
-    <label>
-
-    <input
-    type="checkbox"
-    value="${e.id}"
-    class="copy-check">
-
-    ${getCategoryInfo(e.category)?.icon || "📌"}
-    ${e.title}
-
-    </label>
-
-    <br>
-
-    `).join('');
-
-    document.getElementById(
-        "copySelectModal"
-    ).style.display="block";
-
-}
-
-function closeCopySelectModal(){
-
-    document.getElementById(
-        "copySelectModal"
-    ).style.display = "none";
-
-}
 
 
 
@@ -1986,33 +1695,6 @@ function closeCopySelectModal(){
     document.getElementById(
         "copySelectModal"
     ).style.display = "none";
-
-}
-
-function copySelectedEvents(){
-
-    const checks =
-        document.querySelectorAll(
-            ".copy-check:checked"
-        );
-
-    if(checks.length===0){
-
-        alert("コピーする予定を選択してください");
-
-        return;
-
-    }
-
-    copyEventId =
-        Array.from(checks)
-        .map(c=>Number(c.value));
-
-    copyMode = true;
-
-    closeCopySelectModal();
-
-    alert("コピー先の日付を選択してください");
 
 }
 

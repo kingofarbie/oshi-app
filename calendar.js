@@ -1,4 +1,24 @@
 /* =====================
+   カレンダー状態
+===================== */
+
+let currentCalendarDate = new Date();
+
+let selectedCalendarDate = null;
+
+let editingEventId = null;
+
+let pressTimer;
+let menuDate = null;
+let selectedEventId = null;
+
+let copyEventId = [];
+let copyMode = false;
+
+
+
+
+/* =====================
    カレンダー生成
 ===================== */
 
@@ -540,4 +560,271 @@ function showDayMenu(date){
     ).style.display = "block";
 
 }
+
+function closeDayMenu(){
+
+    document.getElementById(
+        "dayMenuModal"
+    ).style.display = "none";
+
+}
+
+
+function addEventFromMenu(){
+
+    closeDayMenu();
+
+    selectedCalendarDate =
+        menuDate;
+
+    document.getElementById(
+        'event-date'
+    ).value =
+        menuDate + "T12:00";
+
+    openEventForm();
+
+}
+
+
+function editEventFromMenu(){
+
+    closeDayMenu();
+
+    openEventSelectModal();
+
+}
+
+
+function deleteEventFromMenu(){
+
+    console.log("削除押下");
+    console.log(menuDate);
+
+    closeDayMenu();
+
+    openDeleteSelectModal();
+
+}
+
+function copyEventFromMenu(){
+
+    closeDayMenu();
+
+    const events =
+        db.load().events.filter(
+            e => e.date.startsWith(menuDate)
+        );
+
+    if(events.length === 0){
+
+        alert("予定がありません");
+
+        return;
+
+    }
+
+    openCopySelectModal();
+
+}
+
+
+function openDeleteSelectModal(){
+
+    const list =
+        document.getElementById(
+            "deleteEventList"
+        );
+
+
+    const events =
+        db.load().events.filter(
+            e => e.date.startsWith(menuDate)
+        );
+
+
+    if(events.length === 0){
+
+        alert("予定がありません");
+
+        return;
+
+    }
+
+    list.innerHTML =
+
+    events.map(e=>`
+
+<label class="delete-item">
+<input
+type="checkbox"
+value="${e.id}"
+class="delete-check">
+
+${getCategoryInfo(e.category)?.icon || "📌"}
+${e.title}
+
+</label>
+
+`).join('');
+
+
+    document.getElementById(
+        "deleteSelectModal"
+    ).style.display="block";
+
+}
+
+
+function closeDeleteSelectModal(){
+
+    document.getElementById(
+        "deleteSelectModal"
+    ).style.display="none";
+
+}
+
+function deleteSelectedEvents(){
+
+    const checks =
+        document.querySelectorAll(
+            ".delete-check:checked"
+        );
+
+
+    if(checks.length === 0){
+
+        alert("削除する予定を選択してください");
+
+        return;
+
+    }
+
+
+    if(!confirm(
+        "選択した予定を削除しますか？"
+    )){
+
+        return;
+
+    }
+
+
+    const ids =
+        Array.from(checks)
+        .map(
+            c=>Number(c.value)
+        );
+
+
+    const data =
+        db.load();
+
+
+    data.events =
+        data.events.filter(
+            e=>!ids.includes(e.id)
+        );
+
+
+    db.save(data);
+
+
+    closeDeleteSelectModal();
+
+
+    displayEventList();
+
+    displaySelectedDateEvents();
+
+    renderCalendar();
+
+    displayHomeSchedule();
+
+    displayUpcomingEvents();
+
+}
+
+
+function openCopySelectModal(){
+
+    const list =
+        document.getElementById(
+            "copyEventList"
+        );
+
+    const events =
+        db.load().events.filter(
+            e => e.date.startsWith(menuDate)
+        );
+
+    if(events.length === 0){
+
+        alert("予定がありません");
+
+        return;
+
+    }
+
+    list.innerHTML =
+
+    events.map(e=>`
+
+    <label>
+
+    <input
+    type="checkbox"
+    value="${e.id}"
+    class="copy-check">
+
+    ${getCategoryInfo(e.category)?.icon || "📌"}
+    ${e.title}
+
+    </label>
+
+    <br>
+
+    `).join('');
+
+    document.getElementById(
+        "copySelectModal"
+    ).style.display="block";
+
+}
+
+function closeCopySelectModal(){
+
+    document.getElementById(
+        "copySelectModal"
+    ).style.display = "none";
+
+}
+
+function copySelectedEvents(){
+
+    const checks =
+        document.querySelectorAll(
+            ".copy-check:checked"
+        );
+
+    if(checks.length===0){
+
+        alert("コピーする予定を選択してください");
+
+        return;
+
+    }
+
+    copyEventId =
+        Array.from(checks)
+        .map(c=>Number(c.value));
+
+    copyMode = true;
+
+    closeCopySelectModal();
+
+    alert("コピー先の日付を選択してください");
+
+}
+
 
