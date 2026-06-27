@@ -7,16 +7,23 @@ function showPlanner(date){
     const planner =
         document.getElementById("dayPlanner");
 
+    const calendar =
+        document.getElementById("calendar");
+
     const title =
         document.getElementById("plannerTitle");
 
     const timeline =
         document.getElementById("plannerTimeline");
 
-    if(!planner || !title || !timeline)
+    if(!planner || !calendar || !title || !timeline)
         return;
 
 
+    // カレンダーを隠す
+    calendar.style.display = "none";
+
+    // 手帳を表示
     planner.style.display = "block";
 
 
@@ -30,12 +37,19 @@ function showPlanner(date){
         `📅 ${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日(${week[d.getDay()]})`;
 
 
+    const now = new Date();
+
+    const todayString =
+        `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}-${String(now.getDate()).padStart(2,"0")}`;
+
+    const currentMinutes =
+        now.getHours()*60 + now.getMinutes();
+
+
     const events =
         db.load().events
         .filter(e=>e.date.startsWith(date))
-        .sort((a,b)=>
-            (a.meeting || "").localeCompare(b.meeting || "")
-        );
+        .sort((a,b)=>(a.meeting || "").localeCompare(b.meeting || ""));
 
 
     let html = "";
@@ -57,20 +71,46 @@ function showPlanner(date){
         `;
 
 
+        // 現在時刻ライン
+        if(date===todayString){
+
+            if(currentMinutes >= hour*60 &&
+               currentMinutes < (hour+1)*60){
+
+                html += `
+                <div class="planner-now">
+                    ───────── 今ここ
+                </div>
+                `;
+
+            }
+
+        }
+
+
         events.forEach(e=>{
 
             if(!e.meeting) return;
 
             if(e.meeting.substring(0,2)===hh){
 
-                html += `
-                <div class="planner-event">
+                const eventDateTime =
+                    new Date(`${e.date}`);
 
-                    ${getCategoryInfo(e.category)?.icon || "📌"}
-                    <strong>${e.title}</strong>
+                const finished =
+                    eventDateTime < now;
+
+                html += `
+                <div class="planner-event ${finished ? "finished-event" : ""}">
+
+                    <div>
+                        ${e.meeting}
+                        ${getCategoryInfo(e.category)?.icon || "📌"}
+                        <strong>${e.title}</strong>
+                    </div>
 
                     ${e.place
-                        ? `<br>${e.place}`
+                        ? `<div class="planner-place">${e.place}</div>`
                         : ""
                     }
 
@@ -92,5 +132,18 @@ function showPlanner(date){
 
 
     timeline.innerHTML = html;
+
+}
+
+
+/* =====================
+   カレンダーへ戻る
+===================== */
+
+function backToCalendar(){
+
+    document.getElementById("dayPlanner").style.display = "none";
+
+    document.getElementById("calendar").style.display = "block";
 
 }
