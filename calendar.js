@@ -374,61 +374,31 @@ alert("予定を貼り付けました");
 ===================== */
 function updateSelectedDateArea(){
 
-
     const area =
         document.getElementById(
             'selected-event-area'
         );
 
-
-    const btn =
-        document.getElementById(
-            'add-event-open-btn'
-        );
-
-
-
-    if(!area || !btn)
+    if(!area)
         return;
 
-
-
     if(!selectedCalendarDate){
-
 
         area.innerHTML =
         `
         📌 日付を選択してください
         `;
 
-
-        btn.style.display =
-            "none";
-
-
         return;
 
     }
 
-
-
     // 選択日の文字表示は削除
-
     area.innerHTML = "";
-
-
-
-    btn.style.display =
-        "block";
-
-
 
     displaySelectedDateEvents();
 
-
 }
-
-
 
 /* =====================
    選択日の予定表示
@@ -824,7 +794,7 @@ function copySelectedEvents(){
 
     closeCopySelectModal();
 
-    alert("コピー先の日付を選択してください");
+    alert("貼り付け先の日付を選択してください");
 
 }
 
