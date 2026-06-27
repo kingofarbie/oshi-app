@@ -1,3 +1,48 @@
+const DEFAULT_CATEGORIES = [
+
+{ name:"イベント", icon:"🎫", color:"#ff66aa" },
+{ name:"ライブ", icon:"🎤", color:"#ff66aa" },
+{ name:"フェス", icon:"🎵", color:"#9966ff" },
+{ name:"試合", icon:"⚽", color:"#33cc66" },
+{ name:"遠征", icon:"✈️", color:"#3399ff" },
+{ name:"特典会", icon:"🎁", color:"#ff9933" },
+{ name:"握手会", icon:"🤝", color:"#ff66aa" },
+{ name:"配信", icon:"📺", color:"#3399ff" },
+{ name:"テレビ", icon:"📺", color:"#9966ff" },
+{ name:"ラジオ", icon:"📻", color:"#33cc66" },
+{ name:"病院", icon:"🏥", color:"#3399ff" },
+{ name:"仕事", icon:"💼", color:"#9966ff" },
+{ name:"学校", icon:"📚", color:"#33cc66" },
+{ name:"旅行", icon:"✈️", color:"#ff9933" },
+{ name:"誕生日", icon:"🎂", color:"#ff66aa" }
+
+];
+
+
+function initializeCategories(){
+
+    const data = db.load();
+
+    if(!data.categories || data.categories.length===0){
+
+        data.categories =
+            DEFAULT_CATEGORIES.map((c,i)=>({
+
+                id:i+1,
+
+                ...c
+
+            }));
+
+        db.save(data);
+
+    }
+
+}
+
+
+
+
 /* =====================
    カテゴリ追加
 ===================== */
@@ -5,68 +50,73 @@
 function addCategory(){
 
     const name =
-        document.getElementById(
-            "category-name"
-        ).value.trim();
+        document.getElementById("category-name")
+        .value
+        .trim();
 
 
     const icon =
-        document.getElementById(
-            "category-icon"
-        ).value;
+        document.getElementById("category-icon")
+        .value;
 
 
     const color =
-        document.getElementById(
-            "category-color"
-        ).value;
+        document.getElementById("category-color")
+        .value;
 
 
     if(!name){
 
-        alert(
-            "カテゴリ名を入力してください"
-        );
+        alert("カテゴリ名を入力してください");
 
         return;
 
     }
 
 
-    const data =
-        db.load();
-
+    const data = db.load();
 
 
     if(!data.categories){
 
-        data.categories=[];
+        data.categories = [];
 
     }
 
 
-
     data.categories.push({
 
-        id:Date.now(),
+        id: Date.now(),
 
-        name:name,
+        name: name,
 
-        icon:icon,
+        icon: icon,
 
-        color:color
+        color: color
 
     });
-
 
 
     db.save(data);
 
 
 
-    document.getElementById(
-        "category-name"
-    ).value="";
+    // 入力欄リセット
+
+    document.getElementById("category-name")
+    .value = "";
+
+
+    // アイコンを初期値へ戻す
+
+    document.getElementById("category-icon")
+    .value = "📌";
+
+
+    // 色を初期値へ戻す
+
+    document.getElementById("category-color")
+    .value = "#ff66aa";
 
 
 
@@ -75,14 +125,9 @@ function addCategory(){
     updateEventCategoryOptions();
 
 
-
-    alert(
-        "カテゴリを追加しました"
-    );
+    alert("カテゴリを追加しました");
 
 }
-
-
 
 /* =====================
    カテゴリ削除
@@ -197,11 +242,8 @@ function updateEventCategoryOptions(){
 
     const data = db.load();
     const categories = data.categories || [];
-
-    let html =
-        `<option value="イベント">🎫 イベント</option>
-         <option value="フェス">🎵 フェス</option>
-         <option value="試合">⚽ 試合</option>`;
+    
+    let html = "";
 
     categories.forEach(c=>{
 

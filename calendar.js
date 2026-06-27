@@ -8,6 +8,7 @@ let selectedCalendarDate = null;
 
 let editingEventId = null;
 
+
 let pressTimer;
 let menuDate = null;
 let selectedEventId = null;

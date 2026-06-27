@@ -1466,6 +1466,8 @@ if(
 window.onload =
 async function(){
 
+    initializeCategories();
+
 
     await loadMaster();
 
