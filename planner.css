@@ -1,0 +1,73 @@
+/* =====================
+   1日手帳ビュー
+===================== */
+
+#dayPlanner{
+
+    margin-top:20px;
+
+    padding:15px;
+
+}
+
+#plannerTitle{
+
+    font-size:20px;
+
+    margin-bottom:15px;
+
+    font-weight:bold;
+
+}
+
+.planner-row{
+
+    display:flex;
+
+    min-height:60px;
+
+    border-top:1px solid #ddd;
+
+}
+
+.planner-time{
+
+    width:70px;
+
+    font-weight:bold;
+
+    color:#666;
+
+    padding-top:8px;
+
+    flex-shrink:0;
+
+}
+
+.planner-content{
+
+    flex:1;
+
+    border-left:2px solid #ddd;
+
+    padding:6px 10px;
+
+    position:relative;
+
+}
+
+.planner-event{
+
+    background:#f8f8f8;
+
+    border-left:4px solid #ff66aa;
+
+    border-radius:8px;
+
+    padding:8px;
+
+    margin:4px 0;
+
+    font-size:14px;
+
+}

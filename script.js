@@ -1466,6 +1466,13 @@ if(
 window.onload =
 async function(){
 
+    await loadHtml(
+    "plannerContainer",
+    "planner.html"
+);
+
+
+
     initializeCategories();
 
 
@@ -1549,6 +1556,24 @@ async function(){
     displayPlans();
 
 };
+
+
+
+/* =====================
+   HTML読込
+===================== */
+
+async function loadHtml(id,file){
+
+    const response = await fetch(file);
+
+    const html = await response.text();
+
+    document.getElementById(id).innerHTML = html;
+
+}
+
+
 
 
 
