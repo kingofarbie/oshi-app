@@ -1466,11 +1466,10 @@ if(
 window.onload =
 async function(){
 
-    await loadHtml(
-    "plannerContainer",
-    "planner.html"
-);
-
+// await loadHtml(
+//     "plannerContainer",
+//     "planner.html"
+// );
 
 
     initializeCategories();
