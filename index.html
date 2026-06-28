@@ -226,16 +226,6 @@
     </div>
 
 </div>
-<!-- =====================
-     選択日の操作
-===================== -->
-
-
-<div class="card">
-
-
-
-</div>
 
 
 <!--- =====================
@@ -704,17 +694,46 @@ placeholder="カテゴリ名（例：推し活、仕事、旅行）">
 
 <div class="card setting-item">
 
-    <button onclick="checkForUpdates()">
+<button onclick="openUpdateModal()">
 
-        🔄 アプリ更新
+    🔄 アプリ更新
 
-    </button>
+</button>
 
 <div id="appVersion"></div>
 
 </div>
 
+<!-- =====================
+     アプリ更新モーダル
+===================== -->
 
+<div id="updateModal" class="modal">
+
+    <div class="modal-content">
+
+        <h2>🔄 アプリ更新</h2>
+
+        <p id="updateVersion">
+            現在：v1.8
+        </p>
+
+        <p>
+            最新版を確認します。<br><br>
+            保存済みデータは消えません。
+        </p>
+
+        <button onclick="startUpdate()">
+            更新する
+        </button>
+
+        <button onclick="closeUpdateModal()">
+            キャンセル
+        </button>
+
+    </div>
+
+</div>
 
 
 </div>
