@@ -1,4 +1,4 @@
-const APP_VERSION = "v1.8";
+const APP_VERSION = "v1.7";
 
 function openUpdateModal() {
     document.getElementById("updateModal").style.display = "flex";
