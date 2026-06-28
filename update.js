@@ -24,12 +24,46 @@ function startUpdate() {
 
 }
 
+async function checkLatestVersion() {
+
+    try {
+
+        const res = await fetch("version.json?time=" + Date.now());
+        const data = await res.json();
+
+        const version = document.getElementById("appVersion");
+
+        if (!version) return;
+
+        if (data.version === APP_VERSION) {
+
+            version.innerHTML =
+                "現在：" + APP_VERSION + "<br>✅ 最新版です";
+
+        } else {
+
+            version.innerHTML =
+                "現在：" + APP_VERSION +
+                "<br>🆕 最新版：" + data.version;
+
+        }
+
+    } catch {
+
+        const version = document.getElementById("appVersion");
+
+        if (version) {
+            version.innerHTML =
+                "現在：" + APP_VERSION +
+                "<br>⚠️ バージョン確認失敗";
+        }
+
+    }
+
+}
+
 document.addEventListener("DOMContentLoaded", () => {
 
-    const version = document.getElementById("appVersion");
-
-    if (version) {
-        version.textContent = "現在：" + APP_VERSION;
-    }
+    checkLatestVersion();
 
 });
