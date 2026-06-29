@@ -76,16 +76,21 @@
 
 .planner-event{
 
-    margin:8px 0;
+    position:relative;
 
-    padding:8px 10px;
+    overflow:hidden;
 
-    border-radius:10px;
+    box-sizing:border-box;
+
+    padding:12px;
+
+    margin:10px 0;
+
+    border-radius:12px;
 
     background:#fff5fb;
 
 }
-
 
 .finished-event{
 

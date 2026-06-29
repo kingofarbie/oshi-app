@@ -90,28 +90,34 @@ function showPlanner(date){
 
 events.forEach(e=>{
 
-
     if(!e.start) return;
 
-
     const startHour =
-        new Date(e.start).getHours();
+        Number(e.start.substring(11,13));
 
-
-    if(startHour === hour){
-
-
-        const eventDateTime =
-            new Date(e.start);
-
+    if(startHour===hour){
 
         const finished =
-            eventDateTime < now;
+            new Date(e.end || e.start) < now;
 
+        const start =
+            new Date(e.start);
 
-html += `
+        const end =
+            new Date(e.end || e.start);
 
-<div class="planner-event ${finished ? "finished-event" : ""}">
+        const durationMinutes =
+            (end - start) / 60000;
+
+        // 1分＝1px（最低60px）
+        const height =
+            Math.max(60, durationMinutes);
+
+        html += `
+
+<div
+class="planner-event ${finished ? "finished-event" : ""}"
+style="height:${height}px;">
 
     <div class="planner-event-time">
         🕒 ${e.start.substring(11,16)}
@@ -145,9 +151,7 @@ html += `
 
     }
 
-
 });
-
         html += `
             </div>
 
