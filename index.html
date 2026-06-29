@@ -694,9 +694,9 @@ placeholder="カテゴリ名（例：推し活、仕事、旅行）">
 
 <div class="card setting-item">
 
-<button onclick="openUpdateModal()">
+<button onclick="checkLatestVersion(true)">
 
-    🔄 アプリ更新
+    🔍 更新確認
 
 </button>
 
@@ -714,24 +714,23 @@ placeholder="カテゴリ名（例：推し活、仕事、旅行）">
 
         <h2>🔄 アプリ更新</h2>
 
-        <p id="updateVersion"></p>
+        <p id="updateMessage"></p>
 
-        <p>
-            最新版を確認します。<br><br>
-            保存済みデータは消えません。
-        </p>
-
-        <button onclick="startUpdate()">
-            更新する
+        <button id="updateButton" onclick="startUpdate()" style="display:none;">
+            🔄 更新する
         </button>
 
         <button onclick="closeUpdateModal()">
-            キャンセル
+            あとで
         </button>
 
     </div>
 
 </div>
+
+
+
+
 
 
 </div>
