@@ -153,3 +153,27 @@
     cursor:pointer;
 
 }
+
+/* =====================
+   手帳予定カード文字修正
+===================== */
+
+.planner-event{
+
+    color:#333;
+
+}
+
+
+.planner-event strong{
+
+    color:#111;
+
+}
+
+
+.planner-place{
+
+    color:#555;
+
+}
