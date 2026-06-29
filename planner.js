@@ -109,39 +109,39 @@ events.forEach(e=>{
             eventDateTime < now;
 
 
-        html += `
+html += `
 
-        <div class="planner-event ${finished ? "finished-event" : ""}">
+<div class="planner-event ${finished ? "finished-event" : ""}">
 
+    <div class="planner-event-time">
+        🕒 ${e.start.substring(11,16)}
+        ${e.end ? " ～ " + e.end.substring(11,16) : ""}
+    </div>
 
-            <div>
-                ${e.start.slice(11,16)}
-                ${getCategoryInfo(e.category)?.icon || "📌"}
-                <strong>${e.title}</strong>
-            </div>
+    <div class="planner-event-title">
+        ${getCategoryInfo(e.category)?.icon || "📌"}
+        <strong>${e.title}</strong>
+    </div>
 
+    ${
+        e.place
+        ? `<div class="planner-place">
+            📍 ${e.place}
+           </div>`
+        : ""
+    }
 
-            ${
-            e.end
-            ?
-            `<div>
-            ～ ${e.end.slice(11,16)}
-            </div>`
-            :
-            ""
-            }
+    ${
+        e.companion
+        ? `<div class="planner-companion">
+            👥 ${e.companion}
+           </div>`
+        : ""
+    }
 
+</div>
 
-            ${e.place
-                ? `<div class="planner-place">${e.place}</div>`
-                : ""
-            }
-
-
-        </div>
-
-        `;
-
+`;
 
     }
 
