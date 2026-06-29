@@ -686,32 +686,42 @@ function openEventForm(){
 function saveEvent(){
 
 
-    const data = {
+const data = {
+
+    category:
+    document.getElementById(
+        'event-category'
+    ).value,
 
 
-        category:
-        document.getElementById(
-            'event-category'
-        ).value,
+    title:
+    document.getElementById(
+        'event-title'
+    ).value,
 
 
-        title:
-        document.getElementById(
-            'event-title'
-        ).value,
+    date:
+    document.getElementById(
+        'event-date'
+    ).value,
 
 
-        date:
-        document.getElementById(
-            'event-date'
-        ).value,
+    start:
+    document.getElementById(
+        'event-start'
+    ).value,
 
 
-        place:
-        document.getElementById(
-            'event-place'
-        ).value,
+    end:
+    document.getElementById(
+        'event-end'
+    ).value,
 
+
+    place:
+    document.getElementById(
+        'event-place'
+    ).value,
 
         meeting:
         document.getElementById(
@@ -1659,20 +1669,24 @@ function selectEvent(id){
     ).value = event.category;
 
 
-    document.getElementById(
-        "event-title"
-    ).value = event.title;
+document.getElementById(
+    "event-title"
+).value = event.title;
 
 
-    document.getElementById(
-        "event-date"
-    ).value = event.date;
+document.getElementById(
+    "event-start"
+).value = event.start || "";
 
 
-    document.getElementById(
-        "event-place"
-    ).value = event.place || "";
+document.getElementById(
+    "event-end"
+).value = event.end || "";
 
+
+document.getElementById(
+    "event-place"
+).value = event.place || "";
 
     document.getElementById(
         "meeting-time"
