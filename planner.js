@@ -88,39 +88,65 @@ function showPlanner(date){
         }
 
 
-        events.forEach(e=>{
+events.forEach(e=>{
 
-            if(!e.meeting) return;
 
-            if(e.meeting.substring(0,2)===hh){
+    if(!e.start) return;
 
-                const eventDateTime =
-                    new Date(`${e.date}`);
 
-                const finished =
-                    eventDateTime < now;
+    const startHour =
+        new Date(e.start).getHours();
 
-                html += `
-                <div class="planner-event ${finished ? "finished-event" : ""}">
 
-                    <div>
-                        ${e.meeting}
-                        ${getCategoryInfo(e.category)?.icon || "📌"}
-                        <strong>${e.title}</strong>
-                    </div>
+    if(startHour === hour){
 
-                    ${e.place
-                        ? `<div class="planner-place">${e.place}</div>`
-                        : ""
-                    }
 
-                </div>
-                `;
+        const eventDateTime =
+            new Date(e.start);
 
+
+        const finished =
+            eventDateTime < now;
+
+
+        html += `
+
+        <div class="planner-event ${finished ? "finished-event" : ""}">
+
+
+            <div>
+                ${e.start.slice(11,16)}
+                ${getCategoryInfo(e.category)?.icon || "📌"}
+                <strong>${e.title}</strong>
+            </div>
+
+
+            ${
+            e.end
+            ?
+            `<div>
+            ～ ${e.end.slice(11,16)}
+            </div>`
+            :
+            ""
             }
 
-        });
 
+            ${e.place
+                ? `<div class="planner-place">${e.place}</div>`
+                : ""
+            }
+
+
+        </div>
+
+        `;
+
+
+    }
+
+
+});
 
         html += `
             </div>
