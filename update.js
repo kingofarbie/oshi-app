@@ -66,4 +66,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     checkLatestVersion();
 
+    const updateVersion = document.getElementById("updateVersion");
+
+    if (updateVersion) {
+        updateVersion.textContent = "現在：" + APP_VERSION;
+    }
+
 });
