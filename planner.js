@@ -4,6 +4,10 @@
 /* =====================
    1日手帳ビュー v2
 ===================== */
+/* =====================
+   1日手帳ビュー
+   左時間固定 + 予定自由配置版
+===================== */
 
 function showPlanner(date){
 
@@ -60,6 +64,7 @@ function showPlanner(date){
         new Date();
 
 
+
     const todayString =
         `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}-${String(now.getDate()).padStart(2,"0")}`;
 
@@ -72,14 +77,13 @@ function showPlanner(date){
 
 
     const events =
-        db.load().events
-
+        db.load()
+        .events
         .filter(
             e =>
             e.start &&
             e.start.startsWith(date)
         )
-
         .sort(
             (a,b)=>
             new Date(a.start)
@@ -89,9 +93,23 @@ function showPlanner(date){
 
 
 
-    let html = "";
+    // 30分 = 40px
+    const scale =
+        40 / 30;
 
 
+
+    let html = `
+
+<div class="planner-layout">
+
+
+<div class="planner-times">
+`;
+
+
+
+    // 左側時間軸
 
     for(
         let hour=0;
@@ -99,103 +117,102 @@ function showPlanner(date){
         hour++
     ){
 
-        for(
-            let minute=0;
-            minute<60;
-            minute+=30
-        ){
+        html += `
+
+<div class="planner-time-fixed">
+
+${String(hour).padStart(2,"0")}:00
+
+</div>
+
+`;
+
+    }
 
 
-            const time =
-                `${String(hour).padStart(2,"0")}:${String(minute).padStart(2,"0")}`;
-
-
-
-            html += `
-
-<div class="planner-row">
-
-
-<div class="planner-time">
-
-${time}
+    html += `
 
 </div>
 
 
-<div class="planner-content">
+
+<div class="planner-board">
 
 `;
 
 
 
-            // 現在時刻表示
-
-            if(
-                date===todayString &&
-                currentMinutes >= hour*60+minute &&
-                currentMinutes < hour*60+minute+30
-            ){
-
-                html += `
-
-<div class="planner-now">
-● 現在時刻
-</div>
-
-`;
-
-            }
-
-// 予定表示
-
-events.forEach(e=>{
-
-
-    if(!e.start)
-        return;
-
-
-
-    const start =
-        new Date(e.start);
-
-
-    const end =
-        new Date(e.end || e.start);
-
-
-
-    const startMinutes =
-        start.getHours()*60 +
-        start.getMinutes();
-
-
-
-    const rowMinutes =
-        hour*60 + minute;
-
-
+    // 現在時刻ライン
 
     if(
-        startMinutes >= rowMinutes &&
-        startMinutes < rowMinutes + 30
+        date===todayString
     ){
 
+        const top =
+            currentMinutes * scale;
 
-        const finished =
-            end < now;
+
+        html += `
+
+<div
+class="planner-now-line"
+style="
+top:${top}px;
+">
+
+● 現在
+
+</div>
+
+`;
+
+    }
+
+
+
+    // 予定配置
+
+    events.forEach(e=>{
+
+
+        const start =
+            new Date(e.start);
+
+
+        const end =
+            new Date(
+                e.end || e.start
+            );
+
+
+
+        const startMinutes =
+            start.getHours()*60 +
+            start.getMinutes();
 
 
 
         const duration =
             Math.max(
                 30,
-                (end - start) / 60000
+                (end-start)/60000
             );
 
+
+
+        const top =
+            startMinutes * scale;
+
+
+
         const height =
-        Math.max(30, duration);
+            duration * scale;
+
+
+
+        const finished =
+            end < now;
+
 
 
         const category =
@@ -211,6 +228,7 @@ events.forEach(e=>{
 <div
 class="planner-event ${finished ? "finished-event" : ""}"
 style="
+top:${top}px;
 height:${height}px;
 background:${category?.color || "#fff5fb"};
 ">
@@ -232,7 +250,6 @@ e.end
 </div>
 
 
-
 <div class="planner-event-title">
 
 ${category?.icon || "📌"}
@@ -244,77 +261,52 @@ ${e.title}
 </div>
 
 
-
 ${
 e.place
-
 ?
-
 `
-
 <div class="planner-place">
 
 📍 ${e.place}
 
 </div>
-
 `
-
 :
-
 ""
-
 }
-
 
 
 ${
 e.companion
-
 ?
-
 `
-
 <div class="planner-companion">
 
 👥 ${e.companion}
 
 </div>
-
 `
-
 :
-
 ""
-
 }
 
 
-
 </div>
 
 
 `;
 
-    }
-
-
-});
+    });
 
 
 
-html += `
+    html += `
 
 </div>
 
 </div>
 
 `;
-
-
-        }
-
-    }
 
 
 
@@ -323,15 +315,18 @@ html += `
 
 
 
-    // 今日なら現在時刻付近へ移動
+    // 現在時刻へ移動
 
-    if(date===todayString){
+    if(
+        date===todayString
+    ){
 
         setTimeout(()=>{
 
+
             const nowLine =
                 document.querySelector(
-                    ".planner-now"
+                    ".planner-now-line"
                 );
 
 
@@ -349,8 +344,7 @@ html += `
 
     }
 
-    }
-
+}
 
 /* =====================
    手帳イベントクリック用

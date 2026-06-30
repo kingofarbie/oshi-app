@@ -1,5 +1,6 @@
 /* =====================
    1日手帳ビュー
+   左時間固定 + 予定自由配置版
 ===================== */
 
 #dayPlanner{
@@ -30,6 +31,7 @@
 }
 
 
+
 /* タイトル */
 
 #plannerTitle{
@@ -47,25 +49,33 @@
 
 
 /* =====================
-   時間軸
+   手帳本体
 ===================== */
 
-.planner-row{
+
+.planner-layout{
 
     display:flex;
 
-    min-height:30px;
-
-    border-bottom:
-    1px solid rgba(0,0,0,0.08);
+    position:relative;
 
 }
 
 
 
-.planner-time{
+/* 左時間軸 */
+
+.planner-times{
 
     width:65px;
+
+}
+
+
+
+.planner-time-fixed{
+
+    height:40px;
 
     padding-top:5px;
 
@@ -75,31 +85,46 @@
 
     color:#777;
 
+    border-bottom:
+
+    1px solid rgba(0,0,0,0.08);
+
 }
 
 
 
-.planner-content{
+/* 予定配置エリア */
+
+.planner-board{
 
     flex:1;
 
-    min-height:30px;
-
-    border-left:
-
-    2px solid #ddd;
-
-    padding-left:10px;
-
     position:relative;
+
+    height:1920px;
+
+    border-left:2px solid #ddd;
 
 }
 
 
 
-/* 現在時刻 */
+/* =====================
+   現在時刻
+===================== */
 
-.planner-now{
+
+.planner-now-line{
+
+    position:absolute;
+
+    left:0;
+
+    right:0;
+
+    height:2px;
+
+    background:#ff3366;
 
     color:#ff3366;
 
@@ -107,7 +132,7 @@
 
     font-weight:bold;
 
-    margin:3px 0;
+    z-index:5;
 
 }
 
@@ -120,21 +145,21 @@
 
 .planner-event{
 
-    position:relative;
+    position:absolute;
+
+    left:10px;
+
+    right:10px;
 
     box-sizing:border-box;
 
     padding:12px;
 
-    margin:8px 5px 8px 0;
-
-    border-radius:14px;
+    border-radius:12px;
 
     overflow:hidden;
 
     color:#333;
-
-    background:#fff5fb;
 
     border-left:6px solid #ff8fab;
 
@@ -143,6 +168,8 @@
     0 3px 8px rgba(0,0,0,0.15);
 
 }
+
+
 
 /* 終了済み */
 
@@ -181,6 +208,7 @@
     margin-bottom:8px;
 
 }
+
 
 
 .planner-event-title strong{
