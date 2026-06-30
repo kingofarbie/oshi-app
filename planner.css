@@ -97,21 +97,24 @@
 
     background-image:
 
-    /* 15分線 */
-    repeating-linear-gradient(
-        to bottom,
-        transparent 0,
-        transparent 19px,
-        rgba(255,255,255,.08) 20px
-    ),
+background-image:
 
-    /* 30分線 */
-    repeating-linear-gradient(
-        to bottom,
-        transparent 0,
-        transparent 39px,
-        rgba(255,255,255,.18) 40px
-    );
+/* 30分線（下に描く） */
+repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 39px,
+    rgba(255,255,255,.18) 40px
+),
+
+/* 15分線（上に描く） */
+repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 19px,
+    rgba(255,255,255,.08) 20px
+);
+
 
 }
 
@@ -191,22 +194,20 @@
 
     right:0;
 
-    width:0;
+    width:18px;
 
-    height:0;
+    height:18px;
 
-    border-style:solid;
+    background:rgba(255,255,255,0.85);
 
-    border-width:0 0 22px 22px;
+    transform:
+        translate(9px,-9px)
+        rotate(45deg);
 
-    border-color:
-    transparent
-    transparent
-    rgba(255,255,255,0.7)
-    transparent;
+    box-shadow:
+        -2px 2px 4px rgba(0,0,0,0.18);
 
 }
-
 /* 終了済み */
 
 .finished-event{
