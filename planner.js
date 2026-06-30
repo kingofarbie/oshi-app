@@ -109,18 +109,23 @@ function showPlanner(date){
 
 
 
-// 左側時間軸（表示は30分ごと）
+for(
+    let minute=0;
+    minute<1440;
+    minute+=30
+){
 
-for(let hour=0; hour<24; hour++){
+    const hour =
+        Math.floor(minute / 60);
+
+    const min =
+        minute % 60;
 
     html += `
 <div class="planner-time-fixed">
-${String(hour).padStart(2,"0")}:00
+${String(hour).padStart(2,"0")}:${String(min).padStart(2,"0")}
 </div>
-
-<div class="planner-time-fixed blank"></div>
 `;
-
 }    
 
 
