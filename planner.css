@@ -91,32 +91,49 @@
 .planner-board{
 
     flex:1;
+
     position:relative;
+
     height:1920px;
+
     border-left:2px solid #ddd;
+
+}
+
+.planner-board::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    pointer-events:none;
 
     background-image:
 
-background-image:
+    /* 15分線 */
+    repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 19px,
+        rgba(255,255,255,.08) 20px
+    ),
 
-/* 30分線（下に描く） */
-repeating-linear-gradient(
-    to bottom,
-    transparent 0,
-    transparent 39px,
-    rgba(255,255,255,.18) 40px
-),
+    /* 30分線 */
+    repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 39px,
+        rgba(255,255,255,.18) 40px
+    );
 
-/* 15分線（上に描く） */
-repeating-linear-gradient(
-    to bottom,
-    transparent 0,
-    transparent 19px,
-    rgba(255,255,255,.08) 20px
-);
-
+    z-index:0;
 
 }
+
+
+
 
 /* =====================
    現在時刻
@@ -178,6 +195,9 @@ repeating-linear-gradient(
 
     box-shadow:
     2px 4px 10px rgba(0,0,0,0.18);
+
+    z-index:2;
+
 
 }
 
