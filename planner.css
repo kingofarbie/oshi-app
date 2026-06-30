@@ -79,19 +79,16 @@
 
     padding-top:5px;
 
-    font-size:14px;
+    font-size:15px;
 
-    font-weight:bold;
+    font-weight:700;
 
-    color:#555;
+    color:var(--text);
 
     border-bottom:
-
-    1px solid rgba(0,0,0,0.08);
+    1px solid rgba(255,255,255,0.12);
 
 }
-
-
 
 /* 予定配置エリア */
 .planner-board{
