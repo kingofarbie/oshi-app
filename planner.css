@@ -85,36 +85,35 @@
 
     color:var(--text);
 
-    border-bottom:
-    1px solid rgba(255,255,255,0.12);
-
 }
 
 /* 予定配置エリア */
 .planner-board{
 
     flex:1;
-
     position:relative;
-
     height:1920px;
-
     border-left:2px solid #ddd;
 
-
-    /* 15分・30分の時間線 */
-
     background-image:
+
+    /* 15分線 */
     repeating-linear-gradient(
         to bottom,
         transparent 0,
         transparent 19px,
-        rgba(0,0,0,0.08) 20px
+        rgba(255,255,255,.08) 20px
+    ),
+
+    /* 30分線 */
+    repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 39px,
+        rgba(255,255,255,.18) 40px
     );
 
 }
-
-
 
 /* =====================
    現在時刻
