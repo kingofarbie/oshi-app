@@ -194,11 +194,8 @@ events.forEach(e=>{
                 (end - start) / 60000
             );
 
-
-
         const height =
-            duration * 0.6;
-
+        Math.max(30, duration);
 
 
         const category =
