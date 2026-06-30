@@ -114,7 +114,7 @@ function showPlanner(date){
 for(
     let minute=0;
     minute<1440;
-    minute+=30
+    minute+=15
 ){
 
     const hour =

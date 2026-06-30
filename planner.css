@@ -105,9 +105,21 @@
 
     border-left:2px solid #ddd;
 
+    background-image:
+    repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 39px,
+        rgba(0,0,0,0.12) 40px
+    ),
+    repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 19px,
+        rgba(0,0,0,0.05) 20px
+    );
+
 }
-
-
 
 /* =====================
    現在時刻
