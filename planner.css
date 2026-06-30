@@ -1,5 +1,5 @@
 /* =====================
-   1日手帳
+   1日手帳ビュー
 ===================== */
 
 #dayPlanner{
@@ -9,6 +9,8 @@
 }
 
 
+/* 戻るボタン */
+
 .back-button{
 
     width:100%;
@@ -17,7 +19,7 @@
 
     border:none;
 
-    border-radius:10px;
+    border-radius:12px;
 
     font-size:16px;
 
@@ -28,91 +30,151 @@
 }
 
 
+/* タイトル */
+
 #plannerTitle{
 
     text-align:center;
+
+    font-size:20px;
+
+    font-weight:bold;
 
     margin-bottom:20px;
 
 }
 
 
+
+/* =====================
+   時間軸
+===================== */
+
 .planner-row{
 
     display:flex;
 
-    min-height:60px;
+    min-height:30px;
 
-    border-bottom:1px solid #ddd;
+    border-bottom:
+    1px solid rgba(0,0,0,0.08);
 
 }
+
 
 
 .planner-time{
 
-    width:70px;
+    width:65px;
+
+    padding-top:5px;
+
+    font-size:13px;
 
     font-weight:bold;
 
-    color:#666;
-
-    padding-top:10px;
+    color:#777;
 
 }
+
 
 
 .planner-content{
 
     flex:1;
 
-    border-left:2px solid #ddd;
+    min-height:30px;
 
-    padding-left:15px;
+    border-left:
+
+    2px solid #ddd;
+
+    padding-left:10px;
 
     position:relative;
 
 }
+
+
+
+/* 現在時刻 */
+
+.planner-now{
+
+    color:#ff3366;
+
+    font-size:13px;
+
+    font-weight:bold;
+
+    margin:3px 0;
+
+}
+
+
+
+/* =====================
+   イベントカード
+===================== */
 
 
 .planner-event{
 
     position:relative;
 
-    overflow:hidden;
-
     box-sizing:border-box;
 
     padding:12px;
 
-    margin:10px 0;
+    margin:8px 5px 8px 0;
 
-    border-radius:12px;
+    border-radius:14px;
+
+    overflow:hidden;
+
+    color:#333;
 
     background:#fff5fb;
 
+    box-shadow:
+
+    0 3px 8px rgba(0,0,0,0.15);
+
 }
+
+
+
+/* 終了済み */
 
 .finished-event{
 
-    opacity:.4;
+    opacity:0.45;
 
 }
 
 
-.planner-place{
 
-    font-size:13px;
+/* 時間 */
 
-    color:#666;
+.planner-event-time{
 
-    margin-top:3px;
+    font-size:16px;
+
+    font-weight:bold;
+
+    color:#555;
+
+    margin-bottom:6px;
 
 }
 
 
-.planner-now{
 
-    color:red;
+/* タイトル */
+
+.planner-event-title{
+
+    font-size:22px;
 
     font-weight:bold;
 
@@ -121,15 +183,53 @@
 }
 
 
+.planner-event-title strong{
+
+    color:#111;
+
+}
+
+
+
+/* 場所 */
+
+.planner-place{
+
+    font-size:16px;
+
+    color:#555;
+
+    margin-top:5px;
+
+}
+
+
+
+/* 同伴者 */
+
+.planner-companion{
+
+    font-size:16px;
+
+    color:#555;
+
+    margin-top:5px;
+
+}
+
+
+
 /* =====================
    思い出
 ===================== */
+
 
 #plannerMemory{
 
     margin-top:20px;
 
 }
+
 
 
 .memory-item{
@@ -147,6 +247,7 @@
 }
 
 
+
 .memory-item button{
 
     padding:6px 15px;
@@ -156,65 +257,5 @@
     border-radius:8px;
 
     cursor:pointer;
-
-}
-
-/* =====================
-   手帳予定カード文字修正
-===================== */
-
-.planner-event{
-
-    color:#333;
-
-}
-
-
-.planner-event strong{
-
-    color:#111;
-
-}
-
-
-.planner-place{
-
-    color:#555;
-
-}
-
-/* =====================
-   手帳イベント表示
-===================== */
-
-.planner-event{
-
-    padding:12px;
-    margin:10px 0;
-    border-radius:12px;
-
-}
-
-.planner-event-time{
-
-    font-size:20px;
-    color:#666;
-    margin-bottom:8px;
-
-}
-
-.planner-event-title{
-
-    font-size:22px;
-    font-weight:bold;
-    margin-bottom:10px;
-
-}
-
-.planner-place,
-.planner-companion{
-
-    font-size:16px;
-    margin-top:6px;
 
 }
