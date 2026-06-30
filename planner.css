@@ -112,29 +112,28 @@
 
     background-image:
 
-    /* 15分線 */
+    /* 30分線（00・30）*/
     repeating-linear-gradient(
         to bottom,
-        transparent 0,
-        transparent 19px,
-        rgba(255,255,255,.08) 20px
+        rgba(255,255,255,.22) 0px,
+        rgba(255,255,255,.22) 1px,
+        transparent 1px,
+        transparent 40px
     ),
 
-    /* 30分線 */
+    /* 15分線（15・45）*/
     repeating-linear-gradient(
         to bottom,
-        transparent 0,
-        transparent 39px,
-        rgba(255,255,255,.18) 40px
+        transparent 20px,
+        rgba(255,255,255,.08) 20px,
+        rgba(255,255,255,.08) 21px,
+        transparent 21px,
+        transparent 40px
     );
 
     z-index:0;
 
 }
-
-
-
-
 /* =====================
    現在時刻
 ===================== */
