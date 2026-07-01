@@ -142,7 +142,7 @@ ${String(hour).padStart(2,"0")}:${String(min).padStart(2,"0")}
 // 時間線を描画
 for(let i=0; i<96; i++){
 
-    const top = i * 20;
+const top = 40 + (i * 20);
 
     if(i % 2 === 0){
 
