@@ -88,7 +88,8 @@
 }
 
 /* 予定配置エリア */
-.planner-board{
+.planner-board
+{
 
     flex:1;
 
@@ -205,20 +206,25 @@
 
     right:0;
 
-    width:18px;
+    width:0;
 
-    height:18px;
+    height:0;
 
-    background:rgba(255,255,255,0.85);
+    border-style:solid;
 
-    transform:
-        translate(9px,-9px)
-        rotate(45deg);
+    border-width:0 0 18px 18px;
 
-    box-shadow:
-        -2px 2px 4px rgba(0,0,0,0.18);
+    border-color:
+        transparent
+        transparent
+        rgba(255,255,255,.85)
+        transparent;
+
+    filter:drop-shadow(-1px 2px 2px rgba(0,0,0,.18));
 
 }
+
+
 /* 終了済み */
 
 .finished-event{
