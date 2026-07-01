@@ -139,6 +139,33 @@ ${String(hour).padStart(2,"0")}:${String(min).padStart(2,"0")}
 
 `;
 
+// 時間線を描画
+for(let i=0; i<96; i++){
+
+    const top = i * 20;
+
+    if(i % 2 === 0){
+
+        html += `
+<div
+class="planner-line planner-line-major"
+style="top:${top}px;">
+</div>
+`;
+
+    }else{
+
+        html += `
+<div
+class="planner-line planner-line-minor"
+style="top:${top}px;">
+</div>
+`;
+
+    }
+
+}
+
 
 
     // 現在時刻ライン

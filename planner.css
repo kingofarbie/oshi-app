@@ -100,40 +100,32 @@
 
 }
 
-.planner-board::before{
-
-    content:"";
+.planner-line{
 
     position:absolute;
 
-    inset:0;
+    left:0;
+
+    right:0;
 
     pointer-events:none;
 
-    background-image:
+}
 
-    /* 30分線（00・30）*/
-    repeating-linear-gradient(
-        to bottom,
-        transparent 20px,
-        rgba(255,255,255,.08) 20px,
-        rgba(255,255,255,.08) 21px,
-        transparent 21px,
-        transparent 40px
-    ),
+.planner-line-major{
 
-    /* 15分線（15・45）*/
-    repeating-linear-gradient(
-        to bottom,
-        rgba(255,255,255,.22) 0px,
-        rgba(255,255,255,.22) 1px,
-        transparent 1px,
-        transparent 40px
-    );
-
-    z-index:0;
+    border-top:1px solid rgba(255,255,255,.22);
 
 }
+
+.planner-line-minor{
+
+    border-top:1px solid rgba(255,255,255,.08);
+
+}
+
+
+
 /* =====================
    現在時刻
 ===================== */
