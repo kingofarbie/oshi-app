@@ -174,9 +174,8 @@ style="top:${top}px;">
         date===todayString
     ){
 
-        const top =
-            currentMinutes * scale;
-
+const top =
+    15 + (currentMinutes * scale);
 
         html += `
 
