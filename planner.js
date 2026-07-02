@@ -225,9 +225,8 @@ top:${top}px;
 
 
 
-        const top =
-            startMinutes * scale;
-
+const top =
+    15 + (startMinutes * scale);
 
 
         const height =
