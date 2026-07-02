@@ -1075,33 +1075,19 @@ function displayHomeSchedule(){
 
 
 
-    const weekList =
-        events.filter(
-            e=>{
+const weekList =
+    events.filter(
+        e=>{
 
-                const d=eventDate(e);
+            const d = eventDate(e);
 
-                return d >= weekStart
+            return d >= tomorrow
                 &&
                 d < nextWeekStart;
 
-            }
-        );
+        }
+    );
 
-
-
-    const nextWeekList =
-        events.filter(
-            e=>{
-
-                const d=eventDate(e);
-
-                return d >= nextWeekStart
-                &&
-                d < nextWeekEnd;
-
-            }
-        );
 
 
 
@@ -1149,10 +1135,6 @@ function displayHomeSchedule(){
     );
 
 
-    render(
-        'next-week-schedule',
-        nextWeekList
-    );
 
 }
 
@@ -1563,6 +1545,10 @@ async function(){
     updatePlanDisplay();
 
     displayPlans();
+    
+    displayCountdown();
+
+
 
 };
 
@@ -1840,4 +1826,74 @@ function changePlan(plan){
 
     displayPlans();
 
+}
+
+
+function displayCountdown(){
+
+    const box = document.getElementById("countdown-card");
+    if(!box) return;
+
+    const now = new Date();
+
+    const events = db.load().events
+        .filter(e => e.start)
+        .sort((a,b)=>new Date(a.start)-new Date(b.start));
+
+    const next = events.find(e=>new Date(e.end || e.start) > now);
+
+    if(!next){
+        box.innerHTML = "予定はありません";
+        return;
+    }
+
+    const start = new Date(next.start);
+
+    const diff = start - now;
+
+    const days = Math.floor(diff / 86400000);
+    const hours = Math.floor((diff % 86400000)/3600000);
+    const mins = Math.floor((diff % 3600000)/60000);
+
+    let text="";
+
+    if(days>=5){
+
+        text="イベントまでまだあります";
+
+    }else if(days>=1){
+
+        text=`あと ${days} 日`;
+
+    }else if(diff>0){
+
+        text=`あと ${hours}時間 ${mins}分`;
+
+    }else{
+
+        text="🎉 開催中";
+
+    }
+
+    const category=getCategoryInfo(next.category);
+
+    box.innerHTML=`
+        <div style="font-size:28px;font-weight:bold;margin-bottom:10px;">
+            ${text}
+        </div>
+
+        <div>
+            ${category?.icon || "📌"} ${next.title}
+        </div>
+
+        <div style="margin-top:6px;font-size:13px;">
+            📅 ${next.start.replace("T"," ")}
+        </div>
+
+        ${
+            next.place
+            ? `<div style="margin-top:4px;">📍 ${next.place}</div>`
+            : ""
+        }
+    `;
 }
