@@ -1840,7 +1840,9 @@ function displayCountdown(){
         .filter(e => e.start)
         .sort((a,b)=>new Date(a.start)-new Date(b.start));
 
-    const next = events.find(e=>new Date(e.end || e.start) > now);
+const next = events.find(
+    e => new Date(e.start) > now
+);
 
     if(!next){
         box.innerHTML = "予定はありません";
