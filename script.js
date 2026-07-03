@@ -1834,68 +1834,89 @@ function displayCountdown(){
     const box = document.getElementById("countdown-card");
     if(!box) return;
 
-    const now = new Date();
+    function update(){
 
-    const events = db.load().events
-        .filter(e => e.start)
-        .sort((a,b)=>new Date(a.start)-new Date(b.start));
+        const now = new Date();
 
-const next = events.find(
-    e => new Date(e.start) > now
-);
+        const events = db.load().events
+            .filter(e => e.start)
+            .sort((a,b)=>new Date(a.start)-new Date(b.start));
 
-    if(!next){
-        box.innerHTML = "予定はありません";
-        return;
-    }
+        const next = events.find(e=>new Date(e.start) > now);
 
-    const start = new Date(next.start);
+        if(!next){
 
-    const diff = start - now;
-
-    const days = Math.floor(diff / 86400000);
-    const hours = Math.floor((diff % 86400000)/3600000);
-    const mins = Math.floor((diff % 3600000)/60000);
-
-    let text="";
-
-    if(days>=5){
-
-        text="イベントまでまだあります";
-
-    }else if(days>=1){
-
-        text=`あと ${days} 日`;
-
-    }else if(diff>0){
-
-        text=`あと ${hours}時間 ${mins}分`;
-
-    }else{
-
-        text="🎉 開催中";
-
-    }
-
-    const category=getCategoryInfo(next.category);
-
-    box.innerHTML=`
-        <div style="font-size:28px;font-weight:bold;margin-bottom:10px;">
-            ${text}
-        </div>
-
-        <div>
-            ${category?.icon || "📌"} ${next.title}
-        </div>
-
-        <div style="margin-top:6px;font-size:13px;">
-            📅 ${next.start.replace("T"," ")}
-        </div>
-
-        ${
-            next.place
-            ? `<div style="margin-top:4px;">📍 ${next.place}</div>`
-            : ""
+            box.innerHTML = `
+                <div style="font-size:22px;">
+                    📭 今後の予定はありません
+                </div>
+            `;
+            return;
         }
-    `;
+
+        const start = new Date(next.start);
+
+        const diff = start - now;
+
+        let text = "";
+
+        if(diff <= 0){
+
+            text = "🎉 開催中";
+
+        }else{
+
+            const totalMinutes = Math.floor(diff/60000);
+
+            const days = Math.floor(totalMinutes/1440);
+            const hours = Math.floor((totalMinutes%1440)/60);
+            const mins = totalMinutes%60;
+
+            if(days>0){
+
+                text = `あと ${days}日 ${hours}時間`;
+
+            }else if(hours>0){
+
+                text = `あと ${hours}時間 ${mins}分`;
+
+            }else{
+
+                text = `あと ${mins}分`;
+
+            }
+
+        }
+
+        const category = getCategoryInfo(next.category);
+
+        box.innerHTML = `
+            <div style="font-size:28px;font-weight:bold;margin-bottom:12px;">
+                ${text}
+            </div>
+
+            <div style="font-size:20px;">
+                ${category?.icon || "📌"} ${next.title}
+            </div>
+
+            <div style="margin-top:10px;">
+                📅 ${next.start.replace("T"," ")}
+            </div>
+
+            ${next.place ? `
+            <div style="margin-top:6px;">
+                📍 ${next.place}
+            </div>` : ""}
+        `;
+
+    }
+
+    update();
+
+    if(window.countdownTimer){
+        clearInterval(window.countdownTimer);
+    }
+
+    window.countdownTimer = setInterval(update,60000);
+
 }
