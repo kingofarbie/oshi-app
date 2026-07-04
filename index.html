@@ -841,6 +841,19 @@ onclick="switchTab('settingsPage',event)">
 <script src="update.js"></script>
 <script src="script.js"></script>
 
+<script>
+if ("serviceWorker" in navigator) {
+
+    navigator.serviceWorker.register("./service-worker.js")
+    .then(() => {
+
+        console.log("Cache Service Worker OK");
+
+    });
+
+}
+</script>
+
 </body>
 
 </html>
