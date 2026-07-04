@@ -685,72 +685,60 @@ function openEventForm(){
 
 function saveEvent(){
 
+    const data = {
 
-const data = {
+        category:
+        document.getElementById(
+            'event-category'
+        ).value,
 
-    category:
-    document.getElementById(
-        'event-category'
-    ).value,
+        title:
+        document.getElementById(
+            'event-title'
+        ).value,
 
+        start:
+        document.getElementById(
+            'event-start'
+        ).value,
 
-    title:
-    document.getElementById(
-        'event-title'
-    ).value,
+        end:
+        document.getElementById(
+            'event-end'
+        ).value,
 
-
-    date:
-    document.getElementById(
-        'event-date'
-    ).value,
-
-
-    start:
-    document.getElementById(
-        'event-start'
-    ).value,
-
-
-    end:
-    document.getElementById(
-        'event-end'
-    ).value,
-
-
-    place:
-    document.getElementById(
-        'event-place'
-    ).value,
+        place:
+        document.getElementById(
+            'event-place'
+        ).value,
 
         meeting:
         document.getElementById(
             'meeting-time'
         ).value,
 
-
         companion:
         document.getElementById(
             'companions'
         ).value,
-
 
         map:
         document.getElementById(
             'map-url'
         ).value,
 
-
         ticket:
         document.getElementById(
             'ticket-url'
-        ).value
+        ).value,
 
+        // カレンダー表示用の日付は開始日時から自動生成
+        date:
+        document.getElementById(
+            'event-start'
+        ).value.split("T")[0]
 
     };
-
-
-
 
     if(!data.title){
 
@@ -762,46 +750,49 @@ const data = {
 
     }
 
+    if(!data.start){
 
+        alert(
+            "開始日時を入力してください"
+        );
 
-
-if(editingEventId){
-
-    data.id = editingEventId;
-
-    db.updateEvent(data);
-
-    editingEventId = null;
-
-}else{
-
-    if(!db.addEvent(data)){
         return;
+
     }
 
+    if(editingEventId){
+
+        data.id = editingEventId;
+
+        db.updateEvent(data);
+
+        editingEventId = null;
+
+    }else{
+
+        if(!db.addEvent(data)){
+            return;
+        }
+
+    }
+
+    closeEventModal();
+
+    clearEventForm();
+
+    displayEventList();
+
+    displaySelectedDateEvents();
+
+    renderCalendar();
+
+    displayHomeSchedule();
+
+    displayUpcomingEvents();
+
+    displayCountdown();
+
 }
-
-        closeEventModal();
-
-
-        clearEventForm();
-
-
-        displayEventList();
-
-
-        displaySelectedDateEvents();
-
-
-        renderCalendar();
-
-
-        displayHomeSchedule();
-        displayUpcomingEvents();
-
-
-}
-
 
 function clearEventForm(){
 

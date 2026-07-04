@@ -338,13 +338,6 @@ alert("予定を貼り付けました");
     selectedCalendarDate = date;
 
 
-    document
-    .getElementById(
-        'event-date'
-    )
-    .value =
-        date + "T12:00";
-
 
     // 日付変更時は予定追加フォームを閉じる
     const form =
@@ -547,18 +540,17 @@ function addEventFromMenu(){
 
     closeDayMenu();
 
-    selectedCalendarDate =
-        menuDate;
+    selectedCalendarDate = menuDate;
 
-    document.getElementById(
-        'event-date'
-    ).value =
-        menuDate + "T12:00";
+    const start = menuDate + "T18:00";
+    const end   = menuDate + "T21:00";
+
+    document.getElementById("event-start").value = start;
+    document.getElementById("event-end").value = end;
 
     openEventForm();
 
 }
-
 
 function editEventFromMenu(){
 
