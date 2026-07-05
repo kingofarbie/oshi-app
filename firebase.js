@@ -36,9 +36,10 @@ if ("serviceWorker" in navigator) {
 
                 console.log("FCMトークン:", token);
 
-                // ★Firestoreへ保存
-                firebase.firestore()
-                    .collection("devices")
+                // ★Firestore保存（修正版：ここが重要）
+                const db = firebase.firestore();
+
+                db.collection("devices")
                     .add({
                         token: token,
                         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
