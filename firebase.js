@@ -29,15 +29,34 @@ if ("serviceWorker" in navigator) {
             });
 
         })
+
         .then(function(token) {
 
             if (token) {
+
                 console.log("FCMトークン:", token);
+
+                // ★Firestoreへ保存
+                firebase.firestore()
+                    .collection("devices")
+                    .add({
+                        token: token,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        platform: navigator.userAgent
+                    })
+                    .then(function() {
+                        console.log("Firestore保存成功");
+                    })
+                    .catch(function(err) {
+                        console.error("Firestore保存失敗:", err);
+                    });
+
             } else {
                 console.log("FCMトークン取得できませんでした");
             }
 
         })
+
         .catch(function(err) {
 
             console.error("Firebaseエラー:", err);
@@ -45,5 +64,3 @@ if ("serviceWorker" in navigator) {
         });
 
 }
-
-
