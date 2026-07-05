@@ -819,37 +819,35 @@ onclick="switchTab('settingsPage',event)">
 
 
 
-
-
+<!-- Firebase（順番固定・完成版） -->
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
-
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging-compat.js"></script>
 
-
-
-
+<!-- あなたのFirebase本体 -->
 <script src="firebase.js?v=3"></script>
+
+<!-- その他機能 -->
 <script src="theme.js"></script>
 <script src="category.js"></script>
 <script src="calendar.js"></script>
-
 <script src="planner.js"></script>
-
 <script src="update.js"></script>
 <script src="script.js"></script>
 
+<!-- Service Worker -->
 <script>
 if ("serviceWorker" in navigator) {
 
     navigator.serviceWorker.register("./service-worker.js")
     .then(() => {
-
         console.log("Cache Service Worker OK");
-
     });
 
 }
 </script>
+
 
 </body>
 
