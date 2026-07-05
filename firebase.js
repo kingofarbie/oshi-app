@@ -1,4 +1,3 @@
-
 const firebaseConfig = {
   apiKey: "AIzaSyAw4krU9eVoUQegnxTCS02G_rKFCT9HlA0",
   authDomain: "oshi-app-737c0.firebaseapp.com",
@@ -8,80 +7,43 @@ const firebaseConfig = {
   appId: "1:545181069543:web:33809ce86bedd3b28d7242"
 };
 
-// Firebase初期化
-
-firebase.initializeApp(firebaseConfig);
-
-const messaging =
-    firebase.messaging();
-
-
-
-    if ('serviceWorker' in navigator) {
-
-    navigator.serviceWorker
-    .register('./firebase-messaging-sw.js')
-
-    .then(function(reg){
-
-        console.log(
-            'Service Worker登録成功',
-            reg
-        );
-
-    })
-
-    .catch(function(err){
-
-        console.error(
-            'Service Worker登録失敗',
-            err
-        );
-
-    });
-
+// Firebase初期化（重複防止）
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
 }
 
+const messaging = firebase.messaging();
 
-if ('serviceWorker' in navigator) {
+// Service Worker登録＋FCMトークン取得
+if ("serviceWorker" in navigator) {
 
     navigator.serviceWorker
-    .register('./firebase-messaging-sw.js')
+        .register("./firebase-messaging-sw.js")
+        .then(function(reg) {
 
-    .then(function(reg){
+            console.log("Firebase Service Worker登録成功");
 
-        console.log(
-            'Service Worker登録成功'
-        );
+            return messaging.getToken({
+                vapidKey: "BN1-_Xmg_3Ghv0gk1sJ_HuQPcl33BoHA8RzMbI0pKC3Shvet0-eLI6WI6MgKI7CQylJy7yCRBgtSpUmwcLPmtn0",
+                serviceWorkerRegistration: reg
+            });
 
-        return messaging.getToken({
+        })
+        .then(function(token) {
 
-            vapidKey:
-            "BN1-_Xmg_3Ghv0gk1sJ_HuQPcl33BoHA8RzMbI0pKC3Shvet0-eLI6WI6MgKI7CQylJy7yCRBgtSpUmwcLPmtn0",
+            if (token) {
+                console.log("FCMトークン:", token);
+            } else {
+                console.log("FCMトークン取得できませんでした");
+            }
 
-            serviceWorkerRegistration:
-            reg
+        })
+        .catch(function(err) {
+
+            console.error("Firebaseエラー:", err);
 
         });
 
-    })
-
-    .then(function(token){
-
-        console.log(
-            "FCMトークン:",
-            token
-        );
-
-    })
-
-    .catch(function(err){
-
-        console.error(
-            'FCMエラー:',
-            err
-        );
-
-    });
-
 }
+
+

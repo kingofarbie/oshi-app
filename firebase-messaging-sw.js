@@ -1,86 +1,31 @@
-// Firebase Cloud Messaging Service Worker
+importScripts("https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js");
+importScripts("https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging-compat.js");
 
+firebase.initializeApp({
+    apiKey: "AIzaSyAw4krU9eVoUQegnxTCS02G_rKFCT9HlA0",
+    authDomain: "oshi-app-737c0.firebaseapp.com",
+    projectId: "oshi-app-737c0",
+    storageBucket: "oshi-app-737c0.firebasestorage.app",
+    messagingSenderId: "545181069543",
+    appId: "1:545181069543:web:33809ce86bedd3b28d7242"
+});
 
-importScripts(
-  "https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"
-);
+const messaging = firebase.messaging();
 
-importScripts(
-  "https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging-compat.js"
-);
+messaging.onBackgroundMessage(function(payload) {
 
+    console.log("通知受信:", payload);
 
-
-const firebaseConfig = {
-  apiKey: "AIzaSyAw4krU9eVoUQegnxTCS02G_rKFCT9HlA0",
-  authDomain: "oshi-app-737c0.firebaseapp.com",
-  projectId: "oshi-app-737c0",
-  storageBucket: "oshi-app-737c0.firebasestorage.app",
-  messagingSenderId: "545181069543",
-  appId: "1:545181069543:web:33809ce86bedd3b28d7242"
-};
-
-firebase.initializeApp(firebaseConfig);
-
-
-const messaging =
-    firebase.messaging();
-
-
-    
-/* =====================
-   一時コメントアウト
-
-
-messaging.onBackgroundMessage(
-    function(payload){
-
-        console.log(
-            "バックグラウンド通知:",
-            payload
-        );
-
+    if (payload.notification) {
 
         self.registration.showNotification(
             payload.notification.title,
             {
-                body:
-                payload.notification.body
+                body: payload.notification.body,
+                icon: "/icon-192.png"
             }
         );
 
     }
-);
 
-===================== */
-
-
-
-messaging.onBackgroundMessage(
-    function(payload){
-
-        console.log(
-            "FCM受信:",
-            payload
-        );
-
-
-        const title =
-            payload.notification?.title
-            || "推し活手帳";
-
-
-        const body =
-            payload.notification?.body
-            || "通知テストです🎉";
-
-
-        self.registration.showNotification(
-            title,
-            {
-                body: body
-            }
-        );
-
-    }
-);
+});

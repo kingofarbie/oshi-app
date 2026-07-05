@@ -794,6 +794,7 @@ function saveEvent(){
 
 }
 
+
 function clearEventForm(){
 
 
