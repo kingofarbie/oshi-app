@@ -1264,22 +1264,44 @@ function toggleNotification(type){
 
     if(!data.settings.notifications){
 
-        data.settings.notifications = {
-
-            event:false,
-
-            before:false,
-
-            time:"20:00"
-
-        };
+        data.settings.notifications = {};
 
     }
 
 
+    const n =
+        data.settings.notifications;
 
-    data.settings.notifications[type] =
-        !data.settings.notifications[type];
+
+    if(type === "start"){
+
+        n.start =
+            !n.start;
+
+
+        if(!n.startMinutes){
+
+            n.startMinutes = 5;
+
+        }
+
+    }
+
+
+    else if(type === "before"){
+
+        n.before =
+            !n.before;
+
+    }
+
+
+    else if(type === "today"){
+
+        n.today =
+            !n.today;
+
+    }
 
 
 
@@ -1289,6 +1311,7 @@ function toggleNotification(type){
     updateNotificationButtons();
 
 }
+
 
 function updateNotificationButtons(){
 
@@ -1307,17 +1330,24 @@ function updateNotificationButtons(){
         data.settings.notifications;
 
 
+
     const beforeBtn =
         document.getElementById(
             "beforeNotificationBtn"
         );
-    
-    
+
 
     const todayBtn =
         document.getElementById(
             "todayNotificationBtn"
         );
+
+
+    const startBtn =
+        document.getElementById(
+            "startNotificationBtn"
+        );
+
 
 
     if(beforeBtn){
@@ -1326,7 +1356,8 @@ function updateNotificationButtons(){
             n.before ? "ON" : "OFF";
 
     }
-    
+
+
     if(todayBtn){
 
         todayBtn.textContent =
@@ -1335,74 +1366,125 @@ function updateNotificationButtons(){
     }
 
 
+    if(startBtn){
 
-const beforeTime =
-    document.getElementById(
-        "beforeNotificationTime"
-    );
+        startBtn.textContent =
+            n.start ? "ON" : "OFF";
 
-if(beforeTime){
+    }
 
-    beforeTime.value =
-        n.beforeTime || "20:00";
+
+
+
+
+    const beforeTime =
+        document.getElementById(
+            "beforeNotificationTime"
+        );
+
+
+    if(beforeTime){
+
+        beforeTime.value =
+            n.beforeTime || "20:00";
+
+    }
+
+
+
+
+    const todayTime =
+        document.getElementById(
+            "todayNotificationTime"
+        );
+
+
+    if(todayTime){
+
+        todayTime.value =
+            n.todayTime || "09:00";
+
+    }
+
+
+
+
+    const startMinutes =
+        document.getElementById(
+            "startNotificationMinutes"
+        );
+
+
+    if(startMinutes){
+
+        startMinutes.value =
+            n.startMinutes || 5;
+
+    }
+
+
 
 }
 
 
-const todayTime =
-    document.getElementById(
-        "todayNotificationTime"
-    );
-
-if(todayTime){
-
-    todayTime.value =
-        n.todayTime || "09:00";
-
-}
-
-
-    
-
-}
 
 document.addEventListener(
 "change",
 function(e){
 
 
-  if(
-    e.target.id ===
-    "beforeNotificationTime"
-){
+    if(
+        e.target.id ===
+        "beforeNotificationTime"
+    ){
 
-    const data = db.load();
+        const data = db.load();
 
-    data.settings.notifications.beforeTime =
-        e.target.value;
+        data.settings.notifications.beforeTime =
+            e.target.value;
 
-    db.save(data);
+        db.save(data);
 
-}
+    }
 
 
-if(
-    e.target.id ===
-    "todayNotificationTime"
-){
 
-    const data = db.load();
 
-    data.settings.notifications.todayTime =
-        e.target.value;
+    if(
+        e.target.id ===
+        "todayNotificationTime"
+    ){
 
-    db.save(data);
+        const data = db.load();
 
-}  
+        data.settings.notifications.todayTime =
+            e.target.value;
+
+        db.save(data);
+
+    }
+
+
+
+
+    if(
+        e.target.id ===
+        "startNotificationMinutes"
+    ){
+
+        const data = db.load();
+
+
+        data.settings.notifications.startMinutes =
+            Number(e.target.value);
+
+
+        db.save(data);
+
+    }
 
 
 });
-
 
 
 /* =====================

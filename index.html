@@ -570,6 +570,7 @@ onclick="addSelectedOshi()">
 class="setting-content"
 style="display:none;">
 
+
 <p>
 📅 前日通知
 </p>
@@ -610,13 +611,58 @@ type="time"
 id="todayNotificationTime"
 value="09:00">
 
+
+
+<hr>
+
+
+
+<p>
+⏰ 開始前通知
+</p>
+
+<button
+onclick="toggleNotification('start')"
+id="startNotificationBtn">
+
+OFF
+
+</button>
+
+
+<select
+id="startNotificationMinutes"
+onchange="saveStartNotificationMinutes()">
+
+<option value="5">
+5分前
+</option>
+
+<option value="10">
+10分前
+</option>
+
+<option value="15">
+15分前
+</option>
+
+<option value="30">
+30分前
+</option>
+
+<option value="60">
+1時間前
+</option>
+
+</select>
+
+
 </div>
 
 
 
 
 </div>
-
 <!-- =====================
      カテゴリ管理
 ===================== -->
