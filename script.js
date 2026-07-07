@@ -1418,7 +1418,6 @@ async function(){
      "planner.html"
  );
 
-
     initializeCategories();
 
 
