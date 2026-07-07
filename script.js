@@ -1502,6 +1502,8 @@ async function(){
     displayPlans();
     
     displayCountdown();
+    
+    await initNotification();
 
 
 
