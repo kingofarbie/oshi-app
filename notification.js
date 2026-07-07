@@ -29,6 +29,7 @@ function saveNotified(list){
 }
 
 
+
 /* =====================
    通知許可
 ===================== */
@@ -69,13 +70,15 @@ async function initNotification(){
     }
 
 
-console.log(
-    "通知許可OK"
-);
+    console.log(
+        "通知許可OK"
+    );
 
-startNotificationWatcher();
+
+    startNotificationWatcher();
 
 }
+
 
 
 /* =====================
@@ -114,7 +117,6 @@ async function sendNotification(
     );
 
 }
-
 
 
 /* =====================
@@ -198,13 +200,18 @@ async function checkEventNotification(){
 
 
         /*
-          開始通知
-          5分以内
+          開始前通知
         */
 
+        const startMinutes =
+            settings.startMinutes || 5;
+
+
+
         if(
+            settings.start &&
             diffMinutes >=0 &&
-            diffMinutes <=5
+            diffMinutes <= startMinutes
         ){
 
             if(
@@ -216,9 +223,9 @@ async function checkEventNotification(){
 
                 await sendNotification(
 
-                    "🔔 開始時間です",
+                    "🔔 開始前のお知らせ",
 
-                    `${event.title} が始まります`,
+                    `${event.title} が ${startMinutes}分後に始まります`,
 
                     `start_${event.id}`
 
@@ -233,6 +240,7 @@ async function checkEventNotification(){
             }
 
         }
+
 
 
 
