@@ -69,13 +69,13 @@ async function initNotification(){
     }
 
 
-    console.log(
-        "通知許可OK"
-    );
+console.log(
+    "通知許可OK"
+);
 
+startNotificationWatcher();
 
 }
-
 
 
 /* =====================
