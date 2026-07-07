@@ -5,13 +5,32 @@ console.log("notification.js 読み込み成功");
    通知済み管理
 ===================== */
 
-let notifiedEvents = JSON.parse(
-    localStorage.getItem("notifiedEvents") || "[]"
-);
+const NOTIFIED_KEY = "oshi_notification_history";
+
+
+function getNotified(){
+
+    return JSON.parse(
+        localStorage.getItem(
+            NOTIFIED_KEY
+        ) || "[]"
+    );
+
+}
+
+
+function saveNotified(list){
+
+    localStorage.setItem(
+        NOTIFIED_KEY,
+        JSON.stringify(list)
+    );
+
+}
 
 
 /* =====================
-   通知初期化
+   通知許可
 ===================== */
 
 async function initNotification(){
@@ -21,7 +40,9 @@ async function initNotification(){
 
     if(!("Notification" in window)){
 
-        console.log("通知非対応");
+        console.log(
+            "通知非対応"
+        );
 
         return;
 
@@ -35,47 +56,37 @@ async function initNotification(){
     }
 
 
-    if(Notification.permission !== "granted"){
+    console.log(
+        "通知状態:",
+        Notification.permission
+    );
 
-        console.log("通知許可なし");
+
+    if(Notification.permission !== "granted"){
 
         return;
 
     }
 
 
-    console.log("通知許可OK");
-
-
-    // すぐ確認
-    checkEventNotification();
-
-
-    // 1分ごと確認
-    setInterval(
-        checkEventNotification,
-        60000
+    console.log(
+        "通知許可OK"
     );
+
 
 }
 
 
 
-
 /* =====================
-   通知表示
+   通知送信
 ===================== */
 
-async function sendNotification(title,body,id){
-
-    if(
-        notifiedEvents.includes(id)
-    ){
-
-        return;
-
-    }
-
+async function sendNotification(
+    title,
+    body,
+    tag
+){
 
     const registration =
         await navigator.serviceWorker.ready;
@@ -91,7 +102,7 @@ async function sendNotification(title,body,id){
 
             badge:"./icon-192.png",
 
-            tag:String(id),
+            tag:tag,
 
             vibrate:[
                 200,
@@ -102,26 +113,50 @@ async function sendNotification(title,body,id){
         }
     );
 
+}
 
-    notifiedEvents.push(id);
 
 
-    localStorage.setItem(
-        "notifiedEvents",
-        JSON.stringify(notifiedEvents)
+/* =====================
+   通知済みチェック
+===================== */
+
+function alreadyNotified(id,type){
+
+    const list =
+        getNotified();
+
+
+    return list.includes(
+        `${id}_${type}`
     );
 
 }
 
 
 
+function markNotified(id,type){
+
+    const list =
+        getNotified();
+
+
+    list.push(
+        `${id}_${type}`
+    );
+
+
+    saveNotified(list);
+
+}
+
 
 
 /* =====================
-   イベント確認
+   通知チェック本体
 ===================== */
 
-function checkEventNotification(){
+async function checkEventNotification(){
 
 
     const data =
@@ -133,7 +168,7 @@ function checkEventNotification(){
 
 
     const settings =
-        data.settings?.notifications || {};
+        data.settings.notifications || {};
 
 
     const now =
@@ -141,49 +176,63 @@ function checkEventNotification(){
 
 
 
-    events.forEach(event=>{
+    events.forEach(async event=>{
 
 
-        if(!event.start){
-
+        if(!event.start)
             return;
-
-        }
 
 
 
         const start =
-            new Date(event.start);
+            new Date(
+                event.start
+            );
+
+
+        const diffMinutes =
+            (start - now)
+            /
+            60000;
 
 
 
         /*
           開始通知
-          開始時間ぴったり
+          5分以内
         */
 
-        const diff =
-            (start - now) / 60000;
-
-
-
         if(
-            diff >=0 &&
-            diff <1
+            diffMinutes >=0 &&
+            diffMinutes <=5
         ){
 
-            sendNotification(
+            if(
+                !alreadyNotified(
+                    event.id,
+                    "start"
+                )
+            ){
 
-                "🔔 開始時間です",
+                await sendNotification(
 
-                `${event.title} が始まります`,
+                    "🔔 開始時間です",
 
-                event.id + "_start"
+                    `${event.title} が始まります`,
 
-            );
+                    `start_${event.id}`
+
+                );
+
+
+                markNotified(
+                    event.id,
+                    "start"
+                );
+
+            }
 
         }
-
 
 
 
@@ -192,56 +241,95 @@ function checkEventNotification(){
           当日通知
         */
 
-
-        if(settings.today){
-
-
-            const todayTime =
-                settings.todayTime || "09:00";
+        const today =
+            new Date(
+                start
+            );
 
 
-            const target =
-                new Date(start);
+        const sameDay =
+            now.getFullYear()
+            === today.getFullYear()
+            &&
+            now.getMonth()
+            === today.getMonth()
+            &&
+            now.getDate()
+            === today.getDate();
+
+
+
+        if(
+            settings.today &&
+            sameDay
+        ){
+
+
+            const time =
+                settings.todayTime
+                ||
+                "09:00";
 
 
             const [
                 h,
                 m
             ] =
-            todayTime.split(":");
+            time.split(":");
 
 
-            target.setHours(
-                Number(h),
-                Number(m),
-                0,
-                0
-            );
+            const notifyTime =
+                new Date(
+                    today.getFullYear(),
+                    today.getMonth(),
+                    today.getDate(),
+                    h,
+                    m
+                );
 
 
 
-            const todayDiff =
-                (target-now)/60000;
+            const gap =
+                (now-notifyTime)
+                /
+                60000;
 
 
 
             if(
-                todayDiff >=0 &&
-                todayDiff <1
+                gap >=0 &&
+                gap <=5
             ){
 
-                sendNotification(
 
-                    "📅 今日の予定",
+                if(
+                    !alreadyNotified(
+                        event.id,
+                        "today"
+                    )
+                ){
 
-                    `${event.title} があります`,
 
-                    event.id + "_today"
+                    await sendNotification(
 
-                );
+                        "📅 本日の予定",
+
+                        `${event.title} は今日です`,
+
+                        `today_${event.id}`
+
+                    );
+
+
+                    markNotified(
+                        event.id,
+                        "today"
+                    );
+
+
+                }
 
             }
-
 
         }
 
@@ -253,22 +341,17 @@ function checkEventNotification(){
           前日通知
         */
 
-
-        if(settings.before){
-
-
-            const beforeTime =
-                settings.beforeTime || "20:00";
+        if(
+            settings.before
+        ){
 
 
-
-            const target =
+            const before =
                 new Date(start);
 
 
-
-            target.setDate(
-                target.getDate()-1
+            before.setDate(
+                before.getDate()-1
             );
 
 
@@ -277,48 +360,93 @@ function checkEventNotification(){
                 bh,
                 bm
             ] =
-            beforeTime.split(":");
+            (
+                settings.beforeTime
+                ||
+                "20:00"
+            )
+            .split(":");
 
 
 
-            target.setHours(
-                Number(bh),
-                Number(bm),
+            before.setHours(
+                bh,
+                bm,
                 0,
                 0
             );
 
 
 
-            const beforeDiff =
-                (target-now)/60000;
+            const gap =
+                (now-before)
+                /
+                60000;
 
 
 
             if(
-                beforeDiff >=0 &&
-                beforeDiff <1
+                gap >=0 &&
+                gap <=5
             ){
 
 
-                sendNotification(
+                if(
+                    !alreadyNotified(
+                        event.id,
+                        "before"
+                    )
+                ){
 
-                    "🔔 明日の予定",
 
-                    `${event.title} は明日です`,
+                    await sendNotification(
 
-                    event.id + "_before"
+                        "📅 明日の予定",
 
-                );
+                        `${event.title} は明日です`,
 
+                        `before_${event.id}`
+
+                    );
+
+
+                    markNotified(
+                        event.id,
+                        "before"
+                    );
+
+
+                }
 
             }
-
 
         }
 
 
+
     });
 
+
+}
+
+
+
+
+/* =====================
+   自動チェック開始
+===================== */
+
+function startNotificationWatcher(){
+
+    checkEventNotification();
+
+
+    setInterval(
+
+        checkEventNotification,
+
+        60000
+
+    );
 
 }
