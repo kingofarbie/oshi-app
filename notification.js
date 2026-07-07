@@ -1,59 +1,34 @@
 console.log("notification.js 読み込み成功");
 
-/* =====================
-   Notification
-===================== */
-
-let notifiedEvents = [];
-
-/* =====================
-   通知許可
-===================== */
-
 async function initNotification(){
 
-    console.log("initNotification 開始");
-
     if(!("Notification" in window)){
-        console.log("このブラウザは通知に対応していません");
         return;
     }
 
-    console.log("通知状態:", Notification.permission);
-
     if(Notification.permission === "default"){
-
-        const permission = await Notification.requestPermission();
-
-        console.log("通知許可:", permission);
-
+        await Notification.requestPermission();
     }
 
-    // 5秒後にテスト通知
-    testNotification();
+    if(Notification.permission !== "granted"){
+        return;
+    }
+
+    // 5秒後にテスト
+    setTimeout(showTestNotification,5000);
 
 }
 
+async function showTestNotification(){
 
-/* =====================
-   テスト通知
-===================== */
+    const registration = await navigator.serviceWorker.ready;
 
-function testNotification(){
-
-    if(Notification.permission !== "granted"){
-        console.log("通知が許可されていません");
-        return;
-    }
-
-    setTimeout(function(){
-
-        new Notification("推し活手帳",{
-            body:"🎉 通知テスト成功です！"
-        });
-
-        console.log("テスト通知送信");
-
-    },5000);
+    registration.showNotification("推し活手帳",{
+        body:"Android通知テストです🎉",
+        icon:"./icon-192.png",
+        badge:"./icon-192.png",
+        tag:"test",
+        vibrate:[200,100,200]
+    });
 
 }
