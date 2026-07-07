@@ -59,7 +59,10 @@ const db = {
                     beforeTime:"20:00",
                     
                     today:false,
-                    todayTime:"09:00"
+                    todayTime:"09:00",
+                    
+                    start:false,
+                    startMinutes:5
 
                 }
             },
