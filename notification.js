@@ -29,4 +29,31 @@ async function initNotification(){
 
     }
 
+    // 5秒後にテスト通知
+    testNotification();
+
+}
+
+
+/* =====================
+   テスト通知
+===================== */
+
+function testNotification(){
+
+    if(Notification.permission !== "granted"){
+        console.log("通知が許可されていません");
+        return;
+    }
+
+    setTimeout(function(){
+
+        new Notification("推し活手帳",{
+            body:"🎉 通知テスト成功です！"
+        });
+
+        console.log("テスト通知送信");
+
+    },5000);
+
 }
