@@ -2070,16 +2070,19 @@ function displayCountdown() {
 ===================== */
 function openEventDetail(id){
 
-    alert("ID=" + id);
+alert("①");
 
-    const events = db.load().events;
+document.getElementById("detail-title").innerHTML = "...";
 
-    alert("件数=" + events.length);
+alert("②");
 
-    const event = events.find(e => e.id == id);
+document.getElementById("detail-content").innerHTML = "...";
 
-    alert(event ? "見つかった" : "見つからない");
+alert("③");
 
+document.getElementById("eventDetailModal").style.display = "block";
+
+alert("④");
 
 
     currentDetailEventId = id;
@@ -2214,7 +2217,6 @@ function openEventDetail(id){
         "eventDetailModal"
     ).style.display="block";
 
-    alert(document.getElementById("eventDetailModal"));
 
 }
 
