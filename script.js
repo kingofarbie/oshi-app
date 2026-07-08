@@ -1608,6 +1608,8 @@ async function(){
      "plannerContainer",
      "planner.html"
  );
+ 
+ alert(document.getElementById("detail-title"));
 
     initializeCategories();
 
