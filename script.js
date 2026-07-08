@@ -1231,7 +1231,8 @@ function displayTodayEvents(){
 
 <div
 class="notification-item"
-onclick="alert(${e.id})"
+onclick="openEventDetail(${e.id})">
+
 ${icon}
 <strong>
 ${e.title}
@@ -2067,8 +2068,10 @@ function displayCountdown() {
 /* =====================
    イベント詳細表示
 ===================== */
-
 function openEventDetail(id){
+
+        alert("ここまで来た");
+
 
     currentDetailEventId = id;
 
