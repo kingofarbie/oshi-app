@@ -1609,8 +1609,6 @@ async function(){
      "planner.html"
  );
  
- alert(document.getElementById("detail-title"));
-
     initializeCategories();
 
 
@@ -2072,6 +2070,7 @@ function displayCountdown() {
 ===================== */
 function openEventDetail(id){
 
+    alert("詳細画面");
 const event = db.load().events.find(e => e.id === id);
 
 if (!event) return;
