@@ -2072,24 +2072,11 @@ function displayCountdown() {
 ===================== */
 function openEventDetail(id){
 
-alert("①");
+const event = db.load().events.find(e => e.id === id);
 
-const title = document.getElementById("detail-title");
-alert("②");
-
-title.innerHTML = "テスト";
-
-alert("③");
-document.getElementById("eventDetailModal").style.display = "block";
-
-alert("④");
-
+if (!event) return;
 
     currentDetailEventId = id;
-
-
-    if(!event)
-        return;
 
     const category =
         getCategoryInfo(event.category);
