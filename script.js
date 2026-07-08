@@ -32,7 +32,7 @@ let oshiMaster = {
 };
 
 let selectedOshiId = null;
-
+let currentDetailEventId = null;
 
 
 /* =====================
@@ -2071,22 +2071,18 @@ function displayCountdown() {
 
 function openEventDetail(id){
 
+    currentDetailEventId = id;
 
     const event =
         db.load().events.find(
             e=>e.id===id
         );
 
-
     if(!event)
         return;
 
-
-
     const category =
         getCategoryInfo(event.category);
-
-
 
     document.getElementById(
         "detail-title"
@@ -2097,12 +2093,9 @@ function openEventDetail(id){
     ${event.title}
     `;
 
-
-
     document.getElementById(
         "detail-content"
     ).innerHTML =
-
 
     `
 
@@ -2110,22 +2103,25 @@ function openEventDetail(id){
     📅 ${event.date}
     </p>
 
-
-    <p>
-    ⏰ ${event.start || ""}
-    </p>
-
-
     ${
-        event.end
+        event.start
         ?
         `<p>
-        ～ ${event.end}
+        🕒 開始：${new Date(event.start).toLocaleString("ja-JP")}
         </p>`
         :
         ""
     }
 
+    ${
+        event.end
+        ?
+        `<p>
+        🕔 終了：${new Date(event.end).toLocaleString("ja-JP")}
+        </p>`
+        :
+        ""
+    }
 
     ${
         event.place
@@ -2137,6 +2133,15 @@ function openEventDetail(id){
         ""
     }
 
+    ${
+        event.meeting
+        ?
+        `<p>
+        🤝 集合：${event.meeting}
+        </p>`
+        :
+        ""
+    }
 
     ${
         event.companion
@@ -2148,36 +2153,55 @@ function openEventDetail(id){
         ""
     }
 
+    <div class="event-button-area">
 
-    ${
-        event.map
-        ?
-        `
-        <button onclick="location.href='${event.map}'">
-        🗺 地図
+        ${
+            event.map
+            ?
+            `
+            <button
+            class="map-btn"
+            onclick="location.href='${event.map}'">
+            🗺 地図
+            </button>
+            `
+            :
+            ""
+        }
+
+        ${
+            event.ticket
+            ?
+            `
+            <button
+            class="map-btn"
+            onclick="location.href='${event.ticket}'">
+            🎫 チケット
+            </button>
+            `
+            :
+            ""
+        }
+
+    </div>
+
+    <div class="event-button-area">
+
+        <button
+        class="edit-btn"
+        onclick="editCurrentEvent()">
+        ✏️ 編集
         </button>
-        `
-        :
-        ""
-    }
 
-
-    ${
-        event.ticket
-        ?
-        `
-        <button onclick="location.href='${event.ticket}'">
-        🎫 チケット
+        <button
+        class="event-delete-btn"
+        onclick="deleteCurrentEvent()">
+        🗑 削除
         </button>
-        `
-        :
-        ""
-    }
 
+    </div>
 
     `;
-
-
 
     document.getElementById(
         "eventDetailModal"
@@ -2186,11 +2210,41 @@ function openEventDetail(id){
 }
 
 
-
 function closeEventDetail(){
 
     document.getElementById(
         "eventDetailModal"
     ).style.display="none";
+
+}
+
+function editCurrentEvent(){
+
+    closeEventDetail();
+
+    selectEvent(currentDetailEventId);
+
+}
+
+function deleteCurrentEvent(){
+
+    if(!confirm("この予定を削除しますか？"))
+        return;
+
+    db.deleteEvent(currentDetailEventId);
+
+    closeEventDetail();
+
+    displayEventList();
+
+    renderCalendar();
+
+    displayHomeSchedule();
+
+    displayUpcomingEvents();
+
+    displayTodayEvents();
+
+    displayCountdown();
 
 }
