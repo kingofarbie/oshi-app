@@ -2070,15 +2070,16 @@ function displayCountdown() {
 ===================== */
 function openEventDetail(id){
 
-        alert("ここまで来た");
+    alert("ID=" + id);
 
-        console.log(document.getElementById("eventDetailModal"));
-console.log(document.getElementById("detail-title"));
-console.log(document.getElementById("detail-content"));
+    const events = db.load().events;
 
-alert(
-    document.getElementById("eventDetailModal") ? "モーダルあり" : "モーダルなし"
-);
+    alert("件数=" + events.length);
+
+    const event = events.find(e => e.id == id);
+
+    alert(event ? "見つかった" : "見つからない");
+
 
 
     currentDetailEventId = id;
