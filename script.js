@@ -1231,8 +1231,7 @@ function displayTodayEvents(){
 
 <div
 class="notification-item"
-onclick="openEventDetail(${e.id})">
-
+onclick="alert(${e.id})"
 ${icon}
 <strong>
 ${e.title}
