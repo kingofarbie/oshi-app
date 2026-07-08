@@ -2072,6 +2072,14 @@ function openEventDetail(id){
 
         alert("ここまで来た");
 
+        console.log(document.getElementById("eventDetailModal"));
+console.log(document.getElementById("detail-title"));
+console.log(document.getElementById("detail-content"));
+
+alert(
+    document.getElementById("eventDetailModal") ? "モーダルあり" : "モーダルなし"
+);
+
 
     currentDetailEventId = id;
 
