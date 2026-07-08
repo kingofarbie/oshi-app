@@ -792,6 +792,8 @@ function saveEvent(){
     displayHomeSchedule();
 
     displayUpcomingEvents();
+    
+    displayTodayEvents();
 
     displayCountdown();
 
@@ -982,6 +984,8 @@ function deleteEvent(id){
     renderCalendar();
 
     displayHomeSchedule();
+    
+    displayTodayEvents();
 
 }
 
@@ -1148,6 +1152,108 @@ function displayUpcomingEvents(){
     }).join("");
 
 }
+
+
+
+/* =====================
+   新着通知
+===================== */
+
+function displayTodayEvents(){
+
+    const box =
+        document.getElementById(
+            "today-events"
+        );
+
+    if(!box) return;
+
+
+    const now = new Date();
+
+
+    const events =
+        db.load().events
+        .filter(e=>{
+
+            if(!e.start)
+                return false;
+
+
+            const start =
+                new Date(e.start);
+
+
+            const diff =
+                start - now;
+
+
+            // 24時間以内の予定
+            return diff > 0 &&
+                   diff <= 86400000;
+
+        })
+        .sort(
+            (a,b)=>
+            new Date(a.start)
+            -
+            new Date(b.start)
+        );
+
+
+
+    if(events.length===0){
+
+        box.innerHTML =
+            "該当なし";
+
+        return;
+
+    }
+
+
+
+    box.innerHTML =
+    events.map(e=>{
+
+
+        const d =
+            new Date(e.start);
+
+
+        const icon =
+            getCategoryInfo(e.category)?.icon
+            ||
+            "📌";
+
+
+        return `
+
+<div
+class="notification-item"
+onclick="openEventDetail(${e.id})">
+
+${icon}
+<strong>
+${e.title}
+</strong>
+
+<br>
+
+⏰
+${d.toLocaleString(
+"ja-JP"
+)}
+
+</div>
+
+`;
+
+    }).join("");
+
+}
+
+
 
 /* =====================
    設定メニュー開閉
@@ -1575,6 +1681,8 @@ async function(){
     
     displayUpcomingEvents();
     
+    displayTodayEvents();
+    
     updateNotificationButtons();
     
     displayCategories();
@@ -1954,4 +2062,135 @@ function displayCountdown() {
             : ""
         }
     `;
+}
+
+
+/* =====================
+   イベント詳細表示
+===================== */
+
+function openEventDetail(id){
+
+
+    const event =
+        db.load().events.find(
+            e=>e.id===id
+        );
+
+
+    if(!event)
+        return;
+
+
+
+    const category =
+        getCategoryInfo(event.category);
+
+
+
+    document.getElementById(
+        "detail-title"
+    ).innerHTML =
+
+    `
+    ${category?.icon || "📌"}
+    ${event.title}
+    `;
+
+
+
+    document.getElementById(
+        "detail-content"
+    ).innerHTML =
+
+
+    `
+
+    <p>
+    📅 ${event.date}
+    </p>
+
+
+    <p>
+    ⏰ ${event.start || ""}
+    </p>
+
+
+    ${
+        event.end
+        ?
+        `<p>
+        ～ ${event.end}
+        </p>`
+        :
+        ""
+    }
+
+
+    ${
+        event.place
+        ?
+        `<p>
+        📍 ${event.place}
+        </p>`
+        :
+        ""
+    }
+
+
+    ${
+        event.companion
+        ?
+        `<p>
+        👥 ${event.companion}
+        </p>`
+        :
+        ""
+    }
+
+
+    ${
+        event.map
+        ?
+        `
+        <button onclick="location.href='${event.map}'">
+        🗺 地図
+        </button>
+        `
+        :
+        ""
+    }
+
+
+    ${
+        event.ticket
+        ?
+        `
+        <button onclick="location.href='${event.ticket}'">
+        🎫 チケット
+        </button>
+        `
+        :
+        ""
+    }
+
+
+    `;
+
+
+
+    document.getElementById(
+        "eventDetailModal"
+    ).style.display="block";
+
+}
+
+
+
+function closeEventDetail(){
+
+    document.getElementById(
+        "eventDetailModal"
+    ).style.display="none";
+
 }
