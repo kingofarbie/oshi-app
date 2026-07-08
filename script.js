@@ -2073,16 +2073,13 @@ function displayCountdown() {
 function openEventDetail(id){
 
 alert("①");
-alert(document.body.innerHTML.includes("detail-title"));
 
-document.getElementById("detail-title").innerHTML = "...";
-
+const title = document.getElementById("detail-title");
 alert("②");
 
-document.getElementById("detail-content").innerHTML = "...";
+title.innerHTML = "テスト";
 
 alert("③");
-
 document.getElementById("eventDetailModal").style.display = "block";
 
 alert("④");
