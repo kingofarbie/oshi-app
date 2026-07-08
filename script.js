@@ -2214,6 +2214,8 @@ function openEventDetail(id){
         "eventDetailModal"
     ).style.display="block";
 
+    alert(document.getElementById("eventDetailModal"));
+
 }
 
 
