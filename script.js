@@ -2084,10 +2084,6 @@ function openEventDetail(id){
 
     currentDetailEventId = id;
 
-    const event =
-        db.load().events.find(
-            e=>e.id===id
-        );
 
     if(!event)
         return;
