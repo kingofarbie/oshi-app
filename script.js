@@ -2073,6 +2073,7 @@ function displayCountdown() {
 function openEventDetail(id){
 
 alert("①");
+alert(document.body.innerHTML.includes("detail-title"));
 
 document.getElementById("detail-title").innerHTML = "...";
 
