@@ -18,7 +18,9 @@
 
 
 <body class="theme-neon-pink">
-
+<div style="background:red;color:white;font-size:30px;">
+テスト12345
+</div>
 <div class="header">
 
 <h1>推し活手帳</h1>
@@ -327,6 +329,33 @@ id="event-end">
 <div id="plannerContainer"></div>
 
 
+<!-- =====================
+     イベント詳細モーダル
+===================== -->
+
+<div id="eventDetailModal" class="modal">
+
+    <div class="modal-content">
+
+        <h2 id="detail-title">
+            イベント詳細
+        </h2>
+
+
+        <div id="detail-content">
+
+        </div>
+
+
+        <button onclick="closeEventDetail()">
+            ❌ 閉じる
+        </button>
+
+
+    </div>
+
+</div>
+
 
 </div>
 
@@ -631,8 +660,7 @@ OFF
 
 
 <select
-id="startNotificationMinutes"
-onchange="saveStartNotificationMinutes()">
+id="startNotificationMinutes">
 
 <option value="5">
 5分前
