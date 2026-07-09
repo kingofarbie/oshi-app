@@ -1126,12 +1126,14 @@ function displayUpcomingEvents(){
         .sort((a,b)=>eventStartDate(a)-eventStartDate(b))
         .slice(0,3);
 
+
     if(events.length===0){
 
         box.innerHTML = "該当なし";
         return;
 
     }
+
 
     box.innerHTML = events.map(e=>{
 
@@ -1142,18 +1144,22 @@ function displayUpcomingEvents(){
 
         const icon = getCategoryInfo(e.category)?.icon || "📌";
 
+
         return `
-            <div style="margin-bottom:10px;">
-                <strong>${month}/${day}</strong><br>
-                ${icon} ${e.title}
-            </div>
+        <div 
+        class="event-home-item"
+        onclick="openEventDetail(${e.id})">
+
+            <strong>${month}/${day}</strong><br>
+            ${icon} ${e.title}
+
+        </div>
         `;
+
 
     }).join("");
 
 }
-
-
 
 /* =====================
    新着通知
@@ -2070,7 +2076,6 @@ function displayCountdown() {
 ===================== */
 function openEventDetail(id){
 
-    alert("詳細画面");
 const event = db.load().events.find(e => e.id === id);
 
 if (!event) return;
