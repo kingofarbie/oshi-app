@@ -1950,21 +1950,147 @@ function displayCountdown() {
 ===================== */
 function openEventDetail(id){
 
-    console.log("openEventDetail:", id);
+    alert("openEventDetail : " + id);
 
-    const event = db.load().events.find(
-        e => Number(e.id) === Number(id)
-    );
+    const event = db.load().events.find(e => Number(e.id) === Number(id));
 
-    console.log(event);
-
-    if(!event){
+    if (!event){
         alert("イベントが見つかりません");
         return;
     }
 
-    ...
+    currentDetailEventId = id;
+
+    const category =
+        getCategoryInfo(event.category);
+
+    document.getElementById(
+        "detail-title"
+    ).innerHTML =
+
+    `
+    ${category?.icon || "📌"}
+    ${event.title}
+    `;
+
+    document.getElementById(
+        "detail-content"
+    ).innerHTML =
+
+    `
+
+    <p>
+    📅 ${event.date}
+    </p>
+
+    ${
+        event.start
+        ?
+        `<p>
+        🕒 開始：${new Date(event.start).toLocaleString("ja-JP")}
+        </p>`
+        :
+        ""
+    }
+
+    ${
+        event.end
+        ?
+        `<p>
+        🕔 終了：${new Date(event.end).toLocaleString("ja-JP")}
+        </p>`
+        :
+        ""
+    }
+
+    ${
+        event.place
+        ?
+        `<p>
+        📍 ${event.place}
+        </p>`
+        :
+        ""
+    }
+
+    ${
+        event.meeting
+        ?
+        `<p>
+        🤝 集合：${event.meeting}
+        </p>`
+        :
+        ""
+    }
+
+    ${
+        event.companion
+        ?
+        `<p>
+        👥 ${event.companion}
+        </p>`
+        :
+        ""
+    }
+
+    <div class="event-button-area">
+
+        ${
+            event.map
+            ?
+            `
+            <button
+            class="map-btn"
+            onclick="location.href='${event.map}'">
+            🗺 地図
+            </button>
+            `
+            :
+            ""
+        }
+
+        ${
+            event.ticket
+            ?
+            `
+            <button
+            class="map-btn"
+            onclick="location.href='${event.ticket}'">
+            🎫 チケット
+            </button>
+            `
+            :
+            ""
+        }
+
+    </div>
+
+    <div class="event-button-area">
+
+        <button
+        class="edit-btn"
+        onclick="editCurrentEvent()">
+        ✏️ 編集
+        </button>
+
+        <button
+        class="event-delete-btn"
+        onclick="deleteCurrentEvent()">
+        🗑 削除
+        </button>
+
+    </div>
+
+    `;
+
+    document.getElementById(
+        "eventDetailModal"
+    ).style.display = "block";
+
 }
+
+
+
 
 function closeEventDetail(){
 
