@@ -984,11 +984,6 @@ function deleteEvent(id){
     
 }
 
-
-/* =====================
-   ホーム予定表示
-===================== */
-
 /* =====================
    ホーム予定表示
 ===================== */
@@ -1020,7 +1015,7 @@ function displayHomeSchedule(){
         return null;
     }
 
-    // 今日
+    // 今日の予定
     const todayList = events.filter(e=>{
 
         const d = eventStartDate(e);
@@ -1053,19 +1048,23 @@ function displayHomeSchedule(){
             const day = date.getDate();
 
             return `
-                ${month}/${day}
-                ${icon}
-                ${e.title}
-            `;
+<div class="schedule-item"
+     onclick="openEventDetail(${e.id})">
 
-        }).join("<br>");
+    <div class="schedule-title">
+        ${month}/${day} ${icon} ${e.title}
+    </div>
+
+</div>
+`;
+
+        }).join("");
 
     }
 
     render("today-schedule",todayList);
 
 }
-
 
 /* =====================
    直近のイベント
@@ -1134,7 +1133,6 @@ function displayUpcomingEvents(){
     }).join("");
 
 }
-
 
 
 /* =====================
@@ -1576,9 +1574,6 @@ async function(){
     displayCountdown();
     
     await initNotification();
-    
-    startNotificationWatcher();
-
 
 
 };
@@ -1924,23 +1919,28 @@ function displayCountdown() {
     const category = getCategoryInfo(next.category);
 
     box.innerHTML = `
-        <div style="font-size:28px;font-weight:bold;margin-bottom:10px;">
-            ${text}
-        </div>
+        <div class="schedule-item"
+             onclick="openEventDetail(${next.id})">
 
-        <div>
-            ${category?.icon || "📌"} ${next.title}
-        </div>
+            <div style="font-size:28px;font-weight:bold;margin-bottom:10px;">
+                ${text}
+            </div>
 
-        <div style="margin-top:6px;font-size:13px;">
-            📅 ${start.toLocaleString("ja-JP")}
-        </div>
+            <div>
+                ${category?.icon || "📌"} ${next.title}
+            </div>
 
-        ${
-            next.place
-            ? `<div style="margin-top:4px;">📍 ${next.place}</div>`
-            : ""
-        }
+            <div style="margin-top:6px;font-size:13px;">
+                📅 ${start.toLocaleString("ja-JP")}
+            </div>
+
+            ${
+                next.place
+                ? `<div style="margin-top:4px;">📍 ${next.place}</div>`
+                : ""
+            }
+
+        </div>
     `;
 }
 
