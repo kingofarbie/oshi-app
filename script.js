@@ -1855,95 +1855,23 @@ function changePlan(plan){
 }
 
 
-function displayCountdown() {
+box.innerHTML = `
+<div class="event-home-item" onclick="alert('クリックされた')">
 
-    const box = document.getElementById("countdown-card");
-    if (!box) return;
+    <div style="font-size:28px;font-weight:bold;margin-bottom:10px;">
+        ${text}
+    </div>
 
-    const now = new Date();
+    <div>
+        ${category?.icon || "📌"} ${next.title}
+    </div>
 
-    const events = db.load().events
-        .filter(e => e.start)
-        .sort((a, b) => new Date(a.start) - new Date(b.start));
+    <div style="margin-top:6px;font-size:13px;">
+        📅 ${start.toLocaleString("ja-JP")}
+    </div>
 
-    const next = events.find(e => new Date(e.start) > now);
-
-    if (!next) {
-        box.innerHTML = "予定はありません";
-        return;
-    }
-
-    const start = new Date(next.start);
-
-    // 日数差（時間ではなく日付基準）
-    const today = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate()
-    );
-
-    const eventDay = new Date(
-        start.getFullYear(),
-        start.getMonth(),
-        start.getDate()
-    );
-
-    const days = Math.floor(
-        (eventDay - today) / 86400000
-    );
-
-    const diff = start - now;
-    const hours = Math.floor((diff % 86400000) / 3600000);
-    const mins = Math.floor((diff % 3600000) / 60000);
-
-    let text = "";
-
-    if (days >= 5) {
-
-        text = "イベントまでまだあります";
-
-    } else if (days >= 1) {
-
-        text = `あと ${days} 日`;
-
-    } else if (diff > 0) {
-
-        text = `あと ${hours}時間 ${mins}分`;
-
-    } else {
-
-        text = "🎉 開催中";
-
-    }
-
-    const category = getCategoryInfo(next.category);
-
-    box.innerHTML = `
-        <div class="schedule-item"
-             onclick="openEventDetail(${next.id})">
-
-            <div style="font-size:28px;font-weight:bold;margin-bottom:10px;">
-                ${text}
-            </div>
-
-            <div>
-                ${category?.icon || "📌"} ${next.title}
-            </div>
-
-            <div style="margin-top:6px;font-size:13px;">
-                📅 ${start.toLocaleString("ja-JP")}
-            </div>
-
-            ${
-                next.place
-                ? `<div style="margin-top:4px;">📍 ${next.place}</div>`
-                : ""
-            }
-
-        </div>
-    `;
-}
-
+</div>
+`;
 
 /* =====================
    イベント詳細表示
