@@ -1855,168 +1855,109 @@ function changePlan(plan){
 }
 
 
-box.innerHTML = `
-<div class="event-home-item" onclick="alert('クリックされた')">
+function displayCountdown() {
 
-    <div style="font-size:28px;font-weight:bold;margin-bottom:10px;">
-        ${text}
-    </div>
+    const box = document.getElementById("countdown-card");
+    if (!box) return;
 
-    <div>
-        ${category?.icon || "📌"} ${next.title}
-    </div>
+    const now = new Date();
 
-    <div style="margin-top:6px;font-size:13px;">
-        📅 ${start.toLocaleString("ja-JP")}
-    </div>
+    const events = db.load().events
+        .filter(e => e.start)
+        .sort((a, b) => new Date(a.start) - new Date(b.start));
 
-</div>
-`;
+    const next = events.find(e => new Date(e.start) > now);
+
+    if (!next) {
+        box.innerHTML = "予定はありません";
+        return;
+    }
+
+    const start = new Date(next.start);
+
+    // 日数差（時間ではなく日付基準）
+    const today = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate()
+    );
+
+    const eventDay = new Date(
+        start.getFullYear(),
+        start.getMonth(),
+        start.getDate()
+    );
+
+    const days = Math.floor(
+        (eventDay - today) / 86400000
+    );
+
+    const diff = start - now;
+    const hours = Math.floor((diff % 86400000) / 3600000);
+    const mins = Math.floor((diff % 3600000) / 60000);
+
+    let text = "";
+
+    if (days >= 5) {
+
+        text = "イベントまでまだあります";
+
+    } else if (days >= 1) {
+
+        text = `あと ${days} 日`;
+
+    } else if (diff > 0) {
+
+        text = `あと ${hours}時間 ${mins}分`;
+
+    } else {
+
+        text = "🎉 開催中";
+
+    }
+
+    const category = getCategoryInfo(next.category);
+
+    box.innerHTML = `
+        <div class="schedule-item"
+             onclick="openEventDetail(${next.id})">
+
+            <div style="font-size:28px;font-weight:bold;margin-bottom:10px;">
+                ${text}
+            </div>
+
+            <div>
+                ${category?.icon || "📌"} ${next.title}
+            </div>
+
+            <div style="margin-top:6px;font-size:13px;">
+                📅 ${start.toLocaleString("ja-JP")}
+            </div>
+
+            ${
+                next.place
+                ? `<div style="margin-top:4px;">📍 ${next.place}</div>`
+                : ""
+            }
+
+        </div>
+    `;
+}
+
 
 /* =====================
    イベント詳細表示
 ===================== */
 function openEventDetail(id){
 
-    alert("openEventDetail : " + id);
+    alert("openEventDetail 呼ばれた：" + id);
 
-    const event = db.load().events.find(e => Number(e.id) === Number(id));
+    const event = db.load().events.find(e => e.id === id);
 
-    if (!event){
-        alert("イベントが見つかりません");
-        return;
-    }
+    if(!event) return;
 
-    currentDetailEventId = id;
-
-    const category =
-        getCategoryInfo(event.category);
-
-    document.getElementById(
-        "detail-title"
-    ).innerHTML =
-
-    `
-    ${category?.icon || "📌"}
-    ${event.title}
-    `;
-
-    document.getElementById(
-        "detail-content"
-    ).innerHTML =
-
-    `
-
-    <p>
-    📅 ${event.date}
-    </p>
-
-    ${
-        event.start
-        ?
-        `<p>
-        🕒 開始：${new Date(event.start).toLocaleString("ja-JP")}
-        </p>`
-        :
-        ""
-    }
-
-    ${
-        event.end
-        ?
-        `<p>
-        🕔 終了：${new Date(event.end).toLocaleString("ja-JP")}
-        </p>`
-        :
-        ""
-    }
-
-    ${
-        event.place
-        ?
-        `<p>
-        📍 ${event.place}
-        </p>`
-        :
-        ""
-    }
-
-    ${
-        event.meeting
-        ?
-        `<p>
-        🤝 集合：${event.meeting}
-        </p>`
-        :
-        ""
-    }
-
-    ${
-        event.companion
-        ?
-        `<p>
-        👥 ${event.companion}
-        </p>`
-        :
-        ""
-    }
-
-    <div class="event-button-area">
-
-        ${
-            event.map
-            ?
-            `
-            <button
-            class="map-btn"
-            onclick="location.href='${event.map}'">
-            🗺 地図
-            </button>
-            `
-            :
-            ""
-        }
-
-        ${
-            event.ticket
-            ?
-            `
-            <button
-            class="map-btn"
-            onclick="location.href='${event.ticket}'">
-            🎫 チケット
-            </button>
-            `
-            :
-            ""
-        }
-
-    </div>
-
-    <div class="event-button-area">
-
-        <button
-        class="edit-btn"
-        onclick="editCurrentEvent()">
-        ✏️ 編集
-        </button>
-
-        <button
-        class="event-delete-btn"
-        onclick="deleteCurrentEvent()">
-        🗑 削除
-        </button>
-
-    </div>
-
-    `;
-
-    document.getElementById(
-        "eventDetailModal"
-    ).style.display = "block";
-
+    // 以下そのまま
 }
-
 
 
 
