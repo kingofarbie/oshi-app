@@ -310,7 +310,6 @@ function switchTab(pageId,event){
 
         renderCalendar();
 
-        displayEventList();
 
     }
 
@@ -1014,15 +1013,6 @@ function displayHomeSchedule(){
     const tomorrowStart = new Date(todayStart);
     tomorrowStart.setDate(todayStart.getDate() + 1);
 
-    // 来週(月曜日開始)
-    const weekStart = new Date(todayStart);
-    const day = weekStart.getDay(); // 日=0 月=1 ...
-
-    const diff = (day === 0) ? -6 : (1 - day);
-    weekStart.setDate(weekStart.getDate() + diff);
-
-    const nextWeekStart = new Date(weekStart);
-    nextWeekStart.setDate(weekStart.getDate() + 7);
 
     function eventStartDate(e){
         if(e.start){
@@ -1044,17 +1034,6 @@ function displayHomeSchedule(){
 
     });
 
-    // 今週（今日以降～来週開始まで）
-    const weekList = events.filter(e=>{
-
-        const d = eventStartDate(e);
-        if(!d) return false;
-
-        return d >= tomorrowStart && d < nextWeekStart;
-
-    });
-
-    weekList.sort((a,b)=>eventStartDate(a)-eventStartDate(b));
 
     function render(id,list){
 
@@ -1088,7 +1067,6 @@ function displayHomeSchedule(){
     }
 
     render("today-schedule",todayList);
-    render("this-week-schedule",weekList);
 
 }
 
