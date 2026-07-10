@@ -792,8 +792,6 @@ function saveEvent(){
 
     displayUpcomingEvents();
     
-    displayTodayEvents();
-
     displayCountdown();
 
 }
@@ -984,8 +982,6 @@ function deleteEvent(id){
 
     displayHomeSchedule();
     
-    displayTodayEvents();
-
 }
 
 
@@ -1134,104 +1130,6 @@ function displayUpcomingEvents(){
         </div>
         `;
 
-
-    }).join("");
-
-}
-
-/* =====================
-   新着通知
-===================== */
-
-function displayTodayEvents(){
-
-    const box =
-        document.getElementById(
-            "today-events"
-        );
-
-    if(!box) return;
-
-
-    const now = new Date();
-
-
-    const events =
-        db.load().events
-        .filter(e=>{
-
-            if(!e.start)
-                return false;
-
-
-            const start =
-                new Date(e.start);
-
-
-            const diff =
-                start - now;
-
-
-            // 24時間以内の予定
-            return diff > 0 &&
-                   diff <= 86400000;
-
-        })
-        .sort(
-            (a,b)=>
-            new Date(a.start)
-            -
-            new Date(b.start)
-        );
-
-
-
-    if(events.length===0){
-
-        box.innerHTML =
-            "該当なし";
-
-        return;
-
-    }
-
-
-
-    box.innerHTML =
-    events.map(e=>{
-
-
-        const d =
-            new Date(e.start);
-
-
-        const icon =
-            getCategoryInfo(e.category)?.icon
-            ||
-            "📌";
-
-
-        return `
-
-<div
-class="notification-item"
-onclick="openEventDetail(${e.id})">
-
-${icon}
-<strong>
-${e.title}
-</strong>
-
-<br>
-
-⏰
-${d.toLocaleString(
-"ja-JP"
-)}
-
-</div>
-
-`;
 
     }).join("");
 
@@ -1664,9 +1562,7 @@ async function(){
     renderCalendar();
     
     displayUpcomingEvents();
-    
-    displayTodayEvents();
-    
+        
     updateNotificationButtons();
     
     displayCategories();
@@ -2222,8 +2118,6 @@ function deleteCurrentEvent(){
     displayHomeSchedule();
 
     displayUpcomingEvents();
-
-    displayTodayEvents();
 
     displayCountdown();
 
