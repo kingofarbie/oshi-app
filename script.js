@@ -1950,6 +1950,8 @@ function displayCountdown() {
 ===================== */
 function openEventDetail(id){
 
+    alert("①");
+
     const event =
         db.load()
         .events
