@@ -1957,6 +1957,7 @@ function openEventDetail(id){
         .events
         .find(e=>e.id===id);
 
+    alert("②");
 
     if(!event)
         return;
@@ -1970,6 +1971,7 @@ function openEventDetail(id){
             "eventDetailModal"
         );
 
+    alert("③");
 
     const title =
         document.getElementById(
@@ -1981,7 +1983,7 @@ function openEventDetail(id){
         document.getElementById(
             "detail-content"
         );
-
+    alert("④");
 
     const category =
         getCategoryInfo(
