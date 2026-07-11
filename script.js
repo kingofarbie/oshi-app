@@ -1950,15 +1950,127 @@ function displayCountdown() {
 ===================== */
 function openEventDetail(id){
 
-    alert("openEventDetail 呼ばれた：" + id);
+    const event =
+        db.load()
+        .events
+        .find(e=>e.id===id);
 
-    const event = db.load().events.find(e => e.id === id);
 
-    if(!event) return;
+    if(!event)
+        return;
 
-    // 以下そのまま
+
+    currentDetailEventId = id;
+
+
+    const modal =
+        document.getElementById(
+            "eventDetailModal"
+        );
+
+
+    const title =
+        document.getElementById(
+            "detail-title"
+        );
+
+
+    const content =
+        document.getElementById(
+            "detail-content"
+        );
+
+
+    const category =
+        getCategoryInfo(
+            event.category
+        );
+
+
+    title.innerHTML =
+        `${category?.icon || "📌"} ${event.title}`;
+
+
+    content.innerHTML = `
+
+<div>
+
+📅 ${event.date}
+
+</div>
+
+
+${event.start ?
+`
+<div>
+⏰ ${event.start.substring(11,16)}
+${event.end ? "〜"+event.end.substring(11,16):""}
+</div>
+`
+:""}
+
+
+${event.place ?
+`
+<div>
+📍 ${event.place}
+</div>
+`
+:""}
+
+
+${event.meeting ?
+`
+<div>
+⏰ 待ち合わせ：${event.meeting}
+</div>
+`
+:""}
+
+
+${event.companion ?
+`
+<div>
+👥 ${event.companion}
+</div>
+`
+:""}
+
+
+${event.map ?
+`
+<button onclick="location.href='${event.map}'">
+🗺 地図
+</button>
+`
+:""}
+
+
+${event.ticket ?
+`
+<button onclick="location.href='${event.ticket}'">
+🎫 チケット
+</button>
+`
+:""}
+
+
+<button onclick="editCurrentEvent()">
+✏️ 編集
+</button>
+
+
+<button onclick="deleteCurrentEvent()">
+🗑 削除
+</button>
+
+
+`;
+
+
+    modal.style.display="block";
+
 }
-
 
 
 function closeEventDetail(){

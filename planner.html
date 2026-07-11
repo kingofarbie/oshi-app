@@ -77,3 +77,55 @@
     </div>
 
 </div>
+
+
+
+<div id="eventDetailModal" class="modal">
+
+    <div class="modal-content">
+
+        <div id="detail-title" class="modal-title"></div>
+
+        <div id="detail-content"></div>
+
+        <div class="event-button-area">
+
+            <button
+                id="detailMapBtn"
+                class="map-btn"
+                style="display:none;">
+                🗺 地図
+            </button>
+
+            <button
+                id="detailTicketBtn"
+                class="map-btn"
+                style="display:none;">
+                🎫 チケット
+            </button>
+
+        </div>
+
+        <div class="event-button-area">
+
+            <button
+                class="edit-btn"
+                onclick="editCurrentEvent()">
+                ✏️ 編集
+            </button>
+
+            <button
+                class="event-delete-btn"
+                onclick="deleteCurrentEvent()">
+                🗑 削除
+            </button>
+
+        </div>
+
+        <button onclick="closeEventDetail()">
+            閉じる
+        </button>
+
+    </div>
+
+</div>
