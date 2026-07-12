@@ -307,21 +307,47 @@ id="event-end">
             イベント詳細
         </h2>
 
+        <div id="detail-content"></div>
 
-        <div id="detail-content">
+        <div class="event-button-area">
+
+            <button
+                id="detailMapBtn"
+                class="map-btn"
+                style="display:none;">
+                🗺 地図
+            </button>
+
+            <button
+                id="detailTicketBtn"
+                class="map-btn"
+                style="display:none;">
+                🎫 チケット
+            </button>
 
         </div>
 
+        <div class="event-button-area">
+
+            <button
+                onclick="editCurrentEvent()">
+                ✏️ 編集
+            </button>
+
+            <button
+                onclick="deleteCurrentEvent()">
+                🗑 削除
+            </button>
+
+        </div>
 
         <button onclick="closeEventDetail()">
             ❌ 閉じる
         </button>
 
-
     </div>
 
 </div>
-
 
 
 
