@@ -1948,132 +1948,113 @@ function displayCountdown() {
 /* =====================
    イベント詳細表示
 ===================== */
+/* =====================
+   イベント詳細表示
+===================== */
 function openEventDetail(id){
-
-    alert("①");
 
     const event =
         db.load()
         .events
-        .find(e=>e.id===id);
+        .find(e => e.id === id);
 
-    alert("②");
-
-    if(!event)
-        return;
-
+    if(!event) return;
 
     currentDetailEventId = id;
 
+    const modal = document.getElementById("eventDetailModal");
+    const title = document.getElementById("detail-title");
+    const content = document.getElementById("detail-content");
 
-    const modal =
-        document.getElementById(
-            "eventDetailModal"
-        );
+    const mapBtn = document.getElementById("detailMapBtn");
+    const ticketBtn = document.getElementById("detailTicketBtn");
 
-    alert("③");
-
-    const title =
-        document.getElementById(
-            "detail-title"
-        );
-
-
-    const content =
-        document.getElementById(
-            "detail-content"
-        );
-    alert("④");
-
-    const category =
-        getCategoryInfo(
-            event.category
-        );
-
+    const category = getCategoryInfo(event.category);
 
     title.innerHTML =
         `${category?.icon || "📌"} ${event.title}`;
 
-
     content.innerHTML = `
+        <div>📅 ${event.date}</div>
 
-<div>
+        ${
+            event.start
+            ?
+            `<div>
+                ⏰ ${event.start.substring(11,16)}
+                ${event.end ? "〜" + event.end.substring(11,16) : ""}
+            </div>`
+            : ""
+        }
 
-📅 ${event.date}
+        ${
+            event.place
+            ?
+            `<div>📍 ${event.place}</div>`
+            : ""
+        }
 
-</div>
+        ${
+            event.meeting
+            ?
+            `<div>🤝 待ち合わせ：${event.meeting}</div>`
+            : ""
+        }
 
-
-${event.start ?
-`
-<div>
-⏰ ${event.start.substring(11,16)}
-${event.end ? "〜"+event.end.substring(11,16):""}
-</div>
-`
-:""}
-
-
-${event.place ?
-`
-<div>
-📍 ${event.place}
-</div>
-`
-:""}
-
-
-${event.meeting ?
-`
-<div>
-⏰ 待ち合わせ：${event.meeting}
-</div>
-`
-:""}
-
-
-${event.companion ?
-`
-<div>
-👥 ${event.companion}
-</div>
-`
-:""}
+        ${
+            event.companion
+            ?
+            `<div>👥 ${event.companion}</div>`
+            : ""
+        }
+    `;
 
 
-${event.map ?
-`
-<button onclick="location.href='${event.map}'">
-🗺 地図
-</button>
-`
-:""}
+    /* ========= 地図ボタン ========= */
+
+    if(mapBtn){
+
+        if(event.map){
+
+            mapBtn.style.display = "inline-block";
+
+            mapBtn.onclick = function(){
+                window.open(event.map,"_blank");
+            };
+
+        }else{
+
+            mapBtn.style.display = "none";
+            mapBtn.onclick = null;
+
+        }
+
+    }
 
 
-${event.ticket ?
-`
-<button onclick="location.href='${event.ticket}'">
-🎫 チケット
-</button>
-`
-:""}
+    /* ========= チケットボタン ========= */
 
+    if(ticketBtn){
 
-<button onclick="editCurrentEvent()">
-✏️ 編集
-</button>
+        if(event.ticket){
 
+            ticketBtn.style.display = "inline-block";
 
-<button onclick="deleteCurrentEvent()">
-🗑 削除
-</button>
+            ticketBtn.onclick = function(){
+                window.open(event.ticket,"_blank");
+            };
 
+        }else{
 
-`;
+            ticketBtn.style.display = "none";
+            ticketBtn.onclick = null;
 
-    alert("⑤");
-    modal.style.display="block";
-    alert("⑥");
+        }
+
+    }
+
+    modal.style.display = "block";
+
 }
 
 
