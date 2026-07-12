@@ -2071,9 +2071,9 @@ ${event.ticket ?
 
 `;
 
-
+    alert("⑤");
     modal.style.display="block";
-
+    alert("⑥");
 }
 
 
