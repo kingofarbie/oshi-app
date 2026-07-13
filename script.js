@@ -734,7 +734,11 @@ function saveEvent(){
             'ticket-url'
         ).value,
 
-        // カレンダー表示用の日付は開始日時から自動生成
+        // ★持ち物リスト保存
+        checklist:
+        JSON.parse(JSON.stringify(checklistItems)),
+
+        // カレンダー表示用の日付
         date:
         document.getElementById(
             'event-start'
@@ -744,9 +748,7 @@ function saveEvent(){
 
     if(!data.title){
 
-        alert(
-            "イベント名を入力してください"
-        );
+        alert("イベント名を入力してください");
 
         return;
 
@@ -754,9 +756,7 @@ function saveEvent(){
 
     if(!data.start){
 
-        alert(
-            "開始日時を入力してください"
-        );
+        alert("開始日時を入力してください");
 
         return;
 
@@ -778,6 +778,11 @@ function saveEvent(){
 
     }
 
+    // 次回入力用に持ち物をリセット
+    checklistItems = [];
+
+    renderChecklistEditor();
+
     closeEventModal();
 
     clearEventForm();
@@ -791,11 +796,10 @@ function saveEvent(){
     displayHomeSchedule();
 
     displayUpcomingEvents();
-    
+
     displayCountdown();
 
 }
-
 
 function clearEventForm(){
 
@@ -2095,5 +2099,91 @@ function deleteCurrentEvent(){
     displayUpcomingEvents();
 
     displayCountdown();
+
+}
+
+
+
+let checklistItems = [];
+
+function addChecklistItem(){
+
+    const input = document.getElementById("newChecklistItem");
+
+    const text = input.value.trim();
+
+    if(!text) return;
+
+    checklistItems.push({
+        text:text,
+        checked:false
+    });
+
+    input.value="";
+
+    renderChecklistEditor();
+
+}
+
+function removeChecklistItem(index){
+
+    checklistItems.splice(index,1);
+
+    renderChecklistEditor();
+
+}
+
+function toggleChecklistItem(index,checked){
+
+    checklistItems[index].checked = checked;
+
+}
+
+function renderChecklistEditor(){
+
+    const box = document.getElementById("checklistContainer");
+
+    if(!box) return;
+
+    if(checklistItems.length===0){
+
+        box.innerHTML = "<p>持ち物はありません</p>";
+
+        return;
+
+    }
+
+    box.innerHTML = checklistItems.map((item,index)=>`
+
+<div style="
+display:flex;
+align-items:center;
+gap:10px;
+margin:8px 0;
+padding:8px;
+background:#f5f5f5;
+border-radius:8px;
+">
+
+<input
+type="checkbox"
+${item.checked ? "checked" : ""}
+onchange="toggleChecklistItem(${index},this.checked)">
+
+<span style="flex:1;">
+${item.text}
+</span>
+
+<button
+type="button"
+onclick="removeChecklistItem(${index})">
+
+❌
+
+</button>
+
+</div>
+
+`).join("");
 
 }

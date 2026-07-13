@@ -283,6 +283,30 @@ id="event-end">
         id="ticket-url"
         placeholder="チケットURL">
 
+
+        <hr>
+
+<h3>👜 持ち物リスト</h3>
+
+<div id="checklistContainer"></div>
+
+<div style="display:flex;gap:8px;margin-top:10px;">
+
+    <input
+        type="text"
+        id="newChecklistItem"
+        placeholder="持ち物を入力"
+        style="flex:1;">
+
+    <button
+        type="button"
+        onclick="addChecklistItem()">
+        ➕追加
+    </button>
+
+</div>
+
+
         <button onclick="saveEvent()">
             💾 保存
         </button>
@@ -310,6 +334,15 @@ id="event-end">
         </h2>
 
         <div id="detail-content"></div>
+
+<h3>👜 持ち物リスト</h3>
+
+<div id="detail-checklist">
+
+まだ登録されていません
+
+</div>
+
 
         <div class="event-button-area">
 
