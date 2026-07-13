@@ -2070,10 +2070,13 @@ function editCurrentEvent(){
 
     closeEventDetail();
 
-    selectEvent(currentDetailEventId);
+    setTimeout(function(){
+
+        selectEvent(currentDetailEventId);
+
+    },100);
 
 }
-
 function deleteCurrentEvent(){
 
     if(!confirm("この予定を削除しますか？"))
