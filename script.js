@@ -2141,44 +2141,43 @@ function toggleChecklistItem(index,checked){
 
 function renderChecklistEditor(){
 
-    const box = document.getElementById("checklistContainer");
+    const box=document.getElementById("checklistContainer");
 
     if(!box) return;
 
     if(checklistItems.length===0){
 
-        box.innerHTML = "<p>持ち物はありません</p>";
+        box.innerHTML=`
+        <div class="checklist-empty">
+            持ち物はありません
+        </div>
+        `;
 
         return;
 
     }
 
-    box.innerHTML = checklistItems.map((item,index)=>`
+    box.innerHTML=checklistItems.map((item,index)=>`
 
-<div style="
-display:flex;
-align-items:center;
-gap:10px;
-margin:8px 0;
-padding:8px;
-background:#f5f5f5;
-border-radius:8px;
-">
+<div class="checklist-row">
+
+<label class="checklist-label">
 
 <input
 type="checkbox"
-${item.checked ? "checked" : ""}
+${item.checked ? "checked":""}
 onchange="toggleChecklistItem(${index},this.checked)">
 
-<span style="flex:1;">
-${item.text}
-</span>
+<span>${item.text}</span>
+
+</label>
 
 <button
 type="button"
+class="icon-btn delete-btn"
 onclick="removeChecklistItem(${index})">
 
-❌
+🗑
 
 </button>
 

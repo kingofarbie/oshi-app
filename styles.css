@@ -1005,3 +1005,73 @@ button:hover{
 .tabbar{
     z-index:10000;
 }
+
+
+/* =====================
+   持ち物リスト
+===================== */
+
+.checklist-list{
+
+margin-top:10px;
+
+}
+
+.checklist-row{
+
+display:flex;
+align-items:center;
+justify-content:space-between;
+
+padding:10px 0;
+
+border-bottom:1px solid rgba(255,255,255,.15);
+
+}
+
+.checklist-label{
+
+display:flex;
+align-items:center;
+gap:12px;
+
+flex:1;
+
+font-size:15px;
+
+}
+
+.checklist-label input{
+
+width:20px;
+height:20px;
+
+}
+
+.checklist-add{
+
+display:flex;
+
+gap:10px;
+
+margin-top:15px;
+
+}
+
+.checklist-add input{
+
+flex:1;
+
+}
+
+.checklist-empty{
+
+opacity:.6;
+
+padding:12px 0;
+
+text-align:center;
+
+font-size:14px;
+
+}
