@@ -1669,67 +1669,33 @@ function selectEvent(id){
 
     const event =
         db.load().events.find(
-            e=>e.id===selectedEventId
+            e => e.id === selectedEventId
         );
 
-
-    if(!event)
-        return;
-
+    if(!event) return;
 
     editingEventId = event.id;
 
+    document.getElementById("event-category").value = event.category;
+    document.getElementById("event-title").value = event.title;
+    document.getElementById("event-start").value = event.start || "";
+    document.getElementById("event-end").value = event.end || "";
+    document.getElementById("event-place").value = event.place || "";
+    document.getElementById("meeting-time").value = event.meeting || "";
+    document.getElementById("companions").value = event.companion || "";
+    document.getElementById("map-url").value = event.map || "";
+    document.getElementById("ticket-url").value = event.ticket || "";
 
-    document.getElementById(
-        "event-category"
-    ).value = event.category;
+    // 持ち物を復元
+    checklistItems = event.checklist
+        ? JSON.parse(JSON.stringify(event.checklist))
+        : [];
 
+    renderChecklistEditor();
 
-document.getElementById(
-    "event-title"
-).value = event.title;
-
-
-document.getElementById(
-    "event-start"
-).value = event.start || "";
-
-
-document.getElementById(
-    "event-end"
-).value = event.end || "";
-
-
-document.getElementById(
-    "event-place"
-).value = event.place || "";
-
-    document.getElementById(
-        "meeting-time"
-    ).value = event.meeting || "";
-
-
-    document.getElementById(
-        "companions"
-    ).value = event.companion || "";
-
-
-    document.getElementById(
-        "map-url"
-    ).value = event.map || "";
-
-
-    document.getElementById(
-        "ticket-url"
-    ).value = event.ticket || "";
-
-
-    document.getElementById(
-        "eventFormModal"
-    ).style.display="block";
+    document.getElementById("eventFormModal").style.display = "block";
 
 }
-
 function closeEventModal(){
 
     document.getElementById(
@@ -1958,9 +1924,7 @@ function displayCountdown() {
 function openEventDetail(id){
 
     const event =
-        db.load()
-        .events
-        .find(e => e.id === id);
+        db.load().events.find(e => e.id === id);
 
     if(!event) return;
 
@@ -1969,6 +1933,7 @@ function openEventDetail(id){
     const modal = document.getElementById("eventDetailModal");
     const title = document.getElementById("detail-title");
     const content = document.getElementById("detail-content");
+    const checklist = document.getElementById("detail-checklist");
 
     const mapBtn = document.getElementById("detailMapBtn");
     const ticketBtn = document.getElementById("detailTicketBtn");
@@ -1983,84 +1948,62 @@ function openEventDetail(id){
 
         ${
             event.start
-            ?
-            `<div>
-                ⏰ ${event.start.substring(11,16)}
-                ${event.end ? "〜" + event.end.substring(11,16) : ""}
-            </div>`
+            ? `<div>⏰ ${event.start.substring(11,16)}${event.end ? "〜"+event.end.substring(11,16) : ""}</div>`
             : ""
         }
 
         ${
             event.place
-            ?
-            `<div>📍 ${event.place}</div>`
+            ? `<div>📍 ${event.place}</div>`
             : ""
         }
 
         ${
             event.meeting
-            ?
-            `<div>🤝 待ち合わせ：${event.meeting}</div>`
+            ? `<div>🤝 待ち合わせ：${event.meeting}</div>`
             : ""
         }
 
         ${
             event.companion
-            ?
-            `<div>👥 ${event.companion}</div>`
+            ? `<div>👥 ${event.companion}</div>`
             : ""
         }
     `;
 
+    // 持ち物表示
+    if(event.checklist && event.checklist.length){
 
-    /* ========= 地図ボタン ========= */
+        checklist.innerHTML = event.checklist.map(item => `
+            <div class="check-item">
+                <input type="checkbox" ${item.checked ? "checked" : ""} disabled>
+                <span class="check-text">${item.text}</span>
+            </div>
+        `).join("");
 
-    if(mapBtn){
+    }else{
 
-        if(event.map){
-
-            mapBtn.style.display = "inline-block";
-
-            mapBtn.onclick = function(){
-                window.open(event.map,"_blank");
-            };
-
-        }else{
-
-            mapBtn.style.display = "none";
-            mapBtn.onclick = null;
-
-        }
+        checklist.innerHTML = "持ち物はありません";
 
     }
 
-
-    /* ========= チケットボタン ========= */
-
-    if(ticketBtn){
-
-        if(event.ticket){
-
-            ticketBtn.style.display = "inline-block";
-
-            ticketBtn.onclick = function(){
-                window.open(event.ticket,"_blank");
-            };
-
-        }else{
-
-            ticketBtn.style.display = "none";
-            ticketBtn.onclick = null;
-
-        }
-
+    if(event.map){
+        mapBtn.style.display="inline-block";
+        mapBtn.onclick=()=>window.open(event.map,"_blank");
+    }else{
+        mapBtn.style.display="none";
     }
 
-    modal.style.display = "block";
+    if(event.ticket){
+        ticketBtn.style.display="inline-block";
+        ticketBtn.onclick=()=>window.open(event.ticket,"_blank");
+    }else{
+        ticketBtn.style.display="none";
+    }
+
+    modal.style.display="block";
 
 }
-
 
 function closeEventDetail(){
 
@@ -2139,21 +2082,30 @@ function toggleChecklistItem(index,checked){
 
 }
 
+
 function renderChecklistEditor(){
 
-    const box=document.getElementById("checklistContainer");
+    const box = document.getElementById("checklistContainer");
 
     if(!box) return;
 
-    if(checklistItems.length===0){
+    if(checklistItems.length === 0){
 
-        box.innerHTML='<div class="check-empty">持ち物はありません</div>';
+        box.innerHTML = `
+            <div class="check-empty">
+                持ち物はありません
+            </div>
+        `;
 
         return;
 
     }
 
-    box.innerHTML=checklistItems.map((item,index)=>`
+    let html = "";
+
+    checklistItems.forEach((item,index)=>{
+
+        html += `
 
 <div class="check-item">
 
@@ -2170,13 +2122,16 @@ function renderChecklistEditor(){
         type="button"
         class="check-delete"
         onclick="removeChecklistItem(${index})">
-
         🗑️
-
     </button>
 
 </div>
 
-`).join("");
+`;
+
+    });
+
+    box.innerHTML = html;
 
 }
+
