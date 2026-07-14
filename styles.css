@@ -1014,17 +1014,28 @@ button:hover{
 .check-item{
 
 display:flex;
+
 align-items:center;
 
-margin:8px 0;
+width:100%;
+
+gap:8px;
+
+margin:6px 0;
 
 }
 
-.check-item input{
+.check-item input[type="checkbox"]{
 
 width:20px;
 height:20px;
-margin-right:10px;
+
+min-width:20px;
+max-width:20px;
+
+margin:0 10px 0 0;
+
+flex-shrink:0;
 
 }
 
@@ -1042,16 +1053,31 @@ word-break:break-word;
 
 .check-delete{
 
+width:28px;
+
+min-width:28px;
+
+height:28px;
+
+padding:0;
+
+margin:0;
+
 background:none;
+
 border:none;
 
 font-size:18px;
 
-padding:4px;
+display:flex;
+
+align-items:center;
+
+justify-content:center;
 
 cursor:pointer;
 
-margin-left:10px;
+color:#ff8080;
 
 }
 
