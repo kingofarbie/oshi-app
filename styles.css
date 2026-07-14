@@ -153,7 +153,11 @@ body{
 ========================= */
 
 
-input,
+/* =========================
+   入力
+========================= */
+
+input:not([type="checkbox"]),
 select,
 button{
 
@@ -168,7 +172,6 @@ button{
     border-radius:10px;
 
 }
-
 
 input,
 select{
