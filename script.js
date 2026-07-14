@@ -2147,11 +2147,7 @@ function renderChecklistEditor(){
 
     if(checklistItems.length===0){
 
-        box.innerHTML=`
-        <div class="checklist-empty">
-            持ち物はありません
-        </div>
-        `;
+        box.innerHTML='<div class="check-empty">持ち物はありません</div>';
 
         return;
 
@@ -2159,27 +2155,25 @@ function renderChecklistEditor(){
 
     box.innerHTML=checklistItems.map((item,index)=>`
 
-<div class="checklist-row">
+<div class="check-item">
 
-<label class="checklist-label">
+    <input
+        type="checkbox"
+        ${item.checked ? "checked" : ""}
+        onchange="toggleChecklistItem(${index},this.checked)">
 
-<input
-type="checkbox"
-${item.checked ? "checked":""}
-onchange="toggleChecklistItem(${index},this.checked)">
+    <span class="check-text">
+        ${item.text}
+    </span>
 
-<span>${item.text}</span>
+    <button
+        type="button"
+        class="check-delete"
+        onclick="removeChecklistItem(${index})">
 
-</label>
+        🗑️
 
-<button
-type="button"
-class="icon-btn delete-btn"
-onclick="removeChecklistItem(${index})">
-
-🗑
-
-</button>
+    </button>
 
 </div>
 
