@@ -51,22 +51,42 @@ const db = {
             ? JSON.parse(data)
             :
             {
-            settings:{
-                plan:'free',
-                
-                notifications:{
-                    before:false,
-                    beforeTime:"20:00",
-                    
-                    today:false,
-                    todayTime:"09:00",
-                    
-                    start:false,
-                    startMinutes:5
+settings:{
+    plan:'free',
 
-                }
-            },
+    notifications:{
+        before:false,
+        beforeTime:"20:00",
 
+        today:false,
+        todayTime:"09:00",
+
+        start:false,
+        startMinutes:5
+    },
+
+    checklistTemplates:[
+        {
+            id:1,
+            name:"ライブ",
+            items:[
+                "チケット",
+                "ペンライト",
+                "双眼鏡",
+                "モバイルバッテリー"
+            ]
+        },
+        {
+            id:2,
+            name:"試合",
+            items:[
+                "チケット",
+                "タオル",
+                "飲み物"
+            ]
+        }
+    ]
+},
                 oshiList:[],
 
                 events:[],
