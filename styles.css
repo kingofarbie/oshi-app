@@ -1126,11 +1126,11 @@ button:hover{
 
     display:flex;
 
-    align-items:center;
+    align-items:flex-start;
 
     gap:12px;
 
-    padding:8px 0;
+    padding:10px 0;
 
     border-bottom:1px solid rgba(255,255,255,.08);
 
@@ -1141,6 +1141,19 @@ button:hover{
     border-bottom:none;
 
 }
+
+.detail-row span:last-child{
+
+    flex:1;
+
+    word-break:break-word;
+
+    overflow-wrap:anywhere;
+
+    white-space:normal;
+
+}
+
 
 .detail-icon{
 
