@@ -716,13 +716,50 @@ id="startNotificationMinutes">
 
 </select>
 
+</div>
+
+</div>
+
+
+<!-- =====================
+     持ち物テンプレート
+===================== -->
+
+<div class="card setting-item">
+
+<button onclick="toggleSetting('templateMenu')">
+
+<span id="templateIcon">＋</span>
+👜 持ち物テンプレート
+
+</button>
+
+<div id="templateMenu"
+class="setting-content"
+style="display:none;">
+
+<div id="template-list">
+テンプレートはありません
+</div>
+
+<hr>
+
+<input
+type="text"
+id="template-name"
+placeholder="テンプレート名（例：ライブ）">
+
+<button onclick="addTemplate()">
+➕ テンプレート追加
+</button>
+
+</div>
 
 </div>
 
 
 
 
-</div>
 <!-- =====================
      カテゴリ管理
 ===================== -->

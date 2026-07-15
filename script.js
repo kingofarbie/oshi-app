@@ -1168,13 +1168,13 @@ let openSettingMenu = null;
 
 function toggleSetting(menuId){
 
-    const menus = [
-        "planMenu",
-        "themeMenu",
-        "notificationMenu",
-        "categoryMenu"
-    ];
-
+const menus = [
+    "planMenu",
+    "themeMenu",
+    "notificationMenu",
+    "templateMenu",
+    "categoryMenu"
+];
 
     menus.forEach(id=>{
 
@@ -1598,6 +1598,8 @@ async function(){
     displayCountdown();
     
     await initNotification();
+
+    displayTemplateList();
 
 
 };
@@ -2209,3 +2211,97 @@ function renderChecklistEditor(){
 
 }
 
+
+function addTemplate(){
+
+    const name =
+        document.getElementById("template-name").value.trim();
+
+    if(!name){
+
+        alert("テンプレート名を入力してください");
+
+        return;
+
+    }
+
+    const data = db.load();
+
+    if(!data.settings.checklistTemplates){
+
+        data.settings.checklistTemplates=[];
+
+    }
+
+    data.settings.checklistTemplates.push({
+
+        id:Date.now(),
+
+        name:name,
+
+        items:[]
+
+    });
+
+    db.save(data);
+
+    document.getElementById("template-name").value="";
+
+    displayTemplateList();
+
+}
+
+
+function displayTemplateList(){
+
+    const box =
+        document.getElementById("template-list");
+
+    if(!box) return;
+
+    const data = db.load();
+
+    const list =
+        data.settings.checklistTemplates || [];
+
+    if(list.length===0){
+
+        box.innerHTML = "テンプレートはありません";
+
+        return;
+
+    }
+
+    box.innerHTML = list.map(t=>`
+
+<div class="item">
+
+    <button
+        onclick="openTemplateEditor(${t.id})">
+
+        👜 ${t.name}
+
+    </button>
+
+</div>
+
+`).join("");
+
+}
+
+function openTemplateEditor(id){
+
+    const data = db.load();
+
+    const template =
+        data.settings.checklistTemplates.find(
+            t => t.id === id
+        );
+
+    if(!template) return;
+
+    alert(
+        "次に「" + template.name + "」の持ち物編集画面を作ります。"
+    );
+
+}
