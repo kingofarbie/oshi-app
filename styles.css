@@ -1107,3 +1107,49 @@ button:hover{
     min-width:80px;
     margin:0;
 }
+
+/* ===== イベント詳細 ===== */
+
+.detail-card{
+
+    background:var(--surface);
+
+    border-radius:14px;
+
+    padding:15px;
+
+    margin:12px 0;
+
+}
+
+.detail-row{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    padding:8px 0;
+
+    border-bottom:1px solid rgba(255,255,255,.08);
+
+}
+
+.detail-row:last-child{
+
+    border-bottom:none;
+
+}
+
+.detail-icon{
+
+    width:24px;
+
+    text-align:center;
+
+    font-size:18px;
+
+    flex-shrink:0;
+
+}

@@ -1944,61 +1944,115 @@ function openEventDetail(id){
         `${category?.icon || "📌"} ${event.title}`;
 
     content.innerHTML = `
-        <div>📅 ${event.date}</div>
 
-        ${
-            event.start
-            ? `<div>⏰ ${event.start.substring(11,16)}${event.end ? "〜"+event.end.substring(11,16) : ""}</div>`
-            : ""
-        }
+<div class="detail-card">
 
-        ${
-            event.place
-            ? `<div>📍 ${event.place}</div>`
-            : ""
-        }
+<div class="detail-row">
+<span class="detail-icon">📅</span>
+<span>${event.date}</span>
+</div>
 
-        ${
-            event.meeting
-            ? `<div>🤝 待ち合わせ：${event.meeting}</div>`
-            : ""
-        }
+${
+event.start
+?
+`<div class="detail-row">
+<span class="detail-icon">🕕</span>
+<span>
+${event.start.substring(11,16)}
+${event.end ? " ～ " + event.end.substring(11,16) : ""}
+</span>
+</div>`
+:""
+}
 
-        ${
-            event.companion
-            ? `<div>👥 ${event.companion}</div>`
-            : ""
-        }
-    `;
+${
+event.place
+?
+`<div class="detail-row">
+<span class="detail-icon">📍</span>
+<span>${event.place}</span>
+</div>`
+:""
+}
+
+${
+event.meeting
+?
+`<div class="detail-row">
+<span class="detail-icon">🤝</span>
+<span>${event.meeting}</span>
+</div>`
+:""
+}
+
+${
+event.companion
+?
+`<div class="detail-row">
+<span class="detail-icon">👥</span>
+<span>${event.companion}</span>
+</div>`
+:""
+}
+
+</div>
+
+`;
 
     // 持ち物表示
     if(event.checklist && event.checklist.length){
 
         checklist.innerHTML = event.checklist.map(item => `
-            <div class="check-item">
-                <input type="checkbox" ${item.checked ? "checked" : ""} disabled>
-                <span class="check-text">${item.text}</span>
-            </div>
-        `).join("");
+<div class="check-item">
+
+<input
+type="checkbox"
+${item.checked ? "checked" : ""}
+disabled>
+
+<span class="check-text">
+${item.text}
+</span>
+
+</div>
+`).join("");
 
     }else{
 
-        checklist.innerHTML = "持ち物はありません";
+        checklist.innerHTML = `
+<div class="check-empty">
+持ち物はありません
+</div>
+`;
 
     }
 
     if(event.map){
+
         mapBtn.style.display="inline-block";
+
         mapBtn.onclick=()=>window.open(event.map,"_blank");
+
     }else{
+
         mapBtn.style.display="none";
+
+        mapBtn.onclick=null;
+
     }
 
     if(event.ticket){
+
         ticketBtn.style.display="inline-block";
+
         ticketBtn.onclick=()=>window.open(event.ticket,"_blank");
+
     }else{
+
         ticketBtn.style.display="none";
+
+        ticketBtn.onclick=null;
+
     }
 
     modal.style.display="block";
