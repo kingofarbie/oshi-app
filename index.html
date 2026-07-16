@@ -894,7 +894,54 @@ placeholder="カテゴリ名（例：推し活、仕事、旅行）">
 
 
 
+<!-- =====================
+     テンプレート編集
+===================== -->
 
+<div id="templateEditorModal" class="modal">
+
+    <div class="modal-content event-modal">
+
+        <h2 id="templateEditorTitle">
+            持ち物テンプレート
+        </h2>
+
+        <div id="templateEditorList">
+
+        </div>
+
+        <div class="checklist-add">
+
+            <input
+                type="text"
+                id="newTemplateItem"
+                placeholder="持ち物を入力">
+
+            <button
+                type="button"
+                onclick="addTemplateItem()">
+
+                ➕追加
+
+            </button>
+
+        </div>
+
+        <button onclick="saveTemplate()">
+
+            💾 保存
+
+        </button>
+
+        <button onclick="closeTemplateEditor()">
+
+            キャンセル
+
+        </button>
+
+    </div>
+
+</div>
 
 
 <!-- =====================
@@ -957,18 +1004,19 @@ onclick="switchTab('settingsPage',event)">
 </div>
 
 
-
-
 <!-- Firebase（順番固定・完成版） -->
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging-compat.js"></script>
 
-<!-- あなたのFirebase本体 -->
+<!-- Firebase -->
 <script src="firebase.js?v=3"></script>
 
-<!-- その他機能 -->
+<!-- データベース（←追加） -->
+<script src="db.js"></script>
+
+<!-- その他 -->
 <script src="theme.js"></script>
 <script src="category.js"></script>
 <script src="calendar.js"></script>
@@ -988,7 +1036,6 @@ if ("serviceWorker" in navigator) {
 
 }
 </script>
-
 
 </body>
 
