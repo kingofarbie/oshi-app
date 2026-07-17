@@ -1893,6 +1893,7 @@ function editCurrentEvent(){
     },100);
 
 }
+
 function deleteCurrentEvent(){
 
     if(!confirm("この予定を削除しますか？"))
@@ -1917,6 +1918,9 @@ function deleteCurrentEvent(){
 
 
 let checklistItems = [];
+
+let templateItems = [];
+let editingTemplateId = null;
 
 function addChecklistItem(){
 
@@ -2082,6 +2086,9 @@ function displayTemplateList(){
 
 }
 
+
+let editingTemplateId = null;
+
 function openTemplateEditor(id){
 
     const data = db.load();
@@ -2093,8 +2100,140 @@ function openTemplateEditor(id){
 
     if(!template) return;
 
-    alert(
-        "次に「" + template.name + "」の持ち物編集画面を作ります。"
+    editingTemplateId = id;
+
+    templateItems = JSON.parse(
+        JSON.stringify(template.items || [])
     );
 
+    document.getElementById(
+        "templateEditorTitle"
+    ).textContent =
+        "👜 " + template.name;
+
+    renderTemplateItems();
+
+    document.getElementById(
+        "templateEditorModal"
+    ).style.display = "block";
+
 }
+
+function closeTemplateEditor(){
+
+    const modal =
+        document.getElementById(
+            "templateEditorModal"
+        );
+
+    if(modal){
+
+        modal.style.display = "none";
+
+    }
+
+}
+
+
+function renderTemplateItems(){
+
+    const box =
+        document.getElementById("templateEditorList");
+
+    if(!box) return;
+
+    if(templateItems.length===0){
+
+        box.innerHTML =
+        "<div class='check-empty'>持ち物はありません</div>";
+
+        return;
+
+    }
+
+    box.innerHTML = templateItems.map((item,index)=>`
+
+<div class="check-item">
+
+<input
+type="checkbox"
+disabled>
+
+<span class="check-text">
+
+${item.text}
+
+</span>
+
+<button
+type="button"
+class="check-delete"
+onclick="removeTemplateItem(${index})">
+
+🗑️
+
+</button>
+
+</div>
+
+`).join("");
+
+}
+
+
+function removeTemplateItem(index){
+
+    templateItems.splice(index,1);
+
+    renderTemplateItems();
+
+}
+
+function addTemplateItem(){
+
+    const input =
+        document.getElementById("newTemplateItem");
+
+    const text =
+        input.value.trim();
+
+    if(!text) return;
+
+    templateItems.push({
+
+        text:text,
+        checked:false
+
+    });
+
+    input.value="";
+
+    renderTemplateItems();
+
+}
+
+
+function saveTemplate(){
+
+    const data = db.load();
+
+    const template =
+        data.settings.checklistTemplates.find(
+            t => t.id === editingTemplateId
+        );
+
+    if(!template) return;
+
+    template.items = JSON.parse(
+        JSON.stringify(templateItems)
+    );
+
+    db.save(data);
+
+    closeTemplateEditor();
+
+    displayTemplateList();
+
+}
+
+

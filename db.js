@@ -50,34 +50,38 @@ const DEFAULT_DB = {
 
 const db={
 
-    load(){
+load(){
 
-        const json=
-            localStorage.getItem(DB_KEY);
+    const data = localStorage.getItem(DB_KEY);
 
-        if(!json){
+    if(data){
+        return JSON.parse(data);
+    }
 
-            this.save(DEFAULT_DB);
+    const defaultData = {
 
-            return structuredClone(DEFAULT_DB);
+        settings:{
+            plan:"free",
+            notifications:{}
+        },
 
-        }
+        events:[],
 
-        try{
+        oshiList:[],
 
-            return JSON.parse(json);
+        categories:[],
 
-        }catch(e){
+        checklistTemplates:[]
+    };
 
-            console.error(e);
+    localStorage.setItem(
+        DB_KEY,
+        JSON.stringify(defaultData)
+    );
 
-            this.save(DEFAULT_DB);
+    return defaultData;
 
-            return structuredClone(DEFAULT_DB);
-
-        }
-
-    },
+}
 
     save(data){
 
