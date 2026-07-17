@@ -81,7 +81,7 @@ load(){
 
     return defaultData;
 
-}
+},
 
     save(data){
 
