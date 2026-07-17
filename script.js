@@ -2087,7 +2087,6 @@ function displayTemplateList(){
 }
 
 
-let editingTemplateId = null;
 
 function openTemplateEditor(id){
 
