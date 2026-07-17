@@ -486,13 +486,14 @@ function openEventForm(){
         return;
     }
 
+    loadTemplateSelect();
+
     document
     .getElementById(
         "eventFormModal"
     ).style.display = "block";
 
 }
-
 
 /* =====================
    保存
@@ -1393,6 +1394,8 @@ async function(){
     await initNotification();
 
     displayTemplateList();
+    
+    updateTemplateSelect();
 
 
 };
@@ -2086,6 +2089,32 @@ function displayTemplateList(){
 
 }
 
+function updateTemplateSelect(){
+
+    const select =
+        document.getElementById("templateSelect");
+
+    if(!select) return;
+
+    const data = db.load();
+
+    const list =
+        data.settings.checklistTemplates || [];
+
+    select.innerHTML =
+        '<option value="">テンプレートを選択</option>';
+
+    list.forEach(t=>{
+
+        select.innerHTML +=
+        `<option value="${t.id}">
+            ${t.name}
+        </option>`;
+
+    });
+
+}
+
 
 
 function openTemplateEditor(id){
@@ -2235,4 +2264,50 @@ function saveTemplate(){
 
 }
 
+function loadTemplateSelect(){
+
+    const select =
+        document.getElementById("templateSelect");
+
+    if(!select) return;
+
+    const data = db.load();
+
+    const list =
+        data.settings.checklistTemplates || [];
+
+    select.innerHTML =
+        `<option value="">テンプレートを選択</option>` +
+        list.map(t=>`
+<option value="${t.id}">
+${t.name}
+</option>
+`).join("");
+
+}
+
+function applyTemplate(){
+
+    const select =
+        document.getElementById("templateSelect");
+
+    if(!select.value) return;
+
+    const data = db.load();
+
+    const template =
+        data.settings.checklistTemplates.find(
+            t=>t.id==select.value
+        );
+
+    if(!template) return;
+
+    checklistItems =
+        JSON.parse(
+            JSON.stringify(template.items || [])
+        );
+
+    renderChecklistEditor();
+
+}
 
