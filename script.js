@@ -1510,10 +1510,19 @@ function selectEvent(id){
         : [];
 
     renderChecklistEditor();
+    
+    loadTemplateSelect();
+    
+    document.getElementById("templateSelect").value = "";
+
+
+
 
     document.getElementById("eventFormModal").style.display = "block";
 
 }
+
+
 function closeEventModal(){
 
     document.getElementById(
