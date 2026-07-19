@@ -2380,3 +2380,88 @@ function addComment(){
 
 }
 
+
+function saveMemo(){
+
+    const text =
+        document.getElementById("memoText").value.trim();
+
+    if(!text){
+        return;
+    }
+
+    const data = db.load();
+
+    if(!data.dayMemories){
+        data.dayMemories = {};
+    }
+
+    if(!data.dayMemories[selectedCalendarDate]){
+
+        data.dayMemories[selectedCalendarDate]={
+
+            memo:[],
+
+            photos:[],
+
+            videos:[],
+
+            expenses:[],
+
+            rating:0,
+
+            comment:""
+
+        };
+
+    }
+
+    data.dayMemories[selectedCalendarDate].memo.push({
+
+        id:Date.now(),
+
+        text:text
+
+    });
+
+    db.save(data);
+
+    closeMemoModal();
+    
+    renderDayMemory();
+
+}
+
+function renderDayMemory(){
+
+    const area =
+        document.getElementById("memoList")
+
+    if(!area) return;
+
+    const data = db.load();
+
+    const day =
+        data.dayMemories?.[selectedCalendarDate];
+
+    if(!day || day.memo.length===0){
+
+        area.innerHTML =
+            "<div class='check-empty'>まだメモはありません</div>";
+
+        return;
+
+    }
+
+    area.innerHTML = day.memo.map(m=>`
+
+<div class="memory-card">
+
+${m.text}
+
+</div>
+
+`).join("");
+
+}
+
