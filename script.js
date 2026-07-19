@@ -488,10 +488,14 @@ function openEventForm(){
 
     loadTemplateSelect();
 
-    document
-    .getElementById(
-        "eventFormModal"
-    ).style.display = "block";
+    document.getElementById("event-start").value =
+        selectedCalendarDate + "T12:00";
+
+    document.getElementById("event-end").value =
+        selectedCalendarDate + "T13:00";
+
+    document.getElementById("eventFormModal").style.display =
+        "block";
 
 }
 
@@ -799,6 +803,8 @@ function deleteEvent(id){
     renderCalendar();
 
     displayHomeSchedule();
+
+    displaySelectedDateEvents();
     
 }
 
@@ -2317,6 +2323,60 @@ function applyTemplate(){
         );
 
     renderChecklistEditor();
+
+}
+
+
+function openDayMemory(){
+
+    alert("1日手帳は次のStepで作成します😊");
+
+}
+
+
+
+function addPhoto(){
+
+    alert("写真追加（次で実装します）");
+
+}
+
+function addVideo(){
+
+    alert("動画追加（次で実装します）");
+
+}
+
+function addMemo(){
+
+    document.getElementById("memoText").value="";
+
+    document.getElementById("memoModal").style.display="block";
+
+}
+
+function closeMemoModal(){
+
+    document.getElementById("memoModal").style.display="none";
+
+}
+
+
+function addExpense(){
+
+    alert("支出追加（次で実装します）");
+
+}
+
+function addRating(){
+
+    alert("評価追加（次で実装します）");
+
+}
+
+function addComment(){
+
+    alert("今日の一言追加（次で実装します）");
 
 }
 

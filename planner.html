@@ -4,14 +4,6 @@
 
 <div id="dayPlanner" class="card" style="display:none;">
 
-    <button
-        class="back-button"
-        onclick="backToCalendar()">
-
-        ← カレンダーへ戻る
-
-    </button>
-
     <h2 id="plannerTitle">
 
         📅
@@ -24,57 +16,123 @@
 
     <hr>
 
-    <h3>
+<h3>📝 今日の思い出</h3>
 
-        📝 今日の思い出
+<div id="plannerMemory">
 
-    </h3>
-
-    <div id="plannerMemory">
-
-        <div class="memory-item">
-
-            📷 写真
-            <button>追加</button>
-
+    <div class="memory-section">
+        <div class="memory-header">
+            <span>📷 写真</span>
+            <button onclick="addPhoto()">＋追加</button>
         </div>
 
-        <div class="memory-item">
+        <div id="photoList" class="memory-list">
+            写真はありません
+        </div>
+    </div>
 
-            📹 動画
-            <button>追加</button>
-
+    <div class="memory-section">
+        <div class="memory-header">
+            <span>🎥 動画</span>
+            <button onclick="addVideo()">＋追加</button>
         </div>
 
-        <div class="memory-item">
+        <div id="videoList" class="memory-list">
+            動画はありません
+        </div>
+    </div>
 
-            📝 メモ
-            <button>編集</button>
-
+    <div class="memory-section">
+        <div class="memory-header">
+            <span>📝 メモ</span>
+            <button onclick="addMemo()">＋追加</button>
         </div>
 
-        <div class="memory-item">
+        <div id="memoList" class="memory-list">
+            メモはありません
+        </div>
+    </div>
 
-            💰 今日使った金額
-            <button>入力</button>
-
+    <div class="memory-section">
+        <div class="memory-header">
+            <span>💰 支出</span>
+            <button onclick="addExpense()">＋追加</button>
         </div>
 
-        <div class="memory-item">
+        <div id="expenseList" class="memory-list">
+            支出はありません
+        </div>
+    </div>
 
-            ⭐ 今日の評価
-            <button>入力</button>
-
+    <div class="memory-section">
+        <div class="memory-header">
+            <span>⭐ 評価</span>
+            <button onclick="addRating()">＋追加</button>
         </div>
 
-        <div class="memory-item">
+        <div id="ratingView" class="memory-list">
+            未評価
+        </div>
+    </div>
 
-            😊 今日の一言
-            <button>入力</button>
-
+    <div class="memory-section">
+        <div class="memory-header">
+            <span>😊 今日の一言</span>
+            <button onclick="addComment()">＋追加</button>
         </div>
 
+        <div id="commentView" class="memory-list">
+            まだありません
+        </div>
     </div>
 
 </div>
 
+
+<div id="plannerBottomBar">
+
+    <button onclick="backToCalendar()">
+        ← 戻る
+    </button>
+
+    <button onclick="openEventForm()">
+        ➕ 予定
+    </button>
+
+    <button onclick="openDayMemory()">
+        📝 手帳
+    </button>
+
+</div>
+
+
+</div>
+
+
+<!-- =====================
+メモ追加
+===================== -->
+
+<div id="memoModal" class="modal">
+
+    <div class="modal-content">
+
+        <h2>📝 メモ追加</h2>
+
+        <textarea
+            id="memoText"
+            placeholder="今日の思い出を書こう..."
+            rows="8">
+        </textarea>
+
+        <button onclick="saveMemo()">
+            💾 保存
+        </button>
+
+        <button onclick="closeMemoModal()">
+            キャンセル
+        </button>
+
+    </div>
+
+</div>

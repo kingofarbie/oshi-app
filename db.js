@@ -24,6 +24,8 @@ const DEFAULT_DB = {
     },
 
     events:[],
+    
+    dayMemories:{},
 
     oshiList:[],
 

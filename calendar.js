@@ -401,98 +401,90 @@ function updateSelectedDateArea(){
 
 function displaySelectedDateEvents(){
 
-
     const box =
         document.getElementById(
-            'selected-date-events'
+            "selected-date-events"
         );
 
-
-    if(!box)
-        return;
-
-
+    if(!box) return;
 
     const events =
         db.load().events;
 
-
-
     const list =
         events.filter(
             e =>
-            selectedCalendarDate
-            &&
-            e.date.startsWith(
-                selectedCalendarDate
-            )
+            selectedCalendarDate &&
+            e.date.startsWith(selectedCalendarDate)
         );
 
+    if(list.length===0){
 
+        box.innerHTML="該当なし";
 
-    box.innerHTML =
+        return;
 
+    }
 
-    list.length
-
-    ?
-
-    list.map(e=>`
+    box.innerHTML=list.map(e=>`
 
 <div class="event-card">
 
-<div class="event-card-title">
-${getCategoryInfo(e.category)?.icon || "📌"}
-${e.title}
+    <div class="event-card-title">
+        ${getCategoryInfo(e.category)?.icon || "📌"}
+        ${e.title}
+    </div>
+
+    ${
+        e.start
+        ?
+        `<div>
+            🕒 ${e.start.substring(11,16)}
+            ${
+                e.end
+                ?
+                " ～ " + e.end.substring(11,16)
+                :
+                ""
+            }
+        </div>`
+        :
+        ""
+    }
+
+    ${
+        e.place
+        ?
+        `<div>📍 ${e.place}</div>`
+        :
+        ""
+    }
+
+    <div class="event-button-area">
+
+        <button
+        class="icon-btn"
+        onclick="selectEvent(${e.id})">
+
+        ✏️
+
+        </button>
+
+        <button
+        class="icon-btn delete-btn"
+        onclick="deleteEvent(${e.id})">
+
+        🗑️
+
+        </button>
+
+    </div>
+
 </div>
 
-<div>
-📅 ${e.date}
-</div>
-
-${e.place ? `
-<div>
-📍 ${e.place}
-</div>
-` : ''}
-
-${e.meeting ? `
-<div>
-⏰ ${e.meeting}
-</div>
-` : ''}
-
-${e.companion ? `
-<div>
-👥 ${e.companion}
-</div>
-` : ''}
-
-${e.map ? `
-<div>
-🗺 地図登録済み
-</div>
-` : ''}
-
-${e.ticket ? `
-<div>
-🎫 チケット登録済み
-</div>
-` : ''}
-
-</div>
-
-`).join('')
-
-
-:
-
-'該当なし';
-
-
+`).join("");
 
 }
-
 
 
 function startPress(date){
@@ -542,13 +534,14 @@ function addEventFromMenu(){
 
     selectedCalendarDate = menuDate;
 
+    openEventForm();
+
+
     const start = menuDate + "T18:00";
     const end   = menuDate + "T21:00";
 
     document.getElementById("event-start").value = start;
     document.getElementById("event-end").value = end;
-
-    openEventForm();
 
 }
 
