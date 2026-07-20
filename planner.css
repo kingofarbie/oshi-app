@@ -354,7 +354,18 @@
 
 .memory-header span{
 
+    flex:1;
+
+    min-width:0;
+
+    white-space:nowrap;
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
+
     font-size:18px;
+
     font-weight:bold;
 
 }
@@ -363,9 +374,9 @@
 
     background:none;
     border:none;
-
-    color:#ff5f8f;
-
+    
+    color:#fff;
+    
     font-size:20px;
 
     font-weight:bold;
