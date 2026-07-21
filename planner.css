@@ -345,49 +345,39 @@
 .memory-header{
 
     display:flex;
-    justify-content:space-between;
+
     align-items:center;
 
-    padding:10px 0;
+    justify-content:space-between;
 
 }
 
 .memory-header span{
 
-    flex:1;
-
-    min-width:0;
-
-    white-space:nowrap;
-
-    overflow:hidden;
-
-    text-overflow:ellipsis;
+    color:var(--text);
 
     font-size:18px;
 
     font-weight:bold;
-    
-    color:var(--text);
 
 }
 
 .memory-header button{
 
     background:none;
+
     border:none;
-    
+
     color:#fff;
-    
-    font-size:20px;
+
+    font-size:24px;
 
     font-weight:bold;
 
     cursor:pointer;
 
-    padding:0 4px;
-
 }
+
 
 .memory-list{
 
