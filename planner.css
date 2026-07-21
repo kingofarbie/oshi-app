@@ -342,39 +342,46 @@
 
 }
 
+
 .memory-header{
 
-    display:flex;
+    display:grid;
+
+    grid-template-columns:1fr auto;
 
     align-items:center;
 
-    justify-content:space-between;
+    gap:8px;
 
 }
 
-.memory-header span{
 
-    color:var(--text);
+.memory-header{
 
-    font-size:18px;
+    display:grid;
 
-    font-weight:bold;
+    grid-template-columns:1fr auto;
+
+    align-items:center;
+
+    gap:8px;
 
 }
+
 
 .memory-header button{
 
-    background:none;
+    width:28px;
+    height:28px;
 
+    padding:0;
+
+    background:none;
     border:none;
 
     color:#fff;
 
-    font-size:24px;
-
-    font-weight:bold;
-
-    cursor:pointer;
+    font-size:22px;
 
 }
 
