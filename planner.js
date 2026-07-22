@@ -436,3 +436,28 @@ function backToCalendar(){
     document.getElementById("calendar").style.display = "block";
 
 }
+
+
+
+
+/* =====================
+   写真追加
+===================== */
+
+function addPhoto(){
+
+    document
+        .getElementById("photoPicker")
+        .click();
+
+}
+
+function photoSelected(event){
+
+    const file = event.target.files[0];
+
+    if(!file) return;
+
+    alert(file.name);
+
+}

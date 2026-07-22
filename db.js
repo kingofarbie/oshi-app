@@ -27,6 +27,8 @@ const DEFAULT_DB = {
     
     dayMemories:{},
 
+    dayMemories:{},
+
     oshiList:[],
 
     categories:[
