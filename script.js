@@ -2345,6 +2345,8 @@ function addPhoto(){
 
 function photoSelected(event){
 
+    alert("photoSelected");
+
     const file = event.target.files[0];
 
     if(!file) return;
