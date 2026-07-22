@@ -2349,6 +2349,11 @@ function photoSelected(event){
 
     const file = event.target.files[0];
 
+
+alert(file.name);
+
+
+
     if(!file) return;
 
     const reader = new FileReader();
