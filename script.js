@@ -2500,6 +2500,8 @@ function renderDayMemory(){
     const day =
         data.dayMemories?.[selectedCalendarDate];
 
+        alert(selectedCalendarDate);
+
     /* =====================
        メモ
     ===================== */
