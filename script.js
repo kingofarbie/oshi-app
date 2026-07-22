@@ -2337,7 +2337,50 @@ function openDayMemory(){
 
 function addPhoto(){
 
-    alert("写真追加（次で実装します）");
+    document.getElementById("photoPicker").click();
+
+}
+
+function photoSelected(event){
+
+    const file = event.target.files[0];
+    if(!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function(e){
+
+        const data = db.load();
+
+        if(!data.dayMemories){
+            data.dayMemories = {};
+        }
+
+        if(!data.dayMemories[selectedCalendarDate]){
+
+            data.dayMemories[selectedCalendarDate] = {
+                memo:[],
+                photos:[],
+                videos:[],
+                expenses:[],
+                rating:0,
+                comment:""
+            };
+
+        }
+
+        data.dayMemories[selectedCalendarDate].photos.push({
+            id:Date.now(),
+            src:e.target.result
+        });
+
+        db.save(data);
+
+        renderDayMemory();
+
+    };
+
+    reader.readAsDataURL(file);
 
 }
 
@@ -2434,26 +2477,24 @@ function saveMemo(){
 
 function renderDayMemory(){
 
-    const area =
-        document.getElementById("memoList")
-
-    if(!area) return;
-
     const data = db.load();
 
     const day =
         data.dayMemories?.[selectedCalendarDate];
 
-    if(!day || day.memo.length===0){
+    /* =====================
+       メモ
+    ===================== */
 
-        area.innerHTML =
-            "<div class='check-empty'>まだメモはありません</div>";
+    const memoArea =
+        document.getElementById("memoList");
 
-        return;
+    if(memoArea){
 
-    }
+        if(day && day.memo && day.memo.length){
 
-    area.innerHTML = day.memo.map(m=>`
+            memoArea.innerHTML =
+                day.memo.map(m=>`
 
 <div class="memory-card">
 
@@ -2463,5 +2504,42 @@ ${m.text}
 
 `).join("");
 
-}
+        }else{
 
+            memoArea.innerHTML =
+                "<div class='check-empty'>まだメモはありません</div>";
+
+        }
+
+    }
+
+    /* =====================
+       写真
+    ===================== */
+
+    const photoArea =
+        document.getElementById("photoList");
+
+    if(photoArea){
+
+        if(day && day.photos && day.photos.length){
+
+            photoArea.innerHTML =
+                day.photos.map(p=>`
+
+<img
+src="${p.src}"
+class="memory-photo">
+
+`).join("");
+
+        }else{
+
+            photoArea.innerHTML =
+                "写真はありません";
+
+        }
+
+    }
+
+}
