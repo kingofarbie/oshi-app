@@ -436,3 +436,27 @@
     display:block;
 
 }
+
+
+
+.planner-top-bar{
+
+    margin-bottom:15px;
+
+}
+
+.planner-top-bar button{
+
+    padding:10px 18px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:var(--accent);
+
+    color:#fff;
+
+    font-weight:bold;
+
+}
