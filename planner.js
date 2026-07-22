@@ -337,6 +337,8 @@ e.companion
     timeline.innerHTML =
         html;
 
+        renderDayMemory();
+
 
 
     // 現在時刻へ移動

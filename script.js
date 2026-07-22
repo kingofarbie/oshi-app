@@ -2341,9 +2341,12 @@ function addPhoto(){
 
 }
 
+
+
 function photoSelected(event){
 
     const file = event.target.files[0];
+
     if(!file) return;
 
     const reader = new FileReader();
@@ -2358,20 +2361,25 @@ function photoSelected(event){
 
         if(!data.dayMemories[selectedCalendarDate]){
 
-            data.dayMemories[selectedCalendarDate] = {
+            data.dayMemories[selectedCalendarDate]={
+
                 memo:[],
                 photos:[],
                 videos:[],
                 expenses:[],
                 rating:0,
                 comment:""
+
             };
 
         }
 
         data.dayMemories[selectedCalendarDate].photos.push({
+
             id:Date.now(),
+
             src:e.target.result
+
         });
 
         db.save(data);
@@ -2382,7 +2390,10 @@ function photoSelected(event){
 
     reader.readAsDataURL(file);
 
+    event.target.value="";
+
 }
+
 
 function addVideo(){
 
