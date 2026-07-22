@@ -2524,13 +2524,13 @@ ${m.text}
 
         if(day && day.photos && day.photos.length){
 
-            photoArea.innerHTML =
-                day.photos.map(p=>`
-
-<img
-src="${p.src}"
-class="memory-photo">
-
+photoArea.innerHTML =
+    day.photos.map(p => `
+<div class="memory-photo-box">
+    <img
+        src="${p.src}"
+        class="memory-photo">
+</div>
 `).join("");
 
         }else{
