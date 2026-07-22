@@ -2345,14 +2345,7 @@ function addPhoto(){
 
 function photoSelected(event){
 
-    alert("photoSelected");
-
     const file = event.target.files[0];
-
-
-alert(file.name);
-
-
 
     if(!file) return;
 
@@ -2360,49 +2353,97 @@ alert(file.name);
 
     reader.onload = function(e){
 
-        const data = db.load();
+        const img = new Image();
 
-        if(!data.dayMemories){
-            data.dayMemories = {};
-        }
+        img.onload = function(){
 
-        if(!data.dayMemories[selectedCalendarDate]){
+            // 最大サイズ
+            const MAX = 1000;
 
-            data.dayMemories[selectedCalendarDate]={
+            let width = img.width;
+            let height = img.height;
 
-                memo:[],
-                photos:[],
-                videos:[],
-                expenses:[],
-                rating:0,
-                comment:""
+            if(width > height){
 
-            };
+                if(width > MAX){
+                    height *= MAX / width;
+                    width = MAX;
+                }
 
-        }
+            }else{
 
-        data.dayMemories[selectedCalendarDate].photos.push({
+                if(height > MAX){
+                    width *= MAX / height;
+                    height = MAX;
+                }
 
-            id:Date.now(),
+            }
 
-            src:e.target.result
+            const canvas = document.createElement("canvas");
+            canvas.width = width;
+            canvas.height = height;
 
-        });
+            const ctx = canvas.getContext("2d");
 
-        db.save(data);
+            ctx.drawImage(
+                img,
+                0,
+                0,
+                width,
+                height
+            );
 
-        alert("保存完了");
+            // JPEG品質 80%
+            const smallImage =
+                canvas.toDataURL(
+                    "image/jpeg",
+                    0.8
+                );
 
-        renderDayMemory();
+            const data = db.load();
+
+            if(!data.dayMemories){
+                data.dayMemories = {};
+            }
+
+            if(!data.dayMemories[selectedCalendarDate]){
+
+                data.dayMemories[selectedCalendarDate]={
+
+                    memo:[],
+                    photos:[],
+                    videos:[],
+                    expenses:[],
+                    rating:0,
+                    comment:""
+
+                };
+
+            }
+
+            data.dayMemories[selectedCalendarDate].photos.push({
+
+                id:Date.now(),
+
+                src:smallImage
+
+            });
+
+            db.save(data);
+
+            renderDayMemory();
+
+        };
+
+        img.src = e.target.result;
 
     };
 
     reader.readAsDataURL(file);
 
-    event.target.value="";
+    event.target.value = "";
 
 }
-
 
 function addVideo(){
 
