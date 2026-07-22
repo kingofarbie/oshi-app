@@ -10,6 +10,8 @@
 ===================== */
 
 function showPlanner(date){
+    
+    selectedCalendarDate = date;
 
     const planner =
         document.getElementById("dayPlanner");
