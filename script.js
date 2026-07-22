@@ -2391,6 +2391,8 @@ alert(file.name);
 
         db.save(data);
 
+        alert("保存完了");
+
         renderDayMemory();
 
     };
