@@ -442,5 +442,17 @@ function backToCalendar(){
 }
 
 
+function openPhotoViewer(src){
 
+    document.getElementById("photoViewerImage").src = src;
+
+    document.getElementById("photoViewer").style.display = "flex";
+
+}
+
+function closePhotoViewer(){
+
+    document.getElementById("photoViewer").style.display = "none";
+
+}
 

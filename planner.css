@@ -460,3 +460,36 @@
     font-weight:bold;
 
 }
+
+
+/* =====================
+写真拡大表示
+===================== */
+
+.photo-viewer{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.9);
+
+    display:none;
+
+    justify-content:center;
+
+    align-items:center;
+
+    z-index:99999;
+
+}
+
+.photo-viewer img{
+
+    max-width:95%;
+
+    max-height:90%;
+
+    border-radius:12px;
+
+}

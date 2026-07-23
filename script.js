@@ -2543,8 +2543,6 @@ function renderDayMemory(){
     const day =
         data.dayMemories?.[selectedCalendarDate];
 
-        alert(selectedCalendarDate);
-
     /* =====================
        メモ
     ===================== */
@@ -2590,9 +2588,12 @@ ${m.text}
 photoArea.innerHTML =
     day.photos.map(p => `
 <div class="memory-photo-box">
-    <img
-        src="${p.src}"
-        class="memory-photo">
+
+<img
+src="${p.src}"
+class="memory-photo"
+onclick="openPhotoViewer('${p.src}')">
+        
 </div>
 `).join("");
 
