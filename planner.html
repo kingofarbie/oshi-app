@@ -156,8 +156,22 @@
     onchange="photoSelected(event)">
 
 
-<div id="photoViewer" class="photo-viewer" onclick="closePhotoViewer()">
+<div id="photoViewer" class="photo-viewer">
 
-    <img id="photoViewerImage">
+    <button
+        class="photo-close"
+        onclick="closePhotoViewer()">
+        ✕
+    </button>
+
+<button
+    class="photo-delete"
+    onclick="deleteCurrentPhoto()">
+    🗑
+</button>
+    <img
+        id="photoViewerImage"
+        onclick="closePhotoViewer()">
 
 </div>
+

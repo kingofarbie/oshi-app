@@ -493,3 +493,31 @@
     border-radius:12px;
 
 }
+
+.photo-delete{
+
+    position:absolute;
+
+    top:20px;
+
+    right:70px;
+
+    width:44px;
+
+    height:44px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:#ff4444;
+
+    color:#fff;
+
+    font-size:20px;
+
+    cursor:pointer;
+
+    z-index:100000;
+
+}

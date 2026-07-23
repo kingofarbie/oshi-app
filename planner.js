@@ -455,4 +455,8 @@ function closePhotoViewer(){
     document.getElementById("photoViewer").style.display = "none";
 
 }
+function deleteCurrentPhoto(){
 
+    alert("削除ボタンが押されました");
+
+}
