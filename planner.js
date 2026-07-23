@@ -4,6 +4,10 @@
 /* =====================
    1日手帳ビュー v2
 ===================== */
+
+
+let currentPhotoSrc = "";
+
 /* =====================
    1日手帳ビュー
    左時間固定 + 予定自由配置版
@@ -444,19 +448,41 @@ function backToCalendar(){
 
 function openPhotoViewer(src){
 
+    currentPhotoSrc = src;
+
     document.getElementById("photoViewerImage").src = src;
 
     document.getElementById("photoViewer").style.display = "flex";
 
 }
 
+
 function closePhotoViewer(){
 
     document.getElementById("photoViewer").style.display = "none";
 
 }
+
 function deleteCurrentPhoto(){
 
-    alert("削除ボタンが押されました");
+    if(!confirm("この写真を削除しますか？")){
+        return;
+    }
+
+    const data = db.load();
+
+    const day = data.dayMemories?.[selectedCalendarDate];
+
+    if(!day) return;
+
+    day.photos = day.photos.filter(
+        p => p.src !== currentPhotoSrc
+    );
+
+    db.save(data);
+
+    closePhotoViewer();
+
+    renderDayMemory();
 
 }
