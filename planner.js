@@ -20,6 +20,8 @@ let photoTranslateY = 0;
 let dragStartX = 0;
 let dragStartY = 0;
 
+let lastTapTime = 0;
+
 /* =====================
    1日手帳ビュー
    左時間固定 + 予定自由配置版
@@ -661,5 +663,40 @@ event.preventDefault();
 
     dragStartX = event.touches[0].clientX;
     dragStartY = event.touches[0].clientY;
+
+}
+
+
+function photoDoubleTap(){
+
+    const now = Date.now();
+
+    if(now - lastTapTime < 300){
+
+        if(photoScale === 1){
+
+            photoScale = 2;
+
+        }else{
+
+            photoScale = 1;
+
+            photoTranslateX = 0;
+            photoTranslateY = 0;
+
+        }
+
+        document.getElementById("photoViewerImage").style.transform =
+            `translate(${photoTranslateX}px, ${photoTranslateY}px) scale(${photoScale})`;
+
+    }
+
+    lastTapTime = now;
+
+}
+
+function photoDragEnd(event){
+
+    lastDistance = 0;
 
 }
