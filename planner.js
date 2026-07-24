@@ -7,6 +7,8 @@
 
 
 let currentPhotoSrc = "";
+let currentPhotoIndex = 0;
+let touchStartX = 0;
 
 /* =====================
    1日手帳ビュー
@@ -448,6 +450,14 @@ function backToCalendar(){
 
 function openPhotoViewer(src){
 
+    const data = db.load();
+
+    const photos =
+        data.dayMemories?.[selectedCalendarDate]?.photos || [];
+
+    currentPhotoIndex =
+        photos.findIndex(p => p.src === src);
+
     currentPhotoSrc = src;
 
     document.getElementById("photoViewerImage").src = src;
@@ -455,7 +465,6 @@ function openPhotoViewer(src){
     document.getElementById("photoViewer").style.display = "flex";
 
 }
-
 
 function closePhotoViewer(){
 
@@ -484,5 +493,25 @@ function deleteCurrentPhoto(){
     closePhotoViewer();
 
     renderDayMemory();
+
+}
+
+
+function photoSwipe(event){
+
+    const touchEndX = event.changedTouches[0].clientX;
+
+    const diff = touchEndX - touchStartX;
+
+    // 少し動いただけは無視
+    if(Math.abs(diff) < 50){
+        return;
+    }
+
+    if(diff < 0){
+        alert("← 次の写真");
+    }else{
+        alert("→ 前の写真");
+    }
 
 }

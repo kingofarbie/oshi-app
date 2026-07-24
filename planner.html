@@ -156,8 +156,12 @@
     onchange="photoSelected(event)">
 
 
-<div id="photoViewer" class="photo-viewer">
-
+<div
+    id="photoViewer"
+    class="photo-viewer"
+    ontouchstart="touchStartX = event.touches[0].clientX"
+    ontouchend="photoSwipe(event)">
+    
     <button
         class="photo-close"
         onclick="closePhotoViewer()">
