@@ -473,6 +473,12 @@ function closePhotoViewer(){
 
     document.getElementById("photoViewer").style.display = "none";
 
+    photoScale = 1;
+    lastDistance = 0;
+
+    document.getElementById("photoViewerImage").style.transform =
+        "scale(1)";
+
 }
 
 function deleteCurrentPhoto(){
@@ -557,10 +563,13 @@ function showPhoto(index){
 
 function photoPinch(event){
 
-    if(event.touches.length !== 2){
-        return;
-    }
+if(event.touches.length !== 2){
 
+    lastDistance = 0;
+
+    return;
+
+}
     event.preventDefault();
 
     const x =
