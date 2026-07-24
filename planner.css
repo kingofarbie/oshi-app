@@ -482,6 +482,8 @@
 
     z-index:99999;
 
+    touch-action:none;
+
 }
 
 .photo-viewer img{
