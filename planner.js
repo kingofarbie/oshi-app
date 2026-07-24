@@ -643,6 +643,9 @@ function photoDragStart(event){
         return;
     }
 
+event.preventDefault();
+
+
     // 1本指だけ
     if(event.touches.length !== 1){
         return;
