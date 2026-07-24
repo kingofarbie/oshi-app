@@ -176,7 +176,11 @@
 
 <img
     id="photoViewerImage"
-    ontouchmove="photoPinch(event)">
+    ontouchstart="photoDragStart(event)"
+    ontouchmove="photoPinch(event)"
+    ontouchend="photoDragEnd(event)">
 
+
+    
 </div>
 

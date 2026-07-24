@@ -13,6 +13,13 @@ let touchStartX = 0;
 let photoScale = 1;
 let lastDistance = 0;
 
+
+let photoTranslateX = 0;
+let photoTranslateY = 0;
+
+let dragStartX = 0;
+let dragStartY = 0;
+
 /* =====================
    1日手帳ビュー
    左時間固定 + 予定自由配置版
@@ -563,6 +570,29 @@ function showPhoto(index){
 
 function photoPinch(event){
 
+// 拡大中は1本指でドラッグ
+if(photoScale > 1 && event.touches.length === 1){
+
+    event.preventDefault();
+
+    photoTranslateX +=
+        event.touches[0].clientX - dragStartX;
+
+    photoTranslateY +=
+        event.touches[0].clientY - dragStartY;
+
+    dragStartX = event.touches[0].clientX;
+    dragStartY = event.touches[0].clientY;
+
+    document.getElementById("photoViewerImage").style.transform =
+        `translate(${photoTranslateX}px, ${photoTranslateY}px) scale(${photoScale})`;
+
+    return;
+
+}
+
+
+
 if(event.touches.length !== 2){
 
     lastDistance = 0;
@@ -602,5 +632,23 @@ if(event.touches.length !== 2){
         `scale(${photoScale})`;
 
     lastDistance = distance;
+
+}
+
+
+function photoDragStart(event){
+
+    // 拡大していない時はドラッグしない
+    if(photoScale <= 1){
+        return;
+    }
+
+    // 1本指だけ
+    if(event.touches.length !== 1){
+        return;
+    }
+
+    dragStartX = event.touches[0].clientX;
+    dragStartY = event.touches[0].clientY;
 
 }
