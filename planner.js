@@ -10,6 +10,9 @@ let currentPhotoSrc = "";
 let currentPhotoIndex = 0;
 let touchStartX = 0;
 
+let photoScale = 1;
+let lastDistance = 0;
+
 /* =====================
    1日手帳ビュー
    左時間固定 + 予定自由配置版
@@ -545,5 +548,46 @@ function showPhoto(index){
 
     document.getElementById("photoViewerImage").src =
         currentPhotoSrc;
+
+}
+
+function photoPinch(event){
+
+    if(event.touches.length !== 2){
+        return;
+    }
+
+    event.preventDefault();
+
+    const x =
+        event.touches[0].clientX -
+        event.touches[1].clientX;
+
+    const y =
+        event.touches[0].clientY -
+        event.touches[1].clientY;
+
+    const distance =
+        Math.sqrt(x * x + y * y);
+
+    if(lastDistance === 0){
+        lastDistance = distance;
+        return;
+    }
+
+    photoScale *= distance / lastDistance;
+
+    if(photoScale < 1){
+        photoScale = 1;
+    }
+
+    if(photoScale > 4){
+        photoScale = 4;
+    }
+
+    document.getElementById("photoViewerImage").style.transform =
+        `scale(${photoScale})`;
+
+    lastDistance = distance;
 
 }
