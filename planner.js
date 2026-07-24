@@ -508,10 +508,42 @@ function photoSwipe(event){
         return;
     }
 
-    if(diff < 0){
-        alert("← 次の写真");
-    }else{
-        alert("→ 前の写真");
+if(diff < 0){
+
+    showPhoto(currentPhotoIndex + 1);
+
+}else{
+
+    showPhoto(currentPhotoIndex - 1);
+
+}
+}
+
+function showPhoto(index){
+
+    const data = db.load();
+
+    const photos =
+        data.dayMemories?.[selectedCalendarDate]?.photos || [];
+
+    if(photos.length === 0){
+        return;
     }
+
+    // 最後まで行ったら最初へ
+    if(index >= photos.length){
+        index = 0;
+    }
+
+    // 最初より前なら最後へ
+    if(index < 0){
+        index = photos.length - 1;
+    }
+
+    currentPhotoIndex = index;
+    currentPhotoSrc = photos[index].src;
+
+    document.getElementById("photoViewerImage").src =
+        currentPhotoSrc;
 
 }
