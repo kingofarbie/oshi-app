@@ -474,17 +474,25 @@ function openPhotoViewer(src){
 
     document.getElementById("photoViewer").style.display = "flex";
 
+    document.body.style.overflow = "hidden";
+
 }
+
 
 function closePhotoViewer(){
 
     document.getElementById("photoViewer").style.display = "none";
 
+    document.body.style.overflow = "";
+
     photoScale = 1;
     lastDistance = 0;
 
+    photoTranslateX = 0;
+    photoTranslateY = 0;
+
     document.getElementById("photoViewerImage").style.transform =
-        "scale(1)";
+        "translate(0px,0px) scale(1)";
 
 }
 
