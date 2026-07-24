@@ -502,6 +502,10 @@ function deleteCurrentPhoto(){
 
 function photoSwipe(event){
 
+    if(photoScale > 1){
+    return;
+}
+
     const touchEndX = event.changedTouches[0].clientX;
 
     const diff = touchEndX - touchStartX;
