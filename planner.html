@@ -156,30 +156,21 @@
     onchange="photoSelected(event)">
 
 
-<div
-    id="photoViewer"
-    class="photo-viewer"
-    ontouchstart="touchStartX = event.touches[0].clientX"
-    ontouchend="">
+<div id="photoViewer" class="photo-viewer">
 
-    
     <button
         class="photo-close"
         onclick="closePhotoViewer()">
         ✕
     </button>
 
-<button
-    class="photo-delete"
-    onclick="deleteCurrentPhoto()">
-    🗑
-</button>
+    <button
+        class="photo-delete"
+        onclick="deleteCurrentPhoto()">
+        🗑
+    </button>
 
-<img
-    id="photoViewerImage"
-    ontouchstart="photoDragStart(event)"
-    ontouchmove="photoPinch(event)"
-    ontouchend="photoDragEnd(event);photoDoubleTap()">
+    <img
+        id="photoViewerImage">
 
 </div>
-
