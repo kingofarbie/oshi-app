@@ -523,32 +523,6 @@ function deleteCurrentPhoto(){
 }
 
 
-function photoSwipe(event){
-
-    if(photoScale > 1){
-    return;
-}
-
-    const touchEndX = event.changedTouches[0].clientX;
-
-    const diff = touchEndX - touchStartX;
-
-    // 少し動いただけは無視
-    if(Math.abs(diff) < 50){
-        return;
-    }
-
-if(diff < 0){
-
-    showPhoto(currentPhotoIndex + 1);
-
-}else{
-
-    showPhoto(currentPhotoIndex - 1);
-
-}
-}
-
 function showPhoto(index){
 
     const data = db.load();
@@ -578,54 +552,67 @@ function showPhoto(index){
 
 }
 
-function photoPinch(event){
 
-// 拡大中は1本指でドラッグ
-if(photoScale > 1 && event.touches.length === 1){
+
+function photoDragStart(event){
+
+    if(photoScale <= 1) return;
+
+    if(event.touches.length !== 1) return;
 
     event.preventDefault();
-
-    photoTranslateX +=
-        event.touches[0].clientX - dragStartX;
-
-    photoTranslateY +=
-        event.touches[0].clientY - dragStartY;
 
     dragStartX = event.touches[0].clientX;
     dragStartY = event.touches[0].clientY;
 
-    document.getElementById("photoViewerImage").style.transform =
-        `translate(${photoTranslateX}px, ${photoTranslateY}px) scale(${photoScale})`;
-
-    return;
-
 }
 
+function photoPinch(event){
 
+    // 1本指ドラッグ
+    if(photoScale > 1 && event.touches.length === 1){
 
-if(event.touches.length !== 2){
+        event.preventDefault();
 
-    lastDistance = 0;
+        photoTranslateX += event.touches[0].clientX - dragStartX;
+        photoTranslateY += event.touches[0].clientY - dragStartY;
 
-    return;
+        dragStartX = event.touches[0].clientX;
+        dragStartY = event.touches[0].clientY;
 
-}
+        document.getElementById("photoViewerImage").style.transform =
+            `translate(${photoTranslateX}px,${photoTranslateY}px) scale(${photoScale})`;
+
+        return;
+
+    }
+
+    // ピンチ以外
+    if(event.touches.length !== 2){
+
+        lastDistance = 0;
+        return;
+
+    }
+
     event.preventDefault();
 
-    const x =
+    const dx =
         event.touches[0].clientX -
         event.touches[1].clientX;
 
-    const y =
+    const dy =
         event.touches[0].clientY -
         event.touches[1].clientY;
 
     const distance =
-        Math.sqrt(x * x + y * y);
+        Math.sqrt(dx*dx + dy*dy);
 
     if(lastDistance === 0){
+
         lastDistance = distance;
         return;
+
     }
 
     photoScale *= distance / lastDistance;
@@ -639,33 +626,49 @@ if(event.touches.length !== 2){
     }
 
     document.getElementById("photoViewerImage").style.transform =
-        `scale(${photoScale})`;
+        `translate(${photoTranslateX}px,${photoTranslateY}px) scale(${photoScale})`;
 
     lastDistance = distance;
 
 }
 
+function photoDragEnd(event){
 
-function photoDragStart(event){
-
-    // 拡大していない時はドラッグしない
-    if(photoScale <= 1){
-        return;
-    }
-
-event.preventDefault();
-
-
-    // 1本指だけ
-    if(event.touches.length !== 1){
-        return;
-    }
-
-    dragStartX = event.touches[0].clientX;
-    dragStartY = event.touches[0].clientY;
+    lastDistance = 0;
 
 }
 
+function photoSwipe(event){
+
+    if(photoScale > 1){
+        return;
+    }
+
+    if(event.changedTouches.length !== 1){
+        return;
+    }
+
+    const touchEndX =
+        event.changedTouches[0].clientX;
+
+    const diff =
+        touchEndX - touchStartX;
+
+    if(Math.abs(diff) < 60){
+        return;
+    }
+
+    if(diff < 0){
+
+        showPhoto(currentPhotoIndex + 1);
+
+    }else{
+
+        showPhoto(currentPhotoIndex - 1);
+
+    }
+
+}
 
 function photoDoubleTap(){
 
@@ -687,16 +690,10 @@ function photoDoubleTap(){
         }
 
         document.getElementById("photoViewerImage").style.transform =
-            `translate(${photoTranslateX}px, ${photoTranslateY}px) scale(${photoScale})`;
+            `translate(${photoTranslateX}px,${photoTranslateY}px) scale(${photoScale})`;
 
     }
 
     lastTapTime = now;
-
-}
-
-function photoDragEnd(event){
-
-    lastDistance = 0;
 
 }
