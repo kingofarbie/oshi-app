@@ -472,32 +472,25 @@ function openPhotoViewer(src){
 
     currentPhotoSrc = src;
 
-    const viewer =
-        document.getElementById("photoViewer");
-
     const img =
         document.getElementById("photoViewerImage");
 
     img.src = src;
 
-    viewer.style.display = "flex";
+    img.style.transform =
+        "translate(0px,0px) scale(1)";
 
-    document.body.style.overflow = "hidden";
-
-    // 初期状態に戻す
     photoScale = 1;
     photoTranslateX = 0;
     photoTranslateY = 0;
     lastDistance = 0;
 
-    img.style.transform =
-        "translate(0px,0px) scale(1)";
+    document.getElementById("photoViewer").style.display = "flex";
 
-img.ontouchstart = photoDragStart;
-img.ontouchmove = photoPinch;
-img.ontouchend = photoDragEnd;
+    document.body.style.overflow = "hidden";
 
 }
+
 
 function closePhotoViewer(){
 
