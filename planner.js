@@ -608,12 +608,17 @@ function photoPinch(event){
     const distance =
         Math.sqrt(dx*dx + dy*dy);
 
-    if(lastDistance === 0){
+if(lastDistance === 0){
 
-        lastDistance = distance;
-        return;
+    lastDistance = distance;
 
-    }
+    return;
+
+}
+
+if(distance < 20){
+    return;
+}
 
     photoScale *= distance / lastDistance;
 
