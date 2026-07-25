@@ -160,8 +160,9 @@
     id="photoViewer"
     class="photo-viewer"
     ontouchstart="touchStartX = event.touches[0].clientX"
-    ontouchend="photoSwipe(event)">
+    ontouchend="">
 
+    
     <button
         class="photo-close"
         onclick="closePhotoViewer()">
@@ -179,6 +180,6 @@
     ontouchstart="photoDragStart(event)"
     ontouchmove="photoPinch(event)"
     ontouchend="photoDragEnd(event);photoDoubleTap()">
-        
+
 </div>
 
