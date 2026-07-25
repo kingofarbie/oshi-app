@@ -495,15 +495,7 @@ function openPhotoViewer(src){
 
 img.ontouchstart = photoDragStart;
 img.ontouchmove = photoPinch;
-img.ontouchend = function(event){
-
-    photoDragEnd(event);
-
-    photoDoubleTap();
-
-    photoSwipe(event);
-
-};
+img.ontouchend = photoDragEnd;
 
 }
 
