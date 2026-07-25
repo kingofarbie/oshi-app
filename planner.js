@@ -569,73 +569,74 @@ function photoDragStart(event){
 
 function photoPinch(event){
 
-    // 1本指ドラッグ
+    const img =
+        document.getElementById("photoViewerImage");
+
+    // ----- 2本指ピンチ -----
+    if(event.touches.length === 2){
+
+        event.preventDefault();
+
+        const dx =
+            event.touches[0].clientX -
+            event.touches[1].clientX;
+
+        const dy =
+            event.touches[0].clientY -
+            event.touches[1].clientY;
+
+        const distance =
+            Math.sqrt(dx*dx + dy*dy);
+
+        if(lastDistance !== 0){
+
+            photoScale *= distance / lastDistance;
+
+            if(photoScale < 1){
+                photoScale = 1;
+            }
+
+            if(photoScale > 4){
+                photoScale = 4;
+            }
+
+            img.style.transform =
+                `translate(${photoTranslateX}px,${photoTranslateY}px) scale(${photoScale})`;
+
+        }
+
+        lastDistance = distance;
+
+        return;
+
+    }
+
+    // ----- 1本指ドラッグ -----
+    lastDistance = 0;
+
     if(photoScale > 1 && event.touches.length === 1){
 
         event.preventDefault();
 
-        photoTranslateX += event.touches[0].clientX - dragStartX;
-        photoTranslateY += event.touches[0].clientY - dragStartY;
+        const x =
+            event.touches[0].clientX;
 
-        dragStartX = event.touches[0].clientX;
-        dragStartY = event.touches[0].clientY;
+        const y =
+            event.touches[0].clientY;
 
-        document.getElementById("photoViewerImage").style.transform =
+        photoTranslateX += x - dragStartX;
+        photoTranslateY += y - dragStartY;
+
+        dragStartX = x;
+        dragStartY = y;
+
+        img.style.transform =
             `translate(${photoTranslateX}px,${photoTranslateY}px) scale(${photoScale})`;
 
-        return;
-
     }
-
-    // ピンチ以外
-    if(event.touches.length !== 2){
-
-        lastDistance = 0;
-        return;
-
-    }
-
-    event.preventDefault();
-
-    const dx =
-        event.touches[0].clientX -
-        event.touches[1].clientX;
-
-    const dy =
-        event.touches[0].clientY -
-        event.touches[1].clientY;
-
-    const distance =
-        Math.sqrt(dx*dx + dy*dy);
-
-if(lastDistance === 0){
-
-    lastDistance = distance;
-
-    return;
 
 }
 
-if(distance < 20){
-    return;
-}
-
-    photoScale *= distance / lastDistance;
-
-    if(photoScale < 1){
-        photoScale = 1;
-    }
-
-    if(photoScale > 4){
-        photoScale = 4;
-    }
-
-    document.getElementById("photoViewerImage").style.transform =
-        `translate(${photoTranslateX}px,${photoTranslateY}px) scale(${photoScale})`;
-
-    lastDistance = distance;
-
-}
 
 function photoDragEnd(event){
 
