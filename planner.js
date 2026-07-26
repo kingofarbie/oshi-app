@@ -687,7 +687,12 @@ function photoSwipe(event){
 
 }
 
-function photoDoubleTap(){
+function photoDoubleTap(event){
+
+    // 2本指なら何もしない
+    if(event.changedTouches.length !== 1){
+        return;
+    }
 
     const now = Date.now();
 
@@ -700,7 +705,6 @@ function photoDoubleTap(){
         }else{
 
             photoScale = 1;
-
             photoTranslateX = 0;
             photoTranslateY = 0;
 
