@@ -11,6 +11,8 @@ let currentPhotoSrc = "";
 let currentPhotoIndex = 0;
 let touchStartX = 0;
 
+let favoriteViewMode = false;
+
 let photoScale = 1;
 let lastDistance = 0;
 
@@ -465,9 +467,11 @@ function openPhotoViewer(id){
 
     const data = db.load();
 
-    const photos =
-        data.dayMemories?.[selectedCalendarDate]?.photos || [];
-
+const photos = favoriteViewMode
+    ? Object.values(data.dayMemories || {})
+        .flatMap(day => day.photos || [])
+        .filter(photo => photo.favorite)
+    : data.dayMemories?.[selectedCalendarDate]?.photos || [];
 
     const photo =
         photos.find(
@@ -531,6 +535,8 @@ function openPhotoViewer(id){
 
 }
 
+
+
 function closePhotoViewer(){
 
     document.getElementById("photoViewer").style.display = "none";
@@ -545,6 +551,8 @@ function closePhotoViewer(){
 
     document.getElementById("photoViewerImage").style.transform =
         "translate(0px,0px) scale(1)";
+        
+    favoriteViewMode = false;
 
 }
 
@@ -643,9 +651,11 @@ function showPhoto(index){
 
     const data = db.load();
 
-    const photos =
-        data.dayMemories?.[selectedCalendarDate]?.photos || [];
-
+const photos = favoriteViewMode
+    ? Object.values(data.dayMemories || {})
+        .flatMap(day => day.photos || [])
+        .filter(photo => photo.favorite)
+    : data.dayMemories?.[selectedCalendarDate]?.photos || [];
 
     if(photos.length === 0){
         return;

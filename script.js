@@ -2758,7 +2758,7 @@ function displayFavorites(){
 <img
 src="${p.src}"
 class="memory-photo"
-onclick="openPhotoViewer(${p.id})">
+onclick="openFavoritePhotoViewer(${p.id})">
 </div>
 
 `).join("")
@@ -2816,5 +2816,14 @@ ${showAllFavorites ? "閉じる" : "もっと見る"}
 
     }
 
+
+}
+
+
+function openFavoritePhotoViewer(id){
+
+    favoriteViewMode = true;
+
+    openPhotoViewer(id);
 
 }
