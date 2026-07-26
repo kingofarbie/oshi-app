@@ -1181,28 +1181,3 @@ button:hover{
 
 
 
-/* =====================
-   お気に入りもっと見る
-===================== */
-
-.favorite-more{
-
-    grid-column:1 / -1;
-
-    text-align:center;
-
-    padding:12px;
-
-    margin-top:5px;
-
-    border-radius:12px;
-
-    background:var(--accent);
-
-    color:white;
-
-    font-weight:bold;
-
-    cursor:pointer;
-
-}
