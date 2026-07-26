@@ -2619,7 +2619,7 @@ onclick="openPhotoViewer('${p.src}')">
 /* =====================
    お気に入り表示
 ===================== */
-
+let showAllFavorites = false;
 
 function displayFavorites(){
 
@@ -2659,10 +2659,12 @@ function displayFavorites(){
         );
 
 
+
     if(photoBox){
 
 
         if(photos.length===0){
+
 
             photoBox.innerHTML =
             "お気に入り写真はありません";
@@ -2671,8 +2673,18 @@ function displayFavorites(){
         }else{
 
 
+            const showPhotos =
+                showAllFavorites
+                ?
+                photos
+                :
+                photos.slice(0,4);
+
+
+
             photoBox.innerHTML =
-            photos.map(p=>`
+
+            showPhotos.map(p=>`
 
 <div class="memory-photo-box">
 
@@ -2683,7 +2695,36 @@ onclick="openPhotoViewer('${p.src}')">
 
 </div>
 
-`).join("");
+`).join("")
+
++
+
+(
+    !showAllFavorites && photos.length > 4
+
+    ?
+
+`
+
+<div
+class="favorite-more"
+onclick="
+showAllFavorites=true;
+displayFavorites();
+">
+
+もっと見る
+
+</div>
+
+`
+
+    :
+
+""
+
+);
+
 
 
         }
