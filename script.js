@@ -2824,7 +2824,7 @@ function openFavoritePhotoViewer(id){
 
 
     console.log("お気に入りビュー起動", id);
-    
+
     const data = db.load();
 
     let targetPhoto = null;
@@ -2895,6 +2895,8 @@ function openFavoritePhotoViewer(id){
     document.getElementById(
         "photoViewer"
     ).style.display="flex";
+
+    alert("viewer表示");
 
     document.getElementById("photoViewer").style.zIndex = "9999";
 
