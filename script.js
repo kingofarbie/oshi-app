@@ -2455,6 +2455,7 @@ function photoSelected(event){
 
 }
 
+
 function addVideo(){
 
     alert("動画追加（次で実装します）");
