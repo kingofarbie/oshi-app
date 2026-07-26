@@ -1,3 +1,20 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@5/dist/photoswipe.css">
+
+<script type="module">
+import PhotoSwipeLightbox from "https://cdn.jsdelivr.net/npm/photoswipe@5/dist/photoswipe-lightbox.esm.min.js";
+
+window.lightbox = new PhotoSwipeLightbox({
+    gallery: "#photoList",
+    children: "a",
+    pswpModule: () =>
+        import("https://cdn.jsdelivr.net/npm/photoswipe@5/dist/photoswipe.esm.min.js")
+});
+
+window.lightbox.init();
+</script>
+
+
+
 /* =====================
    1日手帳ビュー
 ===================== */
@@ -533,7 +550,6 @@ function deleteCurrentPhoto(){
 
 }
 
-
 function showPhoto(index){
 
     const data = db.load();
@@ -562,8 +578,6 @@ function showPhoto(index){
         currentPhotoSrc;
 
 }
-
-
 
 function photoDragStart(event){
 
