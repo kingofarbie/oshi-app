@@ -127,11 +127,13 @@ function switchTab(pageId,event){
     }
 
 
-    if(pageId==='home'){
+if(pageId==='home'){
 
     displayHomeSchedule();
 
     displayUpcomingEvents();
+
+    displayFavorites();
 
 }
 
