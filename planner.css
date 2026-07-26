@@ -461,39 +461,12 @@
 }
 
 
+
+
+
 /* =====================
-写真拡大表示
+   写真ビューア
 ===================== */
-
-.photo-viewer{
-
-    position:fixed;
-
-    inset:0;
-
-    background:rgba(0,0,0,.9);
-
-    display:none;
-
-    justify-content:center;
-
-    align-items:center;
-
-    z-index:99999;
-
-    touch-action:none;
-
-}
-
-.photo-viewer img{
-
-    max-width:95%;
-
-    max-height:90%;
-
-    border-radius:12px;
-
-}
 
 .photo-delete{
 
@@ -525,13 +498,6 @@
 
 
 
-
-
-
-/* =====================
-   写真ビューア
-===================== */
-
 .photo-viewer{
 
     position:fixed;
@@ -550,15 +516,10 @@
 
     align-items:center;
 
-    z-index:9999;
+    z-index:99999;
 
 }
 
-
-
-/* =====================
-   表示写真
-===================== */
 
 .photo-viewer img{
 
@@ -571,6 +532,9 @@
     user-select:none;
 
     touch-action:none;
+
+    border-radius:12px;
+
 
 }
 
