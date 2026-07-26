@@ -2822,6 +2822,9 @@ ${showAllFavorites ? "閉じる" : "もっと見る"}
 
 function openFavoritePhotoViewer(id){
 
+
+    console.log("お気に入りビュー起動", id);
+    
     const data = db.load();
 
     let targetPhoto = null;
