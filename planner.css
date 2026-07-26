@@ -523,3 +523,159 @@
     z-index:100000;
 
 }
+
+
+/* =====================
+   写真ビューア
+===================== */
+
+.photo-viewer{
+
+    position:fixed;
+
+    top:0;
+    left:0;
+
+    width:100%;
+    height:100%;
+
+    background:rgba(0,0,0,0.85);
+
+    display:none;
+
+    justify-content:center;
+    align-items:center;
+
+    z-index:9999;
+
+}
+
+
+
+/* =====================
+   表示写真
+===================== */
+
+.photo-viewer img{
+
+    max-width:90%;
+
+    max-height:85%;
+
+    object-fit:contain;
+
+    user-select:none;
+
+    touch-action:none;
+
+}
+
+
+
+/* =====================
+   閉じるボタン
+===================== */
+
+.photo-close{
+
+    position:absolute;
+
+    top:20px;
+
+    right:20px;
+
+
+    width:44px;
+
+    height:44px;
+
+
+    border-radius:50%;
+
+
+    border:none;
+
+
+    font-size:26px;
+
+
+    background:rgba(120,120,120,0.85);
+
+
+    color:white;
+
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+
+    z-index:2;
+
+
+}
+
+
+
+/* =====================
+   削除ボタン
+===================== */
+
+.photo-delete{
+
+    position:absolute;
+
+
+    top:20px;
+
+
+    right:72px;
+
+
+    width:44px;
+
+
+    height:44px;
+
+
+    border-radius:50%;
+
+
+    border:none;
+
+
+    font-size:20px;
+
+
+    background:rgba(120,120,120,0.85);
+
+
+    color:white;
+
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+
+    z-index:2;
+
+
+}
+
+
+
+/* =====================
+   ボタン押下時
+===================== */
+
+.photo-close:active,
+.photo-delete:active{
+
+    transform:scale(0.9);
+
+}
