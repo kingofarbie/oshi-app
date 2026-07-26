@@ -2598,14 +2598,16 @@ ${m.text}
 
 photoArea.innerHTML =
     day.photos.map(p => `
+
 <div class="memory-photo-box">
 
 <img
 src="${p.src}"
 class="memory-photo"
-onclick="openPhotoViewer(${p.id})"
+onclick="openPhotoViewer(${p.id})">
 
 </div>
+
 `).join("");
 
         }else{
