@@ -68,6 +68,51 @@
 
 </div>
 
+
+<!-- =====================
+     お気に入り
+===================== -->
+
+<div class="card favorite-home-card">
+
+    <h2>
+        ⭐ お気に入り
+    </h2>
+
+
+    <div class="favorite-summary">
+
+        <div>
+            📷 お気に入り写真
+            <span id="favorite-photo-count">
+                0
+            </span>
+            枚
+        </div>
+
+
+        <div>
+            🏆 ベストイベント
+            <span id="favorite-event-count">
+                0
+            </span>
+            件
+        </div>
+
+    </div>
+
+
+    <button
+        onclick="switchTab('favoritePage',event)">
+        ⭐ お気に入りを見る
+    </button>
+
+
+</div>
+
+
+
+
 </div>
 
 <!-- =====================
@@ -105,6 +150,76 @@
 </div>
 
 
+
+<!-- =====================
+     お気に入りページ
+===================== -->
+
+<div id="favoritePage" class="page">
+
+
+<div class="card">
+
+<h2>
+⭐ お気に入り
+</h2>
+
+
+<button onclick="switchTab('home',event)">
+← ホームへ戻る
+</button>
+
+
+</div>
+
+
+
+<div class="card">
+
+<h3>
+📷 お気に入り写真
+</h3>
+
+
+<div
+id="favorite-photo-list"
+class="memory-list">
+
+写真はありません
+
+</div>
+
+
+</div>
+
+
+
+<div class="card">
+
+<h3>
+🏆 ベストイベント
+</h3>
+
+
+<div
+id="favorite-event-list">
+
+イベントはありません
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+
+
+<!-- =====================
+     モーダルセット（ポップアップ）
+===================== -->
 
 <div id="dayMenuModal" class="modal">
     <div class="modal-content">
