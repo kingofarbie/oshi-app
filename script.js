@@ -2893,7 +2893,10 @@ function openFavoritePhotoViewer(id){
         "photoViewer"
     ).style.display="flex";
 
+    document.getElementById("photoViewer").style.zIndex = "9999";
+
 
     document.body.style.overflow="hidden";
 
 }
+
