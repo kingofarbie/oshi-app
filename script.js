@@ -2822,9 +2822,6 @@ ${showAllFavorites ? "閉じる" : "もっと見る"}
 
 function openFavoritePhotoViewer(id){
 
-
-    console.log("お気に入りビュー起動", id);
-
     const data = db.load();
 
     let targetPhoto = null;
@@ -2850,8 +2847,6 @@ function openFavoritePhotoViewer(id){
         });
 
     });
-
-    alert("写真見つかった");
 
 
     if(!targetPhoto){
@@ -2898,10 +2893,7 @@ function openFavoritePhotoViewer(id){
         "photoViewer"
     ).style.display="flex";
 
-    alert("表示まで来た");
-
     document.getElementById("photoViewer").style.zIndex = "9999";
-
 
     document.body.style.overflow="hidden";
 
