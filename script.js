@@ -2893,6 +2893,17 @@ function openFavoritePhotoViewer(id){
         "photoViewer"
     ).style.display="flex";
 
+const deleteBtn =
+    document.querySelector(".photo-delete");
+
+
+if(deleteBtn){
+
+    deleteBtn.style.display = "none";
+
+}
+
+
     document.getElementById("photoViewer").style.zIndex = "9999";
 
     document.body.style.overflow="hidden";
