@@ -2547,6 +2547,7 @@ function saveMemo(){
 
 }
 
+let showAllDayPhotos = false;
 function renderDayMemory(){
 
     const data = db.load();
@@ -2585,19 +2586,37 @@ ${m.text}
 
     }
 
-    /* =====================
-       写真
-    ===================== */
+/* =====================
+   写真
+===================== */
 
-    const photoArea =
-        document.getElementById("photoList");
+const photoArea =
+    document.getElementById("photoList");
 
-    if(photoArea){
 
-        if(day && day.photos && day.photos.length){
+if(photoArea){
 
-photoArea.innerHTML =
-    day.photos.map(p => `
+
+    if(day && day.photos && day.photos.length){
+
+
+        const photos =
+            day.photos;
+
+
+        const showPhotos =
+            showAllDayPhotos
+            ?
+            photos
+            :
+            photos.slice(0,4);
+
+
+
+        photoArea.innerHTML =
+
+
+        showPhotos.map(p=>`
 
 <div class="memory-photo-box">
 
@@ -2608,17 +2627,49 @@ onclick="openPhotoViewer(${p.id})">
 
 </div>
 
-`).join("");
+`).join("")
 
-        }else{
 
-            photoArea.innerHTML =
-                "写真はありません";
++
 
-        }
+(
+    photos.length > 4
+
+    ?
+
+`
+
+<div
+class="favorite-more"
+onclick="
+showAllDayPhotos = !showAllDayPhotos;
+renderDayMemory();
+">
+
+${showAllDayPhotos ? "閉じる" : "もっと見る"}
+
+</div>
+
+`
+
+    :
+
+""
+
+);
+
+
+    }else{
+
+
+        photoArea.innerHTML =
+            "写真はありません";
+
 
     }
 
+
+}
 }
 
 
