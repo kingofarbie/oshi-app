@@ -2589,17 +2589,11 @@ photoArea.innerHTML =
     day.photos.map(p => `
 <div class="memory-photo-box">
 
-<a
-href="${p.src}"
-data-pswp-width="1600"
-data-pswp-height="1200">
-
 <img
 src="${p.src}"
-class="memory-photo">
-
-</a>
-
+class="memory-photo"
+onclick="openPhotoViewer('${p.src}')">
+        
 </div>
 `).join("");
 
