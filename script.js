@@ -2623,7 +2623,13 @@ onclick="openPhotoViewer('${p.src}')">
 ===================== */
 let showAllFavorites = false;
 
+
+/* =====================
+   お気に入り表示
+===================== */
+
 function displayFavorites(){
+
 
     const data = db.load();
 
@@ -2639,8 +2645,10 @@ function displayFavorites(){
     )
     .forEach(day=>{
 
+
         (day.photos || [])
         .forEach(photo=>{
+
 
             if(photo.favorite){
 
@@ -2648,7 +2656,9 @@ function displayFavorites(){
 
             }
 
+
         });
+
 
     });
 
@@ -2664,7 +2674,7 @@ function displayFavorites(){
     if(photoBox){
 
 
-        if(photos.length===0){
+        if(photos.length === 0){
 
 
             photoBox.innerHTML =
@@ -2698,10 +2708,12 @@ onclick="openPhotoViewer('${p.src}')">
 
 `).join("")
 
+
+
 +
 
 (
-    !showAllFavorites && photos.length > 4
+    photos.length > 4
 
     ?
 
@@ -2710,11 +2722,11 @@ onclick="openPhotoViewer('${p.src}')">
 <div
 class="favorite-more"
 onclick="
-showAllFavorites=true;
+showAllFavorites = !showAllFavorites;
 displayFavorites();
 ">
 
-もっと見る
+${showAllFavorites ? "閉じる" : "もっと見る"}
 
 </div>
 
@@ -2730,6 +2742,7 @@ displayFavorites();
 
         }
 
+
     }
 
 
@@ -2740,13 +2753,13 @@ displayFavorites();
         );
 
 
+
     if(count){
 
         count.textContent =
         photos.length;
 
     }
-
 
 
 }
