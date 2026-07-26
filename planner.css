@@ -573,17 +573,14 @@
 
 
 /* =====================
-   閉じるボタン
+   ボタン共通
 ===================== */
 
-.photo-close{
+.photo-viewer button{
 
     position:absolute;
 
     top:20px;
-
-    right:20px;
-
 
     width:44px;
 
@@ -596,13 +593,10 @@
     border:none;
 
 
-    font-size:26px;
+    background:white;
 
 
-    background:rgba(120,120,120,0.85);
-
-
-    color:white;
+    color:#666;
 
 
     display:flex;
@@ -612,8 +606,24 @@
     justify-content:center;
 
 
+    box-shadow:0 2px 8px rgba(0,0,0,0.25);
+
+
     z-index:2;
 
+}
+
+
+
+/* =====================
+   閉じるボタン
+===================== */
+
+.photo-close{
+
+    right:20px;
+
+    font-size:22px;
 
 }
 
@@ -625,45 +635,9 @@
 
 .photo-delete{
 
-    position:absolute;
-
-
-    top:20px;
-
-
     right:72px;
 
-
-    width:44px;
-
-
-    height:44px;
-
-
-    border-radius:50%;
-
-
-    border:none;
-
-
     font-size:20px;
-
-
-    background:rgba(120,120,120,0.85);
-
-
-    color:white;
-
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-
-    z-index:2;
-
 
 }
 
