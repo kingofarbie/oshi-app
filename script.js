@@ -2623,6 +2623,7 @@ let showAllFavorites = false;
 
 function displayFavorites(){
 
+    showAllFavorites = false;
 
     const data = db.load();
 
