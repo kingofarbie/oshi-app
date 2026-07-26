@@ -2822,8 +2822,78 @@ ${showAllFavorites ? "閉じる" : "もっと見る"}
 
 function openFavoritePhotoViewer(id){
 
+    const data = db.load();
+
+    let targetPhoto = null;
+    let photos = [];
+
+
+    Object.values(data.dayMemories || {})
+    .forEach(day=>{
+
+        (day.photos || [])
+        .forEach(photo=>{
+
+            if(photo.favorite){
+
+                photos.push(photo);
+
+                if(photo.id === id){
+                    targetPhoto = photo;
+                }
+
+            }
+
+        });
+
+    });
+
+
+    if(!targetPhoto){
+        return;
+    }
+
+
     favoriteViewMode = true;
 
-    openPhotoViewer(id);
+    currentPhotoId = id;
+
+    currentPhotoSrc = targetPhoto.src;
+
+
+    currentPhotoIndex =
+        photos.findIndex(
+            p => p.id === id
+        );
+
+
+    const img =
+        document.getElementById(
+            "photoViewerImage"
+        );
+
+
+    img.src = targetPhoto.src;
+
+
+    img.style.transform =
+        "translate(0px,0px) scale(1)";
+
+
+    photoScale = 1;
+    photoTranslateX = 0;
+    photoTranslateY = 0;
+    lastDistance = 0;
+
+
+    updateFavoriteButton();
+
+
+    document.getElementById(
+        "photoViewer"
+    ).style.display="flex";
+
+
+    document.body.style.overflow="hidden";
 
 }
