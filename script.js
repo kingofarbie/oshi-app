@@ -1406,6 +1406,8 @@ async function(){
     displayTemplateList();
     
     updateTemplateSelect();
+    
+    displayFavorites();
 
 
 };
@@ -2622,8 +2624,6 @@ onclick="openPhotoViewer('${p.src}')">
 let showAllFavorites = false;
 
 function displayFavorites(){
-
-    showAllFavorites = false;
 
     const data = db.load();
 
