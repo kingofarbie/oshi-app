@@ -623,7 +623,6 @@ function photoPinch(event){
     }
 
     // ----- 1本指ドラッグ -----
-    lastDistance = 0;
 
     if(photoScale > 1 && event.touches.length === 1){
 
@@ -651,9 +650,12 @@ function photoPinch(event){
 
 function photoDragEnd(event){
 
-    lastDistance = 0;
+    if(event.changedTouches.length >= 2){
+        lastDistance = 0;
+    }
 
 }
+
 
 function photoSwipe(event){
 
