@@ -2851,6 +2851,8 @@ function openFavoritePhotoViewer(id){
 
     });
 
+    alert("写真見つかった");
+
 
     if(!targetPhoto){
         return;
@@ -2896,7 +2898,7 @@ function openFavoritePhotoViewer(id){
         "photoViewer"
     ).style.display="flex";
 
-    alert("viewer表示");
+    alert("表示まで来た");
 
     document.getElementById("photoViewer").style.zIndex = "9999";
 
