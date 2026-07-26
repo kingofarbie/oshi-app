@@ -2704,8 +2704,7 @@ function displayFavorites(){
 <img
 src="${p.src}"
 class="memory-photo"
-onclick="openPhotoViewer('${p.src}')">
-
+onclick="openFavoritePhotoViewer('${p.src}')"
 </div>
 
 `).join("")
@@ -2763,5 +2762,21 @@ ${showAllFavorites ? "閉じる" : "もっと見る"}
 
     }
 
+
+}
+
+
+function openFavoritePhotoViewer(src){
+
+    const img =
+        document.getElementById("photoViewerImage");
+
+    if(!img) return;
+
+    img.src = src;
+
+    document.getElementById("photoViewer").style.display = "flex";
+
+    document.body.style.overflow = "hidden";
 
 }
