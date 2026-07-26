@@ -486,6 +486,8 @@ function openPhotoViewer(src){
     photoTranslateY = 0;
     lastDistance = 0;
 
+    updateFavoriteButton();
+
     document.getElementById("photoViewer").style.display = "flex";
 
     document.body.style.overflow = "hidden";
@@ -533,6 +535,73 @@ function deleteCurrentPhoto(){
     renderDayMemory();
 
 }
+
+
+function toggleFavoritePhoto(){
+
+    const data = db.load();
+
+    const day =
+        data.dayMemories?.[selectedCalendarDate];
+
+
+    if(!day) return;
+
+
+    const photo =
+        day.photos.find(
+            p => p.src === currentPhotoSrc
+        );
+
+
+    if(!photo) return;
+
+
+    photo.favorite =
+        !photo.favorite;
+
+
+    db.save(data);
+
+
+    updateFavoriteButton();
+
+}
+
+
+function updateFavoriteButton(){
+
+    const btn =
+        document.querySelector(
+            ".photo-favorite"
+        );
+
+
+    if(!btn) return;
+
+
+    const data = db.load();
+
+    const photo =
+        data.dayMemories?.[selectedCalendarDate]
+        ?.photos
+        ?.find(
+            p => p.src === currentPhotoSrc
+        );
+
+
+    if(photo?.favorite){
+
+        btn.textContent="⭐";
+
+    }else{
+
+        btn.textContent="☆";
+
+    }
+
+}
+
 
 function showPhoto(index){
 

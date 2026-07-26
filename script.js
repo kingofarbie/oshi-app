@@ -2426,6 +2426,8 @@ function photoSelected(event){
                 id:Date.now(),
 
                 src:smallImage
+                
+                favorite:false
 
             });
 
