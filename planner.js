@@ -626,26 +626,39 @@ function updateFavoriteButton(){
     const data = db.load();
 
 
-    const photo =
-        data.dayMemories?.[selectedCalendarDate]
-        ?.photos
-        ?.find(
-            p => p.id === currentPhotoId
-        );
+    let photo = null;
 
 
-    if(photo?.favorite){
+    Object.values(
+        data.dayMemories || {}
+    )
+    .forEach(day=>{
 
-        btn.textContent="⭐";
+        (day.photos || [])
+        .forEach(p=>{
+
+            if(p.id === currentPhotoId){
+
+                photo = p;
+
+            }
+
+        });
+
+    });
+
+
+    if(photo && photo.favorite){
+
+        btn.textContent = "⭐";
 
     }else{
 
-        btn.textContent="☆";
+        btn.textContent = "☆";
 
     }
 
 }
-
 
 function showPhoto(index){
 
