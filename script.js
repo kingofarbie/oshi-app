@@ -2707,8 +2707,7 @@ function displayFavorites(){
 <img
 src="${p.src}"
 class="memory-photo"
-onclick="openPhotoViewer(${p.id})"
-
+onclick="openPhotoViewer(${p.id})">
 </div>
 
 `).join("")
