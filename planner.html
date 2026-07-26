@@ -162,23 +162,33 @@
     ontouchstart="touchStartX = event.touches[0].clientX"
     ontouchend="photoSwipe(event)">
 
-    <button
-        class="photo-close"
-        onclick="closePhotoViewer()">
-        ✕
-    </button>
+<button
+    class="photo-favorite"
+    onclick="toggleFavoritePhoto()">
+    ☆
+</button>
 
-    <button
-        class="photo-delete"
-        onclick="deleteCurrentPhoto()">
-        🗑
-    </button>
 
-    <button
-        class="photo-favorite"
-        onclick="toggleFavoritePhoto()">
-        ☆
-    </button>
+<button
+    class="photo-share"
+    onclick="shareCurrentPhoto()">
+    📤
+</button>
+
+
+<button
+    class="photo-delete"
+    onclick="deleteCurrentPhoto()">
+    🗑
+</button>
+
+
+<button
+    class="photo-close"
+    onclick="closePhotoViewer()">
+    ✕
+</button>
+
 
     <img
         id="photoViewerImage"
