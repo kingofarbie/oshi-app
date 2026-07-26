@@ -461,39 +461,75 @@ function backToCalendar(){
 }
 
 
-function openPhotoViewer(src){
+function openPhotoViewer(id){
 
     const data = db.load();
 
     const photos =
         data.dayMemories?.[selectedCalendarDate]?.photos || [];
 
-    currentPhotoIndex =
-        photos.findIndex(p => p.src === src);
 
-    currentPhotoSrc = src;
+    const photo =
+        photos.find(
+            p => p.id === id
+        );
+
+
+    if(!photo){
+        return;
+    }
+
+
+    currentPhotoId = id;
+
+    currentPhotoSrc = photo.src;
+
+
+    currentPhotoIndex =
+        photos.findIndex(
+            p => p.id === id
+        );
+
+
 
     const img =
-        document.getElementById("photoViewerImage");
+        document.getElementById(
+            "photoViewerImage"
+        );
 
-    img.src = src;
+
+    img.src = photo.src;
+
 
     img.style.transform =
         "translate(0px,0px) scale(1)";
 
+
     photoScale = 1;
+
     photoTranslateX = 0;
+
     photoTranslateY = 0;
+
     lastDistance = 0;
+
+
 
     updateFavoriteButton();
 
-    document.getElementById("photoViewer").style.display = "flex";
+
+
+    document
+    .getElementById(
+        "photoViewer"
+    )
+    .style.display = "flex";
+
+
 
     document.body.style.overflow = "hidden";
 
 }
-
 
 function closePhotoViewer(){
 
@@ -548,11 +584,10 @@ function toggleFavoritePhoto(){
     if(!day) return;
 
 
-    const photo =
-        day.photos.find(
-            p => p.src === currentPhotoSrc
-        );
-
+const photo =
+    day.photos.find(
+        p => p.id === currentPhotoId
+    );
 
     if(!photo) return;
 
@@ -582,11 +617,12 @@ function updateFavoriteButton(){
 
     const data = db.load();
 
+
     const photo =
         data.dayMemories?.[selectedCalendarDate]
         ?.photos
         ?.find(
-            p => p.src === currentPhotoSrc
+            p => p.id === currentPhotoId
         );
 
 
@@ -601,7 +637,6 @@ function updateFavoriteButton(){
     }
 
 }
-
 
 function showPhoto(index){
 
