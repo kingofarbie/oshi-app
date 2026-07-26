@@ -2602,8 +2602,8 @@ photoArea.innerHTML =
 <img
 src="${p.src}"
 class="memory-photo"
-onclick="openPhotoViewer('${p.src}')">
-        
+onclick="openPhotoViewer(${p.id})"
+
 </div>
 `).join("");
 
@@ -2704,7 +2704,7 @@ function displayFavorites(){
 <img
 src="${p.src}"
 class="memory-photo"
-onclick="openPhotoViewer('${p.src}')"
+onclick="openPhotoViewer(${p.id})"
 
 </div>
 
