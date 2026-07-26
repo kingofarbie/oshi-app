@@ -1029,21 +1029,6 @@ onclick="switchTab('settingsPage',event)">
 <script src="db.js"></script>
 
 <!-- その他 -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@5/dist/photoswipe.css">
-
-<script type="module">
-import PhotoSwipeLightbox from "https://cdn.jsdelivr.net/npm/photoswipe@5/dist/photoswipe-lightbox.esm.min.js";
-
-window.lightbox = new PhotoSwipeLightbox({
-    gallery: "#photoList",
-    children: "a",
-    pswpModule: () =>
-        import("https://cdn.jsdelivr.net/npm/photoswipe@5/dist/photoswipe.esm.min.js")
-});
-
-window.lightbox.init();
-</script>
-
 <script src="theme.js"></script>
 <script src="category.js"></script>
 <script src="calendar.js"></script>
@@ -1051,7 +1036,6 @@ window.lightbox.init();
 <script src="update.js"></script>
 <script src="notification.js"></script>
 <script src="script.js"></script>
-
 
 <!-- Service Worker -->
 <script>
