@@ -2425,7 +2425,7 @@ function photoSelected(event){
 
                 id:Date.now(),
 
-                src:smallImage
+                src:smallImage,
                 
                 favorite:false
 
