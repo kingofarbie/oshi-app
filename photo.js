@@ -477,3 +477,11 @@ function photoPinch(event){
 
 }
 
+function photoDragEnd(event){
+
+    if(event.changedTouches.length >= 2){
+        lastDistance = 0;
+    }
+
+}
+

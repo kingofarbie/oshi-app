@@ -474,19 +474,6 @@ function deleteCurrentPhoto(){
 }
 
 
-
-
-
-function photoDragEnd(event){
-
-    if(event.changedTouches.length >= 2){
-        lastDistance = 0;
-    }
-
-}
-
-
-
 function photoDoubleTap(event){
 
     // 2本指なら何もしない
