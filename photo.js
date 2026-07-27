@@ -361,3 +361,37 @@ function closePhotoViewer(){
     favoriteViewMode = false;
 
 }
+
+
+function photoSwipe(event){
+
+    if(photoScale > 1){
+        return;
+    }
+
+    if(event.changedTouches.length !== 1){
+        return;
+    }
+
+    const touchEndX =
+        event.changedTouches[0].clientX;
+
+    const diff =
+        touchEndX - touchStartX;
+
+    if(Math.abs(diff) < 60){
+        return;
+    }
+
+    if(diff < 0){
+
+        showPhoto(currentPhotoIndex + 1);
+
+    }else{
+
+        showPhoto(currentPhotoIndex - 1);
+
+    }
+
+}
+
