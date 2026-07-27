@@ -594,65 +594,6 @@ function deleteCurrentPhoto(){
 }
 
 
-
-
-
-function showPhoto(index){
-
-    const data = db.load();
-
-const photos = favoriteViewMode
-    ? Object.values(data.dayMemories || {})
-        .flatMap(day => day.photos || [])
-        .filter(photo => photo.favorite)
-    : data.dayMemories?.[selectedCalendarDate]?.photos || [];
-
-    if(photos.length === 0){
-        return;
-    }
-
-
-    // 最後まで行ったら最初へ
-    if(index >= photos.length){
-
-        index = 0;
-
-    }
-
-
-    // 最初より前なら最後へ
-    if(index < 0){
-
-        index = photos.length - 1;
-
-    }
-
-
-    currentPhotoIndex = index;
-
-
-    // ★重要：表示中写真のIDを更新
-    currentPhotoId = photos[index].id;
-
-
-    currentPhotoSrc = photos[index].src;
-
-
-
-    document
-    .getElementById(
-        "photoViewerImage"
-    )
-    .src = currentPhotoSrc;
-
-
-
-    // ★スワイプ後の星状態更新
-    updateFavoriteButton();
-
-}
-
-
 function photoDragStart(event){
 
     if(photoScale <= 1) return;
