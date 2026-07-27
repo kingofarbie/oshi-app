@@ -448,24 +448,6 @@ function backToCalendar(){
 
 
 
-function closePhotoViewer(){
-
-    document.getElementById("photoViewer").style.display = "none";
-
-    document.body.style.overflow = "";
-
-    photoScale = 1;
-    lastDistance = 0;
-
-    photoTranslateX = 0;
-    photoTranslateY = 0;
-
-    document.getElementById("photoViewerImage").style.transform =
-        "translate(0px,0px) scale(1)";
-        
-    favoriteViewMode = false;
-
-}
 
 function deleteCurrentPhoto(){
 
