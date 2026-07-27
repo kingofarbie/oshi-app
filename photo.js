@@ -598,3 +598,108 @@ function deleteCurrentPhoto(){
     renderDayMemory();
 
 }
+
+function photoSelected(event){
+
+    const file = event.target.files[0];
+
+    if(!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function(e){
+
+        const img = new Image();
+
+        img.onload = function(){
+
+            // 最大サイズ
+            const MAX = 1000;
+
+            let width = img.width;
+            let height = img.height;
+
+            if(width > height){
+
+                if(width > MAX){
+                    height *= MAX / width;
+                    width = MAX;
+                }
+
+            }else{
+
+                if(height > MAX){
+                    width *= MAX / height;
+                    height = MAX;
+                }
+
+            }
+
+            const canvas = document.createElement("canvas");
+            canvas.width = width;
+            canvas.height = height;
+
+            const ctx = canvas.getContext("2d");
+
+            ctx.drawImage(
+                img,
+                0,
+                0,
+                width,
+                height
+            );
+
+            // JPEG品質 80%
+            const smallImage =
+                canvas.toDataURL(
+                    "image/jpeg",
+                    0.8
+                );
+
+            const data = db.load();
+
+            if(!data.dayMemories){
+                data.dayMemories = {};
+            }
+
+            if(!data.dayMemories[selectedCalendarDate]){
+
+                data.dayMemories[selectedCalendarDate]={
+
+                    memo:[],
+                    photos:[],
+                    videos:[],
+                    expenses:[],
+                    rating:0,
+                    comment:""
+
+                };
+
+            }
+
+            data.dayMemories[selectedCalendarDate].photos.push({
+
+                id:Date.now(),
+
+                src:smallImage,
+                
+                favorite:false
+
+            });
+
+            db.save(data);
+
+            renderDayMemory();
+
+        };
+
+        img.src = e.target.result;
+
+    };
+
+    reader.readAsDataURL(file);
+
+    event.target.value = "";
+
+}
+
