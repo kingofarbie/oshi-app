@@ -150,3 +150,104 @@ const photos = favoriteViewMode
 
 }
 
+
+function openPhotoViewer(id){
+
+    const data = db.load();
+
+const photos = favoriteViewMode
+    ? Object.values(data.dayMemories || {})
+        .flatMap(day => day.photos || [])
+        .filter(photo => photo.favorite)
+    : data.dayMemories?.[selectedCalendarDate]?.photos || [];
+
+    const photo =
+        photos.find(
+            p => p.id === id
+        );
+
+
+    if(!photo){
+        return;
+    }
+
+
+    currentPhotoId = id;
+
+    currentPhotoSrc = photo.src;
+
+
+    currentPhotoIndex =
+        photos.findIndex(
+            p => p.id === id
+        );
+
+
+
+    const img =
+        document.getElementById(
+            "photoViewerImage"
+        );
+
+
+    img.src = photo.src;
+
+
+const deleteBtn =
+    document.querySelector(".photo-delete");
+
+const closeBtn =
+    document.querySelector(".photo-close");
+
+
+if(deleteBtn){
+
+    if(favoriteViewMode){
+
+        deleteBtn.style.display = "none";
+
+        if(closeBtn){
+            closeBtn.style.right = "72px";
+        }
+
+    }else{
+
+        deleteBtn.style.display = "flex";
+
+        if(closeBtn){
+            closeBtn.style.right = "20px";
+        }
+
+    }
+
+}
+
+    img.style.transform =
+        "translate(0px,0px) scale(1)";
+
+
+    photoScale = 1;
+
+    photoTranslateX = 0;
+
+    photoTranslateY = 0;
+
+    lastDistance = 0;
+
+
+
+    updateFavoriteButton();
+
+
+
+    document
+    .getElementById(
+        "photoViewer"
+    )
+    .style.display = "flex";
+
+
+
+    document.body.style.overflow = "hidden";
+
+}
