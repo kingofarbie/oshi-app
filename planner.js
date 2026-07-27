@@ -474,37 +474,6 @@ function deleteCurrentPhoto(){
 }
 
 
-function photoDoubleTap(event){
-
-    // 2本指なら何もしない
-    if(event.changedTouches.length !== 1){
-        return;
-    }
-
-    const now = Date.now();
-
-    if(now - lastTapTime < 300){
-
-        if(photoScale === 1){
-
-            photoScale = 2;
-
-        }else{
-
-            photoScale = 1;
-            photoTranslateX = 0;
-            photoTranslateY = 0;
-
-        }
-
-        document.getElementById("photoViewerImage").style.transform =
-            `translate(${photoTranslateX}px,${photoTranslateY}px) scale(${photoScale})`;
-
-    }
-
-    lastTapTime = now;
-
-}
 
 
 function shareCurrentPhoto(){
