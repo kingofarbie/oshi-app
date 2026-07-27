@@ -474,18 +474,6 @@ function deleteCurrentPhoto(){
 }
 
 
-function photoDragStart(event){
-
-    if(photoScale <= 1) return;
-
-    if(event.touches.length !== 1) return;
-
-    event.preventDefault();
-
-    dragStartX = event.touches[0].clientX;
-    dragStartY = event.touches[0].clientY;
-
-}
 
 function photoPinch(event){
 
