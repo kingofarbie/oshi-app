@@ -2623,8 +2623,9 @@ if(photoArea){
 <img
 src="${p.src}"
 class="memory-photo"
-onclick="openPhotoViewer(${p.id})">
-
+onclick="if(!dragPhotoId)openPhotoViewer(${p.id})"
+ontouchstart="photoTouchStart(${p.id})"
+ontouchend="photoTouchEnd()">
 </div>
 
 `).join("")

@@ -25,6 +25,10 @@ let dragStartY = 0;
 
 let lastTapTime = 0;
 
+
+let dragPhotoId = null;
+let dragTimer = null;
+
 /* =====================
    1日手帳ビュー
    左時間固定 + 予定自由配置版
@@ -955,5 +959,25 @@ function shareCurrentPhoto(){
 
 
     }
+
+}
+
+
+function photoTouchStart(id){
+
+    dragTimer = setTimeout(()=>{
+
+        dragPhotoId = id;
+
+        navigator.vibrate?.(30);
+
+    },500);
+
+}
+
+
+function photoTouchEnd(){
+
+    clearTimeout(dragTimer);
 
 }
