@@ -447,8 +447,6 @@ function backToCalendar(){
 }
 
 
-
-
 function deleteCurrentPhoto(){
 
     if(!confirm("この写真を削除しますか？")){
@@ -472,63 +470,3 @@ function deleteCurrentPhoto(){
     renderDayMemory();
 
 }
-
-
-
-
-function shareCurrentPhoto(){
-
-    if(!currentPhotoSrc){
-        return;
-    }
-
-
-    // 画像共有対応端末
-
-    if(
-        navigator.share
-    ){
-
-        fetch(currentPhotoSrc)
-
-        .then(res=>res.blob())
-
-        .then(blob=>{
-
-
-            const file =
-                new File(
-                    [blob],
-                    "oshi-photo.jpg",
-                    {
-                        type:"image/jpeg"
-                    }
-                );
-
-
-            navigator.share({
-
-                files:[file],
-
-                title:"推し活手帳",
-
-                text:"お気に入り写真"
-
-            });
-
-
-        });
-
-
-    }else{
-
-
-        alert(
-            "この端末では共有機能に対応していません"
-        );
-
-
-    }
-
-}
-
