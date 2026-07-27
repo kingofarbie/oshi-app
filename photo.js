@@ -573,3 +573,28 @@ function shareCurrentPhoto(){
     }
 
 }
+
+
+function deleteCurrentPhoto(){
+
+    if(!confirm("この写真を削除しますか？")){
+        return;
+    }
+
+    const data = db.load();
+
+    const day = data.dayMemories?.[selectedCalendarDate];
+
+    if(!day) return;
+
+    day.photos = day.photos.filter(
+        p => p.src !== currentPhotoSrc
+    );
+
+    db.save(data);
+
+    closePhotoViewer();
+
+    renderDayMemory();
+
+}
