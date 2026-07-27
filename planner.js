@@ -26,8 +26,6 @@ let dragStartY = 0;
 let lastTapTime = 0;
 
 
-let dragPhotoId = null;
-let dragTimer = null;
 
 /* =====================
    1日手帳ビュー
@@ -962,22 +960,3 @@ function shareCurrentPhoto(){
 
 }
 
-
-function photoTouchStart(id){
-
-    dragTimer = setTimeout(()=>{
-
-        dragPhotoId = id;
-
-        navigator.vibrate?.(30);
-
-    },500);
-
-}
-
-
-function photoTouchEnd(){
-
-    clearTimeout(dragTimer);
-
-}
