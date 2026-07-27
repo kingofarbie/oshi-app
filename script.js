@@ -2901,8 +2901,9 @@ if(deleteBtn){
 
     deleteBtn.style.display = "none";
 
-}
+    document.querySelector(".photo-close").style.right = "72px";
 
+}
 
     document.getElementById("photoViewer").style.zIndex = "9999";
 

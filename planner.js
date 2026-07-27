@@ -505,16 +505,34 @@ const photos = favoriteViewMode
     img.src = photo.src;
 
 
-    const deleteBtn =
+const deleteBtn =
     document.querySelector(".photo-delete");
+
+const closeBtn =
+    document.querySelector(".photo-close");
 
 
 if(deleteBtn){
 
-    deleteBtn.style.display = "none";
+    if(favoriteViewMode){
+
+        deleteBtn.style.display = "none";
+
+        if(closeBtn){
+            closeBtn.style.right = "72px";
+        }
+
+    }else{
+
+        deleteBtn.style.display = "flex";
+
+        if(closeBtn){
+            closeBtn.style.right = "20px";
+        }
+
+    }
 
 }
-
 
     img.style.transform =
         "translate(0px,0px) scale(1)";
