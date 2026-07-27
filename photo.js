@@ -703,3 +703,8 @@ function photoSelected(event){
 
 }
 
+function addPhoto(){
+
+    document.getElementById("photoPicker").click();
+
+}

@@ -2343,11 +2343,6 @@ function openDayMemory(){
 
 
 
-function addPhoto(){
-
-    document.getElementById("photoPicker").click();
-
-}
 
 
 function addVideo(){
