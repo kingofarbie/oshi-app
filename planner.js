@@ -594,35 +594,6 @@ function deleteCurrentPhoto(){
 }
 
 
-function toggleFavoritePhoto(){
-
-    const data = db.load();
-
-    const day =
-        data.dayMemories?.[selectedCalendarDate];
-
-
-    if(!day) return;
-
-
-const photo =
-    day.photos.find(
-        p => p.id === currentPhotoId
-    );
-
-    if(!photo) return;
-
-
-    photo.favorite =
-        !photo.favorite;
-
-
-    db.save(data);
-
-
-    updateFavoriteButton();
-
-}
 
 
 
