@@ -895,9 +895,13 @@ function renderDayPhotos(){
             ? photos
             : photos.slice(0,4);
 
-        photoArea.innerHTML =
+photoArea.innerHTML =
 
-            showPhotos.map(p=>`
+getPhotoToolbar("calendar")
+
++
+
+showPhotos.map(p=>`
 
 <div class="memory-photo-box">
 
@@ -909,7 +913,6 @@ onclick="openPhotoViewer(${p.id})">
 </div>
 
 `).join("")
-
 +
 
 (
@@ -946,3 +949,23 @@ ${showAllDayPhotos ? "閉じる" : "もっと見る"}
     }
 
 }
+
+
+function getPhotoToolbar(type){
+
+    return `
+
+<div class="photo-toolbar">
+
+    <button class="photo-sort-btn">
+
+        並べ替え ▼
+
+    </button>
+
+</div>
+
+`;
+
+}
+
