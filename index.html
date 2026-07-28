@@ -1211,6 +1211,38 @@ ontouchend="photoDragEnd(event);photoDoubleTap(event)">
 </div>
 
 
+
+<div id="photoSortMenu" class="photo-sort-menu" style="display:none;">
+
+<button onclick="setPhotoSort('new')">
+🆕 新しい順
+</button>
+
+<button onclick="setPhotoSort('old')">
+📜 古い順
+</button>
+
+<button onclick="setPhotoSort('favoriteNew')">
+⭐ お気に入り順（新しい順）
+</button>
+
+<button onclick="setPhotoSort('favoriteOld')">
+⭐ お気に入り順（古い順）
+</button>
+
+<button onclick="setPhotoSort('free')">
+✋ 自由
+</button>
+
+<button onclick="closePhotoSortMenu()">
+❌ 閉じる
+</button>
+
+</div>
+
+
+
+
 </body>
 
 </html>

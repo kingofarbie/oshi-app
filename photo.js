@@ -960,12 +960,34 @@ function getPhotoToolbar(type){
 
 function openPhotoSortMenu(type){
 
-    alert(
-        type === "favorite"
-        ?
-        "お気に入り写真の並べ替え（準備中）"
-        :
-        "写真の並べ替え（準備中）"
-    );
+    const menu = document.getElementById("photoSortMenu");
+
+    if(!menu) return;
+
+    menu.dataset.type = type;
+
+    menu.style.display = "block";
+
+}
+
+function closePhotoSortMenu(){
+
+    document.getElementById(
+        "photoSortMenu"
+    ).style.display = "none";
+
+}
+
+function setPhotoSort(mode){
+
+    const menu =
+        document.getElementById("photoSortMenu");
+
+    const type =
+        menu.dataset.type;
+
+    console.log(type, mode);
+
+    closePhotoSortMenu();
 
 }
