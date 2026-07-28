@@ -12,6 +12,8 @@ let photoScale = 1;
 let photoSortMode = false;
 let currentSortType = "";
 
+let dragPhotoId = null;
+
 let lastDistance = 0;
 
 
@@ -966,10 +968,8 @@ showPhotos.map(p=>`
 
 <div 
 class="memory-photo-box"
-${photoSortMode ? `
-draggable="true"
 data-photo-id="${p.id}"
-` : ""}
+${photoSortMode ? 'draggable="true"' : ''}
 >
 
 <img
@@ -977,7 +977,7 @@ src="${p.src}"
 class="memory-photo"
 ${photoSortMode
 ?
-""
+''
 :
 `onclick="openPhotoViewer(${p.id})"`
 }
@@ -1217,3 +1217,158 @@ if(type === "favorite"){
     closePhotoSortMenu();
 
 }
+
+
+/* =====================
+   写真自由並べ替え
+===================== */
+
+document.addEventListener(
+"dragstart",
+function(e){
+
+    if(!photoSortMode) return;
+
+
+    const box =
+        e.target.closest(
+            ".memory-photo-box"
+        );
+
+
+    if(!box) return;
+
+
+    dragPhotoId =
+        Number(
+            box.dataset.photoId
+        );
+
+
+});
+
+
+document.addEventListener(
+"dragover",
+function(e){
+
+    if(!photoSortMode) return;
+
+
+    const box =
+        e.target.closest(
+            ".memory-photo-box"
+        );
+
+
+    if(!box) return;
+
+
+    e.preventDefault();
+
+});
+
+
+document.addEventListener(
+"drop",
+function(e){
+
+    if(!photoSortMode) return;
+
+
+    const box =
+        e.target.closest(
+            ".memory-photo-box"
+        );
+
+
+    if(!box) return;
+
+
+    e.preventDefault();
+
+
+    const targetId =
+        Number(
+            box.dataset.photoId
+        );
+
+
+    if(!dragPhotoId) return;
+
+
+    if(
+        dragPhotoId === targetId
+    ){
+        return;
+    }
+
+
+    const data =
+        db.load();
+
+
+    const photos =
+        data.dayMemories
+        ?. [selectedCalendarDate]
+        ?.photos;
+
+
+    if(!photos) return;
+
+
+
+    const fromIndex =
+        photos.findIndex(
+            p=>p.id === dragPhotoId
+        );
+
+
+    const toIndex =
+        photos.findIndex(
+            p=>p.id === targetId
+        );
+
+
+    if(
+        fromIndex < 0 ||
+        toIndex < 0
+    ){
+        return;
+    }
+
+
+    const movePhoto =
+        photos.splice(
+            fromIndex,
+            1
+        )[0];
+
+
+    photos.splice(
+        toIndex,
+        0,
+        movePhoto
+    );
+
+
+    photos.forEach(
+        (p,index)=>{
+
+            p.order =
+                index + 1;
+
+        }
+    );
+
+
+    db.save(data);
+
+
+    renderDayPhotos();
+
+
+    dragPhotoId = null;
+
+
+});
