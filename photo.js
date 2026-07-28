@@ -1,3 +1,6 @@
+/* =====================
+   写真用変数
+===================== */
 let currentPhotoSrc = "";
 let currentPhotoIndex = 0;
 let touchStartX = 0;
@@ -16,140 +19,123 @@ let dragStartY = 0;
 
 let lastTapTime = 0;
 
+/* =====================
+   写真追加
+===================== */
 
-function updateFavoriteButton(){
+function addPhoto(){
 
-    const btn =
-        document.querySelector(
-            ".photo-favorite"
-        );
+    document.getElementById("photoPicker").click();
 
+}
 
-    if(!btn) return;
+function photoSelected(event){
 
+    const file = event.target.files[0];
 
-    const data = db.load();
+    if(!file) return;
 
+    const reader = new FileReader();
 
-    let photo = null;
+    reader.onload = function(e){
 
+        const img = new Image();
 
-    Object.values(
-        data.dayMemories || {}
-    )
-    .forEach(day=>{
+        img.onload = function(){
 
-        (day.photos || [])
-        .forEach(p=>{
+            // 最大サイズ
+            const MAX = 1000;
 
-            if(p.id === currentPhotoId){
+            let width = img.width;
+            let height = img.height;
 
-                photo = p;
+            if(width > height){
+
+                if(width > MAX){
+                    height *= MAX / width;
+                    width = MAX;
+                }
+
+            }else{
+
+                if(height > MAX){
+                    width *= MAX / height;
+                    height = MAX;
+                }
 
             }
 
-        });
+            const canvas = document.createElement("canvas");
+            canvas.width = width;
+            canvas.height = height;
 
-    });
+            const ctx = canvas.getContext("2d");
 
+            ctx.drawImage(
+                img,
+                0,
+                0,
+                width,
+                height
+            );
 
-    if(photo && photo.favorite){
+            // JPEG品質 80%
+            const smallImage =
+                canvas.toDataURL(
+                    "image/jpeg",
+                    0.8
+                );
 
-        btn.textContent = "⭐";
+            const data = db.load();
 
-    }else{
+            if(!data.dayMemories){
+                data.dayMemories = {};
+            }
 
-        btn.textContent = "☆";
+            if(!data.dayMemories[selectedCalendarDate]){
 
-    }
+                data.dayMemories[selectedCalendarDate]={
 
-}
+                    memo:[],
+                    photos:[],
+                    videos:[],
+                    expenses:[],
+                    rating:0,
+                    comment:""
 
-function toggleFavoritePhoto(){
+                };
 
-    const data = db.load();
+            }
 
-    const day =
-        data.dayMemories?.[selectedCalendarDate];
+            data.dayMemories[selectedCalendarDate].photos.push({
 
+                id:Date.now(),
 
-    if(!day) return;
+                src:smallImage,
+                
+                favorite:false
 
+            });
 
-const photo =
-    day.photos.find(
-        p => p.id === currentPhotoId
-    );
+            db.save(data);
 
-    if(!photo) return;
+            renderDayMemory();
 
+        };
 
-    photo.favorite =
-        !photo.favorite;
+        img.src = e.target.result;
 
+    };
 
-    db.save(data);
+    reader.readAsDataURL(file);
 
-
-    updateFavoriteButton();
-
-}
-
-function showPhoto(index){
-
-    const data = db.load();
-
-const photos = favoriteViewMode
-    ? Object.values(data.dayMemories || {})
-        .flatMap(day => day.photos || [])
-        .filter(photo => photo.favorite)
-    : data.dayMemories?.[selectedCalendarDate]?.photos || [];
-
-    if(photos.length === 0){
-        return;
-    }
-
-
-    // 最後まで行ったら最初へ
-    if(index >= photos.length){
-
-        index = 0;
-
-    }
-
-
-    // 最初より前なら最後へ
-    if(index < 0){
-
-        index = photos.length - 1;
-
-    }
-
-
-    currentPhotoIndex = index;
-
-
-    // ★重要：表示中写真のIDを更新
-    currentPhotoId = photos[index].id;
-
-
-    currentPhotoSrc = photos[index].src;
-
-
-
-    document
-    .getElementById(
-        "photoViewerImage"
-    )
-    .src = currentPhotoSrc;
-
-
-
-    // ★スワイプ後の星状態更新
-    updateFavoriteButton();
+    event.target.value = "";
 
 }
 
+/* =====================
+   写真ビューア
+===================== */
 
 function openPhotoViewer(id){
 
@@ -362,6 +348,146 @@ function closePhotoViewer(){
 
 }
 
+function showPhoto(index){
+
+    const data = db.load();
+
+const photos = favoriteViewMode
+    ? Object.values(data.dayMemories || {})
+        .flatMap(day => day.photos || [])
+        .filter(photo => photo.favorite)
+    : data.dayMemories?.[selectedCalendarDate]?.photos || [];
+
+    if(photos.length === 0){
+        return;
+    }
+
+
+    // 最後まで行ったら最初へ
+    if(index >= photos.length){
+
+        index = 0;
+
+    }
+
+
+    // 最初より前なら最後へ
+    if(index < 0){
+
+        index = photos.length - 1;
+
+    }
+
+
+    currentPhotoIndex = index;
+
+
+    // ★重要：表示中写真のIDを更新
+    currentPhotoId = photos[index].id;
+
+
+    currentPhotoSrc = photos[index].src;
+
+
+
+    document
+    .getElementById(
+        "photoViewerImage"
+    )
+    .src = currentPhotoSrc;
+
+
+
+    // ★スワイプ後の星状態更新
+    updateFavoriteButton();
+
+}
+
+/* =====================
+   お気に入り
+===================== */
+
+function toggleFavoritePhoto(){
+
+    const data = db.load();
+
+    const day =
+        data.dayMemories?.[selectedCalendarDate];
+
+
+    if(!day) return;
+
+
+const photo =
+    day.photos.find(
+        p => p.id === currentPhotoId
+    );
+
+    if(!photo) return;
+
+
+    photo.favorite =
+        !photo.favorite;
+
+
+    db.save(data);
+
+
+    updateFavoriteButton();
+
+}
+
+function updateFavoriteButton(){
+
+    const btn =
+        document.querySelector(
+            ".photo-favorite"
+        );
+
+
+    if(!btn) return;
+
+
+    const data = db.load();
+
+
+    let photo = null;
+
+
+    Object.values(
+        data.dayMemories || {}
+    )
+    .forEach(day=>{
+
+        (day.photos || [])
+        .forEach(p=>{
+
+            if(p.id === currentPhotoId){
+
+                photo = p;
+
+            }
+
+        });
+
+    });
+
+
+    if(photo && photo.favorite){
+
+        btn.textContent = "⭐";
+
+    }else{
+
+        btn.textContent = "☆";
+
+    }
+
+}
+
+/* =====================
+   写真操作
+===================== */
 
 function photoSwipe(event){
 
@@ -517,6 +643,9 @@ function photoDoubleTap(event){
 
 }
 
+/* =====================
+   共有・削除
+===================== */
 
 function shareCurrentPhoto(){
 
@@ -574,7 +703,6 @@ function shareCurrentPhoto(){
 
 }
 
-
 function deleteCurrentPhoto(){
 
     if(!confirm("この写真を削除しますか？")){
@@ -599,112 +727,149 @@ function deleteCurrentPhoto(){
 
 }
 
-function photoSelected(event){
 
-    const file = event.target.files[0];
+/* =====================
+   お気に入り表示
+===================== */
+let showAllFavorites = false;
 
-    if(!file) return;
 
-    const reader = new FileReader();
+/* =====================
+   お気に入り表示
+===================== */
 
-    reader.onload = function(e){
+function displayFavorites(){
 
-        const img = new Image();
 
-        img.onload = function(){
+    const data = db.load();
 
-            // 最大サイズ
-            const MAX = 1000;
 
-            let width = img.width;
-            let height = img.height;
 
-            if(width > height){
+    // 写真
 
-                if(width > MAX){
-                    height *= MAX / width;
-                    width = MAX;
-                }
+    const photos = [];
 
-            }else{
 
-                if(height > MAX){
-                    width *= MAX / height;
-                    height = MAX;
-                }
+    Object.values(
+        data.dayMemories || {}
+    )
+    .forEach(day=>{
 
-            }
 
-            const canvas = document.createElement("canvas");
-            canvas.width = width;
-            canvas.height = height;
+        (day.photos || [])
+        .forEach(photo=>{
 
-            const ctx = canvas.getContext("2d");
 
-            ctx.drawImage(
-                img,
-                0,
-                0,
-                width,
-                height
-            );
+            if(photo.favorite){
 
-            // JPEG品質 80%
-            const smallImage =
-                canvas.toDataURL(
-                    "image/jpeg",
-                    0.8
-                );
-
-            const data = db.load();
-
-            if(!data.dayMemories){
-                data.dayMemories = {};
-            }
-
-            if(!data.dayMemories[selectedCalendarDate]){
-
-                data.dayMemories[selectedCalendarDate]={
-
-                    memo:[],
-                    photos:[],
-                    videos:[],
-                    expenses:[],
-                    rating:0,
-                    comment:""
-
-                };
+                photos.push(photo);
 
             }
 
-            data.dayMemories[selectedCalendarDate].photos.push({
 
-                id:Date.now(),
+        });
 
-                src:smallImage,
-                
-                favorite:false
 
-            });
+    });
 
-            db.save(data);
 
-            renderDayMemory();
 
-        };
+    const photoBox =
+        document.getElementById(
+            "favorite-photo-list"
+        );
 
-        img.src = e.target.result;
 
-    };
 
-    reader.readAsDataURL(file);
+    if(photoBox){
 
-    event.target.value = "";
+
+        if(photos.length === 0){
+
+
+            photoBox.innerHTML =
+            "お気に入り写真はありません";
+
+
+        }else{
+
+
+            const showPhotos =
+                showAllFavorites
+                ?
+                photos
+                :
+                photos.slice(0,4);
+
+
+
+            photoBox.innerHTML =
+
+            showPhotos.map(p=>`
+
+<div class="memory-photo-box">
+
+<img
+src="${p.src}"
+class="memory-photo"
+onclick="openFavoritePhotoViewer(${p.id})">
+</div>
+
+`).join("")
+
+
+
++
+
+(
+    photos.length > 4
+
+    ?
+
+`
+
+<div
+class="favorite-more"
+onclick="
+showAllFavorites = !showAllFavorites;
+displayFavorites();
+">
+
+${showAllFavorites ? "閉じる" : "もっと見る"}
+
+</div>
+
+`
+
+    :
+
+""
+
+);
+
+
+
+        }
+
+
+    }
+
+
+
+    const count =
+        document.getElementById(
+            "favorite-photo-count"
+        );
+
+
+
+    if(count){
+
+        count.textContent =
+        photos.length;
+
+    }
+
 
 }
 
-function addPhoto(){
-
-    document.getElementById("photoPicker").click();
-
-}
