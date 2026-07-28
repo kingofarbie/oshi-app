@@ -8,6 +8,10 @@ let touchStartX = 0;
 let favoriteViewMode = false;
 
 let photoScale = 1;
+
+let photoSortMode = false;
+let currentSortType = "";
+
 let lastDistance = 0;
 
 
@@ -107,15 +111,21 @@ function photoSelected(event){
 
             }
 
-            data.dayMemories[selectedCalendarDate].photos.push({
+data.dayMemories[selectedCalendarDate].photos.push({
 
-                id:Date.now(),
+    id: Date.now(),
 
-                src:smallImage,
-                
-                favorite:false
+    src: smallImage,
 
-            });
+    favorite: false,
+
+    star: 0,
+
+    tags: [],
+
+    order: Date.now()
+
+});
 
             db.save(data);
 
@@ -776,6 +786,81 @@ function displayFavorites(){
 
         }else{
 
+
+// お気に入り写真 並べ替え
+const favoriteSort =
+    localStorage.getItem("favoritePhotoSort")
+    || "new";
+
+
+if(favoriteSort === "new"){
+
+    photos.sort(
+        (a,b)=> b.id - a.id
+    );
+
+}
+
+
+if(favoriteSort === "old"){
+
+    photos.sort(
+        (a,b)=> a.id - b.id
+    );
+
+}
+
+
+if(favoriteSort === "favoriteNew"){
+
+    photos.sort(
+        (a,b)=>{
+
+            const starA = a.star || 0;
+            const starB = b.star || 0;
+
+
+            if(starA !== starB){
+
+                return starB - starA;
+
+            }
+
+
+            return b.id - a.id;
+
+        }
+    );
+
+}
+
+
+if(favoriteSort === "favoriteOld"){
+
+    photos.sort(
+        (a,b)=>{
+
+            const starA = a.star || 0;
+            const starB = b.star || 0;
+
+
+            if(starA !== starB){
+
+                return starB - starA;
+
+            }
+
+
+            return a.id - b.id;
+
+        }
+    );
+
+}
+
+
+
+
             const showPhotos =
                 showAllFavorites
                 ?
@@ -864,7 +949,13 @@ function renderDayPhotos(){
 
     if(day && day.photos && day.photos.length){
 
-        const photos = day.photos;
+const photos =
+    [...day.photos]
+    .sort(
+        (a,b)=>
+        (a.order || a.id) -
+        (b.order || b.id)
+    );
 
         const showPhotos =
             showAllDayPhotos
@@ -879,16 +970,29 @@ getPhotoToolbar("calendar")
 
 showPhotos.map(p=>`
 
-<div class="memory-photo-box">
+<div 
+class="memory-photo-box"
+${photoSortMode ? `
+draggable="true"
+data-photo-id="${p.id}"
+` : ""}
+>
 
 <img
 src="${p.src}"
 class="memory-photo"
-onclick="openPhotoViewer(${p.id})">
+${photoSortMode
+?
+""
+:
+`onclick="openPhotoViewer(${p.id})"`
+}
+>
 
 </div>
 
 `).join("")
+
 +
 
 (
@@ -994,6 +1098,35 @@ function setPhotoSort(mode){
     const data =
         db.load();
 
+if(mode !== "free"){
+
+    photoSortMode = false;
+
+}
+
+if(mode === "free"){
+
+    photoSortMode = true;
+
+    currentSortType = type;
+
+    closePhotoSortMenu();
+
+    if(type === "calendar"){
+
+        renderDayPhotos();
+
+    }
+
+    if(type === "favorite"){
+
+        displayFavorites();
+
+    }
+
+    return;
+
+}
 
 
     // カレンダー写真
@@ -1075,17 +1208,16 @@ function setPhotoSort(mode){
 
 
     // お気に入り写真
-    if(type === "favorite"){
+if(type === "favorite"){
 
+    localStorage.setItem(
+        "favoritePhotoSort",
+        mode
+    );
 
-        // お気に入り一覧は
-        // 表示時に並び替えるため保存はしない
+    displayFavorites();
 
-        displayFavorites();
-
-
-    }
-
+}
 
 
     closePhotoSortMenu();
