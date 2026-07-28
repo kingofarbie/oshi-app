@@ -983,10 +983,110 @@ function setPhotoSort(mode){
     const menu =
         document.getElementById("photoSortMenu");
 
+
+    if(!menu) return;
+
+
     const type =
         menu.dataset.type;
 
-    console.log(type, mode);
+
+    const data =
+        db.load();
+
+
+
+    // カレンダー写真
+    if(type === "calendar"){
+
+
+        const photos =
+            data.dayMemories?.[selectedCalendarDate]?.photos;
+
+
+        if(!photos) return;
+
+
+
+        if(mode === "new"){
+
+            photos.sort(
+                (a,b)=> b.id - a.id
+            );
+
+        }
+
+
+        if(mode === "old"){
+
+            photos.sort(
+                (a,b)=> a.id - b.id
+            );
+
+        }
+
+
+        if(mode === "favoriteNew"){
+
+            photos.sort(
+                (a,b)=>{
+
+                    if(a.favorite !== b.favorite){
+
+                        return b.favorite - a.favorite;
+
+                    }
+
+                    return b.id - a.id;
+
+                }
+            );
+
+        }
+
+
+        if(mode === "favoriteOld"){
+
+            photos.sort(
+                (a,b)=>{
+
+                    if(a.favorite !== b.favorite){
+
+                        return b.favorite - a.favorite;
+
+                    }
+
+                    return a.id - b.id;
+
+                }
+            );
+
+        }
+
+
+        db.save(data);
+
+
+        renderDayPhotos();
+
+
+    }
+
+
+
+    // お気に入り写真
+    if(type === "favorite"){
+
+
+        // お気に入り一覧は
+        // 表示時に並び替えるため保存はしない
+
+        displayFavorites();
+
+
+    }
+
+
 
     closePhotoSortMenu();
 
