@@ -949,13 +949,7 @@ function renderDayPhotos(){
 
     if(day && day.photos && day.photos.length){
 
-const photos =
-    [...day.photos]
-    .sort(
-        (a,b)=>
-        (a.order || a.id) -
-        (b.order || b.id)
-    );
+const photos = day.photos;
 
         const showPhotos =
             showAllDayPhotos
