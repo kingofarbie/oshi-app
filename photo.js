@@ -873,3 +873,76 @@ ${showAllFavorites ? "閉じる" : "もっと見る"}
 
 }
 
+
+function renderDayPhotos(){
+
+    const data = db.load();
+
+    const day =
+        data.dayMemories?.[selectedCalendarDate];
+
+    const photoArea =
+        document.getElementById("photoList");
+
+    if(!photoArea) return;
+
+    if(day && day.photos && day.photos.length){
+
+        const photos = day.photos;
+
+        const showPhotos =
+            showAllDayPhotos
+            ? photos
+            : photos.slice(0,4);
+
+        photoArea.innerHTML =
+
+            showPhotos.map(p=>`
+
+<div class="memory-photo-box">
+
+<img
+src="${p.src}"
+class="memory-photo"
+onclick="openPhotoViewer(${p.id})">
+
+</div>
+
+`).join("")
+
++
+
+(
+photos.length > 4
+
+?
+
+`
+
+<div
+class="favorite-more"
+onclick="
+showAllDayPhotos = !showAllDayPhotos;
+renderDayPhotos();
+">
+
+${showAllDayPhotos ? "閉じる" : "もっと見る"}
+
+</div>
+
+`
+
+:
+
+""
+
+);
+
+    }else{
+
+        photoArea.innerHTML =
+            "写真はありません";
+
+    }
+
+}
