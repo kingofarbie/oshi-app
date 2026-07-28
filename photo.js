@@ -740,25 +740,16 @@ let showAllFavorites = false;
 
 function displayFavorites(){
 
-
     const data = db.load();
 
-
-
     // 写真
-
     const photos = [];
 
-
-    Object.values(
-        data.dayMemories || {}
-    )
+    Object.values(data.dayMemories || {})
     .forEach(day=>{
-
 
         (day.photos || [])
         .forEach(photo=>{
-
 
             if(photo.favorite){
 
@@ -766,33 +757,24 @@ function displayFavorites(){
 
             }
 
-
         });
 
-
     });
-
-
 
     const photoBox =
         document.getElementById(
             "favorite-photo-list"
         );
 
-
-
     if(photoBox){
-
 
         if(photos.length === 0){
 
-
             photoBox.innerHTML =
-            "お気に入り写真はありません";
-
+                getPhotoToolbar("favorite") +
+                "お気に入り写真はありません";
 
         }else{
-
 
             const showPhotos =
                 showAllFavorites
@@ -801,11 +783,13 @@ function displayFavorites(){
                 :
                 photos.slice(0,4);
 
-
-
             photoBox.innerHTML =
 
-            showPhotos.map(p=>`
+                getPhotoToolbar("favorite")
+
+                +
+
+                showPhotos.map(p=>`
 
 <div class="memory-photo-box">
 
@@ -813,18 +797,18 @@ function displayFavorites(){
 src="${p.src}"
 class="memory-photo"
 onclick="openFavoritePhotoViewer(${p.id})">
+
 </div>
 
 `).join("")
 
+                +
 
+                (
 
-+
+                    photos.length > 4
 
-(
-    photos.length > 4
-
-    ?
+                    ?
 
 `
 
@@ -841,35 +825,27 @@ ${showAllFavorites ? "閉じる" : "もっと見る"}
 
 `
 
-    :
+                    :
 
-""
+                    ""
 
-);
-
-
+                );
 
         }
 
-
     }
-
-
 
     const count =
         document.getElementById(
             "favorite-photo-count"
         );
 
-
-
     if(count){
 
         count.textContent =
-        photos.length;
+            photos.length;
 
     }
-
 
 }
 
