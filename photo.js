@@ -953,11 +953,24 @@ ${showAllDayPhotos ? "閉じる" : "もっと見る"}
 
 function getPhotoToolbar(type){
 
+    const title =
+        type === "favorite"
+        ? "⭐ お気に入り写真"
+        : "📷 写真";
+
     return `
 
 <div class="photo-toolbar">
 
-    <button class="photo-sort-btn">
+    <div class="photo-toolbar-title">
+
+        ${title}
+
+    </div>
+
+    <button
+        class="photo-sort-btn"
+        onclick="openPhotoSortMenu('${type}')">
 
         並べ替え ▼
 
@@ -969,3 +982,14 @@ function getPhotoToolbar(type){
 
 }
 
+function openPhotoSortMenu(type){
+
+    alert(
+        type === "favorite"
+        ?
+        "お気に入り写真の並べ替え（準備中）"
+        :
+        "写真の並べ替え（準備中）"
+    );
+
+}
