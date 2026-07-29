@@ -14,6 +14,25 @@ let currentSortType = "";
 
 let dragPhotoId = null;
 
+/* =====================
+   自由並べ替え用
+===================== */
+
+let photoLongPressTimer = null;
+
+let draggingPhotoId = null;
+
+let draggingPhotoElement = null;
+
+let isPhotoDragging = false;
+
+let dragStartPoint = {
+    x:0,
+    y:0
+};
+
+
+
 let lastDistance = 0;
 
 
@@ -969,7 +988,6 @@ showPhotos.map(p=>`
 <div 
 class="memory-photo-box"
 data-photo-id="${p.id}"
-${photoSortMode ? 'draggable="true"' : ''}
 >
 
 <img
@@ -1376,17 +1394,16 @@ function(e){
 
 
 /* =====================
-   スマホ写真自由並べ替え
+   長押し自由並べ替え開始
 ===================== */
-
-let touchDragPhotoId = null;
-
 
 document.addEventListener(
 "touchstart",
 function(e){
 
-    if(!photoSortMode) return;
+    if(!photoSortMode){
+        return;
+    }
 
 
     const box =
@@ -1395,13 +1412,52 @@ function(e){
         );
 
 
-    if(!box) return;
+    if(!box){
+        return;
+    }
 
 
-    touchDragPhotoId =
+    draggingPhotoId =
         Number(
             box.dataset.photoId
         );
+
+
+    draggingPhotoElement = box;
+
+
+    dragStartPoint.x =
+        e.touches[0].clientX;
+
+
+    dragStartPoint.y =
+        e.touches[0].clientY;
+
+
+
+    photoLongPressTimer =
+        setTimeout(()=>{
+
+
+            isPhotoDragging = true;
+
+
+            box.classList.add(
+                "photo-dragging"
+            );
+
+
+            if(
+                navigator.vibrate
+            ){
+
+                navigator.vibrate(30);
+
+            }
+
+
+        },500);
+
 
 
 },
@@ -1411,13 +1467,14 @@ function(e){
 );
 
 
+
 document.addEventListener(
 "touchmove",
 function(e){
 
-    if(!photoSortMode) return;
-
-    if(!touchDragPhotoId) return;
+    if(!isPhotoDragging){
+        return;
+    }
 
 
     e.preventDefault();
@@ -1430,113 +1487,36 @@ function(e){
 );
 
 
+
 document.addEventListener(
 "touchend",
 function(e){
 
-    if(!photoSortMode) return;
 
-
-    if(!touchDragPhotoId) return;
-
-
-    const touch =
-        e.changedTouches[0];
-
-
-    const target =
-        document.elementFromPoint(
-            touch.clientX,
-            touch.clientY
-        );
-
-
-    const box =
-        target?.closest(
-            ".memory-photo-box"
-        );
-
-
-    if(!box) return;
-
-
-    const targetId =
-        Number(
-            box.dataset.photoId
-        );
-
-
-    if(
-        targetId === touchDragPhotoId
-    ){
-        return;
-    }
-
-
-    const data =
-        db.load();
-
-
-    const photos =
-        data.dayMemories
-        ?. [selectedCalendarDate]
-        ?.photos;
-
-
-    if(!photos) return;
-
-
-    const from =
-        photos.findIndex(
-            p=>p.id === touchDragPhotoId
-        );
-
-
-    const to =
-        photos.findIndex(
-            p=>p.id === targetId
-        );
-
-
-    if(
-        from < 0 ||
-        to < 0
-    ){
-        return;
-    }
-
-
-    const move =
-        photos.splice(
-            from,
-            1
-        )[0];
-
-
-    photos.splice(
-        to,
-        0,
-        move
+    clearTimeout(
+        photoLongPressTimer
     );
 
 
-    photos.forEach(
-        (p,i)=>{
+    if(!isPhotoDragging){
 
-            p.order =
-                i+1;
+        draggingPhotoId = null;
 
-        }
-    );
+        return;
 
-
-    db.save(data);
+    }
 
 
-    renderDayPhotos();
+    if(draggingPhotoElement){
+
+        draggingPhotoElement.classList.remove(
+            "photo-dragging"
+        );
+
+    }
 
 
-    touchDragPhotoId = null;
+    isPhotoDragging = false;
 
 
 },
