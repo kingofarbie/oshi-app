@@ -1476,16 +1476,43 @@ function(e){
         return;
     }
 
-
     e.preventDefault();
 
+
+    const touch =
+        e.touches[0];
+
+
+    const target =
+        document.elementFromPoint(
+            touch.clientX,
+            touch.clientY
+        );
+
+
+    const box =
+        target?.closest(
+            ".memory-photo-box"
+        );
+
+
+    if(
+        box &&
+        box !== draggingPhotoElement
+    ){
+
+        box.parentNode.insertBefore(
+            draggingPhotoElement,
+            box
+        );
+
+    }
 
 },
 {
     passive:false
 }
 );
-
 
 
 document.addEventListener(
