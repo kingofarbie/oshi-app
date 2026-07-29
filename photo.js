@@ -995,10 +995,13 @@ function renderDayPhotos(){
 
 
 
-        photoArea.innerHTML =
+photoArea.innerHTML =
 
-        getPhotoToolbar("calendar")
+(photoSortMode ? getPhotoFreeModeBar() : "")
 
++
+
+getPhotoToolbar("calendar")
         +
 
         showPhotos.map(p=>`
