@@ -1220,7 +1220,7 @@ if(type === "favorite"){
 
 
 /* =====================
-   写真自由並べ替え
+   写真自由並べ替え(PC用)
 ===================== */
 
 document.addEventListener(
@@ -1372,3 +1372,175 @@ function(e){
 
 
 });
+
+
+
+/* =====================
+   スマホ写真自由並べ替え
+===================== */
+
+let touchDragPhotoId = null;
+
+
+document.addEventListener(
+"touchstart",
+function(e){
+
+    if(!photoSortMode) return;
+
+
+    const box =
+        e.target.closest(
+            ".memory-photo-box"
+        );
+
+
+    if(!box) return;
+
+
+    touchDragPhotoId =
+        Number(
+            box.dataset.photoId
+        );
+
+
+},
+{
+    passive:true
+}
+);
+
+
+document.addEventListener(
+"touchmove",
+function(e){
+
+    if(!photoSortMode) return;
+
+    if(!touchDragPhotoId) return;
+
+
+    e.preventDefault();
+
+
+},
+{
+    passive:false
+}
+);
+
+
+document.addEventListener(
+"touchend",
+function(e){
+
+    if(!photoSortMode) return;
+
+
+    if(!touchDragPhotoId) return;
+
+
+    const touch =
+        e.changedTouches[0];
+
+
+    const target =
+        document.elementFromPoint(
+            touch.clientX,
+            touch.clientY
+        );
+
+
+    const box =
+        target?.closest(
+            ".memory-photo-box"
+        );
+
+
+    if(!box) return;
+
+
+    const targetId =
+        Number(
+            box.dataset.photoId
+        );
+
+
+    if(
+        targetId === touchDragPhotoId
+    ){
+        return;
+    }
+
+
+    const data =
+        db.load();
+
+
+    const photos =
+        data.dayMemories
+        ?. [selectedCalendarDate]
+        ?.photos;
+
+
+    if(!photos) return;
+
+
+    const from =
+        photos.findIndex(
+            p=>p.id === touchDragPhotoId
+        );
+
+
+    const to =
+        photos.findIndex(
+            p=>p.id === targetId
+        );
+
+
+    if(
+        from < 0 ||
+        to < 0
+    ){
+        return;
+    }
+
+
+    const move =
+        photos.splice(
+            from,
+            1
+        )[0];
+
+
+    photos.splice(
+        to,
+        0,
+        move
+    );
+
+
+    photos.forEach(
+        (p,i)=>{
+
+            p.order =
+                i+1;
+
+        }
+    );
+
+
+    db.save(data);
+
+
+    renderDayPhotos();
+
+
+    touchDragPhotoId = null;
+
+
+},
+{
+    passive:true
+}
+);
