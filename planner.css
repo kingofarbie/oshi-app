@@ -787,3 +787,37 @@
     opacity: 0.5;
     transform: scale(1.05);
 }
+
+
+.photo-free-bar{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:10px;
+
+    background:#222;
+
+    color:white;
+
+    border-radius:10px;
+
+    margin-bottom:10px;
+
+}
+
+
+.photo-free-bar button{
+
+    padding:8px 16px;
+
+    border-radius:20px;
+
+    border:none;
+
+    font-weight:bold;
+
+}

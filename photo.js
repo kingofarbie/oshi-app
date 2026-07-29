@@ -977,7 +977,7 @@ const photos =
         (a.order || a.id) -
         (b.order || b.id)
     );
-    
+
         const showPhotos =
             showAllDayPhotos
             ? photos
@@ -1558,3 +1558,44 @@ function(e){
     passive:true
 }
 );
+
+
+
+function getPhotoFreeModeBar(){
+
+return `
+
+<div class="photo-free-bar">
+
+    <div>
+        📷 自由変更中<br>
+        <small>
+        写真をドラッグして並べ替えてください
+        </small>
+    </div>
+
+
+    <button
+    onclick="finishPhotoSort()">
+
+        完了
+
+    </button>
+
+
+</div>
+
+`;
+
+}
+
+
+function finishPhotoSort(){
+
+    photoSortMode = false;
+
+    renderDayPhotos();
+
+    alert("✅ 並び順を保存しました");
+
+}
