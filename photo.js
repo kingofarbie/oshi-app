@@ -993,6 +993,7 @@ data-photo-id="${p.id}"
 <img
 src="${p.src}"
 class="memory-photo"
+draggable="false"
 ${photoSortMode
 ?
 ''
