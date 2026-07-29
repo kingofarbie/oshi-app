@@ -968,28 +968,40 @@ function renderDayPhotos(){
 
     if(!photoArea) return;
 
+
     if(day && day.photos && day.photos.length){
 
-const photos =
-    [...day.photos]
-    .sort(
-        (a,b)=>
-        (a.order || a.id) -
-        (b.order || b.id)
-    );
+
+        let photos =
+            [...day.photos];
+
+
+        // 自由変更中だけ保存順(order)を使用
+        if(photoSortMode){
+
+            photos.sort(
+                (a,b)=>
+                (a.order || a.id) -
+                (b.order || b.id)
+            );
+
+        }
+
 
         const showPhotos =
             showAllDayPhotos
             ? photos
             : photos.slice(0,4);
 
-photoArea.innerHTML =
 
-getPhotoToolbar("calendar")
 
-+
+        photoArea.innerHTML =
 
-showPhotos.map(p=>`
+        getPhotoToolbar("calendar")
+
+        +
+
+        showPhotos.map(p=>`
 
 <div 
 class="memory-photo-box"
@@ -1040,15 +1052,17 @@ ${showAllDayPhotos ? "閉じる" : "もっと見る"}
 
 );
 
+
     }else{
+
 
         photoArea.innerHTML =
             "写真はありません";
 
+
     }
 
 }
-
 
 function getPhotoToolbar(type){
 
