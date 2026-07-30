@@ -972,21 +972,32 @@ function renderDayPhotos(){
     if(day && day.photos && day.photos.length){
 
 
-        let photos =
-            [...day.photos];
+let photos = [...day.photos];
 
+const sortMode =
+    localStorage.getItem("calendarPhotoSort") || "new";
 
-        // 自由変更中だけ保存順(order)を使用
-        if(photoSortMode){
+if(sortMode === "free"){
 
-            photos.sort(
-                (a,b)=>
-                (a.order || a.id) -
-                (b.order || b.id)
-            );
+    photos.sort(
+        (a,b)=>
+        (a.order || a.id) -
+        (b.order || b.id)
+    );
 
-        }
+}else if(sortMode === "old"){
 
+    photos.sort(
+        (a,b)=> a.id - b.id
+    );
+
+}else{
+
+    photos.sort(
+        (a,b)=> b.id - a.id
+    );
+
+}
 
         const showPhotos =
             showAllDayPhotos
