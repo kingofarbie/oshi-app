@@ -1606,8 +1606,38 @@ return `
 
 }
 
-
 function finishPhotoSort(){
+
+    const data = db.load();
+
+    const photos =
+        data.dayMemories?.[selectedCalendarDate]?.photos;
+
+    if(photos){
+
+        document
+        .querySelectorAll(".memory-photo-box")
+        .forEach((box,index)=>{
+
+            const id =
+                Number(box.dataset.photoId);
+
+            const photo =
+                photos.find(
+                    p => p.id === id
+                );
+
+            if(photo){
+
+                photo.order = index + 1;
+
+            }
+
+        });
+
+        db.save(data);
+
+    }
 
     photoSortMode = false;
 
