@@ -1278,165 +1278,18 @@ if(type === "favorite"){
 }
 
 
-/* =====================
-   写真自由並べ替え(PC用)
-===================== */
-
-document.addEventListener(
-"dragstart",
-function(e){
-
-    if(!photoSortMode) return;
-
-
-    const box =
-        e.target.closest(
-            ".memory-photo-box"
-        );
-
-
-    if(!box) return;
-
-
-    dragPhotoId =
-        Number(
-            box.dataset.photoId
-        );
-
-
-});
-
-
-document.addEventListener(
-"dragover",
-function(e){
-
-    if(!photoSortMode) return;
-
-
-    const box =
-        e.target.closest(
-            ".memory-photo-box"
-        );
-
-
-    if(!box) return;
-
-
-    e.preventDefault();
-
-});
-
-
-document.addEventListener(
-"drop",
-function(e){
-
-    if(!photoSortMode) return;
-
-
-    const box =
-        e.target.closest(
-            ".memory-photo-box"
-        );
-
-
-    if(!box) return;
-
-
-    e.preventDefault();
-
-
-    const targetId =
-        Number(
-            box.dataset.photoId
-        );
-
-
-    if(!dragPhotoId) return;
-
-
-    if(
-        dragPhotoId === targetId
-    ){
-        return;
-    }
-
-
-    const data =
-        db.load();
-
-
-    const photos =
-        data.dayMemories
-        ?. [selectedCalendarDate]
-        ?.photos;
-
-
-    if(!photos) return;
-
-
-
-    const fromIndex =
-        photos.findIndex(
-            p=>p.id === dragPhotoId
-        );
-
-
-    const toIndex =
-        photos.findIndex(
-            p=>p.id === targetId
-        );
-
-
-    if(
-        fromIndex < 0 ||
-        toIndex < 0
-    ){
-        return;
-    }
-
-
-    const movePhoto =
-        photos.splice(
-            fromIndex,
-            1
-        )[0];
-
-
-    photos.splice(
-        toIndex,
-        0,
-        movePhoto
-    );
-
-
-    photos.forEach(
-        (p,index)=>{
-
-            p.order =
-                index + 1;
-
-        }
-    );
-
-
-    db.save(data);
-
-
-    renderDayPhotos();
-
-
-    dragPhotoId = null;
-
-
-});
-
-
 
 /* =====================
-   長押し自由並べ替え開始
+   写真自由並べ替え Ver2
 ===================== */
+
+let sortDragElement = null;
+let sortDragId = null;
+let sortTimer = null;
+let isSortDragging = false;
+
+
+/* 長押し開始 */
 
 document.addEventListener(
 "touchstart",
@@ -1458,29 +1311,20 @@ function(e){
     }
 
 
-    draggingPhotoId =
-        Number(
-            box.dataset.photoId
-        );
-
-
-    draggingPhotoElement = box;
-
-
-    dragStartPoint.x =
-        e.touches[0].clientX;
-
-
-    dragStartPoint.y =
-        e.touches[0].clientY;
-
-
-
-    photoLongPressTimer =
+    sortTimer =
         setTimeout(()=>{
 
 
-            isPhotoDragging = true;
+            isSortDragging = true;
+
+
+            sortDragElement = box;
+
+
+            sortDragId =
+                Number(
+                    box.dataset.photoId
+                );
 
 
             box.classList.add(
@@ -1488,17 +1332,14 @@ function(e){
             );
 
 
-            if(
-                navigator.vibrate
-            ){
+            if(navigator.vibrate){
 
                 navigator.vibrate(30);
 
             }
 
 
-        },500);
-
+        },300);
 
 
 },
@@ -1509,13 +1350,16 @@ function(e){
 
 
 
+/* 移動 */
+
 document.addEventListener(
 "touchmove",
 function(e){
 
-    if(!isPhotoDragging){
+    if(!isSortDragging){
         return;
     }
+
 
     e.preventDefault();
 
@@ -1539,13 +1383,35 @@ function(e){
 
     if(
         box &&
-        box !== draggingPhotoElement
+        box !== sortDragElement
     ){
 
-        box.parentNode.insertBefore(
-            draggingPhotoElement,
-            box
-        );
+        const parent =
+            sortDragElement.parentNode;
+
+
+        const rect =
+            box.getBoundingClientRect();
+
+
+        if(
+            touch.clientX <
+            rect.left + rect.width / 2
+        ){
+
+            parent.insertBefore(
+                sortDragElement,
+                box
+            );
+
+        }else{
+
+            parent.insertBefore(
+                sortDragElement,
+                box.nextSibling
+            );
+
+        }
 
     }
 
@@ -1556,35 +1422,86 @@ function(e){
 );
 
 
+
+/* 終了 */
+
 document.addEventListener(
 "touchend",
-function(e){
+function(){
+
+    clearTimeout(sortTimer);
 
 
-    clearTimeout(
-        photoLongPressTimer
-    );
-
-
-    if(!isPhotoDragging){
-
-        draggingPhotoId = null;
+    if(!isSortDragging){
 
         return;
 
     }
 
 
-    if(draggingPhotoElement){
+    if(sortDragElement){
 
-        draggingPhotoElement.classList.remove(
+        sortDragElement.classList.remove(
             "photo-dragging"
         );
 
     }
 
 
-    isPhotoDragging = false;
+    const data =
+        db.load();
+
+
+    const photos =
+        data.dayMemories
+        ?. [selectedCalendarDate]
+        ?.photos;
+
+
+    if(photos){
+
+
+        document
+        .querySelectorAll(
+            ".memory-photo-box"
+        )
+        .forEach((box,index)=>{
+
+
+            const id =
+                Number(
+                    box.dataset.photoId
+                );
+
+
+            const photo =
+                photos.find(
+                    p=>p.id===id
+                );
+
+
+            if(photo){
+
+                photo.order =
+                    index + 1;
+
+            }
+
+
+        });
+
+
+        db.save(data);
+
+    }
+
+
+
+    isSortDragging = false;
+
+    sortDragElement = null;
+
+    sortDragId = null;
 
 
 },
@@ -1592,6 +1509,7 @@ function(e){
     passive:true
 }
 );
+
 
 
 

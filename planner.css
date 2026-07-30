@@ -784,10 +784,10 @@
 }
 
 .photo-dragging{
-    opacity: 0.5;
-    transform: scale(1.05);
+    opacity:0.5;
+    transform:scale(1.05);
+    z-index:10;
 }
-
 
 .photo-free-bar{
 
