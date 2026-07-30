@@ -1145,6 +1145,12 @@ function setPhotoSort(mode){
     const data =
         db.load();
 
+
+        localStorage.setItem(
+    "calendarPhotoSort",
+    mode
+);
+
 if(mode !== "free"){
 
     photoSortMode = false;
