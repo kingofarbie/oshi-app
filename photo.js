@@ -1280,17 +1280,18 @@ if(type === "favorite"){
 
 
 /* =====================
-   写真自由並べ替え Ver2
+   長押し自由並べ替え
+   長押しのみドラッグ
+   短い操作はスクロール
 ===================== */
 
-let sortDragElement = null;
-let sortDragId = null;
-let sortTimer = null;
-let isSortDragging = false;
+let photoTouchMoved = false;
+
+let photoTouchStartX = 0;
+let photoTouchStartY = 0;
 
 
-/* 長押し開始 */
-
+/* 指を置いた時 */
 document.addEventListener(
 "touchstart",
 function(e){
@@ -1311,20 +1312,36 @@ function(e){
     }
 
 
-    sortTimer =
+    draggingPhotoId =
+        Number(
+            box.dataset.photoId
+        );
+
+
+    draggingPhotoElement = box;
+
+
+    photoTouchMoved = false;
+
+
+    photoTouchStartX =
+        e.touches[0].clientX;
+
+    photoTouchStartY =
+        e.touches[0].clientY;
+
+
+    photoLongPressTimer =
         setTimeout(()=>{
 
 
-            isSortDragging = true;
+            // 長押し成功
+            if(photoTouchMoved){
+                return;
+            }
 
 
-            sortDragElement = box;
-
-
-            sortDragId =
-                Number(
-                    box.dataset.photoId
-                );
+            isPhotoDragging = true;
 
 
             box.classList.add(
@@ -1350,17 +1367,55 @@ function(e){
 
 
 
-/* 移動 */
-
+/* 指を動かした時 */
 document.addEventListener(
 "touchmove",
 function(e){
 
-    if(!isSortDragging){
+    if(!photoSortMode){
         return;
     }
 
 
+    const dx =
+        Math.abs(
+            e.touches[0].clientX -
+            photoTouchStartX
+        );
+
+
+    const dy =
+        Math.abs(
+            e.touches[0].clientY -
+            photoTouchStartY
+        );
+
+
+    // 少しでも動いたらスクロール扱い
+    if(!isPhotoDragging){
+
+        if(dx > 10 || dy > 10){
+
+            photoTouchMoved = true;
+
+
+            clearTimeout(
+                photoLongPressTimer
+            );
+
+
+            draggingPhotoId = null;
+
+        }
+
+
+        return;
+
+    }
+
+
+
+    // ドラッグ中だけ止める
     e.preventDefault();
 
 
@@ -1383,37 +1438,16 @@ function(e){
 
     if(
         box &&
-        box !== sortDragElement
+        box !== draggingPhotoElement
     ){
 
-        const parent =
-            sortDragElement.parentNode;
-
-
-        const rect =
-            box.getBoundingClientRect();
-
-
-        if(
-            touch.clientX <
-            rect.left + rect.width / 2
-        ){
-
-            parent.insertBefore(
-                sortDragElement,
-                box
-            );
-
-        }else{
-
-            parent.insertBefore(
-                sortDragElement,
-                box.nextSibling
-            );
-
-        }
+        box.parentNode.insertBefore(
+            draggingPhotoElement,
+            box
+        );
 
     }
+
 
 },
 {
@@ -1423,85 +1457,30 @@ function(e){
 
 
 
-/* 終了 */
-
+/* 指を離した時 */
 document.addEventListener(
 "touchend",
 function(){
 
-    clearTimeout(sortTimer);
+
+    clearTimeout(
+        photoLongPressTimer
+    );
 
 
-    if(!isSortDragging){
+    if(draggingPhotoElement){
 
-        return;
-
-    }
-
-
-    if(sortDragElement){
-
-        sortDragElement.classList.remove(
+        draggingPhotoElement.classList.remove(
             "photo-dragging"
         );
 
     }
 
 
-    const data =
-        db.load();
+    isPhotoDragging = false;
 
 
-    const photos =
-        data.dayMemories
-        ?. [selectedCalendarDate]
-        ?.photos;
-
-
-    if(photos){
-
-
-        document
-        .querySelectorAll(
-            ".memory-photo-box"
-        )
-        .forEach((box,index)=>{
-
-
-            const id =
-                Number(
-                    box.dataset.photoId
-                );
-
-
-            const photo =
-                photos.find(
-                    p=>p.id===id
-                );
-
-
-            if(photo){
-
-                photo.order =
-                    index + 1;
-
-            }
-
-
-        });
-
-
-        db.save(data);
-
-    }
-
-
-
-    isSortDragging = false;
-
-    sortDragElement = null;
-
-    sortDragId = null;
+    draggingPhotoId = null;
 
 
 },
@@ -1509,8 +1488,6 @@ function(){
     passive:true
 }
 );
-
-
 
 
 function getPhotoFreeModeBar(){
