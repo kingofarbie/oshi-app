@@ -1115,20 +1115,9 @@ function renderDayPhotos(){
 
 function getPhotoToolbar(type){
 
-    const title =
-        type === "favorite"
-        ? "⭐ お気に入り写真"
-        : "📷 写真";
-
     return `
 
 <div class="photo-toolbar">
-
-    <div class="photo-toolbar-title">
-
-        ${title}
-
-    </div>
 
     <button
         class="photo-sort-btn"
@@ -1143,6 +1132,7 @@ function getPhotoToolbar(type){
 `;
 
 }
+
 
 function openPhotoSortMenu(type){
 

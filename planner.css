@@ -691,12 +691,15 @@
     grid-column:1 / -1;
 
     display:flex;
-    justify-content:space-between;
+
+    justify-content:flex-end;
+
     align-items:center;
 
-    margin:12px 0;
+    margin:4px 0 10px;
 
     width:100%;
+
 }
 
 .photo-toolbar-title{
@@ -806,7 +809,7 @@
 
     margin-bottom:10px;
 
-}
+} 
 
 .photo-free-bar button{
 
