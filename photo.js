@@ -15,6 +15,13 @@ let currentSortType = "";
 let dragPhotoId = null;
 
 /* =====================
+   写真表示設定
+===================== */
+
+const PHOTO_COLUMNS = 3; // 2列
+const PHOTO_ROWS = 3;    // 2段
+
+/* =====================
    自由並べ替え用
 ===================== */
 
@@ -971,108 +978,136 @@ function renderDayPhotos(){
 
     if(day && day.photos && day.photos.length){
 
+        let photos = [...day.photos];
 
-let photos = [...day.photos];
 
-const sortMode =
-    localStorage.getItem("calendarPhotoSort") || "new";
+        const sortMode =
+            localStorage.getItem("calendarPhotoSort") || "new";
 
-if(sortMode === "free"){
 
-    photos.sort(
-        (a,b)=>
-        (a.order || a.id) -
-        (b.order || b.id)
-    );
+        if(sortMode === "free"){
 
-}else if(sortMode === "old"){
+            photos.sort(
+                (a,b)=>
+                (a.order || a.id) -
+                (b.order || b.id)
+            );
 
-    photos.sort(
-        (a,b)=> a.id - b.id
-    );
+        }else if(sortMode === "old"){
 
-}else{
+            photos.sort(
+                (a,b)=> a.id - b.id
+            );
 
-    photos.sort(
-        (a,b)=> b.id - a.id
-    );
+        }else{
 
-}
+            photos.sort(
+                (a,b)=> b.id - a.id
+            );
+
+        }
+
+
+        /* =====================
+           表示枚数を自動計算
+        ===================== */
+
+        const photoDisplayCount =
+            PHOTO_COLUMNS * PHOTO_ROWS;
+
 
         const showPhotos =
             showAllDayPhotos
             ? photos
-            : photos.slice(0,4);
+            : photos.slice(
+                0,
+                photoDisplayCount
+            );
 
 
+        /* =====================
+           写真エリア
+        ===================== */
 
-photoArea.innerHTML =
+        photoArea.style.setProperty(
+            "--photo-columns",
+            PHOTO_COLUMNS
+        );
 
-(photoSortMode ? getPhotoFreeModeBar() : "")
 
-+
+        photoArea.innerHTML =
 
-getPhotoToolbar("calendar")
-        +
+            (photoSortMode
+                ? getPhotoFreeModeBar()
+                : ""
+            )
 
-        showPhotos.map(p=>`
+            +
 
-<div 
-class="memory-photo-box"
-data-photo-id="${p.id}"
->
+            getPhotoToolbar("calendar")
 
-<img
-src="${p.src}"
-class="memory-photo"
-draggable="false"
-${photoSortMode
-?
-''
-:
-`onclick="openPhotoViewer(${p.id})"`
-}
->
+            +
 
-</div>
+            showPhotos.map(p=>`
 
-`).join("")
+                <div
+                    class="memory-photo-box"
+                    data-photo-id="${p.id}"
+                >
 
-+
+                    <img
+                        src="${p.src}"
+                        class="memory-photo"
+                        draggable="false"
+                        ${
+                            photoSortMode
+                            ? ""
+                            : `onclick="openPhotoViewer(${p.id})"`
+                        }
+                    >
 
-(
-photos.length > 4
+                </div>
 
-?
+            `).join("")
 
-`
+            +
 
-<div
-class="favorite-more"
-onclick="
-showAllDayPhotos = !showAllDayPhotos;
-renderDayPhotos();
-">
+            (
+                photos.length > photoDisplayCount
 
-${showAllDayPhotos ? "閉じる" : "もっと見る"}
+                ?
 
-</div>
+                `
 
-`
+                <div
+                    class="favorite-more"
+                    onclick="
+                        showAllDayPhotos = !showAllDayPhotos;
+                        renderDayPhotos();
+                    "
+                >
 
-:
+                    ${
+                        showAllDayPhotos
+                        ? "閉じる"
+                        : "もっと見る"
+                    }
 
-""
+                </div>
 
-);
+                `
+
+                :
+
+                ""
+
+            );
 
 
     }else{
 
-
         photoArea.innerHTML =
             "写真はありません";
-
 
     }
 
