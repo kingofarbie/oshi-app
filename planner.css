@@ -822,3 +822,31 @@
     font-weight:bold;
 
 }
+
+
+.memory-header-actions{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:6px;
+
+}
+
+.memory-header-actions button{
+
+    width:28px;
+    height:28px;
+
+    padding:0;
+
+    background:none;
+
+    border:none;
+
+    color:#fff;
+
+    font-size:20px;
+
+}

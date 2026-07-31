@@ -21,6 +21,10 @@ let dragPhotoId = null;
 const PHOTO_COLUMNS = 3; // 2列
 const PHOTO_ROWS = 3;    // 2段
 
+
+let photoDeleteMode = false;
+let selectedDeletePhotoIds = [];
+
 /* =====================
    自由並べ替え用
 ===================== */
@@ -1126,6 +1130,9 @@ function renderDayPhotos(){
 
         photoArea.innerHTML =
 
+        (photoDeleteMode ? getPhotoDeleteModeBar() : "")
++
+
             (photoSortMode
                 ? getPhotoFreeModeBar()
                 : ""
@@ -1137,28 +1144,57 @@ function renderDayPhotos(){
 
             +
 
-            showPhotos.map(p=>`
+showPhotos.map(p=>`
 
-                <div
-                    class="memory-photo-box"
-                    data-photo-id="${p.id}"
-                >
+<div 
+class="memory-photo-box
+${photoDeleteMode && selectedDeletePhotoIds.includes(Number(p.id))
+    ? "photo-delete-selected"
+    : ""
+}"
+data-photo-id="${p.id}"
+onclick="${
+    photoDeleteMode
+    ? `toggleDeletePhoto(${p.id})`
+    : ""
+}"
+>
 
-                    <img
-                        src="${p.src}"
-                        class="memory-photo"
-                        draggable="false"
-                        ${
-                            photoSortMode
-                            ? ""
-                            : `onclick="openPhotoViewer(${p.id})"`
-                        }
-                    >
+<img
+src="${p.src}"
+class="memory-photo"
+draggable="false"
+${photoSortMode
+?
+''
+:
+photoDeleteMode
+?
+''
+:
+`onclick="openPhotoViewer(${p.id})"`
+}
+>
 
-                </div>
+${
+    photoDeleteMode
+    ?
+    `
+    <div class="photo-delete-check">
+        ${
+            selectedDeletePhotoIds.includes(Number(p.id))
+            ? "✓"
+            : ""
+        }
+    </div>
+    `
+    :
+    ""
+}
 
-            `).join("")
+</div>
 
+`).join("")
             +
 
             (
@@ -1746,5 +1782,146 @@ function finishPhotoSort(){
     renderDayPhotos();
 
     alert("✅ 並び順を保存しました");
+
+}
+
+
+
+function startPhotoDeleteMode(){
+
+    photoDeleteMode = true;
+
+    selectedDeletePhotoIds = [];
+
+    renderDayPhotos();
+
+}
+
+function toggleDeletePhoto(id){
+
+    id = Number(id);
+
+    const index =
+        selectedDeletePhotoIds.indexOf(id);
+
+
+    if(index >= 0){
+
+        selectedDeletePhotoIds.splice(
+            index,
+            1
+        );
+
+    }else{
+
+        selectedDeletePhotoIds.push(id);
+
+    }
+
+
+    renderDayPhotos();
+
+}
+
+function getPhotoDeleteModeBar(){
+
+    return `
+
+<div class="photo-delete-bar">
+
+    <div>
+        🗑 写真を選択中
+        <br>
+        <small>
+            ${selectedDeletePhotoIds.length}枚選択
+        </small>
+    </div>
+
+    <div class="photo-delete-actions">
+
+        <button
+            onclick="cancelPhotoDeleteMode()">
+            キャンセル
+        </button>
+
+        <button
+            onclick="deleteSelectedPhotos()"
+            ${selectedDeletePhotoIds.length === 0 ? "disabled" : ""}>
+            🗑 削除
+        </button>
+
+    </div>
+
+</div>
+
+`;
+
+}
+
+function cancelPhotoDeleteMode(){
+
+    photoDeleteMode = false;
+
+    selectedDeletePhotoIds = [];
+
+    renderDayPhotos();
+
+}
+
+
+function deleteSelectedPhotos(){
+
+    if(
+        selectedDeletePhotoIds.length === 0
+    ){
+        return;
+    }
+
+
+    const count =
+        selectedDeletePhotoIds.length;
+
+
+    if(
+        !confirm(
+            `${count}枚の写真を削除しますか？`
+        )
+    ){
+        return;
+    }
+
+
+    const data = db.load();
+
+
+    const day =
+        data.dayMemories?.[
+            selectedCalendarDate
+        ];
+
+
+    if(!day || !day.photos){
+        return;
+    }
+
+
+    day.photos =
+        day.photos.filter(
+            photo =>
+                !selectedDeletePhotoIds.includes(
+                    Number(photo.id)
+                )
+        );
+
+
+    db.save(data);
+
+
+    photoDeleteMode = false;
+
+    selectedDeletePhotoIds = [];
+
+
+    renderDayMemory();
 
 }
