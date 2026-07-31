@@ -1398,7 +1398,7 @@ function(e){
 ===================== */
 
 /* =====================
-   指が入っている枠へ移動
+   指が入った写真の枠と位置交換
 ===================== */
 
 document.addEventListener(
@@ -1410,11 +1410,8 @@ function(e){
     }
 
 
-    /* =====================
-       ドラッグ開始前
-       → 普通のスクロール
-    ===================== */
-
+    /* ドラッグ開始前
+       → 普通にスクロール */
     if(!isPhotoDragging){
 
         const dx =
@@ -1443,15 +1440,10 @@ function(e){
         }
 
         return;
-
     }
 
 
-    /* =====================
-       ドラッグ中
-       → スクロール停止
-    ===================== */
-
+    /* ドラッグ中だけスクロール停止 */
     e.preventDefault();
 
 
@@ -1459,14 +1451,14 @@ function(e){
         e.touches[0];
 
 
-    /* =====================
-       指が実際に入っている枠
-    ===================== */
+    /* 指が入っている写真枠を取得 */
 
     const boxes =
-        document.querySelectorAll(
-            ".memory-photo-box"
-        );
+        [
+            ...document.querySelectorAll(
+                ".memory-photo-box"
+            )
+        ];
 
 
     let targetBox = null;
@@ -1488,11 +1480,8 @@ function(e){
         if(
 
             touch.clientX >= rect.left &&
-
             touch.clientX <= rect.right &&
-
             touch.clientY >= rect.top &&
-
             touch.clientY <= rect.bottom
 
         ){
@@ -1510,38 +1499,64 @@ function(e){
 
 
     /* =====================
-       現在位置と同じなら何もしない
-    ===================== */
-
-    if(
-        targetBox ===
-        draggingPhotoElement
-    ){
-
-        return;
-
-    }
-
-
-    /* =====================
-       指が入った枠の位置へ移動
+       位置を完全に交換
     ===================== */
 
     const parent =
+        draggingPhotoElement.parentNode;
+
+
+    const targetParent =
         targetBox.parentNode;
 
 
-    parent.insertBefore(
-        draggingPhotoElement,
-        targetBox
-    );
+    const nextAfterTarget =
+        targetBox.nextSibling;
 
+
+    const nextAfterDragging =
+        draggingPhotoElement.nextSibling;
+
+
+    if(
+        nextAfterDragging === targetBox
+    ){
+
+        parent.insertBefore(
+            targetBox,
+            draggingPhotoElement
+        );
+
+    }else if(
+        nextAfterTarget === draggingPhotoElement
+    ){
+
+        parent.insertBefore(
+            draggingPhotoElement,
+            targetBox
+        );
+
+    }else{
+
+        parent.insertBefore(
+            draggingPhotoElement,
+            targetBox
+        );
+
+        parent.insertBefore(
+            targetBox,
+            nextAfterDragging
+        );
+
+    }
 
 },
 {
     passive:false
 }
 );
+
+
 
 /* 指を離した時 */
 document.addEventListener(
