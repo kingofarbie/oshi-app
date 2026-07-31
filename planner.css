@@ -703,9 +703,8 @@
 
     font-size:18px;
     font-weight:bold;
-
+    white-space:nowrap;
 }
-
 .photo-sort-btn{
 
     border:none;
@@ -789,6 +788,8 @@
 
 .photo-free-bar{
 
+    grid-column:1 / -1;
+
     display:flex;
 
     justify-content:space-between;
@@ -806,7 +807,6 @@
     margin-bottom:10px;
 
 }
-
 
 .photo-free-bar button{
 
