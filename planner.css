@@ -688,6 +688,8 @@
 
 .photo-toolbar{
 
+    grid-column:1 / -1;
+
     display:flex;
     justify-content:space-between;
     align-items:center;
@@ -695,7 +697,6 @@
     margin:12px 0;
 
     width:100%;
-
 }
 
 .photo-toolbar-title{
