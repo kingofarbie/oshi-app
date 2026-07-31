@@ -30,11 +30,20 @@
 <div id="plannerMemory">
 
     <div class="memory-section">
-        <div class="memory-header">
-            <span>📷 写真</span>
-            <button onclick="addPhoto()">＋</button>
-        </div>
+<div class="memory-header">
+    <span>📷 写真</span>
 
+    <div class="memory-header-actions">
+
+        <button onclick="addPhoto()">＋</button>
+
+        <button onclick="startPhotoDeleteMode()">
+            🗑
+        </button>
+
+    </div>
+
+</div>
         <div id="photoList" class="memory-list">
             写真はありません
         </div>
