@@ -1397,6 +1397,10 @@ function(e){
    画面上の「一番近い枠」へ移動
 ===================== */
 
+/* =====================
+   指が入っている枠へ移動
+===================== */
+
 document.addEventListener(
 "touchmove",
 function(e){
@@ -1407,7 +1411,7 @@ function(e){
 
 
     /* =====================
-       まだドラッグしていない
+       ドラッグ開始前
        → 普通のスクロール
     ===================== */
 
@@ -1444,7 +1448,8 @@ function(e){
 
 
     /* =====================
-       ドラッグ中だけスクロール停止
+       ドラッグ中
+       → スクロール停止
     ===================== */
 
     e.preventDefault();
@@ -1454,142 +1459,89 @@ function(e){
         e.touches[0];
 
 
+    /* =====================
+       指が実際に入っている枠
+    ===================== */
+
     const boxes =
-        [
-            ...document.querySelectorAll(
-                ".memory-photo-box"
-            )
-        ]
-        .filter(
-            box =>
-                box !== draggingPhotoElement
+        document.querySelectorAll(
+            ".memory-photo-box"
         );
 
 
-    if(!boxes.length){
-        return;
-    }
-
-
-    /* =====================
-       指に一番近い写真枠を探す
-    ===================== */
-
-    let nearestBox = null;
-    let nearestDistance = Infinity;
+    let targetBox = null;
 
 
     boxes.forEach(box=>{
+
+        if(
+            box === draggingPhotoElement
+        ){
+            return;
+        }
+
 
         const rect =
             box.getBoundingClientRect();
 
 
-        const centerX =
-            rect.left +
-            rect.width / 2;
-
-
-        const centerY =
-            rect.top +
-            rect.height / 2;
-
-
-        const distance =
-            Math.sqrt(
-
-                Math.pow(
-                    touch.clientX - centerX,
-                    2
-                )
-
-                +
-
-                Math.pow(
-                    touch.clientY - centerY,
-                    2
-                )
-
-            );
-
-
         if(
-            distance <
-            nearestDistance
+
+            touch.clientX >= rect.left &&
+
+            touch.clientX <= rect.right &&
+
+            touch.clientY >= rect.top &&
+
+            touch.clientY <= rect.bottom
+
         ){
 
-            nearestDistance =
-                distance;
-
-            nearestBox =
-                box;
+            targetBox = box;
 
         }
 
     });
 
 
-    if(!nearestBox){
+    if(!targetBox){
         return;
     }
 
 
-    const parent =
-        nearestBox.parentNode;
+    /* =====================
+       現在位置と同じなら何もしない
+    ===================== */
 
+    if(
+        targetBox ===
+        draggingPhotoElement
+    ){
 
-    const rect =
-        nearestBox.getBoundingClientRect();
+        return;
+
+    }
 
 
     /* =====================
-       枠の中心より右・下なら
-       その枠の「次」へ
+       指が入った枠の位置へ移動
     ===================== */
 
-    const afterTarget =
-        touch.clientY >
-        rect.top + rect.height / 2
-
-        ||
-
-        (
-            Math.abs(
-                touch.clientY -
-                (rect.top + rect.height / 2)
-            )
-            <
-            rect.height / 2
-
-            &&
-
-            touch.clientX >
-            rect.left + rect.width / 2
-        );
+    const parent =
+        targetBox.parentNode;
 
 
-    if(afterTarget){
+    parent.insertBefore(
+        draggingPhotoElement,
+        targetBox
+    );
 
-        parent.insertBefore(
-            draggingPhotoElement,
-            nearestBox.nextSibling
-        );
-
-    }else{
-
-        parent.insertBefore(
-            draggingPhotoElement,
-            nearestBox
-        );
-
-    }
 
 },
 {
     passive:false
 }
 );
-
 
 /* 指を離した時 */
 document.addEventListener(
