@@ -1829,28 +1829,24 @@ function getPhotoDeleteModeBar(){
 
 <div class="photo-delete-bar">
 
-    <div>
+    <span class="photo-delete-title">
         🗑 写真を選択中
-        <br>
-        <small>
-            ${selectedDeletePhotoIds.length}枚選択
-        </small>
-    </div>
+    </span>
 
-    <div class="photo-delete-actions">
+    <span class="photo-delete-count">
+        ${selectedDeletePhotoIds.length}枚選択
+    </span>
 
-        <button
-            onclick="cancelPhotoDeleteMode()">
-            キャンセル
-        </button>
+    <button
+        onclick="cancelPhotoDeleteMode()">
+        キャンセル
+    </button>
 
-        <button
-            onclick="deleteSelectedPhotos()"
-            ${selectedDeletePhotoIds.length === 0 ? "disabled" : ""}>
-            🗑 削除
-        </button>
-
-    </div>
+    <button
+        onclick="deleteSelectedPhotos()"
+        ${selectedDeletePhotoIds.length === 0 ? "disabled" : ""}>
+        🗑 削除
+    </button>
 
 </div>
 
