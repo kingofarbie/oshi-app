@@ -2483,3 +2483,87 @@ ${m.text}
     renderDayPhotos();
 
 }
+
+
+
+
+/* =====================
+   ホームメニュー
+===================== */
+
+function toggleHomeMenu(){
+
+    const menu =
+        document.getElementById("homeMenu");
+
+    const overlay =
+        document.getElementById("homeMenuOverlay");
+
+    if(!menu || !overlay) return;
+
+    const isOpen =
+        menu.classList.contains("show");
+
+    if(isOpen){
+
+        closeHomeMenu();
+
+    }else{
+
+        menu.classList.add("show");
+        overlay.classList.add("show");
+
+    }
+
+}
+
+
+function closeHomeMenu(){
+
+    const menu =
+        document.getElementById("homeMenu");
+
+    const overlay =
+        document.getElementById("homeMenuOverlay");
+
+    if(menu){
+
+        menu.classList.remove("show");
+
+    }
+
+    if(overlay){
+
+        overlay.classList.remove("show");
+
+    }
+
+}
+
+
+/* =====================
+   アプリ共有
+===================== */
+
+function openAppShare(){
+
+    closeHomeMenu();
+
+    /*
+       現在アクセスしているURLを
+       そのまま共有する
+    */
+
+    const appUrl =
+        window.location.href;
+
+    /*
+       共有モーダルは次の段階で実装
+    */
+
+    console.log(
+        "共有するURL:",
+        appUrl
+    );
+
+}
