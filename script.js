@@ -83,68 +83,137 @@ async function loadMaster(){
 
 function switchTab(pageId,event){
 
+    /* =====================
+       全ページを非表示
+    ===================== */
 
     document
-    .querySelectorAll('.page')
-    .forEach(
-        page=>
-            page.classList.remove(
-                'active'
-            )
-    );
+        .querySelectorAll('.page')
+        .forEach(page=>{
+            page.classList.remove('active');
+        });
 
 
-    document
-    .getElementById(pageId)
-    .classList.add(
-        'active'
-    );
+    /* =====================
+       1日手帳
+    ===================== */
+
+    if(pageId === 'plannerPage'){
+
+        /*
+         * 1日手帳は planner.html を
+         * plannerContainer に読み込む構造なので、
+         * 通常の page として扱わない
+         */
+
+        let date = selectedCalendarDate;
+
+        /*
+         * 日付がまだ選ばれていなければ
+         * 今日を使用
+         */
+
+        if(!date){
+
+            const today = new Date();
+
+            date =
+                today.getFullYear()
+                + "-"
+                + String(
+                    today.getMonth() + 1
+                ).padStart(2,'0')
+                + "-"
+                + String(
+                    today.getDate()
+                ).padStart(2,'0');
+
+            selectedCalendarDate = date;
+
+        }
 
 
+        /*
+         * planner.html を表示
+         */
 
-    document
-    .querySelectorAll('.tab')
-    .forEach(
-        tab=>
-            tab.classList.remove(
-                'active'
-            )
-    );
+        showPlanner(date);
 
 
-    event.currentTarget
-    .classList.add(
-        'active'
-    );
+    }
+    else{
 
+        /* =====================
+           通常ページ
+        ===================== */
 
+        const page =
+            document.getElementById(pageId);
 
-    if(pageId==='calendarPage'){
+        if(page){
 
-        renderCalendar();
+            page.classList.add('active');
 
+        }
 
     }
 
 
-if(pageId==='home'){
+    /* =====================
+       タブのactive切り替え
+    ===================== */
 
-    displayHomeSchedule();
+    document
+        .querySelectorAll('.tab')
+        .forEach(tab=>{
+            tab.classList.remove('active');
+        });
 
-    displayUpcomingEvents();
 
-    displayFavorites();
+    if(event && event.currentTarget){
+
+        event.currentTarget.classList.add('active');
+
+    }
+
+
+    /* =====================
+       カレンダー
+    ===================== */
+
+    if(pageId === 'calendarPage'){
+
+        renderCalendar();
+
+    }
+
+
+    /* =====================
+       ホーム
+    ===================== */
+
+    if(pageId === 'home'){
+
+        displayHomeSchedule();
+
+        displayUpcomingEvents();
+
+        displayFavorites();
+
+    }
+
+
+    /* =====================
+       お気に入り
+    ===================== */
+
+    if(pageId === 'favoritePage'){
+
+        displayFavorites();
+
+    }
 
 }
-
-if(pageId==='favoritePage'){
-
-    displayFavorites();
-
-}
-
-}
-
 
 
 
