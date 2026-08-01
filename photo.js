@@ -272,11 +272,7 @@ function openPhotoViewer(id){
 
     const data = db.load();
 
-const photos = favoriteViewMode
-    ? Object.values(data.dayMemories || {})
-        .flatMap(day => day.photos || [])
-        .filter(photo => photo.favorite)
-    : data.dayMemories?.[selectedCalendarDate]?.photos || [];
+const photos = getViewerPhotos();
 
     const photo =
         photos.find(
@@ -479,15 +475,144 @@ function closePhotoViewer(){
 
 }
 
+
+function getViewerPhotos(){
+
+    const data = db.load();
+
+    let photos =
+        favoriteViewMode
+        ?
+        Object.values(data.dayMemories || {})
+            .flatMap(day => day.photos || [])
+            .filter(photo => photo.favorite)
+        :
+        [
+            ...(data.dayMemories?.[selectedCalendarDate]?.photos || [])
+        ];
+
+
+    /*
+    =====================
+    表示順と同じ順番にする
+    =====================
+    */
+
+    if(favoriteViewMode){
+
+        const sortMode =
+            localStorage.getItem("favoritePhotoSort")
+            || "new";
+
+
+        if(sortMode === "new"){
+
+            photos.sort(
+                (a,b)=>b.id-a.id
+            );
+
+        }
+
+
+        if(sortMode === "old"){
+
+            photos.sort(
+                (a,b)=>a.id-b.id
+            );
+
+        }
+
+
+        if(
+            sortMode === "favoriteNew" ||
+            sortMode === "favoriteOld"
+        ){
+
+            photos.sort(
+                (a,b)=>{
+
+                    const starA = a.star || 0;
+                    const starB = b.star || 0;
+
+
+                    if(starA !== starB){
+
+                        return starB - starA;
+
+                    }
+
+
+                    return sortMode === "favoriteNew"
+                        ? b.id - a.id
+                        : a.id - b.id;
+
+                }
+            );
+
+        }
+
+    }else{
+
+        const sortMode =
+            localStorage.getItem("calendarPhotoSort")
+            || "new";
+
+
+        if(sortMode === "free"){
+
+            photos.sort(
+                (a,b)=>
+                    (a.order || a.id) -
+                    (b.order || b.id)
+            );
+
+        }else if(sortMode === "old"){
+
+            photos.sort(
+                (a,b)=>a.id-b.id
+            );
+
+        }else if(
+            sortMode === "favoriteNew" ||
+            sortMode === "favoriteOld"
+        ){
+
+            photos.sort(
+                (a,b)=>{
+
+                    if(a.favorite !== b.favorite){
+
+                        return b.favorite - a.favorite;
+
+                    }
+
+                    return sortMode === "favoriteNew"
+                        ? b.id - a.id
+                        : a.id - b.id;
+
+                }
+            );
+
+        }else{
+
+            photos.sort(
+                (a,b)=>b.id-a.id
+            );
+
+        }
+
+    }
+
+
+    return photos;
+
+}
+
 function showPhoto(index){
 
     const data = db.load();
 
-const photos = favoriteViewMode
-    ? Object.values(data.dayMemories || {})
-        .flatMap(day => day.photos || [])
-        .filter(photo => photo.favorite)
-    : data.dayMemories?.[selectedCalendarDate]?.photos || [];
+const photos = getViewerPhotos();
 
     if(photos.length === 0){
         return;
