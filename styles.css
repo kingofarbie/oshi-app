@@ -1222,7 +1222,7 @@ button:hover{
     top:15px;
     right:15px;
 
-    width:280px;
+    width:250px;
 
     max-width:calc(100vw - 30px);
 
@@ -1293,8 +1293,8 @@ button:hover{
 
 .home-menu-header button{
 
-    width:40px;
-    height:40px;
+    width:32px;
+    height:32px;
 
     padding:0;
     margin:0;
@@ -1309,7 +1309,7 @@ button:hover{
 
     line-height:1;
 
-    font-size:20px;
+    font-size:16px;
 
     cursor:pointer;
 
