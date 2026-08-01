@@ -127,6 +127,16 @@
 
 </div>
 
+
+
+<!-- =====================
+     1日手帳
+===================== -->
+<div id="plannerPage" class="page"><div id="plannerContainer">
+    読み込み中...
+</div>
+
+</div>
 <!-- =====================
      カレンダー
 ===================== -->
@@ -153,11 +163,6 @@
 </div>
 
 
-<!-- =====================
-     1日手帳読み込み場所
-===================== -->
-
-<div id="plannerContainer"></div>
 
 </div>
 
@@ -1088,59 +1093,70 @@ placeholder="カテゴリ名（例：推し活、仕事、旅行）">
 ===================== -->
 
 
+
+
+
+<!-- =====================
+     タブ
+===================== -->
 <div class="tabbar">
-
-
+    <!-- ホーム -->
 <div
-class="tab active"
-onclick="switchTab('home',event)">
+    class="tab active"
+    onclick="switchTab('home',event)">
 
-🏠<br>
-ホーム
+    🏠<br>
+    ホーム
 
 </div>
 
 
-
-
+<!-- 1日手帳 -->
 <div
-class="tab"
-onclick="switchTab('calendarPage',event)">
+    class="tab"
+    onclick="switchTab('plannerPage',event)">
 
-📅<br>
-カレンダー
+    📖<br>
+    1日手帳
 
 </div>
 
 
-
-
-
+<!-- カレンダー -->
 <div
-class="tab"
-onclick="switchTab('oshiPage',event)">
+    class="tab"
+    onclick="switchTab('calendarPage',event)">
 
-⭐<br>
-推し
+    📅<br>
+    カレンダー
 
 </div>
 
 
-
-
-
+<!-- 推し -->
 <div
-class="tab"
-onclick="switchTab('settingsPage',event)">
+    class="tab"
+    onclick="switchTab('oshiPage',event)">
 
-⚙️<br>
-設定
+    ⭐<br>
+    推し
+
+</div>
+
+
+<!-- お金 -->
+<div
+    class="tab"
+    onclick="switchTab('moneyPage',event)">
+
+    💰<br>
+    お金
+
+</div>
 
 </div>
 
 
-
-</div>
 
 
 <!-- Firebase（順番固定・完成版） -->
@@ -1374,6 +1390,39 @@ ontouchend="photoDragEnd(event);photoDoubleTap(event)">
 
 <div id="aboutAppContainer"></div>
 
+
+
+
+
+
+
+
+<script>
+
+fetch("planner.html")
+    .then(response => response.text())
+    .then(html => {
+
+        document.getElementById(
+            "plannerContainer"
+        ).innerHTML = html;
+
+    })
+    .catch(error => {
+
+        console.error(
+            "1日手帳の読み込みに失敗:",
+            error
+        );
+
+        document.getElementById(
+            "plannerContainer"
+        ).innerHTML =
+            "<p>1日手帳を読み込めませんでした。</p>";
+
+    });
+
+</script>
 
 
 
