@@ -1181,42 +1181,6 @@ button:hover{
 
 
 /* =====================
-   ホーム右上メニューボタン
-===================== */
-
-#homeMenuButton{
-
-    width:44px;
-    height:44px;
-
-    border:none;
-    border-radius:12px;
-
-    background:var(--accent);
-    color:#fff;
-
-    font-size:24px;
-    font-weight:bold;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    cursor:pointer;
-
-    box-shadow:
-        0 3px 10px rgba(0,0,0,.18);
-
-}
-
-#homeMenuButton:active{
-
-    transform:scale(.94);
-
-}
-
-
-/* =====================
    メニュー背景
 ===================== */
 
@@ -1395,3 +1359,98 @@ button:hover{
     font-size:21px;
 
 }
+
+
+/* =====================
+   ヘッダー
+   ☰左固定 ＋ タイトル中央
+===================== */
+
+.header{
+
+    position:relative;
+
+    width:100%;
+    height:60px;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+}
+
+
+/* タイトル */
+
+.header h1{
+
+    position:absolute;
+
+    left:50%;
+    top:50%;
+
+    transform:translate(-50%,-50%);
+
+    margin:0;
+
+    white-space:nowrap;
+
+    text-align:center;
+
+}
+
+
+/* =====================
+   左上メニューボタン
+===================== */
+
+#homeMenuButton{
+
+    position:absolute;
+
+    left:10px;
+    top:50%;
+
+    transform:translateY(-50%);
+
+    width:42px;
+    height:42px;
+
+    padding:0;
+
+    border:none;
+    border-radius:12px;
+
+    background:var(--accent);
+
+    color:#fff;
+
+    font-size:24px;
+    font-weight:bold;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    cursor:pointer;
+
+    z-index:10;
+
+    box-shadow:
+        0 3px 10px rgba(0,0,0,.18);
+
+}
+
+
+/* 押した時 */
+
+#homeMenuButton:active{
+
+    transform:
+        translateY(-50%)
+        scale(.92);
+
+}
+
