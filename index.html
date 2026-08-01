@@ -1278,15 +1278,15 @@ ontouchend="photoDragEnd(event);photoDoubleTap(event)">
         <span>共有</span>
     </button>
 
-    <button onclick="openSettingsPage(); closeHomeMenu();">
-        <span>⚙️</span>
-        <span>設定</span>
-    </button>
+<button onclick="switchTab('settingsPage',event); closeHomeMenu();">
+    <span>⚙️</span>
+    <span>設定</span>
+</button>
 
-    <button onclick="closeHomeMenu()">
-        <span>ℹ️</span>
-        <span>アプリについて</span>
-    </button>
+<button onclick="openAboutApp()">
+    <span>ℹ️</span>
+    <span>アプリについて</span>
+</button>
 
 </div>
 </div>
@@ -1364,6 +1364,67 @@ ontouchend="photoDragEnd(event);photoDoubleTap(event)">
     </div>
 
 </div>
+
+<!-- =====================
+     アプリについてモーダル
+===================== --><div
+    id="aboutAppModal"
+    class="modal"
+    style="display:none;"><div class="modal-content about-app-modal">
+
+    <h2>
+        📖 推し活手帳
+    </h2>
+
+    <div class="about-app-version">
+        Version 1.8
+    </div>
+
+    <p>
+        推し活の予定・イベント・写真・思い出を
+        まとめて管理できる手帳アプリです。
+    </p>
+
+    <hr>
+
+    <h3>✨ 主な機能</h3>
+
+    <ul>
+        <li>📅 カレンダー・予定管理</li>
+        <li>⭐ 推しの登録・管理</li>
+        <li>📷 写真・思い出の管理</li>
+        <li>👜 持ち物リスト・テンプレート</li>
+        <li>🔔 通知設定</li>
+        <li>🎨 背景テーマ変更</li>
+        <li>⭐ お気に入り管理</li>
+    </ul>
+
+    <hr>
+
+    <h3>🔒 データについて</h3>
+
+    <p>
+        登録したデータは、アプリの設定に応じて
+        お使いの端末やクラウド上に保存されます。
+    </p>
+
+    <hr>
+
+    <h3>📱 アプリ情報</h3>
+
+    <p>
+        アプリ名：推し活手帳<br>
+        バージョン：v1.8
+    </p>
+
+    <button onclick="closeAboutApp()">
+        ❌ 閉じる
+    </button>
+
+</div>
+
+</div>
+
 
 </body>
 
