@@ -25,6 +25,9 @@ const PHOTO_ROWS = 3;    // 2段
 let photoDeleteMode = false;
 let selectedDeletePhotoIds = [];
 
+let photoShareMode = false;
+let selectedSharePhotoIds = [];
+
 /* =====================
    自由並べ替え用
 ===================== */
@@ -985,6 +988,221 @@ function deleteCurrentPhoto(){
 
 
 /* =====================
+   写真複数共有
+===================== */
+
+function startPhotoShareMode(){
+
+    photoShareMode = true;
+
+    selectedSharePhotoIds = [];
+
+    renderDayPhotos();
+
+}
+
+
+function togglePhotoShareSelection(id){
+
+    id = Number(id);
+
+    const index =
+        selectedSharePhotoIds.indexOf(id);
+
+
+    if(index >= 0){
+
+        selectedSharePhotoIds.splice(
+            index,
+            1
+        );
+
+    }else{
+
+        selectedSharePhotoIds.push(id);
+
+    }
+
+
+    renderDayPhotos();
+
+}
+
+
+function cancelPhotoShareMode(){
+
+    photoShareMode = false;
+
+    selectedSharePhotoIds = [];
+
+    renderDayPhotos();
+
+}
+
+
+async function shareSelectedPhotos(){
+
+    if(selectedSharePhotoIds.length === 0){
+
+        alert("共有する写真を選択してください");
+
+        return;
+
+    }
+
+
+    const data = db.load();
+
+    const photos =
+        data.dayMemories
+        ?. [selectedCalendarDate]
+        ?. photos || [];
+
+
+    const selectedPhotos =
+        photos.filter(
+            photo =>
+                selectedSharePhotoIds.includes(
+                    Number(photo.id)
+                )
+        );
+
+
+    if(selectedPhotos.length === 0){
+
+        return;
+
+    }
+
+
+    try{
+
+        const files = [];
+
+
+        for(
+            let i = 0;
+            i < selectedPhotos.length;
+            i++
+        ){
+
+            const photo =
+                selectedPhotos[i];
+
+
+            const response =
+                await fetch(photo.src);
+
+
+            const blob =
+                await response.blob();
+
+
+            const file =
+                new File(
+                    [blob],
+                    `oshi-photo-${i + 1}.jpg`,
+                    {
+                        type:
+                            blob.type ||
+                            "image/jpeg"
+                    }
+                );
+
+
+            files.push(file);
+
+        }
+
+
+        if(
+            !navigator.share ||
+            !navigator.canShare ||
+            !navigator.canShare({
+                files: files
+            })
+        ){
+
+            alert(
+                "この端末では複数写真の共有に対応していません"
+            );
+
+            return;
+
+        }
+
+
+        await navigator.share({
+
+            files: files,
+
+            title:
+                "推し活手帳",
+
+            text:
+                `${files.length}枚の写真`
+
+        });
+
+
+        photoShareMode = false;
+
+        selectedSharePhotoIds = [];
+
+        renderDayPhotos();
+
+
+    }catch(error){
+
+        console.log(
+            "写真共有エラー:",
+            error
+        );
+
+    }
+
+}
+
+
+
+function getPhotoShareModeBar(){
+
+    return `
+
+<div class="photo-delete-bar">
+
+    <div class="photo-delete-title">
+        📤 写真を選択中
+    </div>
+
+    <div class="photo-delete-count">
+        ${selectedSharePhotoIds.length}枚選択
+    </div>
+
+    <button
+        onclick="cancelPhotoShareMode()">
+
+        キャンセル
+
+    </button>
+
+    <button
+        onclick="shareSelectedPhotos()"
+        ${selectedSharePhotoIds.length === 0
+            ? "disabled"
+            : ""}>
+
+        📤 共有
+
+    </button>
+
+</div>
+
+`;
+
+}
+
+/* =====================
    お気に入り表示
 ===================== */
 let showAllFavorites = false;
@@ -1199,28 +1417,33 @@ function renderDayPhotos(){
         let photos = [...day.photos];
 
 
+        /* =====================
+           並び順
+        ===================== */
+
         const sortMode =
-            localStorage.getItem("calendarPhotoSort") || "new";
+            localStorage.getItem("calendarPhotoSort")
+            || "new";
 
 
         if(sortMode === "free"){
 
             photos.sort(
                 (a,b)=>
-                (a.order || a.id) -
-                (b.order || b.id)
+                    (a.order || a.id) -
+                    (b.order || b.id)
             );
 
         }else if(sortMode === "old"){
 
             photos.sort(
-                (a,b)=> a.id - b.id
+                (a,b)=>a.id-b.id
             );
 
         }else{
 
             photos.sort(
-                (a,b)=> b.id - a.id
+                (a,b)=>b.id-a.id
             );
 
         }
@@ -1244,7 +1467,7 @@ function renderDayPhotos(){
 
 
         /* =====================
-           写真エリア
+           列数
         ===================== */
 
         photoArea.style.setProperty(
@@ -1253,115 +1476,248 @@ function renderDayPhotos(){
         );
 
 
+        /* =====================
+           写真エリア
+        ===================== */
+
         photoArea.innerHTML =
 
-        (photoDeleteMode ? getPhotoDeleteModeBar() : "")
-+
+        /* 削除モード */
 
-            (photoSortMode
-                ? getPhotoFreeModeBar()
-                : ""
-            )
+        (
+            photoDeleteMode
+            ?
+            getPhotoDeleteModeBar()
+            :
+            ""
+        )
 
-            +
+        +
 
-            getPhotoToolbar("calendar")
+        /* 共有モード */
 
-            +
+        (
+            photoShareMode
+            ?
+            getPhotoShareModeBar()
+            :
+            ""
+        )
 
-showPhotos.map(p=>`
+        +
 
-<div 
-class="memory-photo-box
-${photoDeleteMode && selectedDeletePhotoIds.includes(Number(p.id))
-    ? "photo-delete-selected"
-    : ""
-}"
+        /* 自由並べ替え */
+
+        (
+            photoSortMode
+            ?
+            getPhotoFreeModeBar()
+            :
+            ""
+        )
+
+        +
+
+        /* ツールバー */
+
+        getPhotoToolbar("calendar")
+
+        +
+
+        /* =====================
+           写真
+        ===================== */
+
+        showPhotos.map(p=>`
+
+<div
+class="
+memory-photo-box
+
+${
+    photoDeleteMode &&
+    selectedDeletePhotoIds.includes(
+        Number(p.id)
+    )
+    ?
+    "photo-delete-selected"
+    :
+    ""
+}
+
+${
+    photoShareMode &&
+    selectedSharePhotoIds.includes(
+        Number(p.id)
+    )
+    ?
+    "photo-delete-selected"
+    :
+    ""
+}
+"
+
 data-photo-id="${p.id}"
-onclick="${
+
+${
     photoDeleteMode
-    ? `toggleDeletePhoto(${p.id})`
-    : ""
-}"
+    ?
+    `onclick="toggleDeletePhoto(${p.id})"`
+
+    :
+
+    photoShareMode
+    ?
+    `onclick="togglePhotoShareSelection(${p.id})"`
+
+    :
+
+    ""
+}
+
 >
 
 <img
 src="${p.src}"
+
 class="memory-photo"
+
 draggable="false"
-${photoSortMode
-?
-''
-:
-photoDeleteMode
-?
-''
-:
-`onclick="openPhotoViewer(${p.id})"`
+
+${
+    photoSortMode
+    ?
+    ""
+
+    :
+
+    photoDeleteMode
+    ?
+    ""
+
+    :
+
+    photoShareMode
+    ?
+    ""
+
+    :
+
+    `onclick="openPhotoViewer(${p.id})"`
 }
+
 >
+
+
+<!-- 削除選択チェック -->
 
 ${
     photoDeleteMode
     ?
     `
     <div class="photo-delete-check">
+
         ${
-            selectedDeletePhotoIds.includes(Number(p.id))
-            ? "✓"
-            : ""
+            selectedDeletePhotoIds.includes(
+                Number(p.id)
+            )
+            ?
+            "✓"
+            :
+            ""
         }
+
     </div>
     `
     :
     ""
 }
 
+
+<!-- 共有選択チェック -->
+
+${
+    photoShareMode
+    ?
+    `
+    <div class="photo-delete-check">
+
+        ${
+            selectedSharePhotoIds.includes(
+                Number(p.id)
+            )
+            ?
+            "✓"
+            :
+            ""
+        }
+
+    </div>
+    `
+    :
+    ""
+}
+
+
 </div>
 
 `).join("")
-            +
 
-            (
-                photos.length > photoDisplayCount
+        +
 
-                ?
+        /* =====================
+           もっと見る
+        ===================== */
 
-                `
+        (
 
-                <div
-                    class="favorite-more"
-                    onclick="
-                        showAllDayPhotos = !showAllDayPhotos;
-                        renderDayPhotos();
-                    "
-                >
+            photos.length > photoDisplayCount
 
-                    ${
-                        showAllDayPhotos
-                        ? "閉じる"
-                        : "もっと見る"
-                    }
+            ?
 
-                </div>
+            `
 
-                `
+            <div
+                class="favorite-more"
 
-                :
+                onclick="
+                    showAllDayPhotos =
+                        !showAllDayPhotos;
 
-                ""
+                    renderDayPhotos();
+                "
+            >
 
-            );
+                ${
+                    showAllDayPhotos
+                    ?
+                    "閉じる"
+                    :
+                    "もっと見る"
+                }
+
+            </div>
+
+            `
+
+            :
+
+            ""
+
+        );
 
 
     }else{
 
+
         photoArea.innerHTML =
             "写真はありません";
+
 
     }
 
 }
+
 
 function getPhotoToolbar(type){
 
