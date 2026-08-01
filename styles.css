@@ -1343,7 +1343,7 @@ button:hover{
 
     background:transparent;
 
-    color:var(--text, #333);
+    color:#333 !important;
 
     font-size:16px;
 
@@ -1353,6 +1353,7 @@ button:hover{
 
 }
 
+
 .home-menu-list button:active{
 
     background:rgba(128,128,128,.12);
@@ -1360,6 +1361,7 @@ button:hover{
     transform:scale(.98);
 
 }
+
 
 .home-menu-list button span:first-child{
 
@@ -1369,8 +1371,20 @@ button:hover{
 
     font-size:21px;
 
+    color:#333;
+
+    flex-shrink:0;
+
 }
 
+
+.home-menu-list button span:last-child{
+
+    color:#333 !important;
+
+    font-size:16px;
+
+}
 
 /* =====================
    ヘッダー
