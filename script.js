@@ -81,133 +81,137 @@ async function loadMaster(){
    タブ切替
 ===================== */
 
-function switchTab(pageId,event){
+function switchTab(pageId, event){
 
-/* =====================
-   ページ切り替え
-===================== */
+    /* =====================
+       ページ切り替え
+    ===================== */
 
-document
-    .querySelectorAll('.page')
-    .forEach(page => {
+    document
+        .querySelectorAll('.page')
+        .forEach(page => {
+            page.classList.remove('active');
+        });
 
-        page.classList.remove('active');
+    const targetPage =
+        document.getElementById(pageId);
 
-    });
+    if(!targetPage){
+        console.error(
+            "ページが見つかりません:",
+            pageId
+        );
+        return;
+    }
 
-
-const targetPage =
-    document.getElementById(pageId);
-
-
-if(!targetPage){
-
-    console.error(
-        "ページが見つかりません:",
-        pageId
-    );
-
-    return;
-
-}
+    targetPage.classList.add('active');
 
 
-targetPage.classList.add('active');
+    /* =====================
+       タブ切り替え
+    ===================== */
+
+    document
+        .querySelectorAll('.tab')
+        .forEach(tab => {
+            tab.classList.remove('active');
+        });
+
+    if(event && event.currentTarget){
+        event.currentTarget.classList.add('active');
+    }
 
 
-/* =====================
-   タブ切り替え
-===================== */
+    /* =====================
+       カレンダー
+    ===================== */
 
-document
-    .querySelectorAll('.tab')
-    .forEach(tab => {
+    if(pageId === 'calendarPage'){
 
-        tab.classList.remove('active');
+        setTimeout(() => {
 
-    });
+            if(typeof renderCalendar === 'function'){
+                renderCalendar();
+            }
 
-
-if(event && event.currentTarget){
-
-    event.currentTarget.classList.add('active');
-
-}
-
-
-/* =====================
-   カレンダー
-===================== */
-
-if(pageId === 'calendarPage'){
-
-    renderCalendar();
-
-}
-
-
-/* =====================
-   1日手帳
-===================== */
-
-if(pageId === 'plannerPage'){
-
-    if(!selectedCalendarDate){
-
-        // 日付がまだ選択されていない場合
-        // 今日を表示する
-
-        const today =
-            new Date();
-
-        selectedCalendarDate =
-            `${today.getFullYear()}-${
-                String(
-                    today.getMonth() + 1
-                ).padStart(2,'0')
-            }-${
-                String(
-                    today.getDate()
-                ).padStart(2,'0')
-            }`;
+        }, 50);
 
     }
 
 
-    showPlanner(
-        selectedCalendarDate
-    );
+    /* =====================
+       1日手帳
+    ===================== */
+
+    if(pageId === 'plannerPage'){
+
+        if(!selectedCalendarDate){
+
+            const today = new Date();
+
+            selectedCalendarDate =
+                `${today.getFullYear()}-${
+                    String(
+                        today.getMonth() + 1
+                    ).padStart(2,'0')
+                }-${
+                    String(
+                        today.getDate()
+                    ).padStart(2,'0')
+                }`;
+
+        }
+
+
+        setTimeout(() => {
+
+            if(typeof showPlanner === 'function'){
+
+                showPlanner(
+                    selectedCalendarDate
+                );
+
+            }
+
+        }, 50);
+
+    }
+
+
+    /* =====================
+       ホーム
+    ===================== */
+
+    if(pageId === 'home'){
+
+        if(typeof displayHomeSchedule === 'function'){
+            displayHomeSchedule();
+        }
+
+        if(typeof displayUpcomingEvents === 'function'){
+            displayUpcomingEvents();
+        }
+
+        if(typeof displayFavorites === 'function'){
+            displayFavorites();
+        }
+
+    }
+
+
+    /* =====================
+       お気に入り
+    ===================== */
+
+    if(pageId === 'favoritePage'){
+
+        if(typeof displayFavorites === 'function'){
+            displayFavorites();
+        }
+
+    }
 
 }
-
-
-/* =====================
-   ホーム
-===================== */
-
-if(pageId === 'home'){
-
-    displayHomeSchedule();
-
-    displayUpcomingEvents();
-
-    displayFavorites();
-
-}
-
-
-/* =====================
-   お気に入り
-===================== */
-
-if(pageId === 'favoritePage'){
-
-    displayFavorites();
-
-}
-
-}
-
 
 
 /* =====================
