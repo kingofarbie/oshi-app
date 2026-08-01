@@ -1,0 +1,79 @@
+/* =====================
+   アプリについて
+===================== */
+
+.about-app-modal{
+
+    width:min(90vw,420px);
+
+    max-height:80vh;
+
+    overflow-y:auto;
+
+}
+
+
+.about-app-modal h2{
+
+    text-align:center;
+
+    margin-top:0;
+
+    color:var(--accent-light);
+
+}
+
+
+.about-description{
+
+    text-align:center;
+
+    color:var(--text-sub);
+
+    margin-bottom:20px;
+
+}
+
+
+.about-section{
+
+    background:var(--surface);
+
+    border-radius:12px;
+
+    padding:14px;
+
+    margin-bottom:12px;
+
+}
+
+
+.about-section h3{
+
+    margin-top:0;
+
+    margin-bottom:10px;
+
+    color:var(--accent-light);
+
+    font-size:16px;
+
+}
+
+
+.about-section p{
+
+    margin:7px 0;
+
+    line-height:1.5;
+
+}
+
+
+.about-close-button{
+
+    width:100%;
+
+    margin-top:5px;
+
+}

@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="styles.css">
 <link rel="stylesheet" href="theme.css">
 <link rel="stylesheet" href="planner.css">
+<link rel="stylesheet" href="about.css">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
@@ -1162,6 +1163,7 @@ onclick="switchTab('settingsPage',event)">
 <script src="planner.js"></script>
 <script src="update.js"></script>
 <script src="notification.js"></script>
+<script src="about.js"></script>
 <script src="script.js"></script>
 
 <!-- Service Worker -->
@@ -1284,7 +1286,7 @@ ontouchend="photoDragEnd(event);photoDoubleTap(event)">
 </button>
 
 <button onclick="openAboutApp()">
-    <span>ℹ️</span>
+        <span>ℹ️</span>
     <span>アプリについて</span>
 </button>
 
@@ -1365,66 +1367,37 @@ ontouchend="photoDragEnd(event);photoDoubleTap(event)">
 
 </div>
 
+
 <!-- =====================
-     アプリについてモーダル
-===================== --><div
-    id="aboutAppModal"
-    class="modal"
-    style="display:none;"><div class="modal-content about-app-modal">
+     アプリについて読み込み
+===================== -->
 
-    <h2>
-        📖 推し活手帳
-    </h2>
+<div id="aboutAppContainer"></div>
 
-    <div class="about-app-version">
-        Version 1.8
-    </div>
 
-    <p>
-        推し活の予定・イベント・写真・思い出を
-        まとめて管理できる手帳アプリです。
-    </p>
 
-    <hr>
 
-    <h3>✨ 主な機能</h3>
+<script>
 
-    <ul>
-        <li>📅 カレンダー・予定管理</li>
-        <li>⭐ 推しの登録・管理</li>
-        <li>📷 写真・思い出の管理</li>
-        <li>👜 持ち物リスト・テンプレート</li>
-        <li>🔔 通知設定</li>
-        <li>🎨 背景テーマ変更</li>
-        <li>⭐ お気に入り管理</li>
-    </ul>
+fetch("about.html")
+    .then(response => response.text())
+    .then(html => {
 
-    <hr>
+        document.getElementById(
+            "aboutAppContainer"
+        ).innerHTML = html;
 
-    <h3>🔒 データについて</h3>
+    })
+    .catch(error => {
 
-    <p>
-        登録したデータは、アプリの設定に応じて
-        お使いの端末やクラウド上に保存されます。
-    </p>
+        console.error(
+            "アプリについての読み込みに失敗:",
+            error
+        );
 
-    <hr>
+    });
 
-    <h3>📱 アプリ情報</h3>
-
-    <p>
-        アプリ名：推し活手帳<br>
-        バージョン：v1.8
-    </p>
-
-    <button onclick="closeAboutApp()">
-        ❌ 閉じる
-    </button>
-
-</div>
-
-</div>
-
+</script>
 
 </body>
 
