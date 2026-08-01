@@ -1286,23 +1286,34 @@ button:hover{
 
 }
 
+/* =====================
+   ホームメニュー
+   閉じるボタン
+===================== */
+
 .home-menu-header button{
 
-    width:36px;
-    height:36px;
+    width:40px;
+    height:40px;
+
+    padding:0;
+    margin:0;
 
     border:none;
-
     border-radius:50%;
 
-    background:rgba(128,128,128,.12);
+    display:flex;
 
-    color:var(--text, #333);
+    align-items:center;
+    justify-content:center;
 
-    font-size:18px;
+    line-height:1;
+
+    font-size:20px;
+
+    cursor:pointer;
 
 }
-
 
 /* =====================
    メニュー項目
@@ -1402,14 +1413,15 @@ button:hover{
 
 
 /* =====================
-   左上メニューボタン
+   ホームメニューボタン
+   ヘッダー内・右上・上下中央
 ===================== */
 
 #homeMenuButton{
 
     position:absolute;
 
-    left:10px;
+    right:10px;
     top:50%;
 
     transform:translateY(-50%);
@@ -1418,6 +1430,7 @@ button:hover{
     height:42px;
 
     padding:0;
+    margin:0;
 
     border:none;
     border-radius:12px;
@@ -1430,9 +1443,10 @@ button:hover{
     font-weight:bold;
 
     display:flex;
-
     align-items:center;
     justify-content:center;
+
+    line-height:1;
 
     cursor:pointer;
 
@@ -1453,4 +1467,3 @@ button:hover{
         scale(.92);
 
 }
-
