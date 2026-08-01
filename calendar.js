@@ -60,9 +60,8 @@ function renderCalendar(){
         new Date();
 
 
-    const events =
-        db.load().events;
-
+const events =
+    db.load().events || [];
 
 
     let html = `
@@ -124,12 +123,12 @@ ${year}年 ${month + 1}月
         `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
 
 
-        const hasEvent =
-            events.some(
-                e =>
-                e.date.startsWith(date)
-            );
-
+const hasEvent =
+    events.some(
+        e =>
+        e.date &&
+        e.date.startsWith(date)
+    );
 
 
         const isToday =
@@ -160,9 +159,12 @@ else if(dayOfWeek === 6){
 
 const dayEvents =
     events.filter(
-        e => e.date.startsWith(date)
+        e =>
+            e.date &&
+            e.date.startsWith(date)
     );
 
+    
 const preview =
     dayEvents
     .slice(0,3)
