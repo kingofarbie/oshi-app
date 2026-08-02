@@ -5,18 +5,23 @@
 
 :root{
 
-    --bg:#0f0f10;
-    --card:#1c1c1e;
-    --surface:#2a2a2d;
-    --border:#333333;
+    --bg:#ffffff;
 
-    --text:#ffffff;
-    --text-sub:#aaaaaa;
+    --card:#ffffff;
+
+    --surface:#f7f8fb;
+
+    --border:#e2e5eb;
+
+    --text:#222936;
+
+    --text-sub:#667085;
 
     --accent:#ff2d55;
-    --accent-light:#ff6fa5;
 
-    --danger:#6b1d2d;
+    --accent-light:#ff5f91;
+
+    --danger:#d94a63;
 
     --header-gradient:
     linear-gradient(
@@ -25,7 +30,6 @@
         #ff6fa5
     );
 }
-
 
 /* =========================
    基本
