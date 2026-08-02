@@ -197,7 +197,7 @@ ${hasEvent ? 'has-event' : ''}
 ${isSelected ? 'selected-day' : ''}
 "
 onclick="selectCalendarDate('${date}')"
-ontouchstart="startPress('${date}')"
+ontouchstart="startPress('${date}', event)"
 ontouchend="cancelPress()"
 ontouchmove="cancelPress()">
 
@@ -492,7 +492,11 @@ function displaySelectedDateEvents(){
 }
 
 
-function startPress(date){
+function startPress(date, event){
+
+    if(event.touches.length > 1){
+        return;
+    }
 
     pressTimer = setTimeout(()=>{
 
@@ -501,6 +505,7 @@ function startPress(date){
     },1000);
 
 }
+
 
 function cancelPress(){
 
