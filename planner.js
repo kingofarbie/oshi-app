@@ -270,15 +270,14 @@ const top =
 
 
 
-        html += `
-
+html += `
 
 <div
 class="planner-event ${finished ? "finished-event" : ""}"
 style="
 top:${top}px;
 height:${height}px;
-background:#ffe6f0;
+background:${category?.color || "#fff5fb"};
 border-left-color:${category?.color || "#ffb3cc"};
 ">
 
