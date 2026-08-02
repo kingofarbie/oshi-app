@@ -670,6 +670,12 @@ button:hover{
 
 }
 
+
+#memoText{
+    width:100%;
+    box-sizing:border-box;
+}
+
 .modal-content button{
     width:100%;
     margin:8px 0;
