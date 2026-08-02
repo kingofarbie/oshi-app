@@ -1,3 +1,7 @@
+/* =========================
+   Theme System
+   白ベース統一版
+========================= */
 
 
 /* =========================
@@ -13,7 +17,7 @@
     --border:#e5e5ea;
 
     --text:#222222;
-    --text-sub:#666666;
+    --text-sub:#667085;
 
     --accent:#ff4f87;
     --accent-light:#ff6f9f;
@@ -31,24 +35,21 @@
 
 
 /* =========================
-   Theme System
+   Neon Pink
 ========================= */
 
-/* Neon Pink */
 .theme-neon-pink{
 
---bg:#ffffff;
---card:#ffffff;
---surface:#f7f7f9;
+    --bg:#ffffff;
+    --card:#ffffff;
+    --surface:#fff5f8;
 
---border:#e5e5ea;
+    --border:#f0dce3;
 
---text:#222222;
-
+    --text:#222222;
     --text-sub:#667085;
 
     --accent:#ff2d55;
-
     --accent-light:#ff5f91;
 
     --danger:#d94a63;
@@ -63,22 +64,25 @@
 }
 
 
-/* Neon Blue */
+/* =========================
+   Neon Blue
+========================= */
 
 .theme-neon-blue{
 
-    --bg:#08111f;
-    --card:#0f1c33;
-    --surface:#172745;
+    --bg:#ffffff;
+    --card:#ffffff;
+    --surface:#f4f9ff;
 
-    --border:#29406d;
+    --border:#dce8f5;
 
-    --text:#ffffff;
+    --text:#222222;
+    --text-sub:#667085;
 
-    --accent:#00c8ff;
-    --accent-light:#79e4ff;
+    --accent:#0078ff;
+    --accent-light:#42bfff;
 
-    --danger:#6b1d2d;
+    --danger:#d94a63;
 
     --header-gradient:
     linear-gradient(
@@ -89,22 +93,26 @@
 
 }
 
-/* Neon Purple */
+
+/* =========================
+   Neon Purple
+========================= */
 
 .theme-neon-purple{
 
-    --bg:#14081f;
-    --card:#231033;
-    --surface:#34184b;
+    --bg:#ffffff;
+    --card:#ffffff;
+    --surface:#faf5ff;
 
-    --border:#513072;
+    --border:#e8d9f5;
 
-    --text:#ffffff;
+    --text:#222222;
+    --text-sub:#667085;
 
-    --accent:#b54cff;
-    --accent-light:#d9a4ff;
+    --accent:#8b3dff;
+    --accent-light:#b477ff;
 
-    --danger:#6b1d2d;
+    --danger:#d94a63;
 
     --header-gradient:
     linear-gradient(
@@ -115,22 +123,26 @@
 
 }
 
-/* Neon Green */
+
+/* =========================
+   Neon Green
+========================= */
 
 .theme-neon-green{
 
-    --bg:#07140a;
-    --card:#102817;
-    --surface:#173b22;
+    --bg:#ffffff;
+    --card:#ffffff;
+    --surface:#f3fff7;
 
-    --border:#275536;
+    --border:#d9eee1;
 
-    --text:#ffffff;
+    --text:#222222;
+    --text-sub:#667085;
 
-    --accent:#00ff7f;
-    --accent-light:#6cffb1;
+    --accent:#00a95c;
+    --accent-light:#35d982;
 
-    --danger:#6b1d2d;
+    --danger:#d94a63;
 
     --header-gradient:
     linear-gradient(
@@ -141,22 +153,26 @@
 
 }
 
-/* Neon Orange */
+
+/* =========================
+   Neon Orange
+========================= */
 
 .theme-neon-orange{
 
-    --bg:#1a0f07;
-    --card:#2c180d;
-    --surface:#402313;
+    --bg:#ffffff;
+    --card:#ffffff;
+    --surface:#fff8f1;
 
-    --border:#6b3a1f;
+    --border:#f0e0d0;
 
-    --text:#ffffff;
+    --text:#222222;
+    --text-sub:#667085;
 
-    --accent:#ff8c00;
-    --accent-light:#ffbf66;
+    --accent:#f07800;
+    --accent-light:#ff9d3d;
 
-    --danger:#6b1d2d;
+    --danger:#d94a63;
 
     --header-gradient:
     linear-gradient(
@@ -168,29 +184,28 @@
 }
 
 
-
-
 /* =========================
    宇宙テーマ
+   ※宇宙だけは背景画像を維持
 ========================= */
 
 .theme-space{
 
-    --bg:#050816;
+    --bg:#ffffff;
 
-    --card:#12153d;
+    --card:rgba(255,255,255,0.90);
 
-    --surface:#1b2255;
+    --surface:rgba(245,248,255,0.92);
 
-    --border:#384080;
+    --border:#dce3f0;
 
-    --text:#ffffff;
+    --text:#222222;
+    --text-sub:#667085;
 
-    --accent:#60a5fa;
+    --accent:#3478d4;
+    --accent-light:#5d9bea;
 
-    --accent-light:#93c5fd;
-
-    --danger:#6b1d2d;
+    --danger:#d94a63;
 
     --header-gradient:
     linear-gradient(
@@ -209,22 +224,28 @@
 
 }
 
+
+/* =========================
+   宇宙テーマのカード
+========================= */
+
 .theme-space .card{
 
     background:
-    rgba(18,21,61,0.82);
+    rgba(255,255,255,0.90);
 
     backdrop-filter:blur(10px);
 
 }
 
+
+/* =========================
+   宇宙テーマのボタン
+========================= */
+
 .theme-space button{
 
     box-shadow:
-    0 0 10px rgba(96,165,250,.5);
+    0 0 10px rgba(96,165,250,.25);
 
 }
-
-
-
-
