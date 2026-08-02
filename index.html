@@ -1387,58 +1387,6 @@ ontouchend="photoDragEnd(event);photoDoubleTap(event)">
 <div id="aboutAppContainer"></div>
 
 
-<!-- =====================
-     1日手帳読み込み
-===================== -->
-
-<script>
-
-fetch("planner.html")
-    .then(response => response.text())
-    .then(html => {
-
-        document.getElementById(
-            "plannerContainer"
-        ).innerHTML = html;
-
-    })
-    .catch(error => {
-
-        console.error(
-            "1日手帳の読み込みに失敗:",
-            error
-        );
-
-    });
-
-</script>
-
-
-<!-- =====================
-     アプリについて読み込み
-===================== -->
-
-<script>
-
-fetch("about.html")
-    .then(response => response.text())
-    .then(html => {
-
-        document.getElementById(
-            "aboutAppContainer"
-        ).innerHTML = html;
-
-    })
-    .catch(error => {
-
-        console.error(
-            "アプリについての読み込みに失敗:",
-            error
-        );
-
-    });
-
-</script>
 
 </body>
 
