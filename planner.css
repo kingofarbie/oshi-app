@@ -158,7 +158,6 @@
     position:absolute;
 
     left:10px;
-
     right:10px;
 
     box-sizing:border-box;
@@ -169,16 +168,16 @@
 
     overflow:hidden;
 
+    background:#ffe6f0;
+
     color:#333;
 
-    border-left:6px solid #ff8fab;
+    border-left:6px solid #ffb3cc;
 
     box-shadow:
     2px 4px 10px rgba(0,0,0,0.18);
 
     z-index:2;
-
-
 }
 
 
