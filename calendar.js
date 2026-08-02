@@ -75,10 +75,12 @@ const events =
 </button>
 
 
-<div class="calendar-title">
-${year}年 ${month + 1}月
+<div
+    class="calendar-title"
+    onclick="openCalendarDatePicker()"
+>
+    ${year}年 ${month + 1}月
 </div>
-
 
 <button onclick="changeMonth(1)">
 ▶
@@ -790,3 +792,169 @@ function copySelectedEvents(){
 }
 
 
+/* =====================
+   カレンダー年月選択
+===================== */
+
+function openCalendarDatePicker(){
+
+    const modal =
+        document.getElementById(
+            "calendarDatePickerModal"
+        );
+
+    const yearSelect =
+        document.getElementById(
+            "calendarYearSelect"
+        );
+
+    const monthSelect =
+        document.getElementById(
+            "calendarMonthSelect"
+        );
+
+
+    if(
+        !modal ||
+        !yearSelect ||
+        !monthSelect
+    ){
+        return;
+    }
+
+
+    /* =====================
+       年の選択肢を作成
+    ===================== */
+
+    const currentYear =
+        currentCalendarDate.getFullYear();
+
+
+    yearSelect.innerHTML = "";
+
+
+    /*
+       現在年の前後10年を選択可能
+    */
+
+    for(
+        let year = currentYear - 10;
+        year <= currentYear + 10;
+        year++
+    ){
+
+        const option =
+            document.createElement("option");
+
+        option.value = year;
+
+        option.textContent =
+            `${year}年`;
+
+        yearSelect.appendChild(option);
+
+    }
+
+
+    /* =====================
+       現在の年月を選択状態にする
+    ===================== */
+
+    yearSelect.value =
+        currentYear;
+
+
+    monthSelect.value =
+        currentCalendarDate.getMonth();
+
+
+    /* =====================
+       モーダル表示
+    ===================== */
+
+    modal.style.display = "block";
+
+}
+
+
+/* =====================
+   年月選択を閉じる
+===================== */
+
+function closeCalendarDatePicker(){
+
+    const modal =
+        document.getElementById(
+            "calendarDatePickerModal"
+        );
+
+    if(!modal){
+        return;
+    }
+
+
+    modal.style.display = "none";
+
+}
+
+
+/* =====================
+   選択した年月へ移動
+===================== */
+
+function applyCalendarDatePicker(){
+
+    const yearSelect =
+        document.getElementById(
+            "calendarYearSelect"
+        );
+
+    const monthSelect =
+        document.getElementById(
+            "calendarMonthSelect"
+        );
+
+
+    if(
+        !yearSelect ||
+        !monthSelect
+    ){
+        return;
+    }
+
+
+    const year =
+        Number(yearSelect.value);
+
+
+    const month =
+        Number(monthSelect.value);
+
+
+    /* =====================
+       カレンダー年月を変更
+    ===================== */
+
+    currentCalendarDate =
+        new Date(
+            year,
+            month,
+            1
+        );
+
+
+    /* =====================
+       モーダルを閉じる
+    ===================== */
+
+    closeCalendarDatePicker();
+
+
+    /* =====================
+       カレンダー再描画
+    ===================== */
+
+    renderCalendar();
+
+}

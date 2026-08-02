@@ -972,3 +972,65 @@
 
 }
 
+
+/* =====================
+   カレンダー年月選択
+===================== */
+
+.calendar-title{
+
+    cursor:pointer;
+
+    user-select:none;
+
+    -webkit-tap-highlight-color:transparent;
+
+    transition:opacity 0.2s;
+
+}
+
+
+.calendar-title:active{
+
+    opacity:0.6;
+
+}
+
+
+.calendar-date-picker{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:8px;
+
+    margin:20px 0;
+
+}
+
+
+.calendar-date-picker label{
+
+    font-weight:bold;
+
+    margin-top:5px;
+
+}
+
+
+.calendar-date-picker select{
+
+    width:100%;
+
+    padding:12px;
+
+    font-size:16px;
+
+    border-radius:8px;
+
+    border:1px solid #ccc;
+
+    box-sizing:border-box;
+
+}
