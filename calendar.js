@@ -364,8 +364,7 @@ alert("予定を貼り付けました");
 
     renderCalendar();
 
-    showPlanner(date);
-
+showPlanner(date, true);
 
 }
 

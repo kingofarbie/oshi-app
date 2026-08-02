@@ -14,9 +14,26 @@
    左時間固定 + 予定自由配置版
 ===================== */
 
-function showPlanner(date){
-    
+function showPlanner(date, fromCalendar = false){
+
     selectedCalendarDate = date;
+
+const calendarBack =
+    document.getElementById(
+        "plannerCalendarBack"
+    );
+
+if(calendarBack){
+
+    calendarBack.style.display =
+        fromCalendar
+        ? "block"
+        : "none";
+
+}
+
+
+
 
     const planner =
         document.getElementById("dayPlanner");

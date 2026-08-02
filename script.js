@@ -149,40 +149,46 @@ setTimeout(() => {
        1日手帳
     ===================== */
 
-    if(pageId === 'plannerPage'){
+if(pageId === 'plannerPage'){
 
-        if(!selectedCalendarDate){
+    /*
+       1日手帳タブから開いた場合は
+       必ず今日を表示する
+    */
 
-            const today = new Date();
+    const today =
+        new Date();
 
-            selectedCalendarDate =
-                `${today.getFullYear()}-${
-                    String(
-                        today.getMonth() + 1
-                    ).padStart(2,'0')
-                }-${
-                    String(
-                        today.getDate()
-                    ).padStart(2,'0')
-                }`;
+    const todayString =
+        `${today.getFullYear()}-${
+            String(
+                today.getMonth() + 1
+            ).padStart(2,'0')
+        }-${
+            String(
+                today.getDate()
+            ).padStart(2,'0')
+        }`;
+
+
+    selectedCalendarDate =
+        todayString;
+
+
+    setTimeout(() => {
+
+        if(typeof showPlanner === 'function'){
+
+            showPlanner(
+                todayString,
+                false
+            );
 
         }
 
+    }, 50);
 
-        setTimeout(() => {
-
-            if(typeof showPlanner === 'function'){
-
-                showPlanner(
-                    selectedCalendarDate
-                );
-
-            }
-
-        }, 50);
-
-    }
-
+}
 
     /* =====================
        ホーム
