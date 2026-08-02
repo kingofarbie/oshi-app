@@ -172,13 +172,26 @@ const dayEvents =
 const preview =
     dayEvents
     .slice(0,3)
-    .map(e=>`
-        <div class="calendar-event-preview">
+    .map(e=>{
+
+        const category =
+            getCategoryInfo(e.category);
+
+        return `
+        <div
+            class="calendar-event-preview"
+            style="
+                background:${getLightCategoryColor(category?.color)};
+            "
+        >
             ${e.title.substring(0,6)}
         </div>
-    `)
+        `;
+
+    })
     .join('');
 
+    
 const more =
     dayEvents.length > 3
     ? `
