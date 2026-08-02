@@ -81,7 +81,8 @@ async function loadMaster(){
    タブ切替
 ===================== */
 
-function switchTab(pageId, event){
+function switchTab(pageId, event, fromCalendar = false){
+
 
     /* =====================
        ページ切り替え
@@ -151,11 +152,6 @@ setTimeout(() => {
 
 if(pageId === 'plannerPage'){
 
-    /*
-       1日手帳タブから開いた場合は
-       必ず今日を表示する
-    */
-
     const today =
         new Date();
 
@@ -171,8 +167,28 @@ if(pageId === 'plannerPage'){
         }`;
 
 
-    selectedCalendarDate =
-        todayString;
+    /*
+       カレンダーから来た場合
+       → 選択した日を表示
+    */
+
+    const plannerDate =
+        fromCalendar
+        ? selectedCalendarDate
+        : todayString;
+
+
+    /*
+       1日手帳タブから直接来た場合
+       → 今日を表示
+    */
+
+    if(!fromCalendar){
+
+        selectedCalendarDate =
+            todayString;
+
+    }
 
 
     setTimeout(() => {
@@ -180,8 +196,8 @@ if(pageId === 'plannerPage'){
         if(typeof showPlanner === 'function'){
 
             showPlanner(
-                todayString,
-                false
+                plannerDate,
+                fromCalendar
             );
 
         }

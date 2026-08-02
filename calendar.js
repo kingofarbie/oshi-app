@@ -362,9 +362,9 @@ alert("予定を貼り付けました");
     clearEventForm();
 
 
-    renderCalendar();
+renderCalendar();
 
-showPlanner(date, true);
+switchTab('plannerPage', null, true);
 
 }
 
