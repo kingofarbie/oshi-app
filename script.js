@@ -1484,16 +1484,48 @@ async function(){
    HTML読込
 ===================== */
 
-async function loadHtml(id,file){
+async function loadHtml(id, file){
 
-    const response = await fetch(file);
+    try {
 
-    const html = await response.text();
+        const response = await fetch(file);
 
-    document.getElementById(id).innerHTML = html;
+        if(!response.ok){
+            throw new Error(
+                `${file} の読み込みに失敗しました: ${response.status}`
+            );
+        }
 
+        const html = await response.text();
+
+        const container =
+            document.getElementById(id);
+
+        if(!container){
+            throw new Error(
+                `HTML内に ${id} が見つかりません`
+            );
+        }
+
+        container.innerHTML = html;
+
+        console.log(
+            `★★★★★ ${file} 読み込み成功 ★★★★★`
+        );
+
+    } catch(error){
+
+        console.error(
+            `★★★★★ ${file} 読み込み失敗 ★★★★★`,
+            error
+        );
+
+        // ここで起動処理全体を止めない
+        return false;
+    }
+
+    return true;
 }
-
 
 
 
