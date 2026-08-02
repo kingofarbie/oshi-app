@@ -20,18 +20,21 @@
     top: 0;
     z-index: 20;
 
-    margin: 0;
+    margin: 0 0 16px 0;
     padding: 12px 8px;
 
-    background: var(--card-bg, #fff);
+    background: var(--accent-color, #ff66aa);
 
-    font-size: 22px;
+    color: #fff;
+
+    font-size: 24px;
     font-weight: bold;
     text-align: center;
 
-    border-bottom: 1px solid rgba(0,0,0,0.08);
-}
+    border-radius: 12px;
 
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
 
 /* =====================
    手帳本体
