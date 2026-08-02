@@ -278,7 +278,8 @@ class="planner-event ${finished ? "finished-event" : ""}"
 style="
 top:${top}px;
 height:${height}px;
-background:${category?.color || "#fff5fb"};
+background:#ffe6f0;
+border-left-color:${category?.color || "#ffb3cc"};
 ">
 
 
