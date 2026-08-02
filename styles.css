@@ -649,6 +649,7 @@ button:hover{
 .modal-content{
 
     position:absolute;
+    font-size:17px;
     left:50%;
     top:50%;
     transform:translate(-50%,-50%);
