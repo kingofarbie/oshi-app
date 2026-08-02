@@ -1055,18 +1055,20 @@ margin-right:auto;
     background:#fff;
     color:#222;
 
-    border-radius:6px;
+    border-radius:0;
 
-    padding:3px 5px;
-    margin-top:3px;
+    padding:1px 3px;
+    margin-top:2px;
 
     font-size:12px;
     font-weight:bold;
+    line-height:1.1;
 
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
 
-    box-shadow:
-        0 1px 3px rgba(0,0,0,0.12);
+    box-shadow:none;
+
+    box-sizing:border-box;
 }
