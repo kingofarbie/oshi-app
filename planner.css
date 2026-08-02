@@ -306,7 +306,7 @@
     position:fixed;
     left:0;
     right:0;
-    bottom:0;
+    bottom:70px;
 
     display:flex;
     gap:10px;
@@ -321,7 +321,6 @@
     z-index:999;
 
 }
-
 
 #plannerBottomBar button{
     flex:1;
