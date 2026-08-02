@@ -6,15 +6,13 @@
 :root{
 
     --bg:#ffffff;
-
     --card:#ffffff;
+    --surface:#f7f7f9;
+    --border:#e5e5ea;
 
-    --surface:#f7f8fb;
+    --text:#222222;
 
-    --border:#e2e5eb;
-
-    --text:#222936;
-
+    
     --text-sub:#667085;
 
     --accent:#ff2d55;

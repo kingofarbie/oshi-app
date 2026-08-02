@@ -37,15 +37,13 @@
 /* Neon Pink */
 .theme-neon-pink{
 
-    --bg:#ffffff;
+--bg:#ffffff;
+--card:#ffffff;
+--surface:#f7f7f9;
 
-    --card:#ffffff;
+--border:#e5e5ea;
 
-    --surface:#fff7fa;
-
-    --border:#f0dce3;
-
-    --text:#252b35;
+--text:#222222;
 
     --text-sub:#667085;
 
