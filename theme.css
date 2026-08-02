@@ -5,18 +5,19 @@
 /* Neon Pink */
 .theme-neon-pink{
 
-    --bg:#0f0f10;
-    --card:#1c1c1e;
-    --surface:#2a2a2d;
+    --bg:#ffffff;
+    --card:#ffffff;
+    --surface:#fff7fa;
 
-    --border:#333333;
+    --border:#f0dce3;
 
-    --text:#ffffff;
+    --text:#252b35;
+    --text-sub:#667085;
 
     --accent:#ff2d55;
-    --accent-light:#ff6fa5;
+    --accent-light:#ff5f91;
 
-    --danger:#6b1d2d;
+    --danger:#d94a63;
 
     --header-gradient:
     linear-gradient(
