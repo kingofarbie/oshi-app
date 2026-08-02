@@ -1044,3 +1044,29 @@ margin-right:auto;
     box-sizing:border-box;
 
 }
+
+
+/* =====================
+   カレンダー予定表示
+===================== */
+
+.calendar-event-preview{
+
+    background:#fff;
+    color:#222;
+
+    border-radius:6px;
+
+    padding:3px 5px;
+    margin-top:3px;
+
+    font-size:12px;
+    font-weight:bold;
+
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+
+    box-shadow:
+        0 1px 3px rgba(0,0,0,0.12);
+}
