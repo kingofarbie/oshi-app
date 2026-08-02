@@ -8,18 +8,16 @@
     --bg:#ffffff;
     --card:#ffffff;
     --surface:#f7f7f9;
+
     --border:#e5e5ea;
 
     --text:#222222;
-
-    
     --text-sub:#667085;
 
     --accent:#ff2d55;
+    --accent-light:#ff6f9f;
 
-    --accent-light:#ff5f91;
-
-    --danger:#d94a63;
+    --danger:#d9365f;
 
     --header-gradient:
     linear-gradient(
@@ -27,6 +25,7 @@
         #ff2d55,
         #ff6fa5
     );
+
 }
 
 /* =========================
@@ -127,8 +126,7 @@ body{
 
     font-size:18px;
 
-    color:var(--accent-light);
-
+color:var(--text);
 }
 
 
@@ -241,7 +239,7 @@ button:hover{
 
 .master-item{
 
-    background:var(--surface);
+background:#ffffff;
 
     padding:12px;
 
@@ -304,7 +302,7 @@ button:hover{
 
     text-align:center;
 
-    color:#999;
+color:#666;
 
     font-size:12px;
 
@@ -317,8 +315,7 @@ button:hover{
 
 .tab.active{
 
-    color:var(--accent-light);
-
+color:var(--accent);
 }
 
 
@@ -363,7 +360,7 @@ button:hover{
 
     font-size:12px;
 
-    color:#aaa;
+color:#666;
 
     margin-bottom:3px;
 
@@ -430,6 +427,7 @@ button:hover{
     font-weight:bold;
 
     margin-bottom:6px;
+    color:#222222;
 
 }
 
@@ -438,7 +436,7 @@ button:hover{
 
     font-size:13px;
 
-    color:#aaa;
+color:#666;
 
     margin-bottom:3px;
 
@@ -508,7 +506,7 @@ button:hover{
 .calendar-week{
     text-align:center;
     font-size:12px;
-    color:#aaa;
+color:#666;
 }
 
 
@@ -528,7 +526,7 @@ button:hover{
 
 .calendar-day{
     height:82px;
-    background:var(--surface);
+background:#ffffff;
     border-radius:3px;
     display:flex;
     flex-direction:column;
@@ -645,7 +643,7 @@ button:hover{
     font-weight:bold;
     text-align:center;
     margin-bottom:15px;
-    color:var(--accent-light);
+color:var(--text);
 }
 
 .modal-content{
@@ -698,7 +696,7 @@ button:hover{
 
     padding:10px;
 
-    background:var(--surface);
+background:#ffffff;
 
     border-radius:10px;
 
@@ -715,7 +713,7 @@ button:hover{
 
 .event-card{
 
-    background:var(--surface);
+background:#ffffff;
 
     border-radius:12px;
 
@@ -731,7 +729,7 @@ button:hover{
 
     font-weight:bold;
 
-    color:var(--accent-light);
+color:var(--text);
 
     margin-bottom:8px;
 
@@ -743,7 +741,7 @@ button:hover{
 
     font-size:13px;
 
-    color:#ddd;
+color:#555;
 
     line-height:1.5;
 
@@ -801,7 +799,7 @@ button:hover{
 
 .schedule-item{
 
-    background:var(--surface);
+background:#ffffff;
 
     border-radius:10px;
 
@@ -825,7 +823,7 @@ button:hover{
 
     font-size:12px;
 
-    color:#aaa;
+color:#666;
 
 }
 
@@ -864,8 +862,7 @@ button:hover{
 
     font-weight:bold;
 
-    color:var(--text);
-
+color:#222222;
 }
 
 
@@ -878,7 +875,7 @@ button:hover{
 
     background:transparent;
 
-    color:var(--text);
+color:#222222;
 
     font-size:16px;
 
@@ -910,7 +907,7 @@ button:hover{
 
     text-align:center;
 
-    background:var(--surface);
+background:#ffffff;
 
     border:1px solid var(--border);
 
@@ -1055,7 +1052,7 @@ button:hover{
     min-width:24px;
     max-width:24px;
 
-    border:2px solid #ffffff;
+border:2px solid #888888;
     border-radius:6px;
 
     background:#ffffff;
@@ -1132,7 +1129,7 @@ button:hover{
 
 .detail-card{
 
-    background:var(--surface);
+background:#ffffff;
 
     border-radius:14px;
 
@@ -1152,7 +1149,7 @@ button:hover{
 
     padding:10px 0;
 
-    border-bottom:1px solid rgba(255,255,255,.08);
+border-bottom:1px solid rgba(0,0,0,.08);
 
 }
 
@@ -1235,7 +1232,7 @@ button:hover{
 
     max-width:calc(100vw - 30px);
 
-    background:var(--card-bg, #fff);
+background:var(--card);
 
     color:var(--text, #333);
 
@@ -1380,7 +1377,7 @@ button:hover{
 
     font-size:21px;
 
-    color:#333;
+color:var(--text);
 
     flex-shrink:0;
 
@@ -1431,6 +1428,7 @@ button:hover{
     white-space:nowrap;
 
     text-align:center;
+    color:#ffffff;
 
 }
 
