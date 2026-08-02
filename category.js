@@ -288,3 +288,30 @@ return category || null;
 }
 
 
+function getLightCategoryColor(color){
+
+    if(!color){
+        return "#fff5fb";
+    }
+
+    // HEX → RGB
+    const hex = color.replace("#","");
+
+    if(hex.length !== 6){
+        return "#fff5fb";
+    }
+
+    const r = parseInt(hex.substring(0,2),16);
+    const g = parseInt(hex.substring(2,4),16);
+    const b = parseInt(hex.substring(4,6),16);
+
+    // 白に近づける
+    const mix = 0.82;
+
+    const nr = Math.round(r + (255-r) * mix);
+    const ng = Math.round(g + (255-g) * mix);
+    const nb = Math.round(b + (255-b) * mix);
+
+    return `rgb(${nr},${ng},${nb})`;
+}
+

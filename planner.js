@@ -277,7 +277,7 @@ class="planner-event ${finished ? "finished-event" : ""}"
 style="
 top:${top}px;
 height:${height}px;
-background:${category?.color || "#fff5fb"};
+background:${getLightCategoryColor(category?.color)};
 border-left-color:${category?.color || "#ffb3cc"};
 ">
 
