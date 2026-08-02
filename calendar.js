@@ -1,6 +1,8 @@
 /* =====================
    カレンダー状態
 ===================== */
+console.log("★★★★★ calendar.js 読み込み開始 ★★★★★");
+
 
 let currentCalendarDate = new Date();
 
@@ -22,14 +24,14 @@ let copyMode = false;
 /* =====================
    カレンダー生成
 ===================== */
-
 function renderCalendar(){
 
-    const area =
-        document.getElementById(
-            'calendar'
-        );
+    console.log("★★★★★ renderCalendar 実行 ★★★★★");
 
+    const area =
+        document.getElementById('calendar');
+
+        
     if(!area) return;
 
 
@@ -164,7 +166,7 @@ const dayEvents =
             e.date.startsWith(date)
     );
 
-    
+
 const preview =
     dayEvents
     .slice(0,3)
