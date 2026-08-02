@@ -1,8 +1,13 @@
 /* =====================
-   推し活手帳
-   planner.css 完全版
-   1日手帳・写真・お気に入り・カレンダー
-   テーマ変数対応＋境界線強化
+   推し活手帳 v1.8
+   planner.css 完全統一版
+
+   白ベース
+   ・カードは薄い境界線＋右下の柔らかい影
+   ・1日手帳は付箋風
+   ・カレンダーはマスを明確に区切る
+   ・写真は枠を見えるようにする
+   ・既存クラス・機能は維持
 ===================== */
 
 
@@ -39,7 +44,7 @@
     border-radius:12px;
 
     box-shadow:
-        0 2px 8px rgba(0,0,0,.12);
+        3px 4px 10px rgba(0,0,0,0.10);
 }
 
 
@@ -57,6 +62,9 @@
     border-radius:12px;
 
     overflow:hidden;
+
+    box-shadow:
+        3px 5px 12px rgba(0,0,0,0.07);
 }
 
 
@@ -66,12 +74,14 @@
 
 .planner-times{
     width:65px;
+
     flex-shrink:0;
 
     background:var(--surface);
 
     border-right:1px solid var(--border);
 }
+
 
 .planner-time-fixed{
     height:40px;
@@ -84,8 +94,6 @@
     color:var(--text);
 
     text-align:center;
-
-    border-bottom:1px solid var(--border);
 }
 
 
@@ -95,6 +103,7 @@
 
 .planner-board{
     flex:1;
+
     position:relative;
 
     height:1920px;
@@ -102,11 +111,12 @@
     background:var(--card);
 
     border-left:0;
+
 }
 
 
 /* =====================
-   時間ライン
+   手帳時間線
 ===================== */
 
 .planner-line{
@@ -118,12 +128,14 @@
     pointer-events:none;
 }
 
+
 .planner-line-major{
     border-top:1px solid var(--border);
 }
 
+
 .planner-line-minor{
-    border-top:1px solid rgba(128,128,128,.15);
+    border-top:1px solid rgba(128,128,128,.12);
 }
 
 
@@ -148,7 +160,7 @@
     z-index:5;
 
     box-shadow:
-        0 0 4px rgba(0,0,0,.12);
+        0 1px 4px rgba(0,0,0,0.12);
 }
 
 
@@ -178,13 +190,15 @@
     border-left:6px solid var(--accent-light);
 
     box-shadow:
-        2px 4px 10px rgba(0,0,0,.14);
+        3px 5px 10px rgba(0,0,0,0.12);
 
     z-index:2;
 }
 
 
-/* 右上折れ */
+/* =====================
+   付箋右上折れ
+===================== */
 
 .planner-event::after{
     content:"";
@@ -204,19 +218,21 @@
         rotate(45deg);
 
     box-shadow:
-        -2px 2px 4px rgba(0,0,0,.14);
-}
-
-
-/* 終了済み */
-
-.finished-event{
-    opacity:.45;
+        -2px 2px 4px rgba(0,0,0,0.12);
 }
 
 
 /* =====================
-   イベント時間
+   終了済み
+===================== */
+
+.finished-event{
+    opacity:0.45;
+}
+
+
+/* =====================
+   時間
 ===================== */
 
 .planner-event-time{
@@ -230,7 +246,7 @@
 
 
 /* =====================
-   イベントタイトル
+   タイトル
 ===================== */
 
 .planner-event-title{
@@ -241,6 +257,7 @@
 
     margin-bottom:8px;
 }
+
 
 .planner-event-title strong{
     color:var(--text);
@@ -283,76 +300,6 @@
 
 
 /* =====================
-   思い出セクション
-===================== */
-
-.memory-section{
-    margin-bottom:20px;
-
-    background:var(--card);
-
-    border:1px solid var(--border);
-    border-radius:14px;
-
-    padding:12px;
-}
-
-.memory-header{
-    display:grid;
-
-    grid-template-columns:1fr auto;
-
-    align-items:center;
-
-    gap:8px;
-
-    padding-bottom:8px;
-
-    border-bottom:1px solid var(--border);
-}
-
-.memory-header button{
-    width:28px;
-    height:28px;
-
-    padding:0;
-
-    background:none;
-    border:none;
-
-    color:var(--text);
-
-    font-size:22px;
-}
-
-.memory-list{
-    padding:10px 0 15px;
-
-    border-bottom:1px solid var(--border);
-}
-
-
-/* =====================
-   メモ・思い出カード
-===================== */
-
-.memory-card{
-    background:var(--surface);
-
-    color:var(--text);
-
-    border:1px solid var(--border);
-    border-radius:10px;
-
-    padding:10px 12px;
-
-    margin-bottom:8px;
-
-    word-break:break-word;
-}
-
-
-/* =====================
    固定ボトムバー
 ===================== */
 
@@ -374,12 +321,13 @@
     z-index:999;
 }
 
+
 #plannerBottomBar button{
     flex:1;
 
     height:48px;
 
-    border:1px solid var(--accent);
+    border:none;
     border-radius:14px;
 
     background:var(--accent);
@@ -390,11 +338,68 @@
     font-weight:bold;
 
     box-shadow:
-        0 3px 12px rgba(0,0,0,.18);
+        3px 5px 12px rgba(0,0,0,0.12);
 }
+
 
 #plannerCalendarBack{
     margin-right:auto;
+}
+
+
+/* =====================
+   思い出ヘッダー
+===================== */
+
+.memory-section{
+    margin-bottom:20px;
+
+    background:var(--card);
+
+    border:1px solid var(--border);
+    border-radius:14px;
+
+    padding:12px;
+
+    box-shadow:
+        3px 4px 10px rgba(0,0,0,0.07);
+}
+
+
+.memory-header{
+    display:grid;
+
+    grid-template-columns:1fr auto;
+
+    align-items:center;
+
+    gap:8px;
+}
+
+
+.memory-header button{
+    width:28px;
+    height:28px;
+
+    padding:0;
+
+    background:none;
+    border:none;
+
+    color:var(--text);
+
+    font-size:22px;
+}
+
+
+/* =====================
+   思い出一覧
+===================== */
+
+.memory-list{
+    padding:10px 0 15px;
+
+    border-bottom:1px solid var(--border);
 }
 
 
@@ -436,7 +441,7 @@
     position:relative;
 
     box-shadow:
-        0 2px 6px rgba(0,0,0,.08);
+        2px 3px 8px rgba(0,0,0,0.08);
 }
 
 
@@ -470,11 +475,13 @@
     color:var(--accent);
 
     z-index:20;
+
+    box-shadow:
+        1px 2px 5px rgba(0,0,0,0.12);
 }
 
 
-/* 選択中 */
-
+/* 修正：スペースを入れて子要素指定 */
 .photo-delete-selected .photo-delete-check{
     background:var(--accent);
 
@@ -506,10 +513,11 @@
     margin-bottom:15px;
 }
 
+
 .planner-top-bar button{
     padding:10px 18px;
 
-    border:1px solid var(--accent);
+    border:none;
     border-radius:10px;
 
     background:var(--accent);
@@ -517,6 +525,9 @@
     color:#fff;
 
     font-weight:bold;
+
+    box-shadow:
+        2px 3px 8px rgba(0,0,0,0.10);
 }
 
 
@@ -533,7 +544,7 @@
     width:100%;
     height:100%;
 
-    background:rgba(0,0,0,.85);
+    background:rgba(0,0,0,0.85);
 
     display:none;
 
@@ -542,6 +553,7 @@
 
     z-index:99999;
 }
+
 
 .photo-viewer img{
     max-width:90%;
@@ -556,7 +568,7 @@
 
 
 /* =====================
-   写真ビューア上部ボタン
+   写真ビューア共通ボタン
 ===================== */
 
 .photo-viewer button{
@@ -581,7 +593,7 @@
     justify-content:center;
 
     box-shadow:
-        0 2px 8px rgba(0,0,0,.25);
+        0 2px 8px rgba(0,0,0,0.25);
 
     z-index:2;
 }
@@ -643,7 +655,7 @@
 .photo-delete:active,
 .photo-favorite:active,
 .photo-share:active{
-    transform:scale(.9);
+    transform:scale(0.9);
 }
 
 
@@ -670,7 +682,8 @@
 
     cursor:pointer;
 
-    border:1px solid var(--accent);
+    box-shadow:
+        2px 4px 9px rgba(0,0,0,0.10);
 }
 
 
@@ -691,6 +704,7 @@
     width:100%;
 }
 
+
 .photo-toolbar-title{
     font-size:18px;
 
@@ -699,10 +713,13 @@
     white-space:nowrap;
 
     color:var(--text);
+
+    margin-right:auto;
 }
 
+
 .photo-sort-btn{
-    border:1px solid var(--accent);
+    border:none;
 
     border-radius:20px;
 
@@ -715,7 +732,11 @@
     font-size:14px;
 
     cursor:pointer;
+
+    box-shadow:
+        2px 3px 7px rgba(0,0,0,0.10);
 }
+
 
 .photo-sort-btn:active{
     transform:scale(.96);
@@ -723,7 +744,7 @@
 
 
 /* =====================
-   写真並べ替えメニュー
+   写真並び替えメニュー
 ===================== */
 
 .photo-sort-menu{
@@ -752,11 +773,11 @@
         0 0 20px rgba(0,0,0,.25);
 }
 
+
 .photo-sort-menu button{
     width:100%;
 
     margin:6px 0;
-
     padding:10px;
 }
 
@@ -766,16 +787,20 @@
 ===================== */
 
 .photo-dragging{
-    opacity:.6;
+    opacity:0.6;
 
     transform:scale(1.05);
 
     z-index:1000;
 
     box-shadow:
-        0 8px 20px rgba(0,0,0,.3);
+        0 8px 20px rgba(0,0,0,0.3);
 }
 
+
+/* =====================
+   写真長押し・選択対策
+===================== */
 
 .memory-photo-box,
 .memory-photo-box img,
@@ -810,14 +835,18 @@
     border-radius:10px;
 
     margin-bottom:10px;
+
+    box-shadow:
+        2px 3px 8px rgba(0,0,0,0.07);
 }
+
 
 .photo-free-bar button{
     padding:8px 16px;
 
     border-radius:20px;
 
-    border:1px solid var(--border);
+    border:none;
 
     font-weight:bold;
 }
@@ -834,6 +863,7 @@
 
     gap:6px;
 }
+
 
 .memory-header-actions button{
     width:28px;
@@ -880,14 +910,16 @@
     white-space:nowrap;
 
     box-shadow:
-        0 3px 10px rgba(0,0,0,.12);
+        2px 3px 9px rgba(0,0,0,0.10);
 
     grid-column:1 / -1;
 }
 
+
 .photo-delete-title{
     font-weight:bold;
 }
+
 
 .photo-delete-count{
     font-size:14px;
@@ -896,6 +928,7 @@
 
     margin-right:auto;
 }
+
 
 .photo-delete-bar button{
     border:none;
@@ -909,11 +942,13 @@
     white-space:nowrap;
 }
 
+
 .photo-delete-bar button:last-child{
     background:var(--danger);
 
     color:#fff;
 }
+
 
 .photo-delete-bar button:disabled{
     opacity:.4;
@@ -931,14 +966,14 @@
 
     -webkit-tap-highlight-color:transparent;
 
-    transition:opacity .2s;
-
-    color:var(--text);
+    transition:opacity 0.2s;
 }
+
 
 .calendar-title:active{
-    opacity:.6;
+    opacity:0.6;
 }
+
 
 .calendar-date-picker{
     display:flex;
@@ -951,12 +986,16 @@
 
     padding:12px;
 
-    background:var(--surface);
+    background:var(--card);
 
     border:1px solid var(--border);
 
     border-radius:12px;
+
+    box-shadow:
+        2px 3px 8px rgba(0,0,0,0.07);
 }
+
 
 .calendar-date-picker label{
     font-weight:bold;
@@ -965,6 +1004,7 @@
 
     color:var(--text);
 }
+
 
 .calendar-date-picker select{
     width:100%;
@@ -979,7 +1019,7 @@
 
     box-sizing:border-box;
 
-    background:var(--card);
+    background:var(--surface);
 
     color:var(--text);
 }
@@ -1010,7 +1050,7 @@
 
     height:auto;
 
-    min-height:calc(1em + 4px);
+    min-height:calc(1em + 2px);
 
     display:flex;
 
@@ -1022,9 +1062,98 @@
 
     text-overflow:ellipsis;
 
-    box-shadow:none;
+    box-shadow:
+        1px 2px 4px rgba(0,0,0,0.06);
 
     box-sizing:border-box;
+}
+
+
+/* =====================
+   カレンダー日付マス
+   planner.css側でも視認性を補強
+===================== */
+
+.calendar-day{
+    background:var(--card);
+
+    border:1px solid var(--border);
+
+    box-shadow:
+        1px 2px 4px rgba(0,0,0,0.04);
+}
+
+
+/* 空白マス */
+
+.empty-day{
+    background:var(--surface);
+
+    border:1px solid var(--border);
+
+    box-shadow:none;
+}
+
+
+/* 今日 */
+
+.calendar-day.today{
+    background:rgba(255,111,165,0.10);
+
+    border:2px solid var(--accent-light);
+
+    box-shadow:
+        2px 3px 7px rgba(0,0,0,0.06);
+}
+
+
+/* 選択日 */
+
+.calendar-day.selected-day{
+    background:rgba(255,45,85,0.07);
+
+    border:2px solid var(--accent);
+
+    box-shadow:
+        2px 3px 7px rgba(0,0,0,0.07);
+}
+
+
+/* =====================
+   カレンダー曜日
+===================== */
+
+.calendar-week{
+    color:var(--text);
+
+    font-weight:bold;
+
+    padding:6px 2px;
+
+    background:var(--surface);
+
+    border:1px solid var(--border);
+
+    border-radius:4px;
+}
+
+
+.calendar-week.sunday{
+    color:#e85d75;
+}
+
+
+.calendar-week.saturday{
+    color:#4d91df;
+}
+
+
+/* =====================
+   カレンダー全体補強
+===================== */
+
+.calendar-grid{
+    gap:2px;
 }
 
 
@@ -1049,7 +1178,6 @@
     .planner-event{
         left:6px;
         right:6px;
-
         padding:10px;
 
         border-left-width:5px;
@@ -1059,31 +1187,13 @@
         font-size:18px;
     }
 
-    .planner-event-time,
     .planner-place,
     .planner-companion{
         font-size:14px;
     }
 
-    #plannerBottomBar{
-        left:8px;
-        right:8px;
-
-        gap:6px;
-    }
-
-    #plannerBottomBar button{
-        height:46px;
-
-        font-size:14px;
-    }
-
     .memory-section{
         padding:10px;
-    }
-
-    .photo-sort-menu{
-        width:min(280px,90vw);
     }
 
 }
