@@ -1047,7 +1047,8 @@ margin-right:auto;
 ===================== */
 
 .calendar-event-preview{
-    background:#fff;
+
+    background:#fff6fa;
     color:#222;
 
     border-radius:0;
@@ -1070,5 +1071,6 @@ margin-right:auto;
     text-overflow:ellipsis;
 
     box-shadow:none;
+
     box-sizing:border-box;
 }

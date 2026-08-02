@@ -177,11 +177,14 @@ const preview =
         const category =
             getCategoryInfo(e.category);
 
+        const color =
+            category?.color || "#ffb3cc";
+
         return `
         <div
             class="calendar-event-preview"
             style="
-                background:${getLightCategoryColor(category?.color)};
+                border-left:2px solid ${color};
             "
         >
             ${e.title.substring(0,6)}
@@ -191,7 +194,8 @@ const preview =
     })
     .join('');
 
-    
+
+
 const more =
     dayEvents.length > 3
     ? `
