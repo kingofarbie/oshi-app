@@ -995,12 +995,16 @@ function startPhotoShareMode(){
 
     photoShareMode = true;
 
+    photoDeleteMode = false;
+    selectedDeletePhotoIds = [];
+
+    photoSortMode = false;
+
     selectedSharePhotoIds = [];
 
     renderDayPhotos();
 
 }
-
 
 function togglePhotoShareSelection(id){
 
@@ -1792,8 +1796,14 @@ if(mode === "free"){
 
     photoSortMode = true;
 
-    currentSortType = type;
+    photoDeleteMode = false;
+    selectedDeletePhotoIds = [];
 
+    photoShareMode = false;
+    selectedSharePhotoIds = [];
+
+    currentSortType = type;
+    
     closePhotoSortMenu();
 
     if(type === "calendar"){
@@ -2272,11 +2282,17 @@ function startPhotoDeleteMode(){
 
     photoDeleteMode = true;
 
+    photoShareMode = false;
+    selectedSharePhotoIds = [];
+
+    photoSortMode = false;
+
     selectedDeletePhotoIds = [];
 
     renderDayPhotos();
 
 }
+
 
 function toggleDeletePhoto(id){
 
