@@ -498,7 +498,7 @@ function startPress(date){
 
         showDayMenu(date);
 
-    },500);
+    },1000);
 
 }
 
