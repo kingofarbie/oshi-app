@@ -457,8 +457,63 @@ function formatPlannerTime(value){
 
 function backToCalendar(){
 
-    document.getElementById("dayPlanner").style.display = "none";
+    const calendar =
+        document.getElementById("calendar");
 
-    document.getElementById("calendar").style.display = "block";
+    const planner =
+        document.getElementById("dayPlanner");
+
+    const calendarBack =
+        document.getElementById(
+            "plannerCalendarBack"
+        );
+
+
+    /* カレンダーを表示 */
+
+    if(calendar){
+
+        calendar.style.display = "block";
+
+    }
+
+
+    /* 1日手帳を非表示 */
+
+    if(planner){
+
+        planner.style.display = "none";
+
+    }
+
+
+    /* 戻るボタンを非表示 */
+
+    if(calendarBack){
+
+        calendarBack.style.display = "none";
+
+    }
+
+
+    /* カレンダーページへ移動 */
+
+    switchTab(
+        'calendarPage',
+        null
+    );
+
+
+    /* カレンダーを再描画 */
+
+    setTimeout(() => {
+
+        if(typeof renderCalendar === "function"){
+
+            renderCalendar();
+
+        }
+
+    }, 50);
 
 }
