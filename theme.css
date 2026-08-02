@@ -6,15 +6,19 @@
 .theme-neon-pink{
 
     --bg:#ffffff;
+
     --card:#ffffff;
+
     --surface:#fff7fa;
 
     --border:#f0dce3;
 
     --text:#252b35;
+
     --text-sub:#667085;
 
     --accent:#ff2d55;
+
     --accent-light:#ff5f91;
 
     --danger:#d94a63;
@@ -27,6 +31,7 @@
     );
 
 }
+
 
 /* Neon Blue */
 
