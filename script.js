@@ -126,18 +126,24 @@ function switchTab(pageId, event){
        カレンダー
     ===================== */
 
-    if(pageId === 'calendarPage'){
+if(pageId === 'calendarPage'){
 
-        setTimeout(() => {
+const calendar =
+    document.getElementById('calendar');
 
-            if(typeof renderCalendar === 'function'){
-                renderCalendar();
-            }
+if(calendar){
+    calendar.style.display = 'block';
+}
 
-        }, 50);
+setTimeout(() => {
 
+    if(typeof renderCalendar === 'function'){
+        renderCalendar();
     }
 
+}, 50);
+
+}
 
     /* =====================
        1日手帳
