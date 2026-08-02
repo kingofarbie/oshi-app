@@ -77,9 +77,8 @@ function loadTheme(){
 
 
 
-    const current =
-        theme || "neon-pink";
-
+const current =
+    theme || "basic";
 
 
     document.body.classList.add(

@@ -1,3 +1,35 @@
+
+
+/* =========================
+   ベーシック（白）
+========================= */
+
+.theme-basic{
+
+    --bg:#ffffff;
+    --card:#ffffff;
+    --surface:#f7f7f9;
+
+    --border:#e5e5ea;
+
+    --text:#222222;
+    --text-sub:#666666;
+
+    --accent:#ff4f87;
+    --accent-light:#ff6f9f;
+
+    --danger:#d9365f;
+
+    --header-gradient:
+    linear-gradient(
+        135deg,
+        #ff4f87,
+        #ff8fb3
+    );
+
+}
+
+
 /* =========================
    Theme System
 ========================= */
