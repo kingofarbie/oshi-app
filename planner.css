@@ -1062,6 +1062,9 @@ margin-right:auto;
     height:auto;
     min-height:calc(1em + 2px);
 
+    display:flex;
+    align-items:center;
+
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
