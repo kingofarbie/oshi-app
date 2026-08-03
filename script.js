@@ -944,6 +944,27 @@ function displayHomeSchedule(){
         return null;
     }
 
+
+console.log(
+    "★ DB内の予定:",
+    events.map(e => ({
+        title: e.title,
+        start: e.start,
+        date: e.date
+    }))
+);
+
+console.log(
+    "★ 今日の開始:",
+    todayStart
+);
+
+console.log(
+    "★ 明日の開始:",
+    tomorrowStart
+);
+
+
     // 今日の予定
 const todayList = events
     .filter(e=>{
