@@ -918,7 +918,7 @@ function deleteEvent(id){
 ===================== */
 function displayHomeSchedule(){
 
-    const events = db.load().events;
+    const events = db.load().events || [];
 
     const now = new Date();
 
@@ -935,99 +935,167 @@ function displayHomeSchedule(){
 
 
     function eventStartDate(e){
+
         if(e.start){
             return new Date(e.start);
         }
+
         if(e.date){
             return new Date(e.date);
         }
+
         return null;
+
     }
 
 
-console.log(
-    "★ DB内の予定:",
-    events.map(e => ({
-        title: e.title,
-        start: e.start,
-        date: e.date
-    }))
-);
+    /* =====================
+       DB内の予定を確認
+    ===================== */
 
-console.log(
-    "★ 今日の開始:",
-    todayStart
-);
-
-console.log(
-    "★ 明日の開始:",
-    tomorrowStart
-);
-
-
-    // 今日の予定
-const todayList = events
-    .filter(e=>{
-
-        const d = eventStartDate(e);
-        if(!d) return false;
-
-        return d >= todayStart && d < tomorrowStart;
-
-    })
-    .sort((a,b)=>
-        eventStartDate(a) - eventStartDate(b)
+    console.log(
+        "★ 予定の日付一覧:",
+        events.map(e => ({
+            title: e.title,
+            start: e.start,
+            date: e.date,
+            parsed: eventStartDate(e)
+        }))
     );
 
-console.log(
-    "今日の予定並び:",
-    todayList.map(e => ({
-        id: e.id,
-        title: e.title,
-        start: e.start,
-        date: e.date,
-        parsed: eventStartDate(e)
-    }))
-);
+
+    console.log(
+        "★ 今日の開始:",
+        todayStart
+    );
 
 
-    function render(id,list){
+    console.log(
+        "★ 明日の開始:",
+        tomorrowStart
+    );
 
-        const box = document.getElementById(id);
-        if(!box) return;
 
-        if(list.length===0){
+    /* =====================
+       今日の予定
+    ===================== */
 
-            box.innerHTML = "該当なし";
+    const todayList = events
+        .filter(e => {
+
+            const d = eventStartDate(e);
+
+            if(!d || isNaN(d.getTime())){
+                return false;
+            }
+
+            return (
+                d >= todayStart &&
+                d < tomorrowStart
+            );
+
+        })
+        .sort((a,b) => {
+
+            return (
+                eventStartDate(a) -
+                eventStartDate(b)
+            );
+
+        });
+
+
+    /* =====================
+       並び順確認
+    ===================== */
+
+    console.log(
+        "今日の予定並び:",
+        todayList.map(e => ({
+            id: e.id,
+            title: e.title,
+            start: e.start,
+            date: e.date,
+            parsed: eventStartDate(e)
+        }))
+    );
+
+
+    /* =====================
+       表示
+    ===================== */
+
+    function render(id, list){
+
+        const box =
+            document.getElementById(id);
+
+        if(!box){
+            return;
+        }
+
+
+        if(list.length === 0){
+
+            box.innerHTML =
+                "該当なし";
+
             return;
 
         }
 
-        box.innerHTML = list.map(e=>{
 
-            const icon = getCategoryInfo(e.category)?.icon || "📌";
+        box.innerHTML =
+            list.map(e => {
 
-            const date = eventStartDate(e);
+                const icon =
+                    getCategoryInfo(e.category)?.icon
+                    || "📌";
 
-            const month = date.getMonth()+1;
-            const day = date.getDate();
 
-            return `
-<div class="schedule-item"
-     onclick="openEventDetail(${e.id})">
+                const date =
+                    eventStartDate(e);
+
+
+                const month =
+                    date.getMonth() + 1;
+
+
+                const day =
+                    date.getDate();
+
+
+                // 開始時刻
+                const time =
+                    e.start
+                    ? e.start.substring(11,16)
+                    : "";
+
+
+                return `
+<div
+    class="schedule-item"
+    onclick="openEventDetail(${e.id})">
 
     <div class="schedule-title">
-        ${month}/${day} ${icon} ${e.title}
+        ${month}/${day}
+        ${time ? " " + time : ""}
+        ${icon}
+        ${e.title}
     </div>
 
 </div>
 `;
 
-        }).join("");
+            }).join("");
 
     }
 
-    render("today-schedule",todayList);
+
+    render(
+        "today-schedule",
+        todayList
+    );
 
 }
 
@@ -1073,15 +1141,7 @@ function displayUpcomingEvents(){
     }
 
 
-    console.log(
-    "★ 予定の日付一覧:",
-    events.map(e => ({
-        title: e.title,
-        start: e.start,
-        date: e.date,
-        parsed: eventStartDate(e)
-    }))
-);
+    
 
     /*
        今日の予定を除外して
