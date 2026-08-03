@@ -997,13 +997,31 @@ function displayHomeSchedule(){
 
 /* =====================
    直近のイベント
+   ※本日の予定は除外
 ===================== */
 function displayUpcomingEvents(){
 
-    const box = document.getElementById("upcoming-events");
+    const box =
+        document.getElementById("upcoming-events");
+
     if(!box) return;
 
     const now = new Date();
+
+    // 今日の開始
+    const todayStart = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate()
+    );
+
+    // 明日の開始
+    const tomorrowStart = new Date(todayStart);
+
+    tomorrowStart.setDate(
+        todayStart.getDate() + 1
+    );
+
 
     function eventStartDate(e){
 
@@ -1018,48 +1036,79 @@ function displayUpcomingEvents(){
         return null;
     }
 
-    const events = db.load().events
+
+    /*
+       今日の予定を除外して
+       明日以降のイベントだけ取得
+    */
+    const events =
+        db.load().events
+
         .filter(e=>{
 
-            const d = eventStartDate(e);
-            return d && d >= now;
+            const d =
+                eventStartDate(e);
+
+            return (
+                d &&
+                d >= tomorrowStart
+            );
 
         })
-        .sort((a,b)=>eventStartDate(a)-eventStartDate(b))
+
+        .sort(
+            (a,b)=>
+                eventStartDate(a)
+                -
+                eventStartDate(b)
+        )
+
         .slice(0,3);
 
 
     if(events.length===0){
 
-        box.innerHTML = "該当なし";
+        box.innerHTML =
+            "該当なし";
+
         return;
 
     }
 
 
-    box.innerHTML = events.map(e=>{
+    box.innerHTML =
+        events.map(e=>{
 
-        const d = eventStartDate(e);
+            const d =
+                eventStartDate(e);
 
-        const month = d.getMonth()+1;
-        const day = d.getDate();
+            const month =
+                d.getMonth() + 1;
 
-        const icon = getCategoryInfo(e.category)?.icon || "📌";
+            const day =
+                d.getDate();
 
-
-        return `
-        <div 
-        class="event-home-item"
-        onclick="openEventDetail(${e.id})">
-
-            <strong>${month}/${day}</strong><br>
-            ${icon} ${e.title}
-
-        </div>
-        `;
+            const icon =
+                getCategoryInfo(
+                    e.category
+                )?.icon || "📌";
 
 
-    }).join("");
+            return `
+<div
+    class="event-home-item"
+    onclick="openEventDetail(${e.id})">
+
+    <strong>
+        ${month}/${day}
+    </strong><br>
+
+    ${icon} ${e.title}
+
+</div>
+`;
+
+        }).join("");
 
 }
 
