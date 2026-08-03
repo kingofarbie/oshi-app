@@ -1603,8 +1603,6 @@ function openEventSelectModal(){
 
 }
 
-
-
 function closeEventSelectModal(){
 
 
@@ -1614,8 +1612,6 @@ function closeEventSelectModal(){
     ).style.display = "none";
 
 }
-
-
 
 function selectEvent(id){
 
@@ -1660,7 +1656,6 @@ function selectEvent(id){
 
 }
 
-
 function closeEventModal(){
 
     document.getElementById(
@@ -1673,10 +1668,6 @@ function closeEventModal(){
 
 }
 
-
-
-
-
 function closeCopySelectModal(){
 
     document.getElementById(
@@ -1684,7 +1675,6 @@ function closeCopySelectModal(){
     ).style.display = "none";
 
 }
-
 
 function updatePlanDisplay(){
 
@@ -1704,7 +1694,6 @@ function updatePlanDisplay(){
     ).textContent = text;
 
 }
-
 
 
 function displayPlans(){

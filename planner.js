@@ -719,17 +719,13 @@ function openPlannerEvent(id){
     const event =
         db.load()
         .events
-        .find(
-            e=>e.id===id
-        );
+        .find(e => e.id === id);
 
-    if(!event)
-        return;
+    if(!event) return;
 
-    selectedEventId =
-        event.id;
+    selectedEventId = event.id;
 
-    openEventSelectModal();
+    openEventDetail(event.id);
 
 }
 
