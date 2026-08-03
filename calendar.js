@@ -61,6 +61,10 @@ function renderCalendar(){
     const today =
         new Date();
 
+    
+const events =
+    db.load().events || [];
+
 
 console.log(
     "★ カレンダー用予定データ:",
@@ -73,10 +77,7 @@ console.log(
     }))
 );
 
-
-const events =
-    db.load().events || [];
-
+    
 
     let html = `
 
