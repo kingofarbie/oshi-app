@@ -62,6 +62,18 @@ function renderCalendar(){
         new Date();
 
 
+console.log(
+    "★ カレンダー用予定データ:",
+    events.map(e => ({
+        id: e.id,
+        title: e.title,
+        date: e.date,
+        start: e.start,
+        end: e.end
+    }))
+);
+
+
 const events =
     db.load().events || [];
 
@@ -277,92 +289,191 @@ function changeMonth(value){
 
 function selectCalendarDate(date){
 
+    /* =====================
+       コピー貼り付け
+    ===================== */
+
     if(copyMode){
 
-const data = db.load();
+        const data = db.load();
 
-const plan = PLAN[data.settings.plan];
+        const plan =
+            PLAN[data.settings.plan];
 
-const remain =
-    plan.eventLimit === Infinity
-    ? Infinity
-    : plan.eventLimit - data.events.length;
-
-if(remain <= 0){
-
-    alert(
-        `${plan.name}は予定${plan.eventLimit}件までです`
-    );
-
-    copyMode = false;
-    copyEventId = [];
-
-    return;
-
-}
-
-const ids =
-    copyEventId.slice(
-        0,
-        remain === Infinity
-        ? copyEventId.length
-        : remain
-    );
-
-ids.forEach(id=>{
-
-    const event =
-        data.events.find(
-            e=>e.id===id
-        );
-
-    if(!event) return;
-
-    data.events.push({
-
-        ...event,
-
-        id: Date.now() + Math.random(),
-
-        date:
-            date +
-            event.date.substring(10)
-
-    });
-
-});
-
-db.save(data);
-
-if(ids.length < copyEventId.length){
-
-    alert(
-`上限のため${ids.length}件のみ貼り付けました`    );
-
-}
+        const remain =
+            plan.eventLimit === Infinity
+            ? Infinity
+            : plan.eventLimit - data.events.length;
 
 
-    copyMode = false;
-    copyEventId = null;
+        if(remain <= 0){
 
-    renderCalendar();
-    displayEventList();
-    displayHomeSchedule();
-    displayUpcomingEvents();
+            alert(
+                `${plan.name}は予定${plan.eventLimit}件までです`
+            );
 
-if(ids.length === copyEventId.length){
+            copyMode = false;
+            copyEventId = [];
 
-alert("予定を貼り付けました");
-}
-    return;
+            return;
 
-}
-
-    selectedCalendarDate = date;
+        }
 
 
+        const ids =
+            copyEventId.slice(
+                0,
+                remain === Infinity
+                    ? copyEventId.length
+                    : remain
+            );
 
-    // 日付変更時は予定追加フォームを閉じる
+
+        ids.forEach(id=>{
+
+            const event =
+                data.events.find(
+                    e => e.id === id
+                );
+
+            if(!event) return;
+
+
+            /*
+               元の開始・終了時刻から
+               時刻部分だけ取り出す
+            */
+
+            const startTime =
+                event.start
+                ? event.start.substring(11,16)
+                : null;
+
+            const endTime =
+                event.end
+                ? event.end.substring(11,16)
+                : null;
+
+
+            /*
+               コピー先の日付で
+               start / end / date を
+               すべて作り直す
+            */
+
+            const newEvent = {
+
+                ...event,
+
+                id:
+                    Date.now() +
+                    Math.random(),
+
+                date:
+                    date,
+
+                start:
+                    startTime
+                    ? `${date}T${startTime}`
+                    : "",
+
+                end:
+                    endTime
+                    ? `${date}T${endTime}`
+                    : ""
+
+            };
+
+
+            data.events.push(newEvent);
+
+        });
+
+
+        const copiedCount =
+            ids.length;
+
+
+        const originalCount =
+            copyEventId.length;
+
+
+        /*
+           コピー状態を解除
+        */
+
+        copyMode = false;
+        copyEventId = [];
+
+
+        /*
+           貼り付け先の日付を選択状態にする
+        */
+
+        selectedCalendarDate =
+            date;
+
+
+        /*
+           データ保存
+        */
+
+        db.save(data);
+
+
+        /*
+           画面をすべて更新
+        */
+
+        renderCalendar();
+
+        displayEventList();
+
+        displaySelectedDateEvents();
+
+        displayHomeSchedule();
+
+        displayUpcomingEvents();
+
+        displayCountdown();
+
+
+        /*
+           上限に引っかかった場合
+        */
+
+        if(copiedCount < originalCount){
+
+            alert(
+                `予定の上限のため、${copiedCount}件のみ貼り付けました`
+            );
+
+        }else{
+
+            alert(
+                "予定を貼り付けました"
+            );
+
+        }
+
+
+        return;
+
+    }
+
+
+    /* =====================
+       通常の日付選択
+    ===================== */
+
+    selectedCalendarDate =
+        date;
+
+
+    /*
+       日付変更時は予定追加フォームを閉じる
+    */
+
     const form =
         document.getElementById(
             'event-form-card'
@@ -370,18 +481,35 @@ alert("予定を貼り付けました");
 
     if(form){
 
-        form.style.display = "none";
+        form.style.display =
+            "none";
 
     }
 
 
-    // 入力途中の内容も消す
+    /*
+       入力途中の内容も消す
+    */
+
     clearEventForm();
 
 
-renderCalendar();
+    /*
+       カレンダー再描画
+    */
 
-switchTab('plannerPage', null, true);
+    renderCalendar();
+
+
+    /*
+       1日手帳へ
+    */
+
+    switchTab(
+        'plannerPage',
+        null,
+        true
+    );
 
 }
 
@@ -433,12 +561,13 @@ function displaySelectedDateEvents(){
     const events =
         db.load().events;
 
-    const list =
-        events.filter(
-            e =>
+const list =
+    events.filter(
+        e =>
             selectedCalendarDate &&
+            e.date &&
             e.date.startsWith(selectedCalendarDate)
-        );
+    );
 
     if(list.length===0){
 
