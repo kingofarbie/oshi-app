@@ -957,7 +957,18 @@ const todayList = events
     .sort((a,b)=>
         eventStartDate(a) - eventStartDate(b)
     );
-    
+
+console.log(
+    "今日の予定並び:",
+    todayList.map(e => ({
+        id: e.id,
+        title: e.title,
+        start: e.start,
+        date: e.date,
+        parsed: eventStartDate(e)
+    }))
+);
+
 
     function render(id,list){
 
