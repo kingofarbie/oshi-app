@@ -1296,8 +1296,40 @@ button:hover{
 }
 
 
+
+/* =========================
+   濃い背景のボタンは白文字
+========================= */
+
+.edit-btn,
+.map-btn,
+.event-delete-btn,
+.delete-btn,
+button[style*="background"],
+#homeMenuButton,
+.planner-edit-btn,
+.planner-delete-btn {
+    color:#fff !important;
+}
+
+/* hover時も白文字を維持 */
+.edit-btn:hover,
+.map-btn:hover,
+.event-delete-btn:hover,
+.delete-btn:hover,
+#homeMenuButton:hover,
+.planner-edit-btn:hover,
+.planner-delete-btn:hover {
+    color:#fff !important;
+}
+
+
+
 /* =========================
    重要：
    1日手帳側のCSSは
    planner.css にあります
 ========================= */
+
+
+
