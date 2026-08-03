@@ -627,6 +627,20 @@ function plannerEditEvent(event, id){
 
     event.stopPropagation();
 
+    const eventData =
+        db.load()
+        .events
+        .find(e => e.id === id);
+
+    if(!eventData){
+        return;
+    }
+
+    // 編集対象をセット
+    selectedEventId = id;
+    editingEventId = id;
+
+    // 編集モード表示を解除
     const target =
         document.querySelector(
             `.planner-event[data-event-id="${id}"]`
@@ -640,12 +654,10 @@ function plannerEditEvent(event, id){
 
     }
 
-    selectedEventId = id;
-
-    openEventSelectModal();
+    // 既存の編集処理をそのまま利用
+    selectEvent(id);
 
 }
-
 
 /* =====================
    削除
@@ -705,29 +717,10 @@ function plannerDeleteEvent(event, id){
     displayEventList();
     displayHomeSchedule();
     displayUpcomingEvents();
-
+    displayCountdown();
+    renderCalendar();
 }
 
-
-/* =====================
-   1日手帳ビュー
-   既存のイベント選択
-===================== */
-
-function openPlannerEvent(id){
-
-    const event =
-        db.load()
-        .events
-        .find(e => e.id === id);
-
-    if(!event) return;
-
-    selectedEventId = event.id;
-
-    openEventDetail(event.id);
-
-}
 
 
 /* =====================
