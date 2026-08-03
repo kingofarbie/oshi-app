@@ -1197,3 +1197,116 @@
     }
 
 }
+
+
+/* =====================
+   1日手帳
+   タップ・長押し操作
+===================== */
+
+/* 編集・削除ボタンは通常非表示 */
+
+.planner-event-actions{
+
+    display:none;
+
+    gap:8px;
+
+    margin-top:10px;
+
+}
+
+
+/* 長押しした付箋だけ表示 */
+
+.planner-event-editing{
+
+    z-index:50;
+
+    box-shadow:
+        0 6px 18px rgba(0,0,0,.28);
+
+}
+
+
+/* 編集モードのボタン */
+
+.planner-event-editing .planner-event-actions{
+
+    display:flex;
+
+}
+
+
+/* 編集ボタン */
+
+.planner-edit-btn{
+
+    flex:1;
+
+    padding:8px 10px !important;
+
+    margin:0 !important;
+
+    border:none;
+
+    border-radius:9px;
+
+    background:var(--accent) !important;
+
+    color:#fff !important;
+
+    font-size:13px;
+
+    font-weight:bold;
+
+}
+
+
+/* 削除ボタン */
+
+.planner-delete-btn{
+
+    flex:1;
+
+    padding:8px 10px !important;
+
+    margin:0 !important;
+
+    border:none;
+
+    border-radius:9px;
+
+    background:var(--danger) !important;
+
+    color:#fff !important;
+
+    font-size:13px;
+
+    font-weight:bold;
+
+}
+
+
+/* 実時間サイズになった付箋 */
+
+.planner-event-compact{
+
+    transition:
+        height .2s ease,
+        box-shadow .2s ease;
+
+}
+
+
+/* タップ可能であることを自然に示す */
+
+.planner-event{
+
+    cursor:pointer;
+
+    transition:
+        height .2s ease,
+        box-shadow .2s ease;
+
+}
