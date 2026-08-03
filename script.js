@@ -1073,6 +1073,16 @@ function displayUpcomingEvents(){
     }
 
 
+    console.log(
+    "★ 予定の日付一覧:",
+    events.map(e => ({
+        title: e.title,
+        start: e.start,
+        date: e.date,
+        parsed: eventStartDate(e)
+    }))
+);
+
     /*
        今日の予定を除外して
        明日以降のイベントだけ取得
