@@ -945,15 +945,19 @@ function displayHomeSchedule(){
     }
 
     // 今日の予定
-    const todayList = events.filter(e=>{
+const todayList = events
+    .filter(e=>{
 
         const d = eventStartDate(e);
         if(!d) return false;
 
         return d >= todayStart && d < tomorrowStart;
 
-    });
-
+    })
+    .sort((a,b)=>
+        eventStartDate(a) - eventStartDate(b)
+    );
+    
 
     function render(id,list){
 
