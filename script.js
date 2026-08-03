@@ -715,6 +715,13 @@ function saveEvent(){
 
     displayCountdown();
 
+showPlanner(
+    selectedCalendarDate,
+    false
+);
+
+
+
 }
 
 function clearEventForm(){
