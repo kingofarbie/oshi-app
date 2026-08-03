@@ -452,7 +452,7 @@ button:hover{
 ========================= */
 
 .calendar-day{
-    height:82px;
+    height:83px;
 
     background:var(--card);
 
@@ -484,40 +484,38 @@ button:hover{
 .calendar-date{
     font-size:14px;
     font-weight:bold;
-    margin-bottom:2px;
+    margin-bottom:1px;
+    line-height:1;
 }
-
 
 /* =========================
    予定表示
 ========================= */
 
 .calendar-event-preview{
-    width:100%;
-
-    font-size:10px;
-    line-height:1.1;
-
-    overflow:hidden;
-
-    white-space:nowrap;
-    text-overflow:ellipsis;
-
     background:var(--surface);
+    color:var(--text);
 
-    border:1px solid var(--border);
+    border-radius:3px;
 
-    border-left:3px solid var(--accent);
-
-    border-radius:4px;
-
-    padding:2px 3px;
-
+    padding:1px 3px;
     margin-top:2px;
 
-    color:var(--text);
-}
+    font-size:11px;
+    font-weight:bold;
+    line-height:1.1;
 
+    min-height:14px;
+
+    display:flex;
+    align-items:center;
+
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+
+    box-sizing:border-box;
+}
 
 /* 予定が多い場合 */
 
