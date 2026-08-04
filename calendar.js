@@ -143,10 +143,10 @@ console.log(
 const hasEvent =
     events.some(
         e =>
-        e.date &&
-        e.date.startsWith(date)
+        e.start &&
+        e.start.startsWith(date)
     );
-
+    
 
         const isToday =
             today.getFullYear() === year
@@ -175,12 +175,17 @@ else if(dayOfWeek === 6){
 
 
 const dayEvents =
-    events.filter(
+    events
+    .filter(
         e =>
-            e.date &&
-            e.date.startsWith(date)
+            e.start &&
+            e.start.startsWith(date)
+    )
+    .sort(
+        (a,b) =>
+            new Date(a.start) -
+            new Date(b.start)
     );
-
 
 const preview =
     dayEvents
