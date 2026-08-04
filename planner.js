@@ -412,6 +412,122 @@ timeline.onclick = function(event){
 }
 
 
+
+/* =====================
+   1日手帳 左右スワイプ
+   左 → 翌日
+   右 → 前日
+===================== */
+
+let plannerSwipeStartX = 0;
+let plannerSwipeStartY = 0;
+
+document.addEventListener("touchstart", function(event){
+
+    const planner =
+        document.getElementById("dayPlanner");
+
+    if(
+        !planner ||
+        planner.style.display === "none"
+    ){
+        return;
+    }
+
+    /* 付箋を触っている場合は無視 */
+    if(
+        event.target.closest(".planner-event")
+    ){
+        return;
+    }
+
+    if(event.touches.length !== 1){
+        return;
+    }
+
+    plannerSwipeStartX =
+        event.touches[0].clientX;
+
+    plannerSwipeStartY =
+        event.touches[0].clientY;
+
+}, {passive:true});
+
+
+document.addEventListener("touchend", function(event){
+
+    const planner =
+        document.getElementById("dayPlanner");
+
+    if(
+        !planner ||
+        planner.style.display === "none"
+    ){
+        return;
+    }
+
+    /* 付箋を触っていた場合は無視 */
+    if(
+        event.target.closest(".planner-event")
+    ){
+        return;
+    }
+
+    const endX =
+        event.changedTouches[0].clientX;
+
+    const endY =
+        event.changedTouches[0].clientY;
+
+    const diffX =
+        endX - plannerSwipeStartX;
+
+    const diffY =
+        endY - plannerSwipeStartY;
+
+    /* 横方向のスワイプだけ判定 */
+    if(
+        Math.abs(diffX) < 80 ||
+        Math.abs(diffX) < Math.abs(diffY)
+    ){
+        return;
+    }
+
+    const current =
+        new Date(selectedCalendarDate);
+
+    /* 左スワイプ → 翌日 */
+    if(diffX < 0){
+
+        current.setDate(
+            current.getDate() + 1
+        );
+
+    }
+
+    /* 右スワイプ → 前日 */
+    else{
+
+        current.setDate(
+            current.getDate() - 1
+        );
+
+    }
+
+    const nextDate =
+        `${current.getFullYear()}-` +
+        `${String(current.getMonth()+1).padStart(2,"0")}-` +
+        `${String(current.getDate()).padStart(2,"0")}`;
+
+    showPlanner(
+        nextDate,
+        false
+    );
+
+});
+
+
+
 /* =====================
    1日手帳
    タップ・長押し制御
