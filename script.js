@@ -699,7 +699,6 @@ function saveEvent(){
 
     displaySelectedDateEvents();
 
-    renderCalendar();
 
     displayHomeSchedule();
 
@@ -716,7 +715,7 @@ if(selectedCalendarDate){
 
 }
 
-
+    renderCalendar();
 
 }
 
