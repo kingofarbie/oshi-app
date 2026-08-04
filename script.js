@@ -603,64 +603,50 @@ function openEventForm(){
 
 function saveEvent(){
 
+    const start =
+        document.getElementById('event-start').value;
+
     const data = {
 
         category:
-        document.getElementById(
-            'event-category'
-        ).value,
+        document.getElementById('event-category').value,
 
         title:
-        document.getElementById(
-            'event-title'
-        ).value,
+        document.getElementById('event-title').value,
 
         start:
-        document.getElementById(
-            'event-start'
-        ).value,
+        start,
 
         end:
-        document.getElementById(
-            'event-end'
-        ).value,
+        document.getElementById('event-end').value,
 
         place:
-        document.getElementById(
-            'event-place'
-        ).value,
+        document.getElementById('event-place').value,
 
         meeting:
-        document.getElementById(
-            'meeting-time'
-        ).value,
+        document.getElementById('meeting-time').value,
 
         companion:
-        document.getElementById(
-            'companions'
-        ).value,
+        document.getElementById('companions').value,
 
         map:
-        document.getElementById(
-            'map-url'
-        ).value,
+        document.getElementById('map-url').value,
 
         ticket:
-        document.getElementById(
-            'ticket-url'
-        ).value,
+        document.getElementById('ticket-url').value,
 
-        // ★持ち物リスト保存
+        // ★ 持ち物リスト保存
         checklist:
         JSON.parse(JSON.stringify(checklistItems)),
 
-        // カレンダー表示用の日付
+        // ★ 開始日時から日付を必ず作る
         date:
-        document.getElementById(
-            'event-start'
-        ).value.split("T")[0]
+        start
+        ? start.split("T")[0]
+        : ""
 
     };
+
 
     if(!data.title){
 
@@ -670,6 +656,7 @@ function saveEvent(){
 
     }
 
+
     if(!data.start){
 
         alert("開始日時を入力してください");
@@ -677,6 +664,7 @@ function saveEvent(){
         return;
 
     }
+
 
     if(editingEventId){
 
@@ -689,10 +677,13 @@ function saveEvent(){
     }else{
 
         if(!db.addEvent(data)){
+
             return;
+
         }
 
     }
+
 
     // 次回入力用に持ち物をリセット
     checklistItems = [];
@@ -702,6 +693,7 @@ function saveEvent(){
     closeEventModal();
 
     clearEventForm();
+
 
     displayEventList();
 
@@ -715,12 +707,11 @@ function saveEvent(){
 
     displayCountdown();
 
-showPlanner(
-    selectedCalendarDate,
-    false
-);
 
-
+    showPlanner(
+        selectedCalendarDate,
+        false
+    );
 
 }
 
