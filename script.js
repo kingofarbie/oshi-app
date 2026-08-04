@@ -639,11 +639,6 @@ function saveEvent(){
         checklist:
         JSON.parse(JSON.stringify(checklistItems)),
 
-        // ★ 開始日時から日付を必ず作る
-        date:
-        start
-        ? start.split("T")[0]
-        : ""
 
     };
 
@@ -803,13 +798,12 @@ function displayEventList(){
 
     // 日付順
 
-    events.sort(
-        (a,b)=>
-        new Date(a.date)
-        -
-        new Date(b.date)
-    );
-
+events.sort(
+    (a,b)=>
+    new Date(a.start)
+    -
+    new Date(b.start)
+);
 
 
 
@@ -839,7 +833,7 @@ ${e.title}
 </div>
 
 <div>
-📅 ${e.date}
+📅 ${e.start ? e.start.substring(0,10) : ""}
 </div>
 
 ${e.place ? `
@@ -929,46 +923,22 @@ function displayHomeSchedule(){
     tomorrowStart.setDate(todayStart.getDate() + 1);
 
 
-    function eventStartDate(e){
+function eventStartDate(e){
 
-        if(e.start){
-            return new Date(e.start);
-        }
-
-        if(e.date){
-            return new Date(e.date);
-        }
-
+    if(!e.start){
         return null;
-
     }
 
+    const d = new Date(e.start);
 
-    /* =====================
-       DB内の予定を確認
-    ===================== */
+    if(isNaN(d.getTime())){
+        return null;
+    }
 
-    console.log(
-        "★ 予定の日付一覧:",
-        events.map(e => ({
-            title: e.title,
-            start: e.start,
-            date: e.date,
-            parsed: eventStartDate(e)
-        }))
-    );
+    return d;
 
+}
 
-    console.log(
-        "★ 今日の開始:",
-        todayStart
-    );
-
-
-    console.log(
-        "★ 明日の開始:",
-        tomorrowStart
-    );
 
 
     /* =====================
@@ -999,21 +969,6 @@ function displayHomeSchedule(){
 
         });
 
-
-    /* =====================
-       並び順確認
-    ===================== */
-
-    console.log(
-        "今日の予定並び:",
-        todayList.map(e => ({
-            id: e.id,
-            title: e.title,
-            start: e.start,
-            date: e.date,
-            parsed: eventStartDate(e)
-        }))
-    );
 
 
     /* =====================
@@ -1122,19 +1077,21 @@ function displayUpcomingEvents(){
     );
 
 
-    function eventStartDate(e){
+function eventStartDate(e){
 
-        if(e.start){
-            return new Date(e.start);
-        }
-
-        if(e.date){
-            return new Date(e.date);
-        }
-
+    if(!e.start){
         return null;
     }
 
+    const d = new Date(e.start);
+
+    if(isNaN(d.getTime())){
+        return null;
+    }
+
+    return d;
+
+}
 
     
 
@@ -1723,11 +1680,18 @@ function openEventSelectModal(){
         );
 
 
-    const events =
-        db.load().events.filter(
-            e => e.date.startsWith(menuDate)
-        );
-
+const events =
+    db.load().events
+    .filter(
+        e =>
+            e.start &&
+            e.start.startsWith(menuDate)
+    )
+    .sort(
+        (a,b) =>
+            new Date(a.start) -
+            new Date(b.start)
+    );
 
     if(events.length === 0){
 
@@ -2060,7 +2024,7 @@ function openEventDetail(id){
 
 <div class="detail-row">
 <span class="detail-icon">📅</span>
-<span>${event.date}</span>
+<span>${event.start ? event.start.substring(0,10) : ""}</span>
 </div>
 
 ${

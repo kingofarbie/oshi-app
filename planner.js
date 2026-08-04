@@ -57,7 +57,7 @@ function showPlanner(date, fromCalendar = false){
     calendar.style.display = "none";
     planner.style.display = "block";
 
-    const d = new Date(date);
+const d = new Date(date + "T00:00:00");
 
     const week =
     [
@@ -422,110 +422,115 @@ timeline.onclick = function(event){
 let plannerSwipeStartX = 0;
 let plannerSwipeStartY = 0;
 
-document.addEventListener("touchstart", function(event){
+const planner =
+    document.getElementById("dayPlanner");
 
-    const planner =
-        document.getElementById("dayPlanner");
+if(planner){
 
-    if(
-        !planner ||
-        planner.style.display === "none"
-    ){
-        return;
-    }
+    planner.addEventListener(
+        "touchstart",
+        function(event){
 
-    /* 付箋を触っている場合は無視 */
-    if(
-        event.target.closest(".planner-event")
-    ){
-        return;
-    }
+            if(event.touches.length !== 1){
+                return;
+            }
 
-    if(event.touches.length !== 1){
-        return;
-    }
+            /* 付箋の上ではスワイプしない */
+            if(
+                event.target.closest(".planner-event")
+            ){
+                return;
+            }
 
-    plannerSwipeStartX =
-        event.touches[0].clientX;
+            plannerSwipeStartX =
+                event.touches[0].clientX;
 
-    plannerSwipeStartY =
-        event.touches[0].clientY;
+            plannerSwipeStartY =
+                event.touches[0].clientY;
 
-}, {passive:true});
-
-
-document.addEventListener("touchend", function(event){
-
-    const planner =
-        document.getElementById("dayPlanner");
-
-    if(
-        !planner ||
-        planner.style.display === "none"
-    ){
-        return;
-    }
-
-    /* 付箋を触っていた場合は無視 */
-    if(
-        event.target.closest(".planner-event")
-    ){
-        return;
-    }
-
-    const endX =
-        event.changedTouches[0].clientX;
-
-    const endY =
-        event.changedTouches[0].clientY;
-
-    const diffX =
-        endX - plannerSwipeStartX;
-
-    const diffY =
-        endY - plannerSwipeStartY;
-
-    /* 横方向のスワイプだけ判定 */
-    if(
-        Math.abs(diffX) < 80 ||
-        Math.abs(diffX) < Math.abs(diffY)
-    ){
-        return;
-    }
-
-    const current =
-        new Date(selectedCalendarDate);
-
-    /* 左スワイプ → 翌日 */
-    if(diffX < 0){
-
-        current.setDate(
-            current.getDate() + 1
-        );
-
-    }
-
-    /* 右スワイプ → 前日 */
-    else{
-
-        current.setDate(
-            current.getDate() - 1
-        );
-
-    }
-
-    const nextDate =
-        `${current.getFullYear()}-` +
-        `${String(current.getMonth()+1).padStart(2,"0")}-` +
-        `${String(current.getDate()).padStart(2,"0")}`;
-
-    showPlanner(
-        nextDate,
-        false
+        },
+        {passive:true}
     );
 
-});
 
+    planner.addEventListener(
+        "touchend",
+        function(event){
+
+            if(!selectedCalendarDate){
+                return;
+            }
+
+            /* 付箋の上ではスワイプしない */
+            if(
+                event.target.closest(".planner-event")
+            ){
+                return;
+            }
+
+            const endX =
+                event.changedTouches[0].clientX;
+
+            const endY =
+                event.changedTouches[0].clientY;
+
+            const diffX =
+                endX - plannerSwipeStartX;
+
+            const diffY =
+                endY - plannerSwipeStartY;
+
+
+            /* 横スワイプではない */
+            if(
+                Math.abs(diffX) < 80 ||
+                Math.abs(diffX) <= Math.abs(diffY)
+            ){
+                return;
+            }
+
+
+            const current =
+                new Date(
+                    selectedCalendarDate + "T00:00:00"
+                );
+
+
+            /* 左 → 翌日 */
+            if(diffX < 0){
+
+                current.setDate(
+                    current.getDate() + 1
+                );
+
+            }
+
+            /* 右 → 前日 */
+            else{
+
+                current.setDate(
+                    current.getDate() - 1
+                );
+
+            }
+
+
+            const nextDate =
+                `${current.getFullYear()}-` +
+                `${String(current.getMonth()+1).padStart(2,"0")}-` +
+                `${String(current.getDate()).padStart(2,"0")}`;
+
+
+            showPlanner(
+                nextDate,
+                false
+            );
+
+        },
+        {passive:true}
+    );
+
+}
 
 
 /* =====================
@@ -890,60 +895,6 @@ function formatPlannerTime(value){
 }
 
 
-/* =====================
-   カレンダーへ戻る
-===================== */
-
-function backToCalendar(){
-
-    const calendar =
-        document.getElementById("calendar");
-
-    const planner =
-        document.getElementById("dayPlanner");
-
-    const calendarBack =
-        document.getElementById(
-            "plannerCalendarBack"
-        );
-
-    if(calendar){
-
-        calendar.style.display = "block";
-
-    }
-
-    if(planner){
-
-        planner.style.display = "none";
-
-    }
-
-    if(calendarBack){
-
-        calendarBack.style.display = "none";
-
-    }
-
-    switchTab(
-        'calendarPage',
-        null
-    );
-
-    setTimeout(() => {
-
-        if(
-            typeof renderCalendar === "function"
-        ){
-
-            renderCalendar();
-
-        }
-
-    },50);
-
-}
-
 
 /* =====================
    手帳イベントクリック用
@@ -970,34 +921,6 @@ function openPlannerEvent(id){
     openEventSelectModal();
 
 }
-
-
-/* =====================
-   時刻表示補助
-===================== */
-
-function formatPlannerTime(value){
-
-    if(!value)
-        return "";
-
-    const d =
-        new Date(value);
-
-
-    return (
-        String(d.getHours())
-        .padStart(2,"0")
-        +
-        ":" +
-        String(d.getMinutes())
-        .padStart(2,"0")
-    );
-
-}
-
-
-
 
 
 /* =====================

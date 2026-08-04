@@ -1,7 +1,6 @@
 /* =====================
    カレンダー状態
 ===================== */
-console.log("★★★★★ calendar.js 読み込み開始 ★★★★★");
 
 
 let currentCalendarDate = new Date();
@@ -26,7 +25,6 @@ let copyMode = false;
 ===================== */
 function renderCalendar(){
 
-    console.log("★★★★★ renderCalendar 実行 ★★★★★");
 
     const area =
         document.getElementById('calendar');
@@ -66,16 +64,6 @@ const events =
     db.load().events || [];
 
 
-console.log(
-    "★ カレンダー用予定データ:",
-    events.map(e => ({
-        id: e.id,
-        title: e.title,
-        date: e.date,
-        start: e.start,
-        end: e.end
-    }))
-);
 
     
 
@@ -361,12 +349,10 @@ function selectCalendarDate(date){
                 : null;
 
 
-            /*
-               コピー先の日付で
-               start / end / date を
-               すべて作り直す
-            */
-
+/*
+   コピー先の日付で
+   start / end を作り直す
+*/
             const newEvent = {
 
                 ...event,
@@ -375,8 +361,6 @@ function selectCalendarDate(date){
                     Date.now() +
                     Math.random(),
 
-                date:
-                    date,
 
                 start:
                     startTime
@@ -568,12 +552,18 @@ function displaySelectedDateEvents(){
         db.load().events;
 
 const list =
-    events.filter(
+    events
+    .filter(
         e =>
             selectedCalendarDate &&
-            e.date &&
-            e.date.startsWith(selectedCalendarDate)
-    );
+            e.start &&
+            e.start.startsWith(selectedCalendarDate)
+    )
+    .sort(
+        (a,b) =>
+            new Date(a.start) -
+            new Date(b.start)
+    );    
 
     if(list.length===0){
 
@@ -667,8 +657,6 @@ function cancelPress(){
 
 function showDayMenu(date){
 
-    console.log("長押し:", date);
-
     menuDate = date;
 
     document.getElementById(
@@ -718,9 +706,6 @@ function editEventFromMenu(){
 
 function deleteEventFromMenu(){
 
-    console.log("削除押下");
-    console.log(menuDate);
-
     closeDayMenu();
 
     openDeleteSelectModal();
@@ -733,7 +718,7 @@ function copyEventFromMenu(){
 
     const events =
         db.load().events.filter(
-            e => e.date.startsWith(menuDate)
+            e => e.start && e.start.startsWith(menuDate)
         );
 
     if(events.length === 0){
@@ -759,7 +744,7 @@ function openDeleteSelectModal(){
 
     const events =
         db.load().events.filter(
-            e => e.date.startsWith(menuDate)
+            e => e.start && e.start.startsWith(menuDate)
         );
 
 
@@ -875,7 +860,7 @@ function openCopySelectModal(){
 
     const events =
         db.load().events.filter(
-            e => e.date.startsWith(menuDate)
+            e => e.start && e.start.startsWith(menuDate)
         );
 
     if(events.length === 0){
