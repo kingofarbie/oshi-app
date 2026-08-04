@@ -409,6 +409,8 @@ timeline.onclick = function(event){
 
     }
 
+    setupPlannerSwipe();
+
 }
 
 
@@ -422,116 +424,79 @@ timeline.onclick = function(event){
 let plannerSwipeStartX = 0;
 let plannerSwipeStartY = 0;
 
-const planner =
-    document.getElementById("dayPlanner");
+function setupPlannerSwipe(){
 
-if(planner){
+    const planner =
+        document.getElementById("dayPlanner");
 
-    planner.addEventListener(
-        "touchstart",
-        function(event){
+    if(!planner) return;
 
-            if(event.touches.length !== 1){
-                return;
-            }
+    if(planner.dataset.swipeReady === "true"){
+        return;
+    }
 
-            /* 付箋の上ではスワイプしない */
-            if(
-                event.target.closest(".planner-event")
-            ){
-                return;
-            }
+    planner.dataset.swipeReady = "true";
 
-            plannerSwipeStartX =
-                event.touches[0].clientX;
+    planner.addEventListener("touchstart", function(event){
 
-            plannerSwipeStartY =
-                event.touches[0].clientY;
+        if(event.touches.length !== 1) return;
 
-        },
-        {passive:true}
-    );
+        if(event.target.closest(".planner-event")) return;
+
+        plannerSwipeStartX =
+            event.touches[0].clientX;
+
+        plannerSwipeStartY =
+            event.touches[0].clientY;
+
+    }, {passive:true});
 
 
-    planner.addEventListener(
-        "touchend",
-        function(event){
+    planner.addEventListener("touchend", function(event){
 
-            if(!selectedCalendarDate){
-                return;
-            }
+        if(!selectedCalendarDate) return;
 
-            /* 付箋の上ではスワイプしない */
-            if(
-                event.target.closest(".planner-event")
-            ){
-                return;
-            }
+        if(event.target.closest(".planner-event")) return;
 
-            const endX =
-                event.changedTouches[0].clientX;
+        const diffX =
+            event.changedTouches[0].clientX -
+            plannerSwipeStartX;
 
-            const endY =
-                event.changedTouches[0].clientY;
+        const diffY =
+            event.changedTouches[0].clientY -
+            plannerSwipeStartY;
 
-            const diffX =
-                endX - plannerSwipeStartX;
+        if(
+            Math.abs(diffX) < 80 ||
+            Math.abs(diffX) <= Math.abs(diffY)
+        ){
+            return;
+        }
 
-            const diffY =
-                endY - plannerSwipeStartY;
-
-
-            /* 横スワイプではない */
-            if(
-                Math.abs(diffX) < 80 ||
-                Math.abs(diffX) <= Math.abs(diffY)
-            ){
-                return;
-            }
-
-
-            const current =
-                new Date(
-                    selectedCalendarDate + "T00:00:00"
-                );
-
-
-            /* 左 → 翌日 */
-            if(diffX < 0){
-
-                current.setDate(
-                    current.getDate() + 1
-                );
-
-            }
-
-            /* 右 → 前日 */
-            else{
-
-                current.setDate(
-                    current.getDate() - 1
-                );
-
-            }
-
-
-            const nextDate =
-                `${current.getFullYear()}-` +
-                `${String(current.getMonth()+1).padStart(2,"0")}-` +
-                `${String(current.getDate()).padStart(2,"0")}`;
-
-
-            showPlanner(
-                nextDate,
-                false
+        const current =
+            new Date(
+                selectedCalendarDate + "T00:00:00"
             );
 
-        },
-        {passive:true}
-    );
+        if(diffX < 0){
+            current.setDate(
+                current.getDate() + 1
+            );
+        }else{
+            current.setDate(
+                current.getDate() - 1
+            );
+        }
 
+        const nextDate =
+            `${current.getFullYear()}-` +
+            `${String(current.getMonth()+1).padStart(2,"0")}-` +
+            `${String(current.getDate()).padStart(2,"0")}`;
+
+        showPlanner(nextDate, false);
+
+    }, {passive:true});
 }
-
 
 /* =====================
    1日手帳
