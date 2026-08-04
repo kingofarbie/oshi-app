@@ -368,6 +368,17 @@ onclick="plannerDeleteEvent(event, ${e.id})"
     timeline.innerHTML =
         html;
 
+// ★ 付箋以外をタップしたら編集モード解除
+timeline.onclick = function(event){
+
+    if(
+        !event.target.closest(".planner-event")
+    ){
+        plannerCancelEditMode();
+    }
+
+};
+
     renderDayMemory();
 
     /* =====================
@@ -618,6 +629,22 @@ function plannerEnterEditMode(id){
 
 }
 
+
+function plannerCancelEditMode(){
+
+    document
+        .querySelectorAll(
+            ".planner-event"
+        )
+        .forEach(el=>{
+
+            el.classList.remove(
+                "planner-event-editing"
+            );
+
+        });
+
+}
 
 /* =====================
    編集
