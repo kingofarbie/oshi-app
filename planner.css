@@ -1310,3 +1310,11 @@
         box-shadow .2s ease;
 
 }
+
+
+.calendar-day{
+    -webkit-user-select:none;
+    user-select:none;
+    -webkit-touch-callout:none;
+    -webkit-tap-highlight-color:transparent;
+}
