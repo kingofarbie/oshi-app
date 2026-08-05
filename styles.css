@@ -1334,7 +1334,7 @@ button[style*="background"],
     grid-template-columns:80px 1fr;
     align-items:center;
     gap:10px;
-    margin-bottom:10px;
+    margin-bottom:4px;
 }
 
 .event-form-row label{
