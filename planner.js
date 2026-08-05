@@ -54,6 +54,17 @@ function showPlanner(date, fromCalendar = false){
         return;
     }
 
+const d = new Date(date + "T00:00:00");
+
+const dayOfWeek = d.getDay();
+
+const plannerClass =
+    dayOfWeek === 6
+    ? "planner-saturday"
+    : dayOfWeek === 0
+    ? "planner-sunday"
+    : "";
+
 calendar.style.display = "none";
 
 planner.classList.remove(
@@ -67,18 +78,6 @@ if(plannerClass){
 
 planner.style.display = "block";
 
-
-
-const d = new Date(date + "T00:00:00");
-
-const dayOfWeek = d.getDay();
-
-const plannerClass =
-    dayOfWeek === 6
-    ? "planner-saturday"
-    : dayOfWeek === 0
-    ? "planner-sunday"
-    : "";
 
     const week =
     [
