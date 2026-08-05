@@ -54,10 +54,31 @@ function showPlanner(date, fromCalendar = false){
         return;
     }
 
-    calendar.style.display = "none";
-    planner.style.display = "block";
+calendar.style.display = "none";
+
+planner.classList.remove(
+    "planner-saturday",
+    "planner-sunday"
+);
+
+if(plannerClass){
+    planner.classList.add(plannerClass);
+}
+
+planner.style.display = "block";
+
+
 
 const d = new Date(date + "T00:00:00");
+
+const dayOfWeek = d.getDay();
+
+const plannerClass =
+    dayOfWeek === 6
+    ? "planner-saturday"
+    : dayOfWeek === 0
+    ? "planner-sunday"
+    : "";
 
     const week =
     [

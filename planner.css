@@ -1318,3 +1318,12 @@
     -webkit-touch-callout:none;
     -webkit-tap-highlight-color:transparent;
 }
+
+
+#dayPlanner.planner-saturday{
+    background:#eaf7ff;
+}
+
+#dayPlanner.planner-sunday{
+    background:#fff0f5;
+}
