@@ -701,8 +701,44 @@ function saveEvent(){
 
     displayCountdown();
 
+/* =====================
+   保存後の画面更新
+===================== */
+
+const plannerPage =
+    document.getElementById("plannerPage");
+
+const calendarPage =
+    document.getElementById("calendarPage");
+
+/* 1日手帳を開いている場合だけ更新 */
+
+if(
+    plannerPage &&
+    plannerPage.classList.contains("active") &&
+    selectedCalendarDate
+){
+
+    showPlanner(
+        selectedCalendarDate,
+        false
+    );
+
+}
+
+/* カレンダーを開いている場合は
+   カレンダーのまま */
+
+if(
+    calendarPage &&
+    calendarPage.classList.contains("active")
+){
 
     renderCalendar();
+
+}
+
+
 
 }
 
