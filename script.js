@@ -701,14 +701,6 @@ function saveEvent(){
 
     displayCountdown();
 
-if(selectedCalendarDate){
-
-    showPlanner(
-        selectedCalendarDate,
-        false
-    );
-
-}
 
     renderCalendar();
 
