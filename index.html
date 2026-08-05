@@ -394,133 +394,135 @@ id="favorite-event-list">
      イベント入力ポップアップ
 ===================== -->
 
-<div id="eventFormModal" class="modal">
+<div id="eventFormModal" class="modal"><div class="modal-content event-modal">
 
-    <div class="modal-content event-modal">
+    <h2 id="eventFormTitle">
+        ➕ 予定追加
+    </h2>
 
-        <h2 id="eventFormTitle">
-            ➕ 予定追加
-        </h2>
-
+    <div class="event-form-row">
+        <label for="event-category">種類</label>
         <select id="event-category">
-
-            <option value="イベント">
-                🎫 イベント
-            </option>
-
-            <option value="フェス">
-                🎵 フェス
-            </option>
-
-            <option value="試合">
-                ⚽ 試合
-            </option>
-
+            <option value="イベント">🎫 イベント</option>
+            <option value="フェス">🎵 フェス</option>
+            <option value="試合">⚽ 試合</option>
         </select>
+    </div>
 
-        <input
+<div class="event-form-row">
+    <label for="event-title">イベント名</label>
+    <input
         type="text"
         id="event-title"
         placeholder="イベント名">
-
-        <label>
-開始時間
-</label>
-
-<input
-type="datetime-local"
-id="event-start">
-
-
-<label>
-終了時間
-</label>
-
-<input
-type="datetime-local"
-id="event-end">
-
-
-        <input
-        type="text"
-        id="event-place"
-        placeholder="場所">
-
-        <input
-        type="text"
-        id="meeting-time"
-        placeholder="待ち合わせ時間">
-
-        <input
-        type="text"
-        id="companions"
-        placeholder="同伴者">
-
-        <input
-        type="url"
-        id="map-url"
-        placeholder="GoogleマップURL">
-
-        <input
-        type="url"
-        id="ticket-url"
-        placeholder="チケットURL">
-
-
-<hr>
-
-<h3>📦 テンプレート</h3>
-
-<div class="template-select-area">
-
-    <select id="templateSelect" onchange="applyTemplate()">
-        <option value="">テンプレートを選択</option>
-    </select>
-
 </div>
 
-<h3>👜 持ち物リスト</h3>
-
-
-
-<div id="checklistContainer" class="checklist-list">
-
-    <div class="checklist-empty">
-        持ち物はありません
+    <div class="event-form-row">
+        <label for="event-start">開始時間</label>
+        <input
+            type="datetime-local"
+            id="event-start">
     </div>
 
-</div>
+    <div class="event-form-row">
+        <label for="event-end">終了時間</label>
+        <input
+            type="datetime-local"
+            id="event-end">
+    </div>
 
-<div class="checklist-add">
+    <div class="event-form-row">
+        <label for="meeting-time">待ち合わせ</label>
+        <input
+            type="time"
+            id="meeting-time">
+    </div>
 
-    <input
-        type="text"
-        id="newChecklistItem"
-        placeholder="持ち物を入力">
+    <div class="event-form-row">
+        <label for="event-place">場所</label>
+        <input
+            type="text"
+            id="event-place"
+            placeholder="場所">
+    </div>
 
-    <button
-        type="button"
-        class="save-btn"
-        onclick="addChecklistItem()">
+    <div class="event-form-row">
+        <label for="companions">同伴者</label>
+        <input
+            type="text"
+            id="companions"
+            placeholder="同伴者">
+    </div>
 
-        ➕追加
+    <div class="event-form-row">
+        <label for="map-url">地図</label>
+        <input
+            type="url"
+            id="map-url"
+            placeholder="GoogleマップURL">
+    </div>
 
-    </button>
+    <div class="event-form-row">
+        <label for="ticket-url">チケット</label>
+        <input
+            type="url"
+            id="ticket-url"
+            placeholder="チケットURL">
+    </div>
 
-</div>
+    <hr>
 
-        <button onclick="saveEvent()">
+    <h3>📦 テンプレート</h3>
+
+    <div class="template-select-area">
+        <select id="templateSelect" onchange="applyTemplate()">
+            <option value="">テンプレートを選択</option>
+        </select>
+    </div>
+
+    <h3>👜 持ち物リスト</h3>
+
+    <div id="checklistContainer" class="checklist-list">
+        <div class="checklist-empty">
+            持ち物はありません
+        </div>
+    </div>
+
+    <div class="checklist-add">
+
+        <input
+            type="text"
+            id="newChecklistItem"
+            placeholder="持ち物を入力">
+
+        <button
+            type="button"
+            class="save-btn"
+            onclick="addChecklistItem()">
+            ➕追加
+        </button>
+
+    </div>
+
+    <div class="event-modal-buttons">
+
+        <button
+            type="button"
+            onclick="saveEvent()">
             💾 保存
         </button>
 
-<button onclick="closeEventModal()">
-キャンセル
-</button>
+        <button
+            type="button"
+            onclick="closeEventModal()">
+            キャンセル
+        </button>
+
     </div>
 
 </div>
 
-
+</div>
 
 
 <!-- =====================

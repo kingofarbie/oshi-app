@@ -1325,6 +1325,42 @@ button[style*="background"],
 
 
 
+/* =====================
+   予定追加・編集フォーム
+===================== */
+
+.event-form-row{
+    display:grid;
+    grid-template-columns:80px 1fr;
+    align-items:center;
+    gap:10px;
+    margin-bottom:10px;
+}
+
+.event-form-row label{
+    font-weight:bold;
+    font-size:14px;
+}
+
+.event-form-row input,
+.event-form-row select{
+    width:100%;
+    min-width:0;
+    box-sizing:border-box;
+}
+
+.event-modal-buttons{
+    display:flex;
+    gap:10px;
+    margin-top:15px;
+}
+
+.event-modal-buttons button{
+    flex:1;
+}
+
+
+
 /* =========================
    重要：
    1日手帳側のCSSは
