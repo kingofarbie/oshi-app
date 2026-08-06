@@ -836,13 +836,11 @@ onclick="addSelectedOshi()">
             国・地域
         </label>
 
-        <select id="holidayCountry">
-
-            <option value="JP">
-                🇯🇵 日本
-            </option>
-
-        </select>
+<select id="holidayCountry">
+    <option value="">
+        国・地域を読み込み中...
+    </option>
+</select>
 
     </div>
 
@@ -1015,6 +1013,9 @@ placeholder="テンプレート名（例：ライブ）">
 <div id="categoryMenu"
 class="setting-content"
 style="display:none;">
+
+
+
 
 
 <p>
@@ -1255,6 +1256,8 @@ placeholder="カテゴリ名（例：推し活、仕事、旅行）">
 
 <!-- データベース（←追加） -->
 <script src="db.js"></script>
+
+<script src="api.js"></script>
 
 <!-- その他 -->
 <script src="theme.js"></script>
