@@ -38,9 +38,10 @@ async function loadHolidayCountries() {
             option.value =
                 country.isoCode;
 
-            option.textContent =
-                country.name;
-
+option.textContent =
+    country.name?.[0]?.text
+    || country.isoCode;
+    
             select.appendChild(option);
 
         });
