@@ -28,6 +28,9 @@ try {
     const countries =
         await response.json();
 
+
+        console.log(countries);
+        
     // 既存の選択肢をクリア
     select.innerHTML = "";
 
@@ -66,6 +69,11 @@ try {
         "か国"
     );
 
+    loadSavedHolidayCountry();
+
+select.onchange =
+    saveHolidayCountry;
+
 } catch (error) {
 
     console.error(
@@ -90,3 +98,54 @@ function() {
 }
 
 );
+
+
+// =====================
+// 祝日国 保存
+// =====================
+
+function saveHolidayCountry(){
+
+    const select =
+        document.getElementById("holidayCountry");
+
+    if(!select) return;
+
+    const data = db.load();
+
+    if(!data.settings){
+        data.settings = {};
+    }
+
+    data.settings.holidayCountry =
+        select.value;
+
+    db.save(data);
+
+}
+
+
+// =====================
+// 祝日国 読み込み
+// =====================
+
+function loadSavedHolidayCountry(){
+
+    const select =
+        document.getElementById("holidayCountry");
+
+    if(!select) return;
+
+    const data = db.load();
+
+    if(
+        data.settings &&
+        data.settings.holidayCountry
+    ){
+
+        select.value =
+            data.settings.holidayCountry;
+
+    }
+
+}
