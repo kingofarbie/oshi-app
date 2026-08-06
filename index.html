@@ -810,6 +810,45 @@ onclick="addSelectedOshi()">
 
 
 
+<!-- =====================
+     祝日設定
+===================== -->
+
+<div class="card setting-item">
+
+    <button onclick="toggleSetting('holidayMenu')">
+
+        <span id="holidayIcon">＋</span>
+        📅 祝日設定
+
+    </button>
+
+    <div
+        id="holidayMenu"
+        class="setting-content"
+        style="display:none;">
+
+        <p>
+            祝日を表示する国・地域を設定します
+        </p>
+
+        <label for="holidayCountry">
+            国・地域
+        </label>
+
+        <select id="holidayCountry">
+
+            <option value="JP">
+                🇯🇵 日本
+            </option>
+
+        </select>
+
+    </div>
+
+</div>
+
+
 <!--通知設定--> 
 <div class="card setting-item">
 
