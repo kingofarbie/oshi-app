@@ -1335,19 +1335,19 @@
 
 .planner-holiday{
 
-    margin-top:4px;
-
     display:inline-block;
 
-    padding:2px 14px;
+    margin-top:6px;
 
-    background:#fff0f3;
+    padding:5px 16px;
 
-    color:#d85a7f;
+    font-size:16px;
 
-    font-size:11px;
+    font-weight:bold;
 
-    font-weight:600;
+    color:#d94b7a;
+
+    background:#ffe5ef;
 
     border-radius:20px;
 
