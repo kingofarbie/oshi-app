@@ -93,6 +93,28 @@ planner.style.display = "block";
     title.textContent =
         `📅 ${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日(${week[d.getDay()]})`;
 
+const holiday =
+    getHoliday(date);
+
+const holidayBox =
+    document.getElementById("plannerHoliday");
+
+if (holiday) {
+
+    holidayBox.textContent =
+        holiday.localName;
+
+    holidayBox.style.display =
+        "inline-block";
+
+} else {
+
+    holidayBox.style.display =
+        "none";
+
+}
+
+
     const now = new Date();
 
     const todayString =
