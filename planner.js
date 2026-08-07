@@ -58,8 +58,13 @@ const d = new Date(date + "T00:00:00");
 
 const dayOfWeek = d.getDay();
 
+const holiday =
+    getHoliday(date);
+
 const plannerClass =
-    dayOfWeek === 6
+    holiday
+    ? "planner-holiday-day"
+    : dayOfWeek === 6
     ? "planner-saturday"
     : dayOfWeek === 0
     ? "planner-sunday"
@@ -69,7 +74,8 @@ calendar.style.display = "none";
 
 planner.classList.remove(
     "planner-saturday",
-    "planner-sunday"
+    "planner-sunday",
+    "planner-holiday-day"
 );
 
 if(plannerClass){
