@@ -95,21 +95,23 @@ const holiday =
 
 
 title.innerHTML =
-    `
-    📅 ${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日(${week[d.getDay()]})
-    ${
-        holiday
-        ?
-        `
-        <div class="planner-holiday">
-            ${holiday.localName}
-        </div>
-        `
-        :
-        ""
-    }
-    `;
+`
+<div class="planner-date-title">
+📅 ${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日(${week[d.getDay()]})
+</div>
 
+${
+    holiday
+    ?
+    `
+    <div class="planner-holiday">
+        ${holiday.localName}
+    </div>
+    `
+    :
+    ""
+}
+`;
 
 
     const now = new Date();
