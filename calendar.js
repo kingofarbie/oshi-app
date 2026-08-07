@@ -23,8 +23,7 @@ let copyMode = false;
 /* =====================
    カレンダー生成
 ===================== */
-function renderCalendar(){
-
+async function renderCalendar(){
 
     const area =
         document.getElementById('calendar');
@@ -63,7 +62,21 @@ function renderCalendar(){
 const events =
     db.load().events || [];
 
+// =====================
+// 祝日取得
+// =====================
 
+const data =
+    db.load();
+
+const countryCode =
+    data.settings?.holidayCountry || "JP";
+
+const holidays =
+    await loadHolidays(
+        year,
+        countryCode
+    );
 
     
 
@@ -128,6 +141,12 @@ const events =
         `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
 
 
+const holiday =
+    holidays.find(
+        h =>
+        h.date === date
+    );
+        
 const hasEvent =
     events.some(
         e =>
@@ -177,7 +196,7 @@ const dayEvents =
 
 const preview =
     dayEvents
-    .slice(0,3)
+    .slice(0,2)
     .map(e=>{
 
         const category =
@@ -203,10 +222,10 @@ const preview =
 
 
 const more =
-    dayEvents.length > 3
+    dayEvents.length > 2
     ? `
         <div class="calendar-more">
-            +${dayEvents.length - 3}
+            +${dayEvents.length - 2}
         </div>
       `
     : '';
@@ -227,6 +246,20 @@ ontouchmove="cancelPress()">
 <div class="calendar-date ${dateClass}">
 ${d}
 </div>
+
+${
+holiday
+?
+`
+<div class="holiday-name">
+🎌 ${holiday.localName}
+</div>
+`
+:
+""
+}
+
+
 
 ${preview}
 
