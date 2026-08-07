@@ -1335,35 +1335,20 @@
 
 .planner-holiday{
 
-    display:none;
+    margin-top:4px;
 
-    margin:6px auto 12px;
+    display:inline-block;
 
-    padding:4px 18px;
+    padding:2px 14px;
 
-    width:fit-content;
-
-    max-width:90%;
-
-    background:
-        linear-gradient(
-            135deg,
-            #fff0f3,
-            #ffe0e8
-        );
+    background:#fff0f3;
 
     color:#d85a7f;
 
-    border-radius:999px;
-
-    font-size:12px;
+    font-size:11px;
 
     font-weight:600;
 
-    letter-spacing:.05em;
-
-    box-shadow:
-        0 2px 6px
-        rgba(220,120,150,.15);
+    border-radius:20px;
 
 }

@@ -90,9 +90,26 @@ planner.style.display = "block";
         "土"
     ];
 
-    title.textContent =
-        `📅 ${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日(${week[d.getDay()]})`;
+const holiday =
+    getHoliday(date);
 
+
+title.innerHTML =
+    `
+    📅 ${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日(${week[d.getDay()]})
+    ${
+        holiday
+        ?
+        `
+        <div class="planner-holiday">
+            ${holiday.localName}
+        </div>
+        `
+        :
+        ""
+    }
+    `;
+    
 const holiday =
     getHoliday(date);
 

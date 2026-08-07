@@ -252,7 +252,7 @@ holiday
 ?
 `
 <div class="holiday-name">
-${holiday.localName}
+🎌 ${holiday.localName}
 </div>
 `
 :
