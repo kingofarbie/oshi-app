@@ -110,7 +110,6 @@ title.innerHTML =
     }
     `;
 
-}
 
 
     const now = new Date();
