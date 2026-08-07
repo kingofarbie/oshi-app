@@ -50,21 +50,18 @@ try {
 
 
     // 国一覧
-    countries.forEach(country => {
+countries.forEach(country => {
 
-        const option =
-            document.createElement("option");
+    console.log(country);
 
-        option.value =
-            country.countryCode;
+    const option = document.createElement("option");
 
-        option.textContent =
-            country.name;
+    option.value = country.countryCode;
+    option.textContent = country.name;
 
-        select.appendChild(option);
+    select.appendChild(option);
 
-    });
-
+});
 
     console.log(
         "Nager.Date 国一覧取得:",
