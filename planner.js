@@ -109,25 +109,6 @@ title.innerHTML =
         ""
     }
     `;
-    
-const holiday =
-    getHoliday(date);
-
-const holidayBox =
-    document.getElementById("plannerHoliday");
-
-if (holiday) {
-
-    holidayBox.textContent =
-        holiday.localName;
-
-    holidayBox.style.display =
-        "inline-block";
-
-} else {
-
-    holidayBox.style.display =
-        "none";
 
 }
 
