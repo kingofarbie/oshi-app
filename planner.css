@@ -1338,10 +1338,10 @@
     display:block;
 
     width:max-content;
-    
+
     margin:6px auto 0;
 
-    padding:4px 18px;
+    padding:5px 18px;
 
     font-size:18px;
 
@@ -1349,7 +1349,7 @@
 
     color:#d94b7a;
 
-    background:#ffe5ef;
+    background:#fff0f5;
 
     border-radius:20px;
 
@@ -1357,8 +1357,33 @@
 
 }
 
+
 .planner-date-title{
 
     text-align:center;
 
 }
+
+
+/* =====================
+   カレンダー曜日カラー統一
+===================== */
+
+/* 日曜日 */
+.calendar-day.sunday{
+    background:#fff0f5 !important;
+}
+
+
+/* 土曜日 */
+.calendar-day.saturday{
+    background:#eaf7ff !important;
+}
+
+
+/* 祝日 */
+.calendar-day.holiday{
+    background:#fff0f5 !important;
+}
+
+

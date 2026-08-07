@@ -234,10 +234,13 @@ html += `
 
 <div
 class="calendar-day
+${dateClass}
+${holiday ? 'holiday' : ''}
 ${isToday ? 'today' : ''}
 ${hasEvent ? 'has-event' : ''}
 ${isSelected ? 'selected-day' : ''}
 "
+
 onclick="selectCalendarDate('${date}')"
 ontouchstart="startPress('${date}', event)"
 ontouchend="cancelPress()"
