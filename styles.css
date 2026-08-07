@@ -1361,6 +1361,32 @@ button[style*="background"],
 
 
 
+
+
+/* =====================
+   祝日表示
+===================== */
+
+.holiday-name {
+
+    font-size: 11px;
+
+    color: #e53935;
+
+    font-weight: bold;
+
+    line-height: 1.2;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    margin-top: 2px;
+
+}
+
 /* =========================
    重要：
    1日手帳側のCSSは
