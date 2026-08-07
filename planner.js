@@ -96,8 +96,6 @@ planner.style.display = "block";
         "土"
     ];
 
-const holiday =
-    getHoliday(date);
 
 
 title.innerHTML =
