@@ -30,7 +30,10 @@ try {
 
 
         console.log(countries);
-        
+        console.log(
+    countries.find(c => c.countryCode === "US")
+);
+
     // 既存の選択肢をクリア
     select.innerHTML = "";
 
