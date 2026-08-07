@@ -37,7 +37,7 @@
     background:var(--accent);
     color:#fff;
 
-    font-size:24px;
+    font-size:26px;
     font-weight:bold;
     text-align:center;
 
@@ -1335,13 +1335,15 @@
 
 .planner-holiday{
 
-    display:inline-block;
+    display:block;
+
+    width:max-content;
 
     margin-top:6px;
 
-    padding:5px 16px;
+    padding:4px 18px;
 
-    font-size:16px;
+    font-size:18px;
 
     font-weight:bold;
 
@@ -1350,5 +1352,7 @@
     background:#ffe5ef;
 
     border-radius:20px;
+
+    line-height:1.3;
 
 }
