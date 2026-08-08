@@ -386,8 +386,9 @@ button:hover{
 ========================= */
 
 .calendar-week{
-    display:grid;
-    grid-template-columns:repeat(7,minmax(0,1fr));
+    display:flex;
+    align-items:center;
+    justify-content:center;
 
     text-align:center;
 
@@ -405,17 +406,10 @@ button:hover{
     border-radius:8px 8px 0 0;
 
     overflow:hidden;
-}
 
-.calendar-week > *{
     padding:9px 2px;
-
-    border-right:1px solid var(--border);
 }
 
-.calendar-week > *:last-child{
-    border-right:none;
-}
 
 .calendar-week.sunday{
     color:#e74b67;
