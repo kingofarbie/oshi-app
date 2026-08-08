@@ -341,35 +341,32 @@ if(visible){
 
 }
 
-
+console.log("anniversary.js loaded");
 /* =====================
 記念日・誕生日ページを開く
 ===================== */
 
 function openMemorialPage(){
 
-const page =
-    document.getElementById("memorialPage");
+    alert("openMemorialPage は動いています");
 
-if(!page){
-    return;
-}
+    const page =
+        document.getElementById("memorialPage");
 
-/* 他のページを非表示 */
-document
-    .querySelectorAll(".page")
-    .forEach(p => {
-        p.style.display = "none";
-        p.classList.remove("active");
-    });
+    if(!page){
+        alert("memorialPage が見つかりません");
+        return;
+    }
 
-/* 記念日ページを表示 */
-page.style.display = "block";
-page.classList.add("active");
+    document
+        .querySelectorAll(".page")
+        .forEach(p => {
+            p.style.display = "none";
+            p.classList.remove("active");
+        });
 
-/* 登録済み一覧を更新 */
-if(typeof renderMemorialList === "function"){
+    page.style.display = "block";
+    page.classList.add("active");
+
     renderMemorialList();
-}
-
 }
