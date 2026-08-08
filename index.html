@@ -14,6 +14,8 @@
 <link rel="stylesheet" href="planner.css">
 <link rel="stylesheet" href="about.css">
 
+<link rel="stylesheet" href="anniversary.css">
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 
@@ -847,6 +849,162 @@ onclick="addSelectedOshi()">
 </div>
 
 
+
+<!-- =====================
+     🎂 記念日・誕生日ページ
+===================== --><div
+    id="memorialPage"
+    class="page"
+    style="display:none;"
+><div class="page-title">
+    🎂 記念日・誕生日
+</div>
+
+
+<div class="memorial-add-card">
+
+    <h3>
+        ✨ 新しく登録
+    </h3>
+
+
+    <label>
+        日付
+    </label>
+
+    <input
+        type="date"
+        id="memorial-date"
+    >
+
+
+    <label>
+        タイトル
+    </label>
+
+    <input
+        type="text"
+        id="memorial-title"
+        placeholder="例：Adoさん誕生日"
+    >
+
+
+    <label>
+        種類
+    </label>
+
+    <select id="memorial-type">
+
+        <option value="birthday">
+            🎂 誕生日
+        </option>
+
+        <option value="anniversary">
+            💖 記念日
+        </option>
+
+        <option value="live">
+            🎤 ライブ記念日
+        </option>
+
+        <option value="release">
+            📀 発売記念日
+        </option>
+
+        <option value="other">
+            ⭐ その他
+        </option>
+
+    </select>
+
+
+    <label>
+        アイコン
+    </label>
+
+    <input
+        type="text"
+        id="memorial-icon"
+        value="🎂"
+        maxlength="2"
+    >
+
+
+    <label>
+        色
+    </label>
+
+    <input
+        type="color"
+        id="memorial-color"
+        value="#ffb3cc"
+    >
+
+
+    <label>
+        メモ
+    </label>
+
+    <textarea
+        id="memorial-memo"
+        placeholder="メモがあれば入力"
+    ></textarea>
+
+
+    <label class="memorial-check">
+
+        <input
+            type="checkbox"
+            id="memorial-yearly"
+        >
+
+        🔁 毎年繰り返す
+
+    </label>
+
+
+    <label class="memorial-check">
+
+        <input
+            type="checkbox"
+            id="memorial-visible"
+            checked
+        >
+
+        👁 カレンダー・1日手帳に表示
+
+    </label>
+
+
+    <button
+        class="memorial-add-button"
+        onclick="addMemorialDay()"
+    >
+        ＋ 記念日を登録
+    </button>
+
+</div>
+
+
+<div class="memorial-list-card">
+
+    <h3>
+        📋 登録済み
+    </h3>
+
+    <div id="memorial-list"></div>
+
+</div>
+
+</div>
+
+
+
+
+
+
+
+
 <!--通知設定--> 
 <div class="card setting-item">
 
@@ -1266,6 +1424,7 @@ placeholder="カテゴリ名（例：推し活、仕事、旅行）">
 <script src="calendar.js"></script>
 <script src="photo.js"></script>
 <script src="planner.js"></script>
+<script src="anniversary.js"></script>
 <script src="update.js"></script>
 <script src="notification.js"></script>
 <script src="about.js"></script>

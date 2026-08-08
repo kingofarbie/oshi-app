@@ -1,0 +1,219 @@
+/* =====================
+🎂 記念日・誕生日
+===================== */
+
+.memorial-add-card,
+.memorial-list-card{
+
+margin:12px;
+
+padding:16px;
+
+background:var(--surface);
+
+border:1px solid var(--border);
+
+border-radius:16px;
+
+box-shadow:0 4px 14px rgba(0,0,0,.08);
+
+}
+
+.memorial-add-card h3,
+.memorial-list-card h3{
+
+margin-top:0;
+
+}
+
+.memorial-add-card label{
+
+display:block;
+
+margin-top:12px;
+
+margin-bottom:5px;
+
+font-size:13px;
+
+font-weight:bold;
+
+}
+
+.memorial-add-card input,
+.memorial-add-card select,
+.memorial-add-card textarea{
+
+width:100%;
+
+box-sizing:border-box;
+
+padding:10px;
+
+border-radius:10px;
+
+border:1px solid var(--border);
+
+background:var(--background);
+
+color:var(--text);
+
+}
+
+.memorial-add-card textarea{
+
+min-height:70px;
+
+resize:vertical;
+
+}
+
+.memorial-check{
+
+display:flex !important;
+
+align-items:center;
+
+gap:8px;
+
+}
+
+.memorial-check input{
+
+width:auto !important;
+
+}
+
+.memorial-add-button{
+
+width:100%;
+
+margin-top:16px;
+
+padding:12px;
+
+border:none;
+
+border-radius:12px;
+
+font-weight:bold;
+
+background:#ff8fb3;
+
+color:white;
+
+}
+
+.memorial-list-item{
+
+display:flex;
+
+align-items:center;
+
+gap:10px;
+
+padding:10px 0;
+
+border-bottom:1px solid var(--border);
+
+}
+
+.memorial-list-item:last-child{
+
+border-bottom:none;
+
+}
+
+.memorial-list-icon{
+
+width:42px;
+
+height:42px;
+
+border-radius:12px;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+flex-shrink:0;
+
+}
+
+.memorial-list-info{
+
+flex:1;
+
+min-width:0;
+
+display:flex;
+
+flex-direction:column;
+
+gap:2px;
+
+}
+
+.memorial-list-info strong{
+
+overflow:hidden;
+
+text-overflow:ellipsis;
+
+white-space:nowrap;
+
+}
+
+.memorial-list-info span{
+
+font-size:12px;
+
+opacity:.7;
+
+}
+
+.memorial-list-info small{
+
+font-size:11px;
+
+opacity:.7;
+
+}
+
+.memorial-list-actions{
+
+display:flex;
+
+gap:4px;
+
+}
+
+.memorial-list-actions button{
+
+border:none;
+
+background:transparent;
+
+font-size:18px;
+
+padding:5px;
+
+}
+
+.memorial-hidden{
+
+opacity:.45;
+
+}
+
+.memorial-empty{
+
+padding:20px;
+
+text-align:center;
+
+opacity:.6;
+
+}
