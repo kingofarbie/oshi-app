@@ -340,3 +340,36 @@ if(visible){
 }
 
 }
+
+
+/* =====================
+記念日・誕生日ページを開く
+===================== */
+
+function openMemorialPage(){
+
+const page =
+    document.getElementById("memorialPage");
+
+if(!page){
+    return;
+}
+
+/* 他のページを非表示 */
+document
+    .querySelectorAll(".page")
+    .forEach(p => {
+        p.style.display = "none";
+        p.classList.remove("active");
+    });
+
+/* 記念日ページを表示 */
+page.style.display = "block";
+page.classList.add("active");
+
+/* 登録済み一覧を更新 */
+if(typeof renderMemorialList === "function"){
+    renderMemorialList();
+}
+
+}
