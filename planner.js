@@ -607,6 +607,7 @@ function setupPlannerSwipe(){
         if(event.touches.length !== 1) return;
 
         if(event.target.closest(".planner-event")) return;
+        if(event.target.closest(".memory-photo-box, .memory-photo, video, textarea, input, select, button")){return;}
 
         plannerSwipeStartX =
             event.touches[0].clientX;
@@ -622,6 +623,7 @@ function setupPlannerSwipe(){
         if(!selectedCalendarDate) return;
 
         if(event.target.closest(".planner-event")) return;
+        if(event.target.closest(".memory-photo-box, .memory-photo, video, textarea, input, select, button")){return;}
 
         const diffX =
             event.changedTouches[0].clientX -
@@ -631,13 +633,13 @@ function setupPlannerSwipe(){
             event.changedTouches[0].clientY -
             plannerSwipeStartY;
 
-        if(
-            Math.abs(diffX) < 80 ||
-            Math.abs(diffX) <= Math.abs(diffY)
-        ){
-            return;
-        }
-
+if(
+    Math.abs(diffX) < 120 ||
+    Math.abs(diffX) <= Math.abs(diffY) * 1.3
+){
+    return;
+}
+        
         const current =
             new Date(
                 selectedCalendarDate + "T00:00:00"
