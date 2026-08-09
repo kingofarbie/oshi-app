@@ -5,28 +5,60 @@
 .memorial-add-card,
 .memorial-list-card{
 
-margin:12px;
+    margin:12px;
+    padding:16px;
 
-padding:16px;
+    background:var(--surface);
 
-background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:16px;
 
-border:1px solid var(--border);
-
-border-radius:16px;
-
-box-shadow:0 4px 14px rgba(0,0,0,.08);
+    box-shadow:
+        0 4px 14px rgba(0,0,0,.08);
 
 }
+
+
+/* =====================
+   タイトル
+===================== */
 
 .memorial-add-card h3,
 .memorial-list-card h3{
 
-margin-top:0;
+    margin-top:0;
 
 }
 
 
+/* =====================
+   入力フォーム
+   左：項目名
+   右：入力欄
+===================== */
+
+.memorial-add-card{
+
+    display:grid;
+
+    grid-template-columns:
+        80px minmax(0,1fr);
+
+    column-gap:10px;
+    row-gap:8px;
+
+    align-items:center;
+
+}
+
+
+.memorial-add-card h3{
+
+    grid-column:1 / -1;
+
+    margin:0 0 4px 0;
+
+}
 
 
 .memorial-add-card label{
@@ -39,52 +71,8 @@ margin-top:0;
 }
 
 
-/* =====================
-   入力欄
-   左：項目名
-   右：入力欄
-===================== */
-
-.memorial-add-card > label:not(.memorial-check),
-.memorial-add-card > input:not([type="checkbox"]),
-.memorial-add-card > select,
-.memorial-add-card > textarea{
-
-    /* grid配置用 */
-}
-
-
-.memorial-add-card > .memorial-color-selector{
-    grid-column:2;
-    width:100%;
-}
-
-/* 入力項目を横並びにする */
-.memorial-add-card{
-
-    display:grid;
-
-    grid-template-columns:80px minmax(0,1fr);
-
-    column-gap:10px;
-    row-gap:8px;
-
-    align-items:center;
-
-}
-
-
-/* タイトル */
-.memorial-add-card h3{
-
-    grid-column:1 / -1;
-
-    margin:0 0 4px 0;
-
-}
-
-
 /* ラベル */
+
 .memorial-add-card > label:not(.memorial-check){
 
     grid-column:1;
@@ -95,6 +83,7 @@ margin-top:0;
 
 
 /* 入力欄 */
+
 .memorial-add-card > input:not([type="checkbox"]),
 .memorial-add-card > select,
 .memorial-add-card > textarea{
@@ -122,7 +111,19 @@ margin-top:0;
 }
 
 
-/* メモだけ少し大きく */
+/* 色選択 */
+
+.memorial-add-card > .memorial-color-selector{
+
+    grid-column:2;
+
+    width:100%;
+
+}
+
+
+/* メモ */
+
 .memorial-add-card > textarea{
 
     min-height:80px;
@@ -146,6 +147,196 @@ margin-top:0;
     color:#777;
 
     opacity:1;
+
+}
+
+
+/* =====================
+   🎨 色選択
+===================== */
+
+.memorial-color-selector{
+
+    position:relative;
+
+    width:100%;
+
+}
+
+
+/* 現在選択中の色 */
+
+.memorial-color-current{
+
+    width:100%;
+
+    display:flex;
+    align-items:center;
+
+    gap:10px;
+
+    padding:10px 12px;
+
+    margin:0;
+
+    background:var(--card);
+
+    color:var(--text);
+
+    border:1px solid var(--border);
+
+    border-radius:10px;
+
+    text-align:left;
+
+}
+
+
+/* 色プレビュー */
+
+.memorial-color-preview{
+
+    width:28px;
+    height:28px;
+
+    flex-shrink:0;
+
+    border-radius:6px;
+
+    border:1px solid rgba(0,0,0,.15);
+
+}
+
+
+/* 色名 */
+
+#memorialColorName{
+
+    flex:1;
+
+    font-size:14px;
+    font-weight:bold;
+
+}
+
+
+/* ▼ */
+
+.memorial-color-arrow{
+
+    font-size:12px;
+
+    color:var(--text-sub);
+
+}
+
+
+/* 色選択パネル */
+
+.memorial-color-picker{
+
+    margin-top:8px;
+
+    padding:12px;
+
+    background:var(--card);
+
+    border:1px solid var(--border);
+
+    border-radius:12px;
+
+}
+
+
+/* 見出し */
+
+.memorial-color-section-title{
+
+    font-size:13px;
+    font-weight:bold;
+
+    margin:4px 0 8px;
+
+}
+
+
+/* =====================
+   最近使った色
+   最大5個
+===================== */
+
+.memorial-color-recent{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(5, 32px);
+
+    gap:8px;
+
+    margin-bottom:14px;
+
+}
+
+
+/* =====================
+   色マトリックス
+===================== */
+
+.memorial-color-matrix{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(15, 1fr);
+
+    gap:5px;
+
+}
+
+
+/* 色ボタン */
+
+.memorial-color-choice,
+.memorial-recent-choice{
+
+    width:100%;
+    aspect-ratio:1 / 1;
+
+    min-width:0;
+
+    padding:0;
+    margin:0;
+
+    border-radius:6px;
+
+    border:1px solid rgba(0,0,0,.15);
+
+    cursor:pointer;
+
+    box-sizing:border-box;
+
+}
+
+
+/* 選択中 */
+
+.memorial-color-choice.selected,
+.memorial-recent-choice.selected{
+
+    outline:3px solid var(--accent);
+
+    outline-offset:2px;
+
+}
+
+
+/* 押したとき */
+
+.memorial-color-choice:active,
+.memorial-recent-choice:active{
+
+    transform:scale(.9);
 
 }
 
@@ -214,119 +405,132 @@ margin-top:0;
 }
 
 
+/* =====================
+   記念日一覧
+===================== */
+
 .memorial-list-item{
 
-display:flex;
+    display:flex;
 
-align-items:center;
+    align-items:center;
 
-gap:10px;
+    gap:10px;
 
-padding:10px 0;
+    padding:10px 0;
 
-border-bottom:1px solid var(--border);
+    border-bottom:1px solid var(--border);
 
 }
+
 
 .memorial-list-item:last-child{
 
-border-bottom:none;
+    border-bottom:none;
 
 }
+
 
 .memorial-list-icon{
 
-width:42px;
+    width:42px;
+    height:42px;
 
-height:42px;
+    border-radius:12px;
 
-border-radius:12px;
+    display:flex;
 
-display:flex;
+    align-items:center;
+    justify-content:center;
 
-align-items:center;
-
-justify-content:center;
-
-flex-shrink:0;
+    flex-shrink:0;
 
 }
+
 
 .memorial-list-info{
 
-flex:1;
+    flex:1;
 
-min-width:0;
+    min-width:0;
 
-display:flex;
+    display:flex;
 
-flex-direction:column;
+    flex-direction:column;
 
-gap:2px;
+    gap:2px;
 
 }
+
 
 .memorial-list-info strong{
 
-overflow:hidden;
+    overflow:hidden;
 
-text-overflow:ellipsis;
+    text-overflow:ellipsis;
 
-white-space:nowrap;
+    white-space:nowrap;
 
 }
+
 
 .memorial-list-info span{
 
-font-size:12px;
+    font-size:12px;
 
-opacity:.7;
+    opacity:.7;
 
 }
+
 
 .memorial-list-info small{
 
-font-size:11px;
+    font-size:11px;
 
-opacity:.7;
+    opacity:.7;
 
 }
+
 
 .memorial-list-actions{
 
-display:flex;
+    display:flex;
 
-gap:4px;
+    gap:4px;
 
 }
+
 
 .memorial-list-actions button{
 
-border:none;
+    border:none;
 
-background:transparent;
+    background:transparent;
 
-font-size:18px;
+    font-size:18px;
 
-padding:5px;
+    padding:5px;
 
 }
+
 
 .memorial-hidden{
 
-opacity:.45;
+    opacity:.45;
 
 }
+
 
 .memorial-empty{
 
-padding:20px;
+    padding:20px;
 
-text-align:center;
+    text-align:center;
 
-opacity:.6;
+    opacity:.6;
 
 }
+
 
 /* =====================
 🎂 記念日ページ 固定戻るボタン
@@ -334,96 +538,67 @@ opacity:.6;
 
 .memorial-fixed-back{
 
-position:sticky;
+    position:sticky;
 
-top:0;
+    top:0;
 
-z-index:100;
+    z-index:100;
 
-padding:8px 12px;
+    padding:8px 12px;
 
-background:var(--background);
+    background:var(--background);
 
 }
+
 
 .memorial-fixed-back button{
 
-width:100%;
+    width:100%;
 
-padding:11px;
+    padding:11px;
 
-border:none;
+    border:none;
 
-border-radius:12px;
+    border-radius:12px;
 
-font-weight:bold;
+    font-weight:bold;
 
-font-size:14px;
+    font-size:14px;
 
-background:var(--surface);
+    background:var(--surface);
 
-color:var(--text);
+    color:var(--text);
 
-border:1px solid var(--border);
+    border:1px solid var(--border);
 
-box-shadow:0 2px 8px rgba(0,0,0,.08);
+    box-shadow:
+        0 2px 8px rgba(0,0,0,.08);
 
 }
 
 
-<!-- 色 -->
-<label>
-    色
-</label>
+/* =====================
+   スマホ
+===================== */
 
-<div class="memorial-color-selector">
+@media(max-width:480px){
 
-    <button
-        type="button"
-        id="memorialColorButton"
-        class="memorial-color-current"
-        onclick="toggleMemorialColorPicker()">
+    .memorial-color-matrix{
 
-        <span
-            id="memorialColorPreview"
-            class="memorial-color-preview">
-        </span>
+        grid-template-columns:
+            repeat(8, 1fr);
 
-        <span id="memorialColorName">
-            ピンク
-        </span>
+        gap:6px;
 
-        <span class="memorial-color-arrow">
-            ▼
-        </span>
+    }
 
-    </button>
+    .memorial-color-recent{
 
+        grid-template-columns:
+            repeat(5, 32px);
 
-    <div
-        id="memorialColorPicker"
-        class="memorial-color-picker"
-        style="display:none;">
+        gap:8px;
 
-        <div class="memorial-color-section-title">
-            最近使った色
-        </div>
+    }
 
-        <div
-            id="memorialRecentColors"
-            class="memorial-color-recent">
-        </div>
-
-
-        <div class="memorial-color-section-title">
-            色を選ぶ
-        </div>
-
-        <div
-            id="memorialColorMatrix"
-            class="memorial-color-matrix">
-        </div>
-
-    </div>
-
-</div>
+}
