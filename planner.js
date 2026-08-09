@@ -83,7 +83,12 @@ if(plannerClass){
 }
 
 planner.style.display = "block";
+const oldMemorial =
+    planner.querySelector(".planner-memorial-badge");
 
+if(oldMemorial){
+    oldMemorial.remove();
+}
 
     const week =
     [
@@ -116,6 +121,91 @@ ${
     ""
 }
 `;
+
+/* =====================
+   🎂 記念日・誕生日
+===================== */
+
+const plannerData =
+    db.load();
+
+const memorialDays =
+    plannerData.memorialDays || [];
+
+const todayMemorials =
+    memorialDays.filter(m => {
+
+        if(!m.visible || !m.date){
+            return false;
+        }
+
+        if(m.yearly){
+
+            return (
+                m.date.substring(5) ===
+                date.substring(5)
+            );
+
+        }
+
+        return m.date === date;
+
+    });
+
+
+/* =====================
+   記念日バッジ表示
+===================== */
+
+let memorialHtml = "";
+
+if(todayMemorials.length > 0){
+
+    memorialHtml = `
+    <div class="planner-memorial-badge">
+
+        ${todayMemorials.map(m => {
+
+            let icon = "🎉";
+
+            if(m.type === "birthday"){
+                icon = "🎂";
+            }
+            else if(m.type === "anniversary"){
+                icon = "🎉";
+            }
+
+            return `
+            <div class="planner-memorial-item">
+                <span class="planner-memorial-icon">
+                    ${icon}
+                </span>
+                <span class="planner-memorial-text">
+                    ${m.title || ""}
+                </span>
+            </div>
+            `;
+
+        }).join("")}
+
+    </div>
+    `;
+
+}
+
+
+/* =====================
+   1日手帳に追加
+===================== */
+
+planner.insertAdjacentHTML(
+    "afterbegin",
+    memorialHtml
+);
+
+
+
+
 
 
     const now = new Date();
