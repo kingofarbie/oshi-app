@@ -1435,12 +1435,12 @@
 
     border-radius:18px;
 
-    background:var(--surface);
+    background:#fff5f8;
 
-    border:1px solid var(--border);
+    border:1px solid #ffb3cc;
 
     box-shadow:
-        2px 4px 10px rgba(0,0,0,.12);
+        0 4px 12px rgba(255,120,160,.18);
 
     font-size:13px;
     font-weight:bold;
@@ -1450,7 +1450,6 @@
     position:relative;
 
 }
-
 
 /* モコモコ感 */
 
