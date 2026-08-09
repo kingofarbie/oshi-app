@@ -373,29 +373,8 @@ function openMemorialPage(){
 
 function closeMemorialPage() {
 
-    const memorialPage =
-        document.getElementById("memorialPage");
+    document.getElementById("memorialPage").style.display = "none";
 
-    const settingsPage =
-        document.getElementById("settingsPage");
+    document.getElementById("settingsPage").style.display = "block";
 
-    if (!memorialPage || !settingsPage) {
-        console.error("記念日ページまたは設定ページが見つかりません");
-        return;
-    }
-
-    // 記念日ページを閉じる
-    memorialPage.style.display = "none";
-    memorialPage.classList.remove("active");
-
-    // 設定ページを表示
-    settingsPage.style.display = "block";
-    settingsPage.classList.add("active");
-
-    // 下部タブはすべて非アクティブ
-    document.querySelectorAll(".tab").forEach(tab => {
-        tab.classList.remove("active");
-    });
-
-    console.log("記念日ページ → 設定ページへ戻りました");
 }
