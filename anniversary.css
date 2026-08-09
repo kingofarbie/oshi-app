@@ -54,6 +54,11 @@ margin-top:0;
 }
 
 
+.memorial-add-card > .memorial-color-selector{
+    grid-column:2;
+    width:100%;
+}
+
 /* 入力項目を横並びにする */
 .memorial-add-card{
 
@@ -364,3 +369,61 @@ border:1px solid var(--border);
 box-shadow:0 2px 8px rgba(0,0,0,.08);
 
 }
+
+
+<!-- 色 -->
+<label>
+    色
+</label>
+
+<div class="memorial-color-selector">
+
+    <button
+        type="button"
+        id="memorialColorButton"
+        class="memorial-color-current"
+        onclick="toggleMemorialColorPicker()">
+
+        <span
+            id="memorialColorPreview"
+            class="memorial-color-preview">
+        </span>
+
+        <span id="memorialColorName">
+            ピンク
+        </span>
+
+        <span class="memorial-color-arrow">
+            ▼
+        </span>
+
+    </button>
+
+
+    <div
+        id="memorialColorPicker"
+        class="memorial-color-picker"
+        style="display:none;">
+
+        <div class="memorial-color-section-title">
+            最近使った色
+        </div>
+
+        <div
+            id="memorialRecentColors"
+            class="memorial-color-recent">
+        </div>
+
+
+        <div class="memorial-color-section-title">
+            色を選ぶ
+        </div>
+
+        <div
+            id="memorialColorMatrix"
+            class="memorial-color-matrix">
+        </div>
+
+    </div>
+
+</div>

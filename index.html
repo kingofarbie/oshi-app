@@ -1250,28 +1250,62 @@ placeholder="カテゴリ名（例：推し活、仕事、旅行）">
     </select>
 
 
-    <label>
-        アイコン
-    </label>
+<!-- 色 -->
+<label>
+    色
+</label>
 
-    <input
-        type="text"
-        id="memorial-icon"
-        value="🎂"
-        maxlength="2"
-    >
+<div class="memorial-color-selector">
+
+    <button
+        type="button"
+        id="memorialColorButton"
+        class="memorial-color-current"
+        onclick="toggleMemorialColorPicker()">
+
+        <span
+            id="memorialColorPreview"
+            class="memorial-color-preview">
+        </span>
+
+        <span id="memorialColorName">
+            ピンク
+        </span>
+
+        <span class="memorial-color-arrow">
+            ▼
+        </span>
+
+    </button>
 
 
-    <label>
-        色
-    </label>
+    <div
+        id="memorialColorPicker"
+        class="memorial-color-picker"
+        style="display:none;">
 
-    <input
-        type="color"
-        id="memorial-color"
-        value="#ffb3cc"
-    >
+        <div class="memorial-color-section-title">
+            最近使った色
+        </div>
 
+        <div
+            id="memorialRecentColors"
+            class="memorial-color-recent">
+        </div>
+
+
+        <div class="memorial-color-section-title">
+            色を選ぶ
+        </div>
+
+        <div
+            id="memorialColorMatrix"
+            class="memorial-color-matrix">
+        </div>
+
+    </div>
+
+</div>
 
     <label>
         メモ
