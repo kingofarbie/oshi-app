@@ -1431,16 +1431,16 @@
     width:max-content;
     max-width:100%;
 
-    padding:7px 11px;
+    padding:8px 13px;
 
-    border-radius:18px;
+    border-radius:20px;
 
     background:#fff5f8;
 
     border:1px solid #ffb3cc;
 
     box-shadow:
-        0 4px 12px rgba(255,120,160,.18);
+        0 4px 12px rgba(255,120,160,.20);
 
     font-size:13px;
     font-weight:bold;
@@ -1451,7 +1451,8 @@
 
 }
 
-/* モコモコ感 */
+
+/* ☁️ ふわふわ下側 */
 
 .planner-memorial-item::before{
 
@@ -1459,20 +1460,44 @@
 
     position:absolute;
 
-    width:9px;
-    height:9px;
+    left:10px;
+    bottom:-5px;
+
+    width:10px;
+    height:10px;
+
+    background:#fff5f8;
+
+    border-left:1px solid #ffb3cc;
+    border-bottom:1px solid #ffb3cc;
+
+    transform:rotate(-45deg);
+
+    border-radius:0 0 0 3px;
+
+}
+
+
+/* ☁️ 上側のふくらみ */
+
+.planner-memorial-item::after{
+
+    content:"";
+
+    position:absolute;
+
+    left:28px;
+    top:-5px;
+
+    width:11px;
+    height:11px;
 
     border-radius:50%;
 
-    background:var(--surface);
+    background:#fff5f8;
 
-    left:10px;
-    bottom:-4px;
-
-    border-right:1px solid var(--border);
-    border-bottom:1px solid var(--border);
-
-    transform:rotate(45deg);
+    border-top:1px solid #ffb3cc;
+    border-left:1px solid #ffb3cc;
 
 }
 
