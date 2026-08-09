@@ -663,3 +663,376 @@
     overflow-wrap:anywhere;
 
 }
+
+
+
+/* =====================
+   🎂 1日手帳 記念日クラウド
+===================== */
+
+.planner-memorial-badge{
+
+    position:fixed;
+
+    top:72px;
+    right:10px;
+
+    z-index:100;
+
+    display:flex;
+    flex-direction:column;
+
+    gap:8px;
+
+    max-width:70vw;
+
+pointer-events:auto;
+}
+
+
+/* =====================
+   ☁️ カプセル型の雲
+   最初の形に戻す
+===================== */
+
+.planner-memorial-item{
+
+    position:relative;
+
+    display:flex;
+    align-items:center;
+
+    gap:6px;
+
+    width:max-content;
+    max-width:70vw;
+
+    min-height:38px;
+
+    padding:9px 15px;
+
+    background:#fff5f8;
+
+    background-color:#fff5f8;
+
+    /*
+       カプセル型
+    */
+    border-radius:22px;
+
+
+    /*
+       上側：薄い輪郭
+       下側：少し強め
+    */
+    border-top:
+        1px solid rgba(255,179,204,.38);
+
+    border-right:
+        1px solid rgba(255,179,204,.32);
+
+    border-left:
+        1px solid rgba(255,179,204,.32);
+
+    border-bottom:
+        2px solid rgba(255,150,185,.62);
+
+
+    /*
+       下側を少し強調
+       でも影は強くしすぎない
+    */
+    box-shadow:
+
+        0 2px 0 rgba(255,150,185,.20),
+
+        0 4px 9px rgba(255,120,160,.15);
+
+
+    font-size:13px;
+
+    font-weight:bold;
+
+    color:var(--text);
+
+
+    /*
+       ☁️ ふわふわ上下
+    */
+    animation:
+        memorialCloudFloat
+        5s
+        ease-in-out
+        infinite;
+
+}
+
+
+/* =====================
+   ☁️ 上側のふわふわ感
+   薄い色で後ろの予定と区別
+===================== */
+
+.planner-memorial-item::after{
+
+    content:"";
+
+    position:absolute;
+
+    left:7px;
+    right:7px;
+
+    top:-5px;
+
+    height:10px;
+
+    background:
+
+        radial-gradient(
+            ellipse at 12% 100%,
+            rgba(255,245,248,.95) 0 8px,
+            transparent 9px
+        ),
+
+        radial-gradient(
+            ellipse at 31% 100%,
+            rgba(255,245,248,.98) 0 10px,
+            transparent 11px
+        ),
+
+        radial-gradient(
+            ellipse at 52% 100%,
+            rgba(255,245,248,.95) 0 8px,
+            transparent 9px
+        ),
+
+        radial-gradient(
+            ellipse at 73% 100%,
+            rgba(255,245,248,.98) 0 10px,
+            transparent 11px
+        ),
+
+        radial-gradient(
+            ellipse at 91% 100%,
+            rgba(255,245,248,.95) 0 7px,
+            transparent 8px
+        );
+
+    /*
+       上側はごく薄い輪郭
+    */
+    filter:
+        drop-shadow(
+            0 -1px 0 rgba(255,179,204,.28)
+        );
+
+    z-index:-1;
+
+    pointer-events:none;
+}
+
+
+/* =====================
+   ☁️ 下側のふわふわ
+   下の輪郭を少し強め
+===================== */
+
+.planner-memorial-item::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:6px;
+    right:6px;
+
+    bottom:-4px;
+
+    height:13px;
+
+    background:
+
+        radial-gradient(
+            ellipse at 7% 0%,
+            #fff5f8 0 7px,
+            transparent 8px
+        ),
+
+        radial-gradient(
+            ellipse at 25% 0%,
+            #fff5f8 0 9px,
+            transparent 10px
+        ),
+
+        radial-gradient(
+            ellipse at 45% 0%,
+            #fff5f8 0 8px,
+            transparent 9px
+        ),
+
+        radial-gradient(
+            ellipse at 66% 0%,
+            #fff5f8 0 10px,
+            transparent 11px
+        ),
+
+        radial-gradient(
+            ellipse at 84% 0%,
+            #fff5f8 0 8px,
+            transparent 9px
+        ),
+
+        radial-gradient(
+            ellipse at 97% 0%,
+            #fff5f8 0 6px,
+            transparent 7px
+        );
+
+    /*
+       下側だけ少し輪郭を強く
+    */
+    filter:
+        drop-shadow(
+            0 1px 0 rgba(255,150,185,.48)
+        );
+
+    pointer-events:none;
+}
+
+
+/* =====================
+   🎈 ふわふわ上下運動
+===================== */
+
+@keyframes memorialCloudFloat{
+
+    0%{
+
+        transform:
+            translateY(0px);
+
+    }
+
+    20%{
+
+        transform:
+            translateY(-2px);
+
+    }
+
+    42%{
+
+        transform:
+            translateY(0.5px);
+
+    }
+
+    65%{
+
+        transform:
+            translateY(-1.5px);
+
+    }
+
+    82%{
+
+        transform:
+            translateY(1px);
+
+    }
+
+    100%{
+
+        transform:
+            translateY(0px);
+
+    }
+
+}
+
+
+/* =====================
+   🎂 アイコン
+===================== */
+
+.planner-memorial-icon{
+
+    font-size:17px;
+
+    line-height:1;
+
+    flex-shrink:0;
+
+    position:relative;
+
+    z-index:2;
+
+}
+
+
+/* =====================
+   📝 文字
+===================== */
+
+.planner-memorial-text{
+
+    white-space:nowrap;
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
+
+    position:relative;
+
+    z-index:2;
+
+}
+
+
+/* =====================
+   ☁️ 複数ある場合
+   少しだけ動きをずらす
+===================== */
+
+.planner-memorial-item:nth-child(2){
+
+    animation-duration:
+        5.6s;
+
+    animation-delay:
+        -.9s;
+
+}
+
+
+.planner-memorial-item:nth-child(3){
+
+    animation-duration:
+        4.5s;
+
+    animation-delay:
+        -1.8s;
+
+}
+
+
+.planner-memorial-item:nth-child(4){
+
+    animation-duration:
+        6.1s;
+
+    animation-delay:
+        -2.6s;
+
+}
+
+
+.planner-memorial-item:nth-child(5){
+
+    animation-duration:
+        4.9s;
+
+    animation-delay:
+        -1.4s;
+
+}
