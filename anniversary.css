@@ -26,83 +26,188 @@ margin-top:0;
 
 }
 
+
+
+
 .memorial-add-card label{
 
-display:block;
+    font-size:14px;
+    font-weight:bold;
 
-margin-top:12px;
-
-margin-bottom:5px;
-
-font-size:13px;
-
-font-weight:bold;
+    margin:0;
 
 }
 
-.memorial-add-card input,
-.memorial-add-card select,
-.memorial-add-card textarea{
 
-width:100%;
+/* =====================
+   入力欄
+   左：項目名
+   右：入力欄
+===================== */
 
-box-sizing:border-box;
+.memorial-add-card > label:not(.memorial-check),
+.memorial-add-card > input:not([type="checkbox"]),
+.memorial-add-card > select,
+.memorial-add-card > textarea{
 
-padding:10px;
+    /* grid配置用 */
+}
 
-border-radius:10px;
 
-border:1px solid var(--border);
+/* 入力項目を横並びにする */
+.memorial-add-card{
 
-background:var(--background);
+    display:grid;
 
-color:var(--text);
+    grid-template-columns:80px minmax(0,1fr);
+
+    column-gap:10px;
+    row-gap:8px;
+
+    align-items:center;
 
 }
 
-.memorial-add-card textarea{
 
-min-height:70px;
+/* タイトル */
+.memorial-add-card h3{
 
-resize:vertical;
+    grid-column:1 / -1;
+
+    margin:0 0 4px 0;
 
 }
+
+
+/* ラベル */
+.memorial-add-card > label:not(.memorial-check){
+
+    grid-column:1;
+
+    align-self:center;
+
+}
+
+
+/* 入力欄 */
+.memorial-add-card > input:not([type="checkbox"]),
+.memorial-add-card > select,
+.memorial-add-card > textarea{
+
+    grid-column:2;
+
+    width:100%;
+
+    box-sizing:border-box;
+
+    padding:10px;
+
+    margin:0;
+
+    border-radius:10px;
+
+    border:1px solid var(--border);
+
+    background:var(--background);
+
+    color:var(--text);
+
+    font-size:15px;
+
+}
+
+
+/* メモだけ少し大きく */
+.memorial-add-card > textarea{
+
+    min-height:80px;
+
+    resize:vertical;
+
+    line-height:1.4;
+
+}
+
+
+/* =====================
+   プレースホルダー
+===================== */
+
+.memorial-add-card input::placeholder,
+.memorial-add-card textarea::placeholder{
+
+    font-size:14px;
+
+    color:#777;
+
+    opacity:1;
+
+}
+
+
+/* =====================
+   チェック項目
+===================== */
 
 .memorial-check{
 
-display:flex !important;
+    grid-column:2;
 
-align-items:center;
+    display:flex !important;
 
-gap:8px;
+    align-items:center;
+
+    gap:8px;
+
+    margin:0 !important;
+
+    font-size:14px !important;
+
+    font-weight:normal !important;
 
 }
+
 
 .memorial-check input{
 
-width:auto !important;
+    width:20px !important;
+    height:20px;
+
+    margin:0 !important;
+
+    flex-shrink:0;
 
 }
+
+
+/* =====================
+   登録ボタン
+===================== */
 
 .memorial-add-button{
 
-width:100%;
+    grid-column:1 / -1;
 
-margin-top:16px;
+    width:100%;
 
-padding:12px;
+    margin-top:6px;
 
-border:none;
+    padding:12px;
 
-border-radius:12px;
+    border:none;
 
-font-weight:bold;
+    border-radius:12px;
 
-background:#ff8fb3;
+    font-weight:bold;
 
-color:white;
+    font-size:15px;
+
+    background:#ff8fb3;
+
+    color:white;
 
 }
+
 
 .memorial-list-item{
 
