@@ -1397,9 +1397,15 @@
 
 
 
-/* =====================
+/* ===============================
    🎂 1日手帳 記念日クラウド
-===================== */
+   完全作り直し版
+   ・中央の横線なし
+   ・左右非対称
+   ・上下にも不規則に膨らむ
+   ・丸をただ横に並べない
+   ・雲全体が上下に浮く
+================================ */
 
 .planner-memorial-badge{
 
@@ -1413,7 +1419,7 @@
     display:flex;
     flex-direction:column;
 
-    gap:8px;
+    gap:10px;
 
     max-width:70vw;
 
@@ -1421,10 +1427,9 @@
 }
 
 
-/* =====================
+/* =================================
    ☁️ 雲本体
-   左右非対称・不規則なモコモコ
-===================== */
+================================= */
 
 .planner-memorial-item{
 
@@ -1440,88 +1445,29 @@
 
     min-height:38px;
 
-    padding:9px 15px;
+    padding:9px 16px;
 
     /*
-       中央の帯
-       丸の位置・大きさを左右で変えて
-       線対称にならないようにする
+       雲の本体そのもの
+       中央に横線を作らない
     */
-    background:
-
-        /* 左下 */
-        radial-gradient(
-            ellipse at 7% 58%,
-            #fff5f8 0 16px,
-            transparent 17px
-        ),
-
-        /* 左上 */
-        radial-gradient(
-            ellipse at 22% 19%,
-            #fff5f8 0 12px,
-            transparent 13px
-        ),
-
-        /* 左中央上 */
-        radial-gradient(
-            ellipse at 38% 7%,
-            #fff5f8 0 17px,
-            transparent 18px
-        ),
-
-        /* 中央 */
-        radial-gradient(
-            ellipse at 55% 13%,
-            #fff5f8 0 13px,
-            transparent 14px
-        ),
-
-        /* 右上 */
-        radial-gradient(
-            ellipse at 73% 24%,
-            #fff5f8 0 18px,
-            transparent 19px
-        ),
-
-        /* 右下 */
-        radial-gradient(
-            ellipse at 91% 53%,
-            #fff5f8 0 13px,
-            transparent 14px
-        ),
-
-        linear-gradient(
-            #fff5f8,
-            #fff5f8
-        );
-
-    background-color:#fff5f8;
-
+    background:#fff5f8;
 
     /*
-       下側は少し丸くする
+       左右を完全には揃えない
     */
     border-radius:
-        18px
-        21px
-        24px
-        19px;
-
+        17px
+        23px
+        19px
+        25px;
 
     /*
-       輪郭
-       上側が分かるようにするが、
-       下側ほど強くしない
+       雲の外周を柔らかく見せる
     */
-    filter:
-        drop-shadow(
-            0 1px 0 rgba(255,179,204,.55)
-        )
-        drop-shadow(
-            0 4px 8px rgba(255,120,160,.16)
-        );
-
+    box-shadow:
+        0 2px 0 rgba(255,179,204,.28),
+        0 5px 10px rgba(255,120,160,.14);
 
     font-size:13px;
     font-weight:bold;
@@ -1529,92 +1475,20 @@
     color:var(--text);
 
     /*
-       全体がゆっくり上下に浮く
+       雲全体がふわっと上下
     */
     animation:
         memorialCloudFloat
-        4.8s
+        5.2s
         ease-in-out
         infinite;
-
 }
 
 
-/* =====================
-   ☁️ 上側の輪郭
-   薄い色で輪郭だけ見せる
-===================== */
-
-.planner-memorial-item::after{
-
-    content:"";
-
-    position:absolute;
-
-    left:1px;
-    right:1px;
-
-    top:-9px;
-
-    height:25px;
-
-    background:
-
-        /* 左端 */
-        radial-gradient(
-            ellipse at 9% 100%,
-            rgba(255,245,248,.95) 0 11px,
-            transparent 12px
-        ),
-
-        /* 左寄り */
-        radial-gradient(
-            ellipse at 29% 100%,
-            rgba(255,245,248,.98) 0 15px,
-            transparent 16px
-        ),
-
-        /* 中央 */
-        radial-gradient(
-            ellipse at 51% 100%,
-            rgba(255,245,248,.95) 0 11px,
-            transparent 12px
-        ),
-
-        /* 右寄り */
-        radial-gradient(
-            ellipse at 69% 100%,
-            rgba(255,245,248,.98) 0 17px,
-            transparent 18px
-        ),
-
-        /* 右端 */
-        radial-gradient(
-            ellipse at 91% 100%,
-            rgba(255,245,248,.92) 0 10px,
-            transparent 11px
-        );
-
-
-    /*
-       上側だけほんのりピンクの輪郭
-    */
-    filter:
-        drop-shadow(
-            0 -1px 0 rgba(255,179,204,.32)
-        );
-
-    z-index:-1;
-
-    pointer-events:none;
-
-}
-
-
-/* =====================
-   ☁️ 下側モコモコ
-   個数を増やしつつ不規則化
-===================== */
+/* =================================
+   ☁️ 上側の雲
+   大小を不規則に重ねる
+================================= */
 
 .planner-memorial-item::before{
 
@@ -1622,121 +1496,216 @@
 
     position:absolute;
 
-    left:5px;
-    right:5px;
+    z-index:-1;
 
-    bottom:-4px;
+    left:-4px;
+    right:-5px;
 
-    height:14px;
+    top:-16px;
+
+    height:28px;
+
+    background:
+
+        /* 左端・小 */
+        radial-gradient(
+            circle at 5% 90%,
+            #fff5f8 0 10px,
+            transparent 10.8px
+        ),
+
+        /* 左寄り・大 */
+        radial-gradient(
+            circle at 18% 72%,
+            #fff5f8 0 16px,
+            transparent 16.8px
+        ),
+
+        /* 左中央・小 */
+        radial-gradient(
+            circle at 34% 92%,
+            #fff5f8 0 11px,
+            transparent 11.8px
+        ),
+
+        /* 中央・かなり大 */
+        radial-gradient(
+            circle at 49% 58%,
+            #fff5f8 0 18px,
+            transparent 18.8px
+        ),
+
+        /* 右中央・小 */
+        radial-gradient(
+            circle at 65% 84%,
+            #fff5f8 0 12px,
+            transparent 12.8px
+        ),
+
+        /* 右寄り・大 */
+        radial-gradient(
+            circle at 79% 63%,
+            #fff5f8 0 15px,
+            transparent 15.8px
+        ),
+
+        /* 右端・小 */
+        radial-gradient(
+            circle at 95% 89%,
+            #fff5f8 0 9px,
+            transparent 9.8px
+        );
+
+    /*
+       上側だけほんのり色を感じる
+    */
+    filter:
+        drop-shadow(
+            0 -1px 0 rgba(255,179,204,.38)
+        );
+
+    pointer-events:none;
+}
+
+
+/* =================================
+   ☁️ 下側の雲
+   上とは違う位置・大きさ
+================================= */
+
+.planner-memorial-item::after{
+
+    content:"";
+
+    position:absolute;
+
+    z-index:-1;
+
+    left:-5px;
+    right:-3px;
+
+    bottom:-10px;
+
+    height:23px;
 
     background:
 
         /* 左端 */
         radial-gradient(
-            ellipse at 5% 0%,
-            #fff5f8 0 7px,
-            transparent 8px
+            circle at 4% 20%,
+            #fff5f8 0 8px,
+            transparent 8.8px
         ),
 
         /* 左 */
         radial-gradient(
-            ellipse at 18% 0%,
-            #fff5f8 0 10px,
-            transparent 11px
+            circle at 19% 42%,
+            #fff5f8 0 12px,
+            transparent 12.8px
         ),
 
         /* 左中央 */
         radial-gradient(
-            ellipse at 35% 0%,
-            #fff5f8 0 7px,
-            transparent 8px
+            circle at 37% 17%,
+            #fff5f8 0 9px,
+            transparent 9.8px
         ),
 
         /* 中央 */
         radial-gradient(
-            ellipse at 50% 0%,
-            #fff5f8 0 10px,
-            transparent 11px
+            circle at 55% 39%,
+            #fff5f8 0 13px,
+            transparent 13.8px
         ),
 
         /* 右中央 */
         radial-gradient(
-            ellipse at 66% 0%,
+            circle at 70% 15%,
             #fff5f8 0 8px,
-            transparent 9px
+            transparent 8.8px
         ),
 
         /* 右 */
         radial-gradient(
-            ellipse at 82% 0%,
-            #fff5f8 0 10px,
-            transparent 11px
+            circle at 84% 43%,
+            #fff5f8 0 14px,
+            transparent 14.8px
         ),
 
         /* 右端 */
         radial-gradient(
-            ellipse at 96% 0%,
-            #fff5f8 0 6px,
-            transparent 7px
+            circle at 97% 18%,
+            #fff5f8 0 7px,
+            transparent 7.8px
         );
 
     pointer-events:none;
-
 }
 
 
-/* =====================
-   🎈 上下にふわっと動く
-===================== */
+/* =================================
+   ✨ 上側の薄い輪郭
+   雲本体とは別の「線」ではなく
+   ごく薄い光として入れる
+================================= */
+
+.planner-memorial-item{
+
+    outline:
+        1px solid rgba(255,179,204,.20);
+
+    outline-offset:
+        -1px;
+}
+
+
+/* =================================
+   🎈 ふわふわ上下運動
+================================= */
 
 @keyframes memorialCloudFloat{
 
     0%{
-
         transform:
-            translateY(0px)
-            rotate(-0.15deg);
-
+            translate3d(0,0,0)
+            rotate(-0.2deg);
     }
 
-    25%{
-
+    20%{
         transform:
-            translateY(-2px)
-            rotate(0.18deg);
-
+            translate3d(-1px,-2px,0)
+            rotate(0.15deg);
     }
 
-    50%{
-
+    43%{
         transform:
-            translateY(1px)
-            rotate(-0.12deg);
-
+            translate3d(1px,1px,0)
+            rotate(-0.08deg);
     }
 
-    75%{
-
+    67%{
         transform:
-            translateY(-1.5px)
+            translate3d(-1px,-1.5px,0)
             rotate(0.12deg);
+    }
 
+    84%{
+        transform:
+            translate3d(1px,0.5px,0)
+            rotate(-0.1deg);
     }
 
     100%{
-
         transform:
-            translateY(0px)
-            rotate(-0.15deg);
-
+            translate3d(0,0,0)
+            rotate(-0.2deg);
     }
-
 }
 
 
-/* =====================
+/* =================================
    🎂 アイコン
-===================== */
+================================= */
 
 .planner-memorial-icon{
 
@@ -1747,14 +1716,14 @@
     flex-shrink:0;
 
     position:relative;
-    z-index:2;
 
+    z-index:5;
 }
 
 
-/* =====================
-   文字
-===================== */
+/* =================================
+   📝 文字
+================================= */
 
 .planner-memorial-text{
 
@@ -1765,67 +1734,51 @@
     text-overflow:ellipsis;
 
     position:relative;
-    z-index:2;
 
+    z-index:5;
 }
 
 
-/* =====================
+/* =================================
    ☁️ 複数ある場合
-   それぞれ動きを少し変える
-===================== */
+   位置・動きを少しずつ変える
+================================= */
 
 .planner-memorial-item:nth-child(2){
 
-    transform:
-        translateX(-4px);
+    transform:translateX(-4px);
 
-    animation-duration:
-        5.4s;
+    animation-duration:5.8s;
 
-    animation-delay:
-        -.8s;
-
+    animation-delay:-1.1s;
 }
 
 
 .planner-memorial-item:nth-child(3){
 
-    transform:
-        translateX(3px);
+    transform:translateX(4px);
 
-    animation-duration:
-        4.2s;
+    animation-duration:4.6s;
 
-    animation-delay:
-        -1.7s;
-
+    animation-delay:-2.2s;
 }
 
 
 .planner-memorial-item:nth-child(4){
 
-    transform:
-        translateX(-2px);
+    transform:translateX(-2px);
 
-    animation-duration:
-        5.8s;
+    animation-duration:6.1s;
 
-    animation-delay:
-        -2.4s;
-
+    animation-delay:-3.0s;
 }
 
 
 .planner-memorial-item:nth-child(5){
 
-    transform:
-        translateX(5px);
+    transform:translateX(5px);
 
-    animation-duration:
-        4.6s;
+    animation-duration:5.0s;
 
-    animation-delay:
-        -1.2s;
-
+    animation-delay:-1.8s;
 }
