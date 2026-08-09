@@ -1,16 +1,6 @@
 
 /* =====================
    1日手帳ビュー
-===================== */
-/* =====================
-   1日手帳ビュー v2
-===================== */
-
-
-
-
-/* =====================
-   1日手帳ビュー
    左時間固定 + 予定自由配置版
    短時間予定は最低3行表示
    タップで実時間表示
@@ -175,16 +165,37 @@ if(todayMemorials.length > 0){
                 icon = "🎉";
             }
 
-            return `
-            <div class="planner-memorial-item">
-                <span class="planner-memorial-icon">
-                    ${icon}
-                </span>
-                <span class="planner-memorial-text">
-                    ${m.title || ""}
-                </span>
-            </div>
-            `;
+
+return `
+<div
+    class="planner-memorial-item"
+    onclick="togglePlannerMemorial(this)"
+>
+
+    <span class="planner-memorial-icon">
+        ${icon}
+    </span>
+
+    <span class="planner-memorial-text">
+        ${m.title || ""}
+    </span>
+
+    ${
+        m.memo
+        ?
+        `
+        <span class="planner-memorial-memo">
+            ${m.memo}
+        </span>
+        `
+        :
+        ""
+    }
+
+</div>
+`;
+
+
 
         }).join("")}
 
@@ -548,6 +559,25 @@ timeline.onclick = function(event){
 
 }
 
+
+
+
+/* =====================
+   🎂 記念日タップ
+   拡大 ⇄ メモ表示
+===================== */
+
+function togglePlannerMemorial(element){
+
+    if(!element){
+        return;
+    }
+
+    element.classList.toggle(
+        "planner-memorial-expanded"
+    );
+
+}
 
 
 /* =====================

@@ -602,3 +602,64 @@
     }
 
 }
+
+
+
+/* =====================
+   🎂 1日手帳 記念日
+   タップで拡大・メモ表示
+===================== */
+
+.planner-memorial-item{
+
+    position:relative;
+
+    transition:
+        transform .2s ease,
+        padding .2s ease;
+
+    cursor:pointer;
+
+}
+
+
+/* メモは通常は非表示 */
+
+.planner-memorial-memo{
+
+    display:none;
+
+}
+
+
+/* タップして開いた状態 */
+
+.planner-memorial-item.planner-memorial-expanded{
+
+    transform:scale(1.04);
+
+    z-index:10;
+
+}
+
+
+/* 開いたときだけメモ表示 */
+
+.planner-memorial-item.planner-memorial-expanded
+.planner-memorial-memo{
+
+    display:block;
+
+    margin-top:6px;
+
+    font-size:12px;
+
+    line-height:1.4;
+
+    opacity:.8;
+
+    white-space:normal;
+
+    overflow-wrap:anywhere;
+
+}

@@ -15,114 +15,176 @@ return data.memorialDays;
 
 }
 
+
 /* =====================
-記念日追加
+記念日追加・編集
 ===================== */
 
 function addMemorialDay(){
 
-const date =
-    document.getElementById("memorial-date")?.value;
+    const date =
+        document.getElementById("memorial-date")?.value;
 
-const title =
-    document.getElementById("memorial-title")?.value.trim();
+    const title =
+        document.getElementById("memorial-title")?.value.trim();
 
-const type =
-    document.getElementById("memorial-type")?.value || "other";
+    const type =
+        document.getElementById("memorial-type")?.value || "other";
 
-const icon =
-    document.getElementById("memorial-icon")?.value || "⭐";
+    const icon =
+        document.getElementById("memorial-icon")?.value || "⭐";
 
-const color =
-    memorialSelectedColor;
-    
-const memo =
-    document.getElementById("memorial-memo")?.value.trim() || "";
+    const color =
+        memorialSelectedColor;
 
-const yearly =
-    document.getElementById("memorial-yearly")?.checked || false;
+    const memo =
+        document.getElementById("memorial-memo")?.value.trim() || "";
 
-const visible =
-    document.getElementById("memorial-visible")?.checked !== false;
+    const yearly =
+        document.getElementById("memorial-yearly")?.checked || false;
 
-
-if(!date){
-
-    alert("日付を入力してください");
-
-    return;
-
-}
-
-if(!title){
-
-    alert("タイトルを入力してください");
-
-    return;
-
-}
+    const visible =
+        document.getElementById("memorial-visible")?.checked !== false;
 
 
-const data =
-    db.load();
+    if(!date){
 
+        alert("日付を入力してください");
 
-if(!data.memorialDays){
-
-    data.memorialDays = [];
-
-}
-
-
-const item = {
-
-    id:
-        Date.now() +
-        Math.random(),
-
-    date,
-
-    title,
-
-    type,
-
-    icon,
-
-    color,
-
-    memo,
-
-    yearly,
-
-    visible,
-
-    position: {
-
-        x: null,
-        y: null
-
-    },
-
-    size: {
-
-        scale: 1
+        return;
 
     }
 
-};
+    if(!title){
+
+        alert("タイトルを入力してください");
+
+        return;
+
+    }
 
 
-data.memorialDays.push(item);
+    const data =
+        db.load();
 
 
-db.save(data);
+    if(!data.memorialDays){
+
+        data.memorialDays = [];
+
+    }
 
 
-clearMemorialForm();
+    /*
+       編集モード
+    */
 
-renderMemorialList();
+    if(window.editingMemorialId){
+
+        const item =
+            data.memorialDays.find(
+                m =>
+                    m.id ===
+                    window.editingMemorialId
+            );
+
+
+        if(item){
+
+            item.date = date;
+            item.title = title;
+            item.type = type;
+            item.icon = icon;
+            item.color = color;
+            item.memo = memo;
+            item.yearly = yearly;
+            item.visible = visible;
+
+
+            db.save(data);
+
+            window.editingMemorialId =
+                null;
+
+
+            clearMemorialForm();
+
+            const button =
+                document.querySelector(
+                    ".memorial-add-button"
+                );
+
+            if(button){
+
+                button.textContent =
+                    "🎂 記念日を登録";
+
+            }
+
+
+            renderMemorialList();
+
+            return;
+
+        }
+
+    }
+
+
+    /*
+       新規登録
+    */
+
+    const item = {
+
+        id:
+            Date.now() +
+            Math.random(),
+
+        date,
+
+        title,
+
+        type,
+
+        icon,
+
+        color,
+
+        memo,
+
+        yearly,
+
+        visible,
+
+        position: {
+
+            x:null,
+            y:null
+
+        },
+
+        size: {
+
+            scale:1
+
+        }
+
+    };
+
+
+    data.memorialDays.push(item);
+
+
+    db.save(data);
+
+
+    clearMemorialForm();
+
+    renderMemorialList();
 
 }
+
 
 /* =====================
 記念日一覧
@@ -196,21 +258,32 @@ box.innerHTML =
         </div>
 
 
-        <div class="memorial-list-actions">
+<div class="memorial-list-actions">
 
-            <button
-                onclick="toggleMemorialVisibility(${item.id})"
-            >
-                ${item.visible ? "👁" : "🙈"}
-            </button>
+    <button
+        onclick="editMemorialDay(${item.id})"
+        title="編集"
+    >
+        ✏️
+    </button>
 
-            <button
-                onclick="deleteMemorialDay(${item.id})"
-            >
-                🗑️
-            </button>
+    <button
+        onclick="toggleMemorialVisibility(${item.id})"
+        title="表示・非表示"
+    >
+        ${item.visible ? "👁" : "🙈"}
+    </button>
 
-        </div>
+    <button
+        onclick="deleteMemorialDay(${item.id})"
+        title="削除"
+    >
+        🗑️
+    </button>
+
+</div>
+
+
 
     </div>
 
@@ -285,6 +358,126 @@ db.save(data);
 renderMemorialList();
 
 }
+
+/* =====================
+   記念日編集
+===================== */
+
+function editMemorialDay(id){
+
+    const data =
+        db.load();
+
+    const item =
+        data.memorialDays?.find(
+            m => m.id === id
+        );
+
+    if(!item) return;
+
+
+    const date =
+        document.getElementById("memorial-date");
+
+    const title =
+        document.getElementById("memorial-title");
+
+    const type =
+        document.getElementById("memorial-type");
+
+    const icon =
+        document.getElementById("memorial-icon");
+
+    const memo =
+        document.getElementById("memorial-memo");
+
+    const yearly =
+        document.getElementById("memorial-yearly");
+
+    const visible =
+        document.getElementById("memorial-visible");
+
+
+    if(date){
+        date.value = item.date || "";
+    }
+
+    if(title){
+        title.value = item.title || "";
+    }
+
+    if(type){
+        type.value = item.type || "other";
+    }
+
+    if(icon){
+        icon.value = item.icon || "⭐";
+    }
+
+    if(memo){
+        memo.value = item.memo || "";
+    }
+
+    if(yearly){
+        yearly.checked =
+            item.yearly === true;
+    }
+
+    if(visible){
+        visible.checked =
+            item.visible !== false;
+    }
+
+
+    /*
+       登録時と同じ色をセット
+    */
+
+    if(item.color){
+
+        initMemorialColorSelector(
+            item.color
+        );
+
+    }
+
+
+    /*
+       編集対象を記憶
+    */
+
+    window.editingMemorialId =
+        id;
+
+
+    /*
+       ページ上部へ移動
+    */
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+
+    /*
+       登録ボタンの表示を変更
+    */
+
+    const button =
+        document.querySelector(
+            ".memorial-add-button"
+        );
+
+    if(button){
+
+        button.textContent =
+            "💾 記念日を保存";
+
+    }
+
+}
+
 
 /* =====================
 入力クリア
