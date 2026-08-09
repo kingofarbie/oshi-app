@@ -1417,16 +1417,13 @@
 
     max-width:70vw;
 
-    pointer-events:auto;
-
-    /* ドラッグ用 */
-    touch-action:none;
-
+    pointer-events:none;
 }
 
 
 /* =====================
    ☁️ 雲本体
+   複数の丸を重ねたシルエット
 ===================== */
 
 .planner-memorial-item{
@@ -1439,33 +1436,84 @@
     gap:6px;
 
     width:max-content;
-    max-width:100%;
+    max-width:70vw;
 
-    min-height:36px;
+    min-height:38px;
 
-    padding:8px 13px;
+    padding:9px 15px;
 
-    border-radius:22px;
+    /*
+       中央の帯＋周囲の丸を重ねる
+    */
+    background:
 
-    background:#fff7fa;
+        radial-gradient(
+            circle at 10% 50%,
+            #fff5f8 0 17px,
+            transparent 18px
+        ),
 
-    border:1.5px solid #ffb3cc;
+        radial-gradient(
+            circle at 25% 18%,
+            #fff5f8 0 14px,
+            transparent 15px
+        ),
 
-    box-shadow:
-        0 4px 10px rgba(255,120,160,.16);
+        radial-gradient(
+            circle at 43% 8%,
+            #fff5f8 0 18px,
+            transparent 19px
+        ),
+
+        radial-gradient(
+            circle at 64% 14%,
+            #fff5f8 0 15px,
+            transparent 16px
+        ),
+
+        radial-gradient(
+            circle at 83% 30%,
+            #fff5f8 0 18px,
+            transparent 19px
+        ),
+
+        linear-gradient(
+            #fff5f8,
+            #fff5f8
+        );
+
+    background-color:#fff5f8;
+
+    /*
+       下側を丸く
+    */
+    border-radius:
+        20px
+        20px
+        24px
+        24px;
+
+    /*
+       雲全体の外周
+    */
+    filter:
+        drop-shadow(
+            0 2px 0 #ffb3cc
+        )
+        drop-shadow(
+            0 5px 9px rgba(255,120,160,.18)
+        );
 
     font-size:13px;
     font-weight:bold;
 
     color:var(--text);
 
-    isolation:isolate;
-
 }
 
 
 /* =====================
-   ☁️ 上側の雲
+   ☁️ 下側にもモコモコ
 ===================== */
 
 .planner-memorial-item::before{
@@ -1474,25 +1522,52 @@
 
     position:absolute;
 
-    z-index:-1;
+    left:8px;
+    right:8px;
 
-    width:17px;
-    height:17px;
+    bottom:-3px;
 
-    left:14px;
-    top:-9px;
+    height:12px;
 
-    background:#fff7fa;
+    background:
 
-    border:1.5px solid #ffb3cc;
+        radial-gradient(
+            circle at 8% 0%,
+            #fff5f8 0 8px,
+            transparent 9px
+        ),
 
-    border-radius:50%;
+        radial-gradient(
+            circle at 30% 0%,
+            #fff5f8 0 9px,
+            transparent 10px
+        ),
+
+        radial-gradient(
+            circle at 52% 0%,
+            #fff5f8 0 8px,
+            transparent 9px
+        ),
+
+        radial-gradient(
+            circle at 75% 0%,
+            #fff5f8 0 9px,
+            transparent 10px
+        ),
+
+        radial-gradient(
+            circle at 94% 0%,
+            #fff5f8 0 7px,
+            transparent 8px
+        );
+
+    pointer-events:none;
 
 }
 
 
 /* =====================
-   ☁️ 右側の雲
+   ☁️ 上側の丸をさらに追加
 ===================== */
 
 .planner-memorial-item::after{
@@ -1501,38 +1576,47 @@
 
     position:absolute;
 
+    width:100%;
+    height:22px;
+
+    left:0;
+    top:-8px;
+
+    background:
+
+        radial-gradient(
+            ellipse at 15% 100%,
+            #fff5f8 0 12px,
+            transparent 13px
+        ),
+
+        radial-gradient(
+            ellipse at 38% 100%,
+            #fff5f8 0 16px,
+            transparent 17px
+        ),
+
+        radial-gradient(
+            ellipse at 63% 100%,
+            #fff5f8 0 13px,
+            transparent 14px
+        ),
+
+        radial-gradient(
+            ellipse at 86% 100%,
+            #fff5f8 0 15px,
+            transparent 16px
+        );
+
     z-index:-1;
 
-    width:25px;
-    height:25px;
-
-    right:18px;
-    top:-13px;
-
-    background:#fff7fa;
-
-    border:1.5px solid #ffb3cc;
-
-    border-radius:50%;
+    pointer-events:none;
 
 }
 
 
 /* =====================
-   ☁️ 丸の食い込みを隠す
-===================== */
-
-.planner-memorial-item{
-
-    box-shadow:
-        0 4px 10px rgba(255,120,160,.16),
-        inset 0 0 0 1px rgba(255,255,255,.7);
-
-}
-
-
-/* =====================
-   アイコン
+   🎂 アイコン
 ===================== */
 
 .planner-memorial-icon{
@@ -1542,6 +1626,9 @@
     line-height:1;
 
     flex-shrink:0;
+
+    position:relative;
+    z-index:2;
 
 }
 
@@ -1558,23 +1645,27 @@
 
     text-overflow:ellipsis;
 
+    position:relative;
+    z-index:2;
+
 }
 
 
 /* =====================
-   ☁️ 複数表示時
+   ☁️ 複数ある場合
+   少しだけ位置をずらす
 ===================== */
 
-.planner-memorial-item:nth-child(2n){
+.planner-memorial-item:nth-child(2){
 
     transform:
-        translateX(5px);
+        translateX(-4px);
 
 }
 
-.planner-memorial-item:nth-child(3n){
+.planner-memorial-item:nth-child(3){
 
     transform:
-        translateX(-3px);
+        translateX(3px);
 
 }
