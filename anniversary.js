@@ -348,33 +348,28 @@ console.log("anniversary.js loaded");
 
 function openMemorialPage(){
 
-    alert("openMemorialPage は動いています");
-
     const page =
         document.getElementById("memorialPage");
 
     if(!page){
-        alert("memorialPage が見つかりません");
+        console.error("memorialPage が見つかりません");
         return;
     }
 
-    document
-        .querySelectorAll(".page")
-        .forEach(p => {
-            p.style.display = "none";
-            p.classList.remove("active");
-        });
-
-    page.style.display = "block";
-    page.classList.add("active");
+    switchTab("memorialPage");
 
     renderMemorialList();
 }
 
 function closeMemorialPage() {
 
-    document.getElementById("memorialPage").style.display = "none";
+    const memorialPage =
+        document.getElementById("memorialPage");
 
-    document.getElementById("settingsPage").style.display = "block";
+    if (memorialPage) {
+        memorialPage.style.display = "";
+    }
+
+    switchTab("settingsPage");
 
 }
