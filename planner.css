@@ -1397,10 +1397,9 @@
 
 
 
- /* =====================
-    🎂 1日手帳 記念日バッジ
-    ふわっとステッカー風
- ===================== */
+/* =====================
+   🎂 1日手帳 記念日クラウド
+===================== */
 
 .planner-memorial-badge{
 
@@ -1414,15 +1413,25 @@
     display:flex;
     flex-direction:column;
 
-    gap:7px;
+    gap:8px;
 
-    max-width:58vw;
+    max-width:70vw;
 
-    pointer-events:none;
+    pointer-events:auto;
+
+    /* ドラッグ用 */
+    touch-action:none;
+
 }
 
 
+/* =====================
+   ☁️ 雲本体
+===================== */
+
 .planner-memorial-item{
+
+    position:relative;
 
     display:flex;
     align-items:center;
@@ -1432,45 +1441,99 @@
     width:max-content;
     max-width:100%;
 
-    padding:7px 12px;
+    min-height:36px;
 
-    border-radius:14px;
+    padding:8px 13px;
 
-    background:rgba(255,245,248,.96);
+    border-radius:22px;
 
-    border:1px solid #ffc4d5;
+    background:#fff7fa;
+
+    border:1.5px solid #ffb3cc;
 
     box-shadow:
-        0 3px 10px rgba(255,120,160,.15);
+        0 4px 10px rgba(255,120,160,.16);
 
     font-size:13px;
     font-weight:bold;
 
     color:var(--text);
 
-    position:relative;
-
-    animation:
-        memorialFloat 2.8s ease-in-out infinite;
+    isolation:isolate;
 
 }
 
 
-/* ふわっと浮く */
+/* =====================
+   ☁️ 上側の雲
+===================== */
 
-@keyframes memorialFloat{
+.planner-memorial-item::before{
 
-    0%,
-    100%{
-        transform:translateY(0);
-    }
+    content:"";
 
-    50%{
-        transform:translateY(-2px);
-    }
+    position:absolute;
+
+    z-index:-1;
+
+    width:17px;
+    height:17px;
+
+    left:14px;
+    top:-9px;
+
+    background:#fff7fa;
+
+    border:1.5px solid #ffb3cc;
+
+    border-radius:50%;
 
 }
 
+
+/* =====================
+   ☁️ 右側の雲
+===================== */
+
+.planner-memorial-item::after{
+
+    content:"";
+
+    position:absolute;
+
+    z-index:-1;
+
+    width:25px;
+    height:25px;
+
+    right:18px;
+    top:-13px;
+
+    background:#fff7fa;
+
+    border:1.5px solid #ffb3cc;
+
+    border-radius:50%;
+
+}
+
+
+/* =====================
+   ☁️ 丸の食い込みを隠す
+===================== */
+
+.planner-memorial-item{
+
+    box-shadow:
+        0 4px 10px rgba(255,120,160,.16),
+        inset 0 0 0 1px rgba(255,255,255,.7);
+
+}
+
+
+/* =====================
+   アイコン
+===================== */
 
 .planner-memorial-icon{
 
@@ -1483,6 +1546,10 @@
 }
 
 
+/* =====================
+   文字
+===================== */
+
 .planner-memorial-text{
 
     white-space:nowrap;
@@ -1492,12 +1559,22 @@
     text-overflow:ellipsis;
 
 }
-.planner-memorial-text{
 
-    white-space:nowrap;
 
-    overflow:hidden;
+/* =====================
+   ☁️ 複数表示時
+===================== */
 
-    text-overflow:ellipsis;
+.planner-memorial-item:nth-child(2n){
+
+    transform:
+        translateX(5px);
+
+}
+
+.planner-memorial-item:nth-child(3n){
+
+    transform:
+        translateX(-3px);
 
 }
