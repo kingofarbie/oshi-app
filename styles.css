@@ -827,8 +827,8 @@ button:hover{
 
 .modal-content button{
     width:100%;
-    margin:8px 0;
-    padding:14px;
+    margin:5px 0;
+    padding:12px;
     font-size:18px;
     font-weight:bold;
 }
@@ -864,7 +864,7 @@ button:hover{
 
 .event-modal input,
 .event-modal select{
-    margin-bottom:10px;
+    margin-bottom:3px;
 }
 
 #eventSelectList,
@@ -1328,8 +1328,8 @@ button[style*="background"],
     display:grid;
     grid-template-columns:80px 1fr;
     align-items:center;
-    gap:10px;
-    margin-bottom:2px;
+    gap:8px;
+    margin-bottom:0px;
 }
 
 .event-form-row label{
@@ -1347,7 +1347,7 @@ button[style*="background"],
 .event-modal-buttons{
     display:flex;
     gap:10px;
-    margin-top:15px;
+    margin-top:8px;
 }
 
 .event-modal-buttons button{
