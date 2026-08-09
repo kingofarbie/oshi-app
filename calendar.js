@@ -196,11 +196,10 @@ const hasPhoto =
         dayMemory.photos.length > 0
     );
 
-    
+
 const dayIcons =
-    (hasMemorial ? "🎉" : "") +
-    (hasPhoto ? "📸" : "");
-    
+    (hasMemorial ? '<span class="calendar-day-icon">🎉</span>' : '') +
+    (hasPhoto ? '<span class="calendar-day-icon">📸</span>' : '');    
 
         const isToday =
             today.getFullYear() === year
