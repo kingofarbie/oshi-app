@@ -186,20 +186,17 @@ const hasMemorial =
 
     });
 
-const photos =
-    data.photos || [];
+const dayMemory =
+    data.dayMemories?.[date];
 
 const hasPhoto =
-    photos.some(photo => {
+    !!(
+        dayMemory &&
+        dayMemory.photos &&
+        dayMemory.photos.length > 0
+    );
 
-        if(!photo.date){
-            return false;
-        }
-
-        return photo.date.startsWith(date);
-
-    });
-
+    
 const dayIcons =
     (hasMemorial ? "🎉" : "") +
     (hasPhoto ? "📸" : "");
