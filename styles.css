@@ -479,6 +479,7 @@ button:hover{
     font-size:14px;
     font-weight:bold;
     margin-bottom:1px;
+    margin-left:-2px;
     line-height:1;
 }
 
