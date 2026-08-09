@@ -1212,6 +1212,7 @@ const menus = [
     "planMenu",
     "themeMenu",
     "holidayMenu",
+    "memorialMenu",
     "notificationMenu",
     "templateMenu",
     "categoryMenu"
