@@ -153,6 +153,56 @@ const hasEvent =
         e.start &&
         e.start.startsWith(date)
     );
+
+
+    // =====================
+// 🎉 記念日・誕生日
+// 📸 写真・動画
+// =====================
+
+const data =
+    db.load();
+
+const memorials =
+    data.memorialDays || [];
+
+const hasMemorial =
+    memorials.some(m => {
+
+        if(!m.visible || !m.date){
+            return false;
+        }
+
+        if(m.yearly){
+
+            const md =
+                m.date.substring(5);
+
+            return md === date.substring(5);
+
+        }
+
+        return m.date === date;
+
+    });
+
+const photos =
+    data.photos || [];
+
+const hasPhoto =
+    photos.some(photo => {
+
+        if(!photo.date){
+            return false;
+        }
+
+        return photo.date.startsWith(date);
+
+    });
+
+const dayIcons =
+    (hasMemorial ? "🎉" : "") +
+    (hasPhoto ? "📸" : "");
     
 
         const isToday =
@@ -247,8 +297,9 @@ ontouchend="cancelPress()"
 ontouchmove="cancelPress()">
 
 <div class="calendar-date ${dateClass}">
-${d}
+${d}${dayIcons}
 </div>
+
 
 ${
 holiday
