@@ -217,3 +217,45 @@ text-align:center;
 opacity:.6;
 
 }
+
+/* =====================
+🎂 記念日ページ 固定戻るボタン
+===================== */
+
+.memorial-fixed-back{
+
+position:sticky;
+
+top:0;
+
+z-index:100;
+
+padding:8px 12px;
+
+background:var(--background);
+
+}
+
+.memorial-fixed-back button{
+
+width:100%;
+
+padding:11px;
+
+border:none;
+
+border-radius:12px;
+
+font-weight:bold;
+
+font-size:14px;
+
+background:var(--surface);
+
+color:var(--text);
+
+border:1px solid var(--border);
+
+box-shadow:0 2px 8px rgba(0,0,0,.08);
+
+}
