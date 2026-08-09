@@ -645,16 +645,63 @@
 
 /* 開いたときだけメモ表示 */
 
+/* =====================
+   🎂 記念日タップ後
+   雲の下にメモを表示
+===================== */
+
+.planner-memorial-item.planner-memorial-expanded{
+
+    transform:scale(1.04);
+
+    z-index:10;
+
+    flex-wrap:wrap;
+
+}
+
+
+/* =====================
+   📝 メモ
+   通常は非表示
+===================== */
+
+.planner-memorial-memo{
+
+    display:none;
+
+}
+
+
+/* =====================
+   📝 展開時のメモ
+===================== */
+
 .planner-memorial-item.planner-memorial-expanded
 .planner-memorial-memo{
 
     display:block;
 
+    flex-basis:100%;
+
+    width:100%;
+
+    box-sizing:border-box;
+
     margin-top:6px;
+
+    padding-top:7px;
+
+    border-top:
+        1px solid rgba(255,150,185,.25);
 
     font-size:12px;
 
-    line-height:1.4;
+    line-height:1.5;
+
+    font-weight:normal;
+
+    color:var(--text);
 
     opacity:.8;
 
@@ -663,7 +710,6 @@
     overflow-wrap:anywhere;
 
 }
-
 
 
 /* =====================
