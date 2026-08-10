@@ -870,3 +870,509 @@
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+/* =====================
+   写真一覧
+===================== */
+
+#photoList,
+#favorite-photo-list{
+    display:grid;
+
+    grid-template-columns:
+        repeat(
+            var(--photo-columns, 2),
+            minmax(0,1fr)
+        );
+
+    gap:10px;
+}
+
+
+/* =====================
+   写真ボックス
+===================== */
+
+.memory-photo-box{
+    width:100%;
+
+    aspect-ratio:1/1;
+
+    overflow:hidden;
+
+    border-radius:12px;
+
+    background:var(--surface);
+
+    border:1px solid var(--border);
+
+    position:relative;
+
+    box-shadow:
+        2px 3px 8px rgba(0,0,0,0.08);
+}
+
+
+/* =====================
+   写真削除チェック
+===================== */
+
+.photo-delete-check{
+    position:absolute;
+
+    top:8px;
+    right:8px;
+
+    width:28px;
+    height:28px;
+
+    border-radius:50%;
+
+    background:var(--card);
+
+    border:2px solid var(--border);
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    font-size:20px;
+    font-weight:bold;
+
+    color:var(--accent);
+
+    z-index:20;
+
+    box-shadow:
+        1px 2px 5px rgba(0,0,0,0.12);
+}
+
+
+/* 修正：スペースを入れて子要素指定 */
+.photo-delete-selected .photo-delete-check{
+    background:var(--accent);
+
+    border-color:var(--accent);
+
+    color:#fff;
+}
+
+
+/* =====================
+   写真
+===================== */
+
+.memory-photo{
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+
+    display:block;
+}
+
+/* =====================
+   写真ビューア
+===================== */
+
+.photo-viewer{
+    position:fixed;
+
+    top:0;
+    left:0;
+
+    width:100%;
+    height:100%;
+
+    background:rgba(0,0,0,0.85);
+
+    display:none;
+
+    justify-content:center;
+    align-items:center;
+
+    z-index:99999;
+}
+
+
+.photo-viewer img{
+    max-width:90%;
+    max-height:85%;
+
+    object-fit:contain;
+
+    user-select:none;
+
+    border-radius:12px;
+}
+
+
+/* =====================
+   写真ビューア共通ボタン
+===================== */
+
+.photo-viewer button{
+    position:absolute;
+
+    top:20px;
+
+    width:44px;
+    height:44px;
+
+    border-radius:50%;
+
+    border:none;
+
+    background:var(--card);
+
+    color:var(--text-sub);
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    box-shadow:
+        0 2px 8px rgba(0,0,0,0.25);
+
+    z-index:2;
+}
+
+
+/* 閉じる */
+
+.photo-close{
+    right:20px;
+    font-size:22px;
+}
+
+
+/* 削除 */
+
+.photo-delete{
+    position:absolute;
+
+    top:20px;
+    right:72px;
+
+    width:44px;
+    height:44px;
+
+    border:none;
+    border-radius:50%;
+
+    background:var(--danger);
+
+    color:#fff;
+
+    font-size:20px;
+
+    cursor:pointer;
+
+    z-index:100000;
+}
+
+
+/* お気に入り */
+
+.photo-favorite{
+    right:124px;
+    font-size:22px;
+}
+
+
+/* 共有 */
+
+.photo-share{
+    right:176px;
+    font-size:20px;
+}
+
+
+/* 押した時 */
+
+.photo-close:active,
+.photo-delete:active,
+.photo-favorite:active,
+.photo-share:active{
+    transform:scale(0.9);
+}
+
+/* =====================
+   写真ツールバー
+===================== */
+
+.photo-toolbar{
+    grid-column:1 / -1;
+
+    display:flex;
+
+    justify-content:flex-end;
+    align-items:center;
+
+    margin:4px 0 10px;
+
+    width:100%;
+}
+
+
+.photo-toolbar-title{
+    font-size:18px;
+
+    font-weight:bold;
+
+    white-space:nowrap;
+
+    color:var(--text);
+
+    margin-right:auto;
+}
+
+
+.photo-sort-btn{
+    border:none;
+
+    border-radius:20px;
+
+    padding:8px 14px;
+
+    background:var(--accent);
+
+    color:#fff;
+
+    font-size:14px;
+
+    cursor:pointer;
+
+    box-shadow:
+        2px 3px 7px rgba(0,0,0,0.10);
+}
+
+
+.photo-sort-btn:active{
+    transform:scale(.96);
+}
+
+
+/* =====================
+   写真並び替えメニュー
+===================== */
+
+.photo-sort-menu{
+    position:fixed;
+
+    left:50%;
+    top:50%;
+
+    transform:translate(-50%,-50%);
+
+    background:var(--card);
+
+    color:var(--text);
+
+    border:1px solid var(--border);
+
+    border-radius:15px;
+
+    padding:15px;
+
+    z-index:10000;
+
+    width:280px;
+
+    box-shadow:
+        0 0 20px rgba(0,0,0,.25);
+}
+
+
+.photo-sort-menu button{
+    width:100%;
+
+    margin:6px 0;
+    padding:10px;
+}
+
+
+/* =====================
+   自由並べ替え中
+===================== */
+
+.photo-dragging{
+    opacity:0.6;
+
+    transform:scale(1.05);
+
+    z-index:1000;
+
+    box-shadow:
+        0 8px 20px rgba(0,0,0,0.3);
+}
+
+
+/* =====================
+   写真長押し・選択対策
+===================== */
+
+.memory-photo-box,
+.memory-photo-box img,
+.memory-photo{
+    -webkit-user-select:none;
+    user-select:none;
+
+    -webkit-touch-callout:none;
+}
+
+
+/* =====================
+   写真自由並べ替えバー
+===================== */
+
+.photo-free-bar{
+    grid-column:1 / -1;
+
+    display:flex;
+
+    justify-content:space-between;
+    align-items:center;
+
+    padding:10px;
+
+    background:var(--surface);
+
+    color:var(--text);
+
+    border:1px solid var(--border);
+
+    border-radius:10px;
+
+    margin-bottom:10px;
+
+    box-shadow:
+        2px 3px 8px rgba(0,0,0,0.07);
+}
+
+
+.photo-free-bar button{
+    padding:8px 16px;
+
+    border-radius:20px;
+
+    border:none;
+
+    font-weight:bold;
+}
+
+/* =====================
+   写真削除バー
+===================== */
+
+.photo-delete-bar{
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    width:100%;
+
+    box-sizing:border-box;
+
+    padding:8px 10px;
+
+    margin:0 0 10px 0;
+
+    background:var(--surface);
+
+    color:var(--text);
+
+    border:1px solid var(--border);
+
+    border-radius:12px;
+
+    white-space:nowrap;
+
+    box-shadow:
+        2px 3px 9px rgba(0,0,0,0.10);
+
+    grid-column:1 / -1;
+}
+
+
+.photo-delete-title{
+    font-weight:bold;
+}
+
+
+.photo-delete-count{
+    font-size:14px;
+
+    opacity:.85;
+
+    margin-right:auto;
+}
+
+
+.photo-delete-bar button{
+    border:none;
+
+    border-radius:18px;
+
+    padding:7px 12px;
+
+    font-weight:bold;
+
+    white-space:nowrap;
+}
+
+
+.photo-delete-bar button:last-child{
+    background:var(--danger);
+
+    color:#fff;
+}
+
+
+.photo-delete-bar button:disabled{
+    opacity:.4;
+}
+
+
+/* =====================
+   お気に入りもっと見る
+===================== */
+
+.favorite-more{
+    grid-column:1 / -1;
+
+    text-align:center;
+
+    padding:12px;
+
+    margin-top:5px;
+
+    border-radius:12px;
+
+    background:var(--accent);
+
+    color:#fff;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    box-shadow:
+        2px 4px 9px rgba(0,0,0,0.10);
+}
+
