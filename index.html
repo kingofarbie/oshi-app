@@ -11,7 +11,10 @@
 
 <link rel="stylesheet" href="styles.css">
 <link rel="stylesheet" href="theme.css">
+<link rel="stylesheet" href="home.css">
 <link rel="stylesheet" href="planner.css">
+<link rel="stylesheet" href="photo.css">
+
 <link rel="stylesheet" href="about.css">
 <link rel="stylesheet" href="anniversary.css">
 <link rel="stylesheet" href="home-menu.css">
@@ -53,21 +56,8 @@
 <!-- =====================
      カレンダー
 ===================== -->
+<div id="calendarContainer"></div>
 
-<div id="calendarPage" class="page">
-
-    <div class="card">
-
-        <h2>
-            📅 カレンダー
-        </h2>
-
-        <div id="calendar">
-        </div>
-
-    </div>
-
-</div>
 
 
 <!-- =====================
@@ -152,169 +142,6 @@ id="favorite-event-list">
 
 
 
-<!-- =====================
-     カレンダー年月選択
-===================== -->
-
-<div id="calendarDatePickerModal" class="modal">
-
-    <div class="modal-content">
-
-        <h2>
-            📅 年月を選択
-        </h2>
-
-        <div class="calendar-date-picker">
-
-            <label>
-                年
-            </label>
-
-            <select id="calendarYearSelect">
-            </select>
-
-
-            <label>
-                月
-            </label>
-
-            <select id="calendarMonthSelect">
-
-                <option value="0">1月</option>
-                <option value="1">2月</option>
-                <option value="2">3月</option>
-                <option value="3">4月</option>
-                <option value="4">5月</option>
-                <option value="5">6月</option>
-                <option value="6">7月</option>
-                <option value="7">8月</option>
-                <option value="8">9月</option>
-                <option value="9">10月</option>
-                <option value="10">11月</option>
-                <option value="11">12月</option>
-
-            </select>
-
-        </div>
-
-
-        <button onclick="applyCalendarDatePicker()">
-            📅 この月へ移動
-        </button>
-
-
-        <button onclick="closeCalendarDatePicker()">
-            ❌ キャンセル
-        </button>
-
-    </div>
-
-</div>
-
-
-<!-- =====================
-     モーダルセット（ポップアップ）
-===================== -->
-
-<div id="dayMenuModal" class="modal">
-    <div class="modal-content">
-
-        <div id="dayMenuDate" class="modal-title">
-            日付
-        </div>
-
-        <button onclick="addEventFromMenu()">
-            ➕ 予定追加
-        </button>
-
-        <button onclick="editEventFromMenu()">
-            ✏️ 予定編集
-        </button>
-
-        <button onclick="copyEventFromMenu()">
-            📋 予定コピー
-        </button>
-
-        <button onclick="deleteEventFromMenu()">
-            🗑 予定削除
-        </button>
-
-        <button onclick="closeDayMenu()">
-            ❌ 閉じる
-        </button>
-
-    </div>
-
-</div>
-
-
-<div id="deleteSelectModal" class="modal">
-
-    <div class="modal-content">
-
-        <h3>
-            削除する予定を選択
-        </h3>
-
-        <div id="deleteEventList"></div>
-
-        <button onclick="deleteSelectedEvents()">
-            🗑 削除
-        </button>
-
-        <button onclick="closeDeleteSelectModal()">
-            ❌ キャンセル
-        </button>
-
-    </div>
-
-</div>
-
-<div id="eventSelectModal" class="modal">
-
-    <div class="modal-content">
-
-        <h3>
-            予定を選択
-        </h3>
-
-
-        <div id="eventSelectList">
-
-        </div>
-
-
-        <button onclick="closeEventSelectModal()">
-            ❌ 閉じる
-        </button>
-
-
-    </div>
-
-</div>
-
-
-<div id="copySelectModal" class="modal">
-
-    <div class="modal-content">
-
-        <h3>
-            コピーする予定を選択
-        </h3>
-
-        <div id="copyEventList"></div>
-
-        <button onclick="copySelectedEvents()">
-            📋 コピー
-        </button>
-
-        <button onclick="closeCopySelectModal()">
-            ❌ キャンセル
-        </button>
-
-    </div>
-
-</div>
 
 
 <!--- =====================

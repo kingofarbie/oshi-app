@@ -1,3 +1,57 @@
+
+/* =====================
+   calendar.html 読み込み
+===================== */
+
+async function loadCalendarHTML(){
+
+    const container =
+        document.getElementById("calendarContainer");
+
+    if(!container){
+        return;
+    }
+
+    try{
+
+        const response =
+            await fetch("./calendar.html");
+
+        if(!response.ok){
+            throw new Error(
+                "calendar.html の読み込みに失敗しました"
+            );
+        }
+
+        container.innerHTML =
+            await response.text();
+
+        console.log(
+            "calendar.html 読み込み完了"
+        );
+
+        renderCalendar();
+
+    }catch(error){
+
+        console.error(
+            "calendar.html 読み込みエラー:",
+            error
+        );
+
+        container.innerHTML = `
+            <div class="card">
+                <p>
+                    カレンダーを読み込めませんでした。
+                </p>
+            </div>
+        `;
+
+    }
+
+}
+
+
 /* =====================
    カレンダー状態
 ===================== */
@@ -1182,3 +1236,19 @@ function applyCalendarDatePicker(){
     renderCalendar();
 
 }
+
+
+
+
+/* =====================
+   初期読み込み
+===================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        loadCalendarHTML();
+
+    }
+);
