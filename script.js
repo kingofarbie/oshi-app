@@ -946,6 +946,7 @@ const menus = [
     "themeMenu",
     "holidayMenu",
     "memorialMenu",
+    "anniversaryMenu",
     "notificationMenu",
     "templateMenu",
     "categoryMenu"
