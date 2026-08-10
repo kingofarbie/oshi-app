@@ -1288,6 +1288,12 @@ async function(){
         "home.html"
     );
 
+    await loadHtml(
+        "homeMenuContainer",
+        "home-menu.html"
+    );
+
+
 
     await loadHtml(
         "plannerContainer",

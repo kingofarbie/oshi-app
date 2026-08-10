@@ -1,0 +1,36 @@
+<!-- =====================
+     ホームメニュー
+===================== -->
+
+<div id="homeMenuOverlay" onclick="closeHomeMenu()"></div>
+
+<div id="homeMenu">
+
+    <div class="home-menu-header">
+        <span>メニュー</span>
+
+        <button onclick="closeHomeMenu()">
+            ✕
+        </button>
+    </div>
+
+<div class="home-menu-list">
+
+    <button onclick="openAppShare()">
+        <span>📤</span>
+        <span>共有</span>
+    </button>
+
+<button onclick="switchTab('settingsPage',event); closeHomeMenu();">
+    <span>⚙️</span>
+    <span>設定</span>
+</button>
+
+<button onclick="openAboutApp()">
+        <span>ℹ️</span>
+    <span>アプリについて</span>
+</button>
+
+</div>
+</div>
+

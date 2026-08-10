@@ -1,0 +1,223 @@
+/* =========================
+   ホームメニュー背景
+========================= */
+
+#homeMenuOverlay{
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.35);
+
+    opacity:0;
+    visibility:hidden;
+
+    transition:.2s;
+
+    z-index:9998;
+}
+
+#homeMenuOverlay.show{
+    opacity:1;
+    visibility:visible;
+}
+
+
+/* =========================
+   ホームメニュー本体
+========================= */
+
+#homeMenu{
+    position:fixed;
+
+    top:15px;
+    right:15px;
+
+    width:220px;
+    max-width:calc(100vw - 30px);
+
+    background:var(--card);
+
+    color:var(--text);
+
+    border:1px solid var(--border);
+
+    border-radius:18px;
+
+    box-shadow:
+        0 10px 35px rgba(0,0,0,.25);
+
+    overflow:hidden;
+
+    transform:
+        translateY(-15px)
+        scale(.96);
+
+    opacity:0;
+    visibility:hidden;
+
+    transition:.2s;
+
+    z-index:9999;
+}
+
+#homeMenu.show{
+    transform:
+        translateY(0)
+        scale(1);
+
+    opacity:1;
+    visibility:visible;
+}
+
+
+/* =========================
+   メニューヘッダー
+========================= */
+
+.home-menu-header{
+    display:flex;
+
+    align-items:center;
+    justify-content:space-between;
+
+    padding:18px;
+
+    font-size:20px;
+    font-weight:bold;
+
+    border-bottom:1px solid var(--border);
+}
+
+.home-menu-header button{
+    width:32px;
+    height:32px;
+
+    padding:0;
+    margin:0;
+
+    border:none;
+    border-radius:50%;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    line-height:1;
+
+    font-size:16px;
+
+    cursor:pointer;
+}
+
+
+/* =========================
+   メニュー項目
+========================= */
+
+.home-menu-list{
+    padding:8px;
+}
+
+.home-menu-list button{
+    width:100%;
+
+    display:flex;
+    align-items:center;
+
+    gap:14px;
+
+    padding:15px 14px;
+
+    border:none;
+    border-radius:12px;
+
+    background:transparent;
+
+    color:var(--text) !important;
+
+    font-size:16px;
+    font-weight:bold;
+
+    text-align:left;
+}
+
+.home-menu-list button:active{
+    background:
+        color-mix(
+            in srgb,
+            var(--accent) 10%,
+            transparent
+        );
+
+    transform:scale(.98);
+}
+
+.home-menu-list button span:first-child{
+    width:30px;
+
+    text-align:center;
+
+    font-size:21px;
+
+    color:var(--accent);
+
+    flex-shrink:0;
+}
+
+.home-menu-list button span:last-child{
+    color:var(--text) !important;
+    font-size:16px;
+}
+
+
+/* =========================
+   ヘッダーメニューボタン
+========================= */
+
+#homeMenuButton{
+    position:absolute;
+
+    right:10px;
+    top:50%;
+
+    transform:translateY(-50%);
+
+    width:42px;
+    height:42px;
+
+    padding:0;
+    margin:0;
+
+    border:none;
+    border-radius:12px;
+
+    background:var(--accent);
+
+    color:#fff;
+
+    font-size:24px;
+    font-weight:bold;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    line-height:1;
+
+    cursor:pointer;
+
+    z-index:10;
+
+    box-shadow:
+        0 3px 10px rgba(0,0,0,.18);
+}
+
+#homeMenuButton:active{
+    transform:
+        translateY(-50%)
+        scale(.92);
+}
+

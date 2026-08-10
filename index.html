@@ -13,8 +13,9 @@
 <link rel="stylesheet" href="theme.css">
 <link rel="stylesheet" href="planner.css">
 <link rel="stylesheet" href="about.css">
-
 <link rel="stylesheet" href="anniversary.css">
+<link rel="stylesheet" href="home-menu.css">
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
@@ -45,6 +46,9 @@
 
 
 <div id="home" class="page active"></div>
+
+<div id="homeHenueContainer"></div>
+
 
 <!-- =====================
      カレンダー
@@ -1421,6 +1425,7 @@ placeholder="カテゴリ名（例：推し活、仕事、旅行）">
 
 <script src="photo.js"></script>
 <script src="home.js"></script>
+<script src="home-menu.js"></script>
 <script src="planner.js"></script>
 <script src="calendar.js"></script>
 <script src="oshi.js"></script>
@@ -1526,42 +1531,6 @@ ontouchend="photoDragEnd(event);photoDoubleTap(event)">
 
 
 
-
-<!-- =====================
-     ホームメニュー
-===================== -->
-
-<div id="homeMenuOverlay" onclick="closeHomeMenu()"></div>
-
-<div id="homeMenu">
-
-    <div class="home-menu-header">
-        <span>メニュー</span>
-
-        <button onclick="closeHomeMenu()">
-            ✕
-        </button>
-    </div>
-
-<div class="home-menu-list">
-
-    <button onclick="openAppShare()">
-        <span>📤</span>
-        <span>共有</span>
-    </button>
-
-<button onclick="switchTab('settingsPage',event); closeHomeMenu();">
-    <span>⚙️</span>
-    <span>設定</span>
-</button>
-
-<button onclick="openAboutApp()">
-        <span>ℹ️</span>
-    <span>アプリについて</span>
-</button>
-
-</div>
-</div>
 
 
 
