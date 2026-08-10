@@ -2,16 +2,16 @@
 🎂 記念日・誕生日
 ===================== */
 
-function getMemorialDays(){
+function getAnniversaryDays(){
 
 const data = db.load();
 
-if(!data.memorialDays){
-    data.memorialDays = [];
+if(!data.anniversaryDays){
+    data.anniversaryDays = [];
     db.save(data);
 }
 
-return data.memorialDays;
+return data.anniversaryDays;
 
 }
 
@@ -20,31 +20,31 @@ return data.memorialDays;
 記念日追加・編集
 ===================== */
 
-function addMemorialDay(){
+function addAnniversaryDay(){
 
     const date =
-        document.getElementById("memorial-date")?.value;
+        document.getElementById("anniversary-date")?.value;
 
     const title =
-        document.getElementById("memorial-title")?.value.trim();
+        document.getElementById("anniversary-title")?.value.trim();
 
     const type =
-        document.getElementById("memorial-type")?.value || "other";
+        document.getElementById("anniversary-type")?.value || "other";
 
     const icon =
-        document.getElementById("memorial-icon")?.value || "⭐";
+        document.getElementById("anniversary-icon")?.value || "⭐";
 
     const color =
-        memorialSelectedColor;
+        anniversarySelectedColor;
 
     const memo =
-        document.getElementById("memorial-memo")?.value.trim() || "";
+        document.getElementById("anniversary-memo")?.value.trim() || "";
 
     const yearly =
-        document.getElementById("memorial-yearly")?.checked || false;
+        document.getElementById("anniversary-yearly")?.checked || false;
 
     const visible =
-        document.getElementById("memorial-visible")?.checked !== false;
+        document.getElementById("anniversary-visible")?.checked !== false;
 
 
     if(!date){
@@ -68,9 +68,9 @@ function addMemorialDay(){
         db.load();
 
 
-    if(!data.memorialDays){
+    if(!data.anniversaryDays){
 
-        data.memorialDays = [];
+        data.anniversaryDays = [];
 
     }
 
@@ -79,13 +79,13 @@ function addMemorialDay(){
        編集モード
     */
 
-    if(window.editingMemorialId){
+    if(window.editingAnniversaryId){
 
         const item =
-            data.memorialDays.find(
+            data.anniversaryDays.find(
                 m =>
                     m.id ===
-                    window.editingMemorialId
+                    window.editingAnniversaryId
             );
 
 
@@ -103,15 +103,15 @@ function addMemorialDay(){
 
             db.save(data);
 
-            window.editingMemorialId =
+            window.editingAnniversaryId =
                 null;
 
 
-            clearMemorialForm();
+            clearAnniversaryForm();
 
             const button =
                 document.querySelector(
-                    ".memorial-add-button"
+                    ".anniversary-add-button"
                 );
 
             if(button){
@@ -122,7 +122,7 @@ function addMemorialDay(){
             }
 
 
-            renderMemorialList();
+            renderAnniversaryList();
 
             return;
 
@@ -173,15 +173,15 @@ function addMemorialDay(){
     };
 
 
-    data.memorialDays.push(item);
+    data.anniversaryDays.push(item);
 
 
     db.save(data);
 
 
-    clearMemorialForm();
+    clearAnniversaryForm();
 
-    renderMemorialList();
+    renderAnniversaryList();
 
 }
 
@@ -190,18 +190,18 @@ function addMemorialDay(){
 記念日一覧
 ===================== */
 
-function renderMemorialList(){
+function renderAnniversaryList(){
 
 const box =
     document.getElementById(
-        "memorial-list"
+        "anniversary-list"
     );
 
 if(!box) return;
 
 
 const list =
-    getMemorialDays()
+    getAnniversaryDays()
     .sort(
         (a,b)=>
             a.date.localeCompare(b.date)
@@ -211,7 +211,7 @@ const list =
 if(list.length === 0){
 
     box.innerHTML = `
-    <div class="memorial-empty">
+    <div class="anniversary-empty">
         🎂 まだ記念日・誕生日がありません
     </div>
     `;
@@ -225,19 +225,19 @@ box.innerHTML =
     list.map(item => `
 
     <div
-        class="memorial-list-item
-        ${item.visible ? "" : "memorial-hidden"}"
+        class="anniversary-list-item
+        ${item.visible ? "" : "anniversary-hidden"}"
     >
 
         <div
-            class="memorial-list-icon"
+            class="anniversary-list-icon"
             style="background:${item.color};"
         >
             ${item.icon}
         </div>
 
 
-        <div class="memorial-list-info">
+        <div class="anniversary-list-info">
 
             <strong>
                 ${item.title}
@@ -258,24 +258,24 @@ box.innerHTML =
         </div>
 
 
-<div class="memorial-list-actions">
+<div class="anniversary-list-actions">
 
     <button
-        onclick="editMemorialDay(${item.id})"
+        onclick="editAnniversaryDay(${item.id})"
         title="編集"
     >
         ✏️
     </button>
 
     <button
-        onclick="toggleMemorialVisibility(${item.id})"
+        onclick="toggleAnniversaryVisibility(${item.id})"
         title="表示・非表示"
     >
         ${item.visible ? "👁" : "🙈"}
     </button>
 
     <button
-        onclick="deleteMemorialDay(${item.id})"
+        onclick="deleteAnniversaryDay(${item.id})"
         title="削除"
     >
         🗑️
@@ -296,13 +296,13 @@ box.innerHTML =
 表示 / 非表示
 ===================== */
 
-function toggleMemorialVisibility(id){
+function toggleAnniversaryVisibility(id){
 
 const data =
     db.load();
 
 const item =
-    data.memorialDays?.find(
+    data.anniversaryDays?.find(
         m => m.id === id
     );
 
@@ -315,7 +315,7 @@ item.visible =
 
 db.save(data);
 
-renderMemorialList();
+renderAnniversaryList();
 
 }
 
@@ -323,14 +323,14 @@ renderMemorialList();
 削除
 ===================== */
 
-function deleteMemorialDay(id){
+function deleteAnniversaryDay(id){
 
 const data =
     db.load();
 
 
 const item =
-    data.memorialDays?.find(
+    data.anniversaryDays?.find(
         m => m.id === id
     );
 
@@ -347,15 +347,15 @@ if(
 }
 
 
-data.memorialDays =
-    data.memorialDays.filter(
+data.anniversaryDays =
+    data.anniversaryDays.filter(
         m => m.id !== id
     );
 
 
 db.save(data);
 
-renderMemorialList();
+renderAnniversaryList();
 
 }
 
@@ -363,13 +363,13 @@ renderMemorialList();
    記念日編集
 ===================== */
 
-function editMemorialDay(id){
+function editAnniversaryDay(id){
 
     const data =
         db.load();
 
     const item =
-        data.memorialDays?.find(
+        data.anniversaryDays?.find(
             m => m.id === id
         );
 
@@ -377,25 +377,25 @@ function editMemorialDay(id){
 
 
     const date =
-        document.getElementById("memorial-date");
+        document.getElementById("anniversary-date");
 
     const title =
-        document.getElementById("memorial-title");
+        document.getElementById("anniversary-title");
 
     const type =
-        document.getElementById("memorial-type");
+        document.getElementById("anniversary-type");
 
     const icon =
-        document.getElementById("memorial-icon");
+        document.getElementById("anniversary-icon");
 
     const memo =
-        document.getElementById("memorial-memo");
+        document.getElementById("anniversary-memo");
 
     const yearly =
-        document.getElementById("memorial-yearly");
+        document.getElementById("anniversary-yearly");
 
     const visible =
-        document.getElementById("memorial-visible");
+        document.getElementById("anniversary-visible");
 
 
     if(date){
@@ -435,7 +435,7 @@ function editMemorialDay(id){
 
     if(item.color){
 
-        initMemorialColorSelector(
+        initAnniversaryColorSelector(
             item.color
         );
 
@@ -446,7 +446,7 @@ function editMemorialDay(id){
        編集対象を記憶
     */
 
-    window.editingMemorialId =
+    window.editingAnniversaryId =
         id;
 
 
@@ -466,7 +466,7 @@ function editMemorialDay(id){
 
     const button =
         document.querySelector(
-            ".memorial-add-button"
+            ".anniversary-add-button"
         );
 
     if(button){
@@ -483,14 +483,14 @@ function editMemorialDay(id){
 入力クリア
 ===================== */
 
-function clearMemorialForm(){
+function clearAnniversaryForm(){
 
 const ids = [
 
-    "memorial-date",
-    "memorial-title",
-    "memorial-icon",
-    "memorial-memo"
+    "anniversary-date",
+    "anniversary-title",
+    "anniversary-icon",
+    "anniversary-memo"
 
 ];
 
@@ -511,7 +511,7 @@ ids.forEach(id => {
 
 const yearly =
     document.getElementById(
-        "memorial-yearly"
+        "anniversary-yearly"
     );
 
 if(yearly){
@@ -523,7 +523,7 @@ if(yearly){
 
 const visible =
     document.getElementById(
-        "memorial-visible"
+        "anniversary-visible"
     );
 
 if(visible){
@@ -539,28 +539,28 @@ console.log("anniversary.js loaded");
 記念日・誕生日ページを開く
 ===================== */
 
-function openMemorialPage(){
+function openAnniversaryPage(){
 
     const page =
-        document.getElementById("memorialPage");
+        document.getElementById("anniversaryPage");
 
     if(!page){
-        console.error("memorialPage が見つかりません");
+        console.error("anniversaryPage が見つかりません");
         return;
     }
 
-    switchTab("memorialPage");
+    switchTab("anniversaryPage");
 
-    renderMemorialList();
+    renderAnniversaryList();
 }
 
-function closeMemorialPage() {
+function closeAnniversaryPage() {
 
-    const memorialPage =
-        document.getElementById("memorialPage");
+    const anniversaryPage =
+        document.getElementById("anniversaryPage");
 
-    if (memorialPage) {
-        memorialPage.style.display = "";
+    if (anniversaryPage) {
+        anniversaryPage.style.display = "";
     }
 
     switchTab("settingsPage");
@@ -574,11 +574,11 @@ function closeMemorialPage() {
    🎨 記念日 色選択
 ===================== */
 
-const MEMORIAL_COLOR_HISTORY_KEY =
-    "memorial_color_history";
+const ANNIVERSARY_COLOR_HISTORY_KEY =
+    "anniversary_color_history";
 
 
-const MEMORIAL_COLORS = [
+const ANNIVERSARY_COLORS = [
 
     /* 淡い色 */
     {
@@ -722,7 +722,7 @@ const MEMORIAL_COLORS = [
 ];
 
 
-let memorialSelectedColor =
+let anniversarySelectedColor =
     "#ffb3cc";
 
 
@@ -730,10 +730,10 @@ let memorialSelectedColor =
    色名取得
 ===================== */
 
-function getMemorialColorName(color){
+function getAnniversaryColorName(color){
 
     const found =
-        MEMORIAL_COLORS.find(
+        ANNIVERSARY_COLORS.find(
             item =>
                 item.color.toLowerCase()
                 === color.toLowerCase()
@@ -750,13 +750,13 @@ function getMemorialColorName(color){
    履歴取得
 ===================== */
 
-function getMemorialColorHistory(){
+function getAnniversaryColorHistory(){
 
     try{
 
         const data =
             localStorage.getItem(
-                MEMORIAL_COLOR_HISTORY_KEY
+                ANNIVERSARY_COLOR_HISTORY_KEY
             );
 
         if(!data){
@@ -790,10 +790,10 @@ function getMemorialColorHistory(){
    履歴保存
 ===================== */
 
-function saveMemorialColorHistory(color){
+function saveAnniversaryColorHistory(color){
 
     let history =
-        getMemorialColorHistory();
+        getAnniversaryColorHistory();
 
 
     history =
@@ -812,7 +812,7 @@ function saveMemorialColorHistory(color){
 
 
     localStorage.setItem(
-        MEMORIAL_COLOR_HISTORY_KEY,
+        ANNIVERSARY_COLOR_HISTORY_KEY,
         JSON.stringify(history)
     );
 
@@ -823,11 +823,11 @@ function saveMemorialColorHistory(color){
    色選択パネル表示
 ===================== */
 
-function toggleMemorialColorPicker(){
+function toggleAnniversaryColorPicker(){
 
     const picker =
         document.getElementById(
-            "memorialColorPicker"
+            "anniversaryColorPicker"
         );
 
     if(!picker){
@@ -844,7 +844,7 @@ function toggleMemorialColorPicker(){
 
     if(isHidden){
 
-        renderMemorialColorPicker();
+        renderAnniversaryColorPicker();
 
         picker.style.display =
             "block";
@@ -863,16 +863,16 @@ function toggleMemorialColorPicker(){
    色選択UI生成
 ===================== */
 
-function renderMemorialColorPicker(){
+function renderAnniversaryColorPicker(){
 
     const matrix =
         document.getElementById(
-            "memorialColorMatrix"
+            "anniversaryColorMatrix"
         );
 
     const recent =
         document.getElementById(
-            "memorialRecentColors"
+            "anniversaryRecentColors"
         );
 
 
@@ -892,7 +892,7 @@ function renderMemorialColorPicker(){
     ===================== */
 
     const history =
-        getMemorialColorHistory();
+        getAnniversaryColorHistory();
 
 
     history.forEach(color => {
@@ -906,7 +906,7 @@ function renderMemorialColorPicker(){
 
 
         button.className =
-            "memorial-recent-choice";
+            "anniversary-recent-choice";
 
 
         button.style.background =
@@ -915,7 +915,7 @@ function renderMemorialColorPicker(){
 
         if(
             color.toLowerCase()
-            === memorialSelectedColor.toLowerCase()
+            === anniversarySelectedColor.toLowerCase()
         ){
 
             button.classList.add(
@@ -926,13 +926,13 @@ function renderMemorialColorPicker(){
 
 
         button.title =
-            getMemorialColorName(color);
+            getAnniversaryColorName(color);
 
 
         button.onclick =
             function(){
 
-                selectMemorialColor(color);
+                selectAnniversaryColor(color);
 
             };
 
@@ -946,7 +946,7 @@ function renderMemorialColorPicker(){
        カラーマトリックス
     ===================== */
 
-    MEMORIAL_COLORS.forEach(item => {
+    ANNIVERSARY_COLORS.forEach(item => {
 
         const button =
             document.createElement("button");
@@ -957,7 +957,7 @@ function renderMemorialColorPicker(){
 
 
         button.className =
-            "memorial-color-choice";
+            "anniversary-color-choice";
 
 
         button.style.background =
@@ -970,7 +970,7 @@ function renderMemorialColorPicker(){
 
         if(
             item.color.toLowerCase()
-            === memorialSelectedColor.toLowerCase()
+            === anniversarySelectedColor.toLowerCase()
         ){
 
             button.classList.add(
@@ -983,7 +983,7 @@ function renderMemorialColorPicker(){
         button.onclick =
             function(){
 
-                selectMemorialColor(
+                selectAnniversaryColor(
                     item.color
                 );
 
@@ -1001,16 +1001,16 @@ function renderMemorialColorPicker(){
    色を選択
 ===================== */
 
-function selectMemorialColor(color){
+function selectAnniversaryColor(color){
 
-    memorialSelectedColor =
+    anniversarySelectedColor =
         color;
 
 
 
     const preview =
         document.getElementById(
-            "memorialColorPreview"
+            "anniversaryColorPreview"
         );
 
 
@@ -1024,24 +1024,24 @@ function selectMemorialColor(color){
 
     const name =
         document.getElementById(
-            "memorialColorName"
+            "anniversaryColorName"
         );
 
 
     if(name){
 
         name.textContent =
-            getMemorialColorName(color);
+            getAnniversaryColorName(color);
 
     }
 
 
-    saveMemorialColorHistory(
+    saveAnniversaryColorHistory(
         color
     );
 
 
-    renderMemorialColorPicker();
+    renderAnniversaryColorPicker();
 
 
     /*
@@ -1050,7 +1050,7 @@ function selectMemorialColor(color){
 
     const picker =
         document.getElementById(
-            "memorialColorPicker"
+            "anniversaryColorPicker"
         );
 
 
@@ -1068,13 +1068,13 @@ function selectMemorialColor(color){
    初期化
 ===================== */
 
-function initMemorialColorSelector(
+function initAnniversaryColorSelector(
     initialColor
 ){
 
     if(initialColor){
 
-        memorialSelectedColor =
+        anniversarySelectedColor =
             initialColor;
 
     }
@@ -1082,20 +1082,20 @@ function initMemorialColorSelector(
 
     const preview =
         document.getElementById(
-            "memorialColorPreview"
+            "anniversaryColorPreview"
         );
 
 
     const name =
         document.getElementById(
-            "memorialColorName"
+            "anniversaryColorName"
         );
 
 
     if(preview){
 
         preview.style.background =
-            memorialSelectedColor;
+            anniversarySelectedColor;
 
     }
 
@@ -1103,8 +1103,8 @@ function initMemorialColorSelector(
     if(name){
 
         name.textContent =
-            getMemorialColorName(
-                memorialSelectedColor
+            getAnniversaryColorName(
+                anniversarySelectedColor
             );
 
     }

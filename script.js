@@ -1283,6 +1283,10 @@ function(e){
 window.onload =
 async function(){
 
+    /* =====================
+       HTML読み込み
+    ===================== */
+
     await loadHtml(
         "home",
         "home.html"
@@ -1293,12 +1297,35 @@ async function(){
         "home-menu.html"
     );
 
-
-
     await loadHtml(
         "plannerContainer",
         "planner.html"
     );
+
+    await loadHtml(
+        "calendarContainer",
+        "calendar.html"
+    );
+
+    await loadHtml(
+        "settingsContainer",
+        "settings.html"
+    );
+
+    await loadHtml(
+        "aboutAppContainer",
+        "about.html"
+    );
+
+    await loadHtml(
+    "anniversaryContainer",
+    "anniversary.html"
+);
+
+
+    /* =====================
+       初期化
+    ===================== */
 
     initializeCategories();
 
@@ -1312,16 +1339,17 @@ async function(){
     displayHomeSchedule();
 
 
+    /* =====================
+       推し検索
+    ===================== */
 
     const search =
-        document
-        .getElementById(
+        document.getElementById(
             'oshi-search'
         );
 
 
     if(search){
-
 
         search.addEventListener(
             'focus',
@@ -1337,11 +1365,8 @@ async function(){
     }
 
 
-
-
     const category =
-        document
-        .getElementById(
+        document.getElementById(
             'category-select'
         );
 
@@ -1352,9 +1377,9 @@ async function(){
             'change',
             function(){
 
-                selectedOshiId=null;
+                selectedOshiId = null;
 
-                search.value='';
+                search.value = '';
 
                 showCandidates();
 
@@ -1364,37 +1389,72 @@ async function(){
     }
 
 
+    /* =====================
+       イベント
+    ===================== */
 
     displayEventList();
 
 
+    /* =====================
+       カレンダー
+    ===================== */
+
     renderCalendar();
-    
+
+
+    /* =====================
+       ホーム
+    ===================== */
+
     displayUpcomingEvents();
-        
+
+    displayCountdown();
+
+
+    /* =====================
+       通知
+    ===================== */
+
     updateNotificationButtons();
-    
+
+    await initNotification();
+
+
+    /* =====================
+       カテゴリ
+    ===================== */
+
     displayCategories();
-    
+
     updateEventCategoryOptions();
+
+
+    /* =====================
+       プラン
+    ===================== */
 
     updatePlanDisplay();
 
     displayPlans();
-    
-    displayCountdown();
-    
-    await initNotification();
+
+
+    /* =====================
+       テンプレート
+    ===================== */
 
     displayTemplateList();
-    
+
     updateTemplateSelect();
-    
+
+
+    /* =====================
+       お気に入り
+    ===================== */
+
     displayFavorites();
 
-
 };
-
 
 
 /* =====================

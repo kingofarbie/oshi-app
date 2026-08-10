@@ -2,8 +2,8 @@
 🎂 記念日・誕生日
 ===================== */
 
-.memorial-add-card,
-.memorial-list-card{
+.anniversary-add-card,
+.anniversary-list-card{
 
     margin:12px;
     padding:16px;
@@ -23,8 +23,8 @@
    タイトル
 ===================== */
 
-.memorial-add-card h3,
-.memorial-list-card h3{
+.anniversary-add-card h3,
+.anniversary-list-card h3{
 
     margin-top:0;
 
@@ -37,7 +37,7 @@
    右：入力欄
 ===================== */
 
-.memorial-add-card{
+.anniversary-add-card{
 
     display:grid;
 
@@ -52,7 +52,7 @@
 }
 
 
-.memorial-add-card h3{
+.anniversary-add-card h3{
 
     grid-column:1 / -1;
 
@@ -61,7 +61,7 @@
 }
 
 
-.memorial-add-card label{
+.anniversary-add-card label{
 
     font-size:14px;
     font-weight:bold;
@@ -73,7 +73,7 @@
 
 /* ラベル */
 
-.memorial-add-card > label:not(.memorial-check){
+.anniversary-add-card > label:not(.anniversary-check){
 
     grid-column:1;
 
@@ -84,9 +84,9 @@
 
 /* 入力欄 */
 
-.memorial-add-card > input:not([type="checkbox"]),
-.memorial-add-card > select,
-.memorial-add-card > textarea{
+.anniversary-add-card > input:not([type="checkbox"]),
+.anniversary-add-card > select,
+.anniversary-add-card > textarea{
 
     grid-column:2;
 
@@ -113,7 +113,7 @@
 
 /* 色選択 */
 
-.memorial-add-card > .memorial-color-selector{
+.anniversary-add-card > .anniversary-color-selector{
 
     grid-column:2;
 
@@ -124,7 +124,7 @@
 
 /* メモ */
 
-.memorial-add-card > textarea{
+.anniversary-add-card > textarea{
 
     min-height:80px;
 
@@ -139,8 +139,8 @@
    プレースホルダー
 ===================== */
 
-.memorial-add-card input::placeholder,
-.memorial-add-card textarea::placeholder{
+.anniversary-add-card input::placeholder,
+.anniversary-add-card textarea::placeholder{
 
     font-size:14px;
 
@@ -155,7 +155,7 @@
    🎨 色選択
 ===================== */
 
-.memorial-color-selector{
+.anniversary-color-selector{
 
     position:relative;
 
@@ -166,7 +166,7 @@
 
 /* 現在選択中の色 */
 
-.memorial-color-current{
+.anniversary-color-current{
 
     width:100%;
 
@@ -194,7 +194,7 @@
 
 /* 色プレビュー */
 
-.memorial-color-preview{
+.anniversary-color-preview{
 
     width:28px;
     height:28px;
@@ -210,7 +210,7 @@
 
 /* 色名 */
 
-#memorialColorName{
+#anniversaryColorName{
 
     flex:1;
 
@@ -222,7 +222,7 @@
 
 /* ▼ */
 
-.memorial-color-arrow{
+.anniversary-color-arrow{
 
     font-size:12px;
 
@@ -233,7 +233,7 @@
 
 /* 色選択パネル */
 
-.memorial-color-picker{
+.anniversary-color-picker{
 
     margin-top:8px;
 
@@ -250,7 +250,7 @@
 
 /* 見出し */
 
-.memorial-color-section-title{
+.anniversary-color-section-title{
 
     font-size:13px;
     font-weight:bold;
@@ -265,7 +265,7 @@
    最大5個
 ===================== */
 
-.memorial-color-recent{
+.anniversary-color-recent{
 
     display:grid;
 
@@ -283,7 +283,7 @@
    色マトリックス
 ===================== */
 
-.memorial-color-matrix{
+.anniversary-color-matrix{
 
     display:grid;
 
@@ -297,8 +297,8 @@
 
 /* 色ボタン */
 
-.memorial-color-choice,
-.memorial-recent-choice{
+.anniversary-color-choice,
+.anniversary-recent-choice{
 
     width:100%;
     aspect-ratio:1 / 1;
@@ -321,8 +321,8 @@
 
 /* 選択中 */
 
-.memorial-color-choice.selected,
-.memorial-recent-choice.selected{
+.anniversary-color-choice.selected,
+.anniversary-recent-choice.selected{
 
     outline:3px solid var(--accent);
 
@@ -333,8 +333,8 @@
 
 /* 押したとき */
 
-.memorial-color-choice:active,
-.memorial-recent-choice:active{
+.anniversary-color-choice:active,
+.anniversary-recent-choice:active{
 
     transform:scale(.9);
 
@@ -345,7 +345,7 @@
    チェック項目
 ===================== */
 
-.memorial-check{
+.anniversary-check{
 
     grid-column:2;
 
@@ -364,7 +364,7 @@
 }
 
 
-.memorial-check input{
+.anniversary-check input{
 
     width:20px !important;
     height:20px;
@@ -380,7 +380,7 @@
    登録ボタン
 ===================== */
 
-.memorial-add-button{
+.anniversary-add-button{
 
     grid-column:1 / -1;
 
@@ -409,7 +409,7 @@
    記念日一覧
 ===================== */
 
-.memorial-list-item{
+.anniversary-list-item{
 
     display:flex;
 
@@ -424,14 +424,14 @@
 }
 
 
-.memorial-list-item:last-child{
+.anniversary-list-item:last-child{
 
     border-bottom:none;
 
 }
 
 
-.memorial-list-icon{
+.anniversary-list-icon{
 
     width:42px;
     height:42px;
@@ -448,7 +448,7 @@
 }
 
 
-.memorial-list-info{
+.anniversary-list-info{
 
     flex:1;
 
@@ -463,7 +463,7 @@
 }
 
 
-.memorial-list-info strong{
+.anniversary-list-info strong{
 
     overflow:hidden;
 
@@ -474,7 +474,7 @@
 }
 
 
-.memorial-list-info span{
+.anniversary-list-info span{
 
     font-size:12px;
 
@@ -483,7 +483,7 @@
 }
 
 
-.memorial-list-info small{
+.anniversary-list-info small{
 
     font-size:11px;
 
@@ -492,7 +492,7 @@
 }
 
 
-.memorial-list-actions{
+.anniversary-list-actions{
 
     display:flex;
 
@@ -501,7 +501,7 @@
 }
 
 
-.memorial-list-actions button{
+.anniversary-list-actions button{
 
     border:none;
 
@@ -514,14 +514,14 @@
 }
 
 
-.memorial-hidden{
+.anniversary-hidden{
 
     opacity:.45;
 
 }
 
 
-.memorial-empty{
+.anniversary-empty{
 
     padding:20px;
 
@@ -536,7 +536,7 @@
 🎂 記念日ページ 固定戻るボタン
 ===================== */
 
-.memorial-fixed-back{
+.anniversary-fixed-back{
 
     position:sticky;
 
@@ -551,7 +551,7 @@
 }
 
 
-.memorial-fixed-back button{
+.anniversary-fixed-back button{
 
     width:100%;
 
@@ -583,7 +583,7 @@
 
 @media(max-width:480px){
 
-    .memorial-color-matrix{
+    .anniversary-color-matrix{
 
         grid-template-columns:
             repeat(8, 1fr);
@@ -592,7 +592,7 @@
 
     }
 
-    .memorial-color-recent{
+    .anniversary-color-recent{
 
         grid-template-columns:
             repeat(5, 32px);
@@ -610,7 +610,7 @@
    タップで拡大・メモ表示
 ===================== */
 
-.planner-memorial-item{
+.planner-anniversary-item{
 
     position:relative;
 
@@ -625,7 +625,7 @@
 
 /* メモは通常は非表示 */
 
-.planner-memorial-memo{
+.planner-anniversary-memo{
 
     display:none;
 
@@ -634,7 +634,7 @@
 
 /* タップして開いた状態 */
 
-.planner-memorial-item.planner-memorial-expanded{
+.planner-anniversary-item.planner-anniversary-expanded{
 
     transform:scale(1.04);
 
@@ -650,7 +650,7 @@
    雲の下にメモを表示
 ===================== */
 
-.planner-memorial-item.planner-memorial-expanded{
+.planner-anniversary-item.planner-anniversary-expanded{
 
     transform:scale(1.04);
 
@@ -666,7 +666,7 @@
    通常は非表示
 ===================== */
 
-.planner-memorial-memo{
+.planner-anniversary-memo{
 
     display:none;
 
@@ -677,8 +677,8 @@
    📝 展開時のメモ
 ===================== */
 
-.planner-memorial-item.planner-memorial-expanded
-.planner-memorial-memo{
+.planner-anniversary-item.planner-anniversary-expanded
+.planner-anniversary-memo{
 
     display:block;
 
@@ -716,7 +716,7 @@
    🎂 1日手帳 記念日クラウド
 ===================== */
 
-.planner-memorial-badge{
+.planner-anniversary-badge{
 
     position:fixed;
 
@@ -741,7 +741,7 @@ pointer-events:auto;
    最初の形に戻す
 ===================== */
 
-.planner-memorial-item{
+.planner-anniversary-item{
 
     position:relative;
 
@@ -819,7 +819,7 @@ pointer-events:auto;
    薄い色で後ろの予定と区別
 ===================== */
 
-.planner-memorial-item::after{
+.planner-anniversary-item::after{
 
     content:"";
 
@@ -883,7 +883,7 @@ pointer-events:auto;
    下の輪郭を少し強め
 ===================== */
 
-.planner-memorial-item::before{
+.planner-anniversary-item::before{
 
     content:"";
 
@@ -1001,7 +1001,7 @@ pointer-events:auto;
    🎂 アイコン
 ===================== */
 
-.planner-memorial-icon{
+.planner-anniversary-icon{
 
     font-size:17px;
 
@@ -1020,7 +1020,7 @@ pointer-events:auto;
    📝 文字
 ===================== */
 
-.planner-memorial-text{
+.planner-anniversary-text{
 
     white-space:nowrap;
 
@@ -1040,7 +1040,7 @@ pointer-events:auto;
    少しだけ動きをずらす
 ===================== */
 
-.planner-memorial-item:nth-child(2){
+.planner-anniversary-item:nth-child(2){
 
     animation-duration:
         5.6s;
@@ -1051,7 +1051,7 @@ pointer-events:auto;
 }
 
 
-.planner-memorial-item:nth-child(3){
+.planner-anniversary-item:nth-child(3){
 
     animation-duration:
         4.5s;
@@ -1062,7 +1062,7 @@ pointer-events:auto;
 }
 
 
-.planner-memorial-item:nth-child(4){
+.planner-anniversary-item:nth-child(4){
 
     animation-duration:
         6.1s;
@@ -1073,7 +1073,7 @@ pointer-events:auto;
 }
 
 
-.planner-memorial-item:nth-child(5){
+.planner-anniversary-item:nth-child(5){
 
     animation-duration:
         4.9s;

@@ -1,0 +1,191 @@
+<div
+    id="anniversaryPage"
+    class="page"
+    >
+    
+    
+<div class="page-title">
+    🎂 記念日・誕生日
+</div>
+
+<div class="anniversary-fixed-back">
+<button
+    type="button"
+    onclick="closeAnniversaryPage()"
+    class="anniversary-back-button">
+    ⚙️ 設定に戻る
+</button>
+</div>
+
+
+
+<div class="anniversary-add-card">
+
+    <h3>
+        ✨ 新しく登録
+    </h3>
+
+
+    <label>
+        日付
+    </label>
+
+    <input
+        type="date"
+        id="anniversary-date"
+    >
+
+
+    <label>
+        タイトル
+    </label>
+
+    <input
+        type="text"
+        id="anniversary-title"
+        placeholder="例：Adoさん誕生日"
+    >
+
+
+    <label>
+        種類
+    </label>
+
+    <select id="anniversary-type">
+
+        <option value="birthday">
+            🎂 誕生日
+        </option>
+
+        <option value="anniversary">
+            💖 記念日
+        </option>
+
+        <option value="live">
+            🎤 ライブ記念日
+        </option>
+
+        <option value="release">
+            📀 発売記念日
+        </option>
+
+        <option value="other">
+            ⭐ その他
+        </option>
+
+    </select>
+
+
+<!-- 色 -->
+<label>
+    色
+</label>
+
+<div class="anniversary-color-selector">
+
+    <button
+        type="button"
+        id="anniversaryColorButton"
+        class="anniversary-color-current"
+        onclick="toggleAnniversaryColorPicker()">
+
+        <span
+            id="anniversaryColorPreview"
+            class="anniversary-color-preview">
+        </span>
+
+        <span id="anniversaryColorName">
+            ピンク
+        </span>
+
+        <span class="anniversary-color-arrow">
+            ▼
+        </span>
+
+    </button>
+
+
+    <div
+        id="anniversaryColorPicker"
+        class="anniversary-color-picker"
+        style="display:none;">
+
+        <div class="anniversary-color-section-title">
+            最近使った色
+        </div>
+
+        <div
+            id="anniversaryRecentColors"
+            class="anniversary-color-recent">
+        </div>
+
+
+        <div class="anniversary-color-section-title">
+            色を選ぶ
+        </div>
+
+        <div
+            id="anniversaryColorMatrix"
+            class="anniversary-color-matrix">
+        </div>
+
+    </div>
+
+</div>
+
+    <label>
+        メモ
+    </label>
+
+    <textarea
+        id="anniversary-memo"
+        placeholder="メモがあれば入力"
+    ></textarea>
+
+
+    <label class="anniversary-check">
+
+        <input
+            type="checkbox"
+            id="anniversary-yearly"
+        >
+
+        🔁 毎年繰り返す
+
+    </label>
+
+
+    <label class="anniversary-check">
+
+        <input
+            type="checkbox"
+            id="anniversary-visible"
+            checked
+        >
+
+        👁 カレンダー・1日手帳に表示
+
+    </label>
+
+
+    <button
+        class="anniversary-add-button"
+        onclick="addAnniversaryDay()"
+    >
+        ＋ 記念日を登録
+    </button>
+
+</div>
+
+
+<div class="anniversary-list-card">
+
+    <h3>
+        📋 登録済み
+    </h3>
+
+    <div id="anniversary-list"></div>
+
+</div>
+
+</div>
