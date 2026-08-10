@@ -1,4 +1,54 @@
 /* =====================
+   ホームHTML読み込み
+===================== */
+
+async function loadHome(){
+
+    const home =
+        document.getElementById("home");
+
+    if(!home){
+        return;
+    }
+
+    try{
+
+        const response =
+            await fetch("./home.html");
+
+        if(!response.ok){
+            throw new Error(
+                "home.html 読み込み失敗"
+            );
+        }
+
+        home.innerHTML =
+            await response.text();
+
+        /* ホーム内容を読み込んだ後に表示 */
+
+        displayHomeSchedule();
+        displayUpcomingEvents();
+        displayCountdown();
+        displayFavorites();
+
+    }catch(error){
+
+        console.error(
+            "ホーム読み込みエラー:",
+            error
+        );
+
+    }
+
+}
+
+
+
+
+
+
+/* =====================
    ホーム予定表示
 ===================== */
 function displayHomeSchedule(){
