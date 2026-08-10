@@ -1,0 +1,540 @@
+/* =====================
+   ホーム予定表示
+===================== */
+function displayHomeSchedule(){
+
+    const events = db.load().events || [];
+
+    const now = new Date();
+
+    // 今日の開始
+    const todayStart = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate()
+    );
+
+    // 明日の開始
+    const tomorrowStart = new Date(todayStart);
+    tomorrowStart.setDate(todayStart.getDate() + 1);
+
+
+function eventStartDate(e){
+
+    if(!e.start){
+        return null;
+    }
+
+    const d = new Date(e.start);
+
+    if(isNaN(d.getTime())){
+        return null;
+    }
+
+    return d;
+
+}
+
+
+
+    /* =====================
+       今日の予定
+    ===================== */
+
+    const todayList = events
+        .filter(e => {
+
+            const d = eventStartDate(e);
+
+            if(!d || isNaN(d.getTime())){
+                return false;
+            }
+
+            return (
+                d >= todayStart &&
+                d < tomorrowStart
+            );
+
+        })
+        .sort((a,b) => {
+
+            return (
+                eventStartDate(a) -
+                eventStartDate(b)
+            );
+
+        });
+
+
+
+    /* =====================
+       表示
+    ===================== */
+
+    function render(id, list){
+
+        const box =
+            document.getElementById(id);
+
+        if(!box){
+            return;
+        }
+
+
+        if(list.length === 0){
+
+            box.innerHTML =
+                "該当なし";
+
+            return;
+
+        }
+
+
+        box.innerHTML =
+            list.map(e => {
+
+                const icon =
+                    getCategoryInfo(e.category)?.icon
+                    || "📌";
+
+
+                const date =
+                    eventStartDate(e);
+
+
+                const month =
+                    date.getMonth() + 1;
+
+
+                const day =
+                    date.getDate();
+
+
+                // 開始時刻
+                const time =
+                    e.start
+                    ? e.start.substring(11,16)
+                    : "";
+
+
+                return `
+<div
+    class="schedule-item"
+    onclick="openEventDetail(${e.id})">
+
+    <div class="schedule-title">
+        ${month}/${day}
+        ${time ? " " + time : ""}
+        ${icon}
+        ${e.title}
+    </div>
+
+</div>
+`;
+
+            }).join("");
+
+    }
+
+
+    render(
+        "today-schedule",
+        todayList
+    );
+
+}
+
+/* =====================
+   直近のイベント
+   ※本日の予定は除外
+===================== */
+function displayUpcomingEvents(){
+
+    const box =
+        document.getElementById("upcoming-events");
+
+    if(!box) return;
+
+    const now = new Date();
+
+    // 今日の開始
+    const todayStart = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate()
+    );
+
+    // 明日の開始
+    const tomorrowStart = new Date(todayStart);
+
+    tomorrowStart.setDate(
+        todayStart.getDate() + 1
+    );
+
+
+function eventStartDate(e){
+
+    if(!e.start){
+        return null;
+    }
+
+    const d = new Date(e.start);
+
+    if(isNaN(d.getTime())){
+        return null;
+    }
+
+    return d;
+
+}
+
+    
+
+    /*
+       今日の予定を除外して
+       明日以降のイベントだけ取得
+    */
+    const events =
+        db.load().events
+
+        .filter(e=>{
+
+            const d =
+                eventStartDate(e);
+
+            return (
+                d &&
+                d >= tomorrowStart
+            );
+
+        })
+
+        .sort(
+            (a,b)=>
+                eventStartDate(a)
+                -
+                eventStartDate(b)
+        )
+
+        .slice(0,3);
+
+
+    if(events.length===0){
+
+        box.innerHTML =
+            "該当なし";
+
+        return;
+
+    }
+
+
+    box.innerHTML =
+        events.map(e=>{
+
+            const d =
+                eventStartDate(e);
+
+            const month =
+                d.getMonth() + 1;
+
+            const day =
+                d.getDate();
+
+            const icon =
+                getCategoryInfo(
+                    e.category
+                )?.icon || "📌";
+
+
+            return `
+<div
+    class="event-home-item"
+    onclick="openEventDetail(${e.id})">
+
+    <strong>
+        ${month}/${day}
+    </strong><br>
+
+    ${icon} ${e.title}
+
+</div>
+`;
+
+        }).join("");
+
+}
+
+function displayCountdown() {
+
+const box =
+    document.getElementById("countdown-card");
+
+if(!box) return;
+
+
+const now = new Date();
+
+const events =
+    db.load().events
+    .filter(e => e.start)
+    .sort(
+        (a,b) =>
+            new Date(a.start) -
+            new Date(b.start)
+    );
+
+
+/*
+   現在時刻より後の
+   一番近いイベント
+*/
+const next =
+    events.find(
+        e => new Date(e.start) > now
+    );
+
+
+if(!next){
+
+    box.innerHTML =
+        "予定はありません";
+
+    box.style.background = "";
+    box.style.border = "";
+
+    return;
+
+}
+
+
+const start =
+    new Date(next.start);
+
+
+/*
+   今日の日付
+*/
+const today =
+    new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate()
+    );
+
+
+/*
+   イベントの日付
+*/
+const eventDay =
+    new Date(
+        start.getFullYear(),
+        start.getMonth(),
+        start.getDate()
+    );
+
+
+/*
+   日付の差
+*/
+const days =
+    Math.floor(
+        (eventDay - today) /
+        86400000
+    );
+
+
+/*
+   現在時刻との差
+*/
+const diff =
+    start - now;
+
+
+const hours =
+    Math.floor(
+        (diff % 86400000) /
+        3600000
+    );
+
+
+const mins =
+    Math.floor(
+        (diff % 3600000) /
+        60000
+    );
+
+
+/*
+   カウントダウン文字
+*/
+let countdownText = "";
+
+
+if(days >= 5){
+
+    countdownText =
+        "あと " + days + "日";
+
+}
+else if(days >= 1){
+
+    countdownText =
+        "あと " + days + "日";
+
+}
+else if(diff > 0){
+
+    countdownText =
+        `あと ${hours}時間 ${mins}分`;
+
+}
+else{
+
+    countdownText =
+        "🎉 開催中";
+
+}
+
+
+/*
+   カテゴリー
+*/
+const category =
+    getCategoryInfo(next.category);
+
+
+const icon =
+    category?.icon || "📌";
+
+
+/*
+   日付・時刻
+*/
+const dateText =
+    `${start.getMonth() + 1}月` +
+    `${start.getDate()}日` +
+    ` ${String(start.getHours()).padStart(2,"0")}:` +
+    `${String(start.getMinutes()).padStart(2,"0")}まで`;
+
+
+/*
+   前日・当日の色
+*/
+let cardClass = "";
+
+
+if(days === 1){
+
+    cardClass =
+        "countdown-tomorrow";
+
+}
+else if(days === 0){
+
+    cardClass =
+        "countdown-today";
+
+}
+
+
+/*
+   カード表示
+   ※ schedule-item を入れ子にしない
+*/
+box.innerHTML = `
+
+<div
+    class="countdown-inner ${cardClass}"
+    onclick="openEventDetail(${next.id})"
+><div class="countdown-top">
+
+    <div class="countdown-number">
+        ${countdownText}
+    </div>
+
+    <div class="countdown-date">
+        ${dateText}
+    </div>
+
+</div>
+
+
+<div class="countdown-event">
+
+    ${icon}
+    ${next.title}
+
+</div>
+
+
+${
+    next.place
+    ?
+    `
+    <div class="countdown-place">
+        📍 ${next.place}
+    </div>
+    `
+    :
+    ""
+}
+
+</div>`;
+
+}
+
+
+/* =====================
+   ホームメニュー
+===================== */
+
+function toggleHomeMenu(){
+
+    const menu =
+        document.getElementById("homeMenu");
+
+    const overlay =
+        document.getElementById("homeMenuOverlay");
+
+    if(!menu || !overlay) return;
+
+    const isOpen =
+        menu.classList.contains("show");
+
+    if(isOpen){
+
+        closeHomeMenu();
+
+    }else{
+
+        menu.classList.add("show");
+        overlay.classList.add("show");
+
+    }
+
+}
+
+
+function closeHomeMenu(){
+
+    const menu =
+        document.getElementById("homeMenu");
+
+    const overlay =
+        document.getElementById("homeMenuOverlay");
+
+    if(menu){
+
+        menu.classList.remove("show");
+
+    }
+
+    if(overlay){
+
+        overlay.classList.remove("show");
+
+    }
+
+}
