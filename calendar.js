@@ -215,26 +215,26 @@ const hasEvent =
 // 📸 写真・動画
 // =====================
 
-const memorials =
-    data.memorialDays || [];
+const anniversaries =
+    data.anniversaryDays || [];
 
-const hasMemorial =
-    memorials.some(m => {
+const hasAnniversary =
+    anniversaries.some(a => {
 
-        if(!m.visible || !m.date){
+        if(!a.visible || !a.date){
             return false;
         }
 
-        if(m.yearly){
+        if(a.yearly){
 
-            const md =
-                m.date.substring(5);
+            const ad =
+                a.date.substring(5);
 
-            return md === date.substring(5);
+            return ad === date.substring(5);
 
         }
 
-        return m.date === date;
+        return a.date === date;
 
     });
 
@@ -249,7 +249,7 @@ const hasPhoto =
     );
 
 const dayIcons =
-    (hasMemorial ? '<span class="calendar-day-icon">🎉</span>' : '') +
+    (hasAnniversary ? '<span class="calendar-day-icon">🎉</span>' : '') +
     (hasPhoto ? '<span class="calendar-day-icon">📸</span>' : '');
     
         const isToday =
