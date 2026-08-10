@@ -1288,11 +1288,13 @@ async function(){
         "home.html"
     );
 
+    displayFavorites();
+
     await loadHtml(
         "plannerContainer",
         "planner.html"
     );
-     
+
     initializeCategories();
 
 
