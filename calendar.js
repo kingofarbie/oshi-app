@@ -210,11 +210,10 @@ const hasEvent =
     );
 
 
-    // =====================
+// =====================
 // 🎉 記念日・誕生日
 // 📸 写真・動画
 // =====================
-
 
 const memorials =
     data.memorialDays || [];
@@ -249,11 +248,10 @@ const hasPhoto =
         dayMemory.photos.length > 0
     );
 
-
 const dayIcons =
     (hasMemorial ? '<span class="calendar-day-icon">🎉</span>' : '') +
-    (hasPhoto ? '<span class="calendar-day-icon">📸</span>' : '');    
-
+    (hasPhoto ? '<span class="calendar-day-icon">📸</span>' : '');
+    
         const isToday =
             today.getFullYear() === year
             &&
