@@ -806,7 +806,7 @@ pointer-events:auto;
        ☁️ ふわふわ上下
     */
     animation:
-        memorialCloudFloat
+        anniversaryCloudFloat
         5s
         ease-in-out
         infinite;
@@ -950,7 +950,7 @@ pointer-events:auto;
    🎈 ふわふわ上下運動
 ===================== */
 
-@keyframes memorialCloudFloat{
+@keyframes anniversaryCloudFloat{
 
     0%{
 
