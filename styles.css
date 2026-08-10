@@ -1393,6 +1393,76 @@ button[style*="background"],
     line-height:1;
     vertical-align:middle;
 }
+
+
+/* =========================
+   ホーム・カウントダウン
+========================= */
+
+.countdown-inner{
+    padding:14px 16px;
+    border-radius:14px;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+/* カウントダウン上段 */
+.countdown-top{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:8px;
+}
+
+/* カウントダウン */
+.countdown-number{
+    font-size:21px;
+    font-weight:bold;
+    white-space:nowrap;
+}
+
+/* 「○月○日 ○○:○○まで」 */
+.countdown-date{
+    font-size:13px;
+    opacity:0.8;
+}
+
+/* イベント名 */
+.countdown-event{
+    font-size:20px;
+    font-weight:bold;
+    line-height:1.4;
+}
+
+/* 場所 */
+.countdown-place{
+    margin-top:5px;
+    font-size:13px;
+    opacity:0.8;
+}
+
+
+/* =========================
+   前日
+========================= */
+
+.countdown-tomorrow{
+    background:rgba(255,235,150,0.28);
+    border:2px solid rgba(220,175,40,0.65);
+}
+
+
+/* =========================
+   当日
+========================= */
+
+.countdown-today{
+    background:rgba(255,170,190,0.25);
+    border:2px solid rgba(220,80,110,0.65);
+}
+
+
+
 /* =========================
    重要：
    1日手帳側のCSSは
