@@ -215,8 +215,6 @@ const hasEvent =
 // 📸 写真・動画
 // =====================
 
-const data =
-    db.load();
 
 const memorials =
     data.memorialDays || [];
