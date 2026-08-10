@@ -1,3 +1,4 @@
+console.log("calendar.js 読み込み成功");
 
 /* =====================
    calendar.html 読み込み
