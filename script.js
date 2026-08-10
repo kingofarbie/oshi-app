@@ -1283,11 +1283,16 @@ function(e){
 window.onload =
 async function(){
 
- await loadHtml(
-     "plannerContainer",
-     "planner.html"
- );
- 
+    await loadHtml(
+        "home",
+        "home.html"
+    );
+
+    await loadHtml(
+        "plannerContainer",
+        "planner.html"
+    );
+     
     initializeCategories();
 
 
