@@ -588,3 +588,6 @@ function closeHomeMenu(){
     }
 
 }
+
+
+loadHome();

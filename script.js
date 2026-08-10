@@ -1288,7 +1288,6 @@ async function(){
         "home.html"
     );
 
-    displayFavorites();
 
     await loadHtml(
         "plannerContainer",
