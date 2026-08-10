@@ -73,11 +73,11 @@ if(plannerClass){
 }
 
 planner.style.display = "block";
-const oldMemorial =
+const oldAnniversary =
     planner.querySelector(".planner-anniversary-badge");
 
-if(oldMemorial){
-    oldMemorial.remove();
+if(oldAnniversary){
+    oldAnniversary.remove();
 }
 
     const week =
