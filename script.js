@@ -1298,6 +1298,12 @@ async function(){
         "home-menu.html"
     );
 
+console.log(
+    "appShareModal:",
+    document.getElementById("appShareModal")
+);
+    
+
     await loadHtml(
         "plannerContainer",
         "planner.html"

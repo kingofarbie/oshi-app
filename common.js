@@ -4,6 +4,9 @@
 
 function openAppShare(){
 
+console.log("★★★★★ openAppShare 実行 ★★★★★");
+
+
     closeHomeMenu();
 
     const appUrl =
