@@ -74,7 +74,7 @@ if(plannerClass){
 
 planner.style.display = "block";
 const oldMemorial =
-    planner.querySelector(".planner-memorial-badge");
+    planner.querySelector(".planner-anniversary-badge");
 
 if(oldMemorial){
     oldMemorial.remove();
@@ -119,11 +119,11 @@ ${
 const plannerData =
     db.load();
 
-const memorialDays =
-    plannerData.memorialDays || [];
+const anniversaryDays =
+    plannerData.anniversaryDays || [];
 
-const todayMemorials =
-    memorialDays.filter(m => {
+const todayAnniversaries =
+    anniversaryDays.filter(m => {
 
         if(!m.visible || !m.date){
             return false;
@@ -147,14 +147,14 @@ const todayMemorials =
    記念日バッジ表示
 ===================== */
 
-let memorialHtml = "";
+let anniversaryHtml = "";
 
-if(todayMemorials.length > 0){
+if(todayAnniversaries.length > 0){
 
-    memorialHtml = `
-    <div class="planner-memorial-badge">
+    anniversaryHtml = `
+    <div class="planner-anniversary-badge">
 
-        ${todayMemorials.map(m => {
+        ${todayAnniversaries.map(m => {
 
             let icon = "🎉";
 
@@ -168,15 +168,15 @@ if(todayMemorials.length > 0){
 
 return `
 <div
-    class="planner-memorial-item"
-    onclick="togglePlannerMemorial(this)"
+    class="planner-anniversary-item"
+    onclick="togglePlannerAnniversary(this)"
 >
 
-    <span class="planner-memorial-icon">
+    <span class="planner-anniversary-icon">
         ${icon}
     </span>
 
-    <span class="planner-memorial-text">
+    <span class="planner-anniversary-text">
         ${m.title || ""}
     </span>
 
@@ -184,7 +184,7 @@ return `
         m.memo
         ?
         `
-        <span class="planner-memorial-memo">
+        <span class="planner-anniversary-memo">
             ${m.memo}
         </span>
         `
@@ -211,7 +211,7 @@ return `
 
 planner.insertAdjacentHTML(
     "afterbegin",
-    memorialHtml
+    anniversaryHtml
 );
 
 
@@ -567,14 +567,14 @@ timeline.onclick = function(event){
    拡大 ⇄ メモ表示
 ===================== */
 
-function togglePlannerMemorial(element){
+function togglePlannerAnniversary(element){
 
     if(!element){
         return;
     }
 
     element.classList.toggle(
-        "planner-memorial-expanded"
+        "planner-anniversary-expanded"
     );
 
 }
