@@ -420,17 +420,30 @@ if(photos.length === 1){
 
     `;
 
-    setTimeout(() => {
+setTimeout(() => {
 
-        const test =
-            document.getElementById("favorite-photo-card");
+    const test =
+        document.getElementById("favorite-photo-card");
 
-        console.log(
-            "★ 1秒後のfavorite-photo-card:",
-            test?.innerHTML
-        );
+    console.log(
+        "★ 1秒後:",
+        test?.innerHTML
+    );
 
-    }, 1000);
+}, 1000);
+
+
+setTimeout(() => {
+
+    const test =
+        document.getElementById("favorite-photo-card");
+
+    console.log(
+        "★ 3秒後:",
+        test?.innerHTML
+    );
+
+}, 3000);
 
     return;
 
