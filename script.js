@@ -2480,16 +2480,20 @@ function openSettingsFromMenu(){
     closeHomeMenu();
 
     /* 設定を開く前のページを記憶 */
-    const activePage =
+    const currentPage =
         document.querySelector(".page.active");
 
-    if(activePage){
+    if(currentPage){
 
         previousPageBeforeSettings =
-            activePage.id;
+            currentPage.id;
+
+        console.log(
+            "設定前のページ:",
+            previousPageBeforeSettings
+        );
 
     }
-
 
     /* すべてのページを閉じる */
     document
@@ -2497,7 +2501,6 @@ function openSettingsFromMenu(){
         .forEach(page => {
             page.classList.remove("active");
         });
-
 
     /* 設定を開く */
     const settings =
@@ -2515,7 +2518,6 @@ function openSettingsFromMenu(){
 
     settings.classList.add("active");
 
-
     /* ☰ → ✕ */
     setHomeMenuButton("close");
 
@@ -2528,11 +2530,12 @@ function closeSettingsFromMenu(){
         document.getElementById("settingsPage");
 
     if(settings){
+
         settings.classList.remove("active");
+
     }
 
-
-    /* 元々開いていたページを表示 */
+    /* 設定を開く前のページへ戻る */
     const previousPage =
         document.getElementById(
             previousPageBeforeSettings
@@ -2542,18 +2545,12 @@ function closeSettingsFromMenu(){
 
         previousPage.classList.add("active");
 
-    }else{
-
-        /* 念のためホーム */
-        const home =
-            document.getElementById("home");
-
-        if(home){
-            home.classList.add("active");
-        }
+        console.log(
+            "設定から戻る:",
+            previousPageBeforeSettings
+        );
 
     }
-
 
     /* ✕ → ☰ */
     setHomeMenuButton("open");
