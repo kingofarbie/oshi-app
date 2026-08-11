@@ -83,6 +83,7 @@ async function loadMaster(){
 
 function switchTab(pageId, event, fromCalendar = false){
 
+console.log("switchTab実行:", pageId);
 
     /* =====================
        ページ切り替え
@@ -2468,5 +2469,24 @@ ${m.text}
     ===================== */
 
     renderDayPhotos();
+
+}
+
+
+
+
+function openSettingsFromMenu(){
+
+    closeHomeMenu();
+
+    const settings =
+        document.getElementById("settingsPage");
+
+    if(!settings){
+        console.error("settingsPage が見つかりません");
+        return;
+    }
+
+    settings.classList.add("active");
 
 }
