@@ -110,6 +110,15 @@ console.log("switchTab実行:", pageId);
 
 
 /* =====================
+   ページ切り替え時に
+   ☰メニュー表示へ戻す
+===================== */
+
+setHomeMenuButton("open");
+
+
+
+/* =====================
    ページ切り替え時に上へ戻す
 ===================== */
 
@@ -959,7 +968,6 @@ let openSettingMenu = null;
 
 
 function toggleSetting(menuId){
-    alert("toggleSetting: " + menuId);
 
 const menus = [
     "planMenu",
