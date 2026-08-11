@@ -109,6 +109,15 @@ console.log("switchTab実行:", pageId);
     targetPage.classList.add('active');
 
 
+/* =====================
+   ページ切り替え時に上へ戻す
+===================== */
+
+window.scrollTo({
+    top: 0,
+    behavior: "instant"
+});
+
     /* =====================
        タブ切り替え
     ===================== */
