@@ -602,6 +602,7 @@ setInterval(() => {
 
 
 }, interval);
+}
 
 
 
