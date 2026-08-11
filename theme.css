@@ -288,40 +288,8 @@ box-shadow:
 
 }
 
-/* =========================
-ボタン
-========================= */
 
-/* =========================
-Theme System
-白ベース＋テーマカラー統一版
-========================= */
 
-/* =========================
-共通カラー
-========================= */
-
-.theme-basic{
---bg:#ffffff;
---card:#ffffff;
---surface:#f8f8fa;
---surface-strong:#f1f1f4;
---border:#dedee4;
---border-strong:#c9c9d1;
-
---text:#222222;
---text-sub:#667085;
-
---accent:#ff4f87;
---accent-light:#ff8fb3;
---accent-soft:#fff0f5;
-
---danger:#d9365f;
-
---header-gradient:
-    linear-gradient(135deg,#ff4f87,#ff8fb3);
-
-}
 
 /* =========================
 Neon Pink
