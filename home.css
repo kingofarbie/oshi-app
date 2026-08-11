@@ -109,13 +109,19 @@
 
 
 /* =========================
-   ホームお気に入り写真
+   ホーム・お気に入り写真
 ========================= */
 
 .home-favorite-photo-card{
+    width:100%;
     padding:0;
     overflow:hidden;
+    box-sizing:border-box;
 }
+
+/* =========================
+   複数枚スライド
+========================= */
 
 .home-favorite-slideshow{
     position:relative;
@@ -125,14 +131,24 @@
     border-radius:14px;
 }
 
-.home-favorite-photo{
-    position:absolute;
-    inset:0;
+/* =========================
+   写真共通
+========================= */
 
+.home-favorite-photo{
+    display:block;
     width:100%;
     height:100%;
-
+    max-width:100%;
+    box-sizing:border-box;
     object-fit:cover;
+    object-position:center;
+}
+
+/* 複数枚 */
+.home-favorite-slideshow .home-favorite-photo{
+    position:absolute;
+    inset:0;
 
     opacity:0;
 
@@ -141,63 +157,42 @@
     cursor:pointer;
 }
 
-.home-favorite-photo.active{
+.home-favorite-slideshow .home-favorite-photo.active{
     opacity:1;
-}
-
-/* 1枚だけの場合 */
-.home-favorite-photo-card > .home-favorite-photo{
-    position:relative;
-    display:block;
-    width:100%;
-    height:220px;
-    object-fit:cover;
-    opacity:1;
-    border-radius:14px;
-}
-
-/* 写真がない場合 */
-.favorite-photo-empty{
-    padding:20px;
-    text-align:center;
-}
-
-
-/* ホームお気に入り写真・強制表示確認 */
-.home-favorite-photo-card{
-    width:100%;
-    min-height:220px;
-    display:block;
-    overflow:hidden;
-}
-
-
-.home-favorite-photo{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    display:block;
 }
 
 /* =========================
-   ホームお気に入り写真・強制表示
+   1枚だけ
 ========================= */
 
-#favorite-photo-card .home-favorite-photo-view{
-    display:block !important;
-    width:100% !important;
-    height:220px !important;
-    overflow:hidden !important;
-    border-radius:14px !important;
+.home-favorite-photo-view{
+    position:relative;
+    width:100%;
+    height:220px;
+    overflow:hidden;
+    border-radius:14px;
 }
 
-#favorite-photo-card .home-favorite-photo{
-    display:block !important;
-    width:100% !important;
-    height:100% !important;
-    max-width:none !important;
-    max-height:none !important;
-    object-fit:cover !important;
-    opacity:1 !important;
-    visibility:visible !important;
+.home-favorite-photo-view .home-favorite-photo{
+    position:relative;
+
+    width:100%;
+    height:100%;
+
+    opacity:1;
+    visibility:visible;
+
+    object-fit:cover;
+    object-position:center;
+
+    cursor:default;
+}
+
+/* =========================
+   お気に入り写真なし
+========================= */
+
+.favorite-photo-empty{
+    padding:20px;
+    text-align:center;
 }
