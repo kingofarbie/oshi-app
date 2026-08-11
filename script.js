@@ -1314,13 +1314,29 @@ window.onload =
 async function(){
 
     /* =====================
-       HTML読み込み
+       ホームHTML読み込み
     ===================== */
 
     await loadHtml(
         "home",
         "home.html"
     );
+
+    /* =====================
+       ホームHTMLが入った直後に
+       ホームを表示
+    ===================== */
+
+    displayHomeSchedule();
+    displayUpcomingEvents();
+    displayFavoritePhotoCard();
+    displayCountdown();
+    displayFavorites();
+
+
+    /* =====================
+       その他HTML読み込み
+    ===================== */
 
     await loadHtml(
         "homeMenuContainer",
@@ -1379,7 +1395,6 @@ async function(){
             'oshi-search'
         );
 
-
     if(search){
 
         search.addEventListener(
@@ -1399,7 +1414,6 @@ async function(){
         document.getElementById(
             'category-select'
         );
-
 
     if(category){
 
@@ -1432,22 +1446,6 @@ async function(){
 
     renderCalendar();
 
-
-    /* =====================
-       ホーム
-    ===================== */
-
-    displayHomeSchedule();
-
-    displayUpcomingEvents();
-
-    displayFavoritePhotoCard();
-
-    displayCountdown();
-
-    displayFavorites();
-    
-    initFavoritePhotoSettings();
 
     /* =====================
        通知
@@ -1485,8 +1483,6 @@ async function(){
     updateTemplateSelect();
 
 };
-
-
 
 /* =====================
    HTML読込
