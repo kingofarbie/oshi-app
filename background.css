@@ -369,7 +369,7 @@ body.theme-dreamy-star .memory-header-actions button {
 
     color:#222222 !important;
 
-    border:1px solid #e5e5ea !important;
+    border:none !important;
 
     box-shadow:none !important;
 }
@@ -383,7 +383,7 @@ body.theme-dreamy-star .memory-header > button {
 
     color:#000000 !important;
 
-    border:1px solid #e5e5ea !important;
+    border:none !important;
 
     box-shadow:none !important;
 }
