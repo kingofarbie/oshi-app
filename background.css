@@ -6,7 +6,7 @@
    ・ヘッダー
    ・下部タブ
    ・テーマカラー
-   ・1日手帳の写真/動画エリア
+   ・1日手帳の写真/動画アイコン
 ================================================== */
 
 
@@ -44,7 +44,6 @@ body.theme-dreamy-star {
 body.theme-dreamy-star .header {
 
     position:relative;
-
     width:100%;
 
     background:
@@ -80,7 +79,6 @@ body.theme-dreamy-star .header {
     color:#fff;
 
     overflow:hidden;
-
     z-index:1000;
 
     box-shadow:
@@ -89,14 +87,15 @@ body.theme-dreamy-star .header {
 }
 
 
-/* ヘッダーの星 */
+/* ==================================================
+   ✨ ヘッダーの星
+================================================== */
 
 body.theme-dreamy-star .header::before {
 
     content:"";
 
     position:absolute;
-
     inset:0;
 
     pointer-events:none;
@@ -123,15 +122,18 @@ body.theme-dreamy-star .header::before {
 }
 
 
-/* ヘッダー内の文字・ボタン */
+/* ヘッダー内の文字・ボタンを前面へ */
 
 body.theme-dreamy-star .header > * {
 
     position:relative;
-
     z-index:1;
 }
 
+
+/* ==================================================
+   ✨ ヘッダー星の瞬き
+================================================== */
 
 @keyframes dreamyHeaderStars {
 
@@ -203,14 +205,15 @@ body.theme-dreamy-star .tabbar {
 }
 
 
-/* タブの星 */
+/* ==================================================
+   ✨ タブの星
+================================================== */
 
 body.theme-dreamy-star .tabbar::before {
 
     content:"";
 
     position:absolute;
-
     inset:0;
 
     pointer-events:none;
@@ -237,15 +240,18 @@ body.theme-dreamy-star .tabbar::before {
 }
 
 
-/* タブ文字 */
+/* タブ文字を星より前へ */
 
 body.theme-dreamy-star .tabbar .tab {
 
     position:relative;
-
     z-index:2;
 }
 
+
+/* ==================================================
+   ✨ タブ星の瞬き
+================================================== */
 
 @keyframes dreamyTabStars {
 
@@ -267,7 +273,6 @@ body.theme-dreamy-star .tabbar .tab {
 body {
 
     padding-bottom:70px;
-
     box-sizing:border-box;
 }
 
@@ -352,59 +357,74 @@ body.theme-dreamy-star .page-title {
 
 /* ==================================================
    📷 1日手帳
-   写真・動画エリアは白固定
+   写真・動画などのアイコンボタン
+   ★ 白固定
 ================================================== */
 
-body.theme-dreamy-star .memory-photo-box {
+/* 写真：＋・🗑・📤・🔀 */
 
-    background:#fff !important;
+body.theme-dreamy-star .memory-header-actions button {
 
-    color:#222 !important;
+    background:#ffffff !important;
 
-    border:1px solid #e5e5ea !important;
-
-}
-
-
-/* 写真・動画エリア内のボタンも白 */
-
-body.theme-dreamy-star .memory-photo-box button {
-
-    background:#fff !important;
-
-    color:#000 !important;
+    color:#222222 !important;
 
     border:1px solid #e5e5ea !important;
 
+    box-shadow:none !important;
 }
 
 
-/* 写真・動画エリア内の文字 */
+/* 動画・メモ・支出・評価・今日の一言：＋ */
 
-body.theme-dreamy-star .memory-photo-box * {
+body.theme-dreamy-star .memory-header > button {
 
-    color:#222;
+    background:#ffffff !important;
 
-}
+    color:#000000 !important;
 
+    border:1px solid #e5e5ea !important;
 
-/* ＋は黒固定 */
-
-body.theme-dreamy-star .memory-photo-box .plus,
-body.theme-dreamy-star .memory-photo-box .add-btn {
-
-    color:#000 !important;
-
+    box-shadow:none !important;
 }
 
 
 /* ==================================================
-   📷 写真・動画エリアのホバー
+   ➕ ＋ボタンは黒固定
 ================================================== */
 
-body.theme-dreamy-star .memory-photo-box button:hover {
+body.theme-dreamy-star .memory-header-actions button[onclick*="addPhoto"],
+body.theme-dreamy-star .memory-header > button[onclick*="addVideo"],
+body.theme-dreamy-star .memory-header > button[onclick*="addMemo"],
+body.theme-dreamy-star .memory-header > button[onclick*="addExpense"],
+body.theme-dreamy-star .memory-header > button[onclick*="addRating"],
+body.theme-dreamy-star .memory-header > button[onclick*="addComment"] {
 
-    background:#f7f7f7 !important;
+    color:#000000 !important;
+}
 
-    color:#000 !important;
+
+/* ==================================================
+   🖱 ホバーしても白固定
+================================================== */
+
+body.theme-dreamy-star .memory-header-actions button:hover,
+body.theme-dreamy-star .memory-header > button:hover {
+
+    background:#ffffff !important;
+
+    box-shadow:none !important;
+}
+
+
+/* ＋のホバーも黒固定 */
+
+body.theme-dreamy-star .memory-header-actions button[onclick*="addPhoto"]:hover,
+body.theme-dreamy-star .memory-header > button[onclick*="addVideo"]:hover,
+body.theme-dreamy-star .memory-header > button[onclick*="addMemo"]:hover,
+body.theme-dreamy-star .memory-header > button[onclick*="addExpense"]:hover,
+body.theme-dreamy-star .memory-header > button[onclick*="addRating"]:hover,
+body.theme-dreamy-star .memory-header > button[onclick*="addComment"]:hover {
+
+    color:#000000 !important;
 }
