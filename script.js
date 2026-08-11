@@ -211,23 +211,29 @@ if(pageId === 'plannerPage'){
        ホーム
     ===================== */
 
-    if(pageId === 'home'){
+if(pageId === 'home'){
 
-        if(typeof displayHomeSchedule === 'function'){
-            displayHomeSchedule();
-        }
-
-        if(typeof displayUpcomingEvents === 'function'){
-            displayUpcomingEvents();
-        }
-
-        if(typeof displayFavorites === 'function'){
-            displayFavorites();
-        }
-
+    if(typeof displayHomeSchedule === 'function'){
+        displayHomeSchedule();
     }
 
+    if(typeof displayUpcomingEvents === 'function'){
+        displayUpcomingEvents();
+    }
 
+    if(typeof displayFavoritePhotoCard === 'function'){
+        displayFavoritePhotoCard();
+    }
+
+    if(typeof displayCountdown === 'function'){
+        displayCountdown();
+    }
+
+    if(typeof displayFavorites === 'function'){
+        displayFavorites();
+    }
+
+}
     /* =====================
        お気に入り
     ===================== */
@@ -698,9 +704,12 @@ function saveEvent(){
 
     displayHomeSchedule();
 
-    displayUpcomingEvents();
+displayUpcomingEvents();
 
-    displayCountdown();
+displayFavoritePhotoCard();
+
+displayCountdown();
+
 
 /* =====================
    保存後の画面更新
