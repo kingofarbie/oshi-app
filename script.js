@@ -959,6 +959,7 @@ let openSettingMenu = null;
 
 
 function toggleSetting(menuId){
+    alert("toggleSetting: " + menuId);
 
 const menus = [
     "planMenu",
