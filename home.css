@@ -157,6 +157,17 @@
     cursor:pointer;
 }
 
+
+/* =========================
+   フェイドOFF
+========================= */
+
+.home-favorite-slideshow.no-fade
+.home-favorite-photo{
+    transition:none;
+}
+
+
 .home-favorite-slideshow .home-favorite-photo.active{
     opacity:1;
 }

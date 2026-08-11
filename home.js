@@ -519,12 +519,17 @@ box.innerHTML = `
 
 `;
 
-
 /* =====================
    スライドショー
 ===================== */
 
 let current = 0;
+
+
+const slideshow =
+    box.querySelector(
+        ".home-favorite-slideshow"
+    );
 
 
 const images =
@@ -534,64 +539,69 @@ const images =
 
 
 /* =====================
-   フェイドOFF
-   → 最初の1枚だけ表示
+   フェイド設定
 ===================== */
 
-if(!fadeEnabled){
+if(slideshow){
 
-    images.forEach((img,index)=>{
+    if(fadeEnabled){
 
-        img.classList.toggle(
-            "active",
-            index === 0
+        slideshow.classList.remove(
+            "no-fade"
         );
 
-    });
+    }else{
+
+        slideshow.classList.add(
+            "no-fade"
+        );
+
+    }
 
 }
 
 
 /* =====================
-   フェイドON
+   最初の写真
 ===================== */
 
-const timer =
-    setInterval(() => {
+images.forEach((img,index)=>{
 
-        if(images.length <= 1){
-            return;
-        }
+    img.classList.toggle(
+        "active",
+        index === 0
+    );
 
-
-        images[current].classList.remove(
-            "active"
-        );
-
-
-        current =
-            (current + 1)
-            % images.length;
-
-
-        images[current].classList.add(
-            "active"
-        );
-
-
-    }, interval);
+});
 
 
 /* =====================
-   フェイドOFFでも
-   写真は切り替える
-   =====================
-   CSS側でフェイドを無効にするため、
-   スライド自体は同じように動かす
-*/
+   写真切り替え
+===================== */
 
-}
+setInterval(() => {
 
+    if(images.length <= 1){
+        return;
+    }
+
+
+    images[current].classList.remove(
+        "active"
+    );
+
+
+    current =
+        (current + 1)
+        % images.length;
+
+
+    images[current].classList.add(
+        "active"
+    );
+
+
+}, interval);
 
 
 
