@@ -1,6 +1,7 @@
 /* =====================
-   🖼 ホームお気に入り写真設定
+   ⭐ ホームお気に入り写真設定
 ===================== */
+
 
 /* =====================
    設定読み込み
@@ -29,11 +30,13 @@ function loadFavoritePhotoSettings(){
         data.settings.favoritePhoto;
 
 
-    /* 表示枚数 */
+    /* =====================
+       表示枚数
+    ===================== */
 
     const countSelect =
         document.getElementById(
-            "homeFavoriteCount"
+            "favoritePhotoCount"
         );
 
     if(countSelect){
@@ -44,11 +47,13 @@ function loadFavoritePhotoSettings(){
     }
 
 
-    /* フェイド */
+    /* =====================
+       フェイド
+    ===================== */
 
     const fadeBtn =
         document.getElementById(
-            "homeFavoriteFadeBtn"
+            "favoritePhotoFadeBtn"
         );
 
     if(fadeBtn){
@@ -61,11 +66,13 @@ function loadFavoritePhotoSettings(){
     }
 
 
-    /* 表示時間 */
+    /* =====================
+       表示時間
+    ===================== */
 
     const intervalSelect =
         document.getElementById(
-            "homeFavoriteInterval"
+            "favoritePhotoInterval"
         );
 
     if(intervalSelect){
@@ -86,7 +93,7 @@ function changeFavoritePhotoCount(){
 
     const select =
         document.getElementById(
-            "homeFavoriteCount"
+            "favoritePhotoCount"
         );
 
     if(!select){
@@ -103,14 +110,17 @@ function changeFavoritePhotoCount(){
         data.settings.favoritePhoto = {};
     }
 
+
     data.settings.favoritePhoto.count =
         select.value === "all"
         ? "all"
         : Number(select.value);
 
+
     db.save(data);
 
     displayFavoritePhotoCard();
+
 }
 
 
@@ -118,7 +128,7 @@ function changeFavoritePhotoCount(){
    フェイド ON / OFF
 ===================== */
 
-function toggleHomeFavoriteFade(){
+function toggleFavoritePhotoFade(){
 
     const data = db.load();
 
@@ -130,19 +140,23 @@ function toggleHomeFavoriteFade(){
         data.settings.favoritePhoto = {};
     }
 
+
     const current =
         data.settings.favoritePhoto.fade !== false;
 
+
     data.settings.favoritePhoto.fade =
         !current;
+
 
     db.save(data);
 
 
     const btn =
         document.getElementById(
-            "homeFavoriteFadeBtn"
+            "favoritePhotoFadeBtn"
         );
+
 
     if(btn){
 
@@ -155,6 +169,7 @@ function toggleHomeFavoriteFade(){
 
 
     displayFavoritePhotoCard();
+
 }
 
 
@@ -166,12 +181,13 @@ function changeFavoritePhotoInterval(){
 
     const select =
         document.getElementById(
-            "homeFavoriteInterval"
+            "favoritePhotoInterval"
         );
 
     if(!select){
         return;
     }
+
 
     const data = db.load();
 
@@ -183,10 +199,54 @@ function changeFavoritePhotoInterval(){
         data.settings.favoritePhoto = {};
     }
 
+
     data.settings.favoritePhoto.interval =
         Number(select.value);
+
 
     db.save(data);
 
     displayFavoritePhotoCard();
+
+}
+
+
+/* =====================
+   設定画面イベント登録
+===================== */
+
+function initFavoritePhotoSettings(){
+
+    const countSelect =
+        document.getElementById(
+            "favoritePhotoCount"
+        );
+
+    if(countSelect){
+
+        countSelect.addEventListener(
+            "change",
+            changeFavoritePhotoCount
+        );
+
+    }
+
+
+    const intervalSelect =
+        document.getElementById(
+            "favoritePhotoInterval"
+        );
+
+    if(intervalSelect){
+
+        intervalSelect.addEventListener(
+            "change",
+            changeFavoritePhotoInterval
+        );
+
+    }
+
+
+    loadFavoritePhotoSettings();
+
 }

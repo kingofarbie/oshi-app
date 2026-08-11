@@ -1437,8 +1437,7 @@ async function(){
 
     displayFavorites();
     
-    loadFavoritePhotoSettings();
-
+    initFavoritePhotoSettings();
 
     /* =====================
        通知
