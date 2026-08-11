@@ -967,6 +967,7 @@ const menus = [
     "memorialMenu",
     "anniversaryMenu",
     "notificationMenu",
+    "favoritePhotoMenu",
     "templateMenu",
     "categoryMenu"
 ];
