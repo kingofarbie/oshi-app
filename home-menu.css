@@ -221,3 +221,87 @@
         scale(.92);
 }
 
+
+
+/* =========================
+   ヘッダーメニューボタン
+   テーマカラーを薄く表示
+========================= */
+
+#homeMenuButton{
+
+    position:absolute;
+
+    right:10px;
+    top:50%;
+
+    transform:translateY(-50%);
+
+    width:42px;
+    height:42px;
+
+    padding:0;
+    margin:0;
+
+    border:none;
+    border-radius:12px;
+
+    /* 現在のテーマカラーを薄くする */
+    background:
+        color-mix(
+            in srgb,
+            var(--accent) 18%,
+            white
+        );
+
+    /* テーマカラー */
+    color:var(--accent);
+
+    font-size:24px;
+    font-weight:bold;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    line-height:1;
+
+    cursor:pointer;
+
+    z-index:10;
+
+    box-shadow:
+        0 2px 7px rgba(0,0,0,.10);
+}
+
+#homeMenuButton:active{
+
+    transform:
+        translateY(-50%)
+        scale(.92);
+}
+
+
+/* =========================
+   ☰・× メニューボタン
+   テーマカラーを薄く表示
+========================= */
+
+#homeMenuButton,
+.home-menu-header button{
+
+    background:
+        color-mix(
+            in srgb,
+            var(--accent) 18%,
+            white
+        ) !important;
+
+    color:var(--accent) !important;
+
+    border:none !important;
+
+    box-shadow:
+        0 2px 7px rgba(0,0,0,.10);
+}
