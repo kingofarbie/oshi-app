@@ -178,3 +178,26 @@
     object-fit:cover;
     display:block;
 }
+
+/* =========================
+   ホームお気に入り写真・強制表示
+========================= */
+
+#favorite-photo-card .home-favorite-photo-view{
+    display:block !important;
+    width:100% !important;
+    height:220px !important;
+    overflow:hidden !important;
+    border-radius:14px !important;
+}
+
+#favorite-photo-card .home-favorite-photo{
+    display:block !important;
+    width:100% !important;
+    height:100% !important;
+    max-width:none !important;
+    max-height:none !important;
+    object-fit:cover !important;
+    opacity:1 !important;
+    visibility:visible !important;
+}
