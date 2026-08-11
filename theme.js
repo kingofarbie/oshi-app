@@ -7,10 +7,6 @@ const themeNames = {
     "neon-orange":"🧡 Orange",
     "love":"💕 恋愛",
     "space":"🌌 宇宙",
-    "passion":"🔥 情熱",
-    "cool":"❄️ クール",
-    "friendship":"🤝 友情",
-
     // 🌌 新しい背景テーマ
     "dreamy-star":"🌌 ゆめかわ星空"
 
