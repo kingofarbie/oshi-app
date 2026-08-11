@@ -103,10 +103,9 @@ body{
     position:absolute;
 
     right:10px;
-    top:50%;
-
     left:auto;
 
+    top:50%;
     transform:translateY(-50%);
 
     width:44px;
