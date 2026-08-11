@@ -9,7 +9,10 @@ const themeNames = {
     "space":"🌌 宇宙",
     "passion":"🔥 情熱",
     "cool":"❄️ クール",
-    "friendship":"🤝 友情"
+    "friendship":"🤝 友情",
+
+    // 🌌 新しい背景テーマ
+    "dreamy-star":"🌌 ゆめかわ星空"
 
 };
 
@@ -17,17 +20,14 @@ const themeNames = {
 
 function setTheme(theme){
 
-
     document.body.className =
         document.body.className
         .replace(/theme-[^\s]+/g,'');
 
 
-
     document.body.classList.add(
         'theme-' + theme
     );
-
 
 
     localStorage.setItem(
@@ -36,17 +36,13 @@ function setTheme(theme){
     );
 
 
-
     updateThemeText(theme);
 
 }
 
 
 
-
-
 function updateThemeText(theme){
-
 
     const area =
         document.getElementById(
@@ -58,7 +54,6 @@ function updateThemeText(theme){
         return;
 
 
-
     area.innerHTML =
         "現在：" +
         (themeNames[theme] || theme);
@@ -67,18 +62,14 @@ function updateThemeText(theme){
 
 
 
-
-
 function loadTheme(){
-
 
     const theme =
         localStorage.getItem('theme');
 
 
-
-const current =
-    theme || "basic";
+    const current =
+        theme || "basic";
 
 
     document.body.classList.add(
@@ -86,11 +77,9 @@ const current =
     );
 
 
-
     updateThemeText(current);
 
 }
-
 
 
 

@@ -1,0 +1,168 @@
+/* ==================================================
+   🌌 推し活手帳
+   背景テーマ専用CSS
+   画像ファイル不要
+================================================== */
+
+
+/* ==================================================
+   🌌 ゆめかわ星空
+================================================== */
+
+body.theme-dreamy-star {
+
+    background:
+        radial-gradient(
+            circle at 20% 15%,
+            rgba(255,255,255,0.9) 0 1px,
+            transparent 2px
+        ),
+        radial-gradient(
+            circle at 75% 20%,
+            rgba(255,220,255,0.9) 0 1.5px,
+            transparent 3px
+        ),
+        radial-gradient(
+            circle at 45% 40%,
+            rgba(210,220,255,0.8) 0 1px,
+            transparent 2px
+        ),
+        radial-gradient(
+            circle at 85% 55%,
+            rgba(255,255,255,0.8) 0 1px,
+            transparent 2px
+        ),
+        radial-gradient(
+            circle at 15% 70%,
+            rgba(220,200,255,0.8) 0 1.5px,
+            transparent 3px
+        ),
+        radial-gradient(
+            circle at 60% 85%,
+            rgba(255,220,250,0.8) 0 1px,
+            transparent 2px
+        ),
+        linear-gradient(
+            135deg,
+            #100d2c 0%,
+            #24164d 35%,
+            #42266b 65%,
+            #17152f 100%
+        );
+
+    background-attachment: fixed;
+
+    background-size:
+        220px 220px,
+        300px 300px,
+        180px 180px,
+        260px 260px,
+        320px 320px,
+        200px 200px,
+        100% 100%;
+
+    min-height: 100vh;
+}
+
+
+/* ==================================================
+   ✨ 大きめの星
+================================================== */
+
+body.theme-dreamy-star::before {
+
+    content: "";
+
+    position: fixed;
+
+    inset: 0;
+
+    pointer-events: none;
+
+    background:
+        radial-gradient(
+            circle at 30% 25%,
+            rgba(255,255,255,0.95) 0 2px,
+            transparent 4px
+        ),
+        radial-gradient(
+            circle at 70% 45%,
+            rgba(255,220,255,0.9) 0 2px,
+            transparent 4px
+        ),
+        radial-gradient(
+            circle at 50% 75%,
+            rgba(210,220,255,0.9) 0 2px,
+            transparent 4px
+        );
+
+    animation:
+        dreamyStars 4s ease-in-out infinite;
+
+    z-index: 0;
+}
+
+
+/* ==================================================
+   💜 ぼんやりした光
+================================================== */
+
+body.theme-dreamy-star::after {
+
+    content: "";
+
+    position: fixed;
+
+    inset: 0;
+
+    pointer-events: none;
+
+    background:
+        radial-gradient(
+            ellipse at 20% 20%,
+            rgba(180,150,255,0.18),
+            transparent 45%
+        ),
+        radial-gradient(
+            ellipse at 80% 70%,
+            rgba(255,150,220,0.14),
+            transparent 45%
+        );
+
+    z-index: 0;
+}
+
+
+/* ==================================================
+   ✨ 星の瞬き
+================================================== */
+
+@keyframes dreamyStars {
+
+    0%,
+    100% {
+
+        opacity: 0.35;
+
+    }
+
+    50% {
+
+        opacity: 1;
+
+    }
+
+}
+
+
+/* ==================================================
+   📱 アプリ本体を背景より前面へ
+================================================== */
+
+body.theme-dreamy-star > * {
+
+    position: relative;
+
+    z-index: 1;
+
+}
