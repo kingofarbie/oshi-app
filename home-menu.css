@@ -196,3 +196,20 @@
     box-shadow:
         0 2px 7px rgba(0,0,0,.10);
 }
+
+
+/* =========================
+   ☰・× サイズ修正
+========================= */
+
+#homeMenuButton {
+    width:42px !important;
+    height:42px !important;
+    font-size:24px !important;
+}
+
+.home-menu-header button {
+    width:32px !important;
+    height:32px !important;
+    font-size:16px !important;
+}
