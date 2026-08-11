@@ -2479,14 +2479,6 @@ function openSettingsFromMenu(){
 
     closeHomeMenu();
 
-    const settings =
-        document.getElementById("settingsPage");
-
-    if(!settings){
-        console.error("settingsPage が見つかりません");
-        return;
-    }
-
-    settings.classList.add("active");
+    switchTab("settingsPage", null);
 
 }
