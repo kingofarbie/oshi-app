@@ -325,285 +325,245 @@ function eventStartDate(e){
 
 function displayFavoritePhotoCard(){
 
-const box =
-    document.getElementById(
-        "favorite-photo-card"
-    );
-
-if(!box){
-    return;
-}
-
-
-const data = db.load();
-
-
-/* =====================
-   設定取得
-===================== */
-
-const settings =
-    data.settings?.favoritePhoto || {};
-
-
-/* =====================
-   表示枚数
-   初期値：3枚
-===================== */
-
-const countSetting =
-    settings.count ?? 3;
-
-
-/* =====================
-   フェイド設定
-   初期値：ON
-===================== */
-
-const fadeEnabled =
-    settings.fade !== false;
-
-
-/* =====================
-   表示時間
-   初期値：7秒
-===================== */
-
-const interval =
-    Number(
-        settings.interval || 7000
-    );
-
-
-/* =====================
-   お気に入り写真取得
-===================== */
-
-let photos = [];
-
-
-Object.values(
-    data.dayMemories || {}
-).forEach(day => {
-
-    (day.photos || []).forEach(photo => {
-
-        if(photo.favorite){
-
-            photos.push(photo);
-
-        }
-
-    });
-
-});
-
-
-/* =====================
-   自由並べ替え順
-   ===================== */
-
-photos.sort((a,b) => {
-
-    return (
-        (a.order ?? a.id)
-        -
-        (b.order ?? b.id)
-    );
-
-});
-
-
-/* =====================
-   表示枚数
-===================== */
-
-if(countSetting !== "all"){
-
-    const displayCount =
-        Number(countSetting);
-
-    photos =
-        photos.slice(
-            0,
-            displayCount
+    const box =
+        document.getElementById(
+            "favorite-photo-card"
         );
 
-}
-
-
-console.log(
-    "ホームお気に入り写真:",
-    photos
-);
-
-console.log(
-    "表示枚数:",
-    countSetting
-);
-
-console.log(
-    "フェイド:",
-    fadeEnabled
-);
-
-console.log(
-    "表示時間:",
-    interval
-);
-
-
-/* =====================
-   写真なし
-===================== */
-
-if(photos.length === 0){
-
-    box.innerHTML = `
-        <div class="favorite-photo-empty">
-            ⭐ お気に入り写真はありません
-        </div>
-    `;
-
-    return;
-
-}
-
-
-/* =====================
-   1枚だけ
-===================== */
-
-if(photos.length === 1){
-
-    box.innerHTML = `
-
-        <div class="home-favorite-photo-view">
-
-            <img
-                src="${photos[0].src}"
-                class="home-favorite-photo"
-                onclick="openFavoritePhotoViewer(${photos[0].id})"
-            >
-
-        </div>
-
-    `;
-
-    return;
-
-}
-
-
-/* =====================
-   複数枚
-===================== */
-
-box.innerHTML = `
-
-    <div class="home-favorite-slideshow">
-
-        ${photos.map((photo,index) => `
-
-            <img
-                src="${photo.src}"
-                class="home-favorite-photo
-                ${index === 0 ? "active" : ""}"
-                data-favorite-index="${index}"
-                onclick="openFavoritePhotoViewer(${photo.id})"
-            >
-
-        `).join("")}
-
-    </div>
-
-`;
-
-/* =====================
-   スライドショー
-===================== */
-
-let current = 0;
-
-
-const slideshow =
-    box.querySelector(
-        ".home-favorite-slideshow"
-    );
-
-
-const images =
-    box.querySelectorAll(
-        ".home-favorite-photo"
-    );
-
-
-/* =====================
-   フェイド設定
-===================== */
-
-if(slideshow){
-
-    if(fadeEnabled){
-
-        slideshow.classList.remove(
-            "no-fade"
-        );
-
-    }else{
-
-        slideshow.classList.add(
-            "no-fade"
-        );
-
-    }
-
-}
-
-
-/* =====================
-   最初の写真
-===================== */
-
-images.forEach((img,index)=>{
-
-    img.classList.toggle(
-        "active",
-        index === 0
-    );
-
-});
-
-
-/* =====================
-   写真切り替え
-===================== */
-
-setInterval(() => {
-
-    if(images.length <= 1){
+    if(!box){
         return;
     }
 
 
-    images[current].classList.remove(
-        "active"
+    const data = db.load();
+
+
+    /* =====================
+       設定取得
+    ===================== */
+
+    const settings =
+        data.settings?.favoritePhoto || {};
+
+
+    /* =====================
+       表示枚数
+       初期値：3枚
+    ===================== */
+
+    const countSetting =
+        settings.count ?? 3;
+
+
+    /* =====================
+       フェイド設定
+       初期値：ON
+    ===================== */
+
+    const fadeEnabled =
+        settings.fade !== false;
+
+
+    /* =====================
+       表示時間
+       初期値：7秒
+    ===================== */
+
+    const interval =
+        Number(
+            settings.interval || 7000
+        );
+
+
+    /* =====================
+       お気に入り写真取得
+    ===================== */
+
+    let photos = [];
+
+
+    Object.values(
+        data.dayMemories || {}
+    ).forEach(day => {
+
+        (day.photos || []).forEach(photo => {
+
+            if(photo.favorite){
+
+                photos.push(photo);
+
+            }
+
+        });
+
+    });
+
+
+    /* =====================
+       自由並べ替え順
+    ===================== */
+
+    photos.sort((a,b) => {
+
+        return (
+            (a.order ?? a.id)
+            -
+            (b.order ?? b.id)
+        );
+
+    });
+
+
+    /* =====================
+       表示枚数
+    ===================== */
+
+    if(countSetting !== "all"){
+
+        const displayCount =
+            Number(countSetting);
+
+        photos =
+            photos.slice(
+                0,
+                displayCount
+            );
+
+    }
+
+
+    console.log(
+        "ホームお気に入り写真:",
+        photos
+    );
+
+    console.log(
+        "表示枚数:",
+        countSetting
+    );
+
+    console.log(
+        "フェイド:",
+        fadeEnabled
+    );
+
+    console.log(
+        "表示時間:",
+        interval
     );
 
 
-    current =
-        (current + 1)
-        % images.length;
+    /* =====================
+       写真なし
+    ===================== */
+
+    if(photos.length === 0){
+
+        box.innerHTML = `
+            <div class="favorite-photo-empty">
+                ⭐ お気に入り写真はありません
+            </div>
+        `;
+
+        return;
+
+    }
 
 
-    images[current].classList.add(
-        "active"
-    );
+    /* =====================
+       1枚だけ
+    ===================== */
+
+    if(photos.length === 1){
+
+        box.innerHTML = `
+
+            <div class="home-favorite-photo-view">
+
+                <img
+                    src="${photos[0].src}"
+                    class="home-favorite-photo"
+                    onclick="openFavoritePhotoViewer(${photos[0].id})"
+                >
+
+            </div>
+
+        `;
+
+        return;
+
+    }
 
 
-}, interval);
+    /* =====================
+       複数枚
+    ===================== */
+
+    box.innerHTML = `
+
+        <div
+            class="home-favorite-slideshow
+            ${fadeEnabled ? "" : "no-fade"}"
+        >
+
+            ${photos.map((photo,index) => `
+
+                <img
+                    src="${photo.src}"
+                    class="home-favorite-photo ${index === 0 ? "active" : ""}"
+                    data-favorite-index="${index}"
+                    onclick="openFavoritePhotoViewer(${photo.id})"
+                >
+
+            `).join("")}
+
+        </div>
+
+    `;
+
+
+    /* =====================
+       スライドショー
+    ===================== */
+
+    let current = 0;
+
+
+    const images =
+        box.querySelectorAll(
+            ".home-favorite-photo"
+        );
+
+
+    /* =====================
+       写真切り替え
+    ===================== */
+
+    setInterval(() => {
+
+        if(images.length <= 1){
+            return;
+        }
+
+
+        images[current].classList.remove(
+            "active"
+        );
+
+
+        current =
+            (current + 1)
+            % images.length;
+
+
+        images[current].classList.add(
+            "active"
+        );
+
+
+    }, interval);
+
 }
-
 
 
 function displayCountdown() {
