@@ -2479,6 +2479,21 @@ function openSettingsFromMenu(){
 
     closeHomeMenu();
 
-    switchTab("settingsPage", null);
+    const home =
+        document.getElementById("home");
+
+    if(home){
+        home.classList.remove("active");
+    }
+
+    const settings =
+        document.getElementById("settingsPage");
+
+    if(!settings){
+        console.error("settingsPage が見つかりません");
+        return;
+    }
+
+    settings.classList.add("active");
 
 }
