@@ -1308,11 +1308,11 @@ async function(){
         "home-menu.html"
     );
 
-console.log(
-    "appShareModal:",
-    document.getElementById("appShareModal")
-);
-    
+    console.log(
+        "appShareModal:",
+        document.getElementById("appShareModal")
+    );
+
 
     await loadHtml(
         "plannerContainer",
@@ -1335,9 +1335,9 @@ console.log(
     );
 
     await loadHtml(
-    "anniversaryContainer",
-    "anniversary.html"
-);
+        "anniversaryContainer",
+        "anniversary.html"
+    );
 
 
     /* =====================
@@ -1346,14 +1346,9 @@ console.log(
 
     initializeCategories();
 
-
     await loadMaster();
 
-
     displayOshiList();
-
-
-    displayHomeSchedule();
 
 
     /* =====================
@@ -1372,7 +1367,6 @@ console.log(
             'focus',
             showCandidates
         );
-
 
         search.addEventListener(
             'input',
@@ -1424,9 +1418,15 @@ console.log(
        ホーム
     ===================== */
 
+    displayHomeSchedule();
+
     displayUpcomingEvents();
 
+    displayFavoritePhotoCard();
+
     displayCountdown();
+
+    displayFavorites();
 
 
     /* =====================
@@ -1464,14 +1464,8 @@ console.log(
 
     updateTemplateSelect();
 
-
-    /* =====================
-       お気に入り
-    ===================== */
-
-    displayFavorites();
-
 };
+
 
 
 /* =====================
