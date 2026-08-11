@@ -27,10 +27,11 @@ async function loadHome(){
 
         /* ホーム内容を読み込んだ後に表示 */
 
-        displayHomeSchedule();
-        displayUpcomingEvents();
-        displayCountdown();
-        displayFavorites();
+displayHomeSchedule();
+displayUpcomingEvents();
+displayFavoritePhotoCard();
+displayCountdown();
+displayFavorites();
 
     }catch(error){
 

@@ -106,3 +106,56 @@
 }
 
 
+
+
+/* =========================
+   ホーム・お気に入り写真
+========================= */
+
+.home-favorite-photo-card{
+    padding:0;
+    overflow:hidden;
+}
+
+/* 写真表示エリア */
+.home-favorite-photo-view{
+    position:relative;
+    width:100%;
+    height:220px;
+    overflow:hidden;
+    border-radius:14px;
+}
+
+/* 写真 */
+.home-favorite-photo-view img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+
+    opacity:1;
+
+    transition:
+        opacity 0.8s ease-in-out;
+}
+
+/* 写真がない場合 */
+.home-favorite-photo-empty{
+    height:220px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:14px;
+    opacity:0.6;
+}
+
+/* 写真切り替え時 */
+.home-favorite-photo-fade-out{
+    opacity:0;
+}
+
+.home-favorite-photo-fade-in{
+    opacity:1;
+}
