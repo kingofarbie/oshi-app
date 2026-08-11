@@ -179,24 +179,6 @@
    テーマカラーを薄く表示
 ========================= */
 
-#homeMenuButton,
-.home-menu-header button{
-
-    background:
-        color-mix(
-            in srgb,
-            var(--accent) 18%,
-            white
-        ) !important;
-
-    color:var(--accent) !important;
-
-    border:none !important;
-
-    box-shadow:
-        0 2px 7px rgba(0,0,0,.10);
-}
-
 
 /* =========================
    ☰・× サイズ修正
