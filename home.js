@@ -317,6 +317,176 @@ function eventStartDate(e){
 
 }
 
+
+/* =====================
+   ホームお気に入り写真
+===================== */
+
+function displayFavoritePhotoCard(){
+
+    const box =
+        document.getElementById(
+            "favorite-photo-card"
+        );
+
+    if(!box){
+        return;
+    }
+
+    const data = db.load();
+
+    let photos = [];
+
+    Object.values(
+        data.dayMemories || {}
+    ).forEach(day => {
+
+        (day.photos || []).forEach(photo => {
+
+            if(photo.favorite){
+
+                photos.push(photo);
+
+            }
+
+        });
+
+    });
+
+
+    /* =====================
+       自由並べ替え順
+    ===================== */
+
+    photos.sort((a,b) => {
+
+        return (
+            (a.order || a.id) -
+            (b.order || b.id)
+        );
+
+    });
+
+
+    /* =====================
+       設定枚数
+       ※ひとまず3枚
+    ===================== */
+
+    const displayCount = 3;
+
+
+    photos =
+        photos.slice(
+            0,
+            displayCount
+        );
+
+        console.log("ホームお気に入り写真:", photos);
+console.log("表示枚数:", photos.length);
+
+
+
+    if(photos.length === 0){
+
+        box.innerHTML =
+            `
+            <div class="favorite-photo-empty">
+                ⭐ お気に入り写真はありません
+            </div>
+            `;
+
+        return;
+
+    }
+
+
+    /* =====================
+       1枚だけ
+    ===================== */
+
+    if(photos.length === 1){
+
+        box.innerHTML = `
+
+        <img
+            src="${photos[0].src}"
+            class="home-favorite-photo"
+            onclick="openFavoritePhotoViewer(${photos[0].id})"
+        >
+
+        `;
+
+        return;
+
+    }
+
+
+    /* =====================
+       複数枚
+    ===================== */
+
+    box.innerHTML = `
+
+        <div class="home-favorite-slideshow">
+
+            ${photos.map((photo,index) => `
+
+                <img
+                    src="${photo.src}"
+                    class="home-favorite-photo
+                    ${index === 0 ? "active" : ""}"
+                    data-favorite-index="${index}"
+                    onclick="openFavoritePhotoViewer(${photo.id})"
+                >
+
+            `).join("")}
+
+        </div>
+
+    `;
+
+
+    /* =====================
+       フェード切り替え
+    ===================== */
+
+    let current = 0;
+
+    const images =
+        box.querySelectorAll(
+            ".home-favorite-photo"
+        );
+
+
+    setInterval(() => {
+
+        if(images.length <= 1){
+            return;
+        }
+
+        images[current].classList.remove(
+            "active"
+        );
+
+
+        current =
+            (current + 1)
+            % images.length;
+
+
+        images[current].classList.add(
+            "active"
+        );
+
+    }, 4000);
+
+}
+
+
+
+
+
 function displayCountdown() {
 
 const box =
