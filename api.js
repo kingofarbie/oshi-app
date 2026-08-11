@@ -8,11 +8,37 @@ async function loadHolidayCountries() {
     const select =
         document.getElementById("holidayCountry");
 
-
+    // 設定画面がまだ読み込まれていない場合
     if (!select) {
-        return;
+        return false;
     }
 
+
+    // すでに読み込み済みなら何もしない
+    if (
+        select.dataset.loaded === "true"
+    ) {
+        return true;
+    }
+
+
+    // =====================
+    // 読み込み中表示
+    // =====================
+
+    select.innerHTML = "";
+
+    const loadingOption =
+        document.createElement("option");
+
+    loadingOption.value = "";
+
+    loadingOption.textContent =
+        "国・地域を読み込み中...";
+
+    select.appendChild(loadingOption);
+
+    select.disabled = true;
 
 
     // =====================
@@ -74,29 +100,45 @@ async function loadHolidayCountries() {
     ];
 
 
-
     try {
 
+        // =====================
+        // Nager.Date API
+        // =====================
 
         const response =
             await fetch(
-                "https://date.nager.at/api/v3/AvailableCountries"
+                "https://date.nager.at/api/v3/AvailableCountries",
+                {
+                    method:"GET",
+                    cache:"no-store"
+                }
             );
 
 
         if (!response.ok) {
 
             throw new Error(
-                "国一覧の取得に失敗しました"
+                "HTTP " + response.status
             );
 
         }
 
 
-
         const countries =
             await response.json();
 
+
+        if (
+            !Array.isArray(countries) ||
+            countries.length === 0
+        ) {
+
+            throw new Error(
+                "国一覧が空です"
+            );
+
+        }
 
 
         console.log(
@@ -106,109 +148,117 @@ async function loadHolidayCountries() {
         );
 
 
+        // =====================
+        // 一旦クリア
+        // =====================
 
         select.innerHTML = "";
-
 
 
         const added =
             new Set();
 
 
-
         // =====================
         // 主要国追加
         // =====================
 
-        priorityCountries.forEach(country=>{
+        priorityCountries.forEach(
+            country => {
 
+                const option =
+                    document.createElement(
+                        "option"
+                    );
 
-            const option =
-                document.createElement("option");
+                option.value =
+                    country.countryCode;
 
+                option.textContent =
+                    country.name;
 
-            option.value =
-                country.countryCode;
+                select.appendChild(
+                    option
+                );
 
+                added.add(
+                    country.countryCode
+                );
 
-            option.textContent =
-                country.name;
-
-
-            select.appendChild(option);
-
-
-
-            added.add(
-                country.countryCode
-            );
-
-
-        });
-
-
+            }
+        );
 
 
         // =====================
-        // その他の国追加
+        // その他の国
         // =====================
 
         countries
+            .sort(
+                (a,b) =>
+                    a.name.localeCompare(
+                        b.name
+                    )
+            )
+            .forEach(
+                country => {
 
-        .sort(
-            (a,b)=>
-                a.name.localeCompare(b.name)
-        )
-
-        .forEach(country=>{
-
-
-            if(
-                added.has(
-                    country.countryCode
-                )
-            ){
-
-                return;
-
-            }
+                    if (
+                        added.has(
+                            country.countryCode
+                        )
+                    ) {
+                        return;
+                    }
 
 
+                    const option =
+                        document.createElement(
+                            "option"
+                        );
 
-            const option =
-                document.createElement("option");
+                    option.value =
+                        country.countryCode;
+
+                    option.textContent =
+                        country.name;
+
+                    select.appendChild(
+                        option
+                    );
+
+                }
+            );
 
 
-            option.value =
-                country.countryCode;
-
-
-            option.textContent =
-                country.name;
-
-
-            select.appendChild(option);
-
-
-        });
-
-
-
+        // =====================
         // 保存済み設定復元
+        // =====================
 
         loadSavedHolidayCountry();
 
 
-
+        // =====================
         // 変更時保存
+        // =====================
 
         select.onchange =
             saveHolidayCountry;
 
 
+        // =====================
+        // 読み込み完了
+        // =====================
+
+        select.disabled = false;
+
+        select.dataset.loaded = "true";
+
+
+        return true;
+
 
     } catch(error) {
-
 
         console.error(
             "Nager.Date 国一覧取得エラー:",
@@ -216,102 +266,147 @@ async function loadHolidayCountries() {
         );
 
 
+        // =====================
+        // エラー表示
+        // =====================
+
+        select.innerHTML = "";
+
+        const errorOption =
+            document.createElement(
+                "option"
+            );
+
+        errorOption.value = "";
+
+        errorOption.textContent =
+            "国・地域を読み込めませんでした";
+
+        select.appendChild(
+            errorOption
+        );
+
+        select.disabled = false;
+
+
+        return false;
+
     }
 
 }
 
 
-
-
 // =====================
-// ページ読み込み時
+// 設定画面が後から生成される場合に対応
 // =====================
 
-document.addEventListener(
-"DOMContentLoaded",
-function(){
+function tryLoadHolidayCountries() {
+
+    const select =
+        document.getElementById(
+            "holidayCountry"
+        );
+
+
+    if (!select) {
+
+        // まだ設定画面が作られていない
+        // 少し待って再確認
+
+        setTimeout(
+            tryLoadHolidayCountries,
+            300
+        );
+
+        return;
+    }
+
 
     loadHolidayCountries();
 
-});
+}
 
 
+// =====================
+// ページ読み込み
+// =====================
 
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
 
+        tryLoadHolidayCountries();
+
+    }
+);
 
 
 // =====================
 // 祝日国 保存
 // =====================
 
-function saveHolidayCountry(){
-
+function saveHolidayCountry() {
 
     const select =
-        document.getElementById("holidayCountry");
+        document.getElementById(
+            "holidayCountry"
+        );
 
 
-    if(!select) return;
-
+    if (!select) {
+        return;
+    }
 
 
     const data =
         db.load();
 
 
-
-    if(!data.settings){
+    if (!data.settings) {
 
         data.settings = {};
 
     }
 
 
-
     data.settings.holidayCountry =
         select.value;
 
 
-
     db.save(data);
 
-
 }
-
-
-
-
 
 
 // =====================
 // 祝日国 読み込み
 // =====================
 
-function loadSavedHolidayCountry(){
-
+function loadSavedHolidayCountry() {
 
     const select =
-        document.getElementById("holidayCountry");
+        document.getElementById(
+            "holidayCountry"
+        );
 
 
-    if(!select) return;
-
+    if (!select) {
+        return;
+    }
 
 
     const data =
         db.load();
 
 
-
-    if(
+    if (
         data.settings &&
         data.settings.holidayCountry
-    ){
+    ) {
 
         select.value =
             data.settings.holidayCountry;
 
     }
-
 
 }
