@@ -1316,12 +1316,12 @@ console.log(
 
     await loadHtml(
         "settingsContainer",
-        "home-menu.html"
+        "settings.html"
     );
 
     await loadHtml(
         "aboutAppContainer",
-        "home-menu.html"
+        "about.html"
     );
 
     await loadHtml(
