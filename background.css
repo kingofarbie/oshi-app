@@ -281,3 +281,44 @@ body {
     box-sizing:border-box;
 
 }
+
+
+/* ==================================================
+   🌌 ゆめかわ星空：ボタンカラー
+================================================== */
+
+body.theme-dreamy-star button {
+    background:#9b7edb;
+    color:#fff;
+    border-color:#9b7edb;
+}
+
+/* 重要ボタン */
+body.theme-dreamy-star .primary-btn,
+body.theme-dreamy-star .add-btn,
+body.theme-dreamy-star .save-btn,
+body.theme-dreamy-star .confirm-btn {
+    background:linear-gradient(
+        135deg,
+        #8d6bc7,
+        #b99ae8
+    );
+    color:#fff !important;
+}
+
+/* 通常の白系ボタン */
+body.theme-dreamy-star .icon-btn,
+body.theme-dreamy-star .setting-item button,
+body.theme-dreamy-star .setting-content button {
+    background:#faf7ff;
+    color:#7654a8 !important;
+    border:1px solid #d8c8ee;
+}
+
+/* キャンセル・閉じる系 */
+body.theme-dreamy-star .cancel-btn,
+body.theme-dreamy-star .close-btn {
+    background:#f5f3f8;
+    color:#666 !important;
+    border-color:#ddd9e5;
+}
