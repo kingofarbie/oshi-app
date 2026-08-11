@@ -1,19 +1,24 @@
 /* ==================================================
    🌌 推し活手帳
    背景テーマ専用CSS
-   画像ファイル不要
 ================================================== */
 
 
 /* ==================================================
    🌌 ゆめかわ星空
+   ヘッダー ＋ 下部タブ専用
 ================================================== */
 
-body.theme-dreamy-star {
+
+/* =========================
+   🌌 ヘッダー
+========================= */
+
+body.theme-dreamy-star .header {
 
     background:
         radial-gradient(
-            circle at 20% 15%,
+            circle at 20% 30%,
             rgba(255,255,255,0.9) 0 1px,
             transparent 2px
         ),
@@ -23,23 +28,8 @@ body.theme-dreamy-star {
             transparent 3px
         ),
         radial-gradient(
-            circle at 45% 40%,
+            circle at 45% 70%,
             rgba(210,220,255,0.8) 0 1px,
-            transparent 2px
-        ),
-        radial-gradient(
-            circle at 85% 55%,
-            rgba(255,255,255,0.8) 0 1px,
-            transparent 2px
-        ),
-        radial-gradient(
-            circle at 15% 70%,
-            rgba(220,200,255,0.8) 0 1.5px,
-            transparent 3px
-        ),
-        radial-gradient(
-            circle at 60% 85%,
-            rgba(255,220,250,0.8) 0 1px,
             transparent 2px
         ),
         linear-gradient(
@@ -50,34 +40,37 @@ body.theme-dreamy-star {
             #17152f 100%
         );
 
-    background-attachment: fixed;
-
     background-size:
         220px 220px,
         300px 300px,
         180px 180px,
-        260px 260px,
-        320px 320px,
-        200px 200px,
         100% 100%;
 
-    min-height: 100vh;
+    color:#fff;
+
+    position:relative;
+
+    overflow:hidden;
+
+    z-index:1000;
+
+    box-shadow:
+        0 3px 15px
+        rgba(120,80,180,0.35);
 }
 
 
-/* ==================================================
-   ✨ 大きめの星
-================================================== */
+/* ヘッダーの星の光 */
 
-body.theme-dreamy-star::before {
+body.theme-dreamy-star .header::before {
 
-    content: "";
+    content:"";
 
-    position: fixed;
+    position:absolute;
 
-    inset: 0;
+    inset:0;
 
-    pointer-events: none;
+    pointer-events:none;
 
     background:
         radial-gradient(
@@ -86,83 +79,205 @@ body.theme-dreamy-star::before {
             transparent 4px
         ),
         radial-gradient(
-            circle at 70% 45%,
+            circle at 70% 55%,
             rgba(255,220,255,0.9) 0 2px,
             transparent 4px
         ),
         radial-gradient(
-            circle at 50% 75%,
+            circle at 90% 20%,
             rgba(210,220,255,0.9) 0 2px,
             transparent 4px
         );
 
     animation:
-        dreamyStars 4s ease-in-out infinite;
+        dreamyHeaderStars 4s ease-in-out infinite;
 
-    z-index: 0;
 }
 
 
-/* ==================================================
-   💜 ぼんやりした光
-================================================== */
+/* ヘッダー内の文字・ボタンを前面へ */
 
-body.theme-dreamy-star::after {
+body.theme-dreamy-star .header > * {
 
-    content: "";
+    position:relative;
 
-    position: fixed;
+    z-index:1;
 
-    inset: 0;
-
-    pointer-events: none;
-
-    background:
-        radial-gradient(
-            ellipse at 20% 20%,
-            rgba(180,150,255,0.18),
-            transparent 45%
-        ),
-        radial-gradient(
-            ellipse at 80% 70%,
-            rgba(255,150,220,0.14),
-            transparent 45%
-        );
-
-    z-index: 0;
 }
 
 
-/* ==================================================
-   ✨ 星の瞬き
-================================================== */
+/* =========================
+   ✨ ヘッダー星の瞬き
+========================= */
 
-@keyframes dreamyStars {
+@keyframes dreamyHeaderStars {
 
     0%,
     100% {
-
-        opacity: 0.35;
-
+        opacity:0.45;
     }
 
     50% {
-
-        opacity: 1;
-
+        opacity:1;
     }
 
 }
 
 
 /* ==================================================
-   📱 アプリ本体を背景より前面へ
+   🌌 下部タブ
 ================================================== */
 
-body.theme-dreamy-star > * {
+body.theme-dreamy-star .tabbar {
 
-    position: relative;
+    background:
+        radial-gradient(
+            circle at 15% 30%,
+            rgba(255,255,255,0.85) 0 1px,
+            transparent 2px
+        ),
+        radial-gradient(
+            circle at 50% 20%,
+            rgba(255,220,255,0.9) 0 1.5px,
+            transparent 3px
+        ),
+        radial-gradient(
+            circle at 85% 65%,
+            rgba(210,220,255,0.85) 0 1px,
+            transparent 2px
+        ),
+        linear-gradient(
+            135deg,
+            #100d2c 0%,
+            #24164d 35%,
+            #42266b 65%,
+            #17152f 100%
+        );
 
-    z-index: 1;
+    background-size:
+        180px 180px,
+        260px 260px,
+        220px 220px,
+        100% 100%;
+
+    color:#fff;
+
+    /* =========================
+       ★ タブを完全固定
+    ========================= */
+
+    position:fixed;
+
+    left:0;
+    right:0;
+    bottom:0;
+
+    width:100%;
+
+    z-index:9999;
+
+    box-sizing:border-box;
+
+    box-shadow:
+        0 -4px 18px
+        rgba(100,70,170,0.35);
+
+}
+
+
+/* ==================================================
+   📱 タブの各項目
+================================================== */
+
+body.theme-dreamy-star .tabbar .tab {
+
+    position:relative;
+
+    z-index:1;
+
+}
+
+
+/* ==================================================
+   ✨ タブにも星の光
+================================================== */
+
+body.theme-dreamy-star .tabbar::before {
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    pointer-events:none;
+
+    background:
+        radial-gradient(
+            circle at 25% 35%,
+            rgba(255,255,255,0.9) 0 1px,
+            transparent 2px
+        ),
+        radial-gradient(
+            circle at 65% 70%,
+            rgba(255,220,255,0.8) 0 1px,
+            transparent 2px
+        ),
+        radial-gradient(
+            circle at 90% 25%,
+            rgba(210,220,255,0.8) 0 1px,
+            transparent 2px
+        );
+
+    animation:
+        dreamyTabStars 5s ease-in-out infinite;
+
+}
+
+
+/* タブ文字を星より前へ */
+
+body.theme-dreamy-star .tabbar .tab {
+
+    position:relative;
+
+    z-index:2;
+
+}
+
+
+/* =========================
+   ✨ タブ星の瞬き
+========================= */
+
+@keyframes dreamyTabStars {
+
+    0%,
+    100% {
+        opacity:0.4;
+    }
+
+    50% {
+        opacity:1;
+    }
+
+}
+
+
+/* ==================================================
+   📱 タブ固定による
+   コンテンツ隠れ防止
+================================================== */
+
+/*
+   下部タブの高さ分だけ
+   最後のコンテンツに余白を確保
+*/
+
+body {
+
+    padding-bottom:70px;
+
+    box-sizing:border-box;
 
 }
