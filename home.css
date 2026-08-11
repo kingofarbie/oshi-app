@@ -171,10 +171,10 @@
     overflow:hidden;
 }
 
+
 .home-favorite-photo{
-    display:block;
     width:100%;
-    height:220px;
-    min-height:220px;
+    height:100%;
     object-fit:cover;
+    display:block;
 }

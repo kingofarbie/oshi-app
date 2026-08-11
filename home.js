@@ -409,18 +409,20 @@ if(photos.length === 1){
 
     box.innerHTML = `
 
-    <img
-        src="${photos[0].src}"
-        class="home-favorite-photo"
-    >
+    <div class="home-favorite-photo-view">
+
+        <img
+            src="${photos[0].src}"
+            class="home-favorite-photo"
+        >
+
+    </div>
 
     `;
 
     return;
 
-}
-
-    /* =====================
+}    /* =====================
        複数枚
     ===================== */
 
