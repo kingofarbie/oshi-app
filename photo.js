@@ -1741,7 +1741,16 @@ function getPhotoToolbar(type){
 
 function openPhotoSortMenu(type){
 
-    const menu = document.getElementById("photoSortMenu");
+    // 並べ替えモードに切り替える前に
+    // 削除・共有を解除
+    photoDeleteMode = false;
+    selectedDeletePhotoIds = [];
+
+    photoShareMode = false;
+    selectedSharePhotoIds = [];
+
+    const menu =
+        document.getElementById("photoSortMenu");
 
     if(!menu) return;
 
