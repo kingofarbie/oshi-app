@@ -180,19 +180,29 @@ async function shareAppUrl(){
 
 function openAboutApp(){
 
-closeHomeMenu();
+    console.log("openAboutApp実行");
 
-const modal =
-    document.getElementById("aboutAppModal");
+    const modal =
+        document.getElementById("aboutAppModal");
 
-if(modal){
+    console.log(
+        "aboutAppModal:",
+        modal
+    );
 
-    modal.style.display = "flex";
+    if(modal){
+
+        modal.style.display = "flex";
+
+    }else{
+
+        console.error(
+            "aboutAppModal が見つかりません"
+        );
+
+    }
 
 }
-
-}
-
 /* =====================
 アプリについてを閉じる
 ===================== */
