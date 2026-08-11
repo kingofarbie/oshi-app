@@ -1,0 +1,352 @@
+/* =========================
+   カレンダー
+========================= */
+
+.holiday-label{
+    font-size:8px;
+    color:#ff6b81;
+    margin-left:2px;
+}
+
+.calendar-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:10px;
+}
+
+.calendar-header button{
+    width:auto;
+
+    padding:8px 14px;
+    margin:0;
+
+    border-radius:8px;
+}
+
+.calendar-title{
+    font-size:22px;
+    font-weight:bold;
+    text-align:center;
+}
+
+
+/* =========================
+   曜日
+========================= */
+
+.calendar-week{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    text-align:center;
+
+    font-size:13px;
+    font-weight:bold;
+
+    color:var(--text);
+
+    background:var(--surface);
+
+    border:1px solid var(--border);
+
+    border-bottom:2px solid var(--border-strong);
+
+    border-radius:8px 8px 0 0;
+
+    overflow:hidden;
+
+    padding:9px 2px;
+}
+
+
+.calendar-week.sunday{
+    color:#e74b67;
+}
+
+.calendar-week.saturday{
+    color:#4285e8;
+}
+
+
+/* =========================
+   日付グリッド
+========================= */
+
+.calendar-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(7,minmax(0,1fr));
+
+    gap:0;
+
+    border-left:1px solid var(--border);
+    border-top:1px solid var(--border);
+
+    overflow:hidden;
+
+    border-radius:0 0 8px 8px;
+}
+
+
+/* =========================
+   日付セル
+========================= */
+
+.calendar-day{
+    height:83px;
+
+    background:var(--card);
+
+    border-right:1px solid var(--border);
+    border-bottom:1px solid var(--border);
+
+    border-radius:0;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-start;
+    align-items:flex-start;
+
+    padding:4px;
+
+    cursor:pointer;
+    position:relative;
+
+    overflow:hidden;
+}
+
+.calendar-day:hover{
+    background:var(--surface);
+}
+
+
+/* 日付文字 */
+
+.calendar-date{
+    font-size:14px;
+    font-weight:bold;
+    margin-bottom:1px;
+    margin-left:-2px;
+    line-height:1;
+}
+
+/* =========================
+   予定表示
+========================= */
+
+.calendar-event-preview{
+    background:var(--surface);
+    color:var(--text);
+
+    border-radius:3px;
+
+    padding:1px 3px;
+    margin-top:2px;
+
+    font-size:11px;
+    font-weight:bold;
+    line-height:1.1;
+
+    min-height:14px;
+
+    display:flex;
+    align-items:center;
+
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+
+    box-sizing:border-box;
+}
+
+/* 予定が多い場合 */
+
+.calendar-more{
+    font-size:10px;
+    font-weight:bold;
+
+    color:var(--accent);
+
+    margin-top:2px;
+
+    padding:1px 3px;
+
+    line-height:1;
+
+    min-height:12px;
+
+    display:flex;
+    align-items:center;
+
+    flex-shrink:0;
+
+    white-space:nowrap;
+}
+
+/* =========================
+   今日
+========================= */
+
+.today{
+    background:
+        color-mix(
+            in srgb,
+            var(--accent) 8%,
+            var(--card)
+        );
+
+    border:2px solid var(--accent);
+
+    font-weight:bold;
+}
+
+
+/* =========================
+   選択日
+========================= */
+
+.calendar-day.selected-day{
+    background:
+        color-mix(
+            in srgb,
+            var(--accent) 6%,
+            var(--card)
+        );
+
+    box-shadow:
+        inset 0 0 0 2px var(--accent-light);
+}
+
+
+/* =========================
+   空白
+========================= */
+
+.empty-day{
+    background:var(--surface);
+
+    cursor:default;
+
+    opacity:.65;
+}
+
+
+/* =========================
+   選択日表示
+========================= */
+
+.selected-date{
+    margin-top:12px;
+
+    padding:10px;
+
+    background:var(--surface);
+
+    border:1px solid var(--border);
+
+    border-left:4px solid var(--accent);
+
+    border-radius:10px;
+
+    text-align:center;
+}
+
+
+/* =========================
+   予定カード
+========================= */
+
+.event-card{
+    background:var(--card);
+
+    border:1px solid var(--border);
+
+    border-left:4px solid var(--accent);
+
+    border-radius:12px;
+
+    padding:12px;
+
+    margin-bottom:8px;
+
+    box-shadow:
+        0 2px 8px rgba(0,0,0,.05);
+}
+
+.event-card-title{
+    font-weight:bold;
+    color:var(--text);
+    margin-bottom:8px;
+}
+
+.event-card-info{
+    font-size:13px;
+    color:var(--text-sub);
+    line-height:1.5;
+}
+
+.event-button-area{
+    display:flex;
+    gap:8px;
+}
+
+.event-button-area button{
+    margin-top:8px;
+}
+
+.edit-btn{
+    background:#444;
+}
+
+.map-btn{
+    background:#1976d2;
+}
+
+.event-delete-btn,
+.delete-btn{
+    background:var(--danger);
+}
+
+
+
+/* =====================
+   祝日表示
+===================== */
+
+.holiday-name {
+
+    font-size: 11px;
+
+    color: #e53935;
+
+    font-weight: bold;
+
+    line-height: 1.2;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    margin-top: 2px;
+
+}
+
+
+/* =========================
+   カレンダー記念日・写真アイコン
+========================= */
+
+.calendar-day-icon{
+    font-size:8px;
+    margin-left:2px;
+    line-height:1;
+    vertical-align:middle;
+}
+
+
+
