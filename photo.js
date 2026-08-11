@@ -1522,11 +1522,6 @@ function renderDayPhotos(){
 
         +
 
-        /* ツールバー */
-
-        getPhotoToolbar("calendar")
-
-        +
 
         /* =====================
            写真
