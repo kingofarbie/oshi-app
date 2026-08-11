@@ -1741,27 +1741,19 @@ function getPhotoToolbar(type){
 
 function openPhotoSortMenu(type){
 
-    // =====================
-    // 他のモードを解除
-    // =====================
-
+    // 削除モード解除
     photoDeleteMode = false;
     selectedDeletePhotoIds = [];
 
+    // 共有モード解除
     photoShareMode = false;
     selectedSharePhotoIds = [];
 
-    // =====================
+    // 並べ替えモード解除状態からメニューを開く
+    photoSortMode = false;
+
     // 画面を更新
-    // =====================
-
-    if(type === "calendar"){
-        renderDayPhotos();
-    }
-
-    // =====================
-    // 並べ替えメニューを表示
-    // =====================
+    renderDayPhotos();
 
     const menu =
         document.getElementById("photoSortMenu");
@@ -1773,7 +1765,6 @@ function openPhotoSortMenu(type){
     menu.style.display = "block";
 
 }
-
 
 function closePhotoSortMenu(){
 
