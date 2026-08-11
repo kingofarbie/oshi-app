@@ -405,22 +405,20 @@ console.log("表示枚数:", photos.length);
        1枚だけ
     ===================== */
 
-    if(photos.length === 1){
+if(photos.length === 1){
 
-        box.innerHTML = `
+    box.innerHTML = `
 
-        <img
-            src="${photos[0].src}"
-            class="home-favorite-photo"
-            onclick="openFavoritePhotoViewer(${photos[0].id})"
-        >
+    <img
+        src="${photos[0].src}"
+        class="home-favorite-photo"
+    >
 
-        `;
+    `;
 
-        return;
+    return;
 
-    }
-
+}
 
     /* =====================
        複数枚
