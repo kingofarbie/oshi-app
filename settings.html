@@ -300,6 +300,146 @@ id="startNotificationMinutes">
 </div>
 
 
+
+<!-- =====================
+     ⭐ お気に入り写真設定
+===================== -->
+<div class="card setting-item"><button
+    type="button"
+    onclick="toggleSetting('favoritePhotoMenu')">
+
+    <span id="favoritePhotoIcon">＋</span>
+    ⭐ お気に入り写真
+
+</button>
+
+
+<div
+    id="favoritePhotoMenu"
+    class="setting-content"
+    style="display:none;">
+
+    <p>
+        ホームに表示するお気に入り写真を設定します。
+    </p>
+
+
+    <!-- =====================
+         表示枚数
+    ===================== -->
+
+    <label for="favoritePhotoCount">
+        🖼 表示枚数
+    </label>
+
+    <select id="favoritePhotoCount">
+
+        <option value="1">
+            1枚
+        </option>
+
+        <option value="2">
+            2枚
+        </option>
+
+        <option value="3" selected>
+            3枚
+        </option>
+
+        <option value="4">
+            4枚
+        </option>
+
+        <option value="5">
+            5枚
+        </option>
+
+        <option value="6">
+            6枚
+        </option>
+
+        <option value="7">
+            7枚
+        </option>
+
+        <option value="8">
+            8枚
+        </option>
+
+        <option value="9">
+            9枚
+        </option>
+
+        <option value="10">
+            10枚
+        </option>
+
+        <option value="all">
+            すべて
+        </option>
+
+    </select>
+
+
+    <hr>
+
+
+    <!-- =====================
+         フェイド
+    ===================== -->
+
+    <p>
+        ✨ フェイドイン・アウト
+    </p>
+
+    <button
+        type="button"
+        id="favoritePhotoFadeBtn"
+        onclick="toggleFavoritePhotoFade()">
+
+        ON
+
+    </button>
+
+
+    <hr>
+
+
+    <!-- =====================
+         表示時間
+    ===================== -->
+
+    <label for="favoritePhotoInterval">
+        ⏱ 1枚の表示時間
+    </label>
+
+    <select id="favoritePhotoInterval">
+
+        <option value="3000">
+            3秒
+        </option>
+
+        <option value="5000">
+            5秒
+        </option>
+
+        <option value="7000" selected>
+            7秒
+        </option>
+
+        <option value="10000">
+            10秒
+        </option>
+
+    </select>
+
+</div>
+
+</div>
+
+
+
+
 <!-- =====================
      持ち物テンプレート
 ===================== -->
@@ -447,6 +587,8 @@ placeholder="カテゴリ名（例：推し活、仕事、旅行）">
 <div id="appVersion"></div>
 
 </div>
+
+
 
 <!-- =====================
      アプリ更新モーダル

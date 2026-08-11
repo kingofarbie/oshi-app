@@ -318,63 +318,110 @@ function eventStartDate(e){
 }
 
 
+
 /* =====================
-   ホームお気に入り写真
+ホームお気に入り写真
 ===================== */
 
 function displayFavoritePhotoCard(){
 
-    const box =
-        document.getElementById(
-            "favorite-photo-card"
-        );
+const box =
+    document.getElementById(
+        "favorite-photo-card"
+    );
 
-    if(!box){
-        return;
-    }
+if(!box){
+    return;
+}
 
-    const data = db.load();
 
-    let photos = [];
+const data = db.load();
 
-    Object.values(
-        data.dayMemories || {}
-    ).forEach(day => {
 
-        (day.photos || []).forEach(photo => {
+/* =====================
+   設定取得
+===================== */
 
-            if(photo.favorite){
+const settings =
+    data.settings?.favoritePhoto || {};
 
-                photos.push(photo);
 
-            }
+/* =====================
+   表示枚数
+   初期値：3枚
+===================== */
 
-        });
+const countSetting =
+    settings.count ?? 3;
+
+
+/* =====================
+   フェイド設定
+   初期値：ON
+===================== */
+
+const fadeEnabled =
+    settings.fade !== false;
+
+
+/* =====================
+   表示時間
+   初期値：7秒
+===================== */
+
+const interval =
+    Number(
+        settings.interval || 7000
+    );
+
+
+/* =====================
+   お気に入り写真取得
+===================== */
+
+let photos = [];
+
+
+Object.values(
+    data.dayMemories || {}
+).forEach(day => {
+
+    (day.photos || []).forEach(photo => {
+
+        if(photo.favorite){
+
+            photos.push(photo);
+
+        }
 
     });
 
-
-    /* =====================
-       自由並べ替え順
-    ===================== */
-
-    photos.sort((a,b) => {
-
-        return (
-            (a.order || a.id) -
-            (b.order || b.id)
-        );
-
-    });
+});
 
 
-    /* =====================
-       設定枚数
-       ※ひとまず3枚
-    ===================== */
+/* =====================
+   自由並べ替え順
+   ===================== */
 
-    const displayCount = 3;
+photos.sort((a,b) => {
 
+    return (
+        (a.order ?? a.id)
+        -
+        (b.order ?? b.id)
+    );
+
+});
+
+
+/* =====================
+   表示枚数
+===================== */
+
+if(countSetting !== "all"){
+
+    const displayCount =
+        Number(countSetting);
 
     photos =
         photos.slice(
@@ -382,68 +429,41 @@ function displayFavoritePhotoCard(){
             displayCount
         );
 
-        console.log("ホームお気に入り写真:", photos);
-console.log("表示枚数:", photos.length);
+}
 
 
+console.log(
+    "ホームお気に入り写真:",
+    photos
+);
 
-    if(photos.length === 0){
+console.log(
+    "表示枚数:",
+    countSetting
+);
 
-        box.innerHTML =
-            `
-            <div class="favorite-photo-empty">
-                ⭐ お気に入り写真はありません
-            </div>
-            `;
+console.log(
+    "フェイド:",
+    fadeEnabled
+);
 
-        return;
+console.log(
+    "表示時間:",
+    interval
+);
 
-    }
 
+/* =====================
+   写真なし
+===================== */
 
-    /* =====================
-       1枚だけ
-    ===================== */
-
-if(photos.length === 1){
+if(photos.length === 0){
 
     box.innerHTML = `
-
-    <div class="home-favorite-photo-view">
-
-        <img
-            src="${photos[0].src}"
-            class="home-favorite-photo"
-        >
-
-    </div>
-
+        <div class="favorite-photo-empty">
+            ⭐ お気に入り写真はありません
+        </div>
     `;
-
-setTimeout(() => {
-
-    const test =
-        document.getElementById("favorite-photo-card");
-
-    console.log(
-        "★ 1秒後:",
-        test?.innerHTML
-    );
-
-}, 1000);
-
-
-setTimeout(() => {
-
-    const test =
-        document.getElementById("favorite-photo-card");
-
-    console.log(
-        "★ 3秒後:",
-        test?.innerHTML
-    );
-
-}, 3000);
 
     return;
 
@@ -451,47 +471,98 @@ setTimeout(() => {
 
 
 /* =====================
-       複数枚
-    ===================== */
+   1枚だけ
+===================== */
+
+if(photos.length === 1){
 
     box.innerHTML = `
 
-        <div class="home-favorite-slideshow">
+        <div class="home-favorite-photo-view">
 
-            ${photos.map((photo,index) => `
-
-                <img
-                    src="${photo.src}"
-                    class="home-favorite-photo
-                    ${index === 0 ? "active" : ""}"
-                    data-favorite-index="${index}"
-                    onclick="openFavoritePhotoViewer(${photo.id})"
-                >
-
-            `).join("")}
+            <img
+                src="${photos[0].src}"
+                class="home-favorite-photo"
+                onclick="openFavoritePhotoViewer(${photos[0].id})"
+            >
 
         </div>
 
     `;
 
+    return;
 
-    /* =====================
-       フェード切り替え
-    ===================== */
+}
 
-    let current = 0;
 
-    const images =
-        box.querySelectorAll(
-            ".home-favorite-photo"
+/* =====================
+   複数枚
+===================== */
+
+box.innerHTML = `
+
+    <div class="home-favorite-slideshow">
+
+        ${photos.map((photo,index) => `
+
+            <img
+                src="${photo.src}"
+                class="home-favorite-photo
+                ${index === 0 ? "active" : ""}"
+                data-favorite-index="${index}"
+                onclick="openFavoritePhotoViewer(${photo.id})"
+            >
+
+        `).join("")}
+
+    </div>
+
+`;
+
+
+/* =====================
+   スライドショー
+===================== */
+
+let current = 0;
+
+
+const images =
+    box.querySelectorAll(
+        ".home-favorite-photo"
+    );
+
+
+/* =====================
+   フェイドOFF
+   → 最初の1枚だけ表示
+===================== */
+
+if(!fadeEnabled){
+
+    images.forEach((img,index)=>{
+
+        img.classList.toggle(
+            "active",
+            index === 0
         );
 
+    });
 
+}
+
+
+/* =====================
+   フェイドON
+===================== */
+
+const timer =
     setInterval(() => {
 
         if(images.length <= 1){
             return;
         }
+
 
         images[current].classList.remove(
             "active"
@@ -507,13 +578,19 @@ setTimeout(() => {
             "active"
         );
 
-    }, 7000);
+
+    }, interval);
 
 
+/* =====================
+   フェイドOFFでも
+   写真は切り替える
+   =====================
+   CSS側でフェイドを無効にするため、
+   スライド自体は同じように動かす
+*/
 
-    
 }
-
 
 
 

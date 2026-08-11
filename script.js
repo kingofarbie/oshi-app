@@ -1436,6 +1436,8 @@ async function(){
     displayCountdown();
 
     displayFavorites();
+    
+    loadFavoritePhotoSettings();
 
 
     /* =====================
