@@ -2479,21 +2479,87 @@ function openSettingsFromMenu(){
 
     closeHomeMenu();
 
-    const home =
-        document.getElementById("home");
-
-    if(home){
-        home.classList.remove("active");
-    }
+    document
+        .querySelectorAll(".page")
+        .forEach(page => {
+            page.classList.remove("active");
+        });
 
     const settings =
         document.getElementById("settingsPage");
 
     if(!settings){
-        console.error("settingsPage が見つかりません");
+
+        console.error(
+            "settingsPage が見つかりません"
+        );
+
         return;
+
     }
 
     settings.classList.add("active");
+
+    /* ☰ → ✕ */
+    setHomeMenuButton("close");
+
+}
+
+
+function closeSettingsFromMenu(){
+
+    const settings =
+        document.getElementById("settingsPage");
+
+    if(settings){
+        settings.classList.remove("active");
+    }
+
+    /* ホームへ戻る */
+    const home =
+        document.getElementById("home");
+
+    if(home){
+        home.classList.add("active");
+    }
+
+    /* ✕ → ☰ */
+    setHomeMenuButton("open");
+
+}
+
+
+function setHomeMenuButton(mode){
+
+    const button =
+        document.getElementById("homeMenuButton");
+
+    if(!button) return;
+
+    if(mode === "close"){
+
+        button.textContent = "✕";
+
+        button.setAttribute(
+            "aria-label",
+            "閉じる"
+        );
+
+        button.onclick =
+            closeSettingsFromMenu;
+
+    }else{
+
+        button.textContent = "☰";
+
+        button.setAttribute(
+            "aria-label",
+            "メニュー"
+        );
+
+        button.onclick =
+            toggleHomeMenu;
+
+    }
 
 }
