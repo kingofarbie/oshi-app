@@ -161,3 +161,20 @@
     padding:20px;
     text-align:center;
 }
+
+
+/* ホームお気に入り写真・強制表示確認 */
+.home-favorite-photo-card{
+    width:100%;
+    min-height:220px;
+    display:block;
+    overflow:hidden;
+}
+
+.home-favorite-photo{
+    display:block;
+    width:100%;
+    height:220px;
+    min-height:220px;
+    object-fit:cover;
+}
