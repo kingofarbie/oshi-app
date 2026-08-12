@@ -1,0 +1,16 @@
+/* =========================
+   推し活記録ページ
+   閉じるボタン
+========================= */
+
+.oshi-record-page-header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+.oshi-record-close-btn {
+    margin-left: auto;
+}

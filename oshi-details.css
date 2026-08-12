@@ -796,3 +796,14 @@
     }
 
 }
+
+/* =========================
+   推し詳細ページ
+   ゴミ箱ボタン
+========================= */
+
+.oshi-detail-delete-btn {
+    background: #fff !important;
+    color: inherit;
+}
+
