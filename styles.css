@@ -491,8 +491,8 @@ button:hover{
     width:min(92vw,500px);
 
     max-height:85vh;
-
-    overflow-y:auto;
+    
+    overflow:visible;
 
     background:var(--card);
 
