@@ -975,3 +975,37 @@
     white-space: normal !important;
 
 }
+
+
+/* =====================================================
+   💰 money：説明文の横書き固定
+===================================================== */
+
+.money-page .money-subtitle {
+
+    display: block;
+
+    width: auto;
+    min-width: 0;
+
+    margin: 0;
+    padding: 0;
+
+    writing-mode: horizontal-tb !important;
+    text-orientation: mixed !important;
+    direction: ltr !important;
+
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+
+    transform: none !important;
+
+    text-align: left;
+
+    line-height: 1.4;
+
+    font-size: 0.82rem;
+
+    color: var(--text-sub);
+}
