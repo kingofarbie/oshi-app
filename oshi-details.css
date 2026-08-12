@@ -1,0 +1,798 @@
+/* =========================
+   推し詳細ページ
+   oshi-details.css
+========================= */
+
+
+/* =========================
+   ページ全体
+========================= */
+
+#oshiDetailPage{
+
+    padding:15px;
+
+    max-width:900px;
+
+    margin:0 auto;
+
+}
+
+
+/* =========================
+   ヘッダー
+========================= */
+
+.oshi-detail-header{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:10px;
+
+    margin-bottom:15px;
+
+}
+
+
+.oshi-detail-title{
+
+    margin:0;
+
+    font-size:24px;
+
+    font-weight:bold;
+
+    color:var(--text);
+
+}
+
+
+.oshi-detail-actions{
+
+    display:flex;
+
+    gap:6px;
+
+}
+
+
+.oshi-detail-actions .icon-btn{
+
+    width:40px;
+
+    height:40px;
+
+    min-width:40px;
+
+    padding:0;
+
+    margin:0;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:18px;
+
+}
+
+
+/* =========================
+   基本プロフィール
+========================= */
+
+.oshi-profile-card{
+
+    display:grid;
+
+    grid-template-columns:
+        180px 1fr;
+
+    gap:20px;
+
+    padding:16px;
+
+    margin-bottom:16px;
+
+    background:var(--card);
+
+    border:1px solid var(--border);
+
+    border-radius:18px;
+
+    box-shadow:
+        0 3px 12px rgba(0,0,0,.06);
+
+}
+
+
+/* =========================
+   メイン写真
+========================= */
+
+.oshi-main-photo{
+
+    width:180px;
+
+    height:180px;
+
+}
+
+
+.oshi-main-photo-placeholder{
+
+    width:100%;
+
+    height:100%;
+
+    margin:0;
+
+    padding:10px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:6px;
+
+    border:2px dashed var(--border-strong);
+
+    border-radius:16px;
+
+    background:var(--surface);
+
+    color:var(--text-sub);
+
+}
+
+
+.oshi-main-photo-placeholder span{
+
+    font-size:32px;
+
+    line-height:1;
+
+}
+
+
+.oshi-main-photo-placeholder small{
+
+    font-size:13px;
+
+}
+
+
+/* =========================
+   プロフィール情報
+========================= */
+
+.oshi-profile-info{
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    gap:12px;
+
+}
+
+
+.oshi-info-row{
+
+    display:flex;
+
+    align-items:flex-start;
+
+    gap:12px;
+
+    padding-bottom:10px;
+
+    border-bottom:1px solid var(--border);
+
+}
+
+
+.oshi-info-row:last-child{
+
+    border-bottom:none;
+
+    padding-bottom:0;
+
+}
+
+
+.oshi-info-label{
+
+    min-width:120px;
+
+    font-size:13px;
+
+    font-weight:bold;
+
+    color:var(--text-sub);
+
+}
+
+
+.oshi-info-value{
+
+    flex:1;
+
+    font-size:15px;
+
+    font-weight:bold;
+
+    color:var(--text);
+
+}
+
+
+/* =========================
+   各セクション
+========================= */
+
+.oshi-section{
+
+    margin-bottom:16px;
+
+    padding:16px;
+
+    background:var(--card);
+
+    border:1px solid var(--border);
+
+    border-radius:18px;
+
+    box-shadow:
+        0 3px 12px rgba(0,0,0,.05);
+
+}
+
+
+.oshi-section-header{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:10px;
+
+    margin-bottom:12px;
+
+}
+
+
+.oshi-section-header h3{
+
+    margin:0;
+
+    font-size:18px;
+
+    color:var(--text);
+
+}
+
+
+.text-btn{
+
+    width:auto;
+
+    margin:0;
+
+    padding:6px 10px;
+
+    background:transparent;
+
+    color:var(--accent);
+
+    border:none;
+
+    font-size:13px;
+
+}
+
+
+/* =========================
+   SNS
+   最大6個
+   横3 × 縦2
+========================= */
+
+.oshi-sns-list{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,minmax(0,1fr));
+
+    gap:8px;
+
+}
+
+
+.oshi-sns-button{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    min-height:40px;
+
+    padding:7px 8px;
+
+    border:1px solid var(--border);
+
+    border-radius:10px;
+
+    background:var(--surface);
+
+    color:var(--text);
+
+    text-decoration:none;
+
+    font-size:13px;
+
+    font-weight:bold;
+
+    white-space:nowrap;
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
+
+}
+
+
+.oshi-sns-button:active{
+
+    transform:scale(.97);
+
+}
+
+
+/* =========================
+   ライブ・イベント
+========================= */
+
+.oshi-live-list{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:8px;
+
+}
+
+
+.oshi-live-card{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    padding:10px;
+
+    border:1px solid var(--border);
+
+    border-radius:12px;
+
+    background:var(--surface);
+
+}
+
+
+.oshi-live-date{
+
+    width:55px;
+
+    min-width:55px;
+
+    text-align:center;
+
+    font-size:13px;
+
+    font-weight:bold;
+
+    color:var(--accent);
+
+}
+
+
+.oshi-live-info{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:3px;
+
+    min-width:0;
+
+}
+
+
+.oshi-live-info strong{
+
+    font-size:14px;
+
+}
+
+
+.oshi-live-info span{
+
+    font-size:12px;
+
+    color:var(--text-sub);
+
+}
+
+
+/* =========================
+   グッズ
+   3列
+========================= */
+
+.oshi-goods-grid{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,minmax(0,1fr));
+
+    gap:10px;
+
+}
+
+
+.oshi-goods-card{
+
+    min-width:0;
+
+}
+
+
+.oshi-goods-photo{
+
+    width:100%;
+
+    aspect-ratio:1 / 1;
+
+    margin:0 0 6px 0;
+
+    padding:0;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border:1px solid var(--border);
+
+    border-radius:12px;
+
+    background:var(--surface);
+
+    color:var(--text-sub);
+
+    font-size:28px;
+
+}
+
+
+.oshi-goods-name{
+
+    font-size:13px;
+
+    font-weight:bold;
+
+    white-space:nowrap;
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
+
+}
+
+
+.oshi-goods-price{
+
+    margin-top:3px;
+
+    font-size:12px;
+
+    color:var(--text-sub);
+
+}
+
+
+/* =========================
+   推し活記録
+========================= */
+
+.oshi-record-list{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:8px;
+
+}
+
+
+.oshi-record-card{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    padding:10px;
+
+    border:1px solid var(--border);
+
+    border-radius:12px;
+
+    background:var(--surface);
+
+}
+
+
+.oshi-record-icon{
+
+    width:42px;
+
+    height:42px;
+
+    min-width:42px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border-radius:10px;
+
+    background:var(--card);
+
+    font-size:20px;
+
+}
+
+
+.oshi-record-info{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:3px;
+
+    min-width:0;
+
+}
+
+
+.oshi-record-info strong{
+
+    font-size:14px;
+
+    white-space:nowrap;
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
+
+}
+
+
+.oshi-record-info span{
+
+    font-size:12px;
+
+    color:var(--text-sub);
+
+}
+
+
+/* =========================
+   メモ
+========================= */
+
+.oshi-memo-card{
+
+    padding:12px;
+
+    border-radius:12px;
+
+    background:var(--surface);
+
+    border:1px solid var(--border);
+
+}
+
+
+.oshi-memo-card p{
+
+    margin:0;
+
+    line-height:1.7;
+
+    font-size:14px;
+
+}
+
+
+/* =========================
+   スマホ
+========================= */
+
+@media(max-width:600px){
+
+    #oshiDetailPage{
+
+        padding:12px;
+
+    }
+
+
+    .oshi-detail-title{
+
+        font-size:21px;
+
+    }
+
+
+    .oshi-profile-card{
+
+        grid-template-columns:
+            110px 1fr;
+
+        gap:12px;
+
+        padding:12px;
+
+    }
+
+
+    .oshi-main-photo{
+
+        width:110px;
+
+        height:110px;
+
+    }
+
+
+    .oshi-info-row{
+
+        flex-direction:column;
+
+        gap:2px;
+
+        padding-bottom:8px;
+
+    }
+
+
+    .oshi-info-label{
+
+        min-width:0;
+
+        font-size:11px;
+
+    }
+
+
+    .oshi-info-value{
+
+        font-size:13px;
+
+    }
+
+
+    .oshi-section{
+
+        padding:12px;
+
+        border-radius:15px;
+
+    }
+
+
+    .oshi-section-header h3{
+
+        font-size:16px;
+
+    }
+
+
+    /* SNSはスマホでも3列 */
+
+    .oshi-sns-list{
+
+        grid-template-columns:
+            repeat(3,minmax(0,1fr));
+
+        gap:6px;
+
+    }
+
+
+    .oshi-sns-button{
+
+        min-height:36px;
+
+        padding:6px 4px;
+
+        font-size:11px;
+
+    }
+
+
+    /* グッズ3列 */
+
+    .oshi-goods-grid{
+
+        grid-template-columns:
+            repeat(3,minmax(0,1fr));
+
+        gap:8px;
+
+    }
+
+
+    .oshi-goods-name{
+
+        font-size:11px;
+
+    }
+
+
+    .oshi-goods-price{
+
+        font-size:11px;
+
+    }
+
+
+    .oshi-live-card{
+
+        padding:9px;
+
+    }
+
+
+    .oshi-live-date{
+
+        width:48px;
+
+        min-width:48px;
+
+        font-size:12px;
+
+    }
+
+}

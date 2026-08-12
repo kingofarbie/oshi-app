@@ -318,6 +318,7 @@ function clearOshiRegisterForm(){
 }
 
 
+
 /* =========================
    推しリスト表示
 ========================= */
@@ -436,7 +437,7 @@ function renderOshiList(){
 
 
     /* =====================
-       表示
+       表示なし
     ===================== */
 
     if(filtered.length === 0){
@@ -459,6 +460,10 @@ function renderOshiList(){
 
     }
 
+
+    /* =====================
+       推し付箋生成
+    ===================== */
 
     container.innerHTML =
 
@@ -487,6 +492,10 @@ function renderOshiList(){
                         ">
 
 
+                        <!-- =====================
+                             名前
+                        ====================== -->
+
                         <div
                             class="oshi-list-name">
 
@@ -496,6 +505,10 @@ function renderOshiList(){
 
                         </div>
 
+
+                        <!-- =====================
+                             ジャンル・区分
+                        ====================== -->
 
                         <div
                             class="oshi-list-info">
@@ -528,12 +541,90 @@ function renderOshiList(){
                         </div>
 
 
+                        <!-- =====================
+                             詳細・推し活記録
+                        ====================== -->
+
+                        <div
+                            class="oshi-list-actions">
+
+
+                            <!-- 推し詳細 -->
+
+                            <button
+                                type="button"
+                                class="oshi-list-action"
+                                onclick="
+                                    event.stopPropagation();
+
+                                    openOshiDetail(
+                                        '${oshi.id}'
+                                    );
+                                ">
+
+                                <span
+                                    class="
+                                        oshi-list-action-icon
+                                    ">
+
+                                    👤
+
+                                </span>
+
+                                <span>
+
+                                    詳細
+
+                                </span>
+
+                            </button>
+
+
+                            <!-- 推し活記録 -->
+
+                            <button
+                                type="button"
+                                class="oshi-list-action"
+                                onclick="
+                                    event.stopPropagation();
+
+                                    openOshiRecord(
+                                        '${oshi.id}'
+                                    );
+                                ">
+
+                                <span
+                                    class="
+                                        oshi-list-action-icon
+                                    ">
+
+                                    💖
+
+                                </span>
+
+                                <span>
+
+                                    推し活記録
+
+                                </span>
+
+                            </button>
+
+
+                        </div>
+
+
+                        <!-- =====================
+                             削除
+                        ====================== -->
+
                         <button
                             type="button"
                             class="oshi-list-delete"
                             title="リストから削除"
                             onclick="
                                 event.stopPropagation();
+
                                 removeOshiFromList(
                                     '${oshi.id}'
                                 );

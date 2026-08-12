@@ -1,0 +1,730 @@
+<!-- =====================
+     推し活記録
+====================== -->
+
+<div class="oshi-section">
+
+    <div class="oshi-section-header">
+
+        <h3>
+            💖 推し活記録
+        </h3>
+
+        <button
+            type="button"
+            class="text-btn"
+            onclick="openOshiActivityModal()">
+
+            ＋ 記録する
+
+        </button>
+
+    </div>
+
+
+    <!-- 記録一覧 -->
+
+    <div
+        id="oshiActivityList"
+        class="oshi-activity-list">
+
+        <!-- JSで記録を表示 -->
+
+        <div class="oshi-activity-empty">
+
+            💖
+
+            <p>
+                まだ推し活記録がありません
+            </p>
+
+            <small>
+                ライブやグッズ購入などを記録してみましょう
+            </small>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================
+     推し活記録入力
+========================= -->
+
+<div
+    id="oshiActivityModal"
+    class="modal">
+
+    <div class="modal-content oshi-activity-modal">
+
+
+        <!-- =====================
+             ヘッダー
+        ====================== -->
+
+        <div class="oshi-activity-modal-header">
+
+            <h2>
+                💖 推し活記録
+            </h2>
+
+
+            <div class="oshi-activity-modal-actions">
+
+
+                <!-- 保存 -->
+
+                <button
+                    type="button"
+                    class="oshi-activity-icon-btn"
+                    title="保存"
+                    onclick="saveOshiActivity()">
+
+                    💾
+
+                </button>
+
+
+                <!-- 閉じる -->
+
+                <button
+                    type="button"
+                    class="oshi-activity-icon-btn"
+                    title="閉じる"
+                    onclick="closeOshiActivityModal()">
+
+                    ✕
+
+                </button>
+
+
+                <!-- 削除 -->
+
+                <button
+                    type="button"
+                    class="oshi-activity-icon-btn delete-btn"
+                    title="削除"
+                    onclick="deleteOshiActivity()">
+
+                    🗑️
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =====================
+             記録タイプ
+        ====================== -->
+
+        <div class="event-form-row">
+
+            <label for="oshiActivityType">
+                種類
+            </label>
+
+
+            <select id="oshiActivityType">
+
+                <option value="live">
+                    🎤 ライブ参加
+                </option>
+
+                <option value="media">
+                    📺 テレビ・配信
+                </option>
+
+                <option value="work">
+                    💿 CD・DVD・作品
+                </option>
+
+                <option value="goods">
+                    🛍️ グッズ購入
+                </option>
+
+                <option value="trip">
+                    ✈️ 遠征
+                </option>
+
+                <option value="memory">
+                    💖 推し活の思い出
+                </option>
+
+                <option value="first">
+                    ⭐ 初めて○○した日
+                </option>
+
+            </select>
+
+        </div>
+
+
+
+        <!-- =====================
+             ライブ参加
+        ====================== -->
+
+        <div
+            id="oshiActivityLiveFields"
+            class="oshi-activity-type-fields">
+
+            <h3>
+                🎤 ライブ参加
+            </h3>
+
+
+            <div class="event-form-row">
+
+                <label>
+                    📅 日付
+                </label>
+
+                <input
+                    type="date"
+                    id="oshiActivityLiveDate">
+
+            </div>
+
+
+            <div class="event-form-row">
+
+                <label>
+                    🎤 ライブ名
+                </label>
+
+                <input
+                    type="text"
+                    id="oshiActivityLiveName"
+                    placeholder="例：Ado JAPAN TOUR">
+
+            </div>
+
+
+            <div class="event-form-row">
+
+                <label>
+                    📍 会場
+                </label>
+
+                <input
+                    type="text"
+                    id="oshiActivityLiveVenue"
+                    placeholder="例：東京ドーム">
+
+            </div>
+
+
+            <div class="event-form-row">
+
+                <label>
+                    💺 座席
+                </label>
+
+                <input
+                    type="text"
+                    id="oshiActivityLiveSeat"
+                    placeholder="例：1階 15列 20番">
+
+            </div>
+
+
+            <div class="event-form-row">
+
+                <label>
+                    📝 感想
+                </label>
+
+                <textarea
+                    id="oshiActivityLiveMemo"
+                    rows="5"
+                    placeholder="ライブの感想を記録"></textarea>
+
+            </div>
+
+
+            <div class="event-form-row">
+
+                <label>
+                    📷 写真
+                </label>
+
+                <input
+                    type="file"
+                    id="oshiActivityLivePhoto"
+                    accept="image/*"
+                    multiple>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =====================
+             テレビ・配信
+        ====================== -->
+
+        <div
+            id="oshiActivityMediaFields"
+            class="oshi-activity-type-fields"
+            style="display:none;">
+
+            <h3>
+                📺 テレビ・配信
+            </h3>
+
+
+            <div class="event-form-row">
+
+                <label>
+                    📺 番組名
+                </label>
+
+                <input
+                    type="text"
+                    id="oshiActivityMediaName"
+                    placeholder="例：MUSIC STATION">
+
+            </div>
+
+
+            <div class="event-form-row">
+
+                <label>
+                    📅 放送日
+                </label>
+
+                <input
+                    type="date"
+                    id="oshiActivityMediaDate">
+
+            </div>
+
+
+            <div class="event-form-row">
+
+                <label>
+                    👀 視聴済み
+                </label>
+
+                <input
+                    type="checkbox"
+                    id="oshiActivityMediaWatched">
+
+            </div>
+
+
+            <div class="event-form-row">
+
+                <label>
+                    📝 感想
+                </label>
+
+                <textarea
+                    id="oshiActivityMediaMemo"
+                    rows="5"
+                    placeholder="番組・配信の感想"></textarea>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =====================
+             CD・DVD・作品
+        ====================== -->
+
+        <div
+            id="oshiActivityWorkFields"
+            class="oshi-activity-type-fields"
+            style="display:none;">
+
+            <h3>
+                💿 CD・DVD・作品
+            </h3>
+
+
+            <div class="event-form-row">
+
+                <label>
+                    📅 購入日
+                </label>
+
+                <input
+                    type="date"
+                    id="oshiActivityWorkDate">
+
+            </div>
+
+
+            <div class="event-form-row">
+
+                <label>
+                    💿 作品名
+                </label>
+
+                <input
+                    type="text"
+                    id="oshiActivityWorkName"
+                    placeholder="例：アルバム・DVD名">
+
+            </div>
+
+
+            <div class="event-form-row">
+
+                <label>
+                    📦 仕様
+                </label>
+
+                <input
+                    type="text"
+                    id="oshiActivityWorkEdition"
+                    placeholder="例：初回限定盤">
+
+            </div>
+
+
+            <div class="event-form-row">
+
+                <label>
+                    📝 感想
+                </label>
+
+                <textarea
+                    id="oshiActivityWorkMemo"
+                    rows="5"
+                    placeholder="作品についての感想"></textarea>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =====================
+             グッズ購入
+        ====================== -->
+
+        <div
+            id="oshiActivityGoodsFields"
+            class="oshi-activity-type-fields"
+            style="display:none;">
+
+            <h3>
+                🛍️ グッズ購入
+            </h3>
+
+
+            <div class="event-form-row">
+
+                <label>
+                    📅 購入日
+                </label>
+
+                <input
+                    type="date"
+                    id="oshiActivityGoodsDate">
+
+            </div>
+
+
+            <div class="event-form-row">
+
+                <label>
+                    🛍️ 商品
+                </label>
+
+                <input
+                    type="text"
+                    id="oshiActivityGoodsName"
+                    placeholder="例：ツアーTシャツ">
+
+            </div>
+
+
+            <div class="event-form-row">
+
+                <label>
+                    💰 金額
+                </label>
+
+                <input
+                    type="number"
+                    id="oshiActivityGoodsPrice"
+                    min="0"
+                    placeholder="4500">
+
+            </div>
+
+
+            <div class="event-form-row">
+
+                <label>
+                    🏪 購入場所
+                </label>
+
+                <input
+                    type="text"
+                    id="oshiActivityGoodsPlace"
+                    placeholder="例：公式オンラインショップ">
+
+            </div>
+
+
+            <div class="event-form-row">
+
+                <label>
+                    📷 写真
+                </label>
+
+                <input
+                    type="file"
+                    id="oshiActivityGoodsPhoto"
+                    accept="image/*"
+                    multiple>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =====================
+             遠征
+        ====================== -->
+
+        <div
+            id="oshiActivityTripFields"
+            class="oshi-activity-type-fields"
+            style="display:none;">
+
+            <h3>
+                ✈️ 遠征
+            </h3>
+
+
+            <div class="event-form-row">
+
+                <label>
+                    📅 日程
+                </label>
+
+                <input
+                    type="date"
+                    id="oshiActivityTripDate">
+
+            </div>
+
+
+            <div class="event-form-row">
+
+                <label>
+                    📍 行き先
+                </label>
+
+                <input
+                    type="text"
+                    id="oshiActivityTripDestination"
+                    placeholder="例：大阪">
+
+            </div>
+
+
+            <div class="event-form-row">
+
+                <label>
+                    🚄 交通費
+                </label>
+
+                <input
+                    type="number"
+                    id="oshiActivityTripTransport"
+                    min="0"
+                    placeholder="15000">
+
+            </div>
+
+
+            <div class="event-form-row">
+
+                <label>
+                    🏨 宿泊費
+                </label>
+
+                <input
+                    type="number"
+                    id="oshiActivityTripHotel"
+                    min="0"
+                    placeholder="12000">
+
+            </div>
+
+
+            <div class="event-form-row">
+
+                <label>
+                    📝 感想
+                </label>
+
+                <textarea
+                    id="oshiActivityTripMemo"
+                    rows="5"
+                    placeholder="遠征の思い出"></textarea>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =====================
+             推し活の思い出
+        ====================== -->
+
+        <div
+            id="oshiActivityMemoryFields"
+            class="oshi-activity-type-fields"
+            style="display:none;">
+
+            <h3>
+                💖 推し活の思い出
+            </h3>
+
+
+            <div class="event-form-row">
+
+                <label>
+                    📅 日付
+                </label>
+
+                <input
+                    type="date"
+                    id="oshiActivityMemoryDate">
+
+            </div>
+
+
+            <div class="event-form-row">
+
+                <label>
+                    📝 コメント
+                </label>
+
+                <textarea
+                    id="oshiActivityMemoryMemo"
+                    rows="8"
+                    placeholder="自由に推し活の思い出を記録"></textarea>
+
+            </div>
+
+
+            <div class="event-form-row">
+
+                <label>
+                    📷 写真・動画
+                </label>
+
+                <input
+                    type="file"
+                    id="oshiActivityMemoryPhoto"
+                    accept="image/*,video/*"
+                    multiple>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =====================
+             初めて○○した日
+        ====================== -->
+
+        <div
+            id="oshiActivityFirstFields"
+            class="oshi-activity-type-fields"
+            style="display:none;">
+
+            <h3>
+                ⭐ 初めて○○した日
+            </h3>
+
+
+            <div class="event-form-row">
+
+                <label>
+                    ⭐ 種類
+                </label>
+
+                <select id="oshiActivityFirstType">
+
+                    <option value="first_live">
+                        初めてライブに行った日
+                    </option>
+
+                    <option value="first_venue">
+                        初めて会場に行った日
+                    </option>
+
+                    <option value="first_goods">
+                        初めてグッズを買った日
+                    </option>
+
+                    <option value="became_fan">
+                        ファンになった日
+                    </option>
+
+                    <option value="first_trip">
+                        初めて遠征した日
+                    </option>
+
+                    <option value="other">
+                        その他
+
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="event-form-row">
+
+                <label>
+                    📅 日付
+                </label>
+
+                <input
+                    type="date"
+                    id="oshiActivityFirstDate">
+
+            </div>
+
+
+            <div class="event-form-row">
+
+                <label>
+                    📝 メモ
+                </label>
+
+                <textarea
+                    id="oshiActivityFirstMemo"
+                    rows="5"
+                    placeholder="その日の思い出など"></textarea>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
