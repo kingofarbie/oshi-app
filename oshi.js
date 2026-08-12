@@ -1049,9 +1049,8 @@ function updateOshiReadingSuggestion(){
         suggestion;
 
 
-    suggestionArea.style.display =
-        "block";
-
+suggestionArea.style.display = "block";
+alert("候補表示処理が実行されました");
 
     suggestionButton.onclick =
         function(){
