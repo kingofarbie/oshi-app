@@ -348,20 +348,35 @@
 
 .money-section-header p {
 
-    display: block;
+    display: block !important;
 
-    width: auto;
+    width: auto !important;
 
-    margin: 4px 0 0;
+    height: auto !important;
+
+    max-width: 100% !important;
+
+    margin: 4px 0 0 !important;
+
+    padding: 0 !important;
 
     font-size: 12px;
 
     line-height: 1.4;
 
-    white-space: normal;
+    white-space: normal !important;
 
-    writing-mode: horizontal-tb;
+    writing-mode: horizontal-tb !important;
+
+    text-orientation: mixed !important;
+
+    word-break: normal !important;
+
+    overflow-wrap: normal !important;
+
+    text-align: left !important;
 }
+
 
 /* =====================================================
    小さいボタン
