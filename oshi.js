@@ -798,6 +798,10 @@ function escapeOshiHtml(value){
    詳細ページ
 ========================= */
 
+/* =========================
+   推し詳細ページ
+========================= */
+
 function openOshiDetail(id){
 
     console.log(
@@ -812,7 +816,6 @@ function openOshiDetail(id){
 
     const data =
         db.load();
-
 
     const oshi =
         (data.oshiList || [])
@@ -862,7 +865,28 @@ function openOshiDetail(id){
 
 
     /* =====================
-       推しページのコンテナ
+       推しページ本体
+    ===================== */
+
+    const oshiPage =
+        document.getElementById(
+            "oshiPage"
+        );
+
+
+    if(!oshiPage){
+
+        console.error(
+            "★ oshiPage が見つかりません"
+        );
+
+        return;
+
+    }
+
+
+    /* =====================
+       推しコンテナ
     ===================== */
 
     const container =
@@ -883,99 +907,137 @@ function openOshiDetail(id){
 
 
     /* =====================
+       推しページを表示
+    ===================== */
+
+    oshiPage.classList.add(
+        "active"
+    );
+
+
+    /* =====================
        詳細HTML読み込み
     ===================== */
 
     fetch("oshi-details.html")
 
-        .then(
-            response => {
+        .then(response => {
 
-                if(!response.ok){
+            if(!response.ok){
 
-                    throw new Error(
-                        "oshi-details.html の読み込みに失敗しました"
-                    );
-
-                }
-
-                return response.text();
-
-            }
-        )
-
-        .then(
-            html => {
-
-                container.innerHTML =
-                    html;
-
-
-                /* =====================
-                   ページを表示状態にする
-                ===================== */
-
-                const detailPage =
-                    document.getElementById(
-                        "oshiDetailPage"
-                    );
-
-
-                if(detailPage){
-
-                    detailPage.classList.add(
-                        "active"
-                    );
-
-                }
-
-
-                /* =====================
-                   現在の推しID
-                ===================== */
-
-                container.dataset.oshiId =
-                    id;
-
-
-                container.dataset.oshiDetailMode =
-                    mode;
-
-
-                console.log(
-                    "★ 推し詳細ページ表示:",
-                    oshi.name
+                throw new Error(
+                    "oshi-details.html の読み込みに失敗しました"
                 );
 
             }
-        )
 
-        .catch(
-            error => {
+            return response.text();
+
+        })
+
+
+        .then(html => {
+
+            /* =====================
+               HTMLを入れる
+            ===================== */
+
+            container.innerHTML =
+                html;
+
+
+            /* =====================
+               詳細ページ取得
+            ===================== */
+
+            const detailPage =
+                document.getElementById(
+                    "oshiDetailPage"
+                );
+
+
+            if(!detailPage){
 
                 console.error(
-                    "★ 推し詳細読み込みエラー:",
-                    error
+                    "★ oshiDetailPage が見つかりません"
                 );
 
-                container.innerHTML = `
-
-                    <div class="card">
-
-                        <p>
-                            推し詳細ページを
-                            読み込めませんでした。
-                        </p>
-
-                    </div>
-
-                `;
+                return;
 
             }
-        );
+
+
+            /* =====================
+               詳細ページ表示
+            ===================== */
+
+            detailPage.classList.add(
+                "active"
+            );
+
+
+            /* =====================
+               現在の推し情報
+            ===================== */
+
+            container.dataset.oshiId =
+                id;
+
+
+            container.dataset.oshiDetailMode =
+                mode;
+
+
+            /* =====================
+               タイトルを現在の推し名に変更
+            ===================== */
+
+            const title =
+                detailPage.querySelector(
+                    ".oshi-detail-title"
+                );
+
+
+            if(title){
+
+                title.textContent =
+                    oshi.name;
+
+            }
+
+
+            console.log(
+                "★ 推し詳細ページ表示:",
+                oshi.name
+            );
+
+        })
+
+
+        .catch(error => {
+
+            console.error(
+                "★ 推し詳細読み込みエラー:",
+                error
+            );
+
+
+            container.innerHTML = `
+
+                <div class="card">
+
+                    <p>
+                        推し詳細ページを
+                        読み込めませんでした。
+                    </p>
+
+                </div>
+
+            `;
+
+        });
 
 }
-
 
 
 
