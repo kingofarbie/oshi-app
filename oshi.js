@@ -37,6 +37,7 @@ function loadOshiPage(){
 
         })
 
+
         .then(html => {
 
             container.innerHTML = html;
@@ -50,10 +51,23 @@ function loadOshiPage(){
                HTML読み込み後に初期化
             ===================== */
 
-initOshiList();
-initOshiReadingHelper();
+            initOshiList();
+
+
+            console.log(
+                "★ initOshiReadingHelper() 実行直前"
+            );
+
+
+            initOshiReadingHelper();
+
+
+            console.log(
+                "★ initOshiReadingHelper() 実行完了"
+            );
 
         })
+
 
         .catch(error => {
 
@@ -73,7 +87,6 @@ initOshiReadingHelper();
         });
 
 }
-
 
 /* =========================
    推しリスト
@@ -1082,14 +1095,6 @@ function normalizeOshiReading(){
    ローマ字入力補助を初期化
 ========================= */
 
-/* =========================
-   ローマ字入力補助を初期化
-========================= */
-
-/* =========================
-   ローマ字入力補助を初期化
-========================= */
-
 function initOshiReadingHelper(){
 
     console.log(
@@ -1107,12 +1112,10 @@ function initOshiReadingHelper(){
             "oshiRegisterReading"
         );
 
-
     const suggestionArea =
         document.getElementById(
             "oshiReadingSuggestion"
         );
-
 
     const suggestionButton =
         document.getElementById(
@@ -1163,28 +1166,6 @@ function initOshiReadingHelper(){
     }
 
 
-    if(!suggestionArea){
-
-        console.error(
-            "★ oshiReadingSuggestion が見つかりません"
-        );
-
-        return;
-
-    }
-
-
-    if(!suggestionButton){
-
-        console.error(
-            "★ oshiReadingSuggestionButton が見つかりません"
-        );
-
-        return;
-
-    }
-
-
     /* =====================
        名前入力
     ===================== */
@@ -1194,10 +1175,9 @@ function initOshiReadingHelper(){
         function(){
 
             console.log(
-                "★ 名前入力:",
+                "★ 名前入力イベント:",
                 nameInput.value
             );
-
 
             updateOshiReadingSuggestion();
 
@@ -1214,10 +1194,9 @@ function initOshiReadingHelper(){
         function(){
 
             console.log(
-                "★ ローマ字入力:",
+                "★ ローマ字入力イベント:",
                 readingInput.value
             );
-
 
             normalizeOshiReading();
 
