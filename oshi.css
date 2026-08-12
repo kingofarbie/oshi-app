@@ -48,28 +48,25 @@
 }
 
 
-/*
-   カレンダーのセルを
-   ベースにしたデザイン。
 
-   後からここだけ変更すれば
-   推し付箋の形を変更できる。
-*/
+/* =========================
+   推し付箋
+   カレンダー風
+========================= */
 
 .oshi-list-card{
 
     position:relative;
 
-    min-height:90px;
+    min-height:135px;
 
-    padding:14px;
+    padding:16px 14px 12px;
 
-    border:1px solid var(--border);
+    border:none;
 
-    border-radius:12px;
+    border-radius:2px 2px 8px 2px;
 
-    background:
-        var(--oshi-pin-color);
+    background:var(--oshi-pin-color);
 
     color:#222;
 
@@ -77,8 +74,17 @@
 
     cursor:pointer;
 
+    /*
+       カレンダーの予定付箋っぽい
+       軽い影
+    */
     box-shadow:
-        0 2px 8px rgba(0,0,0,.06);
+        2px 3px 7px rgba(0,0,0,.12);
+
+    /*
+       少しだけ不規則な付箋感
+    */
+    transform:rotate(-0.5deg);
 
     transition:
         transform .15s,
@@ -87,11 +93,57 @@
 }
 
 
-/* タップ時 */
+/* 付箋ごとに少し角度を変える */
+
+.oshi-list-card:nth-child(2n){
+
+    transform:rotate(.6deg);
+
+}
+
+.oshi-list-card:nth-child(3n){
+
+    transform:rotate(-.3deg);
+
+}
+
+
+/* タップ */
 
 .oshi-list-card:active{
 
-    transform:scale(.97);
+    transform:
+        scale(.97)
+        rotate(0deg);
+
+    box-shadow:
+        1px 2px 5px rgba(0,0,0,.10);
+
+}
+
+
+/* =========================
+   付箋の上部
+========================= */
+
+.oshi-list-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+    left:0;
+
+    width:100%;
+    height:4px;
+
+    background:
+        color-mix(
+            in srgb,
+            var(--accent) 35%,
+            transparent
+        );
 
 }
 
@@ -108,7 +160,9 @@
 
     color:#222;
 
-    padding-right:24px;
+    padding-right:28px;
+
+    margin-bottom:8px;
 
 }
 
@@ -125,11 +179,92 @@
 
     gap:3px;
 
-    margin-top:8px;
-
     font-size:12px;
 
     color:#555;
+
+}
+
+
+/* =========================
+   詳細・推し活記録
+========================= */
+
+.oshi-list-actions{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:flex-start;
+
+    gap:18px;
+
+    margin-top:12px;
+
+    padding-top:8px;
+
+    border-top:
+        1px solid rgba(0,0,0,.08);
+
+}
+
+
+/* =========================
+   アクション
+========================= */
+
+.oshi-list-action{
+
+    width:auto !important;
+
+    min-width:0 !important;
+
+    margin:0 !important;
+
+    padding:2px 4px !important;
+
+    border:none !important;
+
+    background:transparent !important;
+
+    color:var(--accent) !important;
+
+    display:flex;
+
+    flex-direction:row;
+
+    align-items:center;
+
+    gap:4px;
+
+    font-size:11px;
+
+    font-weight:bold;
+
+    line-height:1;
+
+    box-shadow:none !important;
+
+}
+
+
+/* アイコン */
+
+.oshi-list-action-icon{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    width:auto;
+    height:auto;
+
+    font-size:18px;
+
+    line-height:1;
 
 }
 
@@ -142,26 +277,26 @@
 
     position:absolute;
 
-    top:6px;
-    right:7px;
+    top:7px;
+    right:8px;
 
-    width:24px;
+    width:24px !important;
     height:24px;
 
-    padding:0;
+    padding:0 !important;
+    margin:0 !important;
 
-    border:none;
+    border:none !important;
 
-    background:transparent;
+    background:transparent !important;
 
-    color:#222;
+    color:#555 !important;
 
-    font-size:22px;
+    font-size:20px;
 
     line-height:1;
 
 }
-
 
 /* =========================
    空状態
