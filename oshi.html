@@ -2,93 +2,95 @@
      推しリスト
 ========================= -->
 
-    <!-- ページヘッダー -->
-    <div class="page-header">
+<!-- ページヘッダー -->
+<div class="page-header">
 
-        <h2 class="page-title">
-            ⭐ 推しリスト
-        </h2>
+    <h2 class="page-title">
+        ⭐ 推しリスト
+    </h2>
 
-        <button
-            type="button"
-            class="add-btn"
-            onclick="openOshiRegisterModal()">
-            ＋ 推しを登録
-        </button>
+    <button
+        type="button"
+        class="add-btn"
+        onclick="openOshiRegisterModal()">
+        ＋ 推しを登録
+    </button>
 
-    </div>
-
-
-    <!-- =====================
-         絞り込み・並べ替え
-    ====================== -->
-
-    <div class="oshi-filter-area">
-
-        <select id="oshiGenreFilter">
-            <option value="all">
-                すべてのジャンル
-            </option>
-
-            <option value="artists">
-                🎤 アーティスト
-            </option>
-
-            <option value="sports">
-                ⚽ スポーツ
-            </option>
-
-            <option value="other">
-                その他
-            </option>
-        </select>
+</div>
 
 
-        <select id="oshiTypeFilter">
+<!-- =====================
+     絞り込み・並べ替え
+===================== -->
 
-            <option value="all">
-                個人・団体すべて
-            </option>
+<div class="oshi-filter-area">
 
-            <option value="individual">
-                👤 個人
-            </option>
+    <select id="oshiGenreFilter">
 
-            <option value="group">
-                👥 団体
-            </option>
+        <option value="all">
+            すべてのジャンル
+        </option>
 
-        </select>
+        <option value="artists">
+            🎤 アーティスト
+        </option>
 
+        <option value="sports">
+            ⚽ スポーツ
+        </option>
 
-        <select id="oshiSort">
+        <option value="other">
+            その他
+        </option>
 
-            <option value="registered">
-                登録順
-            </option>
-
-            <option
-                value="reading"
-                class="premium-option">
-                🔤 読み方順
-            </option>
-
-        </select>
-
-    </div>
+    </select>
 
 
-    <!-- =====================
-         推し付箋リスト
-    ====================== -->
+    <select id="oshiTypeFilter">
 
-    <div
-        id="oshiList"
-        class="oshi-list">
+        <option value="all">
+            個人・団体すべて
+        </option>
 
-        <!-- JSで生成 -->
+        <option value="individual">
+            👤 個人
+        </option>
 
-    </div>
+        <option value="group">
+            👥 団体
+        </option>
+
+    </select>
+
+
+    <select id="oshiSort">
+
+        <option value="registered">
+            登録順
+        </option>
+
+        <option
+            value="reading"
+            class="premium-option">
+            🔤 ローマ字順
+        </option>
+
+    </select>
+
+</div>
+
+
+<!-- =====================
+     推し付箋リスト
+===================== -->
+
+<div
+    id="oshiList"
+    class="oshi-list">
+
+    <!-- JSで生成 -->
+
+</div>
 
 
 
@@ -107,7 +109,9 @@
         </h2>
 
 
-        <!-- 名前 -->
+        <!-- =====================
+             名前
+        ====================== -->
 
         <div class="event-form-row">
 
@@ -123,23 +127,55 @@
         </div>
 
 
-        <!-- 読み方 -->
+        <!-- =====================
+             ローマ字
+        ====================== -->
 
-        <div class="event-form-row">
+<!-- =====================
+     ローマ字
+===================== -->
 
-            <label for="oshiRegisterReading">
-                読み方
-            </label>
+<div class="event-form-row">
 
-            <input
-                type="text"
-                id="oshiRegisterReading"
-                placeholder="並べ替え用。自由に入力">
+    <label for="oshiRegisterReading">
+        ローマ字
+    </label>
 
-        </div>
+    <input
+        type="text"
+        id="oshiRegisterReading"
+        placeholder="例：ado / aimyon"
+        autocomplete="off"
+        autocapitalize="none"
+        spellcheck="false">
 
+    <small class="oshi-reading-help">
+        並べ替え用・海外向け表記。
+        自動候補を確認して自由に修正できます。
+    </small>
 
-        <!-- ジャンル -->
+    <div
+        id="oshiReadingSuggestion"
+        class="oshi-reading-suggestion"
+        style="display:none;">
+
+        <span class="oshi-reading-suggestion-label">
+            💡 ローマ字候補
+        </span>
+
+        <button
+            type="button"
+            id="oshiReadingSuggestionButton"
+            class="oshi-reading-suggestion-button">
+        </button>
+
+    </div>
+
+</div>
+
+        <!-- =====================
+             ジャンル
+        ====================== -->
 
         <div class="event-form-row">
 
@@ -166,7 +202,9 @@
         </div>
 
 
-        <!-- 個人 / 団体 -->
+        <!-- =====================
+             個人 / 団体
+        ====================== -->
 
         <div class="event-form-row">
 
@@ -188,6 +226,10 @@
 
         </div>
 
+
+        <!-- =====================
+             ボタン
+        ====================== -->
 
         <div class="event-modal-buttons">
 

@@ -50,7 +50,8 @@ function loadOshiPage(){
                HTML読み込み後に初期化
             ===================== */
 
-            initOshiList();
+initOshiList();
+initOshiReadingHelper();
 
         })
 
@@ -716,3 +717,403 @@ document.addEventListener(
     "DOMContentLoaded",
     loadOshiPage
 );
+
+
+
+
+/* =========================
+   ローマ字入力補助
+========================= */
+
+const OSHI_ROMAJI_MAP = {
+
+    "あ":"a",
+    "い":"i",
+    "う":"u",
+    "え":"e",
+    "お":"o",
+
+    "か":"ka",
+    "き":"ki",
+    "く":"ku",
+    "け":"ke",
+    "こ":"ko",
+
+    "さ":"sa",
+    "し":"shi",
+    "す":"su",
+    "せ":"se",
+    "そ":"so",
+
+    "た":"ta",
+    "ち":"chi",
+    "つ":"tsu",
+    "て":"te",
+    "と":"to",
+
+    "な":"na",
+    "に":"ni",
+    "ぬ":"nu",
+    "ね":"ne",
+    "の":"no",
+
+    "は":"ha",
+    "ひ":"hi",
+    "ふ":"fu",
+    "へ":"he",
+    "ほ":"ho",
+
+    "ま":"ma",
+    "み":"mi",
+    "む":"mu",
+    "め":"me",
+    "も":"mo",
+
+    "や":"ya",
+    "ゆ":"yu",
+    "よ":"yo",
+
+    "ら":"ra",
+    "り":"ri",
+    "る":"ru",
+    "れ":"re",
+    "ろ":"ro",
+
+    "わ":"wa",
+    "を":"wo",
+    "ん":"n",
+
+    "が":"ga",
+    "ぎ":"gi",
+    "ぐ":"gu",
+    "げ":"ge",
+    "ご":"go",
+
+    "ざ":"za",
+    "じ":"ji",
+    "ず":"zu",
+    "ぜ":"ze",
+    "ぞ":"zo",
+
+    "だ":"da",
+    "ぢ":"ji",
+    "づ":"zu",
+    "で":"de",
+    "ど":"do",
+
+    "ば":"ba",
+    "び":"bi",
+    "ぶ":"bu",
+    "べ":"be",
+    "ぼ":"bo",
+
+    "ぱ":"pa",
+    "ぴ":"pi",
+    "ぷ":"pu",
+    "ぺ":"pe",
+    "ぽ":"po",
+
+    "きゃ":"kya",
+    "きゅ":"kyu",
+    "きょ":"kyo",
+
+    "しゃ":"sha",
+    "しゅ":"shu",
+    "しょ":"sho",
+
+    "ちゃ":"cha",
+    "ちゅ":"chu",
+    "ちょ":"cho",
+
+    "にゃ":"nya",
+    "にゅ":"nyu",
+    "にょ":"nyo",
+
+    "ひゃ":"hya",
+    "ひゅ":"hyu",
+    "ひょ":"hyo",
+
+    "みゃ":"mya",
+    "みゅ":"myu",
+    "みょ":"myo",
+
+    "りゃ":"rya",
+    "りゅ":"ryu",
+    "りょ":"ryo",
+
+    "ぎゃ":"gya",
+    "ぎゅ":"gyu",
+    "ぎょ":"gyo",
+
+    "じゃ":"ja",
+    "じゅ":"ju",
+    "じょ":"jo",
+
+    "びゃ":"bya",
+    "びゅ":"byu",
+    "びょ":"byo",
+
+    "ぴゃ":"pya",
+    "ぴゅ":"pyu",
+    "ぴょ":"pyo"
+
+};
+
+
+/* =========================
+   かな → ローマ字
+========================= */
+
+function convertKanaToRomaji(text){
+
+    let result = "";
+
+    const normalized =
+        text
+        .normalize("NFKC")
+        .toLowerCase()
+        .replace(/[\u30a1-\u30f6]/g, function(char){
+
+            return String.fromCharCode(
+                char.charCodeAt(0) - 0x60
+            );
+
+        });
+
+
+    let i = 0;
+
+
+    while(i < normalized.length){
+
+        /* 2文字の拗音 */
+
+        const pair =
+            normalized.substring(i, i + 2);
+
+        if(OSHI_ROMAJI_MAP[pair]){
+
+            result += OSHI_ROMAJI_MAP[pair];
+
+            i += 2;
+
+            continue;
+
+        }
+
+
+        /* 小さい「っ」 */
+
+        if(normalized[i] === "っ"){
+
+            const next =
+                normalized.substring(i + 1, i + 3);
+
+            const nextRomaji =
+                OSHI_ROMAJI_MAP[next] ||
+                OSHI_ROMAJI_MAP[normalized[i + 1]];
+
+            if(nextRomaji){
+
+                result += nextRomaji.charAt(0);
+
+            }
+
+            i++;
+
+            continue;
+
+        }
+
+
+        /* 通常の1文字 */
+
+        if(OSHI_ROMAJI_MAP[normalized[i]]){
+
+            result +=
+                OSHI_ROMAJI_MAP[normalized[i]];
+
+        }else{
+
+            /*
+                英数字・記号などは
+                そのまま残す
+            */
+
+            result += normalized[i];
+
+        }
+
+
+        i++;
+
+    }
+
+
+    return result
+        .replace(/\s+/g, " ")
+        .trim();
+
+}
+
+
+/* =========================
+   ローマ字候補を表示
+========================= */
+
+function updateOshiReadingSuggestion(){
+
+    const nameInput =
+        document.getElementById(
+            "oshiRegisterName"
+        );
+
+    const readingInput =
+        document.getElementById(
+            "oshiRegisterReading"
+        );
+
+    const suggestionArea =
+        document.getElementById(
+            "oshiReadingSuggestion"
+        );
+
+    const suggestionButton =
+        document.getElementById(
+            "oshiReadingSuggestionButton"
+        );
+
+
+    if(
+        !nameInput ||
+        !readingInput ||
+        !suggestionArea ||
+        !suggestionButton
+    ){
+
+        return;
+
+    }
+
+
+    const name =
+        nameInput.value.trim();
+
+
+    if(!name){
+
+        suggestionArea.style.display =
+            "none";
+
+        return;
+
+    }
+
+
+    const suggestion =
+        convertKanaToRomaji(name);
+
+
+    /*
+        変換できる文字がない場合は
+        候補を表示しない。
+    */
+
+    if(
+        !suggestion ||
+        suggestion === name.toLowerCase()
+    ){
+
+        suggestionArea.style.display =
+            "none";
+
+        return;
+
+    }
+
+
+    suggestionButton.textContent =
+        suggestion;
+
+
+    suggestionArea.style.display =
+        "block";
+
+
+    suggestionButton.onclick =
+        function(){
+
+            readingInput.value =
+                suggestion;
+
+            readingInput.focus();
+
+        };
+
+}
+
+
+/* =========================
+   ローマ字欄を小文字化
+========================= */
+
+function normalizeOshiReading(){
+
+    const input =
+        document.getElementById(
+            "oshiRegisterReading"
+        );
+
+
+    if(!input){
+        return;
+    }
+
+
+    input.value =
+        input.value
+        .normalize("NFKC")
+        .toLowerCase();
+
+}
+
+
+/* =========================
+   ローマ字入力補助を初期化
+========================= */
+
+function initOshiReadingHelper(){
+
+    const nameInput =
+        document.getElementById(
+            "oshiRegisterName"
+        );
+
+    const readingInput =
+        document.getElementById(
+            "oshiRegisterReading"
+        );
+
+
+    if(nameInput){
+
+        nameInput.addEventListener(
+            "input",
+            updateOshiReadingSuggestion
+        );
+
+    }
+
+
+    if(readingInput){
+
+        readingInput.addEventListener(
+            "input",
+            normalizeOshiReading
+        );
+
+    }
+
+}
+
+
