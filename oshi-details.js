@@ -71,7 +71,8 @@ function initOshiDetailsPage(id){
     if(recordTitle){
 
         recordTitle.textContent =
-            oshi.name + "の推し活記録";
+            oshi.name +
+            "の推し活記録";
 
     }
 
@@ -80,5 +81,72 @@ function initOshiDetailsPage(id){
         "★ 推し詳細表示:",
         oshi.name
     );
+
+}
+
+
+/* =========================
+   推し詳細ページを閉じる
+========================= */
+
+function closeOshiDetail(){
+
+    console.log(
+        "★ 推し詳細ページを閉じる"
+    );
+
+
+    const container =
+        document.getElementById(
+            "oshiContainer"
+        );
+
+
+    if(!container){
+
+        return;
+
+    }
+
+
+    /*
+       詳細ページを消して、
+       推し一覧を再表示する
+    */
+
+    loadOshiPage();
+
+}
+
+
+/* =========================
+   推し活記録ページを閉じる
+========================= */
+
+function closeOshiRecord(){
+
+    console.log(
+        "★ 推し活記録ページを閉じる"
+    );
+
+
+    const container =
+        document.getElementById(
+            "oshiContainer"
+        );
+
+
+    if(!container){
+
+        return;
+
+    }
+
+
+    /*
+       推し一覧を再表示する
+    */
+
+    loadOshiPage();
 
 }

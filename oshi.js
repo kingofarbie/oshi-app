@@ -1596,4 +1596,115 @@ function openOshiRecord(id){
 
 }
 
+/* =========================
+   推し活記録ページを閉じる
+========================= */
 
+function closeOshiRecord(){
+
+    console.log(
+        "★ 推し活記録ページを閉じる"
+    );
+
+
+    const container =
+        document.getElementById(
+            "oshiContainer"
+        );
+
+
+    if(!container){
+
+        console.error(
+            "★ oshiContainer が見つかりません"
+        );
+
+        return;
+
+    }
+
+
+    /* =====================
+       推しIDを取得
+    ===================== */
+
+    const oshiId =
+        container.dataset.oshiId;
+
+
+    console.log(
+        "★ 戻る推しID:",
+        oshiId
+    );
+
+
+    /* =====================
+       推しページを再読み込み
+    ===================== */
+
+    fetch("oshi.html")
+
+        .then(response => {
+
+            if(!response.ok){
+
+                throw new Error(
+                    "oshi.html の読み込みに失敗しました"
+                );
+
+            }
+
+            return response.text();
+
+        })
+
+
+        .then(html => {
+
+            container.innerHTML =
+                html;
+
+
+            /* =====================
+               推しページを表示
+            ===================== */
+
+            const oshiPage =
+                document.getElementById(
+                    "oshiPage"
+                );
+
+
+            if(oshiPage){
+
+                oshiPage.classList.add(
+                    "active"
+                );
+
+            }
+
+
+            /* =====================
+               推し一覧を初期化
+            ===================== */
+
+            initOshiList();
+
+
+            console.log(
+                "★ 推し一覧へ戻りました"
+            );
+
+        })
+
+
+        .catch(error => {
+
+            console.error(
+                "★ 推し一覧への復帰に失敗:",
+                error
+            );
+
+        });
+
+}
