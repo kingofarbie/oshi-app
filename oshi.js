@@ -1113,6 +1113,7 @@ function normalizeOshiReading(){
 
 function initOshiReadingHelper(){
 
+    alert("ローマ字補助が起動しました");
     console.log("★★★ ローマ字補助 初期化 ★★★");
 
     document.addEventListener(
