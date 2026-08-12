@@ -1,0 +1,511 @@
+<!-- =========================
+     💰 お金ページ
+     money.html
+========================= -->
+
+<div
+    id="moneyPage"
+    class="money-page">
+
+
+    <!-- =====================
+         ヘッダー
+    ====================== -->
+
+    <div class="money-header">
+
+        <div>
+            <h2>💰 お金</h2>
+            <p class="money-subtitle">
+                家計と推し活のお金をまとめて管理
+            </p>
+        </div>
+
+
+        <!-- 金額表示切り替え -->
+
+        <button
+            type="button"
+            id="moneyVisibilityBtn"
+            class="money-visibility-btn">
+
+            👁 表示
+
+        </button>
+
+    </div>
+
+
+
+    <!-- =====================
+         今月の残高
+    ====================== -->
+
+    <section class="money-balance-card">
+
+        <div class="money-balance-label">
+
+            今月の残高
+
+        </div>
+
+
+        <div
+            id="moneyCurrentBalance"
+            class="money-current-balance money-hidden">
+
+            ¥＊＊＊＊＊＊
+
+        </div>
+
+
+        <div class="money-balance-period">
+
+            8月1日 ～ 今日現在
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================
+         収入・支出
+    ====================== -->
+
+    <div class="money-summary-grid">
+
+
+        <!-- 収入 -->
+
+        <section class="money-summary-card income">
+
+            <div class="money-summary-icon">
+                ＋
+            </div>
+
+            <div class="money-summary-title">
+                収入
+            </div>
+
+            <div
+                id="moneyIncomeTotal"
+                class="money-summary-value money-hidden">
+
+                ¥＊＊＊＊＊＊
+
+            </div>
+
+        </section>
+
+
+
+        <!-- 支出 -->
+
+        <section class="money-summary-card expense">
+
+            <div class="money-summary-icon">
+                −
+            </div>
+
+            <div class="money-summary-title">
+                支出
+            </div>
+
+            <div
+                id="moneyExpenseTotal"
+                class="money-summary-value money-hidden">
+
+                ¥＊＊＊＊＊＊
+
+            </div>
+
+        </section>
+
+    </div>
+
+
+
+    <!-- =====================
+         💖 推し活費
+    ====================== -->
+
+    <section class="money-section money-oshi-section">
+
+        <div class="money-section-header">
+
+            <div>
+
+                <h3>
+                    💖 推し活費
+                </h3>
+
+                <p>
+                    推し別の支出を管理
+                </p>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="money-small-btn">
+
+                ＋ 記録
+
+            </button>
+
+        </div>
+
+
+
+        <!-- 推し① -->
+
+        <div class="money-oshi-row">
+
+            <div class="money-oshi-name">
+
+                💖 推し①
+
+            </div>
+
+            <div
+                class="money-oshi-value money-hidden">
+
+                ¥＊＊＊＊
+
+            </div>
+
+        </div>
+
+
+
+        <!-- 推し② -->
+
+        <div class="money-oshi-row">
+
+            <div class="money-oshi-name">
+
+                💖 推し②
+
+            </div>
+
+            <div
+                class="money-oshi-value money-hidden">
+
+                ¥＊＊＊＊
+
+            </div>
+
+        </div>
+
+
+
+        <!-- 推し③ -->
+
+        <div class="money-oshi-row">
+
+            <div class="money-oshi-name">
+
+                💖 推し③
+
+            </div>
+
+            <div
+                class="money-oshi-value money-hidden">
+
+                ¥＊＊＊＊
+
+            </div>
+
+        </div>
+
+
+
+        <!-- 推し④ -->
+
+        <div class="money-oshi-row">
+
+            <div class="money-oshi-name">
+
+                💖 推し④
+
+            </div>
+
+            <div
+                class="money-oshi-value money-hidden">
+
+                ¥＊＊＊＊
+
+            </div>
+
+        </div>
+
+
+
+        <!-- 推し⑤ -->
+
+        <div class="money-oshi-row">
+
+            <div class="money-oshi-name">
+
+                💖 推し⑤
+
+            </div>
+
+            <div
+                class="money-oshi-value money-hidden">
+
+                ¥＊＊＊＊
+
+            </div>
+
+        </div>
+
+
+
+        <!-- 推し活残高 -->
+
+        <div class="money-oshi-balance">
+
+            <div>
+
+                💖 推し活残高
+
+            </div>
+
+            <div
+                id="moneyOshiBalance"
+                class="money-oshi-balance-value money-hidden">
+
+                ¥＊＊＊＊＊＊
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================
+         📊 今月の収支
+    ====================== -->
+
+    <section class="money-section">
+
+        <div class="money-section-header">
+
+            <div>
+
+                <h3>
+                    📊 今月の収支
+                </h3>
+
+            </div>
+
+        </div>
+
+
+        <div class="money-detail-row">
+
+            <span>
+                ＋ 収入
+            </span>
+
+            <strong
+                class="money-detail-value money-hidden">
+
+                ¥＊＊＊＊＊＊
+
+            </strong>
+
+        </div>
+
+
+        <div class="money-detail-row">
+
+            <span>
+                − 支出
+            </span>
+
+            <strong
+                class="money-detail-value money-hidden">
+
+                ¥＊＊＊＊＊＊
+
+            </strong>
+
+        </div>
+
+
+        <div class="money-detail-row">
+
+            <span>
+                🏦 貯蓄
+            </span>
+
+            <strong
+                class="money-detail-value money-hidden">
+
+                ¥＊＊＊＊＊＊
+
+            </strong>
+
+        </div>
+
+
+        <div class="money-detail-total">
+
+            <span>
+                残高
+            </span>
+
+            <strong
+                class="money-detail-value money-hidden">
+
+                ¥＊＊＊＊＊＊
+
+            </strong>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================
+         📅 期間
+    ====================== -->
+
+    <section class="money-section money-period-section">
+
+        <div class="money-section-header">
+
+            <div>
+
+                <h3>
+                    📅 期間
+                </h3>
+
+            </div>
+
+        </div>
+
+
+        <div class="money-period-buttons">
+
+            <button
+                type="button"
+                class="money-period-btn active">
+
+                今月
+
+            </button>
+
+
+            <button
+                type="button"
+                class="money-period-btn">
+
+                年間
+
+            </button>
+
+
+            <button
+                type="button"
+                class="money-period-btn">
+
+                指定期間
+
+            </button>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================
+         📈 年間
+    ====================== -->
+
+    <section class="money-section money-year-preview">
+
+        <div class="money-section-header">
+
+            <div>
+
+                <h3>
+                    📈 年間の状況
+                </h3>
+
+                <p>
+                    2026年
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="money-year-grid">
+
+            <div class="money-year-item">
+
+                <span>
+                    収入
+                </span>
+
+                <strong class="money-hidden">
+                    ¥＊＊＊＊＊＊
+                </strong>
+
+            </div>
+
+
+            <div class="money-year-item">
+
+                <span>
+                    支出
+                </span>
+
+                <strong class="money-hidden">
+                    ¥＊＊＊＊＊＊
+                </strong>
+
+            </div>
+
+
+            <div class="money-year-item">
+
+                <span>
+                    貯蓄
+                </span>
+
+                <strong class="money-hidden">
+                    ¥＊＊＊＊＊＊
+                </strong>
+
+            </div>
+
+
+            <div class="money-year-item">
+
+                <span>
+                    💖 推し活
+                </span>
+
+                <strong class="money-hidden">
+                    ¥＊＊＊＊＊＊
+                </strong>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+</div>

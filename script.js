@@ -83,7 +83,8 @@ async function loadMaster(){
 
 function switchTab(pageId, event, fromCalendar = false){
 
-console.log("switchTab実行:", pageId);
+    console.log("switchTab実行:", pageId);
+
 
     /* =====================
        ページ切り替え
@@ -92,40 +93,50 @@ console.log("switchTab実行:", pageId);
     document
         .querySelectorAll('.page')
         .forEach(page => {
+
             page.classList.remove('active');
+
         });
+
 
     const targetPage =
         document.getElementById(pageId);
 
+
     if(!targetPage){
+
         console.error(
             "ページが見つかりません:",
             pageId
         );
+
         return;
+
     }
+
 
     targetPage.classList.add('active');
 
 
-/* =====================
-   ページ切り替え時に
-   ☰メニュー表示へ戻す
-===================== */
+    /* =====================
+       ページ切り替え時に
+       ☰メニュー表示へ戻す
+    ===================== */
 
-setHomeMenuButton("open");
+    setHomeMenuButton("open");
 
 
+    /* =====================
+       ページ切り替え時に上へ戻す
+    ===================== */
 
-/* =====================
-   ページ切り替え時に上へ戻す
-===================== */
+    window.scrollTo({
 
-window.scrollTo({
-    top: 0,
-    behavior: "instant"
-});
+        top: 0,
+        behavior: "instant"
+
+    });
+
 
     /* =====================
        タブ切り替え
@@ -134,11 +145,21 @@ window.scrollTo({
     document
         .querySelectorAll('.tab')
         .forEach(tab => {
+
             tab.classList.remove('active');
+
         });
 
-    if(event && event.currentTarget){
-        event.currentTarget.classList.add('active');
+
+    if(
+        event &&
+        event.currentTarget
+    ){
+
+        event.currentTarget.classList.add(
+            'active'
+        );
+
     }
 
 
@@ -146,126 +167,212 @@ window.scrollTo({
        カレンダー
     ===================== */
 
-if(pageId === 'calendarPage'){
+    if(pageId === 'calendarPage'){
 
-const calendar =
-    document.getElementById('calendar');
+        const calendar =
+            document.getElementById(
+                'calendar'
+            );
 
-if(calendar){
-    calendar.style.display = 'block';
-}
 
-setTimeout(() => {
+        if(calendar){
 
-    if(typeof renderCalendar === 'function'){
-        renderCalendar();
+            calendar.style.display =
+                'block';
+
+        }
+
+
+        setTimeout(() => {
+
+            if(
+                typeof renderCalendar ===
+                'function'
+            ){
+
+                renderCalendar();
+
+            }
+
+        }, 50);
+
     }
 
-}, 50);
-
-}
 
     /* =====================
        1日手帳
     ===================== */
 
-if(pageId === 'plannerPage'){
+    if(pageId === 'plannerPage'){
 
-    const today =
-        new Date();
-
-    const todayString =
-        `${today.getFullYear()}-${
-            String(
-                today.getMonth() + 1
-            ).padStart(2,'0')
-        }-${
-            String(
-                today.getDate()
-            ).padStart(2,'0')
-        }`;
+        const today =
+            new Date();
 
 
-    /*
-       カレンダーから来た場合
-       → 選択した日を表示
-    */
-
-    const plannerDate =
-        fromCalendar
-        ? selectedCalendarDate
-        : todayString;
-
-
-    /*
-       1日手帳タブから直接来た場合
-       → 今日を表示
-    */
-
-    if(!fromCalendar){
-
-        selectedCalendarDate =
-            todayString;
-
-    }
+        const todayString =
+            `${today.getFullYear()}-${
+                String(
+                    today.getMonth() + 1
+                ).padStart(2,'0')
+            }-${
+                String(
+                    today.getDate()
+                ).padStart(2,'0')
+            }`;
 
 
-    setTimeout(() => {
+        /*
+           カレンダーから来た場合
+           → 選択した日を表示
+        */
 
-        if(typeof showPlanner === 'function'){
+        const plannerDate =
+            fromCalendar
+            ? selectedCalendarDate
+            : todayString;
 
-            showPlanner(
-                plannerDate,
-                fromCalendar
-            );
+
+        /*
+           1日手帳タブから直接来た場合
+           → 今日を表示
+        */
+
+        if(!fromCalendar){
+
+            selectedCalendarDate =
+                todayString;
 
         }
 
-    }, 50);
 
-}
+        setTimeout(() => {
+
+            if(
+                typeof showPlanner ===
+                'function'
+            ){
+
+                showPlanner(
+                    plannerDate,
+                    fromCalendar
+                );
+
+            }
+
+        }, 50);
+
+    }
+
 
     /* =====================
        ホーム
     ===================== */
 
-if(pageId === 'home'){
+    if(pageId === 'home'){
 
-    if(typeof displayHomeSchedule === 'function'){
-        displayHomeSchedule();
+        if(
+            typeof displayHomeSchedule ===
+            'function'
+        ){
+
+            displayHomeSchedule();
+
+        }
+
+
+        if(
+            typeof displayUpcomingEvents ===
+            'function'
+        ){
+
+            displayUpcomingEvents();
+
+        }
+
+
+        if(
+            typeof displayFavoritePhotoCard ===
+            'function'
+        ){
+
+            displayFavoritePhotoCard();
+
+        }
+
+
+        if(
+            typeof displayCountdown ===
+            'function'
+        ){
+
+            displayCountdown();
+
+        }
+
+
+        if(
+            typeof displayFavorites ===
+            'function'
+        ){
+
+            displayFavorites();
+
+        }
+
     }
 
-    if(typeof displayUpcomingEvents === 'function'){
-        displayUpcomingEvents();
-    }
 
-    if(typeof displayFavoritePhotoCard === 'function'){
-        displayFavoritePhotoCard();
-    }
-
-    if(typeof displayCountdown === 'function'){
-        displayCountdown();
-    }
-
-    if(typeof displayFavorites === 'function'){
-        displayFavorites();
-    }
-
-}
     /* =====================
        お気に入り
     ===================== */
 
     if(pageId === 'favoritePage'){
 
-        if(typeof displayFavorites === 'function'){
+        if(
+            typeof displayFavorites ===
+            'function'
+        ){
+
             displayFavorites();
+
         }
 
     }
 
-}
 
+    /* =====================
+       💰 お金
+    ===================== */
+
+    if(pageId === 'moneyPage'){
+
+        console.log(
+            "★ お金ページを読み込みます"
+        );
+
+
+        setTimeout(() => {
+
+            if(
+                typeof loadMoneyPage ===
+                'function'
+            ){
+
+                loadMoneyPage();
+
+            }else{
+
+                console.error(
+                    "★ loadMoneyPage() が見つかりません"
+                );
+
+            }
+
+        }, 50);
+
+    }
+
+}
 
 /* =====================
    推し候補表示
