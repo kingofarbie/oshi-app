@@ -800,18 +800,163 @@ function escapeOshiHtml(value){
 
 function openOshiDetail(id){
 
-    /*
-       次の段階で
-       oshi-details.html に接続する。
-    */
-
     console.log(
-        "推し詳細を開く:",
+        "★ 推し詳細を開く:",
         id
     );
 
-}
 
+    /* =====================
+       推しデータ取得
+    ===================== */
+
+    const data =
+        db.load();
+
+
+    const oshi =
+        (data.oshiList || [])
+        .find(
+            item =>
+                item.id === id
+        );
+
+
+    if(!oshi){
+
+        console.error(
+            "★ 推しが見つかりません:",
+            id
+        );
+
+        return;
+
+    }
+
+
+    /* =====================
+       詳細データ確認
+    ===================== */
+
+    if(!data.oshiDetails){
+
+        data.oshiDetails = {};
+
+    }
+
+
+    const detail =
+        data.oshiDetails[id];
+
+
+    /* =====================
+       初回 / 既存判定
+    ===================== */
+
+    if(!detail){
+
+        console.log(
+            "★ 推し詳細：新規登録",
+            oshi.name
+        );
+
+    }else{
+
+        console.log(
+            "★ 推し詳細：既存データ",
+            oshi.name
+        );
+
+    }
+
+
+    /* =====================
+       詳細ページを開く
+    ===================== */
+
+    const container =
+        document.getElementById(
+            "oshiContainer"
+        );
+
+
+    if(!container){
+
+        console.error(
+            "★ oshiContainer が見つかりません"
+        );
+
+        return;
+
+    }
+
+
+    fetch("oshi-details.html")
+
+        .then(
+            response => {
+
+                if(!response.ok){
+
+                    throw new Error(
+                        "oshi-details.html の読み込みに失敗しました"
+                    );
+
+                }
+
+                return response.text();
+
+            }
+        )
+
+        .then(
+            html => {
+
+                container.innerHTML =
+                    html;
+
+
+                /* =====================
+                   現在の推しIDを保存
+                ===================== */
+
+                container.dataset.oshiId =
+                    id;
+
+
+                /* =====================
+                   新規 / 既存を記録
+                ===================== */
+
+                container.dataset.oshiDetailMode =
+                    detail
+                        ? "edit"
+                        : "new";
+
+
+                console.log(
+                    "★ 推し詳細ページ読み込み完了:",
+                    oshi.name,
+                    detail
+                        ? "既存"
+                        : "新規"
+                );
+
+            }
+        )
+
+        .catch(
+            error => {
+
+                console.error(
+                    "★ 推し詳細読み込みエラー:",
+                    error
+                );
+
+            }
+        );
+
+}
 
 /* =========================
    起動
