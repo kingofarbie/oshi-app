@@ -206,3 +206,18 @@
     }
 
 }
+
+
+/* =========================
+   推し登録モーダル
+========================= */
+
+#oshiRegisterModal {
+    display: none;
+}
+
+#oshiRegisterModal.show {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
