@@ -1082,9 +1082,16 @@ function normalizeOshiReading(){
    ローマ字入力補助を初期化
 ========================= */
 
+/* =========================
+   ローマ字入力補助を初期化
+========================= */
+
 function initOshiReadingHelper(){
 
-    console.log("★ ローマ字補助 初期化開始");
+    console.log(
+        "★ ローマ字補助 初期化開始"
+    );
+
 
     const nameInput =
         document.getElementById(
@@ -1095,6 +1102,7 @@ function initOshiReadingHelper(){
         document.getElementById(
             "oshiRegisterReading"
         );
+
 
     console.log(
         "★ 名前欄:",
@@ -1114,19 +1122,13 @@ function initOshiReadingHelper(){
             function(){
 
                 console.log(
-                    "★ 名前入力検知:",
+                    "★ 名前入力:",
                     nameInput.value
                 );
 
                 updateOshiReadingSuggestion();
 
             }
-        );
-
-    }else{
-
-        console.error(
-            "★ oshiRegisterName が見つかりません"
         );
 
     }
@@ -1136,13 +1138,16 @@ function initOshiReadingHelper(){
 
         readingInput.addEventListener(
             "input",
-            normalizeOshiReading
-        );
+            function(){
 
-    }else{
+                console.log(
+                    "★ ローマ字入力:",
+                    readingInput.value
+                );
 
-        console.error(
-            "★ oshiRegisterReading が見つかりません"
+                normalizeOshiReading();
+
+            }
         );
 
     }
