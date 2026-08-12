@@ -997,28 +997,23 @@ function updateOshiReadingSuggestion(){
         );
 
 
-if(
-    !nameInput ||
-    !readingInput ||
-    !suggestionArea ||
-    !suggestionButton
-){
+    if(
+        !nameInput ||
+        !readingInput ||
+        !suggestionArea ||
+        !suggestionButton
+    ){
 
-    alert(
-        "候補欄のどれかが見つかりません\n" +
-        "名前:" + !!nameInput + "\n" +
-        "ローマ字:" + !!readingInput + "\n" +
-        "候補エリア:" + !!suggestionArea + "\n" +
-        "候補ボタン:" + !!suggestionButton
-    );
+        return;
 
-    return;
+    }
 
-}
 
     const name =
         nameInput.value.trim();
 
+
+    /* 名前が空なら候補を隠す */
 
     if(!name){
 
@@ -1030,14 +1025,13 @@ if(
     }
 
 
+    /* かな → ローマ字 */
+
     const suggestion =
         convertKanaToRomaji(name);
 
 
-    /*
-        変換できる文字がない場合は
-        候補を表示しない。
-    */
+    /* 変換できなければ候補を隠す */
 
     if(
         !suggestion ||
@@ -1052,12 +1046,19 @@ if(
     }
 
 
+    /* 候補文字を表示 */
+
     suggestionButton.textContent =
         suggestion;
 
 
-suggestionArea.style.display = "block";
-alert("候補表示処理が実行されました");
+    /* 候補エリアを表示 */
+
+    suggestionArea.style.display =
+        "block";
+
+
+    /* 候補をタップしたらローマ字欄へ */
 
     suggestionButton.onclick =
         function(){
@@ -1068,12 +1069,6 @@ alert("候補表示処理が実行されました");
             readingInput.focus();
 
         };
-
-        console.log(
-    "★候補表示:",
-    suggestion,
-    suggestionArea.style.display
-);
 
 }
 
@@ -1091,7 +1086,9 @@ function normalizeOshiReading(){
 
 
     if(!input){
+
         return;
+
     }
 
 
@@ -1107,36 +1104,31 @@ function normalizeOshiReading(){
    ローマ字入力補助を初期化
 ========================= */
 
-/* =========================
-   ローマ字入力補助を初期化
-========================= */
-
 function initOshiReadingHelper(){
-
-    alert("ローマ字補助が起動しました");
-    console.log("★★★ ローマ字補助 初期化 ★★★");
 
     document.addEventListener(
         "input",
         function(e){
 
+            /* 名前欄 */
+
             if(
                 e.target &&
-                e.target.id === "oshiRegisterName"
+                e.target.id ===
+                    "oshiRegisterName"
             ){
-
-                console.log(
-                    "★★★ 名前入力を検知 ★★★",
-                    e.target.value
-                );
 
                 updateOshiReadingSuggestion();
 
             }
 
+
+            /* ローマ字欄 */
+
             if(
                 e.target &&
-                e.target.id === "oshiRegisterReading"
+                e.target.id ===
+                    "oshiRegisterReading"
             ){
 
                 normalizeOshiReading();
@@ -1144,10 +1136,6 @@ function initOshiReadingHelper(){
             }
 
         }
-    );
-
-    console.log(
-        "★★★ ローマ字補助 イベント接続完了 ★★★"
     );
 
 }
