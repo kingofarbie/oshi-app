@@ -131,19 +131,36 @@ const OSHI_TYPE_NAMES = {
 
 function openOshiRegisterModal(){
 
+    console.log("★ 推し登録ボタンが押された");
+
     const modal =
         document.getElementById(
             "oshiRegisterModal"
         );
 
+    console.log(
+        "★ モーダル:",
+        modal
+    );
+
     if(!modal){
+
+        console.error(
+            "★ oshiRegisterModal が見つからない"
+        );
+
         return;
+
     }
 
     modal.classList.add("show");
 
-}
+    console.log(
+        "★ showを追加しました:",
+        modal.className
+    );
 
+}
 
 function closeOshiRegisterModal(){
 
