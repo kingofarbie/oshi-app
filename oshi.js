@@ -1113,72 +1113,40 @@ function normalizeOshiReading(){
 
 function initOshiReadingHelper(){
 
-    console.log(
-        "★★★ ローマ字補助を接続します ★★★"
-    );
+    console.log("★★★ ローマ字補助 初期化 ★★★");
 
-
-    const nameInput =
-        document.getElementById(
-            "oshiRegisterName"
-        );
-
-    const readingInput =
-        document.getElementById(
-            "oshiRegisterReading"
-        );
-
-
-    console.log(
-        "★★★ 接続対象 名前:",
-        nameInput
-    );
-
-    console.log(
-        "★★★ 接続対象 ローマ字:",
-        readingInput
-    );
-
-
-    if(!nameInput || !readingInput){
-
-        console.error(
-            "★★★ 入力欄が見つかりません"
-        );
-
-        return;
-
-    }
-
-
-nameInput.addEventListener(
-    "input",
-    function(){
-
-        alert("名前入力を検知しました");
-
-        updateOshiReadingSuggestion();
-
-    }
-);
-
-    readingInput.addEventListener(
+    document.addEventListener(
         "input",
-        function(){
+        function(e){
 
-            console.log(
-                "★★★ ローマ字入力検知:",
-                readingInput.value
-            );
+            if(
+                e.target &&
+                e.target.id === "oshiRegisterName"
+            ){
 
-            normalizeOshiReading();
+                console.log(
+                    "★★★ 名前入力を検知 ★★★",
+                    e.target.value
+                );
+
+                updateOshiReadingSuggestion();
+
+            }
+
+            if(
+                e.target &&
+                e.target.id === "oshiRegisterReading"
+            ){
+
+                normalizeOshiReading();
+
+            }
 
         }
     );
 
-
     console.log(
-        "★★★ イベント接続完了 ★★★"
+        "★★★ ローマ字補助 イベント接続完了 ★★★"
     );
 
 }
