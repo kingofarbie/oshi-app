@@ -898,3 +898,80 @@
 
     line-height: 1.4;
 }
+
+/* =====================================================
+   💰 お金ページ：文字方向を完全固定
+===================================================== */
+
+/* =====================================================
+   🔧 moneyページ 横書き強制
+   既存CSSのwriting-mode対策
+===================================================== */
+
+.money-page,
+.money-page *,
+.money-page h2,
+.money-page h3,
+.money-page p,
+.money-page span,
+.money-page strong,
+.money-page div {
+
+    writing-mode: horizontal-tb !important;
+
+    text-orientation: mixed !important;
+
+    word-break: normal !important;
+
+    overflow-wrap: normal;
+
+}
+
+
+/* お金ページの説明文 */
+
+.money-header .money-subtitle {
+
+    display: block !important;
+
+    width: auto !important;
+
+    writing-mode: horizontal-tb !important;
+
+    text-orientation: mixed !important;
+
+    white-space: normal !important;
+
+}
+
+
+/* 推し活費の説明 */
+
+.money-oshi-section
+.money-section-header p {
+
+    display: block !important;
+
+    width: auto !important;
+
+    writing-mode: horizontal-tb !important;
+
+    text-orientation: mixed !important;
+
+    white-space: normal !important;
+
+}
+
+
+/* 年間の「2026年」 */
+
+.money-year-preview
+.money-section-header p {
+
+    writing-mode: horizontal-tb !important;
+
+    text-orientation: mixed !important;
+
+    white-space: normal !important;
+
+}
