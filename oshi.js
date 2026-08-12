@@ -849,29 +849,20 @@ function openOshiDetail(id){
         data.oshiDetails[id];
 
 
-    /* =====================
-       初回 / 既存判定
-    ===================== */
+    const mode =
+        detail
+            ? "edit"
+            : "new";
 
-    if(!detail){
 
-        console.log(
-            "★ 推し詳細：新規登録",
-            oshi.name
-        );
-
-    }else{
-
-        console.log(
-            "★ 推し詳細：既存データ",
-            oshi.name
-        );
-
-    }
+    console.log(
+        "★ 詳細モード:",
+        mode
+    );
 
 
     /* =====================
-       詳細ページを開く
+       推しページのコンテナ
     ===================== */
 
     const container =
@@ -890,6 +881,10 @@ function openOshiDetail(id){
 
     }
 
+
+    /* =====================
+       詳細HTML読み込み
+    ===================== */
 
     fetch("oshi-details.html")
 
@@ -917,29 +912,39 @@ function openOshiDetail(id){
 
 
                 /* =====================
-                   現在の推しIDを保存
+                   ページを表示状態にする
+                ===================== */
+
+                const detailPage =
+                    document.getElementById(
+                        "oshiDetailPage"
+                    );
+
+
+                if(detailPage){
+
+                    detailPage.classList.add(
+                        "active"
+                    );
+
+                }
+
+
+                /* =====================
+                   現在の推しID
                 ===================== */
 
                 container.dataset.oshiId =
                     id;
 
 
-                /* =====================
-                   新規 / 既存を記録
-                ===================== */
-
                 container.dataset.oshiDetailMode =
-                    detail
-                        ? "edit"
-                        : "new";
+                    mode;
 
 
                 console.log(
-                    "★ 推し詳細ページ読み込み完了:",
-                    oshi.name,
-                    detail
-                        ? "既存"
-                        : "新規"
+                    "★ 推し詳細ページ表示:",
+                    oshi.name
                 );
 
             }
@@ -953,10 +958,26 @@ function openOshiDetail(id){
                     error
                 );
 
+                container.innerHTML = `
+
+                    <div class="card">
+
+                        <p>
+                            推し詳細ページを
+                            読み込めませんでした。
+                        </p>
+
+                    </div>
+
+                `;
+
             }
         );
 
 }
+
+
+
 
 /* =========================
    起動
