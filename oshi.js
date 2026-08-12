@@ -1151,20 +1151,16 @@ function initOshiReadingHelper(){
     }
 
 
-    nameInput.addEventListener(
-        "input",
-        function(){
+nameInput.addEventListener(
+    "input",
+    function(){
 
-            console.log(
-                "★★★ 名前入力検知:",
-                nameInput.value
-            );
+        alert("名前入力を検知しました");
 
-            updateOshiReadingSuggestion();
+        updateOshiReadingSuggestion();
 
-        }
-    );
-
+    }
+);
 
     readingInput.addEventListener(
         "input",
