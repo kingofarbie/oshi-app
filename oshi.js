@@ -997,17 +997,24 @@ function updateOshiReadingSuggestion(){
         );
 
 
-    if(
-        !nameInput ||
-        !readingInput ||
-        !suggestionArea ||
-        !suggestionButton
-    ){
+if(
+    !nameInput ||
+    !readingInput ||
+    !suggestionArea ||
+    !suggestionButton
+){
 
-        return;
+    alert(
+        "候補欄のどれかが見つかりません\n" +
+        "名前:" + !!nameInput + "\n" +
+        "ローマ字:" + !!readingInput + "\n" +
+        "候補エリア:" + !!suggestionArea + "\n" +
+        "候補ボタン:" + !!suggestionButton
+    );
 
-    }
+    return;
 
+}
 
     const name =
         nameInput.value.trim();
