@@ -1086,6 +1086,10 @@ function normalizeOshiReading(){
    ローマ字入力補助を初期化
 ========================= */
 
+/* =========================
+   ローマ字入力補助を初期化
+========================= */
+
 function initOshiReadingHelper(){
 
     console.log(
@@ -1104,6 +1108,18 @@ function initOshiReadingHelper(){
         );
 
 
+    const suggestionArea =
+        document.getElementById(
+            "oshiReadingSuggestion"
+        );
+
+
+    const suggestionButton =
+        document.getElementById(
+            "oshiReadingSuggestionButton"
+        );
+
+
     console.log(
         "★ 名前欄:",
         nameInput
@@ -1114,42 +1130,103 @@ function initOshiReadingHelper(){
         readingInput
     );
 
+    console.log(
+        "★ 候補エリア:",
+        suggestionArea
+    );
 
-    if(nameInput){
+    console.log(
+        "★ 候補ボタン:",
+        suggestionButton
+    );
 
-        nameInput.addEventListener(
-            "input",
-            function(){
 
-                console.log(
-                    "★ 名前入力:",
-                    nameInput.value
-                );
+    if(!nameInput){
 
-                updateOshiReadingSuggestion();
-
-            }
+        console.error(
+            "★ 名前欄が見つかりません"
         );
+
+        return;
 
     }
 
 
-    if(readingInput){
+    if(!readingInput){
 
-        readingInput.addEventListener(
-            "input",
-            function(){
-
-                console.log(
-                    "★ ローマ字入力:",
-                    readingInput.value
-                );
-
-                normalizeOshiReading();
-
-            }
+        console.error(
+            "★ ローマ字欄が見つかりません"
         );
 
+        return;
+
     }
+
+
+    if(!suggestionArea){
+
+        console.error(
+            "★ oshiReadingSuggestion が見つかりません"
+        );
+
+        return;
+
+    }
+
+
+    if(!suggestionButton){
+
+        console.error(
+            "★ oshiReadingSuggestionButton が見つかりません"
+        );
+
+        return;
+
+    }
+
+
+    /* =====================
+       名前入力
+    ===================== */
+
+    nameInput.addEventListener(
+        "input",
+        function(){
+
+            console.log(
+                "★ 名前入力:",
+                nameInput.value
+            );
+
+
+            updateOshiReadingSuggestion();
+
+        }
+    );
+
+
+    /* =====================
+       ローマ字入力
+    ===================== */
+
+    readingInput.addEventListener(
+        "input",
+        function(){
+
+            console.log(
+                "★ ローマ字入力:",
+                readingInput.value
+            );
+
+
+            normalizeOshiReading();
+
+        }
+    );
+
+
+    console.log(
+        "★ ローマ字補助 初期化完了"
+    );
 
 }
