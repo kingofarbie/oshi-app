@@ -1374,6 +1374,11 @@ async function(){
         "anniversary.html"
     );
 
+    await loadHtml(
+    "oshiContainer",
+    "oshi.html"
+);
+
 
     /* =====================
        初期化
@@ -1382,55 +1387,8 @@ async function(){
     initializeCategories();
 
     await loadMaster();
-
-    displayOshiList();
-
-
-    /* =====================
-       推し検索
-    ===================== */
-
-    const search =
-        document.getElementById(
-            'oshi-search'
-        );
-
-    if(search){
-
-        search.addEventListener(
-            'focus',
-            showCandidates
-        );
-
-        search.addEventListener(
-            'input',
-            searchOshi
-        );
-
-    }
-
-
-    const category =
-        document.getElementById(
-            'category-select'
-        );
-
-    if(category){
-
-        category.addEventListener(
-            'change',
-            function(){
-
-                selectedOshiId = null;
-
-                search.value = '';
-
-                showCandidates();
-
-            }
-        );
-
-    }
+    
+    initOshiList();
 
 
     /* =====================

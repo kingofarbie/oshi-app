@@ -2,6 +2,79 @@ console.log("★ oshi.js 読み込みOK");
 
 
 /* =========================
+   推しページ読み込み
+========================= */
+
+function loadOshiPage(){
+
+    const container =
+        document.getElementById("oshiContainer");
+
+    if(!container){
+
+        console.error(
+            "oshiContainer が見つかりません"
+        );
+
+        return;
+
+    }
+
+
+    fetch("oshi.html")
+
+        .then(response => {
+
+            if(!response.ok){
+
+                throw new Error(
+                    "oshi.html の読み込みに失敗しました"
+                );
+
+            }
+
+            return response.text();
+
+        })
+
+        .then(html => {
+
+            container.innerHTML = html;
+
+            console.log(
+                "★ oshi.html 読み込みOK"
+            );
+
+
+            /* =====================
+               HTML読み込み後に初期化
+            ===================== */
+
+            initOshiList();
+
+        })
+
+        .catch(error => {
+
+            console.error(
+                "oshi.html 読み込みエラー:",
+                error
+            );
+
+            container.innerHTML = `
+                <div class="card">
+                    <p>
+                        推しページを読み込めませんでした。
+                    </p>
+                </div>
+            `;
+
+        });
+
+}
+
+
+/* =========================
    推しリスト
 ========================= */
 
@@ -10,7 +83,7 @@ console.log("★ oshi.js 読み込みOK");
     付箋カラー
 
     後からここだけ変更すれば
-    推し付箋のデザインを変更できるようにする。
+    推し付箋のデザインを変更できる。
 */
 
 const OSHI_PIN_COLORS = [
@@ -117,7 +190,9 @@ function registerOshi(){
 
     if(!name){
 
-        alert("名前・名称を入力してください。");
+        alert(
+            "名前・名称を入力してください。"
+        );
 
         return;
 
@@ -135,20 +210,14 @@ function registerOshi(){
     }
 
 
-    /*
-       リスト登録情報だけを管理する。
-
-       detail は後から追加する。
-       リストから削除しても detail は残せる構造。
-    */
-
     const oshi = {
 
         id:
             "oshi_" +
             Date.now(),
 
-        name:name,
+        name:
+            name,
 
         reading:
             reading || name,
@@ -162,7 +231,8 @@ function registerOshi(){
         registeredAt:
             Date.now(),
 
-        listed:true
+        listed:
+            true
 
     };
 
@@ -202,11 +272,16 @@ function clearOshiRegisterForm(){
 
 
     if(name){
+
         name.value = "";
+
     }
 
+
     if(reading){
+
         reading.value = "";
+
     }
 
 }
@@ -224,7 +299,13 @@ function renderOshiList(){
         );
 
     if(!container){
+
+        console.warn(
+            "oshiList がまだ存在しません"
+        );
+
         return;
+
     }
 
 
@@ -234,8 +315,9 @@ function renderOshiList(){
 
     const list =
         (data.oshiList || [])
-        .filter(oshi =>
-            oshi.listed !== false
+        .filter(
+            oshi =>
+                oshi.listed !== false
         );
 
 
@@ -259,7 +341,7 @@ function renderOshiList(){
 
     /* =====================
        絞り込み
-    ====================== */
+    ===================== */
 
     let filtered =
         list.filter(oshi => {
@@ -268,7 +350,9 @@ function renderOshiList(){
                 genreFilter !== "all" &&
                 oshi.genre !== genreFilter
             ){
+
                 return false;
+
             }
 
 
@@ -276,7 +360,9 @@ function renderOshiList(){
                 typeFilter !== "all" &&
                 oshi.type !== typeFilter
             ){
+
                 return false;
+
             }
 
 
@@ -287,17 +373,23 @@ function renderOshiList(){
 
     /* =====================
        並べ替え
-    ====================== */
+    ===================== */
 
     if(sort === "reading"){
 
-        filtered.sort((a,b) =>
+        filtered.sort(
+            (a,b) =>
 
-            String(a.reading || a.name)
-            .localeCompare(
-                String(b.reading || b.name),
-                "ja"
-            )
+                String(
+                    a.reading ||
+                    a.name
+                ).localeCompare(
+                    String(
+                        b.reading ||
+                        b.name
+                    ),
+                    "ja"
+                )
 
         );
 
@@ -323,6 +415,7 @@ function renderOshiList(){
             <div class="oshi-empty">
 
                 ⭐
+
                 <br>
 
                 まだ推しが登録されていません
@@ -337,14 +430,9 @@ function renderOshiList(){
 
 
     container.innerHTML =
+
         filtered.map(
-
             (oshi,index) => {
-
-                /*
-                    毎回同じ推しが
-                    同じ色になるようにする。
-                */
 
                 const color =
                     OSHI_PIN_COLORS[
@@ -358,7 +446,8 @@ function renderOshiList(){
                     <div
                         class="oshi-list-card"
                         style="
-                            --oshi-pin-color:${color};
+                            --oshi-pin-color:
+                                ${color};
                         "
                         onclick="
                             openOshiDetail(
@@ -367,7 +456,8 @@ function renderOshiList(){
                         ">
 
 
-                        <div class="oshi-list-name">
+                        <div
+                            class="oshi-list-name">
 
                             ${escapeOshiHtml(
                                 oshi.name
@@ -376,22 +466,32 @@ function renderOshiList(){
                         </div>
 
 
-                        <div class="oshi-list-info">
+                        <div
+                            class="oshi-list-info">
 
                             <span>
+
                                 ${
                                     OSHI_GENRE_NAMES[
                                         oshi.genre
-                                    ] || "その他"
+                                    ]
+                                    ||
+                                    "その他"
                                 }
+
                             </span>
 
+
                             <span>
+
                                 ${
                                     OSHI_TYPE_NAMES[
                                         oshi.type
-                                    ] || "個人"
+                                    ]
+                                    ||
+                                    "個人"
                                 }
+
                             </span>
 
                         </div>
@@ -411,6 +511,7 @@ function renderOshiList(){
                             ×
 
                         </button>
+
 
                     </div>
 
@@ -434,7 +535,9 @@ function removeOshiFromList(id){
             "推しリストから外しますか？\n\n詳細データは削除されません。"
         )
     ){
+
         return;
+
     }
 
 
@@ -444,27 +547,28 @@ function removeOshiFromList(id){
 
     const oshi =
         (data.oshiList || [])
-        .find(item =>
-            item.id === id
+        .find(
+            item =>
+                item.id === id
         );
 
 
     if(!oshi){
+
         return;
+
     }
 
 
     /*
-       重要。
-
        完全削除ではなく
        listed=false にする。
 
-       これなら詳細データを
-       後から残せる。
+       詳細データは残す。
     */
 
-    oshi.listed = false;
+    oshi.listed =
+        false;
 
 
     db.save(data);
@@ -539,11 +643,31 @@ function initOshiList(){
 function escapeOshiHtml(value){
 
     return String(value)
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#039;");
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 
 }
 
@@ -555,10 +679,8 @@ function escapeOshiHtml(value){
 function openOshiDetail(id){
 
     /*
-       ここは次の段階で
+       次の段階で
        oshi-details.html に接続する。
-
-       今はクリックできる状態だけ作る。
     */
 
     console.log(
@@ -575,5 +697,5 @@ function openOshiDetail(id){
 
 document.addEventListener(
     "DOMContentLoaded",
-    initOshiList
+    loadOshiPage
 );
