@@ -807,3 +807,58 @@
     color: inherit;
 }
 
+/* =========================
+   推し詳細ヘッダーアイコン
+   編集・削除・閉じる
+========================= */
+
+.oshi-detail-actions .icon-btn,
+.oshi-detail-actions .delete-btn {
+
+    background: #fff !important;
+
+    border: none !important;
+
+    box-shadow: none !important;
+
+    outline: none !important;
+
+    border-radius: 0 !important;
+
+    width: auto !important;
+    height: auto !important;
+
+    padding: 4px !important;
+
+    font-size: 20px;
+
+}
+
+
+/* タップ時にも四角い枠を出さない */
+
+.oshi-detail-actions .icon-btn:focus,
+.oshi-detail-actions .icon-btn:active,
+.oshi-detail-actions .delete-btn:focus,
+.oshi-detail-actions .delete-btn:active {
+
+    background: #fff !important;
+
+    border: none !important;
+
+    box-shadow: none !important;
+
+    outline: none !important;
+
+}
+
+
+/* 削除ボタンも赤背景にしない */
+
+.oshi-detail-actions .delete-btn {
+
+    background: #fff !important;
+
+    color: inherit;
+
+}

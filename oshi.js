@@ -794,6 +794,7 @@ function escapeOshiHtml(value){
 }
 
 
+
 /* =========================
    詳細ページ
 ========================= */
@@ -1043,6 +1044,106 @@ function openOshiDetail(id){
                 </div>
 
             `;
+
+        });
+
+}
+
+
+/* =========================
+   推し詳細ページを閉じる
+========================= */
+
+function closeOshiDetail(){
+
+    console.log(
+        "★ 推し詳細ページを閉じる"
+    );
+
+
+    const container =
+        document.getElementById(
+            "oshiContainer"
+        );
+
+
+    if(!container){
+
+        console.error(
+            "★ oshiContainer が見つかりません"
+        );
+
+        return;
+
+    }
+
+
+    /* =====================
+       推し一覧ページへ戻す
+    ===================== */
+
+    fetch("oshi.html")
+
+        .then(response => {
+
+            if(!response.ok){
+
+                throw new Error(
+                    "oshi.html の読み込みに失敗しました"
+                );
+
+            }
+
+            return response.text();
+
+        })
+
+
+        .then(html => {
+
+            container.innerHTML =
+                html;
+
+
+            /* =====================
+               推しページを表示
+            ===================== */
+
+            const oshiPage =
+                document.getElementById(
+                    "oshiPage"
+                );
+
+
+            if(oshiPage){
+
+                oshiPage.classList.add(
+                    "active"
+                );
+
+            }
+
+
+            /* =====================
+               推し一覧を初期化
+            ===================== */
+
+            initOshiList();
+
+
+            console.log(
+                "★ 推し詳細ページを閉じて推し一覧へ戻りました"
+            );
+
+        })
+
+
+        .catch(error => {
+
+            console.error(
+                "★ 推し詳細ページを閉じる際のエラー:",
+                error
+            );
 
         });
 
