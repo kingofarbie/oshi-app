@@ -41,65 +41,100 @@
 
 
 /* =====================================================
-   ヘッダー
+   💰 お金ページ ヘッダー
 ===================================================== */
 
 .money-header {
 
     width: 100%;
+    max-width: 100%;
 
     display: flex;
+    flex-direction: row;
+
     align-items: center;
     justify-content: space-between;
 
-    gap: 10px;
+    gap: 12px;
 
     margin-bottom: 14px;
+
+    box-sizing: border-box;
 }
 
+
+/* タイトル側 */
+
+.money-header > div:first-child {
+
+    flex: 1 1 auto;
+
+    min-width: 0;
+
+    width: auto;
+
+    display: block;
+}
+
+
+/* 「お金」 */
 
 .money-header h2 {
 
+    display: block;
+
+    width: auto;
+
     margin: 0;
 
+    padding: 0;
+
     font-size: 22px;
+
+    line-height: 1.4;
+
+    white-space: nowrap;
+
+    writing-mode: horizontal-tb;
+
+    text-align: left;
 }
 
 
-.money-subtitle {
+/* 説明 */
+
+.money-header .money-subtitle {
+
+    display: block;
+
+    width: auto;
 
     margin: 4px 0 0;
 
     font-size: 12px;
 
-    opacity: 0.7;
+    line-height: 1.4;
+
+    white-space: normal;
+
+    writing-mode: horizontal-tb;
 }
 
 
-/* =====================================================
-   金額表示切り替え
-===================================================== */
+/* 表示ボタン */
 
 .money-visibility-btn {
 
-    flex-shrink: 0;
+    flex: 0 0 auto;
+
+    width: auto;
 
     min-width: 78px;
 
-    padding: 8px 10px;
+    white-space: nowrap;
 
-    border: none;
-    border-radius: 10px;
-
-    background: rgba(255,255,255,0.9);
-
-    color: inherit;
-
-    font-size: 13px;
-
-    cursor: pointer;
+    writing-mode: horizontal-tb;
 }
-
 
 /* =====================================================
    今月の残高
@@ -256,11 +291,17 @@
 }
 
 
+/* =====================================================
+   💖 推し活費 ヘッダー
+===================================================== */
+
 .money-section-header {
 
     width: 100%;
+    max-width: 100%;
 
     display: flex;
+    flex-direction: row;
 
     align-items: center;
     justify-content: space-between;
@@ -268,26 +309,59 @@
     gap: 10px;
 
     margin-bottom: 12px;
+
+    box-sizing: border-box;
+}
+
+
+.money-section-header > div {
+
+    flex: 1 1 auto;
+
+    min-width: 0;
+
+    width: auto;
 }
 
 
 .money-section-header h3 {
 
+    display: block;
+
+    width: auto;
+
     margin: 0;
 
+    padding: 0;
+
     font-size: 17px;
+
+    line-height: 1.4;
+
+    white-space: nowrap;
+
+    writing-mode: horizontal-tb;
+
+    text-align: left;
 }
 
 
 .money-section-header p {
 
+    display: block;
+
+    width: auto;
+
     margin: 4px 0 0;
 
     font-size: 12px;
 
-    opacity: 0.65;
-}
+    line-height: 1.4;
 
+    white-space: normal;
+
+    writing-mode: horizontal-tb;
+}
 
 /* =====================================================
    小さいボタン
