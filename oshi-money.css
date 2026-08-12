@@ -1,10 +1,18 @@
+/* =====================================================
+   ⭐ 推し活費詳細
+   oshi-money.css
+===================================================== */
+
+
 /* =========================
-   ⭐ 推し活費ページ
+   ページ本体
 ========================= */
 
 .oshi-money-page {
-    padding: 12px;
-    padding-bottom: 90px;
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 12px 12px 90px;
 }
 
 
@@ -15,21 +23,40 @@
 .oshi-money-header {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 15px;
-}
 
-.oshi-money-header h2 {
-    margin: 0;
-    flex: 1;
+    gap: 10px;
+
+    margin-bottom: 14px;
 }
 
 .oshi-money-header button {
+    flex-shrink: 0;
+
     border: none;
-    background: transparent;
-    padding: 8px 4px;
-    font-size: 14px;
+    border-radius: 999px;
+
+    padding: 8px 11px;
+
+    background: rgba(255,255,255,0.9);
+
+    color: inherit;
+
+    font-size: 0.78rem;
+
     cursor: pointer;
+
+    box-shadow:
+        0 2px 7px rgba(0,0,0,0.07);
+}
+
+.oshi-money-header h2 {
+    flex: 1;
+
+    margin: 0;
+
+    font-size: 1.3rem;
+
+    text-align: center;
 }
 
 
@@ -38,22 +65,36 @@
 ========================= */
 
 .oshi-money-period {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 15px;
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 7px;
+
+    margin-bottom: 14px;
 }
 
 .oshi-money-period button {
-    flex: 1;
-    padding: 9px 5px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    background: #fff;
+    border: none;
+    border-radius: 12px;
+
+    padding: 10px 5px;
+
+    background: rgba(255,255,255,0.82);
+
+    color: inherit;
+
+    font-size: 0.8rem;
+
     cursor: pointer;
 }
 
 .oshi-money-period button.active {
-    font-weight: bold;
+    font-weight: 700;
+
+    box-shadow:
+        inset 0 0 0 2px rgba(0,0,0,0.08);
 }
 
 
@@ -62,19 +103,58 @@
 ========================= */
 
 .oshi-money-total {
+    margin-bottom: 15px;
+
+    padding: 22px 16px;
+
+    border-radius: 20px;
+
     text-align: center;
-    padding: 20px 12px;
-    margin-bottom: 18px;
+
+    background: rgba(255,255,255,0.92);
+
+    box-shadow:
+        0 5px 18px rgba(0,0,0,0.08);
 }
 
 .oshi-money-total-label {
-    font-size: 14px;
-    margin-bottom: 6px;
+    font-size: 0.85rem;
+
+    opacity: 0.65;
 }
 
 .oshi-money-total-value {
-    font-size: 32px;
-    font-weight: bold;
+    margin-top: 8px;
+
+    font-size: clamp(2rem, 9vw, 2.8rem);
+
+    font-weight: 800;
+
+    line-height: 1.15;
+}
+
+
+/* =========================
+   セクション
+========================= */
+
+.oshi-money-section {
+    margin-bottom: 15px;
+
+    padding: 16px 12px;
+
+    border-radius: 18px;
+
+    background: rgba(255,255,255,0.9);
+
+    box-shadow:
+        0 3px 14px rgba(0,0,0,0.06);
+}
+
+.oshi-money-section h3 {
+    margin: 0 4px 10px;
+
+    font-size: 1rem;
 }
 
 
@@ -82,63 +162,74 @@
    推し別
 ========================= */
 
-.oshi-money-section h3 {
-    margin: 10px 4px;
-}
-
-
-/* =========================
-   推し1人分
-========================= */
-
 .oshi-money-person {
     width: 100%;
+
     display: flex;
     align-items: center;
 
+    gap: 10px;
+
+    min-height: 48px;
+
+    padding: 9px 7px;
+
     border: none;
-    border-radius: 12px;
+    border-bottom: 1px solid rgba(0,0,0,0.07);
 
-    background: rgba(255,255,255,0.85);
+    background: transparent;
 
-    padding: 14px 12px;
-    margin-bottom: 9px;
+    color: inherit;
 
     text-align: left;
-    cursor: pointer;
 
-    box-shadow:
-        0 2px 6px rgba(0,0,0,0.08);
+    cursor: pointer;
 }
 
-
-/* 推し名 */
+.oshi-money-person:last-child {
+    border-bottom: none;
+}
 
 .oshi-money-person-name {
     flex: 1;
+
+    min-width: 0;
+
     padding-left: 8px;
+
+    font-size: 0.9rem;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
-
-
-/* 金額 */
 
 .oshi-money-person-value {
-    min-width: 90px;
+    flex-shrink: 0;
+
+    min-width: 80px;
+
+    font-size: 0.92rem;
+
+    font-weight: 700;
 
     text-align: right;
 
-    font-weight: bold;
+    white-space: nowrap;
 }
 
-
-/* 矢印 */
-
 .oshi-money-arrow {
-    width: 24px;
-    text-align: right;
+    flex-shrink: 0;
 
-    font-size: 22px;
-    opacity: 0.5;
+    width: 22px;
+
+    font-size: 1.35rem;
+
+    line-height: 1;
+
+    text-align: center;
+
+    opacity: 0.45;
 }
 
 
@@ -147,14 +238,62 @@
 ========================= */
 
 .oshi-money-grand-total {
-    margin-top: 18px;
-    padding: 18px 14px;
-
     display: flex;
-    justify-content: space-between;
+
     align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    padding: 17px 15px;
+
+    border-radius: 18px;
+
+    background: rgba(255,255,255,0.94);
+
+    box-shadow:
+        0 4px 16px rgba(0,0,0,0.08);
+
+    font-weight: 800;
 }
 
 .oshi-money-grand-total strong {
-    font-size: 22px;
+    font-size: 1.2rem;
+
+    text-align: right;
+
+    white-space: nowrap;
+}
+
+
+/* =========================
+   ボタン押下
+========================= */
+
+.oshi-money-header button:active,
+.oshi-money-period button:active,
+.oshi-money-person:active {
+    transform: scale(0.98);
+}
+
+
+/* =========================
+   スマホ
+========================= */
+
+@media (max-width: 420px) {
+
+    .oshi-money-page {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .oshi-money-person-value {
+        min-width: 70px;
+    }
+
+    .oshi-money-header h2 {
+        font-size: 1.2rem;
+    }
+
 }

@@ -1,0 +1,474 @@
+/* =====================================================
+   💰 お金ページ
+   money.css
+===================================================== */
+
+
+/* =========================
+   ページ本体
+========================= */
+
+.money-page {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 14px 12px 90px;
+}
+
+
+/* =========================
+   ヘッダー
+========================= */
+
+.money-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    margin-bottom: 14px;
+}
+
+.money-header h2 {
+    margin: 0;
+    font-size: 1.35rem;
+}
+
+.money-subtitle {
+    margin: 4px 0 0;
+    font-size: 0.78rem;
+    opacity: 0.65;
+}
+
+
+/* =========================
+   金額表示切り替え
+========================= */
+
+.money-visibility-btn {
+    flex-shrink: 0;
+
+    border: none;
+    border-radius: 999px;
+
+    padding: 9px 13px;
+
+    background: rgba(255,255,255,0.85);
+    color: inherit;
+
+    font-size: 0.82rem;
+    cursor: pointer;
+
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+
+/* =========================
+   金額非表示
+========================= */
+
+.money-hidden {
+    letter-spacing: 0.08em;
+}
+
+
+/* =========================
+   今月の残高
+========================= */
+
+.money-balance-card {
+    position: relative;
+
+    padding: 22px 18px;
+
+    margin-bottom: 14px;
+
+    border-radius: 20px;
+
+    background: rgba(255,255,255,0.92);
+
+    box-shadow:
+        0 5px 18px rgba(0,0,0,0.08);
+
+    text-align: center;
+}
+
+.money-balance-label {
+    font-size: 0.85rem;
+    opacity: 0.65;
+}
+
+.money-current-balance {
+    margin-top: 8px;
+
+    font-size: clamp(2rem, 9vw, 3rem);
+    font-weight: 800;
+
+    line-height: 1.15;
+
+    text-align: center;
+}
+
+.money-balance-period {
+    margin-top: 7px;
+
+    font-size: 0.72rem;
+    opacity: 0.55;
+}
+
+
+/* =========================
+   収入・支出
+========================= */
+
+.money-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 10px;
+
+    margin-bottom: 14px;
+}
+
+.money-summary-card {
+    min-width: 0;
+
+    padding: 15px 13px;
+
+    border-radius: 16px;
+
+    background: rgba(255,255,255,0.88);
+
+    box-shadow:
+        0 3px 12px rgba(0,0,0,0.06);
+}
+
+.money-summary-icon {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.money-summary-title {
+    margin-top: 3px;
+
+    font-size: 0.78rem;
+    opacity: 0.65;
+}
+
+.money-summary-value {
+    margin-top: 7px;
+
+    font-size: 1.15rem;
+    font-weight: 700;
+
+    text-align: right;
+    white-space: nowrap;
+}
+
+
+/* =========================
+   共通セクション
+========================= */
+
+.money-section {
+    margin-bottom: 14px;
+
+    padding: 16px 14px;
+
+    border-radius: 18px;
+
+    background: rgba(255,255,255,0.90);
+
+    box-shadow:
+        0 3px 14px rgba(0,0,0,0.06);
+}
+
+.money-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+
+    margin-bottom: 12px;
+}
+
+.money-section-header h3 {
+    margin: 0;
+
+    font-size: 1rem;
+}
+
+.money-section-header p {
+    margin: 3px 0 0;
+
+    font-size: 0.72rem;
+    opacity: 0.6;
+}
+
+
+/* =========================
+   小ボタン
+========================= */
+
+.money-small-btn {
+    flex-shrink: 0;
+
+    border: none;
+    border-radius: 999px;
+
+    padding: 8px 12px;
+
+    background: rgba(255,255,255,0.9);
+
+    color: inherit;
+
+    font-size: 0.78rem;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 2px 7px rgba(0,0,0,0.08);
+}
+
+
+/* =========================
+   推し活費
+========================= */
+
+.money-oshi-section {
+    padding-bottom: 12px;
+}
+
+.money-oshi-row {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    min-height: 44px;
+
+    padding: 8px 4px;
+
+    border-bottom: 1px solid rgba(0,0,0,0.07);
+}
+
+.money-oshi-name {
+    flex: 1;
+
+    min-width: 0;
+
+    padding-left: 8px;
+
+    font-size: 0.9rem;
+
+    text-align: left;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.money-oshi-value {
+    flex-shrink: 0;
+
+    min-width: 85px;
+
+    font-size: 0.92rem;
+    font-weight: 700;
+
+    text-align: right;
+}
+
+
+/* =========================
+   推し活残高
+========================= */
+
+.money-oshi-balance {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+
+    margin-top: 12px;
+
+    padding: 13px 10px;
+
+    border-radius: 12px;
+
+    background: rgba(255,255,255,0.65);
+
+    font-weight: 700;
+}
+
+.money-oshi-balance-value {
+    text-align: right;
+    white-space: nowrap;
+}
+
+
+/* =========================
+   今月の収支
+========================= */
+
+.money-detail-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    min-height: 42px;
+
+    padding: 8px 6px;
+
+    border-bottom: 1px solid rgba(0,0,0,0.07);
+}
+
+.money-detail-row span {
+    flex: 1;
+
+    padding-left: 8px;
+
+    text-align: left;
+
+    font-size: 0.88rem;
+}
+
+.money-detail-value {
+    flex-shrink: 0;
+
+    min-width: 100px;
+
+    text-align: right;
+
+    font-size: 0.9rem;
+}
+
+
+/* =========================
+   残高
+========================= */
+
+.money-detail-total {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin-top: 8px;
+
+    padding: 13px 6px;
+
+    border-radius: 12px;
+
+    font-weight: 800;
+}
+
+.money-detail-total span {
+    padding-left: 8px;
+}
+
+.money-detail-total strong {
+    text-align: right;
+}
+
+
+/* =========================
+   期間
+========================= */
+
+.money-period-buttons {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 7px;
+}
+
+.money-period-btn {
+    border: none;
+    border-radius: 12px;
+
+    padding: 10px 5px;
+
+    background: rgba(245,245,245,0.9);
+
+    color: inherit;
+
+    font-size: 0.78rem;
+
+    cursor: pointer;
+}
+
+.money-period-btn.active {
+    font-weight: 700;
+
+    box-shadow:
+        inset 0 0 0 2px rgba(0,0,0,0.08);
+}
+
+
+/* =========================
+   年間
+========================= */
+
+.money-year-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 9px;
+}
+
+.money-year-item {
+    display: flex;
+    flex-direction: column;
+
+    gap: 5px;
+
+    padding: 12px;
+
+    border-radius: 13px;
+
+    background: rgba(248,248,248,0.8);
+}
+
+.money-year-item span {
+    font-size: 0.75rem;
+    opacity: 0.65;
+}
+
+.money-year-item strong {
+    font-size: 0.92rem;
+
+    text-align: right;
+
+    white-space: nowrap;
+}
+
+
+/* =========================
+   スマホ調整
+========================= */
+
+@media (max-width: 420px) {
+
+    .money-page {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .money-current-balance {
+        font-size: 2.2rem;
+    }
+
+    .money-oshi-value {
+        min-width: 75px;
+    }
+
+}
