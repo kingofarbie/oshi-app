@@ -1,68 +1,219 @@
 <!-- =========================
-     ⭐ 推しリスト
+     推しリスト
 ========================= -->
 
-<div class="page-header"><h2 class="page-title">
-    ⭐ 推しリスト
-</h2>
+<div class="oshi-page">
 
-<button
-    class="add-btn"
-    type="button">
-    ＋ 推しを登録
-</button>
+    <!-- ページヘッダー -->
+    <div class="page-header">
 
-</div><!-- =========================
-     推し一覧
-========================= --><div class="oshi-list"><!-- Ado -->
+        <h2 class="page-title">
+            ⭐ 推しリスト
+        </h2>
 
-<button
-    class="oshi-list-card"
-    type="button"
-    onclick="openOshiDetail()">
+        <button
+            type="button"
+            class="add-btn"
+            onclick="openOshiRegisterModal()">
+            ＋ 推しを登録
+        </button>
 
-    <div class="oshi-list-pin">
-        ⭐
     </div>
 
-    <div class="oshi-list-name">
-        Ado
+
+    <!-- =====================
+         絞り込み・並べ替え
+    ====================== -->
+
+    <div class="oshi-filter-area">
+
+        <select id="oshiGenreFilter">
+            <option value="all">
+                すべてのジャンル
+            </option>
+
+            <option value="artists">
+                🎤 アーティスト
+            </option>
+
+            <option value="sports">
+                ⚽ スポーツ
+            </option>
+
+            <option value="other">
+                その他
+            </option>
+        </select>
+
+
+        <select id="oshiTypeFilter">
+
+            <option value="all">
+                個人・団体すべて
+            </option>
+
+            <option value="individual">
+                👤 個人
+            </option>
+
+            <option value="group">
+                👥 団体
+            </option>
+
+        </select>
+
+
+        <select id="oshiSort">
+
+            <option value="registered">
+                登録順
+            </option>
+
+            <option
+                value="reading"
+                class="premium-option">
+                🔤 読み方順
+            </option>
+
+        </select>
+
     </div>
 
-</button>
 
+    <!-- =====================
+         推し付箋リスト
+    ====================== -->
 
-<!-- Mrs. GREEN APPLE -->
+    <div
+        id="oshiList"
+        class="oshi-list">
 
-<button
-    class="oshi-list-card"
-    type="button">
+        <!-- JSで生成 -->
 
-    <div class="oshi-list-pin">
-        💚
     </div>
 
-    <div class="oshi-list-name">
-        Mrs. GREEN APPLE
+</div>
+
+
+<!-- =========================
+     推し登録モーダル
+========================= -->
+
+<div
+    id="oshiRegisterModal"
+    class="modal">
+
+    <div class="modal-content oshi-register-modal">
+
+        <h2>
+            ⭐ 推しを登録
+        </h2>
+
+
+        <!-- 名前 -->
+
+        <div class="event-form-row">
+
+            <label for="oshiRegisterName">
+                名前・名称
+            </label>
+
+            <input
+                type="text"
+                id="oshiRegisterName"
+                placeholder="例：Ado">
+
+        </div>
+
+
+        <!-- 読み方 -->
+
+        <div class="event-form-row">
+
+            <label for="oshiRegisterReading">
+                読み方
+            </label>
+
+            <input
+                type="text"
+                id="oshiRegisterReading"
+                placeholder="並べ替え用。自由に入力">
+
+        </div>
+
+
+        <!-- ジャンル -->
+
+        <div class="event-form-row">
+
+            <label for="oshiRegisterGenre">
+                ジャンル
+            </label>
+
+            <select id="oshiRegisterGenre">
+
+                <option value="artists">
+                    🎤 アーティスト
+                </option>
+
+                <option value="sports">
+                    ⚽ スポーツ
+                </option>
+
+                <option value="other">
+                    その他
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- 個人 / 団体 -->
+
+        <div class="event-form-row">
+
+            <label for="oshiRegisterType">
+                区分
+            </label>
+
+            <select id="oshiRegisterType">
+
+                <option value="individual">
+                    👤 個人
+                </option>
+
+                <option value="group">
+                    👥 団体
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="event-modal-buttons">
+
+            <button
+                type="button"
+                class="save-btn"
+                onclick="registerOshi()">
+
+                💾 登録
+
+            </button>
+
+
+            <button
+                type="button"
+                onclick="closeOshiRegisterModal()">
+
+                キャンセル
+
+            </button>
+
+        </div>
+
     </div>
-
-</button>
-
-
-<!-- 仮の推し -->
-
-<button
-    class="oshi-list-card"
-    type="button">
-
-    <div class="oshi-list-pin">
-        💙
-    </div>
-
-    <div class="oshi-list-name">
-        推しの名前
-    </div>
-
-</button>
 
 </div>
