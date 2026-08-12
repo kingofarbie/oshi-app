@@ -1011,6 +1011,15 @@ function openOshiDetail(id){
                 oshi.name
             );
 
+
+            if(typeof initOshiDetailsPage ===
+                "function"
+            ){
+
+    initOshiDetailsPage(id);
+
+}
+
         })
 
 
@@ -1458,3 +1467,133 @@ function initOshiReadingHelper(){
     );
 
 }
+
+
+/* =========================
+   推し活記録ページを開く
+========================= */
+
+function openOshiRecord(id){
+
+    console.log(
+        "★ 推し活記録を開く:",
+        id
+    );
+
+    const container =
+        document.getElementById(
+            "oshiContainer"
+        );
+
+    if(!container){
+
+        console.error(
+            "★ oshiContainer が見つかりません"
+        );
+
+        return;
+
+    }
+
+    fetch("oshi-record.html")
+
+        .then(response => {
+
+            if(!response.ok){
+
+                throw new Error(
+                    "oshi-record.html の読み込みに失敗しました"
+                );
+
+            }
+
+            return response.text();
+
+        })
+
+        .then(html => {
+
+            container.innerHTML =
+                html;
+
+
+            /* =====================
+               推しページを表示
+            ===================== */
+
+            const oshiPage =
+                document.getElementById(
+                    "oshiPage"
+                );
+
+            if(oshiPage){
+
+                oshiPage.classList.add(
+                    "active"
+                );
+
+            }
+
+
+            /* =====================
+               記録ページを表示
+            ===================== */
+
+            const recordPage =
+                document.getElementById(
+                    "oshiRecordPage"
+                );
+
+            if(recordPage){
+
+                recordPage.classList.add(
+                    "active"
+                );
+
+            }
+
+
+            /* =====================
+               現在の推しID
+            ===================== */
+
+            container.dataset.oshiId =
+                id;
+
+
+            container.dataset.oshiRecordMode =
+                "view";
+
+
+            console.log(
+                "★ 推し活記録ページ表示:",
+                id
+            );
+
+        })
+
+        .catch(error => {
+
+            console.error(
+                "★ 推し活記録読み込みエラー:",
+                error
+            );
+
+            container.innerHTML = `
+
+                <div class="card">
+
+                    <p>
+                        推し活記録ページを
+                        読み込めませんでした。
+                    </p>
+
+                </div>
+
+            `;
+
+        });
+
+}
+
+
