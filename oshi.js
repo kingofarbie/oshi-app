@@ -1063,6 +1063,12 @@ function updateOshiReadingSuggestion(){
 
         };
 
+        console.log(
+    "★候補表示:",
+    suggestion,
+    suggestionArea.style.display
+);
+
 }
 
 
