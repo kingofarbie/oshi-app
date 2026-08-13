@@ -1,244 +1,110 @@
-<!-- =========================================================
-     ⭐ お気に入りページ
-     完全独立版
+<!-- =====================================================
+     📷 お気に入り写真
+====================================================== -->
 
-     【重要】
-     ・photo.jsのHTMLを使用しない
-     ・1日手帳のフォトビューアを使用しない
-     ・お気に入り専用フォトビューアを使用
-     ・お気に入り専用ID / classを使用
-     ・お気に入り専用関数のみ呼び出す
-========================================================= -->
+<section class="favorites-section">
 
-<div class="favorites-page">
+    <div class="favorites-section-header">
 
-    <!-- =====================================================
-         ヘッダー
-    ====================================================== -->
-
-    <div class="favorites-header">
-
-        <button
-            type="button"
-            onclick="switchTab('home', event)">
-            ← ホーム
-        </button>
-
-        <div class="favorites-header-title">
-
-            <h2>⭐ お気に入り</h2>
+        <div>
+            <h3>📷 お気に入り写真</h3>
 
             <p>
-                お気に入りの予定・写真を楽しむページ
+                お気に入りの写真
             </p>
+        </div>
+
+
+        <div class="memory-header-actions">
+
+            <!-- 写真追加 -->
+
+            <button
+                type="button"
+                onclick="favoritePhotoOpenPicker()"
+                title="写真を追加">
+
+                ＋
+
+            </button>
+
+
+            <!-- 写真削除 -->
+
+            <button
+                type="button"
+                onclick="favoritePhotoStartDeleteMode()"
+                title="写真を削除">
+
+                🗑
+
+            </button>
+
+
+            <!-- 写真共有 -->
+
+            <button
+                type="button"
+                onclick="favoritePhotoStartShareMode()"
+                title="写真を共有">
+
+                📤
+
+            </button>
+
+
+            <!-- 写真並べ替え -->
+
+            <button
+                type="button"
+                onclick="favoritePhotoStartSortMode()"
+                title="写真を並べ替え">
+
+                🔀
+
+            </button>
 
         </div>
 
     </div>
 
 
-    <!-- =====================================================
-         🏆 お気に入りイベント
-    ====================================================== -->
+    <!-- =================================================
+         写真操作バー
+    ================================================== -->
 
-    <section class="favorites-section">
-
-        <div class="favorites-section-header">
-
-            <div>
-
-                <h3>🏆 ベストイベント</h3>
-
-                <p>
-                    お気に入りの予定
-                </p>
-
-            </div>
+    <div
+        id="favorite-photo-action-bar"
+        class="favorite-photo-action-bar"
+        style="display:none;">
+    </div>
 
 
-            <div class="memory-header-actions">
+    <!-- =================================================
+         写真一覧
+    ================================================== -->
 
-                <!-- 直接追加 -->
+    <div
+        id="favorite-photo-list"
+        class="favorites-photo-list">
 
-                <button
-                    type="button"
-                    onclick="favoriteOpenAddEvent()"
-                    title="イベントを追加">
+        <div class="favorites-empty">
 
-                    ＋
+            📷
+            <br>
 
-                </button>
-
-
-                <!-- 削除 -->
-
-                <button
-                    type="button"
-                    onclick="favoriteEventDeleteMode()"
-                    title="イベントを削除">
-
-                    🗑
-
-                </button>
-
-
-                <!-- 共有 -->
-
-                <button
-                    type="button"
-                    onclick="favoriteEventShareMode()"
-                    title="イベントを共有">
-
-                    📤
-
-                </button>
-
-
-                <!-- 並べ替え -->
-
-                <button
-                    type="button"
-                    onclick="favoriteEventSortMode()"
-                    title="イベントを並べ替え">
-
-                    🔀
-
-                </button>
-
-            </div>
+            お気に入り写真はありません
 
         </div>
 
+    </div>
 
-        <div
-            id="favorite-event-action-bar"
-            class="favorite-action-bar"
-            style="display:none;">
-        </div>
+</section>
 
 
-        <div
-            id="favorite-event-list"
-            class="favorites-event-list">
-
-            <div class="favorites-empty">
-
-                🏆
-                <br>
-                お気に入りイベントはありません
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-
-    <!-- =====================================================
-         📷 お気に入り写真
-    ====================================================== -->
-
-    <section class="favorites-section">
-
-        <div class="favorites-section-header">
-
-            <div>
-
-                <h3>📷 お気に入り写真</h3>
-
-                <p>
-                    お気に入りの写真
-                </p>
-
-            </div>
-
-
-            <div class="memory-header-actions">
-
-                <!-- 直接追加 -->
-
-                <button
-                    type="button"
-                    onclick="favoriteOpenPhotoPicker()"
-                    title="写真を追加">
-
-                    ＋
-
-                </button>
-
-
-                <!-- 削除 -->
-
-                <button
-                    type="button"
-                    onclick="favoritePhotoDeleteMode()"
-                    title="写真を削除">
-
-                    🗑
-
-                </button>
-
-
-                <!-- 共有 -->
-
-                <button
-                    type="button"
-                    onclick="favoritePhotoShareMode()"
-                    title="写真を共有">
-
-                    📤
-
-                </button>
-
-
-                <!-- 並べ替え -->
-
-                <button
-                    type="button"
-                    onclick="favoritePhotoSortMode()"
-                    title="写真を並べ替え">
-
-                    🔀
-
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <div
-            id="favorite-photo-action-bar"
-            class="favorite-action-bar"
-            style="display:none;">
-        </div>
-
-
-        <div
-            id="favorite-photo-list"
-            class="favorites-photo-list">
-
-            <div class="favorites-empty">
-
-                📷
-                <br>
-                お気に入り写真はありません
-
-            </div>
-
-        </div>
-
-    </section>
-
-</div>
-
-
-
-<!-- =========================================================
-     📷 お気に入り直接追加
-     写真選択
-========================================================= -->
+<!-- =====================================================
+     📷 お気に入り直接追加用
+====================================================== -->
 
 <input
     type="file"
@@ -246,43 +112,43 @@
     accept="image/*"
     multiple
     style="display:none;"
-    onchange="favoritePhotoSelected(event)">
+    onchange="favoritePhotoHandleSelected(event)"
+>
 
 
-
-<!-- =========================================================
-     🏆 お気に入り直接追加
-     イベント
-========================================================= -->
+<!-- =====================================================
+     🗑 写真削除確認
+====================================================== -->
 
 <div
-    id="favoriteAddEventModal"
-    class="modal">
+    id="favoritePhotoDeleteModal"
+    class="modal"
+    style="display:none;">
 
     <div class="modal-content">
 
         <h2>
-            🏆 お気に入りイベントを追加
+            🗑 写真を削除
         </h2>
 
         <div
-            id="favoriteAddEventContent">
+            id="favoritePhotoDeleteMessage"
+            class="favorite-delete-confirm-text">
         </div>
 
         <div class="favorites-modal-buttons">
 
             <button
                 type="button"
-                onclick="saveFavoriteDirectEvent()">
+                onclick="favoritePhotoConfirmDelete()">
 
-                保存
+                🗑 削除
 
             </button>
 
-
             <button
                 type="button"
-                onclick="closeFavoriteAddEvent()">
+                onclick="favoritePhotoCancelDelete()">
 
                 キャンセル
 
@@ -295,125 +161,44 @@
 </div>
 
 
-
-<!-- =========================================================
-     📷 お気に入り専用フォトビューア
-     
-     ★ photo.jsのphotoViewerとは完全に別物
-========================================================= -->
+<!-- =====================================================
+     📤 写真共有確認
+====================================================== -->
 
 <div
-    id="favoritePhotoViewer"
-    class="favorite-photo-viewer"
+    id="favoritePhotoShareModal"
+    class="modal"
     style="display:none;">
 
-    <!-- 背景 -->
-
-    <div
-        class="favorite-photo-viewer-backdrop">
-    </div>
-
-
-    <!-- =====================================================
-         上部操作
-    ====================================================== -->
-
-    <div
-        class="favorite-photo-viewer-top">
-
-        <!-- 閉じる -->
-
-        <button
-            type="button"
-            id="favoritePhotoViewerClose"
-            class="favorite-photo-close"
-            aria-label="閉じる">
-
-            ✕
-
-        </button>
-
-    </div>
-
-
-    <!-- =====================================================
-         写真表示領域
-    ====================================================== -->
-
-    <div
-        id="favoritePhotoViewerStage"
-        class="favorite-photo-viewer-stage">
-
-        <img
-            id="favoritePhotoViewerImage"
-            class="favorite-photo-viewer-image"
-            src=""
-            alt="お気に入り写真"
-            draggable="false">
-
-    </div>
-
-
-    <!-- =====================================================
-         下部操作
-    ====================================================== -->
-
-    <div
-        class="favorite-photo-viewer-controls">
-
-        <!-- 削除 -->
-
-        <button
-            type="button"
-            id="favoritePhotoViewerDelete"
-            class="favorite-photo-delete"
-            aria-label="削除">
-
-            🗑
-
-        </button>
-
-
-        <!-- 共有 -->
-
-        <button
-            type="button"
-            id="favoritePhotoViewerShare"
-            class="favorite-photo-share"
-            aria-label="共有">
-
-            📤
-
-        </button>
-
-    </div>
-
-</div>
-
-
-
-<!-- =========================================================
-     ⭐ お気に入り専用イベント削除確認
-========================================================= -->
-
-<div
-    id="favoriteEventDeleteConfirmModal"
-    class="modal">
-
     <div class="modal-content">
 
         <h2>
-            🗑 イベントを削除
+            📤 写真を共有
         </h2>
 
         <div
-            id="favoriteEventDeleteConfirmText"
-            class="favorite-delete-confirm-text">
+            id="favoritePhotoShareList"
+            class="favorite-share-list">
         </div>
 
-        <div
-            id="favoriteEventDeleteSourceActions"
-            class="favorites-modal-buttons">
+        <div class="favorites-modal-buttons">
+
+            <button
+                type="button"
+                onclick="favoritePhotoConfirmShare()">
+
+                📤 共有
+
+            </button>
+
+            <button
+                type="button"
+                onclick="favoritePhotoCancelShare()">
+
+                キャンセル
+
+            </button>
+
         </div>
 
     </div>
@@ -421,99 +206,14 @@
 </div>
 
 
-
-<!-- =========================================================
-     ⭐ お気に入り専用写真削除確認
-========================================================= -->
-
-<div
-    id="favoritePhotoDeleteConfirmModal"
-    class="modal">
-
-    <div class="modal-content">
-
-        <h2>
-            🗑 写真を削除
-        </h2>
-
-        <div
-            id="favoritePhotoDeleteConfirmText"
-            class="favorite-delete-confirm-text">
-        </div>
-
-        <div
-            id="favoritePhotoDeleteSourceActions"
-            class="favorites-modal-buttons">
-        </div>
-
-    </div>
-
-</div>
-
-
-
-<!-- =========================================================
-     🔀 お気に入りイベント並べ替え
-========================================================= -->
-
-<div
-    id="favoriteEventSortModal"
-    class="modal">
-
-    <div class="modal-content">
-
-        <h2>
-            🔀 イベント並べ替え
-        </h2>
-
-        <button
-            type="button"
-            onclick="favoriteSetEventSort('new')">
-
-            🆕 新しい順
-
-        </button>
-
-
-        <button
-            type="button"
-            onclick="favoriteSetEventSort('old')">
-
-            📜 古い順
-
-        </button>
-
-
-        <button
-            type="button"
-            onclick="favoriteSetEventSort('free')">
-
-            ✋ 自由に並べ替え
-
-        </button>
-
-
-        <button
-            type="button"
-            onclick="favoriteCloseEventSortModal()">
-
-            ❌ 閉じる
-
-        </button>
-
-    </div>
-
-</div>
-
-
-
-<!-- =========================================================
-     🔀 お気に入り写真並べ替え
-========================================================= -->
+<!-- =====================================================
+     🔀 写真並べ替え
+====================================================== -->
 
 <div
     id="favoritePhotoSortModal"
-    class="modal">
+    class="modal"
+    style="display:none;">
 
     <div class="modal-content">
 
@@ -523,100 +223,31 @@
 
         <button
             type="button"
-            onclick="favoriteSetPhotoSort('new')">
+            onclick="favoritePhotoSetSort('new')">
 
             🆕 新しい順
 
         </button>
 
-
         <button
             type="button"
-            onclick="favoriteSetPhotoSort('old')">
+            onclick="favoritePhotoSetSort('old')">
 
             📜 古い順
 
         </button>
 
-
         <button
             type="button"
-            onclick="favoriteSetPhotoSort('free')">
+            onclick="favoritePhotoSetSort('free')">
 
             ✋ 自由に並べ替え
 
         </button>
 
-
         <button
             type="button"
-            onclick="favoriteClosePhotoSortModal()">
-
-            ❌ 閉じる
-
-        </button>
-
-    </div>
-
-</div>
-
-
-
-<!-- =========================================================
-     📤 お気に入りイベント共有
-========================================================= -->
-
-<div
-    id="favoriteEventShareModal"
-    class="modal">
-
-    <div class="modal-content">
-
-        <h2>
-            📤 イベント共有
-        </h2>
-
-        <div
-            id="favoriteEventShareList"
-            class="favorite-share-list">
-        </div>
-
-        <button
-            type="button"
-            onclick="favoriteCloseEventShareModal()">
-
-            ❌ 閉じる
-
-        </button>
-
-    </div>
-
-</div>
-
-
-
-<!-- =========================================================
-     📤 お気に入り写真共有
-========================================================= -->
-
-<div
-    id="favoritePhotoShareModal"
-    class="modal">
-
-    <div class="modal-content">
-
-        <h2>
-            📤 写真共有
-        </h2>
-
-        <div
-            id="favoritePhotoShareList"
-            class="favorite-share-list">
-        </div>
-
-        <button
-            type="button"
-            onclick="favoriteClosePhotoShareModal()">
+            onclick="favoritePhotoCloseSortModal()">
 
             ❌ 閉じる
 
