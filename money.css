@@ -1009,3 +1009,75 @@
 
     color: var(--text-sub);
 }
+
+
+/* =====================================================
+   💰 money：説明文・年表示
+   1文字ずつの縦並びを防止
+===================================================== */
+
+.money-page .money-subtitle,
+.money-page .money-section-subtitle,
+.money-page .money-section-header p {
+
+    writing-mode: horizontal-tb !important;
+    text-orientation: mixed !important;
+    direction: ltr !important;
+
+    display: block !important;
+
+    width: auto !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+
+    white-space: nowrap !important;
+
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+
+    transform: none !important;
+
+    text-align: left !important;
+    line-height: 1.4 !important;
+}
+
+
+/* =====================================================
+   💰 説明文を置いている左側
+===================================================== */
+
+.money-page .money-header > div:first-child,
+.money-page .money-section-header > div:first-child {
+
+    min-width: 0 !important;
+
+    writing-mode: horizontal-tb !important;
+}
+
+
+/* =====================================================
+   💰 セクションヘッダー
+===================================================== */
+
+.money-page .money-section-header {
+
+    writing-mode: horizontal-tb !important;
+    direction: ltr !important;
+
+    display: flex !important;
+    flex-direction: row !important;
+
+    align-items: center !important;
+}
+
+
+/* =====================================================
+   💰 2026年
+===================================================== */
+
+.money-page .money-year-preview
+.money-section-header p {
+
+    writing-mode: horizontal-tb !important;
+    white-space: nowrap !important;
+}
