@@ -2543,3 +2543,76 @@ if(
     favoritePhotoInitialize();
 
 }
+
+
+
+
+/* =========================================================
+   ⭐ HTMLのonclickから呼び出せるように公開
+========================================================= */
+
+window.favoritePhotoOpenPicker =
+    favoritePhotoOpenPicker;
+
+window.favoritePhotoSelected =
+    favoritePhotoSelected;
+
+window.favoritePhotoDeleteMode =
+    favoritePhotoDeleteMode;
+
+window.favoritePhotoShareMode =
+    favoritePhotoShareMode;
+
+window.favoritePhotoSortMode =
+    favoritePhotoSortMode;
+
+window.favoritePhotoToggleSelect =
+    favoritePhotoToggleSelect;
+
+window.favoritePhotoCancelDelete =
+    favoritePhotoCancelDelete;
+
+window.favoritePhotoCancelShare =
+    favoritePhotoCancelShare;
+
+window.favoritePhotoConfirmDelete =
+    favoritePhotoConfirmDelete;
+
+window.favoritePhotoShareSelected =
+    favoritePhotoShareSelected;
+
+window.favoritePhotoFinishSort =
+    favoritePhotoFinishSort;
+
+window.favoritePhotoOpenViewer =
+    favoritePhotoOpenViewer;
+
+window.favoritePhotoCloseViewer =
+    favoritePhotoCloseViewer;
+
+window.favoritePhotoShareCurrent =
+    favoritePhotoShareCurrent;
+
+window.favoritePhotoDeleteCurrent =
+    favoritePhotoDeleteCurrent;
+
+window.favoritePhotoPrevious =
+    favoritePhotoPrevious;
+
+window.favoritePhotoNext =
+    favoritePhotoNext;
+
+window.favoritePhotoDragStart =
+    favoritePhotoDragStart;
+
+window.favoritePhotoPinch =
+    favoritePhotoPinch;
+
+window.favoritePhotoDragEnd =
+    favoritePhotoDragEnd;
+
+window.favoritePhotoSwipe =
+    favoritePhotoSwipe;
+
+window.favoritePhotoDoubleTap =
+    favoritePhotoDoubleTap;
