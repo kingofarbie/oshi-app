@@ -47,39 +47,52 @@
 
             </div>
 
-            <!-- 直接追加 -->
-
-            <button
-                type="button"
-                class="favorites-add-btn"
-                onclick="openFavoriteAddEvent()">
-                ＋追加
-            </button>
-
         </div>
 
 
         <!-- =====================
              操作ボタン
+             ＋ 🗑 📤 🔀
         ===================== -->
 
         <div class="favorites-tools">
 
+            <!-- 追加 -->
+
             <button
                 type="button"
-                onclick="favoriteDeleteMode()">
+                onclick="openFavoriteAddEvent()"
+                aria-label="お気に入りイベントを追加">
+                ＋
+            </button>
+
+
+            <!-- 削除 -->
+
+            <button
+                type="button"
+                onclick="favoriteDeleteMode()"
+                aria-label="お気に入りイベントを削除">
                 🗑
             </button>
 
-            <button
-                type="button"
-                onclick="favoriteShareMode()">
-                📤
-            </button>
+
+            <!-- 共有 -->
 
             <button
                 type="button"
-                onclick="favoriteSortMode()">
+                onclick="favoriteShareMode()"
+                aria-label="お気に入りイベントを共有">
+                📤
+            </button>
+
+
+            <!-- 並べ替え -->
+
+            <button
+                type="button"
+                onclick="favoriteSortMode()"
+                aria-label="お気に入りイベントを並べ替え">
                 🔀
             </button>
 
