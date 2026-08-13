@@ -1,6 +1,7 @@
 /* =====================================================
    💰 お金ページ
    money.css
+   整理版
 ===================================================== */
 
 
@@ -32,7 +33,6 @@
     box-sizing: border-box;
 }
 
-
 .money-page button,
 .money-page input,
 .money-page select {
@@ -51,72 +51,87 @@
     max-width: 100%;
 
     display: flex;
-
     flex-direction: row;
 
     align-items: center;
-
     justify-content: space-between;
 
     gap: 12px;
 
     margin-bottom: 14px;
+
+    writing-mode: horizontal-tb;
 }
 
+
+/*
+   左側
+   タイトル＋説明文
+*/
 
 .money-header > div:first-child {
 
     flex: 1 1 auto;
 
     min-width: 0;
-
-    width: auto;
+    max-width: calc(100% - 90px);
 
     display: block;
+
+    writing-mode: horizontal-tb;
 }
 
+
+/* タイトル */
 
 .money-header h2 {
 
     display: block;
 
-    width: auto;
+    width: 100%;
 
     margin: 0;
-
     padding: 0;
 
     font-size: 22px;
-
     line-height: 1.4;
 
     white-space: nowrap;
 
-    writing-mode: horizontal-tb;
+    writing-mode: horizontal-tb !important;
+    text-orientation: mixed !important;
+    direction: ltr !important;
 
     text-align: left;
 }
 
 
+/* 説明文 */
+
 .money-header .money-subtitle {
 
     display: block;
 
-    width: auto;
+    width: 100%;
 
-    margin: 4px 0 0;
-
+    margin: 3px 0 0;
     padding: 0;
 
     font-size: 12px;
-
     line-height: 1.4;
 
     white-space: normal;
 
-    writing-mode: horizontal-tb;
+    writing-mode: horizontal-tb !important;
+    text-orientation: mixed !important;
+    direction: ltr !important;
+
+    word-break: normal;
+    overflow-wrap: break-word;
 
     text-align: left;
+
+    color: var(--text-sub);
 }
 
 
@@ -128,12 +143,15 @@
 
     flex: 0 0 auto;
 
+    width: auto;
     min-width: 78px;
+    max-width: 90px;
 
     padding: 8px 11px;
 
-    border: none;
+    margin: 0;
 
+    border: none;
     border-radius: 10px;
 
     background: rgba(0,0,0,0.07);
@@ -144,7 +162,7 @@
 
     white-space: nowrap;
 
-    writing-mode: horizontal-tb;
+    writing-mode: horizontal-tb !important;
 
     cursor: pointer;
 }
@@ -192,6 +210,8 @@
     line-height: 1.2;
 
     letter-spacing: 0.5px;
+
+    white-space: nowrap;
 }
 
 
@@ -202,6 +222,8 @@
     font-size: 12px;
 
     opacity: 0.6;
+
+    white-space: nowrap;
 }
 
 
@@ -292,7 +314,6 @@
 .money-section {
 
     width: 100%;
-
     min-width: 0;
 
     margin-bottom: 14px;
@@ -318,79 +339,90 @@
     max-width: 100%;
 
     display: flex;
-
     flex-direction: row;
 
     align-items: center;
-
     justify-content: space-between;
 
     gap: 10px;
 
     margin-bottom: 10px;
+
+    writing-mode: horizontal-tb !important;
+    text-orientation: mixed !important;
+    direction: ltr !important;
 }
 
 
-.money-section-header > div {
+/*
+   左側
+   タイトル＋説明文
+*/
+
+.money-section-header > div:first-child {
 
     flex: 1 1 auto;
 
     min-width: 0;
 
     width: auto;
+    max-width: calc(100% - 85px);
 
     display: block;
+
+    writing-mode: horizontal-tb !important;
 }
 
+
+/* セクションタイトル */
 
 .money-section-header h3 {
 
     display: block;
 
-    width: auto;
+    width: 100%;
 
     margin: 0;
-
     padding: 0;
 
     font-size: 17px;
-
     line-height: 1.4;
 
     white-space: nowrap;
 
-    writing-mode: horizontal-tb;
+    writing-mode: horizontal-tb !important;
+    text-orientation: mixed !important;
+    direction: ltr !important;
 
     text-align: left;
 }
 
 
-/*
-   ★ ここが今回の修正ポイント
+/* =====================================================
+   セクション説明文
+===================================================== */
 
-   「推し別の支出を管理」などの説明文が
-   縦書きにならないように明示
-*/
-
+.money-section-header .money-section-subtitle,
 .money-section-header p {
 
     display: block;
 
-    width: auto;
+    width: 100%;
 
-    margin: 4px 0 0;
-
+    margin: 3px 0 0;
     padding: 0;
 
     font-size: 12px;
-
     line-height: 1.4;
 
     white-space: normal;
 
-    writing-mode: horizontal-tb;
+    writing-mode: horizontal-tb !important;
+    text-orientation: mixed !important;
+    direction: ltr !important;
 
-    text-orientation: mixed;
+    word-break: normal;
+    overflow-wrap: break-word;
 
     text-align: left;
 
@@ -406,7 +438,13 @@
 
     flex: 0 0 auto;
 
+    width: auto;
+    min-width: 65px;
+    max-width: 80px;
+
     padding: 8px 11px;
+
+    margin: 0;
 
     border: none;
 
@@ -419,6 +457,8 @@
     font-size: 13px;
 
     white-space: nowrap;
+
+    writing-mode: horizontal-tb !important;
 
     cursor: pointer;
 }
@@ -434,17 +474,9 @@
 }
 
 
-/*
-   推し別の行
-
-   左：推し名
-   右：金額
-*/
-
 .money-oshi-row {
 
     width: 100%;
-
     min-width: 0;
 
     display: grid;
@@ -481,6 +513,8 @@
     text-overflow: ellipsis;
 
     white-space: nowrap;
+
+    writing-mode: horizontal-tb !important;
 }
 
 
@@ -495,6 +529,8 @@
     text-align: right;
 
     white-space: nowrap;
+
+    writing-mode: horizontal-tb !important;
 }
 
 
@@ -521,6 +557,8 @@
     padding: 13px 7px 4px;
 
     font-weight: 800;
+
+    writing-mode: horizontal-tb !important;
 }
 
 
@@ -541,7 +579,6 @@
 .money-detail-row {
 
     width: 100%;
-
     min-width: 0;
 
     display: grid;
@@ -555,6 +592,8 @@
     gap: 12px;
 
     padding: 10px 7px;
+
+    writing-mode: horizontal-tb !important;
 }
 
 
@@ -567,6 +606,8 @@
     font-size: 14px;
 
     text-align: left;
+
+    white-space: nowrap;
 }
 
 
@@ -648,6 +689,8 @@
 
     padding: 10px 5px;
 
+    margin: 0;
+
     border: none;
 
     border-radius: 12px;
@@ -658,6 +701,8 @@
 
     font-size: 13px;
 
+    white-space: nowrap;
+
     cursor: pointer;
 
     transition:
@@ -667,12 +712,6 @@
 }
 
 
-/*
-   非選択
-
-   薄い色 → 黒文字
-*/
-
 .money-period-btn:not(.active) {
 
     background: rgba(0,0,0,0.06);
@@ -680,15 +719,6 @@
     color: #222;
 }
 
-
-/*
-   選択中
-
-   濃い色 → 白文字
-
-   ※テーマ側で色が変わる場合でも
-   最低限見やすくする
-*/
 
 .money-period-btn.active {
 
@@ -747,6 +777,8 @@
     font-size: 12px;
 
     opacity: 0.7;
+
+    writing-mode: horizontal-tb !important;
 }
 
 
@@ -769,6 +801,25 @@
 
 
 /* =====================================================
+   お金ページ内の文字方向
+===================================================== */
+
+.money-page h2,
+.money-page h3,
+.money-page div,
+.money-page span,
+.money-page strong,
+.money-page button {
+
+    writing-mode: horizontal-tb !important;
+
+    text-orientation: mixed !important;
+
+    direction: ltr;
+}
+
+
+/* =====================================================
    スマホ
 ===================================================== */
 
@@ -777,14 +828,43 @@
     .money-page {
 
         padding-left: 10px;
-
         padding-right: 10px;
+    }
+
+
+    .money-header {
+
+        gap: 8px;
+    }
+
+
+    .money-header > div:first-child {
+
+        max-width: calc(100% - 85px);
     }
 
 
     .money-header h2 {
 
         font-size: 20px;
+    }
+
+
+    .money-header .money-subtitle {
+
+        font-size: 11px;
+
+        white-space: normal;
+    }
+
+
+    .money-visibility-btn {
+
+        min-width: 72px;
+
+        padding: 8px 8px;
+
+        font-size: 12px;
     }
 
 
@@ -806,17 +886,42 @@
     }
 
 
+    .money-section-header {
+
+        gap: 8px;
+
+        align-items: center;
+    }
+
+
+    .money-section-header > div:first-child {
+
+        max-width: calc(100% - 75px);
+    }
+
+
     .money-section-header h3 {
 
         font-size: 16px;
     }
 
 
+    .money-section-header .money-section-subtitle,
     .money-section-header p {
 
         font-size: 11px;
 
-        writing-mode: horizontal-tb;
+        white-space: normal;
+    }
+
+
+    .money-small-btn {
+
+        min-width: 60px;
+
+        padding: 8px 7px;
+
+        font-size: 12px;
     }
 
 
@@ -869,6 +974,31 @@
     }
 
 
+    .money-header > div:first-child {
+
+        max-width: calc(100% - 78px);
+    }
+
+
+    .money-header .money-subtitle {
+
+        font-size: 10px;
+    }
+
+
+    .money-section-header > div:first-child {
+
+        max-width: calc(100% - 68px);
+    }
+
+
+    .money-section-header .money-section-subtitle,
+    .money-section-header p {
+
+        font-size: 10px;
+    }
+
+
     .money-oshi-value,
     .money-detail-row strong,
     .money-detail-total strong {
@@ -876,208 +1006,15 @@
         min-width: 75px;
     }
 
-}
 
-/* =====================================================
-   💰 お金ページ：説明文を横書き固定
-===================================================== */
+    .money-small-btn {
 
-.money-header .money-subtitle,
-.money-section-header p {
+        min-width: 58px;
 
-    writing-mode: horizontal-tb !important;
-    text-orientation: mixed !important;
+        padding-left: 5px;
+        padding-right: 5px;
 
-    display: block;
+        font-size: 11px;
+    }
 
-    width: 100%;
-
-    white-space: normal;
-
-    text-align: left;
-
-    line-height: 1.4;
-}
-
-/* =====================================================
-   💰 お金ページ：文字方向を完全固定
-===================================================== */
-
-/* =====================================================
-   🔧 moneyページ 横書き強制
-   既存CSSのwriting-mode対策
-===================================================== */
-
-.money-page,
-.money-page *,
-.money-page h2,
-.money-page h3,
-.money-page p,
-.money-page span,
-.money-page strong,
-.money-page div {
-
-    writing-mode: horizontal-tb !important;
-
-    text-orientation: mixed !important;
-
-    word-break: normal !important;
-
-    overflow-wrap: normal;
-
-}
-
-
-/* お金ページの説明文 */
-
-.money-header .money-subtitle {
-
-    display: block !important;
-
-    width: auto !important;
-
-    writing-mode: horizontal-tb !important;
-
-    text-orientation: mixed !important;
-
-    white-space: normal !important;
-
-}
-
-
-/* 推し活費の説明 */
-
-.money-oshi-section
-.money-section-header p {
-
-    display: block !important;
-
-    width: auto !important;
-
-    writing-mode: horizontal-tb !important;
-
-    text-orientation: mixed !important;
-
-    white-space: normal !important;
-
-}
-
-
-/* 年間の「2026年」 */
-
-.money-year-preview
-.money-section-header p {
-
-    writing-mode: horizontal-tb !important;
-
-    text-orientation: mixed !important;
-
-    white-space: normal !important;
-
-}
-
-
-/* =====================================================
-   💰 money：説明文の横書き固定
-===================================================== */
-
-.money-page .money-subtitle {
-
-    display: block;
-
-    width: auto;
-    min-width: 0;
-
-    margin: 0;
-    padding: 0;
-
-    writing-mode: horizontal-tb !important;
-    text-orientation: mixed !important;
-    direction: ltr !important;
-
-    white-space: normal !important;
-    word-break: normal !important;
-    overflow-wrap: normal !important;
-
-    transform: none !important;
-
-    text-align: left;
-
-    line-height: 1.4;
-
-    font-size: 0.82rem;
-
-    color: var(--text-sub);
-}
-
-
-/* =====================================================
-   💰 money：説明文・年表示
-   1文字ずつの縦並びを防止
-===================================================== */
-
-.money-page .money-subtitle,
-.money-page .money-section-subtitle,
-.money-page .money-section-header p {
-
-    writing-mode: horizontal-tb !important;
-    text-orientation: mixed !important;
-    direction: ltr !important;
-
-    display: block !important;
-
-    width: auto !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-
-    white-space: nowrap !important;
-
-    word-break: keep-all !important;
-    overflow-wrap: normal !important;
-
-    transform: none !important;
-
-    text-align: left !important;
-    line-height: 1.4 !important;
-}
-
-
-/* =====================================================
-   💰 説明文を置いている左側
-===================================================== */
-
-.money-page .money-header > div:first-child,
-.money-page .money-section-header > div:first-child {
-
-    min-width: 0 !important;
-
-    writing-mode: horizontal-tb !important;
-}
-
-
-/* =====================================================
-   💰 セクションヘッダー
-===================================================== */
-
-.money-page .money-section-header {
-
-    writing-mode: horizontal-tb !important;
-    direction: ltr !important;
-
-    display: flex !important;
-    flex-direction: row !important;
-
-    align-items: center !important;
-}
-
-
-/* =====================================================
-   💰 2026年
-===================================================== */
-
-.money-page .money-year-preview
-.money-section-header p {
-
-    writing-mode: horizontal-tb !important;
-    white-space: nowrap !important;
 }
