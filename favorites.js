@@ -1,114 +1,97 @@
 /* =========================================================
    ⭐ favorites.js
-   お気に入りページ 完全独立システム
+   お気に入りページ 完全独立版
+   =========================================================
 
    【重要】
+   ・photo.jsは変更しない
+   ・photo.jsの状態変数を使用しない
+   ・photo.jsの写真関数を使用しない
+   ・お気に入り用に変数名をすべて変更
+   ・お気に入り用に関数名をすべて変更
+   ・ビューアも完全独立
+   ・スワイプも完全独立
+   ・拡大縮小も完全独立
+   ・削除も完全独立
+   ・共有も完全独立
+   ・並べ替えも完全独立
 
-   photo.js の写真機能とは完全分離。
+   =========================================================
+   【photo.js → favorites.js 受け渡し】
 
-   photo.js の以下の変数は使用しない。
+   photo.js側に存在する値を必要に応じて
+   favorites.js専用の定数へ受け渡す。
 
-   currentPhotoSrc
-   currentPhotoIndex
-   currentPhotoId
-   photoScale
-   photoTranslateX
-   photoTranslateY
-   touchStartX
-   touchStartY
-   lastDistance
-   lastTapTime
-   favoriteViewMode
-   photoDeleteMode
-   photoShareMode
-   photoSortMode
-   selectedDeletePhotoIds
-   selectedSharePhotoIds
-   draggingPhotoId
-   draggingPhotoElement
-   isPhotoDragging
-   photoLongPressTimer
+   ※ favorites.js内部では下記の専用名だけを使用する。
 
-   ↓
+   PHOTO_COLUMNS
+        ↓
+   FAVORITE_PHOTO_COLUMNS
 
-   favorites.js ではすべて
-   favoritePhoto... 系の専用変数を使用する。
+   PHOTO_ROWS
+        ↓
+   FAVORITE_PHOTO_ROWS
 
-
-   【写真データ】
-
-   ① 1日手帳由来
-      data.dayMemories[日付].photos
-      photo.favorite === true
-
-   ② お気に入り直接追加
-      data.favorites.photos
-      favorite.source === "favorite"
-
-   この2種類を
-   getAllFavoritePhotoItems()
-   で統合して表示する。
-
-
-   【削除】
-
-   1日手帳由来
-      → 元の1日手帳写真も削除
-      → お気に入り状態も消える
-
-   直接追加
-      → お気に入り側だけ削除
-
-
-   【ビューア】
-
-   既存 photoViewer / photoViewerImage を使用するが、
-   状態管理は完全に favorites.js 専用。
-
-
-   【重要】
-
-   photo.js / planner.js / planner.html は変更しない。
-========================================================= */
+   =========================================================
+*/
 
 
 /* =========================================================
-   ⭐ お気に入りイベント状態
+   ⭐ photo.js から受け取る表示設定
+========================================================= */
+
+const FAVORITE_PHOTO_COLUMNS =
+    typeof PHOTO_COLUMNS !== "undefined"
+    ? PHOTO_COLUMNS
+    : 3;
+
+const FAVORITE_PHOTO_ROWS =
+    typeof PHOTO_ROWS !== "undefined"
+    ? PHOTO_ROWS
+    : 3;
+
+
+/* =========================================================
+   ⭐ お気に入り専用状態
 ========================================================= */
 
 let favoriteEventDeleteSelecting = false;
+let favoritePhotoDeleteSelecting = false;
+
 let favoriteEventShareSelecting = false;
+let favoritePhotoShareSelecting = false;
+
 let favoriteEventSortSelecting = false;
+let favoritePhotoSortSelecting = false;
 
 let selectedFavoriteEventIds = [];
-
-let favoriteEventDisplayOrder = [];
+let selectedFavoritePhotoIds = [];
 
 
 /* =========================================================
-   ⭐ お気に入り写真状態
+   ⭐ お気に入り専用表示順
 ========================================================= */
 
-let favoritePhotoDeleteSelecting = false;
-let favoritePhotoShareSelecting = false;
-let favoritePhotoSortSelecting = false;
-
-let selectedFavoritePhotoIds = [];
-
+let favoriteEventDisplayOrder = [];
 let favoritePhotoDisplayOrder = [];
 
 
 /* =========================================================
-   ⭐ お気に入り写真ビューア専用状態
+   ⭐ お気に入り専用表示
 ========================================================= */
 
-let favoritePhotoViewerItems = [];
+let favoriteShowAllPhotos = false;
+
+
+/* =========================================================
+   ⭐ お気に入り専用ビューア状態
+========================================================= */
+
+let favoritePhotoViewerIds = [];
 
 let favoritePhotoViewerIndex = 0;
 
 let favoritePhotoViewerCurrentId = null;
-
-let favoritePhotoViewerSrc = "";
 
 let favoritePhotoViewerScale = 1;
 
@@ -116,23 +99,21 @@ let favoritePhotoViewerTranslateX = 0;
 
 let favoritePhotoViewerTranslateY = 0;
 
-let favoritePhotoViewerTouchStartX = 0;
-
-let favoritePhotoViewerTouchStartY = 0;
-
 let favoritePhotoViewerLastDistance = 0;
 
-let favoritePhotoViewerLastTapTime = 0;
-
-let favoritePhotoViewerDragging = false;
+let favoritePhotoViewerTouchStartX = 0;
 
 let favoritePhotoViewerDragStartX = 0;
 
 let favoritePhotoViewerDragStartY = 0;
 
+let favoritePhotoViewerLastTapTime = 0;
+
+let favoritePhotoViewerIsOpen = false;
+
 
 /* =========================================================
-   ⭐ お気に入り写真自由並べ替え専用状態
+   ⭐ お気に入り専用並べ替え状態
 ========================================================= */
 
 let favoritePhotoDraggingId = null;
@@ -151,83 +132,14 @@ let favoritePhotoLongPressTimer = null;
 
 
 /* =========================================================
-   ⭐ お気に入り写真表示
-========================================================= */
-
-let showAllFavoritePhotos = false;
-
-
-/* =========================================================
-   ⭐ 共通表示
+   ⭐ お気に入りページ表示
 ========================================================= */
 
 function displayFavorites(){
 
-    renderFavoriteEvents();
+    favoriteRenderEvents();
 
-    renderFavoritePhotos();
-
-}
-
-
-/* =========================================================
-   ⭐ データ初期化
-========================================================= */
-
-function ensureFavoritesData(data){
-
-    if(!data.favorites){
-
-        data.favorites = {};
-
-    }
-
-
-    if(
-        !Array.isArray(
-            data.favorites.events
-        )
-    ){
-
-        data.favorites.events = [];
-
-    }
-
-
-    if(
-        !Array.isArray(
-            data.favorites.photos
-        )
-    ){
-
-        data.favorites.photos = [];
-
-    }
-
-
-    if(
-        !Array.isArray(
-            data.favorites.eventOrder
-        )
-    ){
-
-        data.favorites.eventOrder = [];
-
-    }
-
-
-    if(
-        !Array.isArray(
-            data.favorites.photoOrder
-        )
-    ){
-
-        data.favorites.photoOrder = [];
-
-    }
-
-
-    return data;
+    favoriteRenderPhotos();
 
 }
 
@@ -236,17 +148,21 @@ function ensureFavoritesData(data){
    ⭐ お気に入りイベント取得
 ========================================================= */
 
-function getFavoriteEvents(){
+function favoriteGetEvents(){
 
-    const data = db.load();
+    const data =
+        db.load();
 
-    return Array.isArray(
-        data.favorites?.events
-    )
-    ?
-    data.favorites.events.filter(Boolean)
-    :
-    [];
+    const favorites =
+        data.favorites?.events || [];
+
+    if(!Array.isArray(favorites)){
+        return [];
+    }
+
+    return favorites.filter(
+        item => !!item
+    );
 
 }
 
@@ -255,17 +171,21 @@ function getFavoriteEvents(){
    ⭐ お気に入り写真取得
 ========================================================= */
 
-function getFavoritePhotos(){
+function favoriteGetPhotos(){
 
-    const data = db.load();
+    const data =
+        db.load();
 
-    return Array.isArray(
-        data.favorites?.photos
-    )
-    ?
-    data.favorites.photos.filter(Boolean)
-    :
-    [];
+    const favorites =
+        data.favorites?.photos || [];
+
+    if(!Array.isArray(favorites)){
+        return [];
+    }
+
+    return favorites.filter(
+        item => !!item
+    );
 
 }
 
@@ -274,7 +194,7 @@ function getFavoritePhotos(){
    ⭐ 1日手帳イベント取得
 ========================================================= */
 
-function getFavoriteSourceEvent(favorite){
+function favoriteGetSourceEvent(favorite){
 
     if(
         !favorite ||
@@ -286,16 +206,11 @@ function getFavoriteSourceEvent(favorite){
 
     }
 
-
-    const data = db.load();
+    const data =
+        db.load();
 
     const events =
-        Array.isArray(data.events)
-        ?
-        data.events
-        :
-        [];
-
+        data.events || [];
 
     return events.find(
         event =>
@@ -310,7 +225,7 @@ function getFavoriteSourceEvent(favorite){
    ⭐ 1日手帳写真取得
 ========================================================= */
 
-function getFavoriteSourcePhoto(favorite){
+function favoriteGetSourcePhoto(favorite){
 
     if(
         !favorite ||
@@ -322,12 +237,11 @@ function getFavoriteSourcePhoto(favorite){
 
     }
 
-
-    const data = db.load();
+    const data =
+        db.load();
 
     const memories =
         data.dayMemories || {};
-
 
     for(
         const [dayKey, day]
@@ -335,39 +249,26 @@ function getFavoriteSourcePhoto(favorite){
     ){
 
         const photos =
-            Array.isArray(day?.photos)
-            ?
-            day.photos
-            :
-            [];
-
+            day?.photos || [];
 
         const photo =
             photos.find(
                 item =>
                     String(item.id) ===
-                    String(
-                        favorite.sourcePhotoId
-                    )
+                    String(favorite.sourcePhotoId)
             );
-
 
         if(photo){
 
             return {
-
                 photo: photo,
-
                 day: day,
-
                 dayKey: dayKey
-
             };
 
         }
 
     }
-
 
     return null;
 
@@ -378,27 +279,21 @@ function getFavoriteSourcePhoto(favorite){
    ⭐ お気に入りイベント実体
 ========================================================= */
 
-function getFavoriteEventData(favorite){
+function favoriteGetEventData(favorite){
 
-    if(
-        !favorite
-    ){
-
+    if(!favorite){
         return null;
-
     }
-
 
     if(
         favorite.source === "dayPlanner"
     ){
 
-        return getFavoriteSourceEvent(
+        return favoriteGetSourceEvent(
             favorite
         );
 
     }
-
 
     if(
         favorite.source === "favorite"
@@ -407,7 +302,6 @@ function getFavoriteEventData(favorite){
         return favorite;
 
     }
-
 
     return null;
 
@@ -418,33 +312,26 @@ function getFavoriteEventData(favorite){
    ⭐ お気に入り写真実体
 ========================================================= */
 
-function getFavoritePhotoData(favorite){
+function favoriteGetPhotoData(favorite){
 
-    if(
-        !favorite
-    ){
-
+    if(!favorite){
         return null;
-
     }
-
 
     if(
         favorite.source === "dayPlanner"
     ){
 
         const result =
-            getFavoriteSourcePhoto(
+            favoriteGetSourcePhoto(
                 favorite
             );
-
 
         return result
             ? result.photo
             : null;
 
     }
-
 
     if(
         favorite.source === "favorite"
@@ -454,156 +341,7 @@ function getFavoritePhotoData(favorite){
 
     }
 
-
     return null;
-
-}
-
-
-/* =========================================================
-   ⭐⭐⭐ お気に入り写真統合取得
-========================================================= */
-
-function getAllFavoritePhotoItems(){
-
-    const data = db.load();
-
-    const result = [];
-
-
-    /* =====================================================
-       ① 1日手帳由来
-    ===================================================== */
-
-    Object.entries(
-        data.dayMemories || {}
-    ).forEach(
-        ([dayKey, day]) => {
-
-            const photos =
-                Array.isArray(day?.photos)
-                ?
-                day.photos
-                :
-                [];
-
-
-            photos.forEach(
-                photo => {
-
-                    if(
-                        !photo ||
-                        !photo.favorite
-                    ){
-
-                        return;
-
-                    }
-
-
-                    result.push({
-
-                        id:
-                            String(photo.id),
-
-                        type:
-                            "dayPlanner",
-
-                        photo:
-                            photo,
-
-                        dayKey:
-                            dayKey,
-
-                        sourceId:
-                            String(photo.id),
-
-                        favoriteAt:
-                            photo.id
-
-                    });
-
-                }
-            );
-
-        }
-    );
-
-
-    /* =====================================================
-       ② お気に入り直接追加
-    ===================================================== */
-
-    const direct =
-        Array.isArray(
-            data.favorites?.photos
-        )
-        ?
-        data.favorites.photos
-        :
-        [];
-
-
-    direct.forEach(
-        favorite => {
-
-            if(
-                !favorite ||
-                favorite.source !== "favorite"
-            ){
-
-                return;
-
-            }
-
-
-            result.push({
-
-                id:
-                    String(favorite.id),
-
-                type:
-                    "favorite",
-
-                photo:
-                    favorite,
-
-                dayKey:
-                    null,
-
-                sourceId:
-                    String(favorite.id),
-
-                favoriteAt:
-                    favorite.favoriteAt ||
-                    favorite.id
-
-            });
-
-        }
-    );
-
-
-    return result;
-
-}
-
-
-/* =========================================================
-   ⭐ お気に入り写真IDから取得
-========================================================= */
-
-function findFavoritePhotoItem(id){
-
-    const items =
-        getAllFavoritePhotoItems();
-
-
-    return items.find(
-        item =>
-            String(item.id) ===
-            String(id)
-    ) || null;
 
 }
 
@@ -612,47 +350,29 @@ function findFavoritePhotoItem(id){
    ⭐ イベント表示順
 ========================================================= */
 
-function getOrderedFavoriteEvents(){
+function favoriteGetOrderedEvents(){
+
+    const data =
+        db.load();
 
     const favorites =
-        getFavoriteEvents();
+        data.favorites?.events || [];
 
-
-    if(
-        favorites.length === 0
-    ){
-
+    if(!Array.isArray(favorites)){
         return [];
-
     }
-
-
-    const data = db.load();
 
     const order =
-        Array.isArray(
-            data.favorites?.eventOrder
-        )
-        ?
-        data.favorites.eventOrder
-        :
-        [];
-
+        data.favorites?.eventOrder || [];
 
     if(
-        order.length === 0
+        Array.isArray(order) &&
+        order.length
     ){
 
-        return [...favorites];
+        const result = [];
 
-    }
-
-
-    const result = [];
-
-
-    order.forEach(
-        id => {
+        order.forEach(id => {
 
             const item =
                 favorites.find(
@@ -661,19 +381,13 @@ function getOrderedFavoriteEvents(){
                         String(id)
                 );
 
-
             if(item){
-
                 result.push(item);
-
             }
 
-        }
-    );
+        });
 
-
-    favorites.forEach(
-        item => {
+        favorites.forEach(item => {
 
             const exists =
                 result.some(
@@ -682,18 +396,17 @@ function getOrderedFavoriteEvents(){
                         String(item.id)
                 );
 
-
             if(!exists){
-
                 result.push(item);
-
             }
 
-        }
-    );
+        });
 
+        return result;
 
-    return result;
+    }
+
+    return [...favorites];
 
 }
 
@@ -702,68 +415,44 @@ function getOrderedFavoriteEvents(){
    ⭐ 写真表示順
 ========================================================= */
 
-function getOrderedFavoritePhotos(){
+function favoriteGetOrderedPhotos(){
 
-    const items =
-        getAllFavoritePhotoItems();
+    const data =
+        db.load();
 
+    const favorites =
+        data.favorites?.photos || [];
 
-    if(
-        items.length === 0
-    ){
-
+    if(!Array.isArray(favorites)){
         return [];
-
     }
-
-
-    const data = db.load();
 
     const order =
-        Array.isArray(
-            data.favorites?.photoOrder
-        )
-        ?
-        data.favorites.photoOrder
-        :
-        [];
-
+        data.favorites?.photoOrder || [];
 
     if(
-        order.length === 0
+        Array.isArray(order) &&
+        order.length
     ){
 
-        return [...items];
+        const result = [];
 
-    }
-
-
-    const result = [];
-
-
-    order.forEach(
-        id => {
+        order.forEach(id => {
 
             const item =
-                items.find(
-                    x =>
-                        String(x.id) ===
+                favorites.find(
+                    favorite =>
+                        String(favorite.id) ===
                         String(id)
                 );
 
-
             if(item){
-
                 result.push(item);
-
             }
 
-        }
-    );
+        });
 
-
-    items.forEach(
-        item => {
+        favorites.forEach(item => {
 
             const exists =
                 result.some(
@@ -772,18 +461,17 @@ function getOrderedFavoritePhotos(){
                         String(item.id)
                 );
 
-
             if(!exists){
-
                 result.push(item);
-
             }
 
-        }
-    );
+        });
 
+        return result;
 
-    return result;
+    }
+
+    return [...favorites];
 
 }
 
@@ -792,30 +480,24 @@ function getOrderedFavoritePhotos(){
    ⭐ イベント表示
 ========================================================= */
 
-function renderFavoriteEvents(){
+function favoriteRenderEvents(){
 
     const box =
         document.getElementById(
             "favorite-event-list"
         );
 
-
     if(!box){
-
         return;
-
     }
 
-
     const favorites =
-        getOrderedFavoriteEvents();
-
+        favoriteGetOrderedEvents();
 
     favoriteEventDisplayOrder =
         favorites.map(
             item => item.id
         );
-
 
     if(
         favorites.length === 0
@@ -831,20 +513,18 @@ function renderFavoriteEvents(){
 
     }
 
-
     let html = "";
-
 
     favorites.forEach(
         favorite => {
 
             const event =
-                getFavoriteEventData(
+                favoriteGetEventData(
                     favorite
                 );
 
-
             if(
+                favorite.source === "dayPlanner" &&
                 !event
             ){
 
@@ -852,21 +532,22 @@ function renderFavoriteEvents(){
 
             }
 
+            if(!event){
+                return;
+            }
 
             const selected =
-                selectedFavoriteEventIds.includes(
+                selectedFavoriteEventIds
+                .includes(
                     String(favorite.id)
                 );
 
-
             const sourceLabel =
-                favorite.source ===
-                "dayPlanner"
+                favorite.source === "dayPlanner"
                 ?
                 "📅 1日手帳"
                 :
                 "⭐ お気に入りに追加";
-
 
             html += `
 
@@ -892,19 +573,14 @@ function renderFavoriteEvents(){
     ${
         favoriteEventDeleteSelecting
         ?
-        `onclick="toggleFavoriteEventDelete('${favorite.id}')"`
+        `onclick="favoriteToggleEventDelete('${favorite.id}')"`
         :
-        ""
-    }
-
-    ${
         favoriteEventShareSelecting
         ?
-        `onclick="toggleFavoriteEventShare('${favorite.id}')"`
+        `onclick="favoriteToggleEventShare('${favorite.id}')"`
         :
         ""
     }
-
 >
 
     <div class="favorite-event-source">
@@ -919,7 +595,7 @@ function renderFavoriteEvents(){
         ${
             event.start
             ?
-            formatFavoriteEventDate(
+            favoriteFormatEventDate(
                 event.start
             )
             :
@@ -958,7 +634,6 @@ function renderFavoriteEvents(){
         }
     );
 
-
     box.innerHTML =
         html ||
         `
@@ -971,21 +646,17 @@ function renderFavoriteEvents(){
 
 
 /* =========================================================
-   ⭐ 日時
+   ⭐ イベント日時
 ========================================================= */
 
-function formatFavoriteEventDate(value){
+function favoriteFormatEventDate(value){
 
     if(!value){
-
         return "";
-
     }
-
 
     const date =
         new Date(value);
-
 
     if(
         Number.isNaN(
@@ -997,7 +668,6 @@ function formatFavoriteEventDate(value){
 
     }
 
-
     const week =
         [
             "日",
@@ -1008,7 +678,6 @@ function formatFavoriteEventDate(value){
             "金",
             "土"
         ];
-
 
     return `
         ${date.getFullYear()}年
@@ -1023,36 +692,30 @@ function formatFavoriteEventDate(value){
 
 
 /* =========================================================
-   ⭐ お気に入り写真表示
+   ⭐ 写真表示
 ========================================================= */
 
-function renderFavoritePhotos(){
+function favoriteRenderPhotos(){
 
     const box =
         document.getElementById(
             "favorite-photo-list"
         );
 
-
     if(!box){
-
         return;
-
     }
 
-
-    let photos =
-        getOrderedFavoritePhotos();
-
+    const favorites =
+        favoriteGetOrderedPhotos();
 
     favoritePhotoDisplayOrder =
-        photos.map(
+        favorites.map(
             item => item.id
         );
 
-
     if(
-        photos.length === 0
+        favorites.length === 0
     ){
 
         box.innerHTML = `
@@ -1065,33 +728,149 @@ function renderFavoritePhotos(){
 
     }
 
-
     let html = "";
 
 
-    const displayPhotos =
-        showAllFavoritePhotos
-        ?
-        photos
-        :
-        photos.slice(
-            0,
-            6
-        );
+    /*
+       ⭐ 選択・並べ替えモードバー
+    */
+
+    if(
+        favoritePhotoDeleteSelecting
+    ){
+
+        html += `
+        <div class="photo-delete-bar">
+
+            <span class="photo-delete-title">
+                🗑 写真を選択中
+            </span>
+
+            <span class="photo-delete-count">
+                ${selectedFavoritePhotoIds.length}枚選択
+            </span>
+
+            <button
+                type="button"
+                onclick="favoriteCancelPhotoDelete()">
+                キャンセル
+            </button>
+
+            <button
+                type="button"
+                onclick="favoriteConfirmPhotoDelete()"
+                ${
+                    selectedFavoritePhotoIds.length === 0
+                    ?
+                    "disabled"
+                    :
+                    ""
+                }>
+                🗑 削除
+            </button>
+
+        </div>
+        `;
+
+    }
 
 
-    displayPhotos.forEach(
-        item => {
+    if(
+        favoritePhotoShareSelecting
+    ){
+
+        html += `
+        <div class="photo-delete-bar">
+
+            <span class="photo-delete-title">
+                📤 写真を選択中
+            </span>
+
+            <span class="photo-delete-count">
+                ${selectedFavoritePhotoIds.length}枚選択
+            </span>
+
+            <button
+                type="button"
+                onclick="favoriteCancelPhotoShare()">
+                キャンセル
+            </button>
+
+            <button
+                type="button"
+                onclick="favoriteShareSelectedPhotos()"
+                ${
+                    selectedFavoritePhotoIds.length === 0
+                    ?
+                    "disabled"
+                    :
+                    ""
+                }>
+                📤 共有
+            </button>
+
+        </div>
+        `;
+
+    }
+
+
+    if(
+        favoritePhotoSortSelecting
+    ){
+
+        html += `
+        <div class="photo-free-bar">
+
+            <div>
+                📷 自由変更中<br>
+                <small>
+                    写真をドラッグして並べ替えてください
+                </small>
+            </div>
+
+            <button
+                type="button"
+                onclick="favoriteFinishPhotoSort()">
+                完了
+            </button>
+
+        </div>
+        `;
+
+    }
+
+
+    /*
+       ⭐ 写真
+    */
+
+    favorites.forEach(
+        favorite => {
 
             const photo =
-                item.photo;
-
-
-            const selected =
-                selectedFavoritePhotoIds.includes(
-                    String(item.id)
+                favoriteGetPhotoData(
+                    favorite
                 );
 
+            if(
+                favorite.source === "dayPlanner" &&
+                !photo
+            ){
+
+                return;
+
+            }
+
+            if(!photo){
+                return;
+            }
+
+            const selected =
+                selectedFavoritePhotoIds
+                .includes(
+                    String(favorite.id)
+                );
 
             html += `
 
@@ -1120,42 +899,63 @@ function renderFavoritePhotos(){
         }
     "
 
-    data-favorite-photo-id="${item.id}"
+    data-favorite-photo-id="${favorite.id}"
 
     ${
         favoritePhotoDeleteSelecting
         ?
-        `onclick="toggleFavoritePhotoDelete('${item.id}')"`
+        `onclick="favoriteTogglePhotoDelete('${favorite.id}')"`
         :
-        ""
-    }
-
-    ${
         favoritePhotoShareSelecting
         ?
-        `onclick="toggleFavoritePhotoShare('${item.id}')"`
+        `onclick="favoriteTogglePhotoShare('${favorite.id}')"`
         :
         ""
     }
-
 >
 
     <img
         src="${photo.src}"
         class="favorite-photo-image"
 
+        style="
+            width:100%;
+            max-width:100%;
+            height:auto;
+            object-fit:cover;
+        "
+
+        draggable="false"
+
         ${
             !favoritePhotoDeleteSelecting &&
             !favoritePhotoShareSelecting &&
             !favoritePhotoSortSelecting
             ?
-            `onclick="openFavoritePhotoViewerNew('${item.id}')"`
+            `onclick="favoriteOpenPhotoViewer('${favorite.id}')"`
             :
             ""
         }
-
-        draggable="false"
     >
+
+    ${
+        favoritePhotoDeleteSelecting ||
+        favoritePhotoShareSelecting
+        ?
+        `
+        <div class="photo-delete-check">
+            ${
+                selected
+                ?
+                "✓"
+                :
+                ""
+            }
+        </div>
+        `
+        :
+        ""
+    }
 
 </div>
 
@@ -1165,55 +965,27 @@ function renderFavoritePhotos(){
     );
 
 
-    if(
-        photos.length > 6
-    ){
-
-        html += `
-
-<div
-    class="favorite-more"
-
-    onclick="
-        showAllFavoritePhotos =
-            !showAllFavoritePhotos;
-
-        renderFavoritePhotos();
-    "
->
-
-    ${
-        showAllFavoritePhotos
-        ?
-        "閉じる"
-        :
-        "もっと見る"
-    }
-
-</div>
-
-`;
-
-    }
-
-
     box.innerHTML =
-        html;
+        html ||
+        `
+        <div class="favorites-empty">
+            写真はありません
+        </div>
+        `;
 
 }
 
 
 /* =========================================================
-   ⭐ お気に入り直接追加イベント
+   ⭐ お気に入り直接イベント追加
 ========================================================= */
 
-function openFavoriteAddEvent(){
+function favoriteOpenAddEvent(){
 
     const modal =
         document.getElementById(
             "favoriteEventAddModal"
         );
-
 
     if(modal){
 
@@ -1232,16 +1004,15 @@ function openFavoriteAddEvent(){
 
 
 /* =========================================================
-   ⭐ お気に入り直接追加写真
+   ⭐ お気に入り直接写真追加
 ========================================================= */
 
-function openFavoritePhotoPicker(){
+function favoriteOpenPhotoPicker(){
 
     const picker =
         document.getElementById(
             "favoritePhotoPicker"
         );
-
 
     if(!picker){
 
@@ -1253,14 +1024,13 @@ function openFavoritePhotoPicker(){
 
     }
 
-
     picker.click();
 
 }
 
 
 /* =========================================================
-   ⭐ 直接追加写真保存
+   ⭐ 直接追加写真
 ========================================================= */
 
 function favoritePhotoSelected(event){
@@ -1270,7 +1040,6 @@ function favoritePhotoSelected(event){
             event.target.files || []
         );
 
-
     if(
         files.length === 0
     ){
@@ -1279,184 +1048,404 @@ function favoritePhotoSelected(event){
 
     }
 
-
     const data =
-        ensureFavoritesData(
-            db.load()
-        );
+        db.load();
 
+    if(!data.favorites){
+
+        data.favorites = {
+
+            events: [],
+            photos: [],
+            eventOrder: [],
+            photoOrder: []
+
+        };
+
+    }
+
+    if(
+        !Array.isArray(
+            data.favorites.photos
+        )
+    ){
+
+        data.favorites.photos = [];
+
+    }
+
+    if(
+        !Array.isArray(
+            data.favorites.photoOrder
+        )
+    ){
+
+        data.favorites.photoOrder = [];
+
+    }
 
     let completed = 0;
 
+    files.forEach(file => {
 
-    files.forEach(
-        file => {
+        if(
+            !file.type.startsWith(
+                "image/"
+            )
+        ){
 
-            if(
-                !file.type.startsWith(
-                    "image/"
-                )
-            ){
+            completed++;
 
-                completed++;
+            return;
 
-                return;
+        }
 
-            }
+        const reader =
+            new FileReader();
 
+        reader.onload =
+            function(e){
 
-            const reader =
-                new FileReader();
+                const img =
+                    new Image();
 
+                img.onload =
+                    function(){
 
-            reader.onload =
-                function(e){
+                        const MAX =
+                            1000;
 
-                    const img =
-                        new Image();
+                        let width =
+                            img.width;
 
+                        let height =
+                            img.height;
 
-                    img.onload =
-                        function(){
-
-                            const MAX =
-                                1000;
-
-
-                            let width =
-                                img.width;
-
-                            let height =
-                                img.height;
-
+                        if(
+                            width > height
+                        ){
 
                             if(
-                                width > height
+                                width > MAX
                             ){
 
-                                if(
-                                    width > MAX
-                                ){
+                                height *=
+                                    MAX / width;
 
-                                    height *=
-                                        MAX / width;
-
-                                    width =
-                                        MAX;
-
-                                }
-
-                            }else{
-
-                                if(
-                                    height > MAX
-                                ){
-
-                                    width *=
-                                        MAX / height;
-
-                                    height =
-                                        MAX;
-
-                                }
+                                width =
+                                    MAX;
 
                             }
 
-
-                            const canvas =
-                                document.createElement(
-                                    "canvas"
-                                );
-
-
-                            canvas.width =
-                                width;
-
-                            canvas.height =
-                                height;
-
-
-                            const ctx =
-                                canvas.getContext(
-                                    "2d"
-                                );
-
-
-                            ctx.drawImage(
-                                img,
-                                0,
-                                0,
-                                width,
-                                height
-                            );
-
-
-                            const src =
-                                canvas.toDataURL(
-                                    "image/jpeg",
-                                    0.8
-                                );
-
-
-                            const id =
-                                Date.now() +
-                                Math.random();
-
-
-                            data.favorites.photos.push({
-
-                                id:
-                                    id,
-
-                                source:
-                                    "favorite",
-
-                                src:
-                                    src,
-
-                                favoriteAt:
-                                    Date.now()
-
-                            });
-
-
-                            data.favorites.photoOrder.push(
-                                String(id)
-                            );
-
-
-                            completed++;
-
+                        }else{
 
                             if(
-                                completed >=
-                                files.length
+                                height > MAX
                             ){
 
-                                db.save(data);
+                                width *=
+                                    MAX / height;
 
-                                renderFavoritePhotos();
+                                height =
+                                    MAX;
 
                             }
+
+                        }
+
+                        const canvas =
+                            document.createElement(
+                                "canvas"
+                            );
+
+                        canvas.width =
+                            width;
+
+                        canvas.height =
+                            height;
+
+                        const ctx =
+                            canvas.getContext(
+                                "2d"
+                            );
+
+                        ctx.drawImage(
+                            img,
+                            0,
+                            0,
+                            width,
+                            height
+                        );
+
+                        const src =
+                            canvas.toDataURL(
+                                "image/jpeg",
+                                0.8
+                            );
+
+                        const id =
+                            Date.now()
+                            +
+                            Math.random();
+
+                        const favorite = {
+
+                            id: id,
+
+                            source:
+                                "favorite",
+
+                            src: src,
+
+                            favoriteAt:
+                                Date.now()
 
                         };
 
+                        data.favorites.photos.push(
+                            favorite
+                        );
 
-                    img.src =
-                        e.target.result;
+                        data.favorites.photoOrder.push(
+                            id
+                        );
 
-                };
+                        completed++;
 
+                        if(
+                            completed >=
+                            files.length
+                        ){
 
-            reader.readAsDataURL(
-                file
-            );
+                            db.save(data);
 
-        }
-    );
+                            favoriteRenderPhotos();
 
+                        }
+
+                    };
+
+                img.src =
+                    e.target.result;
+
+            };
+
+        reader.readAsDataURL(file);
+
+    });
 
     event.target.value = "";
+
+}
+
+
+/* =========================================================
+   ⭐ イベント削除
+========================================================= */
+
+function favoriteEventDeleteMode(){
+
+    favoriteEventDeleteSelecting =
+        true;
+
+    favoriteEventShareSelecting =
+        false;
+
+    favoriteEventSortSelecting =
+        false;
+
+    selectedFavoriteEventIds = [];
+
+    favoriteRenderEvents();
+
+}
+
+
+function favoriteToggleEventDelete(id){
+
+    id =
+        String(id);
+
+    const index =
+        selectedFavoriteEventIds.indexOf(
+            id
+        );
+
+    if(index >= 0){
+
+        selectedFavoriteEventIds.splice(
+            index,
+            1
+        );
+
+    }else{
+
+        selectedFavoriteEventIds.push(
+            id
+        );
+
+    }
+
+    favoriteRenderEvents();
+
+}
+
+
+function favoriteConfirmEventDelete(){
+
+    if(
+        selectedFavoriteEventIds.length === 0
+    ){
+
+        alert(
+            "削除するイベントを選択してください"
+        );
+
+        return;
+
+    }
+
+    const data =
+        db.load();
+
+    const favorites =
+        data.favorites?.events || [];
+
+    const targets =
+        favorites.filter(
+            favorite =>
+                selectedFavoriteEventIds
+                .includes(
+                    String(favorite.id)
+                )
+        );
+
+    const dayPlannerTargets =
+        targets.filter(
+            favorite =>
+                favorite.source ===
+                "dayPlanner"
+        );
+
+    const directTargets =
+        targets.filter(
+            favorite =>
+                favorite.source ===
+                "favorite"
+        );
+
+    let message = "";
+
+    if(
+        dayPlannerTargets.length
+    ){
+
+        message +=
+            "📅 1日手帳からのお気に入り\n" +
+            `${dayPlannerTargets.length}件あります。\n` +
+            "お気に入りから削除すると、" +
+            "元の1日手帳の予定も削除されます。\n\n";
+
+    }
+
+    if(
+        directTargets.length
+    ){
+
+        message +=
+            "⭐ お気に入りに直接追加した予定\n" +
+            `${directTargets.length}件あります。\n` +
+            "お気に入りからのみ削除されます。\n\n";
+
+    }
+
+    message +=
+        "削除してよろしいですか？";
+
+    if(
+        !confirm(message)
+    ){
+
+        return;
+
+    }
+
+    if(
+        dayPlannerTargets.length
+    ){
+
+        if(
+            !Array.isArray(
+                data.events
+            )
+        ){
+
+            data.events = [];
+
+        }
+
+        dayPlannerTargets.forEach(
+            favorite => {
+
+                data.events =
+                    data.events.filter(
+                        event =>
+                            String(event.id) !==
+                            String(
+                                favorite.sourceEventId
+                            )
+                    );
+
+            }
+        );
+
+    }
+
+    data.favorites.events =
+        favorites.filter(
+            favorite =>
+                !selectedFavoriteEventIds
+                .includes(
+                    String(favorite.id)
+                )
+        );
+
+    data.favorites.eventOrder =
+        (
+            data.favorites.eventOrder ||
+            []
+        ).filter(
+            id =>
+                !selectedFavoriteEventIds
+                .includes(
+                    String(id)
+                )
+        );
+
+    db.save(data);
+
+    favoriteEventDeleteSelecting =
+        false;
+
+    selectedFavoriteEventIds = [];
+
+    favoriteRenderEvents();
+
+}
+
+
+/* =========================================================
+   ⭐ イベント削除キャンセル
+========================================================= */
+
+function favoriteCancelEventDelete(){
+
+    favoriteEventDeleteSelecting =
+        false;
+
+    selectedFavoriteEventIds = [];
+
+    favoriteRenderEvents();
 
 }
 
@@ -1478,27 +1467,20 @@ function favoritePhotoDeleteMode(){
 
     selectedFavoritePhotoIds = [];
 
-
-    renderFavoritePhotos();
+    favoriteRenderPhotos();
 
 }
 
 
-/* =========================================================
-   ⭐ 写真削除選択
-========================================================= */
-
-function toggleFavoritePhotoDelete(id){
+function favoriteTogglePhotoDelete(id){
 
     id =
         String(id);
-
 
     const index =
         selectedFavoritePhotoIds.indexOf(
             id
         );
-
 
     if(index >= 0){
 
@@ -1515,17 +1497,16 @@ function toggleFavoritePhotoDelete(id){
 
     }
 
-
-    renderFavoritePhotos();
+    favoriteRenderPhotos();
 
 }
 
 
 /* =========================================================
-   ⭐ 写真削除実行
+   ⭐ 写真削除
 ========================================================= */
 
-function confirmFavoritePhotoDelete(){
+function favoriteConfirmPhotoDelete(){
 
     if(
         selectedFavoritePhotoIds.length === 0
@@ -1539,83 +1520,66 @@ function confirmFavoritePhotoDelete(){
 
     }
 
-
     const data =
-        ensureFavoritesData(
-            db.load()
-        );
+        db.load();
 
+    if(!data.favorites){
+        return;
+    }
+
+    const favorites =
+        data.favorites.photos || [];
 
     const targets =
-        getAllFavoritePhotoItems()
-        .filter(
-            item =>
-                selectedFavoritePhotoIds.includes(
-                    String(item.id)
+        favorites.filter(
+            favorite =>
+                selectedFavoritePhotoIds
+                .includes(
+                    String(favorite.id)
                 )
         );
 
-
-    if(
-        targets.length === 0
-    ){
-
-        alert(
-            "削除対象の写真が見つかりません"
-        );
-
-        return;
-
-    }
-
-
     const dayPlannerTargets =
         targets.filter(
-            item =>
-                item.type ===
+            favorite =>
+                favorite.source ===
                 "dayPlanner"
         );
 
-
     const directTargets =
         targets.filter(
-            item =>
-                item.type ===
+            favorite =>
+                favorite.source ===
                 "favorite"
         );
 
-
-    let message =
-        "";
-
+    let message = "";
 
     if(
         dayPlannerTargets.length
     ){
 
         message +=
-            `📅 1日手帳由来\n` +
-            `${dayPlannerTargets.length}枚\n` +
-            `元の1日手帳写真も削除されます。\n\n`;
+            "📅 1日手帳からのお気に入り写真\n" +
+            `${dayPlannerTargets.length}枚あります。\n` +
+            "お気に入りから削除すると、" +
+            "元の1日手帳の写真も削除されます。\n\n";
 
     }
-
 
     if(
         directTargets.length
     ){
 
         message +=
-            `⭐ お気に入り直接追加\n` +
-            `${directTargets.length}枚\n` +
-            `お気に入りからのみ削除されます。\n\n`;
+            "⭐ お気に入りに直接追加した写真\n" +
+            `${directTargets.length}枚あります。\n` +
+            "お気に入りからのみ削除されます。\n\n";
 
     }
 
-
     message +=
         "削除してよろしいですか？";
-
 
     if(
         !confirm(message)
@@ -1626,63 +1590,60 @@ function confirmFavoritePhotoDelete(){
     }
 
 
-    /* =====================================================
-       1日手帳由来を削除
-    ===================================================== */
+    /* =========================
+       1日手帳側を削除
+    ========================= */
 
     dayPlannerTargets.forEach(
-        item => {
+        favorite => {
 
-            const day =
-                data.dayMemories?.[
-                    item.dayKey
-                ];
-
+            const source =
+                favoriteGetSourcePhoto(
+                    favorite
+                );
 
             if(
-                !day ||
-                !Array.isArray(day.photos)
+                !source ||
+                !source.day ||
+                !Array.isArray(
+                    source.day.photos
+                )
             ){
 
                 return;
 
             }
 
-
-            day.photos =
-                day.photos.filter(
+            source.day.photos =
+                source.day.photos.filter(
                     photo =>
                         String(photo.id) !==
-                        String(item.sourceId)
+                        String(
+                            favorite.sourcePhotoId
+                        )
                 );
 
         }
     );
 
 
-    /* =====================================================
-       直接追加を削除
-    ===================================================== */
-
-    const directIds =
-        directTargets.map(
-            item =>
-                String(item.id)
-        );
-
+    /* =========================
+       お気に入り側を削除
+    ========================= */
 
     data.favorites.photos =
-        data.favorites.photos.filter(
+        favorites.filter(
             favorite =>
-                !directIds.includes(
+                !selectedFavoritePhotoIds
+                .includes(
                     String(favorite.id)
                 )
         );
 
 
-    /* =====================================================
-       並び順からも削除
-    ===================================================== */
+    /* =========================
+       並び順から削除
+    ========================= */
 
     data.favorites.photoOrder =
         (
@@ -1690,7 +1651,8 @@ function confirmFavoritePhotoDelete(){
             []
         ).filter(
             id =>
-                !selectedFavoritePhotoIds.includes(
+                !selectedFavoritePhotoIds
+                .includes(
                     String(id)
                 )
         );
@@ -1705,10 +1667,7 @@ function confirmFavoritePhotoDelete(){
     selectedFavoritePhotoIds = [];
 
 
-    closeFavoritePhotoViewer();
-
-
-    renderFavoritePhotos();
+    favoriteRenderPhotos();
 
 
     if(
@@ -1727,218 +1686,86 @@ function confirmFavoritePhotoDelete(){
    ⭐ 写真削除キャンセル
 ========================================================= */
 
-function cancelFavoritePhotoDelete(){
+function favoriteCancelPhotoDelete(){
 
     favoritePhotoDeleteSelecting =
         false;
 
     selectedFavoritePhotoIds = [];
 
-
-    renderFavoritePhotos();
+    favoriteRenderPhotos();
 
 }
 
 
 /* =========================================================
-   ⭐ 写真共有モード
+   ⭐ イベント並べ替え
 ========================================================= */
 
-function favoritePhotoShareMode(){
+function favoriteEventSortMode(){
 
-    favoritePhotoDeleteSelecting =
+    favoriteEventDeleteSelecting =
         false;
 
-    favoritePhotoSortSelecting =
+    favoriteEventShareSelecting =
         false;
 
-    favoritePhotoShareSelecting =
+    favoriteEventSortSelecting =
         true;
 
-    selectedFavoritePhotoIds = [];
+    selectedFavoriteEventIds = [];
 
-
-    renderFavoritePhotos();
+    favoriteRenderEvents();
 
 }
 
 
-/* =========================================================
-   ⭐ 写真共有選択
-========================================================= */
+function favoriteSaveEventOrder(){
 
-function toggleFavoritePhotoShare(id){
+    const data =
+        db.load();
 
-    id =
-        String(id);
+    if(!data.favorites){
 
+        data.favorites = {
 
-    const index =
-        selectedFavoritePhotoIds.indexOf(
-            id
-        );
+            events: [],
+            photos: [],
+            eventOrder: [],
+            photoOrder: []
 
-
-    if(index >= 0){
-
-        selectedFavoritePhotoIds.splice(
-            index,
-            1
-        );
-
-    }else{
-
-        selectedFavoritePhotoIds.push(
-            id
-        );
+        };
 
     }
 
-
-    renderFavoritePhotos();
-
-}
-
-
-/* =========================================================
-   ⭐ 写真共有
-========================================================= */
-
-async function shareFavoriteSelectedPhotos(){
-
-    if(
-        selectedFavoritePhotoIds.length === 0
-    ){
-
-        alert(
-            "共有する写真を選択してください"
+    const container =
+        document.getElementById(
+            "favorite-event-list"
         );
 
+    if(!container){
         return;
-
     }
 
+    const items =
+        [
+            ...container.querySelectorAll(
+                "[data-favorite-event-id]"
+            )
+        ];
 
-    const targets =
-        getAllFavoritePhotoItems()
-        .filter(
+    data.favorites.eventOrder =
+        items.map(
             item =>
-                selectedFavoritePhotoIds.includes(
-                    String(item.id)
-                )
+                item.dataset.favoriteEventId
         );
 
+    db.save(data);
 
-    try{
+    favoriteEventSortSelecting =
+        false;
 
-        const files = [];
-
-
-        for(
-            let i = 0;
-            i < targets.length;
-            i++
-        ){
-
-            const photo =
-                targets[i].photo;
-
-
-            if(
-                !photo ||
-                !photo.src
-            ){
-
-                continue;
-
-            }
-
-
-            const response =
-                await fetch(
-                    photo.src
-                );
-
-
-            const blob =
-                await response.blob();
-
-
-            files.push(
-                new File(
-                    [blob],
-                    `oshi-favorite-${i+1}.jpg`,
-                    {
-                        type:
-                            blob.type ||
-                            "image/jpeg"
-                    }
-                )
-            );
-
-        }
-
-
-        if(
-            files.length === 0
-        ){
-
-            alert(
-                "共有できる写真がありません"
-            );
-
-            return;
-
-        }
-
-
-        if(
-            !navigator.share ||
-            !navigator.canShare ||
-            !navigator.canShare({
-                files: files
-            })
-        ){
-
-            alert(
-                "この端末では複数写真の共有に対応していません"
-            );
-
-            return;
-
-        }
-
-
-        await navigator.share({
-
-            files:
-                files,
-
-            title:
-                "推し活手帳",
-
-            text:
-                "お気に入り写真"
-
-        });
-
-
-        favoritePhotoShareSelecting =
-            false;
-
-        selectedFavoritePhotoIds = [];
-
-
-        renderFavoritePhotos();
-
-    }catch(error){
-
-        console.log(
-            "お気に入り写真共有エラー:",
-            error
-        );
-
-    }
+    favoriteRenderEvents();
 
 }
 
@@ -1960,8 +1787,7 @@ function favoritePhotoSortMode(){
 
     selectedFavoritePhotoIds = [];
 
-
-    renderFavoritePhotos();
+    favoriteRenderPhotos();
 
 }
 
@@ -1970,26 +1796,32 @@ function favoritePhotoSortMode(){
    ⭐ 写真並べ替え保存
 ========================================================= */
 
-function saveFavoritePhotoOrder(){
+function favoriteSavePhotoOrder(){
 
     const data =
-        ensureFavoritesData(
-            db.load()
-        );
+        db.load();
 
+    if(!data.favorites){
+
+        data.favorites = {
+
+            events: [],
+            photos: [],
+            eventOrder: [],
+            photoOrder: []
+
+        };
+
+    }
 
     const container =
         document.getElementById(
             "favorite-photo-list"
         );
 
-
     if(!container){
-
         return;
-
     }
-
 
     const items =
         [
@@ -1998,117 +1830,416 @@ function saveFavoritePhotoOrder(){
             )
         ];
 
-
-    const order =
+    data.favorites.photoOrder =
         items.map(
             item =>
-                String(
-                    item.dataset.favoritePhotoId
-                )
+                item.dataset.favoritePhotoId
         );
-
-
-    data.favorites.photoOrder =
-        order;
-
 
     db.save(data);
 
-
     favoritePhotoSortSelecting =
         false;
 
-
-    favoritePhotoDraggingId =
-        null;
-
-    favoritePhotoDraggingElement =
-        null;
-
-
-    renderFavoritePhotos();
+    favoriteRenderPhotos();
 
 }
 
 
 /* =========================================================
-   ⭐ 写真並べ替えキャンセル
+   ⭐ 写真共有モード
 ========================================================= */
 
-function cancelFavoritePhotoSort(){
+function favoritePhotoShareMode(){
+
+    favoritePhotoDeleteSelecting =
+        false;
 
     favoritePhotoSortSelecting =
         false;
 
-    favoritePhotoDraggingId =
-        null;
+    favoritePhotoShareSelecting =
+        true;
 
-    favoritePhotoDraggingElement =
-        null;
+    selectedFavoritePhotoIds = [];
+
+    favoriteRenderPhotos();
+
+}
 
 
-    renderFavoritePhotos();
+function favoriteTogglePhotoShare(id){
+
+    id =
+        String(id);
+
+    const index =
+        selectedFavoritePhotoIds.indexOf(
+            id
+        );
+
+    if(index >= 0){
+
+        selectedFavoritePhotoIds.splice(
+            index,
+            1
+        );
+
+    }else{
+
+        selectedFavoritePhotoIds.push(
+            id
+        );
+
+    }
+
+    favoriteRenderPhotos();
+
+}
+
+
+function favoriteCancelPhotoShare(){
+
+    favoritePhotoShareSelecting =
+        false;
+
+    selectedFavoritePhotoIds = [];
+
+    favoriteRenderPhotos();
 
 }
 
 
 /* =========================================================
-   ⭐ お気に入り写真ビューア開始
+   ⭐ 写真共有
 ========================================================= */
 
-function openFavoritePhotoViewerNew(
+async function favoriteShareSelectedPhotos(){
+
+    if(
+        selectedFavoritePhotoIds.length === 0
+    ){
+
+        alert(
+            "共有する写真を選択してください"
+        );
+
+        return;
+
+    }
+
+    const favorites =
+        favoriteGetPhotos();
+
+    const targets =
+        favorites.filter(
+            favorite =>
+                selectedFavoritePhotoIds
+                .includes(
+                    String(favorite.id)
+                )
+        );
+
+    try{
+
+        const files = [];
+
+        for(
+            let i = 0;
+            i < targets.length;
+            i++
+        ){
+
+            const photo =
+                favoriteGetPhotoData(
+                    targets[i]
+                );
+
+            if(!photo){
+                continue;
+            }
+
+            const response =
+                await fetch(
+                    photo.src
+                );
+
+            const blob =
+                await response.blob();
+
+            files.push(
+                new File(
+                    [blob],
+                    `oshi-favorite-${i+1}.jpg`,
+                    {
+                        type:
+                            blob.type ||
+                            "image/jpeg"
+                    }
+                )
+            );
+
+        }
+
+        if(
+            !navigator.share ||
+            !navigator.canShare ||
+            !navigator.canShare({
+                files: files
+            })
+        ){
+
+            alert(
+                "この端末では複数写真の共有に対応していません"
+            );
+
+            return;
+
+        }
+
+        await navigator.share({
+
+            files: files,
+
+            title:
+                "推し活手帳",
+
+            text:
+                "お気に入り写真"
+
+        });
+
+        favoritePhotoShareSelecting =
+            false;
+
+        selectedFavoritePhotoIds = [];
+
+        favoriteRenderPhotos();
+
+    }catch(error){
+
+        console.log(
+            "お気に入り写真共有エラー:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   ⭐ イベント共有モード
+========================================================= */
+
+function favoriteEventShareMode(){
+
+    favoriteEventDeleteSelecting =
+        false;
+
+    favoriteEventSortSelecting =
+        false;
+
+    favoriteEventShareSelecting =
+        true;
+
+    selectedFavoriteEventIds = [];
+
+    favoriteRenderEvents();
+
+}
+
+
+function favoriteToggleEventShare(id){
+
+    id =
+        String(id);
+
+    const index =
+        selectedFavoriteEventIds.indexOf(
+            id
+        );
+
+    if(index >= 0){
+
+        selectedFavoriteEventIds.splice(
+            index,
+            1
+        );
+
+    }else{
+
+        selectedFavoriteEventIds.push(
+            id
+        );
+
+    }
+
+    favoriteRenderEvents();
+
+}
+
+
+/* =========================================================
+   ⭐ イベント共有
+========================================================= */
+
+async function favoriteShareSelectedEvents(){
+
+    if(
+        selectedFavoriteEventIds.length === 0
+    ){
+
+        alert(
+            "共有するイベントを選択してください"
+        );
+
+        return;
+
+    }
+
+    const favorites =
+        favoriteGetEvents();
+
+    const targets =
+        favorites.filter(
+            favorite =>
+                selectedFavoriteEventIds
+                .includes(
+                    String(favorite.id)
+                )
+        );
+
+    const text =
+        targets
+        .map(
+            favorite => {
+
+                const event =
+                    favoriteGetEventData(
+                        favorite
+                    );
+
+                if(!event){
+                    return "";
+                }
+
+                return (
+                    `📅 ${event.title || "無題"}\n` +
+                    (
+                        event.start
+                        ?
+                        favoriteFormatEventDate(
+                            event.start
+                        )
+                        :
+                        ""
+                    ) +
+                    (
+                        event.place
+                        ?
+                        `\n📍 ${event.place}`
+                        :
+                        ""
+                    )
+                );
+
+            }
+        )
+        .filter(Boolean)
+        .join("\n\n");
+
+    if(
+        navigator.share
+    ){
+
+        try{
+
+            await navigator.share({
+
+                title:
+                    "推し活手帳",
+
+                text:
+                    text
+
+            });
+
+        }catch(error){
+
+            console.log(
+                "お気に入りイベント共有キャンセル:",
+                error
+            );
+
+        }
+
+    }else{
+
+        alert(text);
+
+    }
+
+    favoriteEventShareSelecting =
+        false;
+
+    selectedFavoriteEventIds = [];
+
+    favoriteRenderEvents();
+
+}
+
+
+/* =========================================================
+   ⭐ お気に入り写真ビューア
+========================================================= */
+
+function favoriteOpenPhotoViewer(
     favoriteId
 ){
 
-    const items =
-        getOrderedFavoritePhotos();
-
+    const favorites =
+        favoriteGetOrderedPhotos();
 
     const index =
-        items.findIndex(
+        favorites.findIndex(
             item =>
                 String(item.id) ===
                 String(favoriteId)
         );
 
-
     if(index < 0){
-
         return;
+    }
 
+    const favorite =
+        favorites[index];
+
+    const photo =
+        favoriteGetPhotoData(
+            favorite
+        );
+
+    if(!photo){
+        return;
     }
 
 
-    const item =
-        items[index];
+    /*
+       ⭐ お気に入り専用ビューア配列
+       photo.jsのgetViewerPhotos()は使わない
+    */
 
-
-    if(
-        !item ||
-        !item.photo ||
-        !item.photo.src
-    ){
-
-        return;
-
-    }
-
-
-    favoritePhotoViewerItems =
-        items;
-
+    favoritePhotoViewerIds =
+        favorites.map(
+            item => item.id
+        );
 
     favoritePhotoViewerIndex =
         index;
 
-
     favoritePhotoViewerCurrentId =
-        String(item.id);
-
-
-    favoritePhotoViewerSrc =
-        item.photo.src;
-
+        favorite.id;
 
     favoritePhotoViewerScale =
         1;
@@ -2122,8 +2253,8 @@ function openFavoritePhotoViewerNew(
     favoritePhotoViewerLastDistance =
         0;
 
-    favoritePhotoViewerLastTapTime =
-        0;
+    favoritePhotoViewerIsOpen =
+        true;
 
 
     const viewer =
@@ -2131,12 +2262,10 @@ function openFavoritePhotoViewerNew(
             "photoViewer"
         );
 
-
     const image =
         document.getElementById(
             "photoViewerImage"
         );
-
 
     if(
         !viewer ||
@@ -2149,31 +2278,26 @@ function openFavoritePhotoViewerNew(
 
 
     image.src =
-        favoritePhotoViewerSrc;
+        photo.src;
 
 
-    image.style.transform =
-        "translate(0px,0px) scale(1)";
+    favoriteApplyViewerTransform();
 
 
-    viewer.style.display =
-        "flex";
-
-
-    viewer.style.zIndex =
-        "9999";
-
+    /*
+       ⭐ お気に入りビューアでは
+       削除アイコンを必ず表示
+    */
 
     const deleteBtn =
         document.querySelector(
             ".photo-delete"
         );
 
-
     if(deleteBtn){
 
         deleteBtn.style.display =
-            "none";
+            "flex";
 
     }
 
@@ -2183,7 +2307,6 @@ function openFavoritePhotoViewerNew(
             ".photo-close"
         );
 
-
     if(closeBtn){
 
         closeBtn.style.right =
@@ -2192,6 +2315,12 @@ function openFavoritePhotoViewerNew(
     }
 
 
+    viewer.style.display =
+        "flex";
+
+    viewer.style.zIndex =
+        "9999";
+
     document.body.style.overflow =
         "hidden";
 
@@ -2199,195 +2328,87 @@ function openFavoritePhotoViewerNew(
 
 
 /* =========================================================
-   ⭐ お気に入りビューアを閉じる
+   ⭐ ビューア変形適用
 ========================================================= */
 
-function closeFavoritePhotoViewer(){
-
-    const viewer =
-        document.getElementById(
-            "photoViewer"
-        );
-
-
-    if(viewer){
-
-        viewer.style.display =
-            "none";
-
-    }
-
+function favoriteApplyViewerTransform(){
 
     const image =
         document.getElementById(
             "photoViewerImage"
         );
 
-
-    if(image){
-
-        image.style.transform =
-            "translate(0px,0px) scale(1)";
-
+    if(!image){
+        return;
     }
 
-
-    document.body.style.overflow =
-        "";
-
-
-    favoritePhotoViewerItems =
-        [];
-
-    favoritePhotoViewerIndex =
-        0;
-
-    favoritePhotoViewerCurrentId =
-        null;
-
-    favoritePhotoViewerSrc =
-        "";
-
-    favoritePhotoViewerScale =
-        1;
-
-    favoritePhotoViewerTranslateX =
-        0;
-
-    favoritePhotoViewerTranslateY =
-        0;
-
-    favoritePhotoViewerLastDistance =
-        0;
-
-    favoritePhotoViewerDragging =
-        false;
+    image.style.transform =
+        `translate(${favoritePhotoViewerTranslateX}px,${favoritePhotoViewerTranslateY}px) scale(${favoritePhotoViewerScale})`;
 
 }
 
 
 /* =========================================================
-   ⭐ 既存 closePhotoViewer からの独立対策
+   ⭐ お気に入りビューア表示
 ========================================================= */
 
-/*
-   お気に入りビューアを閉じる時に
-   既存 photo.js の状態へ触れない。
-
-   ボタン側が closePhotoViewer() を呼ぶ場合にも、
-   お気に入り表示中ならこちらへ切り替える。
-*/
-
-function closeFavoriteViewerIfNeeded(){
+function favoriteShowPhoto(index){
 
     if(
-        favoritePhotoViewerCurrentId !== null
-    ){
-
-        closeFavoritePhotoViewer();
-
-        return true;
-
-    }
-
-
-    return false;
-
-}
-
-
-/* =========================================================
-   ⭐ お気に入り写真切り替え
-========================================================= */
-
-function showFavoritePhoto(index){
-
-    const items =
-        favoritePhotoViewerItems.length
-        ?
-        favoritePhotoViewerItems
-        :
-        getOrderedFavoritePhotos();
-
-
-    if(
-        items.length === 0
+        favoritePhotoViewerIds.length === 0
     ){
 
         return;
 
     }
 
-
     if(
-        index >= items.length
+        index >=
+        favoritePhotoViewerIds.length
     ){
 
         index = 0;
 
     }
 
-
-    if(
-        index < 0
-    ){
+    if(index < 0){
 
         index =
-            items.length - 1;
+            favoritePhotoViewerIds.length - 1;
 
     }
-
-
-    favoritePhotoViewerItems =
-        items;
-
 
     favoritePhotoViewerIndex =
         index;
 
+    const id =
+        favoritePhotoViewerIds[index];
 
-    const item =
-        items[index];
+    const favorites =
+        favoriteGetOrderedPhotos();
 
-
-    if(
-        !item ||
-        !item.photo
-    ){
-
-        return;
-
-    }
-
-
-    favoritePhotoViewerCurrentId =
-        String(item.id);
-
-
-    favoritePhotoViewerSrc =
-        item.photo.src;
-
-
-    const image =
-        document.getElementById(
-            "photoViewerImage"
+    const favorite =
+        favorites.find(
+            item =>
+                String(item.id) ===
+                String(id)
         );
 
-
-    if(!image){
-
+    if(!favorite){
         return;
-
     }
 
+    const photo =
+        favoriteGetPhotoData(
+            favorite
+        );
 
-    image.src =
-        favoritePhotoViewerSrc;
+    if(!photo){
+        return;
+    }
 
-
-    /*
-       写真切り替え時はズーム状態をリセット
-    */
+    favoritePhotoViewerCurrentId =
+        favorite.id;
 
     favoritePhotoViewerScale =
         1;
@@ -2401,61 +2422,82 @@ function showFavoritePhoto(index){
     favoritePhotoViewerLastDistance =
         0;
 
+    const image =
+        document.getElementById(
+            "photoViewerImage"
+        );
 
-    image.style.transform =
-        "translate(0px,0px) scale(1)";
+    if(image){
+
+        image.src =
+            photo.src;
+
+        favoriteApplyViewerTransform();
+
+    }
 
 }
 
 
 /* =========================================================
-   ⭐ お気に入りビューア タッチ開始
+   ⭐ お気に入り専用スワイプ
 ========================================================= */
 
-function favoritePhotoViewerTouchStart(event){
+function favoritePhotoSwipe(
+    event
+){
 
     if(
-        !event.touches ||
-        event.touches.length === 0
+        !favoritePhotoViewerIsOpen
     ){
 
         return;
 
     }
 
-
     if(
-        event.touches.length === 1
+        favoritePhotoViewerScale > 1
     ){
 
-        favoritePhotoViewerTouchStartX =
-            event.touches[0].clientX;
-
-        favoritePhotoViewerTouchStartY =
-            event.touches[0].clientY;
-
-
-        favoritePhotoViewerDragging =
-            favoritePhotoViewerScale > 1;
-
-
-        favoritePhotoViewerDragStartX =
-            event.touches[0].clientX;
-
-        favoritePhotoViewerDragStartY =
-            event.touches[0].clientY;
+        return;
 
     }
 
-
     if(
-        event.touches.length === 2
+        !event.changedTouches ||
+        event.changedTouches.length !== 1
     ){
 
-        favoritePhotoViewerLastDistance =
-            favoritePhotoViewerGetDistance(
-                event.touches
-            );
+        return;
+
+    }
+
+    const touchEndX =
+        event.changedTouches[0].clientX;
+
+    const diff =
+        touchEndX -
+        favoritePhotoViewerTouchStartX;
+
+    if(
+        Math.abs(diff) < 60
+    ){
+
+        return;
+
+    }
+
+    if(diff < 0){
+
+        favoriteShowPhoto(
+            favoritePhotoViewerIndex + 1
+        );
+
+    }else{
+
+        favoriteShowPhoto(
+            favoritePhotoViewerIndex - 1
+        );
 
     }
 
@@ -2463,55 +2505,34 @@ function favoritePhotoViewerTouchStart(event){
 
 
 /* =========================================================
-   ⭐ 距離
+   ⭐ お気に入り専用ピンチ・ドラッグ
 ========================================================= */
 
-function favoritePhotoViewerGetDistance(
-    touches
-){
-
-    const dx =
-        touches[0].clientX -
-        touches[1].clientX;
-
-
-    const dy =
-        touches[0].clientY -
-        touches[1].clientY;
-
-
-    return Math.sqrt(
-        dx * dx +
-        dy * dy
-    );
-
-}
-
-
-/* =========================================================
-   ⭐ お気に入りビューア タッチ移動
-========================================================= */
-
-function favoritePhotoViewerTouchMove(
+function favoritePhotoPinch(
     event
 ){
+
+    if(
+        !favoritePhotoViewerIsOpen
+    ){
+
+        return;
+
+    }
 
     const image =
         document.getElementById(
             "photoViewerImage"
         );
 
-
     if(!image){
-
         return;
-
     }
 
 
-    /* =====================================================
-       2本指 → ピンチズーム
-    ===================================================== */
+    /*
+       2本指ピンチ
+    */
 
     if(
         event.touches.length === 2
@@ -2519,21 +2540,27 @@ function favoritePhotoViewerTouchMove(
 
         event.preventDefault();
 
+        const dx =
+            event.touches[0].clientX -
+            event.touches[1].clientX;
+
+        const dy =
+            event.touches[0].clientY -
+            event.touches[1].clientY;
 
         const distance =
-            favoritePhotoViewerGetDistance(
-                event.touches
+            Math.sqrt(
+                dx * dx +
+                dy * dy
             );
 
-
         if(
-            favoritePhotoViewerLastDistance > 0
+            favoritePhotoViewerLastDistance !== 0
         ){
 
             favoritePhotoViewerScale *=
                 distance /
                 favoritePhotoViewerLastDistance;
-
 
             if(
                 favoritePhotoViewerScale < 1
@@ -2544,7 +2571,6 @@ function favoritePhotoViewerTouchMove(
 
             }
 
-
             if(
                 favoritePhotoViewerScale > 4
             ){
@@ -2554,33 +2580,21 @@ function favoritePhotoViewerTouchMove(
 
             }
 
-
-            image.style.transform =
-                `
-                translate(
-                    ${favoritePhotoViewerTranslateX}px,
-                    ${favoritePhotoViewerTranslateY}px
-                )
-                scale(
-                    ${favoritePhotoViewerScale}
-                )
-                `;
+            favoriteApplyViewerTransform();
 
         }
 
-
         favoritePhotoViewerLastDistance =
             distance;
-
 
         return;
 
     }
 
 
-    /* =====================================================
-       拡大中1本指 → 写真移動
-    ===================================================== */
+    /*
+       1本指ドラッグ
+    */
 
     if(
         favoritePhotoViewerScale > 1 &&
@@ -2589,23 +2603,19 @@ function favoritePhotoViewerTouchMove(
 
         event.preventDefault();
 
-
         const x =
             event.touches[0].clientX;
 
         const y =
             event.touches[0].clientY;
 
-
         favoritePhotoViewerTranslateX +=
             x -
             favoritePhotoViewerDragStartX;
 
-
         favoritePhotoViewerTranslateY +=
             y -
             favoritePhotoViewerDragStartY;
-
 
         favoritePhotoViewerDragStartX =
             x;
@@ -2613,20 +2623,7 @@ function favoritePhotoViewerTouchMove(
         favoritePhotoViewerDragStartY =
             y;
 
-
-        image.style.transform =
-            `
-            translate(
-                ${favoritePhotoViewerTranslateX}px,
-                ${favoritePhotoViewerTranslateY}px
-            )
-            scale(
-                ${favoritePhotoViewerScale}
-            )
-            `;
-
-
-        return;
+        favoriteApplyViewerTransform();
 
     }
 
@@ -2634,16 +2631,68 @@ function favoritePhotoViewerTouchMove(
 
 
 /* =========================================================
-   ⭐ お気に入りビューア タッチ終了
+   ⭐ お気に入り専用ドラッグ開始
 ========================================================= */
 
-function favoritePhotoViewerTouchEnd(
+function favoritePhotoDragStart(
     event
 ){
 
     if(
-        event.touches &&
-        event.touches.length === 0
+        !favoritePhotoViewerIsOpen
+    ){
+
+        return;
+
+    }
+
+    if(
+        favoritePhotoViewerScale <= 1
+    ){
+
+        if(
+            event.touches.length === 1
+        ){
+
+            favoritePhotoViewerTouchStartX =
+                event.touches[0].clientX;
+
+        }
+
+        return;
+
+    }
+
+    if(
+        event.touches.length !== 1
+    ){
+
+        return;
+
+    }
+
+    event.preventDefault();
+
+    favoritePhotoViewerDragStartX =
+        event.touches[0].clientX;
+
+    favoritePhotoViewerDragStartY =
+        event.touches[0].clientY;
+
+}
+
+
+/* =========================================================
+   ⭐ お気に入り専用ドラッグ終了
+========================================================= */
+
+function favoritePhotoDragEnd(
+    event
+){
+
+    if(
+        event.changedTouches &&
+        event.changedTouches.length >= 2
     ){
 
         favoritePhotoViewerLastDistance =
@@ -2655,25 +2704,20 @@ function favoritePhotoViewerTouchEnd(
 
 
 /* =========================================================
-   ⭐ お気に入りビューア スワイプ
+   ⭐ お気に入り専用ダブルタップ
 ========================================================= */
 
-function favoritePhotoViewerSwipe(
+function favoritePhotoDoubleTap(
     event
 ){
 
-    /*
-       拡大中はスワイプしない
-    */
-
     if(
-        favoritePhotoViewerScale > 1
+        !favoritePhotoViewerIsOpen
     ){
 
         return;
 
     }
-
 
     if(
         !event.changedTouches ||
@@ -2684,70 +2728,12 @@ function favoritePhotoViewerSwipe(
 
     }
 
-
-    const touchEndX =
-        event.changedTouches[0].clientX;
-
-
-    const diff =
-        touchEndX -
-        favoritePhotoViewerTouchStartX;
-
-
-    if(
-        Math.abs(diff) < 60
-    ){
-
-        return;
-
-    }
-
-
-    if(
-        diff < 0
-    ){
-
-        showFavoritePhoto(
-            favoritePhotoViewerIndex + 1
-        );
-
-    }else{
-
-        showFavoritePhoto(
-            favoritePhotoViewerIndex - 1
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   ⭐ ダブルタップ
-========================================================= */
-
-function favoritePhotoViewerDoubleTap(
-    event
-){
-
-    if(
-        event.changedTouches &&
-        event.changedTouches.length !== 1
-    ){
-
-        return;
-
-    }
-
-
     const now =
         Date.now();
 
-
     if(
         now -
-        favoritePhotoViewerLastTapTime
-        <
+        favoritePhotoViewerLastTapTime <
         300
     ){
 
@@ -2771,30 +2757,9 @@ function favoritePhotoViewerDoubleTap(
 
         }
 
-
-        const image =
-            document.getElementById(
-                "photoViewerImage"
-            );
-
-
-        if(image){
-
-            image.style.transform =
-                `
-                translate(
-                    ${favoritePhotoViewerTranslateX}px,
-                    ${favoritePhotoViewerTranslateY}px
-                )
-                scale(
-                    ${favoritePhotoViewerScale}
-                )
-                `;
-
-        }
+        favoriteApplyViewerTransform();
 
     }
-
 
     favoritePhotoViewerLastTapTime =
         now;
@@ -2803,93 +2768,388 @@ function favoritePhotoViewerDoubleTap(
 
 
 /* =========================================================
-   ⭐ お気に入りビューア用タッチイベント
+   ⭐ お気に入りビューアを閉じる
 ========================================================= */
 
-(function setupFavoritePhotoViewerEvents(){
+function favoriteClosePhotoViewer(){
 
-    const image =
+    const viewer =
         document.getElementById(
-            "photoViewerImage"
+            "photoViewer"
         );
 
+    if(viewer){
 
-    if(!image){
-
-        /*
-           HTML読み込み時にまだ存在しない場合は
-           後から再設定できるようにする。
-        */
-
-        return;
+        viewer.style.display =
+            "none";
 
     }
 
+    document.body.style.overflow =
+        "";
 
-    image.addEventListener(
-        "touchstart",
-        favoritePhotoViewerTouchStart,
-        {
-            passive: true
-        }
-    );
+    favoritePhotoViewerIsOpen =
+        false;
 
+    favoritePhotoViewerIds =
+        [];
 
-    image.addEventListener(
-        "touchmove",
-        favoritePhotoViewerTouchMove,
-        {
-            passive: false
-        }
-    );
+    favoritePhotoViewerIndex =
+        0;
 
+    favoritePhotoViewerCurrentId =
+        null;
 
-    image.addEventListener(
-        "touchend",
-        function(event){
+    favoritePhotoViewerScale =
+        1;
 
-            favoritePhotoViewerSwipe(
-                event
-            );
+    favoritePhotoViewerTranslateX =
+        0;
 
-            favoritePhotoViewerTouchEnd(
-                event
-            );
+    favoritePhotoViewerTranslateY =
+        0;
 
-            favoritePhotoViewerDoubleTap(
-                event
-            );
+    favoritePhotoViewerLastDistance =
+        0;
 
-        },
-        {
-            passive: true
-        }
-    );
-
-})();
+}
 
 
 /* =========================================================
-   ⭐ お気に入り写真ビューアの後からイベント設定
+   ⭐ お気に入りビューア現在写真削除
 ========================================================= */
 
-function setupFavoritePhotoViewer(){
+function favoriteDeleteCurrentPhoto(){
 
-    const image =
-        document.getElementById(
-            "photoViewerImage"
+    if(
+        !favoritePhotoViewerCurrentId
+    ){
+
+        return;
+
+    }
+
+    const data =
+        db.load();
+
+    const favorites =
+        data.favorites?.photos || [];
+
+    const target =
+        favorites.find(
+            favorite =>
+                String(favorite.id) ===
+                String(
+                    favoritePhotoViewerCurrentId
+                )
         );
 
+    if(!target){
+        return;
+    }
 
-    if(!image){
+    const isDayPlanner =
+        target.source ===
+        "dayPlanner";
+
+    let message = "";
+
+    if(isDayPlanner){
+
+        message =
+            "この写真は1日手帳からのお気に入りです。\n\n" +
+            "お気に入りから削除すると、" +
+            "1日手帳からも削除されます。\n\n" +
+            "削除してよろしいですか？";
+
+    }else{
+
+        message =
+            "この写真をお気に入りから削除しますか？";
+
+    }
+
+    if(
+        !confirm(message)
+    ){
 
         return;
 
     }
 
 
+    /*
+       1日手帳由来
+    */
+
+    if(isDayPlanner){
+
+        const source =
+            favoriteGetSourcePhoto(
+                target
+            );
+
+        if(
+            source &&
+            source.day &&
+            Array.isArray(
+                source.day.photos
+            )
+        ){
+
+            source.day.photos =
+                source.day.photos.filter(
+                    photo =>
+                        String(photo.id) !==
+                        String(
+                            target.sourcePhotoId
+                        )
+                );
+
+        }
+
+    }
+
+
+    /*
+       お気に入り側
+    */
+
+    data.favorites.photos =
+        favorites.filter(
+            favorite =>
+                String(favorite.id) !==
+                String(target.id)
+        );
+
+
+    /*
+       並び順
+    */
+
+    data.favorites.photoOrder =
+        (
+            data.favorites.photoOrder ||
+            []
+        ).filter(
+            id =>
+                String(id) !==
+                String(target.id)
+        );
+
+
+    db.save(data);
+
+
+    /*
+       残りの写真
+    */
+
+    const remaining =
+        favoriteGetOrderedPhotos();
+
+
     if(
-        image.dataset.favoriteViewerReady ===
+        remaining.length === 0
+    ){
+
+        favoriteClosePhotoViewer();
+
+        favoriteRenderPhotos();
+
+        if(
+            typeof renderDayMemory ===
+            "function"
+        ){
+
+            renderDayMemory();
+
+        }
+
+        return;
+
+    }
+
+
+    /*
+       削除した位置の次を表示
+    */
+
+    let nextIndex =
+        favoritePhotoViewerIndex;
+
+    if(
+        nextIndex >=
+        remaining.length
+    ){
+
+        nextIndex =
+            remaining.length - 1;
+
+    }
+
+    favoritePhotoViewerIds =
+        remaining.map(
+            item => item.id
+        );
+
+    favoriteShowPhoto(
+        nextIndex
+    );
+
+    favoriteRenderPhotos();
+
+
+    if(
+        typeof renderDayMemory ===
+        "function"
+    ){
+
+        renderDayMemory();
+
+    }
+
+}
+
+
+/* =========================================================
+   ⭐ お気に入り現在写真共有
+========================================================= */
+
+async function favoriteShareCurrentPhoto(){
+
+    if(
+        !favoritePhotoViewerCurrentId
+    ){
+
+        return;
+
+    }
+
+    const favorites =
+        favoriteGetPhotos();
+
+    const favorite =
+        favorites.find(
+            item =>
+                String(item.id) ===
+                String(
+                    favoritePhotoViewerCurrentId
+                )
+        );
+
+    if(!favorite){
+        return;
+    }
+
+    const photo =
+        favoriteGetPhotoData(
+            favorite
+        );
+
+    if(!photo){
+        return;
+    }
+
+    if(
+        !navigator.share
+    ){
+
+        alert(
+            "この端末では共有機能に対応していません"
+        );
+
+        return;
+
+    }
+
+    try{
+
+        const response =
+            await fetch(
+                photo.src
+            );
+
+        const blob =
+            await response.blob();
+
+        const file =
+            new File(
+                [blob],
+                "oshi-favorite.jpg",
+                {
+                    type:
+                        blob.type ||
+                        "image/jpeg"
+                }
+            );
+
+        if(
+            navigator.canShare &&
+            !navigator.canShare({
+                files: [file]
+            })
+        ){
+
+            alert(
+                "この端末では写真共有に対応していません"
+            );
+
+            return;
+
+        }
+
+        await navigator.share({
+
+            files: [file],
+
+            title:
+                "推し活手帳",
+
+            text:
+                "お気に入り写真"
+
+        });
+
+    }catch(error){
+
+        console.log(
+            "お気に入り写真共有エラー:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   ⭐ お気に入り専用ビューアイベント接続
+   photo.jsとは独立
+========================================================= */
+
+function favoriteInstallViewerEvents(){
+
+    const image =
+        document.getElementById(
+            "photoViewerImage"
+        );
+
+    if(!image){
+        return;
+    }
+
+
+    /*
+       既存のphoto.js側イベントより先に
+       お気に入り専用イベントを処理する。
+
+       お気に入りビューア中は
+       photo.js側へイベントを流さない。
+    */
+
+    if(
+        image.dataset.favoriteViewerEventsInstalled ===
         "true"
     ){
 
@@ -2898,14 +3158,40 @@ function setupFavoritePhotoViewer(){
     }
 
 
-    image.dataset.favoriteViewerReady =
+    image.dataset.favoriteViewerEventsInstalled =
         "true";
 
 
     image.addEventListener(
         "touchstart",
-        favoritePhotoViewerTouchStart,
+        function(event){
+
+            if(
+                !favoritePhotoViewerIsOpen
+            ){
+
+                return;
+
+            }
+
+            if(
+                event.touches.length === 1
+            ){
+
+                favoritePhotoViewerTouchStartX =
+                    event.touches[0].clientX;
+
+                favoritePhotoViewerDragStartX =
+                    event.touches[0].clientX;
+
+                favoritePhotoViewerDragStartY =
+                    event.touches[0].clientY;
+
+            }
+
+        },
         {
+            capture: true,
             passive: true
         }
     );
@@ -2913,8 +3199,29 @@ function setupFavoritePhotoViewer(){
 
     image.addEventListener(
         "touchmove",
-        favoritePhotoViewerTouchMove,
+        function(event){
+
+            if(
+                !favoritePhotoViewerIsOpen
+            ){
+
+                return;
+
+            }
+
+            /*
+               photo.jsへ流さない
+            */
+
+            event.stopImmediatePropagation();
+
+            favoritePhotoPinch(
+                event
+            );
+
+        },
         {
+            capture: true,
             passive: false
         }
     );
@@ -2924,21 +3231,32 @@ function setupFavoritePhotoViewer(){
         "touchend",
         function(event){
 
-            favoritePhotoViewerSwipe(
+            if(
+                !favoritePhotoViewerIsOpen
+            ){
+
+                return;
+
+            }
+
+            event.stopImmediatePropagation();
+
+            favoritePhotoSwipe(
                 event
             );
 
-            favoritePhotoViewerTouchEnd(
+            favoritePhotoDoubleTap(
                 event
             );
 
-            favoritePhotoViewerDoubleTap(
+            favoritePhotoDragEnd(
                 event
             );
 
         },
         {
-            passive: true
+            capture: true,
+            passive: false
         }
     );
 
@@ -2946,13 +3264,107 @@ function setupFavoritePhotoViewer(){
 
 
 /* =========================================================
-   ⭐ お気に入り写真自由並べ替え
+   ⭐ ビューアボタンをお気に入り専用へ接続
 ========================================================= */
 
-function setupFavoritePhotoSortEvents(){
+function favoriteInstallViewerButtons(){
+
+    const deleteBtn =
+        document.querySelector(
+            ".photo-delete"
+        );
+
+    const shareBtn =
+        document.querySelector(
+            ".photo-share"
+        );
+
+    const closeBtn =
+        document.querySelector(
+            ".photo-close"
+        );
+
+
+    if(deleteBtn){
+
+        deleteBtn.onclick =
+            function(event){
+
+                if(
+                    !favoritePhotoViewerIsOpen
+                ){
+
+                    return;
+
+                }
+
+                event.preventDefault();
+                event.stopImmediatePropagation();
+
+                favoriteDeleteCurrentPhoto();
+
+            };
+
+    }
+
+
+    if(shareBtn){
+
+        shareBtn.onclick =
+            function(event){
+
+                if(
+                    !favoritePhotoViewerIsOpen
+                ){
+
+                    return;
+
+                }
+
+                event.preventDefault();
+                event.stopImmediatePropagation();
+
+                favoriteShareCurrentPhoto();
+
+            };
+
+    }
+
+
+    if(closeBtn){
+
+        closeBtn.onclick =
+            function(event){
+
+                if(
+                    !favoritePhotoViewerIsOpen
+                ){
+
+                    return;
+
+                }
+
+                event.preventDefault();
+                event.stopImmediatePropagation();
+
+                favoriteClosePhotoViewer();
+
+            };
+
+    }
+
+}
+
+
+/* =========================================================
+   ⭐ 写真自由並べ替えタッチ処理
+   favorites.js専用
+========================================================= */
+
+function favoriteInstallPhotoSortEvents(){
 
     if(
-        document.body.dataset.favoritePhotoSortReady ===
+        document.body.dataset.favoriteSortEventsInstalled ===
         "true"
     ){
 
@@ -2960,8 +3372,7 @@ function setupFavoritePhotoSortEvents(){
 
     }
 
-
-    document.body.dataset.favoritePhotoSortReady =
+    document.body.dataset.favoriteSortEventsInstalled =
         "true";
 
 
@@ -2977,44 +3388,34 @@ function setupFavoritePhotoSortEvents(){
 
             }
 
-
             const box =
                 event.target.closest(
-                    "[data-favorite-photo-id]"
+                    ".favorite-photo-item"
                 );
 
-
             if(!box){
-
                 return;
-
             }
-
 
             favoritePhotoDraggingId =
                 String(
                     box.dataset.favoritePhotoId
                 );
 
-
             favoritePhotoDraggingElement =
                 box;
-
-
-            favoritePhotoIsDragging =
-                false;
 
             favoritePhotoTouchMoved =
                 false;
 
+            favoritePhotoIsDragging =
+                false;
 
             favoritePhotoTouchStartX =
                 event.touches[0].clientX;
 
-
             favoritePhotoTouchStartY =
                 event.touches[0].clientY;
-
 
             favoritePhotoLongPressTimer =
                 setTimeout(
@@ -3028,15 +3429,12 @@ function setupFavoritePhotoSortEvents(){
 
                         }
 
-
                         favoritePhotoIsDragging =
                             true;
-
 
                         box.classList.add(
                             "photo-dragging"
                         );
-
 
                         if(
                             navigator.vibrate
@@ -3071,19 +3469,17 @@ function setupFavoritePhotoSortEvents(){
 
             }
 
+            if(
+                !favoritePhotoDraggingElement
+            ){
+
+                return;
+
+            }
 
             if(
                 !favoritePhotoIsDragging
             ){
-
-                if(
-                    !event.touches.length
-                ){
-
-                    return;
-
-                }
-
 
                 const dx =
                     Math.abs(
@@ -3091,13 +3487,11 @@ function setupFavoritePhotoSortEvents(){
                         favoritePhotoTouchStartX
                     );
 
-
                 const dy =
                     Math.abs(
                         event.touches[0].clientY -
                         favoritePhotoTouchStartY
                     );
-
 
                 if(
                     dx > 10 ||
@@ -3107,37 +3501,36 @@ function setupFavoritePhotoSortEvents(){
                     favoritePhotoTouchMoved =
                         true;
 
-
                     clearTimeout(
                         favoritePhotoLongPressTimer
                     );
 
-                }
+                    favoritePhotoDraggingId =
+                        null;
 
+                    favoritePhotoDraggingElement =
+                        null;
+
+                }
 
                 return;
 
             }
 
-
             event.preventDefault();
-
 
             const touch =
                 event.touches[0];
 
-
             const boxes =
                 [
                     ...document.querySelectorAll(
-                        "#favorite-photo-list [data-favorite-photo-id]"
+                        ".favorite-photo-item"
                     )
                 ];
 
-
             let targetBox =
                 null;
-
 
             boxes.forEach(
                 box => {
@@ -3151,10 +3544,8 @@ function setupFavoritePhotoSortEvents(){
 
                     }
 
-
                     const rect =
                         box.getBoundingClientRect();
-
 
                     if(
                         touch.clientX >= rect.left &&
@@ -3171,26 +3562,22 @@ function setupFavoritePhotoSortEvents(){
                 }
             );
 
-
-            if(
-                !targetBox
-            ){
-
+            if(!targetBox){
                 return;
-
             }
-
 
             const parent =
                 favoritePhotoDraggingElement.parentNode;
 
-
-            const next =
+            const nextAfterDragging =
                 favoritePhotoDraggingElement.nextSibling;
 
+            const nextAfterTarget =
+                targetBox.nextSibling;
 
             if(
-                next === targetBox
+                nextAfterDragging ===
+                targetBox
             ){
 
                 parent.insertBefore(
@@ -3198,11 +3585,26 @@ function setupFavoritePhotoSortEvents(){
                     favoritePhotoDraggingElement
                 );
 
+            }else if(
+                nextAfterTarget ===
+                favoritePhotoDraggingElement
+            ){
+
+                parent.insertBefore(
+                    favoritePhotoDraggingElement,
+                    targetBox
+                );
+
             }else{
 
                 parent.insertBefore(
                     favoritePhotoDraggingElement,
                     targetBox
+                );
+
+                parent.insertBefore(
+                    targetBox,
+                    nextAfterDragging
                 );
 
             }
@@ -3222,17 +3624,17 @@ function setupFavoritePhotoSortEvents(){
                 favoritePhotoLongPressTimer
             );
 
-
             if(
                 favoritePhotoDraggingElement
             ){
 
-                favoritePhotoDraggingElement.classList.remove(
-                    "photo-dragging"
-                );
+                favoritePhotoDraggingElement
+                    .classList
+                    .remove(
+                        "photo-dragging"
+                    );
 
             }
-
 
             favoritePhotoIsDragging =
                 false;
@@ -3253,544 +3655,65 @@ function setupFavoritePhotoSortEvents(){
 
 
 /* =========================================================
-   ⭐ 並べ替えイベントを初期化
+   ⭐ 自由並べ替え完了
 ========================================================= */
 
-setupFavoritePhotoSortEvents();
-
-
-/* =========================================================
-   ⭐ イベント削除モード
-========================================================= */
-
-function favoriteEventDeleteMode(){
-
-    favoriteEventDeleteSelecting =
-        true;
-
-    favoriteEventShareSelecting =
-        false;
-
-    favoriteEventSortSelecting =
-        false;
-
-    selectedFavoriteEventIds = [];
-
-
-    renderFavoriteEvents();
-
-}
-
-
-/* =========================================================
-   ⭐ イベント削除選択
-========================================================= */
-
-function toggleFavoriteEventDelete(id){
-
-    id =
-        String(id);
-
-
-    const index =
-        selectedFavoriteEventIds.indexOf(
-            id
-        );
-
-
-    if(index >= 0){
-
-        selectedFavoriteEventIds.splice(
-            index,
-            1
-        );
-
-    }else{
-
-        selectedFavoriteEventIds.push(
-            id
-        );
-
-    }
-
-
-    renderFavoriteEvents();
-
-}
-
-
-/* =========================================================
-   ⭐ イベント削除
-========================================================= */
-
-function confirmFavoriteEventDelete(){
-
-    if(
-        selectedFavoriteEventIds.length === 0
-    ){
-
-        alert(
-            "削除するイベントを選択してください"
-        );
-
-        return;
-
-    }
-
+function favoriteFinishPhotoSort(){
 
     const data =
-        ensureFavoritesData(
-            db.load()
-        );
+        db.load();
 
-
-    const targets =
-        data.favorites.events.filter(
-            favorite =>
-                selectedFavoriteEventIds.includes(
-                    String(favorite.id)
-                )
-        );
-
-
-    let message =
-        "";
-
-
-    const dayPlannerTargets =
-        targets.filter(
-            favorite =>
-                favorite.source ===
-                "dayPlanner"
-        );
-
-
-    const directTargets =
-        targets.filter(
-            favorite =>
-                favorite.source ===
-                "favorite"
-        );
-
-
-    if(
-        dayPlannerTargets.length
-    ){
-
-        message +=
-            `📅 1日手帳からのお気に入り\n` +
-            `${dayPlannerTargets.length}件\n` +
-            `元の1日手帳予定も削除されます。\n\n`;
-
-    }
-
-
-    if(
-        directTargets.length
-    ){
-
-        message +=
-            `⭐ お気に入り直接追加\n` +
-            `${directTargets.length}件\n` +
-            `お気に入りからのみ削除されます。\n\n`;
-
-    }
-
-
-    message +=
-        "削除してよろしいですか？";
-
-
-    if(
-        !confirm(message)
-    ){
-
+    if(!data.favorites){
         return;
-
     }
-
-
-    /* 1日手帳イベント削除 */
-
-    if(
-        !Array.isArray(data.events)
-    ){
-
-        data.events = [];
-
-    }
-
-
-    dayPlannerTargets.forEach(
-        favorite => {
-
-            data.events =
-                data.events.filter(
-                    event =>
-                        String(event.id) !==
-                        String(
-                            favorite.sourceEventId
-                        )
-                );
-
-        }
-    );
-
-
-    /* お気に入り削除 */
-
-    data.favorites.events =
-        data.favorites.events.filter(
-            favorite =>
-                !selectedFavoriteEventIds.includes(
-                    String(favorite.id)
-                )
-        );
-
-
-    /* 並び順削除 */
-
-    data.favorites.eventOrder =
-        (
-            data.favorites.eventOrder ||
-            []
-        ).filter(
-            id =>
-                !selectedFavoriteEventIds.includes(
-                    String(id)
-                )
-        );
-
-
-    db.save(data);
-
-
-    favoriteEventDeleteSelecting =
-        false;
-
-    selectedFavoriteEventIds = [];
-
-
-    renderFavoriteEvents();
-
-
-    if(
-        typeof displayEventList ===
-        "function"
-    ){
-
-        displayEventList();
-
-    }
-
-
-    if(
-        typeof displayHomeSchedule ===
-        "function"
-    ){
-
-        displayHomeSchedule();
-
-    }
-
-
-    if(
-        typeof displayUpcomingEvents ===
-        "function"
-    ){
-
-        displayUpcomingEvents();
-
-    }
-
-
-    if(
-        typeof renderCalendar ===
-        "function"
-    ){
-
-        renderCalendar();
-
-    }
-
-}
-
-
-/* =========================================================
-   ⭐ イベント削除キャンセル
-========================================================= */
-
-function cancelFavoriteEventDelete(){
-
-    favoriteEventDeleteSelecting =
-        false;
-
-    selectedFavoriteEventIds = [];
-
-
-    renderFavoriteEvents();
-
-}
-
-
-/* =========================================================
-   ⭐ イベント並べ替え
-========================================================= */
-
-function favoriteEventSortMode(){
-
-    favoriteEventDeleteSelecting =
-        false;
-
-    favoriteEventShareSelecting =
-        false;
-
-    favoriteEventSortSelecting =
-        true;
-
-    selectedFavoriteEventIds = [];
-
-
-    renderFavoriteEvents();
-
-}
-
-
-/* =========================================================
-   ⭐ イベント並べ替え保存
-========================================================= */
-
-function saveFavoriteEventOrder(){
-
-    const data =
-        ensureFavoritesData(
-            db.load()
-        );
-
 
     const container =
         document.getElementById(
-            "favorite-event-list"
+            "favorite-photo-list"
         );
 
-
     if(!container){
-
         return;
-
     }
-
 
     const items =
         [
             ...container.querySelectorAll(
-                "[data-favorite-event-id]"
+                "[data-favorite-photo-id]"
             )
         ];
 
-
-    data.favorites.eventOrder =
+    data.favorites.photoOrder =
         items.map(
             item =>
-                String(
-                    item.dataset.favoriteEventId
-                )
+                item.dataset.favoritePhotoId
         );
-
 
     db.save(data);
 
-
-    favoriteEventSortSelecting =
+    favoritePhotoSortSelecting =
         false;
 
+    favoritePhotoDraggingId =
+        null;
 
-    renderFavoriteEvents();
+    favoritePhotoDraggingElement =
+        null;
+
+    favoriteRenderPhotos();
+
+    alert(
+        "✅ 並び順を保存しました"
+    );
 
 }
 
 
 /* =========================================================
-   ⭐ イベント共有モード
+   ⭐ すべてのモード終了
 ========================================================= */
 
-function favoriteEventShareMode(){
-
-    favoriteEventDeleteSelecting =
-        false;
-
-    favoriteEventSortSelecting =
-        false;
-
-    favoriteEventShareSelecting =
-        true;
-
-    selectedFavoriteEventIds = [];
-
-
-    renderFavoriteEvents();
-
-}
-
-
-/* =========================================================
-   ⭐ イベント共有選択
-========================================================= */
-
-function toggleFavoriteEventShare(id){
-
-    id =
-        String(id);
-
-
-    const index =
-        selectedFavoriteEventIds.indexOf(
-            id
-        );
-
-
-    if(index >= 0){
-
-        selectedFavoriteEventIds.splice(
-            index,
-            1
-        );
-
-    }else{
-
-        selectedFavoriteEventIds.push(
-            id
-        );
-
-    }
-
-
-    renderFavoriteEvents();
-
-}
-
-
-/* =========================================================
-   ⭐ イベント共有
-========================================================= */
-
-async function shareFavoriteSelectedEvents(){
-
-    if(
-        selectedFavoriteEventIds.length === 0
-    ){
-
-        alert(
-            "共有するイベントを選択してください"
-        );
-
-        return;
-
-    }
-
-
-    const targets =
-        getFavoriteEvents()
-        .filter(
-            favorite =>
-                selectedFavoriteEventIds.includes(
-                    String(favorite.id)
-                )
-        );
-
-
-    const text =
-        targets
-        .map(
-            favorite => {
-
-                const event =
-                    getFavoriteEventData(
-                        favorite
-                    );
-
-
-                if(!event){
-
-                    return "";
-
-                }
-
-
-                return (
-                    `📅 ${event.title || "無題"}\n` +
-                    (
-                        event.start
-                        ?
-                        formatFavoriteEventDate(
-                            event.start
-                        )
-                        :
-                        ""
-                    ) +
-                    (
-                        event.place
-                        ?
-                        `\n📍 ${event.place}`
-                        :
-                        ""
-                    )
-                );
-
-            }
-        )
-        .filter(Boolean)
-        .join("\n\n");
-
-
-    try{
-
-        if(
-            navigator.share
-        ){
-
-            await navigator.share({
-
-                title:
-                    "推し活手帳",
-
-                text:
-                    text
-
-            });
-
-        }else{
-
-            alert(text);
-
-        }
-
-    }catch(error){
-
-        console.log(
-            "お気に入りイベント共有:",
-            error
-        );
-
-    }
-
-
-    favoriteEventShareSelecting =
-        false;
-
-    selectedFavoriteEventIds = [];
-
-
-    renderFavoriteEvents();
-
-}
-
-
-/* =========================================================
-   ⭐ 全モード終了
-========================================================= */
-
-function cancelFavoriteAllModes(){
+function favoriteCancelAllModes(){
 
     favoriteEventDeleteSelecting =
         false;
@@ -3800,7 +3723,6 @@ function cancelFavoriteAllModes(){
 
     favoriteEventSortSelecting =
         false;
-
 
     favoritePhotoDeleteSelecting =
         false;
@@ -3811,21 +3733,50 @@ function cancelFavoriteAllModes(){
     favoritePhotoSortSelecting =
         false;
 
+    selectedFavoriteEventIds =
+        [];
 
-    selectedFavoriteEventIds = [];
+    selectedFavoritePhotoIds =
+        [];
 
-    selectedFavoritePhotoIds = [];
+    favoriteRenderEvents();
 
+    favoriteRenderPhotos();
 
-    favoritePhotoDraggingId =
-        null;
-
-    favoritePhotoDraggingElement =
-        null;
+}
 
 
-    renderFavoriteEvents();
+/* =========================================================
+   ⭐ 初期接続
+========================================================= */
 
-    renderFavoritePhotos();
+function favoriteInitialize(){
+
+    favoriteInstallViewerEvents();
+
+    favoriteInstallViewerButtons();
+
+    favoriteInstallPhotoSortEvents();
+
+}
+
+
+/* =========================================================
+   ⭐ DOM読み込み後
+========================================================= */
+
+if(
+    document.readyState ===
+    "loading"
+){
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        favoriteInitialize
+    );
+
+}else{
+
+    favoriteInitialize();
 
 }
