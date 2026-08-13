@@ -1482,6 +1482,13 @@ async function(){
     );
 
     await loadHtml(
+    "favoriteContainer",
+    "favorites.html"
+);
+
+initFavorites();
+
+    await loadHtml(
     "oshiContainer",
     "oshi.html"
 );

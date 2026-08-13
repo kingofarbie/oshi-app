@@ -4704,8 +4704,6 @@ document.addEventListener(
     "DOMContentLoaded",
     function(){
 
-        initFavorites();
-
         setupFavoriteDragDrop();
 
     }
