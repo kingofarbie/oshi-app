@@ -31,7 +31,7 @@
 
     <!-- =====================
          ⭐ お気に入りイベント
-    ===================== -->
+===================== -->
 
     <section class="favorites-section">
 
@@ -47,61 +47,48 @@
 
             </div>
 
-        </div>
 
+            <!-- =====================
+                 ＋ 🗑 📤 🔀
+                 1日手帳と同じアイコン操作
+            ===================== -->
 
-        <!-- =====================
-             操作ボタン
-             ＋ 🗑 📤 🔀
-        ===================== -->
+            <div class="memory-header-actions">
 
-        <div class="favorites-tools">
+                <button
+                    type="button"
+                    onclick="openFavoriteAddEvent()"
+                    aria-label="追加">
+                    ＋
+                </button>
 
-            <!-- 追加 -->
+                <button
+                    type="button"
+                    onclick="favoriteDeleteMode()"
+                    aria-label="削除">
+                    🗑
+                </button>
 
-            <button
-                type="button"
-                onclick="openFavoriteAddEvent()"
-                aria-label="お気に入りイベントを追加">
-                ＋
-            </button>
+                <button
+                    type="button"
+                    onclick="favoriteShareMode()"
+                    aria-label="共有">
+                    📤
+                </button>
 
+                <button
+                    type="button"
+                    onclick="favoriteSortMode()"
+                    aria-label="並べ替え">
+                    🔀
+                </button>
 
-            <!-- 削除 -->
-
-            <button
-                type="button"
-                onclick="favoriteDeleteMode()"
-                aria-label="お気に入りイベントを削除">
-                🗑
-            </button>
-
-
-            <!-- 共有 -->
-
-            <button
-                type="button"
-                onclick="favoriteShareMode()"
-                aria-label="お気に入りイベントを共有">
-                📤
-            </button>
-
-
-            <!-- 並べ替え -->
-
-            <button
-                type="button"
-                onclick="favoriteSortMode()"
-                aria-label="お気に入りイベントを並べ替え">
-                🔀
-            </button>
+            </div>
 
         </div>
 
 
-        <!-- =====================
-             イベント一覧
-        ===================== -->
+        <!-- イベント一覧 -->
 
         <div
             id="favorite-event-list"
@@ -118,7 +105,7 @@
 
     <!-- =====================
          📷 お気に入り写真
-    ===================== -->
+===================== -->
 
     <section class="favorites-section">
 
@@ -134,8 +121,48 @@
 
             </div>
 
+
+            <!-- =====================
+                 ＋ 🗑 📤 🔀
+                 イベントと完全に同じ
+            ===================== -->
+
+            <div class="memory-header-actions">
+
+                <button
+                    type="button"
+                    onclick="openFavoriteAddPhoto()"
+                    aria-label="追加">
+                    ＋
+                </button>
+
+                <button
+                    type="button"
+                    onclick="favoritePhotoDeleteMode()"
+                    aria-label="削除">
+                    🗑
+                </button>
+
+                <button
+                    type="button"
+                    onclick="favoritePhotoShareMode()"
+                    aria-label="共有">
+                    📤
+                </button>
+
+                <button
+                    type="button"
+                    onclick="favoritePhotoSortMode()"
+                    aria-label="並べ替え">
+                    🔀
+                </button>
+
+            </div>
+
         </div>
 
+
+        <!-- 写真一覧 -->
 
         <div
             id="favorite-photo-list"
@@ -148,7 +175,6 @@
         </div>
 
     </section>
-
 
 </div>
 

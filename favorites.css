@@ -758,3 +758,40 @@
     }
 
 }
+
+
+
+
+/* =====================
+   お気に入り
+   1日手帳と同じ操作アイコン
+===================== */
+
+.favorites-section-header .memory-header-actions{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    flex-shrink:0;
+}
+
+.favorites-section-header .memory-header-actions button{
+    width:28px;
+    height:28px;
+
+    padding:0;
+    margin:0;
+
+    background:none;
+    border:none;
+
+    color:var(--text);
+
+    font-size:20px;
+    line-height:1;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    cursor:pointer;
+}
