@@ -12,7 +12,8 @@
 <link rel="stylesheet" href="styles.css">
 <link rel="stylesheet" href="theme.css">
 <link rel="stylesheet" href="home.css">
-<link rel="stylesheet" href="planner.css">
+<link rel="stylesheet" href="home.css">
+<link rel="stylesheet" href="favorites.css">
 <link rel="stylesheet" href="calendar.css">
 <link rel="stylesheet" href="oshi.css">
 <link rel="stylesheet" href="oshi-details.css">
@@ -92,68 +93,8 @@
 ===================== -->
 
 <div id="favoritePage" class="page">
-
-
-<div class="card">
-
-<h2>
-⭐ お気に入り
-</h2>
-
-
-<button onclick="switchTab('home',event)">
-← ホームへ戻る
-</button>
-
-
+    <div id="favoriteContainer"></div>
 </div>
-
-
-
-<div class="card">
-
-<h3>
-📷 お気に入り写真
-</h3>
-
-
-<div
-id="favorite-photo-list"
-class="memory-list">
-
-写真はありません
-
-</div>
-
-
-</div>
-
-
-
-<div class="card">
-
-<h3>
-🏆 ベストイベント
-</h3>
-
-
-<div
-id="favorite-event-list">
-
-イベントはありません
-
-</div>
-
-
-</div>
-
-
-
-</div>
-
-
-
-
 
 <!--- =====================
      イベント入力ポップアップ
@@ -525,6 +466,7 @@ id="favorite-event-list">
 <script src="photo.js"></script>
 <script src="home.js"></script>
 <script src="home-menu.js"></script>
+<script src="favorites.js"></script>
 <script src="planner.js"></script>
 <script src="calendar.js"></script>
 <script src="oshi.js"></script>
