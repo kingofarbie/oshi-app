@@ -683,6 +683,12 @@
 }
 
 
+/* =====================================================
+   📅 期間切り替えボタン
+   選択中：テーマカラー＋白文字
+   非選択：薄いグレー＋黒文字
+===================================================== */
+
 .money-period-btn {
 
     min-width: 0;
@@ -701,6 +707,10 @@
 
     font-size: 13px;
 
+    font-weight: 400;
+
+    line-height: 1.2;
+
     white-space: nowrap;
 
     cursor: pointer;
@@ -712,6 +722,8 @@
 }
 
 
+/* 非選択 */
+
 .money-period-btn:not(.active) {
 
     background: rgba(0,0,0,0.06);
@@ -720,11 +732,13 @@
 }
 
 
+/* 選択中 */
+
 .money-period-btn.active {
 
-    background: #555;
+    background: var(--accent) !important;
 
-    color: #fff;
+    color: #fff !important;
 
     font-weight: 700;
 
@@ -733,11 +747,12 @@
 }
 
 
+/* 押した瞬間 */
+
 .money-period-btn:active {
 
     transform: scale(0.98);
 }
-
 
 /* =====================================================
    📈 年間
