@@ -412,7 +412,7 @@
     margin: 3px 0 0;
     padding: 0;
 
-    font-size: 12px;
+    font-size: 14px;
     line-height: 1.4;
 
     white-space: normal;
@@ -909,7 +909,7 @@
     .money-section-header .money-section-subtitle,
     .money-section-header p {
 
-        font-size: 11px;
+        font-size: 14px;
 
         white-space: normal;
     }
@@ -995,7 +995,7 @@
     .money-section-header .money-section-subtitle,
     .money-section-header p {
 
-        font-size: 10px;
+        font-size: 14px;
     }
 
 
