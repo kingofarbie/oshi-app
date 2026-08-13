@@ -1,0 +1,253 @@
+<!-- =====================
+     ⭐ お気に入りページ
+===================== -->
+
+<div class="favorites-page">
+
+    <!-- =====================
+         ヘッダー
+    ===================== -->
+
+    <div class="favorites-header">
+
+        <button
+            type="button"
+            onclick="switchTab('home', event)">
+            ← ホーム
+        </button>
+
+        <div class="favorites-header-title">
+
+            <h2>⭐ お気に入り</h2>
+
+            <p>
+                お気に入りに登録した予定・写真を管理します
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================
+         ⭐ お気に入りイベント
+    ===================== -->
+
+    <section class="favorites-section">
+
+        <div class="favorites-section-header">
+
+            <div>
+
+                <h3>🏆 ベストイベント</h3>
+
+                <p>
+                    お気に入りの予定
+                </p>
+
+            </div>
+
+            <!-- 直接追加 -->
+
+            <button
+                type="button"
+                class="favorites-add-btn"
+                onclick="openFavoriteAddEvent()">
+                ＋追加
+            </button>
+
+        </div>
+
+
+        <!-- =====================
+             操作ボタン
+        ===================== -->
+
+        <div class="favorites-tools">
+
+            <button
+                type="button"
+                onclick="favoriteDeleteMode()">
+                🗑
+            </button>
+
+            <button
+                type="button"
+                onclick="favoriteShareMode()">
+                📤
+            </button>
+
+            <button
+                type="button"
+                onclick="favoriteSortMode()">
+                🔀
+            </button>
+
+        </div>
+
+
+        <!-- =====================
+             イベント一覧
+        ===================== -->
+
+        <div
+            id="favorite-event-list"
+            class="favorites-event-list">
+
+            <div class="favorites-empty">
+                イベントはありません
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================
+         📷 お気に入り写真
+    ===================== -->
+
+    <section class="favorites-section">
+
+        <div class="favorites-section-header">
+
+            <div>
+
+                <h3>📷 お気に入り写真</h3>
+
+                <p>
+                    お気に入りに登録した写真
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div
+            id="favorite-photo-list"
+            class="favorites-photo-list">
+
+            <div class="favorites-empty">
+                写真はありません
+            </div>
+
+        </div>
+
+    </section>
+
+
+</div>
+
+
+<!-- =====================
+     🗑 お気に入り削除確認
+===================== -->
+
+<div
+    id="favoriteDeleteConfirmModal"
+    class="modal">
+
+    <div class="modal-content">
+
+        <h2>
+            🗑 お気に入りを削除
+        </h2>
+
+        <div
+            id="favoriteDeleteConfirmText"
+            class="favorite-delete-confirm-text">
+        </div>
+
+        <div class="favorites-modal-buttons">
+
+            <button
+                type="button"
+                onclick="confirmFavoriteDelete()">
+                🗑 削除する
+            </button>
+
+            <button
+                type="button"
+                onclick="closeFavoriteDeleteConfirm()">
+                キャンセル
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================
+     🔀 お気に入り並べ替え
+===================== -->
+
+<div
+    id="favoriteSortModal"
+    class="modal">
+
+    <div class="modal-content">
+
+        <h2>
+            🔀 並べ替え
+        </h2>
+
+        <button
+            type="button"
+            onclick="setFavoriteSort('new')">
+            🆕 新しい順
+        </button>
+
+        <button
+            type="button"
+            onclick="setFavoriteSort('old')">
+            📜 古い順
+        </button>
+
+        <button
+            type="button"
+            onclick="setFavoriteSort('free')">
+            ✋ 自由
+        </button>
+
+        <button
+            type="button"
+            onclick="closeFavoriteSortModal()">
+            ❌ 閉じる
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =====================
+     📤 お気に入り共有
+===================== -->
+
+<div
+    id="favoriteShareModal"
+    class="modal">
+
+    <div class="modal-content">
+
+        <h2>
+            📤 共有
+        </h2>
+
+        <div
+            id="favoriteShareList"
+            class="favorite-share-list">
+        </div>
+
+        <button
+            type="button"
+            onclick="closeFavoriteShareModal()">
+            ❌ 閉じる
+        </button>
+
+    </div>
+
+</div>
