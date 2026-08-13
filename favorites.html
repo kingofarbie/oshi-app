@@ -18,50 +18,38 @@
         <div class="memory-header-actions">
 
             <!-- 写真追加 -->
-
             <button
                 type="button"
                 onclick="favoritePhotoOpenPicker()"
                 title="写真を追加">
-
                 ＋
-
             </button>
 
 
             <!-- 写真削除 -->
-
             <button
                 type="button"
-                onclick="favoritePhotoStartDeleteMode()"
+                onclick="favoritePhotoDeleteMode()"
                 title="写真を削除">
-
                 🗑
-
             </button>
 
 
             <!-- 写真共有 -->
-
             <button
                 type="button"
-                onclick="favoritePhotoStartShareMode()"
+                onclick="favoritePhotoShareMode()"
                 title="写真を共有">
-
                 📤
-
             </button>
 
 
             <!-- 写真並べ替え -->
-
             <button
                 type="button"
-                onclick="favoritePhotoStartSortMode()"
+                onclick="favoritePhotoSortMode()"
                 title="写真を並べ替え">
-
                 🔀
-
             </button>
 
         </div>
@@ -71,6 +59,7 @@
 
     <!-- =================================================
          写真操作バー
+         ※ favorites-photo.js が必要に応じて生成
     ================================================== -->
 
     <div
@@ -89,12 +78,9 @@
         class="favorites-photo-list">
 
         <div class="favorites-empty">
-
             📷
             <br>
-
             お気に入り写真はありません
-
         </div>
 
     </div>
@@ -112,147 +98,82 @@
     accept="image/*"
     multiple
     style="display:none;"
-    onchange="favoritePhotoHandleSelected(event)"
+    onchange="favoritePhotoSelected(event)"
 >
 
 
 <!-- =====================================================
-     🗑 写真削除確認
+     📷 お気に入り写真ビューア
 ====================================================== -->
 
 <div
-    id="favoritePhotoDeleteModal"
-    class="modal"
-    style="display:none;">
+    id="favoritePhotoViewer"
+    class="favorite-photo-viewer"
+    style="display:none;"
+>
 
-    <div class="modal-content">
-
-        <h2>
-            🗑 写真を削除
-        </h2>
-
-        <div
-            id="favoritePhotoDeleteMessage"
-            class="favorite-delete-confirm-text">
-        </div>
-
-        <div class="favorites-modal-buttons">
-
-            <button
-                type="button"
-                onclick="favoritePhotoConfirmDelete()">
-
-                🗑 削除
-
-            </button>
-
-            <button
-                type="button"
-                onclick="favoritePhotoCancelDelete()">
-
-                キャンセル
-
-            </button>
-
-        </div>
-
-    </div>
-
-</div>
+    <!-- 閉じる -->
+    <button
+        type="button"
+        class="favorite-photo-viewer-close"
+        onclick="favoritePhotoCloseViewer()">
+        ✕
+    </button>
 
 
-<!-- =====================================================
-     📤 写真共有確認
-====================================================== -->
+    <!-- 共有 -->
+    <button
+        type="button"
+        class="favorite-photo-viewer-share"
+        onclick="favoritePhotoShareCurrent()">
+        📤
+    </button>
 
-<div
-    id="favoritePhotoShareModal"
-    class="modal"
-    style="display:none;">
 
-    <div class="modal-content">
+    <!-- 削除 -->
+    <button
+        type="button"
+        class="favorite-photo-viewer-delete"
+        onclick="favoritePhotoDeleteCurrent()">
+        🗑
+    </button>
 
-        <h2>
-            📤 写真を共有
-        </h2>
 
-        <div
-            id="favoritePhotoShareList"
-            class="favorite-share-list">
-        </div>
+    <!-- 前へ -->
+    <button
+        type="button"
+        class="favorite-photo-viewer-prev"
+        onclick="favoritePhotoPrevious()">
+        ‹
+    </button>
 
-        <div class="favorites-modal-buttons">
 
-            <button
-                type="button"
-                onclick="favoritePhotoConfirmShare()">
+    <!-- 写真 -->
+    <div
+        class="favorite-photo-viewer-image-wrap"
+        ontouchstart="favoritePhotoDragStart(event)"
+        ontouchmove="favoritePhotoPinch(event)"
+        ontouchend="favoritePhotoDragEnd(); favoritePhotoSwipe(event)"
+        onclick="favoritePhotoDoubleTap(event)"
+    >
 
-                📤 共有
-
-            </button>
-
-            <button
-                type="button"
-                onclick="favoritePhotoCancelShare()">
-
-                キャンセル
-
-            </button>
-
-        </div>
+        <img
+            id="favoritePhotoViewerImage"
+            class="favorite-photo-viewer-image"
+            src=""
+            alt="お気に入り写真"
+            draggable="false"
+        >
 
     </div>
 
-</div>
 
-
-<!-- =====================================================
-     🔀 写真並べ替え
-====================================================== -->
-
-<div
-    id="favoritePhotoSortModal"
-    class="modal"
-    style="display:none;">
-
-    <div class="modal-content">
-
-        <h2>
-            🔀 写真並べ替え
-        </h2>
-
-        <button
-            type="button"
-            onclick="favoritePhotoSetSort('new')">
-
-            🆕 新しい順
-
-        </button>
-
-        <button
-            type="button"
-            onclick="favoritePhotoSetSort('old')">
-
-            📜 古い順
-
-        </button>
-
-        <button
-            type="button"
-            onclick="favoritePhotoSetSort('free')">
-
-            ✋ 自由に並べ替え
-
-        </button>
-
-        <button
-            type="button"
-            onclick="favoritePhotoCloseSortModal()">
-
-            ❌ 閉じる
-
-        </button>
-
-    </div>
+    <!-- 次へ -->
+    <button
+        type="button"
+        class="favorite-photo-viewer-next"
+        onclick="favoritePhotoNext()">
+        ›
+    </button>
 
 </div>
