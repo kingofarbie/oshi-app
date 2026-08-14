@@ -103,73 +103,84 @@
 ====================================================== -->
 
 <div
-    id="favoritePhotoViewer"
-    class="favorite-photo-viewer"
+    id="favorites-photo-viewer"
+    class="favorites-photo-viewer"
     style="display:none;"
 >
 
-    <!-- 閉じる -->
-    <button
-        type="button"
-        class="favorite-photo-viewer-close"
-        onclick="favoritePhotoCloseViewer()">
-        ✕
-    </button>
+    <!-- =================================================
+         右上操作ボタン
+    ================================================== -->
+
+    <div class="favorites-photo-viewer-actions">
+
+        <!-- 閉じる -->
+        <button
+            type="button"
+            class="favorites-photo-viewer-close"
+            id="favorites-viewer-close"
+            title="閉じる">
+            ✕
+        </button>
+
+        <!-- 共有 -->
+        <button
+            type="button"
+            class="favorites-photo-viewer-share"
+            id="favorites-viewer-share"
+            title="共有">
+            📤
+        </button>
+
+        <!-- 削除 -->
+        <button
+            type="button"
+            class="favorites-photo-viewer-delete"
+            id="favorites-viewer-delete"
+            title="削除">
+            🗑
+        </button>
+
+    </div>
 
 
-    <!-- 共有 -->
-    <button
-        type="button"
-        class="favorite-photo-viewer-share"
-        onclick="favoritePhotoShareCurrent()">
-        📤
-    </button>
+    <!-- =================================================
+         写真表示エリア
+    ================================================== -->
 
-
-    <!-- 削除 -->
-    <button
-        type="button"
-        class="favorite-photo-viewer-delete"
-        onclick="favoritePhotoDeleteCurrent()">
-        🗑
-    </button>
-
-
-    <!-- 前へ -->
-    <button
-        type="button"
-        class="favorite-photo-viewer-prev"
-        onclick="favoritePhotoPrevious()">
-        ‹
-    </button>
-
-
-    <!-- 写真 -->
     <div
-        class="favorite-photo-viewer-image-wrap"
-        ontouchstart="favoritePhotoDragStart(event)"
-        ontouchmove="favoritePhotoPinch(event)"
-        ontouchend="favoritePhotoDragEnd(); favoritePhotoSwipe(event)"
-        onclick="favoritePhotoDoubleTap(event)"
+        class="favorites-photo-viewer-image-wrap"
     >
 
+        <!-- 前の写真 -->
+        <button
+            type="button"
+            class="favorites-photo-viewer-prev"
+            onclick="favoritesShowPhoto(favoritesViewerIndex - 1)"
+            title="前の写真">
+            ‹
+        </button>
+
+
+        <!-- 写真 -->
         <img
-            id="favoritePhotoViewerImage"
-            class="favorite-photo-viewer-image"
+            id="favorites-photo-viewer-image"
+            class="favorites-photo-viewer-image"
             src=""
             alt="お気に入り写真"
             draggable="false"
         >
 
+
+        <!-- 次の写真 -->
+        <button
+            type="button"
+            class="favorites-photo-viewer-next"
+            onclick="favoritesShowPhoto(favoritesViewerIndex + 1)"
+            title="次の写真">
+            ›
+        </button>
+
     </div>
-
-
-    <!-- 次へ -->
-    <button
-        type="button"
-        class="favorite-photo-viewer-next"
-        onclick="favoritePhotoNext()">
-        ›
-    </button>
 
 </div>
