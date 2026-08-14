@@ -1310,7 +1310,7 @@ async function favoritePhotoShareSelected(){
 
 
     const favorites =
-        favoritePhotoGetPhotos();
+        favoritePhotoGetOrdered();
 
 
     const targets =
