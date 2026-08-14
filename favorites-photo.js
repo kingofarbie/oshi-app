@@ -987,22 +987,18 @@ function favoritePhotoToggleSelect(
             id
         );
 
-
-        console.log(
-    "お気に入り写真選択:",
-    favoritePhotoSelectedPhotos
-);
-
-
-
-
     }
+
+
+    console.log(
+        "選択されたお気に入り写真ID:",
+        selectedFavoritePhotoIds
+    );
 
 
     favoritePhotoRender();
 
 }
-
 
 /* =========================================================
    ⭐ 削除キャンセル
