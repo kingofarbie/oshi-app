@@ -431,27 +431,6 @@ function displayFavoritePhotoCard(){
     }
 
 
-    console.log(
-        "ホームお気に入り写真:",
-        photos
-    );
-
-    console.log(
-        "表示枚数:",
-        countSetting
-    );
-
-    console.log(
-        "フェイド:",
-        fadeEnabled
-    );
-
-    console.log(
-        "表示時間:",
-        interval
-    );
-
-
     /* =====================
        写真なし
     ===================== */

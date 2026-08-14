@@ -83,9 +83,6 @@ async function loadMaster(){
 
 function switchTab(pageId, event, fromCalendar = false){
 
-    console.log("switchTab実行:", pageId);
-
-
     /* =====================
        ページ切り替え
     ===================== */
@@ -346,11 +343,6 @@ function switchTab(pageId, event, fromCalendar = false){
     ===================== */
 
     if(pageId === 'moneyPage'){
-
-        console.log(
-            "★ お金ページを読み込みます"
-        );
-
 
         setTimeout(() => {
 
@@ -1450,12 +1442,6 @@ async function(){
         "home-menu.html"
     );
 
-    console.log(
-        "appShareModal:",
-        document.getElementById("appShareModal")
-    );
-
-
     await loadHtml(
         "plannerContainer",
         "planner.html"
@@ -1590,9 +1576,6 @@ async function loadHtml(id, file){
 
         container.innerHTML = html;
 
-        console.log(
-            `★★★★★ ${file} 読み込み成功 ★★★★★`
-        );
 
     } catch(error){
 
@@ -2584,11 +2567,6 @@ function openSettingsFromMenu(){
         previousPageBeforeSettings =
             currentPage.id;
 
-        console.log(
-            "設定前のページ:",
-            previousPageBeforeSettings
-        );
-
     }
 
     /* すべてのページを閉じる */
@@ -2640,11 +2618,6 @@ function closeSettingsFromMenu(){
     if(previousPage){
 
         previousPage.classList.add("active");
-
-        console.log(
-            "設定から戻る:",
-            previousPageBeforeSettings
-        );
 
     }
 
