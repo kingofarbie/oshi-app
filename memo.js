@@ -21,11 +21,19 @@ function addMemo(){
         document.getElementById("memoModal");
 
     if(modal){
+
         modal.style.display = "block";
+
+        const title =
+            modal.querySelector("h2");
+
+        if(title){
+            title.textContent = "📝 メモ追加";
+        }
+
     }
 
 }
-
 
 /* ==================================================
    メモ追加モーダル閉じる
@@ -96,24 +104,64 @@ function saveMemo(){
     }
 
 
-    if(
-        !Array.isArray(
-            data.dayMemories[
-                selectedCalendarDate
-            ].memo
-        )
-    ){
-
+    const day =
         data.dayMemories[
             selectedCalendarDate
-        ].memo = [];
+        ];
+
+
+    if(
+        !Array.isArray(day.memo)
+    ){
+
+        day.memo = [];
 
     }
 
 
-    data.dayMemories[
-        selectedCalendarDate
-    ].memo.push({
+    /*
+       ✏️ 編集中
+    */
+
+    if(
+        memoEditingId !== null
+    ){
+
+        const memo =
+            day.memo.find(
+                item =>
+                    item.id === memoEditingId
+            );
+
+
+        if(memo){
+
+            memo.text =
+                text;
+
+        }
+
+
+        memoEditingId =
+            null;
+
+
+        db.save(data);
+
+        closeMemoModal();
+
+        renderDayMemory();
+
+        return;
+
+    }
+
+
+    /*
+       📝 新規追加
+    */
+
+    day.memo.push({
 
         id: Date.now(),
 
@@ -318,6 +366,9 @@ function escapeMemoHtml(text){
 let memoMode = "normal";
 
 let selectedMemoIds = [];
+
+// ✏️ 編集中のメモID
+let memoEditingId = null;
 
 // 並び替え前のメモ順を一時保存
 let memoSortOriginalOrder = null;
@@ -1495,47 +1546,60 @@ function editMemo(id){
     }
 
 
-    const text =
-        prompt(
-            "メモを編集してください",
-            memo.text
+    /*
+       編集対象を記憶
+    */
+
+    memoEditingId =
+        id;
+
+
+    /*
+       既存文章を入力欄へ
+    */
+
+    const input =
+        document.getElementById(
+            "memoText"
         );
 
 
-    if(
-        text === null
-    ){
+    if(input){
 
-        return;
+        input.value =
+            memo.text;
 
     }
 
 
-    const newText =
-        text.trim();
+    /*
+       モーダルタイトル変更
+    */
 
-
-    if(!newText){
-
-        alert(
-            "メモを空にすることはできません"
+    const modal =
+        document.getElementById(
+            "memoModal"
         );
 
-        return;
+
+    if(modal){
+
+        const title =
+            modal.querySelector("h2");
+
+
+        if(title){
+
+            title.textContent =
+                "✏️ メモ編集";
+
+        }
+
+
+        modal.style.display =
+            "block";
 
     }
-
-
-    memo.text =
-        newText;
-
-
-    db.save(data);
-
-
-    cancelMemoMode();
-
-    renderDayMemory();
 
 }
 
