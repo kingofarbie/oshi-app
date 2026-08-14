@@ -126,7 +126,7 @@
    📷 写真ボックス
 ========================================================= */
 
-.favorites-photo-item{
+.favorite-photo-item{
 
     width:100%;
 
@@ -152,7 +152,7 @@
 }
 
 
-.favorites-photo-item img{
+.favorite-photo-item img{
 
     width:100%;
     height:100%;
@@ -408,9 +408,9 @@
    📷 長押し・画像選択対策
 ========================================================= */
 
-.favorites-photo-item,
-.favorites-photo-item img,
-.favorites-photo-image{
+.favorite-photo-item,
+.favorite-photo-item img,
+.favorite-photo-image{
 
     -webkit-user-select:none;
 
@@ -783,7 +783,7 @@
    📱 写真一覧のタップ時
 ========================================================= */
 
-.favorites-photo-item:active{
+.favorite-photo-item:active{
 
     transform:scale(.98);
 
