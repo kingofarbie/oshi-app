@@ -788,11 +788,14 @@ ${
 
 function openFavoritePhotoPage(){
 
-    document
-        .querySelectorAll(".page")
-        .forEach(page => {
-            page.style.display = "none";
-        });
+    const pages =
+        document.querySelectorAll(".page");
+
+    pages.forEach(
+        page => {
+            page.classList.remove("active");
+        }
+    );
 
     const page =
         document.getElementById(
@@ -806,6 +809,6 @@ function openFavoritePhotoPage(){
         return;
     }
 
-    page.style.display = "block";
+    page.classList.add("active");
 
 }
