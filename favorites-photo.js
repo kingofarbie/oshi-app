@@ -3760,16 +3760,6 @@ if(
    ※ favoritesDisplay() は使用しない
 ========================================================= */
 
-/* =========================================================
-   📷 お気に入り写真表示
-   DBからお気に入り写真だけを取得して表示する
-
-   ※ お気に入りページ全体は表示しない
-   ※ イベントは扱わない
-   ※ 並べ替えボタンは生成しない
-   ※ favoritesDisplay() は使用しない
-========================================================= */
-
 function displayFavoritePhotos(){
 
     const data = db.load();
@@ -3779,4 +3769,26 @@ function displayFavoritePhotos(){
     }
 
     favoritePhotoRender();
+
+    favoritePhotoUpdateHomeCount();
+
+}
+
+function favoritePhotoUpdateHomeCount(){
+
+    const countElement =
+        document.getElementById(
+            "favorite-photo-count"
+        );
+
+    if(!countElement){
+        return;
+    }
+
+    const photos =
+        favoritePhotoGetOrdered();
+
+    countElement.textContent =
+        photos.length;
+
 }

@@ -30,6 +30,7 @@ async function loadHome(){
 displayHomeSchedule();
 displayUpcomingEvents();
 displayFavoritePhotoCard();
+favoritePhotoUpdateHomeCount();
 displayCountdown();
 
     }catch(error){
