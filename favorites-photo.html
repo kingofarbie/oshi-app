@@ -5,3 +5,39 @@
     <div id="favorite-photo-list"></div>
 
 </div>
+
+<!-- =====================
+     ⭐ お気に入り写真ビューア
+===================== -->
+
+<div
+    id="favoritePhotoViewer"
+    class="favorite-photo-viewer"
+    style="display:none;">
+
+    <button
+        type="button"
+        class="favorite-photo-viewer-close"
+        onclick="favoritePhotoCloseViewer()">
+        ✕
+    </button>
+
+    <button
+        type="button"
+        class="favorite-photo-viewer-prev"
+        onclick="favoritePhotoPrevious()">
+        ‹
+    </button>
+
+    <img
+        id="favoritePhotoViewerImage"
+        class="favorite-photo-viewer-image">
+
+    <button
+        type="button"
+        class="favorite-photo-viewer-next"
+        onclick="favoritePhotoNext()">
+        ›
+    </button>
+
+</div>
