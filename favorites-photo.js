@@ -2167,91 +2167,144 @@ function favoritePhotoDeleteCurrent(){
     }
 
 
-    let message;
-
-
-    if(
-        target.source ===
-        "dayPlanner"
-    ){
-
-        message =
-            "この写真は1日手帳由来です。\n\n" +
-            "お気に入りから削除すると、" +
-            "元の1日手帳写真も削除されます。\n\n" +
-            "削除してよろしいですか？";
-
-    }else{
-
-        message =
-            "この写真をお気に入りから削除しますか？";
-
-    }
-
-
-    if(
-        !confirm(message)
-    ){
-
-        return;
-
-    }
-
+    /* =====================================================
+       📅 1日手帳由来
+       → お気に入り解除だけ
+       → 1日手帳の写真は残す
+    ===================================================== */
 
     if(
         target.source ===
         "dayPlanner"
     ){
-
-        const source =
-            favoritePhotoGetSourcePhoto(
-                target
-            );
-
 
         if(
-            source &&
-            source.day &&
-            Array.isArray(
-                source.day.photos
+            !confirm(
+                "この写真をお気に入りから外しますか？\n\n" +
+                "1日手帳の写真は残ります。"
             )
         ){
 
-            source.day.photos =
-                source.day.photos.filter(
-                    photo =>
-                        String(photo.id) !==
-                        String(
-                            target.sourcePhotoId
-                        )
-                );
+            return;
 
         }
+
+
+        const memories =
+            data.dayMemories || {};
+
+
+        Object.values(memories).forEach(
+            day => {
+
+                if(
+                    !day ||
+                    !Array.isArray(
+                        day.photos
+                    )
+                ){
+
+                    return;
+
+                }
+
+
+                const photo =
+                    day.photos.find(
+                        item =>
+                            String(item.id) ===
+                            String(
+                                target.sourcePhotoId
+                            )
+                    );
+
+
+                if(photo){
+
+                    photo.favorite =
+                        false;
+
+                    delete photo.favoriteOrder;
+
+                    delete photo.favoriteAt;
+
+                }
+
+            }
+        );
+
+
+        /* お気に入り登録データからも削除 */
+
+        data.favorites.photos =
+            favorites.filter(
+                photo =>
+                    String(photo.id) !==
+                    String(target.id)
+            );
+
+
+        data.favorites.photoOrder =
+            (
+                data.favorites.photoOrder ||
+                []
+            ).filter(
+                id =>
+                    String(id) !==
+                    String(target.id)
+            );
+
+
+        db.save(data);
 
     }
 
 
-    data.favorites.photos =
-        favorites.filter(
-            photo =>
-                String(photo.id) !==
-                String(target.id)
-        );
+    /* =====================================================
+       ⭐ 直接追加
+       → お気に入り写真そのものを削除
+    ===================================================== */
+
+    else{
+
+        if(
+            !confirm(
+                "この写真をお気に入りから削除しますか？"
+            )
+        ){
+
+            return;
+
+        }
 
 
-    data.favorites.photoOrder =
-        (
-            data.favorites.photoOrder ||
-            []
-        ).filter(
-            id =>
-                String(id) !==
-                String(target.id)
-        );
+        data.favorites.photos =
+            favorites.filter(
+                photo =>
+                    String(photo.id) !==
+                    String(target.id)
+            );
 
 
-    db.save(data);
+        data.favorites.photoOrder =
+            (
+                data.favorites.photoOrder ||
+                []
+            ).filter(
+                id =>
+                    String(id) !==
+                    String(target.id)
+            );
 
+
+        db.save(data);
+
+    }
+
+
+    /* =====================================================
+       📷 残りの写真を確認
+    ===================================================== */
 
     const remaining =
         favoritePhotoGetOrdered();
