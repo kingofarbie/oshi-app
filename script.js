@@ -1486,6 +1486,8 @@ async function(){
     "favorites-photo.html"
 );
 
+console.log("★★★★★ favorites-photo.html 読み込み確認 ★★★★★");
+
 displayFavoritePhotos();
 
 
