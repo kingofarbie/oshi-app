@@ -140,14 +140,6 @@ async function loadHolidayCountries() {
 
         }
 
-
-        console.log(
-            "Nager.Date 国一覧取得:",
-            countries.length,
-            "か国"
-        );
-
-
         // =====================
         // 一旦クリア
         // =====================

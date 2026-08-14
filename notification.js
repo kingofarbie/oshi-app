@@ -1,5 +1,3 @@
-console.log("notification.js 読み込み成功");
-
 
 /* =====================
    通知済み管理
@@ -56,24 +54,11 @@ async function initNotification(){
 
     }
 
-
-    console.log(
-        "通知状態:",
-        Notification.permission
-    );
-
-
     if(Notification.permission !== "granted"){
 
         return;
 
     }
-
-
-    console.log(
-        "通知許可OK"
-    );
-
 
     startNotificationWatcher();
 

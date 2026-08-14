@@ -54,17 +54,6 @@ async function loadHolidays(
         holidayData =
             holidays;
 
-
-
-        console.log(
-            "祝日取得:",
-            countryCode,
-            year,
-            holidays
-        );
-
-
-
         return holidays;
 
 
