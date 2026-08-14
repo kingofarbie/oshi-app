@@ -1424,9 +1424,6 @@ function favoritePhotoOpenViewer(
     favoriteId
 ){
 
-console.log("★★★★★ お気に入り写真ビューア呼び出し ★★★★★", favoriteId);
-
-
     const favorites =
         favoritePhotoGetOrdered();
 
