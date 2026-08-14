@@ -1,10 +1,51 @@
 <div class="favorite-photo-page-content">
 
-    <h2>⭐ お気に入り写真</h2>
+    <div class="favorite-photo-header">
+
+        <h2>⭐ お気に入り写真</h2>
+
+        <div class="favorite-photo-actions">
+
+            <button
+                type="button"
+                onclick="favoritePhotoOpenPicker()">
+                ➕
+            </button>
+
+            <button
+                type="button"
+                onclick="favoritePhotoDeleteMode()">
+                🗑
+            </button>
+
+            <button
+                type="button"
+                onclick="favoritePhotoShareMode()">
+                📤
+            </button>
+
+            <button
+                type="button"
+                onclick="favoritePhotoSortMode()">
+                🔀
+            </button>
+
+        </div>
+
+    </div>
+
+    <input
+        type="file"
+        id="favoritePhotoPicker"
+        accept="image/*"
+        multiple
+        style="display:none"
+        onchange="favoritePhotoSelected(event)">
 
     <div id="favorite-photo-list"></div>
 
 </div>
+
 
 <!-- =====================
      ⭐ お気に入り写真ビューア
