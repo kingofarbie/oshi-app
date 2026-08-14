@@ -17,37 +17,41 @@
 
         <div class="memory-header-actions">
 
-<!-- 写真追加 -->
-<button
-    type="button"
-    onclick="favoritePhotoOpenPicker()"
-    title="写真を追加">
-    ＋
-</button>
+            <!-- 写真追加 -->
+            <button
+                type="button"
+                onclick="favoritesOpenPhotoPicker()"
+                title="写真を追加">
+                ＋
+            </button>
 
-<!-- 写真削除 -->
-<button
-    type="button"
-    onclick="favoritePhotoDeleteMode()"
-    title="写真を削除">
-    🗑
-</button>
 
-<!-- 写真共有 -->
-<button
-    type="button"
-    onclick="favoritePhotoShareMode()"
-    title="写真を共有">
-    📤
-</button>
+            <!-- 写真削除 -->
+            <button
+                type="button"
+                onclick="favoritesPhotoDeleteMode()"
+                title="写真を削除">
+                🗑
+            </button>
 
-<!-- 写真並べ替え -->
-<button
-    type="button"
-    onclick="favoritePhotoSortMode()"
-    title="写真を並べ替え">
-    🔀
-</button>
+
+            <!-- 写真共有 -->
+            <button
+                type="button"
+                onclick="favoritesPhotoShareMode()"
+                title="写真を共有">
+                📤
+            </button>
+
+
+            <!-- 写真並べ替え -->
+            <button
+                type="button"
+                onclick="favoritesPhotoSortMode()"
+                title="写真を並べ替え">
+                🔀
+            </button>
+
         </div>
 
     </div>
@@ -55,7 +59,7 @@
 
     <!-- =================================================
          写真操作バー
-         ※ favorites-photo.js が必要に応じて生成
+         JSが必要に応じて生成
     ================================================== -->
 
     <div
@@ -70,18 +74,22 @@
     ================================================== -->
 
     <div
-        id="favorite-photo-list"
+        id="favorites-photo-list"
         class="favorites-photo-list">
 
         <div class="favorites-empty">
+
             📷
             <br>
+
             お気に入り写真はありません
+
         </div>
 
     </div>
 
 </section>
+
 
 
 <!-- =====================================================
@@ -90,12 +98,13 @@
 
 <input
     type="file"
-    id="favoritePhotoPicker"
+    id="favorites-photo-picker"
     accept="image/*"
     multiple
     style="display:none;"
-    onchange="favoritePhotoSelected(event)"
+    onchange="favoritesPhotoSelected(event)"
 >
+
 
 
 <!-- =====================================================
@@ -104,44 +113,84 @@
 
 <div
     id="favorites-photo-viewer"
-    class="favorites-photo-viewer"
+    class="favorite-photo-viewer"
     style="display:none;"
 >
 
+
     <!-- =================================================
-         右上操作ボタン
+         右上ボタン
+         1日手帳のフォトビューアと同じ4点セット
     ================================================== -->
 
-    <div class="favorites-photo-viewer-actions">
 
-        <!-- 閉じる -->
-        <button
-            type="button"
-            class="favorites-photo-viewer-close"
-            id="favorites-viewer-close"
-            title="閉じる">
-            ✕
-        </button>
+    <!-- 共有 -->
+    <button
+        type="button"
+        id="favorites-viewer-share"
+        class="favorite-photo-viewer-share"
+        title="共有">
 
-        <!-- 共有 -->
-        <button
-            type="button"
-            class="favorites-photo-viewer-share"
-            id="favorites-viewer-share"
-            title="共有">
-            📤
-        </button>
+        📤
 
-        <!-- 削除 -->
-        <button
-            type="button"
-            class="favorites-photo-viewer-delete"
-            id="favorites-viewer-delete"
-            title="削除">
-            🗑
-        </button>
+    </button>
 
-    </div>
+
+    <!-- お気に入り -->
+    <button
+        type="button"
+        id="favorites-viewer-favorite"
+        class="favorite-photo-viewer-favorite"
+        title="お気に入り">
+
+        ⭐
+
+    </button>
+
+
+    <!-- 削除 -->
+    <button
+        type="button"
+        id="favorites-viewer-delete"
+        class="favorite-photo-viewer-delete"
+        title="削除">
+
+        🗑
+
+    </button>
+
+
+    <!-- 閉じる -->
+    <button
+        type="button"
+        id="favorites-viewer-close"
+        class="favorite-photo-viewer-close"
+        title="閉じる">
+
+        ✕
+
+    </button>
+
+
+
+    <!-- =================================================
+         前の写真
+    ================================================== -->
+
+    <button
+        type="button"
+        class="favorite-photo-viewer-prev"
+        onclick="
+            favoritesShowPhoto(
+                favoritesViewerIndex - 1
+            )
+        "
+        title="前の写真">
+
+        ‹
+
+    </button>
+
 
 
     <!-- =================================================
@@ -149,38 +198,38 @@
     ================================================== -->
 
     <div
-        class="favorites-photo-viewer-image-wrap"
+        class="favorite-photo-viewer-image-wrap"
     >
 
-        <!-- 前の写真 -->
-        <button
-            type="button"
-            class="favorites-photo-viewer-prev"
-            onclick="favoritesShowPhoto(favoritesViewerIndex - 1)"
-            title="前の写真">
-            ‹
-        </button>
-
-
-        <!-- 写真 -->
         <img
             id="favorites-photo-viewer-image"
-            class="favorites-photo-viewer-image"
+            class="favorite-photo-viewer-image"
             src=""
             alt="お気に入り写真"
             draggable="false"
         >
 
-
-        <!-- 次の写真 -->
-        <button
-            type="button"
-            class="favorites-photo-viewer-next"
-            onclick="favoritesShowPhoto(favoritesViewerIndex + 1)"
-            title="次の写真">
-            ›
-        </button>
-
     </div>
+
+
+
+    <!-- =================================================
+         次の写真
+    ================================================== -->
+
+    <button
+        type="button"
+        class="favorite-photo-viewer-next"
+        onclick="
+            favoritesShowPhoto(
+                favoritesViewerIndex + 1
+            )
+        "
+        title="次の写真">
+
+        ›
+
+    </button>
+
 
 </div>

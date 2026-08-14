@@ -1,91 +1,102 @@
-/* =========================================================
-   ⭐ favorites-photo.css
-   お気に入り写真専用CSS
-   ========================================================= */
-
-
-/* =========================================================
-   📷 写真セクション
+ /* =========================================================
+   ⭐ お気に入り写真
+   1日手帳の写真UIに合わせた完全独立CSS
 ========================================================= */
 
-.favorites-section {
-    width: 100%;
-    box-sizing: border-box;
-    margin-bottom: 24px;
-}
 
+/* =========================================================
+   📷 お気に入り写真セクション
+========================================================= */
 
-.favorites-section-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 14px;
-}
-
-
-.favorites-section-header h3 {
-    margin: 0;
-    font-size: 1.15rem;
-}
-
-
-.favorites-section-header p {
-    margin: 4px 0 0;
-    opacity: 0.7;
-    font-size: 0.85rem;
+.favorites-section{
+    width:100%;
+    box-sizing:border-box;
 }
 
 
 /* =========================================================
-   ⚙️ ヘッダー操作ボタン
+   📷 セクションヘッダー
 ========================================================= */
 
-.favorites-section-header .memory-header-actions {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-shrink: 0;
+.favorites-section-header{
+    display:flex;
+
+    justify-content:space-between;
+    align-items:center;
+
+    width:100%;
+
+    margin-bottom:10px;
 }
 
 
-.favorites-section-header .memory-header-actions button {
-    width: 38px;
-    height: 38px;
+.favorites-section-header h3{
+    margin:0;
 
-    border: none;
-    border-radius: 12px;
+    color:var(--text);
 
-    background: rgba(255,255,255,0.10);
+    font-size:18px;
+}
 
-    font-size: 18px;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.favorites-section-header p{
+    margin:3px 0 0;
 
-    cursor: pointer;
+    color:var(--text-sub);
 
-    transition:
-        transform 0.15s ease,
-        background 0.15s ease;
+    font-size:13px;
+}
+
+
+/* =========================================================
+   📷 上部操作ボタン
+========================================================= */
+
+.favorites-section-header .memory-header-actions{
+    display:flex;
+
+    align-items:center;
+
+    justify-content:flex-end;
+
+    gap:6px;
 }
 
 
 .favorites-section-header
-.memory-header-actions
-button:active {
+.memory-header-actions button{
 
-    transform: scale(0.9);
+    width:40px;
+    height:40px;
 
+    padding:0;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:var(--card);
+
+    color:var(--text-sub);
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    font-size:20px;
+
+    cursor:pointer;
+
+    box-shadow:
+        0 2px 7px rgba(0,0,0,.12);
 }
 
 
 .favorites-section-header
-.memory-header-actions
-button:hover {
+.memory-header-actions button:active{
 
-    background: rgba(255,255,255,0.18);
+    transform:scale(.9);
 
 }
 
@@ -94,108 +105,76 @@ button:hover {
    📷 写真一覧
 ========================================================= */
 
-.favorites-photo-list {
+#favorites-photo-list{
 
-    display: grid;
+    display:grid;
 
     grid-template-columns:
-        repeat(3, minmax(0, 1fr));
+        repeat(
+            var(--photo-columns, 2),
+            minmax(0,1fr)
+        );
 
-    gap: 8px;
+    gap:10px;
 
-    width: 100%;
-
-    box-sizing: border-box;
-
-}
-
-
-/* =========================================================
-   📷 写真カード
-========================================================= */
-
-.favorite-photo-item {
-
-    position: relative;
-
-    width: 100%;
-
-    aspect-ratio: 1 / 1;
-
-    overflow: hidden;
-
-    border-radius: 12px;
-
-    background:
-        rgba(255,255,255,0.06);
-
-    cursor: pointer;
-
-    user-select: none;
-
-    -webkit-user-select: none;
-
-    box-sizing: border-box;
-
-    transition:
-        transform 0.15s ease,
-        opacity 0.15s ease;
-}
-
-
-.favorite-photo-item:active {
-
-    transform: scale(0.97);
+    width:100%;
 
 }
 
 
 /* =========================================================
-   🖼 写真
+   📷 写真ボックス
 ========================================================= */
 
-.favorite-photo-image {
+.favorites-photo-item{
 
-    display: block;
+    width:100%;
 
-    width: 100% !important;
+    aspect-ratio:1 / 1;
 
-    height: 100% !important;
+    overflow:hidden;
 
-    max-width: none !important;
+    border-radius:12px;
 
-    object-fit: cover;
+    background:var(--surface);
 
-    user-select: none;
+    border:1px solid var(--border);
 
-    -webkit-user-select: none;
+    position:relative;
 
-    -webkit-touch-callout: none;
+    box-shadow:
+        2px 3px 8px rgba(0,0,0,.08);
 
-    pointer-events: auto;
+    box-sizing:border-box;
+
+    cursor:pointer;
+
+}
+
+
+.favorites-photo-item img{
+
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+
+    display:block;
 
 }
 
 
 /* =========================================================
-   ⭐ 選択状態
+   📷 写真選択時
 ========================================================= */
 
-.favorite-item-selected {
+.favorites-item-selected{
 
-    outline:
-        3px solid
-        rgba(255, 215, 0, 0.95);
+    border:3px solid var(--accent);
 
-    outline-offset: -3px;
-
-}
-
-
-.favorite-item-selected
-.favorite-photo-image {
-
-    opacity: 0.65;
+    box-shadow:
+        0 0 0 2px var(--accent),
+        2px 4px 10px rgba(0,0,0,.15);
 
 }
 
@@ -204,490 +183,357 @@ button:hover {
    ✓ 選択チェック
 ========================================================= */
 
-.favorite-photo-item
-.photo-delete-check {
+.favorites-photo-check{
 
-    position: absolute;
+    position:absolute;
 
-    top: 8px;
-    right: 8px;
+    top:8px;
+    right:8px;
 
-    width: 30px;
-    height: 30px;
+    width:28px;
+    height:28px;
 
-    border-radius: 50%;
+    border-radius:50%;
 
-    background:
-        rgba(0,0,0,0.65);
+    background:var(--card);
 
-    color: #fff;
+    border:2px solid var(--border);
 
-    display: flex;
+    display:flex;
 
-    align-items: center;
+    align-items:center;
+    justify-content:center;
 
-    justify-content: center;
+    font-size:20px;
 
-    font-size: 18px;
+    font-weight:bold;
 
-    font-weight: bold;
+    color:var(--accent);
 
-    pointer-events: none;
+    z-index:20;
+
+    box-shadow:
+        1px 2px 5px rgba(0,0,0,.12);
+
+}
+
+
+.favorites-item-selected
+.favorites-photo-check{
+
+    background:var(--accent);
+
+    border-color:var(--accent);
+
+    color:#fff;
 
 }
 
 
 /* =========================================================
-   🗑 操作バー
+   📷 長押し並べ替え中
 ========================================================= */
 
-.favorite-photo-action-bar {
+.favorites-photo-dragging{
 
-    display: flex;
+    opacity:.6;
 
-    align-items: center;
+    transform:scale(1.05);
 
-    justify-content: space-between;
+    z-index:1000;
 
-    gap: 10px;
-
-    width: 100%;
-
-    box-sizing: border-box;
-
-    margin-bottom: 12px;
-
-    padding: 10px 12px;
-
-    border-radius: 12px;
-
-    background:
-        rgba(255,255,255,0.08);
-
-}
-
-
-.favorite-photo-action-bar button {
-
-    border: none;
-
-    border-radius: 9px;
-
-    padding: 8px 12px;
-
-    background:
-        rgba(255,255,255,0.12);
-
-    color: inherit;
-
-    cursor: pointer;
-
-}
-
-
-.favorite-photo-action-bar button:disabled {
-
-    opacity: 0.4;
-
-    cursor: default;
+    box-shadow:
+        0 8px 20px rgba(0,0,0,.3);
 
 }
 
 
 /* =========================================================
-   🔀 並べ替え中
+   📷 写真操作バー
+   ※写真1枚分の枠には入れない
 ========================================================= */
 
-.favorite-photo-sort-item {
+.favorites-photo-action-bar{
 
-    cursor: grab;
+    grid-column:1 / -1;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    width:100%;
+
+    box-sizing:border-box;
+
+    padding:8px 10px;
+
+    margin:0 0 10px 0;
+
+    background:var(--surface);
+
+    color:var(--text);
+
+    border:1px solid var(--border);
+
+    border-radius:12px;
+
+    white-space:nowrap;
+
+    box-shadow:
+        2px 3px 9px rgba(0,0,0,.10);
 
 }
 
 
-.favorite-photo-sort-item:active {
+.favorites-photo-action-bar span:first-child{
 
-    cursor: grabbing;
+    font-weight:bold;
 
 }
 
 
-.photo-dragging {
+.favorites-photo-action-bar span:nth-child(2){
 
-    opacity: 0.55;
+    font-size:14px;
 
-    transform: scale(0.96);
+    opacity:.85;
 
-    z-index: 20;
+    margin-right:auto;
+
+}
+
+
+.favorites-photo-action-bar button{
+
+    border:none;
+
+    border-radius:18px;
+
+    padding:7px 12px;
+
+    font-weight:bold;
+
+    white-space:nowrap;
+
+    cursor:pointer;
+
+}
+
+
+.favorites-photo-action-bar button:last-child{
+
+    background:var(--danger);
+
+    color:#fff;
+
+}
+
+
+.favorites-photo-action-bar button:disabled{
+
+    opacity:.4;
 
 }
 
 
 /* =========================================================
-   📷 写真なし
+   📷 並べ替えバー
 ========================================================= */
 
-.favorites-photo-list
-.favorites-empty {
+.favorites-photo-sort-bar{
 
-    grid-column: 1 / -1;
+    grid-column:1 / -1;
 
-    width: 100%;
+    display:flex;
 
-    box-sizing: border-box;
+    justify-content:space-between;
 
-    padding: 36px 20px;
+    align-items:center;
 
-    text-align: center;
+    padding:10px;
 
-    opacity: 0.65;
+    background:var(--surface);
 
-    border-radius: 14px;
+    color:var(--text);
 
-    background:
-        rgba(255,255,255,0.05);
+    border:1px solid var(--border);
 
-    line-height: 1.8;
+    border-radius:10px;
+
+    margin-bottom:10px;
+
+    box-shadow:
+        2px 3px 8px rgba(0,0,0,.07);
+
+}
+
+
+.favorites-photo-sort-bar button{
+
+    padding:8px 16px;
+
+    border-radius:20px;
+
+    border:none;
+
+    background:var(--accent);
+
+    color:#fff;
+
+    font-weight:bold;
 
 }
 
 
 /* =========================================================
-   🗑 削除確認
+   📷 空表示
 ========================================================= */
 
-.favorite-delete-confirm-text {
+.favorites-empty{
 
-    margin: 16px 0;
+    grid-column:1 / -1;
 
-    line-height: 1.7;
+    text-align:center;
 
-    white-space: pre-line;
+    padding:30px 15px;
 
-}
-
-
-.favorites-modal-buttons {
-
-    display: flex;
-
-    gap: 10px;
-
-    justify-content: center;
-
-    flex-wrap: wrap;
-
-}
-
-
-.favorites-modal-buttons button {
-
-    min-width: 110px;
-
-    padding: 10px 16px;
-
-    border: none;
-
-    border-radius: 10px;
-
-    cursor: pointer;
+    color:var(--text-sub);
 
 }
 
 
 /* =========================================================
-   📤 共有一覧
+   📷 長押し・画像選択対策
 ========================================================= */
 
-.favorite-share-list {
+.favorites-photo-item,
+.favorites-photo-item img,
+.favorites-photo-image{
 
-    display: flex;
+    -webkit-user-select:none;
 
-    flex-direction: column;
+    user-select:none;
 
-    gap: 8px;
+    -webkit-touch-callout:none;
 
-    max-height: 50vh;
-
-    overflow-y: auto;
-
-    margin: 14px 0;
-
-}
-
-
-.favorite-share-list button {
-
-    width: 100%;
-
-    padding: 12px;
-
-    border: none;
-
-    border-radius: 10px;
-
-    background:
-        rgba(255,255,255,0.08);
-
-    color: inherit;
+    -webkit-user-drag:none;
 
 }
 
 
 /* =========================================================
-   📱 スマホ
+   📷 フォトビューア
 ========================================================= */
 
-@media (max-width: 600px) {
+#favorites-photo-viewer{
 
-    .favorites-photo-list {
+    position:fixed;
 
-        grid-template-columns:
-            repeat(3, minmax(0, 1fr));
+    top:0;
+    left:0;
 
-        gap: 6px;
+    width:100%;
+    height:100%;
 
-    }
+    background:rgba(0,0,0,.85);
 
+    display:none;
 
-    .favorite-photo-item {
+    justify-content:center;
 
-        border-radius: 9px;
+    align-items:center;
 
-    }
+    z-index:99999;
 
-
-    .favorites-section-header {
-
-        align-items: flex-start;
-
-    }
-
-
-    .favorites-section-header
-    .memory-header-actions {
-
-        gap: 4px;
-
-    }
-
-
-    .favorites-section-header
-    .memory-header-actions
-    button {
-
-        width: 34px;
-        height: 34px;
-
-        border-radius: 10px;
-
-        font-size: 16px;
-
-    }
+    overflow:hidden;
 
 }
 
 
 /* =========================================================
-   📱 非常に小さい画面
+   📷 ビューア写真エリア
 ========================================================= */
 
-@media (max-width: 360px) {
+.favorite-photo-viewer-image-wrap{
 
-    .favorites-photo-list {
+    width:100%;
+    height:100%;
 
-        gap: 5px;
+    display:flex;
 
-    }
+    align-items:center;
+    justify-content:center;
 
+    overflow:hidden;
 
-    .favorites-section-header
-    .memory-header-actions
-    button {
-
-        width: 32px;
-        height: 32px;
-
-        font-size: 15px;
-
-    }
-
-}
-
-
-
-/* =========================================================
-   📷 お気に入り写真専用フォトビューア
-========================================================= */
-
-.favorites-photo-viewer {
-
-    position: fixed;
-
-    inset: 0;
-
-    width: 100vw;
-    height: 100dvh;
-
-    background:
-        rgba(0, 0, 0, 0.94);
-
-    z-index: 10000;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    overflow: hidden;
-
-    box-sizing: border-box;
-
-    touch-action: none;
-
-    user-select: none;
-    -webkit-user-select: none;
+    touch-action:none;
 
 }
 
 
 /* =========================================================
-   📷 写真表示エリア
+   📷 ビューア写真
 ========================================================= */
 
-.favorites-photo-viewer-image-wrap {
+#favorites-photo-viewer-image{
 
-    position: absolute;
+    max-width:90%;
 
-    inset: 0;
+    max-height:85%;
 
-    display: flex;
+    width:auto;
+    height:auto;
 
-    align-items: center;
-    justify-content: center;
+    object-fit:contain;
 
-    overflow: hidden;
+    user-select:none;
 
-    touch-action: none;
+    -webkit-user-select:none;
+
+    -webkit-user-drag:none;
+
+    border-radius:12px;
+
+    display:block;
+
+    transform-origin:center center;
 
 }
 
 
 /* =========================================================
-   🖼 写真
+   📷 ビューア共通ボタン
+   右上に4点セット
 ========================================================= */
 
-.favorites-photo-viewer-image {
+#favorites-photo-viewer > button{
 
-    display: block;
+    position:absolute;
 
-    max-width: 90vw;
-    max-height: 88dvh;
+    top:20px;
 
-    width: auto;
-    height: auto;
+    width:44px;
+    height:44px;
 
-    object-fit: contain;
+    padding:0;
 
-    transform-origin: center center;
+    border:none;
 
-    will-change:
-        transform;
+    border-radius:50%;
 
-    user-select: none;
-    -webkit-user-select: none;
+    display:flex;
 
-    -webkit-touch-callout: none;
+    align-items:center;
+    justify-content:center;
 
-    pointer-events: auto;
+    box-shadow:
+        0 2px 8px rgba(0,0,0,.25);
 
-}
+    z-index:100001;
 
-
-/* =========================================================
-   🎛 右上操作ボタン
-========================================================= */
-
-.favorites-photo-viewer-actions {
-
-    position: absolute;
-
-    top:
-        max(12px, env(safe-area-inset-top));
-
-    right:
-        max(12px, env(safe-area-inset-right));
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 8px;
-
-    z-index: 10003;
-
-}
-
-
-/* =========================================================
-   🔘 右上ボタン共通
-========================================================= */
-
-.favorites-photo-viewer-actions button {
-
-    width: 42px;
-    height: 42px;
-
-    padding: 0;
-
-    border: none;
-
-    border-radius: 50%;
-
-    background:
-        rgba(0, 0, 0, 0.60);
-
-    color: #fff;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    font-size: 20px;
-
-    line-height: 1;
-
-    cursor: pointer;
-
-    -webkit-tap-highlight-color:
-        transparent;
-
-    transition:
-        transform 0.15s ease,
-        background 0.15s ease;
-
-}
-
-
-.favorites-photo-viewer-actions button:active {
-
-    transform:
-        scale(0.88);
-
-    background:
-        rgba(255,255,255,0.22);
-
-}
-
-
-/* =========================================================
-   ✕ 閉じる
-========================================================= */
-
-.favorites-photo-viewer-close {
-
-    font-size: 21px !important;
+    cursor:pointer;
 
 }
 
@@ -696,9 +542,32 @@ button:hover {
    📤 共有
 ========================================================= */
 
-.favorites-photo-viewer-share {
+#favorites-viewer-share{
 
-    font-size: 19px !important;
+    right:176px;
+
+    background:var(--card);
+
+    color:var(--text-sub);
+
+    font-size:20px;
+
+}
+
+
+/* =========================================================
+   ⭐ お気に入り
+========================================================= */
+
+#favorites-viewer-favorite{
+
+    right:124px;
+
+    background:var(--card);
+
+    color:var(--text-sub);
+
+    font-size:22px;
 
 }
 
@@ -707,161 +576,203 @@ button:hover {
    🗑 削除
 ========================================================= */
 
-.favorites-photo-viewer-delete {
+#favorites-viewer-delete{
 
-    font-size: 19px !important;
+    right:72px;
+
+    background:var(--danger);
+
+    color:#fff;
+
+    font-size:20px;
 
 }
 
 
 /* =========================================================
-   ◀ ▶ 前後移動ボタン
+   ✕ 閉じる
 ========================================================= */
 
-.favorites-photo-viewer-prev,
-.favorites-photo-viewer-next {
+#favorites-viewer-close{
 
-    position: absolute;
+    right:20px;
 
-    top: 50%;
+    background:var(--card);
 
-    transform:
-        translateY(-50%);
+    color:var(--text-sub);
 
-    width: 46px;
-    height: 70px;
-
-    padding: 0;
-
-    border: none;
-
-    border-radius: 14px;
-
-    background:
-        rgba(0,0,0,0.38);
-
-    color: #fff;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    font-size: 48px;
-
-    font-weight: 300;
-
-    line-height: 1;
-
-    z-index: 10002;
-
-    cursor: pointer;
-
-    -webkit-tap-highlight-color:
-        transparent;
-
-    transition:
-        background 0.15s ease,
-        transform 0.15s ease;
+    font-size:22px;
 
 }
 
 
-.favorites-photo-viewer-prev {
+/* =========================================================
+   📷 ビューア左右ボタン
+========================================================= */
 
-    left:
-        max(10px, env(safe-area-inset-left));
+.favorite-photo-viewer-prev,
+.favorite-photo-viewer-next{
+
+    position:absolute;
+
+    top:50% !important;
+
+    transform:translateY(-50%);
+
+    width:46px !important;
+    height:60px !important;
+
+    border:none;
+
+    border-radius:14px !important;
+
+    background:rgba(0,0,0,.35) !important;
+
+    color:#fff !important;
+
+    font-size:42px;
+
+    line-height:1;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    z-index:100001;
 
 }
 
 
-.favorites-photo-viewer-next {
+.favorite-photo-viewer-prev{
 
-    right:
-        max(10px, env(safe-area-inset-right));
+    left:12px;
 
 }
 
 
-.favorites-photo-viewer-prev:active,
-.favorites-photo-viewer-next:active {
+.favorite-photo-viewer-next{
+
+    right:12px;
+
+}
+
+
+/* =========================================================
+   📷 ビューアボタン押下
+========================================================= */
+
+#favorites-photo-viewer > button:active{
+
+    transform:scale(.9);
+
+}
+
+
+.favorite-photo-viewer-prev:active,
+.favorite-photo-viewer-next:active{
 
     transform:
         translateY(-50%)
-        scale(0.90);
-
-    background:
-        rgba(255,255,255,0.20);
+        scale(.9);
 
 }
 
 
 /* =========================================================
-   📱 スマホ
+   📱 スマホ用
 ========================================================= */
 
-@media (max-width: 600px) {
+@media(max-width:600px){
 
-    .favorites-photo-viewer-actions {
+    .favorites-section-header
+    .memory-header-actions{
 
-        top:
-            max(10px, env(safe-area-inset-top));
-
-        right:
-            max(10px, env(safe-area-inset-right));
-
-        gap: 6px;
+        gap:4px;
 
     }
 
 
-    .favorites-photo-viewer-actions button {
+    .favorites-section-header
+    .memory-header-actions button{
 
-        width: 40px;
-        height: 40px;
+        width:38px;
+        height:38px;
 
-        font-size: 19px;
-
-    }
-
-
-    .favorites-photo-viewer-image {
-
-        max-width: 94vw;
-
-        max-height: 86dvh;
+        font-size:19px;
 
     }
 
 
-    .favorites-photo-viewer-prev,
-    .favorites-photo-viewer-next {
+    #favorites-photo-viewer-image{
 
-        width: 40px;
-        height: 62px;
+        max-width:94%;
 
-        font-size: 42px;
-
-        border-radius: 12px;
-
-        background:
-            rgba(0,0,0,0.32);
+        max-height:82%;
 
     }
 
 
-    .favorites-photo-viewer-prev {
+    #favorites-photo-viewer > button{
 
-        left:
-            max(6px, env(safe-area-inset-left));
+        top:15px;
+
+        width:42px;
+        height:42px;
 
     }
 
 
-    .favorites-photo-viewer-next {
+    #favorites-viewer-share{
 
-        right:
-            max(6px, env(safe-area-inset-right));
+        right:168px;
+
+    }
+
+
+    #favorites-viewer-favorite{
+
+        right:119px;
+
+    }
+
+
+    #favorites-viewer-delete{
+
+        right:70px;
+
+    }
+
+
+    #favorites-viewer-close{
+
+        right:15px;
+
+    }
+
+
+    .favorite-photo-viewer-prev,
+    .favorite-photo-viewer-next{
+
+        width:42px !important;
+
+        height:55px !important;
+
+        font-size:38px;
+
+    }
+
+
+    .favorite-photo-viewer-prev{
+
+        left:8px;
+
+    }
+
+
+    .favorite-photo-viewer-next{
+
+        right:8px;
 
     }
 
@@ -869,36 +780,25 @@ button:hover {
 
 
 /* =========================================================
-   📱 非常に小さい画面
+   📱 写真一覧のタップ時
 ========================================================= */
 
-@media (max-width: 360px) {
+.favorites-photo-item:active{
 
-    .favorites-photo-viewer-actions {
+    transform:scale(.98);
 
-        gap: 4px;
-
-    }
+}
 
 
-    .favorites-photo-viewer-actions button {
+/* =========================================================
+   📷 ビューア中は選択を禁止
+========================================================= */
 
-        width: 36px;
-        height: 36px;
+#favorites-photo-viewer,
+#favorites-photo-viewer *{
 
-        font-size: 17px;
+    -webkit-user-select:none;
 
-    }
-
-
-    .favorites-photo-viewer-prev,
-    .favorites-photo-viewer-next {
-
-        width: 36px;
-        height: 56px;
-
-        font-size: 38px;
-
-    }
+    user-select:none;
 
 }
