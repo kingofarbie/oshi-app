@@ -64,16 +64,44 @@
         </div>
     </div>
 
-    <div class="memory-section">
-        <div class="memory-header">
-            <span>📝 メモ</span>
-            <button onclick="addMemo()">＋</button>
+<div class="memory-section">
+
+    <div class="memory-header">
+
+        <span>📝 メモ</span>
+
+        <div class="memory-header-actions">
+
+            <!-- 追加 -->
+            <button onclick="addMemo()">
+                ＋
+            </button>
+
+            <!-- 削除 -->
+            <button onclick="startMemoDeleteMode()">
+                🗑
+            </button>
+
+            <!-- 編集 -->
+            <button onclick="startMemoEditMode()">
+                ✏️
+            </button>
+
+            <!-- 並べ替え -->
+            <button onclick="startMemoSortMode()">
+                🔀
+            </button>
+
         </div>
 
-        <div id="memoList" class="memory-list">
-            メモはありません
-        </div>
     </div>
+
+    <div id="memoList" class="memory-list">
+        メモはありません
+    </div>
+
+</div>
+
 
     <div class="memory-section">
         <div class="memory-header">
