@@ -31,7 +31,6 @@ displayHomeSchedule();
 displayUpcomingEvents();
 displayFavoritePhotoCard();
 displayCountdown();
-displayFavorites();
 
     }catch(error){
 
