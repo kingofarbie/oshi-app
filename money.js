@@ -54,11 +54,6 @@ function loadMoneyPage(){
             container.innerHTML =
                 html;
 
-
-            console.log(
-                "★ money.html 読み込みOK"
-            );
-
         })
 
 
@@ -137,9 +132,6 @@ function openOshiMoney(){
                 html;
 
 
-            console.log(
-                "★ oshi-money.html 読み込みOK"
-            );
 
         })
 
