@@ -2425,9 +2425,15 @@ async function favoritePhotoShareCurrent(){
 
 /* =========================================================
    ⭐ 写真自由並べ替え
+   長押しのみドラッグ
+   短い操作はスクロール
 ========================================================= */
 
 function favoritePhotoInstallSortEvents(){
+
+    /* =====================================================
+       二重登録防止
+    ===================================================== */
 
     if(
         document.body.dataset
@@ -2444,6 +2450,11 @@ function favoritePhotoInstallSortEvents(){
         .favoritePhotoSortInstalled =
         "true";
 
+
+    /* =====================================================
+       指を置いた時
+       長押しするまでドラッグしない
+    ===================================================== */
 
     document.addEventListener(
         "touchstart",
@@ -2465,9 +2476,15 @@ function favoritePhotoInstallSortEvents(){
 
 
             if(!box){
+
                 return;
+
             }
 
+
+            /* ---------------------------------------------
+               ドラッグ対象
+            --------------------------------------------- */
 
             favoritePhotoDraggingId =
                 String(
@@ -2487,6 +2504,10 @@ function favoritePhotoInstallSortEvents(){
                 false;
 
 
+            /* ---------------------------------------------
+               指を置いた位置
+            --------------------------------------------- */
+
             favoritePhotoTouchStartX =
                 event.touches[0].clientX;
 
@@ -2495,9 +2516,17 @@ function favoritePhotoInstallSortEvents(){
                 event.touches[0].clientY;
 
 
+            /* ---------------------------------------------
+               長押しタイマー
+            --------------------------------------------- */
+
             favoritePhotoLongPressTimer =
                 setTimeout(
                     function(){
+
+                        /* ---------------------------------
+                           長押し前に動いていたらキャンセル
+                        --------------------------------- */
 
                         if(
                             favoritePhotoTouchMoved
@@ -2508,6 +2537,10 @@ function favoritePhotoInstallSortEvents(){
                         }
 
 
+                        /* ---------------------------------
+                           ドラッグ開始
+                        --------------------------------- */
+
                         favoritePhotoIsDragging =
                             true;
 
@@ -2516,6 +2549,10 @@ function favoritePhotoInstallSortEvents(){
                             "favorite-photo-dragging"
                         );
 
+
+                        /* ---------------------------------
+                           バイブ
+                        --------------------------------- */
 
                         if(
                             navigator.vibrate
@@ -2528,7 +2565,7 @@ function favoritePhotoInstallSortEvents(){
                         }
 
                     },
-                    250
+                    70
                 );
 
         },
@@ -2538,19 +2575,35 @@ function favoritePhotoInstallSortEvents(){
     );
 
 
+    /* =====================================================
+       写真移動
+       長押し後だけ実行
+       
+       ・左 → 右
+       ・右 → 左
+       ・上 → 下
+       ・下 → 上
+       
+       2列グリッドにも対応
+    ===================================================== */
+
     document.addEventListener(
         "touchmove",
         function(event){
 
             if(
-                !favoritePhotoSortSelecting ||
-                !favoritePhotoDraggingElement
+                !favoritePhotoSortSelecting
             ){
 
                 return;
 
             }
 
+
+            /* =================================================
+               ドラッグ開始前
+               → 普通にスクロール
+            ================================================= */
 
             if(
                 !favoritePhotoIsDragging
@@ -2599,12 +2652,32 @@ function favoritePhotoInstallSortEvents(){
             }
 
 
+            /* =================================================
+               ドラッグ中
+               → スクロール停止
+            ================================================= */
+
             event.preventDefault();
 
 
             const touch =
                 event.touches[0];
 
+
+            const dragging =
+                favoritePhotoDraggingElement;
+
+
+            if(!dragging){
+
+                return;
+
+            }
+
+
+            /* =================================================
+               現在表示されている写真枠
+            ================================================= */
 
             const boxes =
                 [
@@ -2614,7 +2687,20 @@ function favoritePhotoInstallSortEvents(){
                 ];
 
 
-            let target =
+            if(
+                boxes.length < 2
+            ){
+
+                return;
+
+            }
+
+
+            /* =================================================
+               指が入っている写真を探す
+            ================================================= */
+
+            let targetBox =
                 null;
 
 
@@ -2622,8 +2708,7 @@ function favoritePhotoInstallSortEvents(){
                 box => {
 
                     if(
-                        box ===
-                        favoritePhotoDraggingElement
+                        box === dragging
                     ){
 
                         return;
@@ -2636,13 +2721,22 @@ function favoritePhotoInstallSortEvents(){
 
 
                     if(
-                        touch.clientX >= rect.left &&
-                        touch.clientX <= rect.right &&
-                        touch.clientY >= rect.top &&
-                        touch.clientY <= rect.bottom
+
+                        touch.clientX >=
+                            rect.left &&
+
+                        touch.clientX <=
+                            rect.right &&
+
+                        touch.clientY >=
+                            rect.top &&
+
+                        touch.clientY <=
+                            rect.bottom
+
                     ){
 
-                        target =
+                        targetBox =
                             box;
 
                     }
@@ -2651,19 +2745,170 @@ function favoritePhotoInstallSortEvents(){
             );
 
 
-            if(!target){
+            if(
+                !targetBox
+            ){
+
                 return;
+
+            }
+
+
+            /* =================================================
+               現在の位置
+            ================================================= */
+
+            const dragRect =
+                dragging.getBoundingClientRect();
+
+
+            const targetRect =
+                targetBox.getBoundingClientRect();
+
+
+            const dragCenterX =
+                dragRect.left +
+                dragRect.width / 2;
+
+
+            const dragCenterY =
+                dragRect.top +
+                dragRect.height / 2;
+
+
+            const targetCenterX =
+                targetRect.left +
+                targetRect.width / 2;
+
+
+            const targetCenterY =
+                targetRect.top +
+                targetRect.height / 2;
+
+
+            const draggingIndex =
+                boxes.indexOf(
+                    dragging
+                );
+
+
+            const targetIndex =
+                boxes.indexOf(
+                    targetBox
+                );
+
+
+            if(
+                draggingIndex < 0 ||
+                targetIndex < 0
+            ){
+
+                return;
+
             }
 
 
             const parent =
-                favoritePhotoDraggingElement.parentNode;
+                dragging.parentNode;
 
 
-            parent.insertBefore(
-                favoritePhotoDraggingElement,
-                target
-            );
+            /* =================================================
+               ⭐ 横方向の移動
+            ================================================= */
+
+
+            /* ---------------------------------------------
+               左 → 右
+            --------------------------------------------- */
+
+            if(
+                touch.clientX >
+                    targetCenterX &&
+                draggingIndex <
+                    targetIndex
+            ){
+
+                parent.insertBefore(
+                    dragging,
+                    targetBox.nextSibling
+                );
+
+
+                return;
+
+            }
+
+
+            /* ---------------------------------------------
+               右 → 左
+            --------------------------------------------- */
+
+            if(
+                touch.clientX <
+                    targetCenterX &&
+                draggingIndex >
+                    targetIndex
+            ){
+
+                parent.insertBefore(
+                    dragging,
+                    targetBox
+                );
+
+
+                return;
+
+            }
+
+
+            /* =================================================
+               ⭐ 縦方向の移動
+               2列グリッド対応
+            ================================================= */
+
+
+            /* ---------------------------------------------
+               上 → 下
+            --------------------------------------------- */
+
+            if(
+                touch.clientY >
+                    targetCenterY &&
+                draggingIndex <
+                    targetIndex
+            ){
+
+                parent.insertBefore(
+                    dragging,
+                    targetBox.nextSibling
+                );
+
+
+                return;
+
+            }
+
+
+            /* ---------------------------------------------
+               下 → 上
+            --------------------------------------------- */
+
+            if(
+                touch.clientY <
+                    targetCenterY &&
+                draggingIndex >
+                    targetIndex
+            ){
+
+                parent.insertBefore(
+                    dragging,
+                    targetBox
+                );
+
+
+                return;
+
+            }
 
         },
         {
@@ -2672,8 +2917,69 @@ function favoritePhotoInstallSortEvents(){
     );
 
 
+    /* =====================================================
+       指を離した時
+    ===================================================== */
+
     document.addEventListener(
         "touchend",
+        function(){
+
+            clearTimeout(
+                favoritePhotoLongPressTimer
+            );
+
+
+            /* ---------------------------------------------
+               ドラッグ表示解除
+            --------------------------------------------- */
+
+            if(
+                favoritePhotoDraggingElement
+            ){
+
+                favoritePhotoDraggingElement
+                    .classList
+                    .remove(
+                        "favorite-photo-dragging"
+                    );
+
+            }
+
+
+            /* ---------------------------------------------
+               状態リセット
+            --------------------------------------------- */
+
+            favoritePhotoIsDragging =
+                false;
+
+
+            favoritePhotoDraggingId =
+                null;
+
+
+            favoritePhotoDraggingElement =
+                null;
+
+
+            favoritePhotoTouchMoved =
+                false;
+
+        },
+        {
+            passive: true
+        }
+    );
+
+
+    /* =====================================================
+       指をキャンセルした場合
+       ※ スマホ操作対策
+    ===================================================== */
+
+    document.addEventListener(
+        "touchcancel",
         function(){
 
             clearTimeout(
@@ -2705,6 +3011,10 @@ function favoritePhotoInstallSortEvents(){
             favoritePhotoDraggingElement =
                 null;
 
+
+            favoritePhotoTouchMoved =
+                false;
+
         },
         {
             passive: true
@@ -2712,6 +3022,7 @@ function favoritePhotoInstallSortEvents(){
     );
 
 }
+
 
 
 /* =========================================================
