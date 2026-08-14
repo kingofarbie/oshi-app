@@ -4,6 +4,10 @@
 
 <section class="favorites-section">
 
+    <!-- ===============================
+         ヘッダー
+    ================================ -->
+
     <div class="favorites-section-header">
 
         <div>
@@ -14,6 +18,10 @@
             </p>
         </div>
 
+
+        <!-- ===============================
+             写真操作ボタン
+        ================================ -->
 
         <div class="memory-header-actions">
 
@@ -58,19 +66,11 @@
 
 
     <!-- =================================================
-         写真操作バー
-         JSが必要に応じて生成
-    ================================================== -->
-
-    <div
-        id="favorite-photo-action-bar"
-        class="favorite-photo-action-bar"
-        style="display:none;">
-    </div>
-
-
-    <!-- =================================================
          写真一覧
+
+         favorites.js の
+         favoritesRenderPhotos()
+         がここを書き換える
     ================================================== -->
 
     <div
@@ -78,12 +78,9 @@
         class="favorites-photo-list">
 
         <div class="favorites-empty">
-
             📷
             <br>
-
             お気に入り写真はありません
-
         </div>
 
     </div>
@@ -108,7 +105,7 @@
 
 
 <!-- =====================================================
-     📷 お気に入り写真ビューア
+     📷 お気に入り専用写真ビューア
 ====================================================== -->
 
 <div
@@ -120,7 +117,10 @@
 
     <!-- =================================================
          右上ボタン
-         1日手帳のフォトビューアと同じ4点セット
+         
+         JS:
+         favoritesInstallViewerButtons()
+         と完全一致
     ================================================== -->
 
 
@@ -130,21 +130,7 @@
         id="favorites-viewer-share"
         class="favorite-photo-viewer-share"
         title="共有">
-
         📤
-
-    </button>
-
-
-    <!-- お気に入り -->
-    <button
-        type="button"
-        id="favorites-viewer-favorite"
-        class="favorite-photo-viewer-favorite"
-        title="お気に入り">
-
-        ⭐
-
     </button>
 
 
@@ -154,9 +140,7 @@
         id="favorites-viewer-delete"
         class="favorite-photo-viewer-delete"
         title="削除">
-
         🗑
-
     </button>
 
 
@@ -166,9 +150,7 @@
         id="favorites-viewer-close"
         class="favorite-photo-viewer-close"
         title="閉じる">
-
         ✕
-
     </button>
 
 
@@ -180,15 +162,11 @@
     <button
         type="button"
         class="favorite-photo-viewer-prev"
-        onclick="
-            favoritesShowPhoto(
-                favoritesViewerIndex - 1
-            )
-        "
+        onclick="favoritesShowPhoto(
+            favoritesViewerIndex - 1
+        )"
         title="前の写真">
-
         ‹
-
     </button>
 
 
@@ -220,16 +198,11 @@
     <button
         type="button"
         class="favorite-photo-viewer-next"
-        onclick="
-            favoritesShowPhoto(
-                favoritesViewerIndex + 1
-            )
-        "
+        onclick="favoritesShowPhoto(
+            favoritesViewerIndex + 1
+        )"
         title="次の写真">
-
         ›
-
     </button>
-
 
 </div>
