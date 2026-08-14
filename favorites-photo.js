@@ -1078,6 +1078,24 @@ function favoritePhotoConfirmDelete(){
                 )
         );
 
+        console.log(
+    "selectedFavoritePhotoIds:",
+    selectedFavoritePhotoIds
+);
+
+console.log(
+    "data.favorites.photos:",
+    photos
+);
+
+console.log(
+    "削除対象targets:",
+    targets
+);
+
+
+
+
 
     const dayPlannerTargets =
         targets.filter(
