@@ -1,21 +1,30 @@
-/* =====================
-   📝 メモ機能
-===================== */
+/* =========================================================
+   📝 1日手帳 メモ機能
+   memo.css
+========================================================= */
+
+
+/* =========================================================
+   メモ操作ボタン
+========================================================= */
 
 .memo-toolbar {
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
-    margin: 10px 0;
+    margin: 10px 0 12px;
 }
 
 .memo-toolbar button {
-    padding: 8px 12px;
     border: none;
     border-radius: 10px;
-    cursor: pointer;
-    background: #f3f3f3;
+    padding: 9px 13px;
     font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    background: var(--card-bg, #ffffff);
+    color: var(--text-color, #333);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
 }
 
 .memo-toolbar button:active {
@@ -23,68 +32,266 @@
 }
 
 
-/* =====================
-   メモカード
-===================== */
-
-.memo-card-item {
-    position: relative;
-    cursor: pointer;
-    user-select: none;
-    transition:
-        transform 0.15s ease,
-        box-shadow 0.15s ease;
-}
-
-
-/* 選択中 */
-
-.memo-card-item.memo-selected {
-    outline: 3px solid #ff69a8;
-    transform: scale(1.02);
-}
-
-
-/* =====================
+/* =========================================================
    モード案内
-===================== */
+========================================================= */
 
 .memo-mode-message {
-    margin: 8px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+
+    margin: 8px 0 12px;
     padding: 10px 12px;
-    border-radius: 12px;
-    background: rgba(255, 105, 168, 0.12);
+
+    border-radius: 10px;
+
+    background: var(--card-bg, #ffffff);
+    color: var(--text-color, #333);
+
+    box-shadow: 0 2px 6px rgba(0,0,0,0.10);
+
     font-size: 14px;
 }
 
+.memo-mode-message > span {
+    flex: 1;
+}
+
 .memo-mode-message button {
-    margin-left: 6px;
-    padding: 6px 10px;
     border: none;
     border-radius: 8px;
-    background: white;
+    padding: 7px 11px;
+
+    background: var(--accent-color, #ff69b4);
+    color: #fff;
+
+    font-size: 13px;
+    font-weight: 600;
+
     cursor: pointer;
 }
 
-.memo-mode-message button:disabled {
-    opacity: 0.4;
+.memo-mode-message button:active {
+    transform: scale(0.96);
+}
+
+
+/* =========================================================
+   メモカード
+========================================================= */
+
+.memo-card-item {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+
+    min-height: 48px;
+
+    padding: 10px 12px;
+    margin-bottom: 8px;
+
+    border-radius: 10px;
+
+    background: var(--card-bg, #ffffff);
+    color: var(--text-color, #333);
+
+    box-shadow: 0 2px 6px rgba(0,0,0,0.10);
+
+    transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease,
+        background 0.15s ease;
+}
+
+
+/* メモ本文 */
+
+.memo-card-text {
+    flex: 1;
+
+    min-width: 0;
+
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   削除・編集モード
+========================================================= */
+
+.memo-select-box {
+    flex: 0 0 auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 34px;
+    height: 34px;
+
+    margin-right: 6px;
+
+    cursor: pointer;
+}
+
+
+/* 元のcheckboxは隠す */
+
+.memo-select-box input {
+    position: absolute;
+
+    opacity: 0;
+
+    width: 1px;
+    height: 1px;
+
+    pointer-events: none;
+}
+
+
+/* ☐ / ☑ */
+
+.memo-checkbox-mark {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 28px;
+    height: 28px;
+
+    font-size: 24px;
+    line-height: 1;
+
+    user-select: none;
+}
+
+
+/* 選択されたメモ */
+
+.memo-card-item.memo-selected {
+    background: rgba(255, 105, 180, 0.10);
+
+    box-shadow:
+        0 0 0 2px var(--accent-color, #ff69b4),
+        0 3px 8px rgba(0,0,0,0.12);
+}
+
+
+/* =========================================================
+   並び替えモード
+========================================================= */
+
+.memo-sort-item {
     cursor: default;
 }
 
 
-/* =====================
-   メモ本文
-===================== */
+/* 右側の三本線 */
 
-.memo-card-text {
-    white-space: pre-wrap;
-    word-break: break-word;
+.memo-drag-handle {
+    flex: 0 0 auto;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 42px;
+    min-height: 38px;
+
+    margin-left: 8px;
+
+    font-size: 24px;
+    line-height: 1;
+
+    color: var(--text-color, #777);
+
+    cursor: grab;
+
+    user-select: none;
+
+    touch-action: none;
+}
+
+.memo-drag-handle:active {
+    cursor: grabbing;
 }
 
 
-/* =====================
+/* ドラッグ中 */
+
+.memo-dragging {
+    opacity: 0.65;
+
+    transform: scale(1.02);
+
+    box-shadow:
+        0 5px 15px rgba(0,0,0,0.20);
+}
+
+
+/* =========================================================
+   ドラッグ中の挿入位置
+========================================================= */
+
+.memo-drag-placeholder {
+    height: 8px;
+
+    margin: 4px 0;
+
+    border-radius: 5px;
+
+    background: var(--accent-color, #ff69b4);
+
+    opacity: 0.55;
+}
+
+
+/* =========================================================
+   決定ボタン
+========================================================= */
+
+.memo-selection-confirm {
+    background: var(--accent-color, #ff69b4) !important;
+    color: #fff !important;
+}
+
+
+/* =========================================================
+   メモ追加モーダル
+   ※既存モーダルの邪魔をしない最低限の補助
+========================================================= */
+
+#memoModal {
+    z-index: 1000;
+}
+
+
+/* =========================================================
+   空状態
+========================================================= */
+
+#memoList .check-empty {
+    padding: 16px 10px;
+
+    text-align: center;
+
+    opacity: 0.65;
+
+    font-size: 14px;
+}
+
+
+/* =========================================================
    スマホ
-===================== */
+========================================================= */
 
 @media (max-width: 600px) {
 
@@ -93,14 +300,56 @@
     }
 
     .memo-toolbar button {
-        flex: 1;
-        min-width: 70px;
+        padding: 8px 10px;
         font-size: 13px;
-        padding: 9px 6px;
     }
 
     .memo-mode-message {
         font-size: 13px;
+        padding: 9px 10px;
     }
 
+    .memo-card-item {
+        min-height: 46px;
+        padding: 9px 10px;
+    }
+
+    .memo-card-text {
+        font-size: 14px;
+    }
+
+    .memo-drag-handle {
+        width: 38px;
+        font-size: 22px;
+    }
+
+}
+
+
+/* =========================================================
+   タッチ操作
+========================================================= */
+
+.memo-card-item,
+.memo-drag-handle,
+.memo-select-box {
+    -webkit-tap-highlight-color: transparent;
+}
+
+
+/* =========================================================
+   長押し・選択時の文字選択防止
+========================================================= */
+
+.memo-card-item {
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+
+/* 本文はコピーできるようにする */
+
+.memo-card-text {
+    user-select: text;
+    -webkit-user-select: text;
 }
