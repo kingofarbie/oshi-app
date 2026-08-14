@@ -1033,6 +1033,12 @@ function favoritePhotoCancelShare(){
 
 function favoritePhotoConfirmDelete(){
 
+
+    console.log(
+    "削除対象お気に入り:",
+    favoritePhotoGetPhotos()
+);
+
     if(
         selectedFavoritePhotoIds.length === 0
     ){
