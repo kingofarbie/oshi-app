@@ -1289,6 +1289,24 @@ console.log(
 
     db.save(data);
 
+if(
+    dayPlannerTargets.length > 0
+){
+
+    console.log(
+        "保存直後の1日手帳写真:",
+        favoritePhotoGetSourcePhoto(
+            dayPlannerTargets[0]
+        )
+    );
+
+}
+
+console.log(
+    "保存直後のお気に入り:",
+    db.load().favorites?.photos
+);
+
 
     /* =====================================================
        選択状態解除
