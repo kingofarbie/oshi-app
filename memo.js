@@ -152,10 +152,6 @@ function renderDayMemos(){
         return;
     }
 
-
-    renderMemoToolbar();
-
-
     /*
        メモがない場合
     */
@@ -323,82 +319,6 @@ let memoMode = "normal";
 
 let selectedMemoIds = [];
 
-
-/* ==================================================
-   メモ操作ボタン
-================================================== */
-
-function renderMemoToolbar(){
-
-    const memoArea =
-        document.getElementById("memoList");
-
-    if(!memoArea){
-        return;
-    }
-
-
-    let toolbar =
-        document.getElementById("memoToolbar");
-
-
-    if(!toolbar){
-
-        toolbar =
-            document.createElement("div");
-
-        toolbar.id =
-            "memoToolbar";
-
-
-        memoArea.parentNode.insertBefore(
-            toolbar,
-            memoArea
-        );
-
-    }
-
-
-    toolbar.innerHTML = `
-
-<div class="memo-toolbar">
-
-<button
-    type="button"
-    onclick="addMemo()"
->
-    ＋ 追加
-</button>
-
-
-<button
-    type="button"
-    onclick="startMemoDeleteMode()"
->
-    🗑 削除
-</button>
-
-
-<button
-    type="button"
-    onclick="startMemoEditMode()"
->
-    ✏️ 編集
-</button>
-
-
-<button
-    type="button"
-    onclick="startMemoSortMode()"
->
-    🔀 並び替え
-</button>
-
-</div>
-
-`;
-
-}
 
 
 /* ==================================================
