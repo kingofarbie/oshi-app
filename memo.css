@@ -1,0 +1,106 @@
+/* =====================
+   📝 メモ機能
+===================== */
+
+.memo-toolbar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 10px 0;
+}
+
+.memo-toolbar button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    background: #f3f3f3;
+    font-size: 14px;
+}
+
+.memo-toolbar button:active {
+    transform: scale(0.96);
+}
+
+
+/* =====================
+   メモカード
+===================== */
+
+.memo-card-item {
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+    transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+
+/* 選択中 */
+
+.memo-card-item.memo-selected {
+    outline: 3px solid #ff69a8;
+    transform: scale(1.02);
+}
+
+
+/* =====================
+   モード案内
+===================== */
+
+.memo-mode-message {
+    margin: 8px 0;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: rgba(255, 105, 168, 0.12);
+    font-size: 14px;
+}
+
+.memo-mode-message button {
+    margin-left: 6px;
+    padding: 6px 10px;
+    border: none;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+}
+
+.memo-mode-message button:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+
+/* =====================
+   メモ本文
+===================== */
+
+.memo-card-text {
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+
+/* =====================
+   スマホ
+===================== */
+
+@media (max-width: 600px) {
+
+    .memo-toolbar {
+        gap: 6px;
+    }
+
+    .memo-toolbar button {
+        flex: 1;
+        min-width: 70px;
+        font-size: 13px;
+        padding: 9px 6px;
+    }
+
+    .memo-mode-message {
+        font-size: 13px;
+    }
+
+}
