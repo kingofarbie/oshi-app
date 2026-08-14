@@ -990,12 +990,6 @@ function favoritePhotoToggleSelect(
     }
 
 
-    console.log(
-        "選択されたお気に入り写真ID:",
-        selectedFavoritePhotoIds
-    );
-
-
     favoritePhotoRender();
 
 }
@@ -1072,17 +1066,6 @@ function favoritePhotoConfirmDelete(){
                     String(photo.id)
                 )
         );
-
-
-    console.log(
-        "selectedFavoritePhotoIds:",
-        selectedFavoritePhotoIds
-    );
-
-    console.log(
-        "お気に入りページの削除対象:",
-        targets
-    );
 
 
     /* =====================================================
@@ -1215,12 +1198,6 @@ function favoritePhotoConfirmDelete(){
                         delete photo.favoriteOrder;
 
                         delete photo.favoriteAt;
-
-
-                        console.log(
-                            "1日手帳写真のお気に入りを解除:",
-                            photo.id
-                        );
 
                     }
 

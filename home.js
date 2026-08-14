@@ -788,8 +788,6 @@ ${
 
 function openFavoritePhotoPage(){
 
-    console.log("★★★★★ お気に入り写真ページをクリック ★★★★★");
-
     const pages =
         document.querySelectorAll(".page");
 
