@@ -1178,6 +1178,22 @@ function favoritePhotoConfirmDelete(){
                 );
 
 
+                console.log(
+    "1日手帳のお気に入り解除対象:",
+    favorite
+);
+
+console.log(
+    "元写真検索結果:",
+    source
+);
+
+
+
+
+
+
+
             if(
                 !source ||
                 !source.day ||
