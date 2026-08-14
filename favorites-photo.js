@@ -987,6 +987,15 @@ function favoritePhotoToggleSelect(
             id
         );
 
+
+        console.log(
+    "お気に入り写真選択:",
+    favoritePhotoSelectedPhotos
+);
+
+
+
+
     }
 
 
