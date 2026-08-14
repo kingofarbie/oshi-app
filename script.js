@@ -310,15 +310,6 @@ function switchTab(pageId, event, fromCalendar = false){
         }
 
 
-        if(
-            typeof displayFavorites ===
-            'function'
-        ){
-
-            displayFavorites();
-
-        }
-
     }
 
 
@@ -1438,7 +1429,6 @@ async function(){
     displayUpcomingEvents();
     displayFavoritePhotoCard();
     displayCountdown();
-    displayFavorites();
 
 
     /* =====================
