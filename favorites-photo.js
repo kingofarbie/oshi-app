@@ -1598,15 +1598,82 @@ function favoritePhotoOpenViewer(
     }
 
 
-    image.src =
-        photo.src;
+image.src =
+    photo.src;
 
 
-    favoritePhotoApplyTransform();
+/* =====================================================
+   ⭐ / 🗑 ボタン表示制御
+===================================================== */
+
+const favoriteButton =
+    document.getElementById(
+        "favoritePhotoViewerFavorite"
+    );
+
+const deleteButton =
+    document.getElementById(
+        "favoritePhotoViewerDelete"
+    );
 
 
-    viewer.style.display =
-        "flex";
+/*
+ * 📅 1日手帳由来
+ *
+ * ⭐ は表示
+ * 🗑 は非表示
+ */
+if(
+    favorite.source ===
+    "dayPlanner"
+){
+
+    if(favoriteButton){
+
+        favoriteButton.style.display =
+            "flex";
+
+    }
+
+    if(deleteButton){
+
+        deleteButton.style.display =
+            "none";
+
+    }
+
+}
+
+
+/*
+ * ⭐ 直接追加
+ *
+ * ⭐ は非表示
+ * 🗑 は表示
+ */
+else{
+
+    if(favoriteButton){
+
+        favoriteButton.style.display =
+            "none";
+
+    }
+
+    if(deleteButton){
+
+        deleteButton.style.display =
+            "flex";
+
+    }
+
+}
+
+
+favoritePhotoApplyTransform();
+
+viewer.style.display =
+    "flex";
 
 
     document.body.style.overflow =
@@ -1790,9 +1857,49 @@ function favoritePhotoCloseViewer(){
     }
 
 
+    /* =====================================================
+       ⭐ / 🗑 ビューアボタンをリセット
+    ===================================================== */
+
+    const favoriteButton =
+        document.getElementById(
+            "favoritePhotoViewerFavorite"
+        );
+
+
+    const deleteButton =
+        document.getElementById(
+            "favoritePhotoViewerDelete"
+        );
+
+
+    if(favoriteButton){
+
+        favoriteButton.style.display =
+            "none";
+
+    }
+
+
+    if(deleteButton){
+
+        deleteButton.style.display =
+            "none";
+
+    }
+
+
+    /* =====================================================
+       📷 背景スクロール解除
+    ===================================================== */
+
     document.body.style.overflow =
         "";
 
+
+    /* =====================================================
+       ⭐ ビューア状態リセット
+    ===================================================== */
 
     favoritePhotoViewerIsOpen =
         false;
@@ -1827,60 +1934,41 @@ function favoritePhotoCloseViewer(){
 
 }
 
-
 /* =========================================================
    ⭐ スワイプ
 ========================================================= */
 
-function favoritePhotoSwipe(
-    event
-){
+function favoritePhotoSwipe(event){
 
-    if(
-        !favoritePhotoViewerIsOpen
-    ){
-
+    if(!favoritePhotoViewerIsOpen){
         return;
-
     }
 
-
-    if(
-        favoritePhotoViewerScale > 1
-    ){
-
+    if(favoritePhotoViewerScale > 1){
         return;
-
     }
-
 
     if(
         !event.changedTouches ||
         event.changedTouches.length !== 1
     ){
-
         return;
-
     }
-
 
     const endX =
         event.changedTouches[0].clientX;
-
 
     const diff =
         endX -
         favoritePhotoViewerTouchStartX;
 
-
-    if(
-        Math.abs(diff) < 60
-    ){
-
+    /*
+     * タップでは絶対に移動しない。
+     * 100px以上動いた場合だけスワイプと判定。
+     */
+    if(Math.abs(diff) < 100){
         return;
-
     }
-
 
     if(diff < 0){
 

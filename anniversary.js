@@ -534,7 +534,6 @@ if(visible){
 
 }
 
-console.log("anniversary.js loaded");
 /* =====================
 記念日・誕生日ページを開く
 ===================== */
