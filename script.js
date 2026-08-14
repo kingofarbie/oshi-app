@@ -296,6 +296,19 @@ function switchTab(pageId, event, fromCalendar = false){
 
         }
 
+        /* =====================
+           ⭐ お気に入り写真枚数更新
+        ===================== */
+
+        if(
+            typeof favoritePhotoUpdateHomeCount ===
+            'function'
+        ){
+
+            favoritePhotoUpdateHomeCount();
+
+        }
+
 
         if(
             typeof displayCountdown ===
