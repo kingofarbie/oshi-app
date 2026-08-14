@@ -870,7 +870,162 @@
 }
 
 
+/* =====================
+   📝 メモ付箋デザイン
+===================== */
 
+#memoList .memo-card-item{
+    position:relative;
+
+    margin:10px 2px;
+
+    padding:14px 16px 14px 20px;
+
+    background:var(--surface);
+    color:var(--text);
+
+    border:1px solid var(--border);
+    border-left:7px solid var(--accent);
+
+    border-radius:4px 10px 10px 4px;
+
+    box-shadow:
+        3px 5px 10px rgba(0,0,0,0.12);
+
+    min-height:52px;
+
+    box-sizing:border-box;
+
+    display:flex;
+    align-items:center;
+
+    transition:
+        transform .15s ease,
+        box-shadow .15s ease;
+}
+
+
+/* メモ本文 */
+
+#memoList .memo-card-text{
+    font-size:18px;
+    line-height:1.6;
+
+    color:var(--text);
+
+    flex:1;
+
+    word-break:break-word;
+}
+
+
+/* 付箋の右上を少し折った感じ */
+
+#memoList .memo-card-item::after{
+    content:"";
+
+    position:absolute;
+
+    top:0;
+    right:0;
+
+    width:16px;
+    height:16px;
+
+    background:var(--card);
+
+    transform:
+        translate(8px,-8px)
+        rotate(45deg);
+
+    box-shadow:
+        -1px 2px 3px rgba(0,0,0,.10);
+}
+
+
+/* 選択中 */
+
+#memoList .memo-card-item.memo-selected{
+    border-left-color:var(--accent);
+
+    box-shadow:
+        0 0 0 2px var(--accent-light),
+        3px 5px 10px rgba(0,0,0,0.12);
+}
+
+
+/* 並び替え中 */
+
+#memoList .memo-card-item.memo-sort-item{
+    cursor:grab;
+}
+
+
+/* ドラッグ中 */
+
+#memoList .memo-card-item.memo-dragging{
+    opacity:.7;
+
+    transform:scale(1.02);
+
+    box-shadow:
+        0 8px 18px rgba(0,0,0,.22);
+}
+
+
+/* 並び替えハンドル */
+
+#memoList .memo-drag-handle{
+    flex-shrink:0;
+
+    margin-left:10px;
+
+    padding:4px 6px;
+
+    color:var(--text-sub);
+
+    font-size:22px;
+
+    cursor:grab;
+
+    touch-action:none;
+}
+
+
+/* 並び替え位置 */
+
+#memoList .memo-drag-placeholder{
+    height:8px;
+
+    margin:4px 2px;
+
+    border-radius:6px;
+
+    background:var(--accent-light);
+}
+
+
+/* =====================
+   📝 メモモーダル文字サイズ
+===================== */
+
+#memoModal .modal-content h2{
+    font-size:24px;
+}
+
+
+#memoModal #memoText{
+    font-size:18px;
+
+    line-height:1.6;
+}
+
+
+/* モーダルのボタン文字も少し大きく */
+
+#memoModal .modal-content button{
+    font-size:16px;
+}
 
 
 
