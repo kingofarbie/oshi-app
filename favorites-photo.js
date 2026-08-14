@@ -1170,53 +1170,62 @@ function favoritePhotoConfirmDelete(){
        元の写真は残してお気に入りだけ解除
     ===================================================== */
 
+    const memories =
+        data.dayMemories || {};
+
+
     dayPlannerTargets.forEach(
         favorite => {
 
-            const source =
-                favoritePhotoGetSourcePhoto(
-                    favorite
-                );
+            Object.values(memories).forEach(
+                day => {
 
-
-            if(
-                !source ||
-                !source.day ||
-                !Array.isArray(
-                    source.day.photos
-                )
-            ){
-
-                return;
-
-            }
-
-
-            const photo =
-                source.day.photos.find(
-                    item =>
-                        String(item.id) ===
-                        String(
-                            favorite.sourcePhotoId
+                    if(
+                        !day ||
+                        !Array.isArray(
+                            day.photos
                         )
-                );
+                    ){
+
+                        return;
+
+                    }
 
 
-            if(photo){
+                    const photo =
+                        day.photos.find(
+                            item =>
+                                String(item.id) ===
+                                String(
+                                    favorite.sourcePhotoId
+                                )
+                        );
 
-                /* お気に入り解除 */
 
-                photo.favorite =
-                    false;
+                    if(photo){
+
+                        /* お気に入り解除 */
+
+                        photo.favorite =
+                            false;
 
 
-                /* お気に入り関連情報を解除 */
+                        /* お気に入り関連情報も解除 */
 
-                delete photo.favoriteOrder;
+                        delete photo.favoriteOrder;
 
-                delete photo.favoriteAt;
+                        delete photo.favoriteAt;
 
-            }
+
+                        console.log(
+                            "1日手帳写真のお気に入りを解除:",
+                            photo.id
+                        );
+
+                    }
+
+                }
+            );
 
         }
     );
@@ -1247,22 +1256,11 @@ function favoritePhotoConfirmDelete(){
 
     data.favorites.photos =
         favoritePhotos.filter(
-            photo => {
-
-                return !selectedFavoritePhotoIds.includes(
+            photo =>
+                !selectedFavoritePhotoIds.includes(
                     String(photo.id)
-                );
-
-            }
+                )
         );
-
-
-
-console.log(
-    "削除後のお気に入りデータ:",
-    data.favorites.photos
-);
-
 
 
     /* =====================================================
@@ -1273,13 +1271,10 @@ console.log(
         (
             data.favorites.photoOrder || []
         ).filter(
-            id => {
-
-                return !selectedFavoritePhotoIds.includes(
+            id =>
+                !selectedFavoritePhotoIds.includes(
                     String(id)
-                );
-
-            }
+                )
         );
 
 
@@ -1289,23 +1284,11 @@ console.log(
 
     db.save(data);
 
-if(
-    dayPlannerTargets.length > 0
-){
 
     console.log(
-        "保存直後の1日手帳写真:",
-        favoritePhotoGetSourcePhoto(
-            dayPlannerTargets[0]
-        )
+        "削除処理完了:",
+        selectedFavoritePhotoIds
     );
-
-}
-
-console.log(
-    "保存直後のお気に入り:",
-    db.load().favorites?.photos
-);
 
 
     /* =====================================================
@@ -1327,6 +1310,7 @@ console.log(
     favoritePhotoRender();
 
 }
+
 
 
 /* =========================================================
