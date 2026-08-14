@@ -28,7 +28,7 @@
             <!-- 写真追加 -->
             <button
                 type="button"
-                onclick="favoritesOpenPhotoPicker()"
+                onclick="favoritePhotoOpenPicker()"
                 title="写真を追加">
                 ＋
             </button>
@@ -74,7 +74,7 @@
     ================================================== -->
 
     <div
-        id="favorites-photo-list"
+        id="favorite-photo-list"
         class="favorites-photo-list">
 
         <div class="favorites-empty">
@@ -99,7 +99,7 @@
     accept="image/*"
     multiple
     style="display:none;"
-    onchange="favoritesPhotoSelected(event)"
+    onchange="favoritePhotoSelected(event)"
 >
 
 
