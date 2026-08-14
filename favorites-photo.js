@@ -2549,7 +2549,7 @@ if(
 
 /* =========================================================
    ⭐ HTMLのonclickから呼び出せるように公開
-========================================================= */
+
 
 window.favoritePhotoOpenPicker =
     favoritePhotoOpenPicker;
@@ -2616,3 +2616,5 @@ window.favoritePhotoSwipe =
 
 window.favoritePhotoDoubleTap =
     favoritePhotoDoubleTap;
+
+    ========================================================= */
