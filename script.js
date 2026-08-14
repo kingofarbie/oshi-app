@@ -1481,6 +1481,9 @@ async function(){
         "anniversary.html"
     );
 
+
+console.log("★★★★★ anniversary の次まで来た ★★★★★");
+
     await loadHtml(
     "favoritePhotoContainer",
     "favorites-photo.html"
