@@ -813,4 +813,6 @@ function openFavoritePhotoPage(){
 
     page.classList.add("active");
 
+    favoritePhotoRender();
+
 }

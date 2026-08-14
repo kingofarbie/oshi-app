@@ -1482,14 +1482,12 @@ async function(){
     );
 
 
-console.log("★★★★★ anniversary の次まで来た ★★★★★");
 
     await loadHtml(
     "favoritePhotoContainer",
     "favorites-photo.html"
 );
 
-console.log("★★★★★ favorites-photo.html 読み込み確認 ★★★★★");
 
 displayFavoritePhotos();
 
