@@ -209,49 +209,89 @@ function favoritePhotoGetOrdered(){
 
     const data = db.load();
 
-    const photos =
-        data.favorites?.photos || [];
+    const result = [];
 
+    /* =====================================================
+       1日手帳からお気に入り写真を取得
+    ===================================================== */
 
-        console.log("favorites-photo側の写真データ:", photos);
+    const memories =
+        data.dayMemories || {};
 
-    if(!Array.isArray(photos)){
-        return [];
-    }
+    Object.entries(memories).forEach(
+        ([dayKey, day]) => {
 
-    const order =
-        data.favorites?.photoOrder || [];
+            const photos =
+                day?.photos || [];
 
-    if(
-        Array.isArray(order) &&
-        order.length > 0
-    ){
+            if(!Array.isArray(photos)){
+                return;
+            }
 
-        const result = [];
+            photos.forEach(
+                photo => {
 
-        order.forEach(
-            id => {
+                    if(
+                        photo &&
+                        photo.favorite === true
+                    ){
 
-                const photo =
-                    photos.find(
-                        item =>
-                            String(item.id) ===
-                            String(id)
-                    );
+                        result.push({
 
-                if(photo){
+                            id:
+                                photo.id,
 
-                    result.push(
-                        photo
-                    );
+                            source:
+                                "dayPlanner",
+
+                            sourcePhotoId:
+                                photo.id,
+
+                            src:
+                                photo.src,
+
+                            favoriteAt:
+                                photo.favoriteAt ||
+                                photo.favoriteOrder ||
+                                0
+
+                        });
+
+                    }
 
                 }
+            );
 
-            }
-        );
+        }
+    );
 
-        photos.forEach(
+
+    /* =====================================================
+       直接追加お気に入り写真
+       ※ 今後使用するため残しておく
+    ===================================================== */
+
+    const directFavorites =
+        data.favorites?.photos || [];
+
+    if(
+        Array.isArray(
+            directFavorites
+        )
+    ){
+
+        directFavorites.forEach(
             photo => {
+
+                if(!photo){
+                    return;
+                }
+
+                /*
+                 * 1日手帳由来として
+                 * すでに取得した写真と
+                 * 同じIDなら重複させない
+                 */
 
                 const exists =
                     result.some(
@@ -271,13 +311,78 @@ function favoritePhotoGetOrdered(){
             }
         );
 
-        return result;
+    }
+
+
+    /* =====================================================
+       保存されている並び順があれば反映
+    ===================================================== */
+
+    const order =
+        data.favorites?.photoOrder || [];
+
+
+    if(
+        Array.isArray(order) &&
+        order.length > 0
+    ){
+
+        const ordered = [];
+
+
+        order.forEach(
+            id => {
+
+                const photo =
+                    result.find(
+                        item =>
+                            String(item.id) ===
+                            String(id)
+                    );
+
+                if(photo){
+
+                    ordered.push(
+                        photo
+                    );
+
+                }
+
+            }
+        );
+
+
+        result.forEach(
+            photo => {
+
+                const exists =
+                    ordered.some(
+                        item =>
+                            String(item.id) ===
+                            String(photo.id)
+                    );
+
+                if(!exists){
+
+                    ordered.push(
+                        photo
+                    );
+
+                }
+
+            }
+        );
+
+
+        return ordered;
 
     }
 
-    return [...photos];
+
+    return result;
 
 }
+
 
 
 /* =========================================================
