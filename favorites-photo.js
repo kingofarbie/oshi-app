@@ -212,6 +212,9 @@ function favoritePhotoGetOrdered(){
     const photos =
         data.favorites?.photos || [];
 
+
+        console.log("favorites-photo側の写真データ:", photos);
+
     if(!Array.isArray(photos)){
         return [];
     }
