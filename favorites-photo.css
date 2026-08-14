@@ -183,7 +183,7 @@
    ✓ 選択チェック
 ========================================================= */
 
-.favorites-photo-check{
+.favorite-photo-check{
 
     position:absolute;
 
@@ -218,8 +218,8 @@
 }
 
 
-.favorites-item-selected
-.favorites-photo-check{
+.favorite-item-selected
+.favorite-photo-check{
 
     background:var(--accent);
 
@@ -234,7 +234,7 @@
    📷 長押し並べ替え中
 ========================================================= */
 
-.favorites-photo-dragging{
+.favorite-photo-dragging{
 
     opacity:.6;
 
@@ -253,7 +253,7 @@
    ※写真1枚分の枠には入れない
 ========================================================= */
 
-.favorites-photo-action-bar{
+.favorite-photo-action-bar{
 
     grid-column:1 / -1;
 
@@ -287,14 +287,14 @@
 }
 
 
-.favorites-photo-action-bar span:first-child{
+.favorite-photo-action-bar span:first-child{
 
     font-weight:bold;
 
 }
 
 
-.favorites-photo-action-bar span:nth-child(2){
+.favorite-photo-action-bar span:nth-child(2){
 
     font-size:14px;
 
@@ -305,7 +305,7 @@
 }
 
 
-.favorites-photo-action-bar button{
+.favorite-photo-action-bar button{
 
     border:none;
 
@@ -322,7 +322,7 @@
 }
 
 
-.favorites-photo-action-bar button:last-child{
+.favorite-photo-action-bar button:last-child{
 
     background:var(--danger);
 
@@ -331,7 +331,7 @@
 }
 
 
-.favorites-photo-action-bar button:disabled{
+.favorite-photo-action-bar button:disabled{
 
     opacity:.4;
 
@@ -342,7 +342,7 @@
    📷 並べ替えバー
 ========================================================= */
 
-.favorites-photo-sort-bar{
+.favorite-photo-sort-bar{
 
     grid-column:1 / -1;
 
@@ -370,7 +370,7 @@
 }
 
 
-.favorites-photo-sort-bar button{
+.favorite-photo-sort-bar button{
 
     padding:8px 16px;
 
@@ -427,7 +427,7 @@
    📷 フォトビューア
 ========================================================= */
 
-#favorites-photo-viewer{
+#favorite-photo-viewer{
 
     position:fixed;
 
@@ -477,7 +477,7 @@
    📷 ビューア写真
 ========================================================= */
 
-#favorites-photo-viewer-image{
+#favorite-photo-viewer-image{
 
     max-width:90%;
 
@@ -508,7 +508,7 @@
    右上に4点セット
 ========================================================= */
 
-#favorites-photo-viewer > button{
+#favorite-photo-viewer > button{
 
     position:absolute;
 
@@ -662,7 +662,7 @@
    📷 ビューアボタン押下
 ========================================================= */
 
-#favorites-photo-viewer > button:active{
+#favorite-photo-viewer > button:active{
 
     transform:scale(.9);
 
@@ -704,7 +704,7 @@
     }
 
 
-    #favorites-photo-viewer-image{
+    #favorite-photo-viewer-image{
 
         max-width:94%;
 
@@ -713,7 +713,7 @@
     }
 
 
-    #favorites-photo-viewer > button{
+    #favorite-photo-viewer > button{
 
         top:15px;
 
@@ -794,8 +794,8 @@
    📷 ビューア中は選択を禁止
 ========================================================= */
 
-#favorites-photo-viewer,
-#favorites-photo-viewer *{
+#favorite-photo-viewer,
+#favorite-photo-viewer *{
 
     -webkit-user-select:none;
 
