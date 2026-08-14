@@ -877,69 +877,57 @@
 #memoList .memo-card-item{
     position:relative;
 
-    margin:10px 2px;
+    width:100%;
+    box-sizing:border-box;
 
-    padding:14px 16px 14px 20px;
+    height:auto !important;
+    min-height:0 !important;
+
+    padding:12px 14px 12px 18px !important;
+
+    margin-bottom:10px;
 
     background:var(--surface);
     color:var(--text);
 
     border:1px solid var(--border);
-    border-left:7px solid var(--accent);
+    border-left:6px solid var(--accent);
 
-    border-radius:4px 10px 10px 4px;
+    border-radius:8px;
 
     box-shadow:
-        3px 5px 10px rgba(0,0,0,0.12);
+        3px 4px 9px rgba(0,0,0,0.10);
 
-    min-height:52px;
+    overflow:hidden;
 
-    box-sizing:border-box;
-
-    display:flex;
-    align-items:center;
-
-    transition:
-        transform .15s ease,
-        box-shadow .15s ease;
+    white-space:normal;
+    overflow-wrap:anywhere;
 }
 
 
 /* メモ本文 */
 
 #memoList .memo-card-text{
+    display:block;
+
     font-size:18px;
-    line-height:1.6;
+    line-height:1.55;
 
     color:var(--text);
 
-    flex:1;
+    white-space:pre-wrap;
+    overflow-wrap:anywhere;
 
-    word-break:break-word;
+    padding:0;
+    margin:0;
 }
 
 
-/* 付箋の右上を少し折った感じ */
+/* 右上の折れ目を削除 */
 
 #memoList .memo-card-item::after{
-    content:"";
-
-    position:absolute;
-
-    top:0;
-    right:0;
-
-    width:16px;
-    height:16px;
-
-    background:var(--card);
-
-    transform:
-        translate(8px,-8px)
-        rotate(45deg);
-
-    box-shadow:
-        -1px 2px 3px rgba(0,0,0,.10);
+    display:none !important;
+    content:none !important;
 }
 
 
@@ -950,7 +938,7 @@
 
     box-shadow:
         0 0 0 2px var(--accent-light),
-        3px 5px 10px rgba(0,0,0,0.12);
+        3px 4px 9px rgba(0,0,0,0.10);
 }
 
 
@@ -1006,22 +994,25 @@
 
 
 /* =====================
-   📝 メモモーダル文字サイズ
+   📝 メモ追加モーダル
 ===================== */
 
 #memoModal .modal-content h2{
     font-size:24px;
 }
 
-
 #memoModal #memoText{
     font-size:18px;
-
     line-height:1.6;
+
+    padding:12px;
+
+    box-sizing:border-box;
 }
 
-
-/* モーダルのボタン文字も少し大きく */
+#memoModal #memoText::placeholder{
+    font-size:17px;
+}
 
 #memoModal .modal-content button{
     font-size:16px;
