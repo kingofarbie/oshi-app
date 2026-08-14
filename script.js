@@ -1466,6 +1466,10 @@ async function(){
 
 initFavorites();
 
+displayFavoritePhotos();
+
+
+
     await loadHtml(
     "oshiContainer",
     "oshi.html"
