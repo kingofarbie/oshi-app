@@ -9,7 +9,7 @@
             <button
                 type="button"
                 onclick="favoritePhotoOpenPicker()">
-                ➕
+                ＋
             </button>
 
             <button
@@ -51,18 +51,59 @@
      ⭐ お気に入り写真ビューア
 ===================== -->
 
+<!-- =====================
+     ⭐ お気に入り写真ビューア
+===================== -->
+
 <div
     id="favoritePhotoViewer"
     class="favorite-photo-viewer"
     style="display:none;">
 
-    <button
-        type="button"
-        class="favorite-photo-viewer-close"
-        onclick="favoritePhotoCloseViewer()">
-        ✕
-    </button>
+    <!-- 右上アクション -->
+    <div class="favorite-photo-viewer-actions">
 
+        <!-- 共有 -->
+        <button
+            type="button"
+            id="favoritePhotoViewerShare"
+            class="favorite-photo-viewer-action"
+            onclick="favoritePhotoShareCurrent()">
+            📤
+        </button>
+
+        <!-- 1日手帳由来：お気に入り解除 -->
+        <button
+            type="button"
+            id="favoritePhotoViewerFavorite"
+            class="favorite-photo-viewer-action"
+            onclick="favoritePhotoToggleCurrentFavorite()"
+            style="display:none;">
+            ⭐
+        </button>
+
+        <!-- 直接追加：削除 -->
+        <button
+            type="button"
+            id="favoritePhotoViewerDelete"
+            class="favorite-photo-viewer-action"
+            onclick="favoritePhotoDeleteCurrent()"
+            style="display:none;">
+            🗑
+        </button>
+
+        <!-- 閉じる -->
+        <button
+            type="button"
+            class="favorite-photo-viewer-close"
+            onclick="favoritePhotoCloseViewer()">
+            ✕
+        </button>
+
+    </div>
+
+
+    <!-- 前へ -->
     <button
         type="button"
         class="favorite-photo-viewer-prev"
@@ -70,10 +111,15 @@
         ‹
     </button>
 
+
+    <!-- 写真 -->
     <img
         id="favoritePhotoViewerImage"
-        class="favorite-photo-viewer-image">
+        class="favorite-photo-viewer-image"
+        draggable="false">
 
+
+    <!-- 次へ -->
     <button
         type="button"
         class="favorite-photo-viewer-next"
