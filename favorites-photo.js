@@ -88,6 +88,9 @@ function favoritePhotoGetPhotos(){
     const photos =
         data.favorites?.photos || [];
 
+
+        console.log("お気に入り写真データ:", photos);
+
     if(!Array.isArray(photos)){
         return [];
     }
