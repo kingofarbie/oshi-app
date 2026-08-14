@@ -1,6 +1,8 @@
 /* =====================================================
    ⭐ お気に入りページ
    favorites.css
+
+   ※ 写真関連CSSは favorites-photo.css に分離
 ===================================================== */
 
 
@@ -232,7 +234,6 @@
 /* =====================================================
    ⭐ 操作ボタン
    ＋ 🗑 📤 🔀
-   4つとも完全に同じデザイン
 ===================================================== */
 
 .favorites-tools {
@@ -315,6 +316,10 @@
 
 }
 
+
+/* =====================================================
+   イベント
+===================================================== */
 
 .favorites-event {
 
@@ -466,79 +471,6 @@
 
 
 /* =====================================================
-   📷 写真
-===================================================== */
-
-.favorites-photo-list {
-
-    width: 100%;
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(3, minmax(0,1fr));
-
-    gap: 7px;
-
-}
-
-
-.favorites-photo-item {
-
-    aspect-ratio: 1 / 1;
-
-    overflow: hidden;
-
-    border-radius: 12px;
-
-    background: #fff;
-
-    border: 1px solid var(--border);
-
-    cursor: pointer;
-
-}
-
-
-.favorites-photo-item img {
-
-    width: 100%;
-
-    height: 100%;
-
-    object-fit: cover;
-
-    display: block;
-
-}
-
-
-/* =====================================================
-   🗑 削除確認
-===================================================== */
-
-.favorite-delete-confirm-text {
-
-    margin: 12px 0 18px;
-
-    padding: 12px;
-
-    border-radius: 12px;
-
-    background: #fff;
-
-    border: 1px solid var(--border);
-
-    font-size: 14px;
-
-    line-height: 1.7;
-
-    white-space: pre-line;
-
-}
-
-
-/* =====================================================
    モーダルボタン
 ===================================================== */
 
@@ -616,7 +548,57 @@
 
 
 /* =====================================================
-   スマホ
+   ⭐ お気に入り操作アイコン
+   1日手帳と同じデザイン
+===================================================== */
+
+.favorites-section-header .memory-header-actions {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    flex-shrink: 0;
+
+}
+
+
+.favorites-section-header
+.memory-header-actions button {
+
+    width: 28px;
+
+    height: 28px;
+
+    padding: 0;
+
+    margin: 0;
+
+    background: none;
+
+    border: none;
+
+    color: var(--text);
+
+    font-size: 20px;
+
+    line-height: 1;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    cursor: pointer;
+
+}
+
+
+/* =====================================================
+   📱 スマホ
 ===================================================== */
 
 @media (max-width: 420px) {
@@ -703,18 +685,11 @@
 
     }
 
-
-    .favorites-photo-list {
-
-        gap: 5px;
-
-    }
-
 }
 
 
 /* =====================================================
-   極端に狭い画面
+   📱 極端に狭い画面
 ===================================================== */
 
 @media (max-width: 350px) {
@@ -757,41 +732,4 @@
 
     }
 
-}
-
-
-
-
-/* =====================
-   お気に入り
-   1日手帳と同じ操作アイコン
-===================== */
-
-.favorites-section-header .memory-header-actions{
-    display:flex;
-    align-items:center;
-    gap:6px;
-    flex-shrink:0;
-}
-
-.favorites-section-header .memory-header-actions button{
-    width:28px;
-    height:28px;
-
-    padding:0;
-    margin:0;
-
-    background:none;
-    border:none;
-
-    color:var(--text);
-
-    font-size:20px;
-    line-height:1;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    cursor:pointer;
 }

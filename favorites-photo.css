@@ -111,7 +111,7 @@
 
     grid-template-columns:
         repeat(
-            var(--photo-columns, 2),
+            var(--photo-columns, 3),
             minmax(0,1fr)
         );
 

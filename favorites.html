@@ -11,11 +11,13 @@
     <div class="favorites-section-header">
 
         <div>
+
             <h3>📷 お気に入り写真</h3>
 
             <p>
                 お気に入りの写真
             </p>
+
         </div>
 
 
@@ -28,7 +30,7 @@
             <!-- 写真追加 -->
             <button
                 type="button"
-                onclick="favoritePhotoOpenPicker()"
+                onclick="favoritesOpenPhotoPicker()"
                 title="写真を追加">
                 ＋
             </button>
@@ -66,21 +68,23 @@
 
 
     <!-- =================================================
-         写真一覧
+         📷 写真一覧
 
-         favorites.js の
-         favoritesRenderPhotos()
-         がここを書き換える
+         ★ CSSとIDを統一
+         favorites.css
+         #favorites-photo-list
     ================================================== -->
 
     <div
-        id="favorite-photo-list"
+        id="favorites-photo-list"
         class="favorites-photo-list">
 
         <div class="favorites-empty">
+
             📷
             <br>
             お気に入り写真はありません
+
         </div>
 
     </div>
@@ -117,12 +121,7 @@
 
     <!-- =================================================
          右上ボタン
-         
-         JS:
-         favoritesInstallViewerButtons()
-         と完全一致
     ================================================== -->
-
 
     <!-- 共有 -->
     <button
@@ -172,20 +171,18 @@
 
 
     <!-- =================================================
-         写真表示エリア
+         📷 写真表示エリア
     ================================================== -->
 
     <div
-        class="favorite-photo-viewer-image-wrap"
-    >
+        class="favorite-photo-viewer-image-wrap">
 
         <img
             id="favorites-photo-viewer-image"
             class="favorite-photo-viewer-image"
             src=""
             alt="お気に入り写真"
-            draggable="false"
-        >
+            draggable="false">
 
     </div>
 

@@ -2573,5 +2573,5 @@ function displayFavoritePhotos(){
         return;
     }
 
-    favoritesRenderPhotos();
+    favoritePhotoRender();
 }
