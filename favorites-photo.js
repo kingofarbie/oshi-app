@@ -1038,12 +1038,6 @@ function favoritePhotoCancelShare(){
 
 function favoritePhotoConfirmDelete(){
 
-
-    console.log(
-    "削除対象お気に入り:",
-    favoritePhotoGetPhotos()
-);
-
     if(
         selectedFavoritePhotoIds.length === 0
     ){
@@ -1061,13 +1055,13 @@ function favoritePhotoConfirmDelete(){
         db.load();
 
 
-    if(!data.favorites){
-        return;
-    }
-
+    /* =====================================================
+       お気に入りページに現在表示されている写真を取得
+       1日手帳由来 ＋ 直接追加の両方
+    ===================================================== */
 
     const photos =
-        data.favorites.photos || [];
+        favoritePhotoGetOrdered();
 
 
     const targets =
@@ -1078,24 +1072,21 @@ function favoritePhotoConfirmDelete(){
                 )
         );
 
-        console.log(
-    "selectedFavoritePhotoIds:",
-    selectedFavoritePhotoIds
-);
 
-console.log(
-    "data.favorites.photos:",
-    photos
-);
+    console.log(
+        "selectedFavoritePhotoIds:",
+        selectedFavoritePhotoIds
+    );
 
-console.log(
-    "削除対象targets:",
-    targets
-);
+    console.log(
+        "お気に入りページの削除対象:",
+        targets
+    );
 
 
-
-
+    /* =====================================================
+       1日手帳由来
+    ===================================================== */
 
     const dayPlannerTargets =
         targets.filter(
@@ -1104,6 +1095,10 @@ console.log(
                 "dayPlanner"
         );
 
+
+    /* =====================================================
+       直接追加
+    ===================================================== */
 
     const directTargets =
         targets.filter(
@@ -1116,14 +1111,18 @@ console.log(
     let message = "";
 
 
+    /* =====================================================
+       確認メッセージ
+    ===================================================== */
+
     if(
         dayPlannerTargets.length
     ){
 
         message +=
             `📅 1日手帳由来：${dayPlannerTargets.length}枚\n` +
-            "お気に入りから削除すると、" +
-            "元の1日手帳写真も削除されます。\n\n";
+            "お気に入りから外します。\n" +
+            "1日手帳の写真は残ります。\n\n";
 
     }
 
@@ -1134,13 +1133,26 @@ console.log(
 
         message +=
             `⭐ 直接追加：${directTargets.length}枚\n` +
-            "お気に入りからのみ削除されます。\n\n";
+            "写真そのものを削除します。\n\n";
+
+    }
+
+
+    if(
+        !message
+    ){
+
+        alert(
+            "削除対象の写真が見つかりませんでした。"
+        );
+
+        return;
 
     }
 
 
     message +=
-        "削除してよろしいですか？";
+        "実行してよろしいですか？";
 
 
     if(
@@ -1153,7 +1165,8 @@ console.log(
 
 
     /* =====================================================
-       1日手帳由来写真を削除
+       📅 1日手帳由来
+       写真は削除せず「お気に入り」を解除
     ===================================================== */
 
     dayPlannerTargets.forEach(
@@ -1178,51 +1191,103 @@ console.log(
             }
 
 
-            source.day.photos =
-                source.day.photos.filter(
-                    photo =>
-                        String(photo.id) !==
+            const photo =
+                source.day.photos.find(
+                    item =>
+                        String(item.id) ===
                         String(
                             favorite.sourcePhotoId
                         )
                 );
+
+
+            if(photo){
+
+                photo.favorite =
+                    false;
+
+
+                /* お気に入り関連情報を解除 */
+
+                delete photo.favoriteOrder;
+
+                delete photo.favoriteAt;
+
+            }
 
         }
     );
 
 
     /* =====================================================
-       お気に入りから削除
+       ⭐ 直接追加
+       写真そのものを削除
     ===================================================== */
 
+    if(
+        !data.favorites
+    ){
+
+        data.favorites = {};
+
+    }
+
+
+    const directPhotos =
+        data.favorites.photos || [];
+
+
     data.favorites.photos =
-        photos.filter(
+        directPhotos.filter(
             photo =>
-                !selectedFavoritePhotoIds.includes(
-                    String(photo.id)
+                !directTargets.some(
+                    target =>
+                        String(target.id) ===
+                        String(photo.id)
                 )
         );
 
+
+    /* =====================================================
+       並べ替え情報からも削除
+    ===================================================== */
 
     data.favorites.photoOrder =
         (
             data.favorites.photoOrder || []
         ).filter(
-            id =>
-                !selectedFavoritePhotoIds.includes(
+            id => {
+
+                return !selectedFavoritePhotoIds.includes(
                     String(id)
-                )
+                );
+
+            }
         );
 
+
+    /* =====================================================
+       保存
+    ===================================================== */
 
     db.save(data);
 
 
+    /* =====================================================
+       選択状態解除
+    ===================================================== */
+
     favoritePhotoDeleteSelecting =
         false;
 
-    selectedFavoritePhotoIds = [];
 
+    selectedFavoritePhotoIds =
+        [];
+
+
+    /* =====================================================
+       再表示
+    ===================================================== */
 
     favoritePhotoRender();
 
