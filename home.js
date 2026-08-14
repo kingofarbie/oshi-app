@@ -786,3 +786,26 @@ ${
 
 
 
+function openFavoritePhotoPage(){
+
+    document
+        .querySelectorAll(".page")
+        .forEach(page => {
+            page.style.display = "none";
+        });
+
+    const page =
+        document.getElementById(
+            "favoritePhotoPage"
+        );
+
+    if(!page){
+        console.error(
+            "favoritePhotoPage が見つかりません"
+        );
+        return;
+    }
+
+    page.style.display = "block";
+
+}
