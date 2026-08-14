@@ -89,8 +89,6 @@ function favoritePhotoGetPhotos(){
         data.favorites?.photos || [];
 
 
-        console.log("お気に入り写真データ:", photos);
-
     if(!Array.isArray(photos)){
         return [];
     }
@@ -1425,6 +1423,9 @@ function favoritePhotoFinishSort(){
 function favoritePhotoOpenViewer(
     favoriteId
 ){
+
+console.log("★★★★★ お気に入り写真ビューア呼び出し ★★★★★", favoriteId);
+
 
     const favorites =
         favoritePhotoGetOrdered();
