@@ -1506,6 +1506,36 @@ function favoritePhotoFinishSort(){
 }
 
 
+
+function favoritePhotoViewerTouchStart(event){
+
+    if(
+        !event.touches ||
+        event.touches.length !== 1
+    ){
+
+        return;
+
+    }
+
+
+    const touch =
+        event.touches[0];
+
+
+    favoritePhotoViewerTouchStartX =
+        touch.clientX;
+
+
+    favoritePhotoViewerDragStartX =
+        touch.clientX;
+
+
+    favoritePhotoViewerDragStartY =
+        touch.clientY;
+
+}
+
 /* =========================================================
    ⭐ ビューアを開く
 ========================================================= */
@@ -1940,41 +1970,103 @@ function favoritePhotoCloseViewer(){
 
 function favoritePhotoSwipe(event){
 
-    if(!favoritePhotoViewerIsOpen){
+    if(
+        !favoritePhotoViewerIsOpen
+    ){
+
         return;
+
     }
 
-    if(favoritePhotoViewerScale > 1){
+
+    /* ズーム中はスワイプしない */
+
+    if(
+        favoritePhotoViewerScale > 1
+    ){
+
         return;
+
     }
+
 
     if(
         !event.changedTouches ||
         event.changedTouches.length !== 1
     ){
+
         return;
+
     }
 
-    const endX =
-        event.changedTouches[0].clientX;
 
-    const diff =
+    const touch =
+        event.changedTouches[0];
+
+
+    const endX =
+        touch.clientX;
+
+    const endY =
+        touch.clientY;
+
+
+    const diffX =
         endX -
         favoritePhotoViewerTouchStartX;
 
-    /*
-     * タップでは絶対に移動しない。
-     * 100px以上動いた場合だけスワイプと判定。
-     */
-    if(Math.abs(diff) < 100){
+
+    const diffY =
+        endY -
+        favoritePhotoViewerTouchStartY;
+
+
+    /* =====================================================
+       📷 1日手帳と同じスワイプ判定
+
+       ・横移動 80px以上
+       ・横移動が縦移動より大きい
+
+       → タップでは絶対に切り替えない
+    ===================================================== */
+
+    if(
+        Math.abs(diffX) < 80
+    ){
+
         return;
+
     }
 
-    if(diff < 0){
+
+    if(
+        Math.abs(diffX) <=
+        Math.abs(diffY)
+    ){
+
+        return;
+
+    }
+
+
+    /* =====================================================
+       👉 左スワイプ → 次
+    ===================================================== */
+
+    if(
+        diffX < 0
+    ){
 
         favoritePhotoNext();
 
-    }else{
+    }
+
+
+    /* =====================================================
+       👈 右スワイプ → 前
+    ===================================================== */
+
+    else{
 
         favoritePhotoPrevious();
 
@@ -2236,8 +2328,13 @@ function favoritePhotoDeleteCurrent(){
         db.load();
 
 
+    /* =====================================================
+       📷 ビューアで表示している一覧そのものから
+       現在の写真を取得する
+    ===================================================== */
+
     const favorites =
-        data.favorites?.photos || [];
+        favoritePhotoGetOrdered();
 
 
     const target =
@@ -2251,14 +2348,20 @@ function favoritePhotoDeleteCurrent(){
 
 
     if(!target){
+
+        alert(
+            "削除対象の写真が見つかりませんでした。"
+        );
+
         return;
+
     }
 
 
     /* =====================================================
        📅 1日手帳由来
-       → お気に入り解除だけ
-       → 1日手帳の写真は残す
+       → ⭐お気に入り解除
+       → 元写真は残す
     ===================================================== */
 
     if(
@@ -2322,38 +2425,56 @@ function favoritePhotoDeleteCurrent(){
         );
 
 
-        /* お気に入り登録データからも削除 */
+        /*
+         * favorites.photos に
+         * 1日手帳由来の登録データが存在する場合も削除
+         */
 
-        data.favorites.photos =
-            favorites.filter(
-                photo =>
-                    String(photo.id) !==
-                    String(target.id)
-            );
+        if(
+            data.favorites &&
+            Array.isArray(
+                data.favorites.photos
+            )
+        ){
+
+            data.favorites.photos =
+                data.favorites.photos.filter(
+                    photo =>
+                        String(photo.id) !==
+                        String(target.id)
+                );
+
+        }
 
 
-        data.favorites.photoOrder =
-            (
-                data.favorites.photoOrder ||
-                []
-            ).filter(
-                id =>
-                    String(id) !==
-                    String(target.id)
-            );
+        if(
+            data.favorites
+        ){
 
+            data.favorites.photoOrder =
+                (
+                    data.favorites.photoOrder ||
+                    []
+                ).filter(
+                    id =>
+                        String(id) !==
+                        String(target.id)
+                );
 
-        db.save(data);
+        }
 
     }
 
 
     /* =====================================================
        ⭐ 直接追加
-       → お気に入り写真そのものを削除
+       → 写真そのものを削除
     ===================================================== */
 
-    else{
+    else if(
+        target.source ===
+        "favorite"
+    ){
 
         if(
             !confirm(
@@ -2366,37 +2487,60 @@ function favoritePhotoDeleteCurrent(){
         }
 
 
-        data.favorites.photos =
-            favorites.filter(
-                photo =>
-                    String(photo.id) !==
-                    String(target.id)
-            );
+        if(
+            data.favorites &&
+            Array.isArray(
+                data.favorites.photos
+            )
+        ){
+
+            data.favorites.photos =
+                data.favorites.photos.filter(
+                    photo =>
+                        String(photo.id) !==
+                        String(target.id)
+                );
+
+        }
 
 
-        data.favorites.photoOrder =
-            (
-                data.favorites.photoOrder ||
-                []
-            ).filter(
-                id =>
-                    String(id) !==
-                    String(target.id)
-            );
+        if(
+            data.favorites
+        ){
 
+            data.favorites.photoOrder =
+                (
+                    data.favorites.photoOrder ||
+                    []
+                ).filter(
+                    id =>
+                        String(id) !==
+                        String(target.id)
+                );
 
-        db.save(data);
+        }
 
     }
 
 
     /* =====================================================
-       📷 残りの写真を確認
+       💾 保存
+    ===================================================== */
+
+    db.save(data);
+
+
+    /* =====================================================
+       📷 削除後の一覧
     ===================================================== */
 
     const remaining =
         favoritePhotoGetOrdered();
 
+
+    /* =====================================================
+       写真がもう無い
+    ===================================================== */
 
     if(
         remaining.length === 0
@@ -2411,11 +2555,21 @@ function favoritePhotoDeleteCurrent(){
     }
 
 
+    /* =====================================================
+       ビューア一覧を更新
+    ===================================================== */
+
     favoritePhotoViewerIds =
         remaining.map(
             photo => photo.id
         );
 
+
+    /*
+     * 現在位置を維持。
+     * 最後の写真を削除した場合だけ
+     * 1つ前へ戻す。
+     */
 
     let nextIndex =
         favoritePhotoViewerIndex;
@@ -2440,7 +2594,6 @@ function favoritePhotoDeleteCurrent(){
     favoritePhotoRender();
 
 }
-
 
 /* =========================================================
    ⭐ ビューア現在写真共有
@@ -3226,3 +3379,5 @@ function displayFavoritePhotos(){
 
     favoritePhotoRender();
 }
+
+
