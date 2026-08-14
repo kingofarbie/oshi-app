@@ -39,6 +39,8 @@ let favoritePhotoViewerIndex = 0;
 
 let favoritePhotoViewerCurrentId = null;
 
+let favoritePhotoViewerFavoritePendingIds = [];
+
 let favoritePhotoViewerScale = 1;
 
 let favoritePhotoViewerTranslateX = 0;
@@ -49,6 +51,8 @@ let favoritePhotoViewerLastDistance = 0;
 
 let favoritePhotoViewerTouchStartX = 0;
 
+let favoritePhotoViewerTouchStartY = 0;
+
 let favoritePhotoViewerDragStartX = 0;
 
 let favoritePhotoViewerDragStartY = 0;
@@ -56,6 +60,11 @@ let favoritePhotoViewerDragStartY = 0;
 let favoritePhotoViewerLastTapTime = 0;
 
 let favoritePhotoViewerIsOpen = false;
+
+
+
+let favoritePhotoViewerFavoritePending = false;
+
 
 
 /* =========================================================
@@ -1507,8 +1516,22 @@ function favoritePhotoFinishSort(){
 
 
 
-function favoritePhotoViewerTouchStart(event){
+function favoritePhotoViewerTouchStart(
+    event
+){
 
+    if(
+        !favoritePhotoViewerIsOpen
+    ){
+
+        return;
+
+    }
+
+
+    /*
+     * 1本指だけを対象にする
+     */
     if(
         !event.touches ||
         event.touches.length !== 1
@@ -1523,10 +1546,20 @@ function favoritePhotoViewerTouchStart(event){
         event.touches[0];
 
 
+    /*
+     * ⭐ スワイプ開始位置
+     */
     favoritePhotoViewerTouchStartX =
         touch.clientX;
 
 
+    favoritePhotoViewerTouchStartY =
+        touch.clientY;
+
+
+    /*
+     * 📷 拡大写真のドラッグ開始位置
+     */
     favoritePhotoViewerDragStartX =
         touch.clientX;
 
@@ -1534,7 +1567,15 @@ function favoritePhotoViewerTouchStart(event){
     favoritePhotoViewerDragStartY =
         touch.clientY;
 
+
+    /*
+     * ピンチ距離をリセット
+     */
+    favoritePhotoViewerLastDistance =
+        0;
+
 }
+
 
 /* =========================================================
    ⭐ ビューアを開く
@@ -1576,6 +1617,10 @@ function favoritePhotoOpenViewer(
     }
 
 
+    /* =====================================================
+       ビューア対象写真
+    ===================================================== */
+
     favoritePhotoViewerIds =
         favorites.map(
             item => item.id
@@ -1590,6 +1635,19 @@ function favoritePhotoOpenViewer(
         favorite.id;
 
 
+    /* =====================================================
+       ⭐ 新しくビューアを開いたら
+       解除予定をリセット
+    ===================================================== */
+
+    favoritePhotoViewerFavoritePendingIds =
+        [];
+
+
+    /* =====================================================
+       ビューア状態初期化
+    ===================================================== */
+
     favoritePhotoViewerScale =
         1;
 
@@ -1602,9 +1660,16 @@ function favoritePhotoOpenViewer(
     favoritePhotoViewerLastDistance =
         0;
 
+    favoritePhotoViewerLastTapTime =
+        0;
+
     favoritePhotoViewerIsOpen =
         true;
 
+
+    /* =====================================================
+       HTML取得
+    ===================================================== */
 
     const viewer =
         document.getElementById(
@@ -1618,6 +1683,18 @@ function favoritePhotoOpenViewer(
         );
 
 
+    const favoriteButton =
+        document.getElementById(
+            "favoritePhotoViewerFavorite"
+        );
+
+
+    const deleteButton =
+        document.getElementById(
+            "favoritePhotoViewerDelete"
+        );
+
+
     if(
         !viewer ||
         !image
@@ -1628,89 +1705,91 @@ function favoritePhotoOpenViewer(
     }
 
 
-image.src =
-    photo.src;
+    /* =====================================================
+       写真表示
+    ===================================================== */
+
+    image.src =
+        photo.src;
 
 
-/* =====================================================
-   ⭐ / 🗑 ボタン表示制御
-===================================================== */
+    /* =====================================================
+       ⭐ / 🗑 ボタン表示制御
+       
+       📅 1日手帳由来
+       → ⭐表示
+       → 🗑非表示
+       
+       ⭐ 直接追加
+       → ⭐非表示
+       → 🗑表示
+    ===================================================== */
 
-const favoriteButton =
-    document.getElementById(
-        "favoritePhotoViewerFavorite"
-    );
+    if(
+        favorite.source ===
+        "dayPlanner"
+    ){
 
-const deleteButton =
-    document.getElementById(
-        "favoritePhotoViewerDelete"
-    );
+        if(favoriteButton){
 
+            favoriteButton.style.display =
+                "flex";
 
-/*
- * 📅 1日手帳由来
- *
- * ⭐ は表示
- * 🗑 は非表示
- */
-if(
-    favorite.source ===
-    "dayPlanner"
-){
+            favoriteButton.textContent =
+                "⭐";
 
-    if(favoriteButton){
-
-        favoriteButton.style.display =
-            "flex";
-
-    }
-
-    if(deleteButton){
-
-        deleteButton.style.display =
-            "none";
-
-    }
-
-}
+        }
 
 
-/*
- * ⭐ 直接追加
- *
- * ⭐ は非表示
- * 🗑 は表示
- */
-else{
+        if(deleteButton){
 
-    if(favoriteButton){
+            deleteButton.style.display =
+                "none";
 
-        favoriteButton.style.display =
-            "none";
+        }
 
     }
 
-    if(deleteButton){
 
-        deleteButton.style.display =
-            "flex";
+    else{
+
+        if(favoriteButton){
+
+            favoriteButton.style.display =
+                "none";
+
+        }
+
+
+        if(deleteButton){
+
+            deleteButton.style.display =
+                "flex";
+
+        }
 
     }
 
-}
+
+    /* =====================================================
+       画像位置リセット
+    ===================================================== */
+
+    favoritePhotoApplyTransform();
 
 
-favoritePhotoApplyTransform();
+    /* =====================================================
+       ビューア表示
+    ===================================================== */
 
-viewer.style.display =
-    "flex";
+    viewer.style.display =
+        "flex";
 
 
     document.body.style.overflow =
         "hidden";
 
 }
-
 
 /* =========================================================
    ⭐ ビューア画像変形
@@ -1752,6 +1831,9 @@ function favoritePhotoShow(
     }
 
 
+    /*
+     * 最後まで行ったら最初へ
+     */
     if(
         index >=
         favoritePhotoViewerIds.length
@@ -1762,7 +1844,12 @@ function favoritePhotoShow(
     }
 
 
-    if(index < 0){
+    /*
+     * 最初より前なら最後へ
+     */
+    if(
+        index < 0
+    ){
 
         index =
             favoritePhotoViewerIds.length - 1;
@@ -1774,6 +1861,9 @@ function favoritePhotoShow(
         index;
 
 
+    /*
+     * 次に表示する写真ID
+     */
     const id =
         favoritePhotoViewerIds[index];
 
@@ -1791,7 +1881,9 @@ function favoritePhotoShow(
 
 
     if(!favorite){
+
         return;
+
     }
 
 
@@ -1802,14 +1894,23 @@ function favoritePhotoShow(
 
 
     if(!photo){
+
         return;
+
     }
 
 
+    /*
+     * 現在写真IDを更新
+     */
     favoritePhotoViewerCurrentId =
         favorite.id;
 
 
+    /*
+     * 写真切り替え時は
+     * ズーム状態をリセット
+     */
     favoritePhotoViewerScale =
         1;
 
@@ -1823,6 +1924,9 @@ function favoritePhotoShow(
         0;
 
 
+    /*
+     * 写真表示
+     */
     const image =
         document.getElementById(
             "favoritePhotoViewerImage"
@@ -1838,8 +1942,86 @@ function favoritePhotoShow(
 
     }
 
-}
 
+    /*
+     * =====================================================
+     * ⭐ / 🗑 ボタン切り替え
+     * =====================================================
+     */
+
+    const favoriteButton =
+        document.getElementById(
+            "favoritePhotoViewerFavorite"
+        );
+
+
+    const deleteButton =
+        document.getElementById(
+            "favoritePhotoViewerDelete"
+        );
+
+
+    /*
+     * 1日手帳由来
+     */
+    if(
+        favorite.source ===
+        "dayPlanner"
+    ){
+
+        if(favoriteButton){
+
+            favoriteButton.style.display =
+                "flex";
+
+
+            /*
+             * この写真が解除予定なら ☆
+             * 解除予定でなければ ⭐
+             */
+            favoriteButton.textContent =
+                favoritePhotoViewerFavoritePendingIds.includes(
+                    String(favorite.id)
+                )
+                ? "☆"
+                : "⭐";
+
+        }
+
+
+        if(deleteButton){
+
+            deleteButton.style.display =
+                "none";
+
+        }
+
+    }
+
+
+    /*
+     * 直接追加
+     */
+    else{
+
+        if(favoriteButton){
+
+            favoriteButton.style.display =
+                "none";
+
+        }
+
+
+        if(deleteButton){
+
+            deleteButton.style.display =
+                "flex";
+
+        }
+
+    }
+
+}
 
 /* =========================================================
    ⭐ 前へ
@@ -1873,6 +2055,80 @@ function favoritePhotoNext(){
 
 function favoritePhotoCloseViewer(){
 
+    /*
+     * ⭐解除予定になっている写真を
+     * ビューアを閉じる瞬間にまとめて確定
+     */
+    if(
+        Array.isArray(
+            favoritePhotoViewerFavoritePendingIds
+        ) &&
+        favoritePhotoViewerFavoritePendingIds.length > 0
+    ){
+
+        const data =
+            db.load();
+
+        const memories =
+            data.dayMemories || {};
+
+
+        Object.values(memories).forEach(
+            day => {
+
+                if(
+                    !day ||
+                    !Array.isArray(
+                        day.photos
+                    )
+                ){
+
+                    return;
+
+                }
+
+
+                day.photos.forEach(
+                    photo => {
+
+                        if(
+                            favoritePhotoViewerFavoritePendingIds
+                                .includes(
+                                    String(photo.id)
+                                )
+                        ){
+
+                            /*
+                             * ⭐お気に入り解除
+                             */
+                            photo.favorite =
+                                false;
+
+
+                            delete photo.favoriteAt;
+
+                            delete photo.favoriteOrder;
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+
+        /*
+         * DB保存
+         */
+        db.save(data);
+
+    }
+
+
+    /*
+     * ビューアを閉じる
+     */
     const viewer =
         document.getElementById(
             "favoritePhotoViewer"
@@ -1887,50 +2143,13 @@ function favoritePhotoCloseViewer(){
     }
 
 
-    /* =====================================================
-       ⭐ / 🗑 ビューアボタンをリセット
-    ===================================================== */
-
-    const favoriteButton =
-        document.getElementById(
-            "favoritePhotoViewerFavorite"
-        );
-
-
-    const deleteButton =
-        document.getElementById(
-            "favoritePhotoViewerDelete"
-        );
-
-
-    if(favoriteButton){
-
-        favoriteButton.style.display =
-            "none";
-
-    }
-
-
-    if(deleteButton){
-
-        deleteButton.style.display =
-            "none";
-
-    }
-
-
-    /* =====================================================
-       📷 背景スクロール解除
-    ===================================================== */
-
     document.body.style.overflow =
         "";
 
 
-    /* =====================================================
-       ⭐ ビューア状態リセット
-    ===================================================== */
-
+    /*
+     * ビューア状態リセット
+     */
     favoritePhotoViewerIsOpen =
         false;
 
@@ -1962,13 +2181,48 @@ function favoritePhotoCloseViewer(){
     favoritePhotoViewerLastDistance =
         0;
 
+
+    /*
+     * ⭐解除予定を全部リセット
+     *
+     * 次にビューアを開いたときに
+     * 前回の解除予定が残らないようにする
+     */
+    favoritePhotoViewerFavoritePendingIds =
+        [];
+
+
+    /*
+     * ボタンを⭐に戻す
+     */
+    const favoriteButton =
+        document.getElementById(
+            "favoritePhotoViewerFavorite"
+        );
+
+
+    if(favoriteButton){
+
+        favoriteButton.textContent =
+            "⭐";
+
+    }
+
+
+    /*
+     * お気に入りページを更新
+     */
+    favoritePhotoRender();
+
 }
 
 /* =========================================================
    ⭐ スワイプ
 ========================================================= */
 
-function favoritePhotoSwipe(event){
+function favoritePhotoSwipe(
+    event
+){
 
     if(
         !favoritePhotoViewerIsOpen
@@ -1979,8 +2233,9 @@ function favoritePhotoSwipe(event){
     }
 
 
-    /* ズーム中はスワイプしない */
-
+    /*
+     * 拡大中はスワイプで写真を切り替えない
+     */
     if(
         favoritePhotoViewerScale > 1
     ){
@@ -1990,6 +2245,9 @@ function favoritePhotoSwipe(event){
     }
 
 
+    /*
+     * 指1本で終了した場合だけ判定
+     */
     if(
         !event.changedTouches ||
         event.changedTouches.length !== 1
@@ -2004,6 +2262,19 @@ function favoritePhotoSwipe(event){
         event.changedTouches[0];
 
 
+    /*
+     * 開始位置
+     */
+    const startX =
+        favoritePhotoViewerTouchStartX;
+
+    const startY =
+        favoritePhotoViewerTouchStartY;
+
+
+    /*
+     * 終了位置
+     */
     const endX =
         touch.clientX;
 
@@ -2011,27 +2282,29 @@ function favoritePhotoSwipe(event){
         touch.clientY;
 
 
+    /*
+     * 移動量
+     */
     const diffX =
         endX -
-        favoritePhotoViewerTouchStartX;
-
+        startX;
 
     const diffY =
         endY -
-        favoritePhotoViewerTouchStartY;
+        startY;
 
 
-    /* =====================================================
-       📷 1日手帳と同じスワイプ判定
-
-       ・横移動 80px以上
-       ・横移動が縦移動より大きい
-
-       → タップでは絶対に切り替えない
-    ===================================================== */
+    /*
+     * =====================================================
+     * タップ判定
+     *
+     * 横方向の移動が60px未満なら
+     * 写真を切り替えない
+     * =====================================================
+     */
 
     if(
-        Math.abs(diffX) < 80
+        Math.abs(diffX) < 60
     ){
 
         return;
@@ -2039,9 +2312,18 @@ function favoritePhotoSwipe(event){
     }
 
 
+    /*
+     * =====================================================
+     * 縦方向の移動の方が大きい場合
+     *
+     * 縦スクロール的な操作なので
+     * 写真を切り替えない
+     * =====================================================
+     */
+
     if(
-        Math.abs(diffX) <=
-        Math.abs(diffY)
+        Math.abs(diffY) >=
+        Math.abs(diffX)
     ){
 
         return;
@@ -2049,9 +2331,12 @@ function favoritePhotoSwipe(event){
     }
 
 
-    /* =====================================================
-       👉 左スワイプ → 次
-    ===================================================== */
+    /*
+     * =====================================================
+     * 左へスワイプ
+     * → 次の写真
+     * =====================================================
+     */
 
     if(
         diffX < 0
@@ -2062,9 +2347,12 @@ function favoritePhotoSwipe(event){
     }
 
 
-    /* =====================================================
-       👈 右スワイプ → 前
-    ===================================================== */
+    /*
+     * =====================================================
+     * 右へスワイプ
+     * → 前の写真
+     * =====================================================
+     */
 
     else{
 
@@ -2308,6 +2596,119 @@ function favoritePhotoDragEnd(){
 
 }
 
+
+/* =========================================================
+   ⭐ ビューア現在写真 お気に入り解除予約
+========================================================= */
+
+function favoritePhotoToggleCurrentFavorite(){
+
+    if(
+        favoritePhotoViewerCurrentId == null
+    ){
+
+        return;
+
+    }
+
+
+    /*
+     * 現在表示している写真ID
+     */
+    const id =
+        String(
+            favoritePhotoViewerCurrentId
+        );
+
+
+    /*
+     * 1日手帳由来の写真だけ
+     * ⭐解除処理を行う
+     */
+    const favorites =
+        favoritePhotoGetOrdered();
+
+
+    const favorite =
+        favorites.find(
+            item =>
+                String(item.id) ===
+                id
+        );
+
+
+    if(
+        !favorite ||
+        favorite.source !==
+        "dayPlanner"
+    ){
+
+        return;
+
+    }
+
+
+    /*
+     * 現在の写真が
+     * 解除予定に入っているか確認
+     */
+    const index =
+        favoritePhotoViewerFavoritePendingIds.indexOf(
+            id
+        );
+
+
+    /*
+     * ⭐ → ☆
+     *
+     * DBはまだ変更しない
+     * 「閉じる時に解除する予定」
+     */
+    if(index === -1){
+
+        favoritePhotoViewerFavoritePendingIds.push(
+            id
+        );
+
+    }
+
+
+    /*
+     * ☆ → ⭐
+     *
+     * 解除予定から取り消す
+     */
+    else{
+
+        favoritePhotoViewerFavoritePendingIds.splice(
+            index,
+            1
+        );
+
+    }
+
+
+    /*
+     * ボタン表示を即時変更
+     */
+    const button =
+        document.getElementById(
+            "favoritePhotoViewerFavorite"
+        );
+
+
+    if(button){
+
+        button.textContent =
+            favoritePhotoViewerFavoritePendingIds.includes(
+                id
+            )
+            ? "☆"
+            : "⭐";
+
+    }
+
+}
 
 /* =========================================================
    ⭐ ビューア現在写真削除
@@ -3379,5 +3780,3 @@ function displayFavoritePhotos(){
 
     favoritePhotoRender();
 }
-
-
