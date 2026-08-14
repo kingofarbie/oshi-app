@@ -322,6 +322,9 @@ let selectedMemoIds = [];
 // 並び替え前のメモ順を一時保存
 let memoSortOriginalOrder = null;
 
+// 並び替え中の作業用メモ順
+let memoSortWorkingOrder = null;
+
 
 
 /* ==================================================
@@ -576,6 +579,16 @@ memoSortOriginalOrder =
     list.map(memo => ({
         ...memo
     }));
+
+// 並び替え中の作業用順番
+memoSortWorkingOrder =
+    list.map(memo => ({
+        ...memo
+    }));
+
+
+
+
 
 renderMemoModeMessage(
     "🔀 右側の☰をドラッグして並び替えてください"
@@ -1262,7 +1275,7 @@ function memoDragMouseUp(){
 
 /* ==================================================
    DB上でメモを並び替える
-   ※ この時点では保存しない
+   ※ 並び替え中は画面上だけ変更
 ================================================== */
 
 function reorderMemoInDB(
@@ -1270,25 +1283,20 @@ function reorderMemoInDB(
     targetIndex
 ){
 
-    const data =
-        db.load();
-
-    const day =
-        data.dayMemories?.[
-            selectedCalendarDate
-        ];
-
     if(
-        !day ||
-        !Array.isArray(day.memo)
+        !Array.isArray(
+            memoSortWorkingOrder
+        )
     ){
 
         return;
 
     }
 
+
     const list =
-        day.memo;
+        memoSortWorkingOrder;
+
 
     const oldIndex =
         list.findIndex(
@@ -1296,9 +1304,17 @@ function reorderMemoInDB(
                 memo.id === id
         );
 
+
     if(oldIndex < 0){
+
         return;
+
     }
+
+
+    /*
+       移動するメモを取り出す
+    */
 
     const item =
         list.splice(
@@ -1306,13 +1322,31 @@ function reorderMemoInDB(
             1
         )[0];
 
+
+    /*
+       移動先を補正
+    */
+
     if(targetIndex < 0){
+
         targetIndex = 0;
+
     }
 
-    if(targetIndex > list.length){
-        targetIndex = list.length;
+
+    if(
+        targetIndex > list.length
+    ){
+
+        targetIndex =
+            list.length;
+
     }
+
+
+    /*
+       新しい位置へ入れる
+    */
 
     list.splice(
         targetIndex,
@@ -1320,14 +1354,69 @@ function reorderMemoInDB(
         item
     );
 
+
     /*
-       ★ ここでは db.save(data) しない
-       ★ 並び替えモード中は一時的に画面だけ変更
+       ★ 作業用配列を画面に反映
+       ★ DBにはまだ保存しない
     */
 
-    renderDayMemos();
+    const memoArea =
+        document.getElementById(
+            "memoList"
+        );
+
+
+    if(!memoArea){
+
+        return;
+
+    }
+
+
+    memoArea.innerHTML =
+        list.map(
+            (memo,index)=>{
+
+                return `
+
+<div
+    class="
+        memory-card
+        memo-card-item
+        memo-sort-item
+    "
+    data-memo-id="${memo.id}"
+    data-memo-index="${index}"
+>
+
+<span class="memo-card-text">
+    ${escapeMemoHtml(memo.text)}
+</span>
+
+<span
+    class="memo-drag-handle"
+    data-memo-id="${memo.id}"
+    aria-label="メモを並び替える"
+>
+    ☰
+</span>
+
+</div>
+
+`;
+
+            }
+        ).join("");
+
+
+    /*
+       ドラッグ機能を再設定
+    */
+
+    setupMemoDragSort();
 
 }
+
 
 /* ==================================================
    ドラッグ終了処理
@@ -1604,88 +1693,82 @@ function deleteSelectedMemos(){
 
 function confirmMemoSort(){
 
+    if(
+        !Array.isArray(
+            memoSortWorkingOrder
+        )
+    ){
+
+        cancelMemoMode();
+
+        return;
+
+    }
+
+
     const data =
         db.load();
 
-    const day =
-        data.dayMemories?.[
-            selectedCalendarDate
-        ];
+
+    if(!data.dayMemories){
+
+        return;
+
+    }
+
 
     if(
-        !day ||
-        !Array.isArray(day.memo)
+        !data.dayMemories[
+            selectedCalendarDate
+        ]
     ){
 
         return;
 
     }
 
-    // 現在の並び順を保存
-    db.save(data);
-
-    memoSortOriginalOrder = null;
-
-    cancelMemoMode();
-
-}
-
-
-/* ==================================================
-   モード終了
-================================================== */
-
-function cancelMemoMode(){
 
     /*
-       🔀 並び替えモードをキャンセルした場合
-       元の順番に戻す
+       作業中の並びをDBへ反映
     */
 
-    if(
-        memoMode === "sort" &&
-        memoSortOriginalOrder
-    ){
-
-        const data =
-            db.load();
-
-        const day =
-            data.dayMemories?.[
-                selectedCalendarDate
-            ];
-
-        if(
-            day &&
-            Array.isArray(day.memo)
-        ){
-
-            day.memo =
-                memoSortOriginalOrder.map(
-                    memo => ({
-                        ...memo
-                    })
-                );
-
-        }
-
-    }
+    data.dayMemories[
+        selectedCalendarDate
+    ].memo =
+        memoSortWorkingOrder.map(
+            memo => ({
+                ...memo
+            })
+        );
 
 
     /*
-       モード終了
+       ★ ここで初めて保存
+    */
+
+    db.save(data);
+
+
+    /*
+       作業用データを終了
+    */
+
+    memoSortOriginalOrder =
+        null;
+
+    memoSortWorkingOrder =
+        null;
+
+
+    /*
+       通常モードへ戻る
     */
 
     memoMode =
         "normal";
 
-
     selectedMemoIds =
         [];
-
-
-    memoSortOriginalOrder =
-        null;
 
 
     resetMemoDrag();
@@ -1703,6 +1786,71 @@ function cancelMemoMode(){
 
     }
 
+
+    renderDayMemos();
+
+}
+
+
+/* ==================================================
+   モード終了
+================================================== */
+
+function cancelMemoMode(){
+
+    /*
+       🔀 並び替えモードをキャンセル
+       → DBは変更しない
+    */
+
+    if(
+        memoMode === "sort"
+    ){
+
+        /*
+           作業用並びを破棄
+        */
+
+        memoSortWorkingOrder =
+            null;
+
+        memoSortOriginalOrder =
+            null;
+
+    }
+
+
+    /*
+       モード終了
+    */
+
+    memoMode =
+        "normal";
+
+    selectedMemoIds =
+        [];
+
+
+    resetMemoDrag();
+
+
+    const message =
+        document.getElementById(
+            "memoModeMessage"
+        );
+
+
+    if(message){
+
+        message.remove();
+
+    }
+
+
+    /*
+       DBに保存されている
+       本来の順番を再表示
+    */
 
     renderDayMemos();
 
