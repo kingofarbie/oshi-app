@@ -1482,11 +1482,9 @@ async function(){
     );
 
     await loadHtml(
-    "favoriteContainer",
-    "favorites.html"
+    "favoritePhotoContainer",
+    "favorites-photo.html"
 );
-
-initFavorites();
 
 displayFavoritePhotos();
 
