@@ -316,6 +316,28 @@ function switchTab(pageId, event, fromCalendar = false){
     /* =====================
        お気に入り
     ===================== */
+    if(pageId === 'favoritePage'){
+
+    setTimeout(() => {
+
+        if(
+            typeof favoritePhotoRender ===
+            'function'
+        ){
+
+            favoritePhotoRender();
+
+        }else{
+
+            console.error(
+                "★ favoritePhotoRender() が見つかりません"
+            );
+
+        }
+
+    }, 50);
+
+}
 
 
 
