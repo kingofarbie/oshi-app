@@ -2924,8 +2924,7 @@ async function renderDayMovies(){
         if(!movieSrc){
 
             console.warn(
-                "⚠️ IndexedDBから取得できなかったため、
-                movie.src を使用します:",
+                "⚠️ IndexedDBから取得できなかったため、movie.src を使用します:",
                 movie.src
             );
 
