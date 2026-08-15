@@ -323,6 +323,8 @@ function eventStartDate(e){
 ホームお気に入り写真
 ===================== */
 
+
+
 function displayFavoritePhotoCard(){
 
     const box =
@@ -412,6 +414,18 @@ function displayFavoritePhotoCard(){
         );
 
     });
+
+    console.log(
+    "ホームお気に入り写真:",
+    photos
+);
+console.log(
+    "ホームお気に入り写真枚数:",
+    photos.length
+);
+
+
+
 
 
     /* =====================
