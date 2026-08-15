@@ -2505,15 +2505,33 @@ function displayFavorites(){
 
 console.log("🎥 renderDayMovies を呼び出します");
 
-/* =========================================================
+/* =====================================================
    1日動画表示
-========================================================= */
+===================================================== */
 
 async function renderDayMovies(){
 
+    console.log("🎥 ===============================");
     console.log("🎥 renderDayMovies 実行");
+    console.log("🎥 ===============================");
 
-    const data = db.load();
+
+    /* =====================
+       DB取得
+    ===================== */
+
+    const data =
+        db.load();
+
+    console.log(
+        "🎥 DB取得:",
+        data
+    );
+
+
+    /* =====================
+       表示対象日
+    ===================== */
 
     const selectedDate =
         window.selectedCalendarDate ||
@@ -2524,6 +2542,11 @@ async function renderDayMovies(){
         selectedDate
     );
 
+
+    /* =====================
+       日付データ取得
+    ===================== */
+
     const day =
         data.dayMemories?.[selectedDate];
 
@@ -2532,12 +2555,25 @@ async function renderDayMovies(){
         day
     );
 
+
+    /* =====================
+       動画表示エリア
+    ===================== */
+
     const movieArea =
-        document.getElementById("movieList");
+        document.getElementById(
+            "movieList"
+        );
+
+    console.log(
+        "🎥 movieList:",
+        movieArea
+    );
+
 
     if(!movieArea){
 
-        console.log(
+        console.error(
             "❌ movieList が見つかりません"
         );
 
@@ -2546,11 +2582,19 @@ async function renderDayMovies(){
     }
 
 
+    /* =====================
+       動画なし
+    ===================== */
+
     if(
         !day ||
-        !day.movies ||
-        !day.movies.length
+        !Array.isArray(day.movies) ||
+        day.movies.length === 0
     ){
+
+        console.log(
+            "🎥 この日に動画はありません"
+        );
 
         movieArea.innerHTML =
             "動画はありません";
@@ -2560,7 +2604,18 @@ async function renderDayMovies(){
     }
 
 
-    let movies = [...day.movies];
+    console.log(
+        "🎥 DB上の動画件数:",
+        day.movies.length
+    );
+
+
+    /* =====================
+       動画コピー
+    ===================== */
+
+    let movies =
+        [...day.movies];
 
 
     /* =====================
@@ -2573,12 +2628,22 @@ async function renderDayMovies(){
         ) || "new";
 
 
+    console.log(
+        "🎥 動画並び順:",
+        sortMode
+    );
+
+
     if(sortMode === "free"){
 
         movies.sort(
             (a,b) =>
-                Number(a.order ?? a.id) -
-                Number(b.order ?? b.id)
+                Number(
+                    a.order ?? a.id
+                ) -
+                Number(
+                    b.order ?? b.id
+                )
         );
 
     }
@@ -2595,35 +2660,47 @@ async function renderDayMovies(){
 
     else if(sortMode === "favoriteNew"){
 
-        movies.sort((a,b)=>{
+        movies.sort(
+            (a,b) => {
 
-            if(a.favorite !== b.favorite){
+                if(
+                    a.favorite !==
+                    b.favorite
+                ){
 
-                return b.favorite - a.favorite;
+                    return b.favorite -
+                           a.favorite;
+
+                }
+
+                return Number(b.id) -
+                       Number(a.id);
 
             }
-
-            return Number(b.id) -
-                   Number(a.id);
-
-        });
+        );
 
     }
 
     else if(sortMode === "favoriteOld"){
 
-        movies.sort((a,b)=>{
+        movies.sort(
+            (a,b) => {
 
-            if(a.favorite !== b.favorite){
+                if(
+                    a.favorite !==
+                    b.favorite
+                ){
 
-                return b.favorite - a.favorite;
+                    return b.favorite -
+                           a.favorite;
+
+                }
+
+                return Number(a.id) -
+                       Number(b.id);
 
             }
-
-            return Number(a.id) -
-                   Number(b.id);
-
-        });
+        );
 
     }
 
@@ -2639,11 +2716,13 @@ async function renderDayMovies(){
 
 
     /* =====================
-       表示数
+       表示件数
     ===================== */
 
     const movieDisplayCount =
-        MOVIE_COLUMNS * MOVIE_ROWS;
+        MOVIE_COLUMNS *
+        MOVIE_ROWS;
+
 
     const showMovies =
         showAllDayMovies
@@ -2654,6 +2733,16 @@ async function renderDayMovies(){
         );
 
 
+    console.log(
+        "🎥 今回表示する動画件数:",
+        showMovies.length
+    );
+
+
+    /* =====================
+       グリッド設定
+    ===================== */
+
     movieArea.style.setProperty(
         "--movie-columns",
         MOVIE_COLUMNS
@@ -2661,7 +2750,7 @@ async function renderDayMovies(){
 
 
     /* =====================
-       動画HTML作成
+       HTML
     ===================== */
 
     let html = "";
@@ -2669,30 +2758,31 @@ async function renderDayMovies(){
 
     if(movieDeleteMode){
 
-        html += getMovieDeleteModeBar();
+        html +=
+            getMovieDeleteModeBar();
 
     }
 
 
     if(movieShareMode){
 
-        html += getMovieShareModeBar();
+        html +=
+            getMovieShareModeBar();
 
     }
 
 
     if(movieSortMode){
 
-        html += getMovieFreeModeBar();
+        html +=
+            getMovieFreeModeBar();
 
     }
 
 
-    /*
-    =====================
-       動画
-    =====================
-    */
+    /* =================================================
+       動画1本ずつ処理
+    ================================================= */
 
     for(const movie of showMovies){
 
@@ -2700,65 +2790,134 @@ async function renderDayMovies(){
             Number(movie.id);
 
 
+        console.log(
+            "🎥 動画処理開始:",
+            {
+                id: id,
+                mediaId: movie.mediaId,
+                oldSrc: movie.src,
+                type: movie.type
+            }
+        );
+
+
         const deleteSelected =
             movieDeleteMode &&
-            selectedDeleteMovieIds.includes(id);
+            selectedDeleteMovieIds.includes(
+                id
+            );
 
 
         const shareSelected =
             movieShareMode &&
-            selectedShareMovieIds.includes(id);
+            selectedShareMovieIds.includes(
+                id
+            );
 
 
-        /*
-        =====================
-           IndexedDBから動画取得
-        =====================
-        */
+        /* =================================================
+           ★重要
+           古い movie.src は使わない
+           必ず IndexedDB から取得する
+        ================================================= */
 
-        let movieSrc = movie.src || "";
+        let movieSrc = "";
 
 
-        if(!movieSrc){
+        try{
 
-            try{
+            console.log(
+                "🎥 IndexedDBから動画取得開始:",
+                id
+            );
 
-                const storedMovie =
-                    await getMovieFromIndexedDB(id);
 
-                console.log(
-                    "🎥 IndexedDB取得結果:",
-                    storedMovie
+            const storedMovie =
+                await getMovieFromIndexedDB(
+                    id
                 );
 
 
-                if(
-                    storedMovie &&
-                    storedMovie.file
-                ){
+            console.log(
+                "🎥 IndexedDB取得結果:",
+                storedMovie
+            );
 
-                    movieSrc =
-                        URL.createObjectURL(
-                            storedMovie.file
-                        );
 
-                }
+            /* =====================
+               File確認
+            ===================== */
 
-            }catch(error){
+            if(
+                storedMovie &&
+                storedMovie.file
+            ){
 
-                console.error(
-                    "❌ IndexedDB動画取得エラー:",
-                    error
+                console.log(
+                    "🎥 IndexedDB File確認:",
+                    {
+                        id:
+                            storedMovie.id,
+
+                        file:
+                            storedMovie.file,
+
+                        fileName:
+                            storedMovie.file.name,
+
+                        fileType:
+                            storedMovie.file.type,
+
+                        fileSize:
+                            storedMovie.file.size
+                    }
+                );
+
+
+                /* =====================
+                   ★新しいBlob URL作成
+                ===================== */
+
+                movieSrc =
+                    URL.createObjectURL(
+                        storedMovie.file
+                    );
+
+
+                console.log(
+                    "🎥 新しい動画URL作成:",
+                    movieSrc
                 );
 
             }
 
+            else{
+
+                console.error(
+                    "❌ IndexedDBに動画Fileがありません:",
+                    id
+                );
+
+            }
+
+        }catch(error){
+
+            console.error(
+                "❌ IndexedDB動画取得エラー:",
+                id,
+                error
+            );
+
         }
 
 
+        /* =====================
+           URL取得失敗
+        ===================== */
+
         if(!movieSrc){
 
-            console.log(
+            console.error(
                 "❌ 動画URLを取得できません:",
                 movie
             );
@@ -2768,19 +2927,27 @@ async function renderDayMovies(){
         }
 
 
+        /* =====================
+           選択状態
+        ===================== */
+
+        const selectedClass =
+            deleteSelected ||
+            shareSelected
+            ? "movie-delete-selected"
+            : "";
+
+
+        /* =====================
+           動画HTML
+        ===================== */
+
         html += `
 
 <div
     class="
         memory-movie-box
-        ${
-            deleteSelected ||
-            shareSelected
-            ?
-            "movie-delete-selected"
-            :
-            ""
-        }
+        ${selectedClass}
     "
 
     data-movie-id="${movie.id}"
@@ -2819,6 +2986,7 @@ async function renderDayMovies(){
             :
             `onclick="openMovieViewer(${movie.id})"`
         }
+
     ></video>
 
 
@@ -2831,10 +2999,8 @@ async function renderDayMovies(){
 
             ${
                 deleteSelected
-                ?
-                "✓"
-                :
-                ""
+                ? "✓"
+                : ""
             }
 
         </div>
@@ -2854,10 +3020,8 @@ async function renderDayMovies(){
 
             ${
                 shareSelected
-                ?
-                "✓"
-                :
-                ""
+                ? "✓"
+                : ""
             }
 
         </div>
@@ -2898,10 +3062,8 @@ async function renderDayMovies(){
 
     ${
         showAllDayMovies
-        ?
-        "閉じる"
-        :
-        "もっと見る"
+        ? "閉じる"
+        : "もっと見る"
     }
 
 </div>
@@ -2911,13 +3073,25 @@ async function renderDayMovies(){
     }
 
 
+    /* =====================
+       HTML反映
+    ===================== */
+
     movieArea.innerHTML =
         html;
 
 
     console.log(
+        "🎥 ==============================="
+    );
+
+    console.log(
         "🎥 動画一覧HTML表示完了:",
         showMovies.length
+    );
+
+    console.log(
+        "🎥 ==============================="
     );
 
 }
