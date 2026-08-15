@@ -1,0 +1,90 @@
+/* =========================
+   ⭐ お気に入り写真設定
+========================= */
+
+.favorite-setting-row{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:12px;
+
+    min-height:48px;
+
+    padding:6px 0;
+
+}
+
+
+.favorite-setting-row label,
+.favorite-setting-row > span{
+
+    flex:1;
+
+    font-size:16px;
+
+    font-weight:bold;
+
+    color:var(--text);
+
+}
+
+
+.favorite-setting-row select{
+
+    width:auto;
+
+    min-width:90px;
+
+    padding:9px 12px;
+
+    border:1px solid var(--border);
+
+    border-radius:9px;
+
+    background:var(--surface);
+
+    color:var(--text);
+
+    font-size:15px;
+
+}
+
+
+/* フェイドON/OFF */
+
+.favorite-fade-btn{
+
+    min-width:82px;
+
+    padding:9px 14px;
+
+    border:none;
+
+    border-radius:20px;
+
+    font-size:15px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    background:#e8f7ed;
+
+    color:#16833b;
+
+}
+
+
+/* OFF状態 */
+
+.favorite-fade-btn.off{
+
+    background:#eeeeee;
+
+    color:#777;
+
+}

@@ -323,7 +323,7 @@ function eventStartDate(e){
 ホームお気に入り写真
 ===================== */
 
-
+let favoritePhotoHomeSlideTimer = null;
 
 function displayFavoritePhotoCard(){
 
@@ -336,7 +336,29 @@ function displayFavoritePhotoCard(){
         return;
     }
 
-    const data = db.load();
+
+    /* =====================
+       既存タイマー停止
+       設定変更時の多重実行防止
+    ===================== */
+
+    if(
+        favoritePhotoHomeSlideTimer
+    ){
+
+        clearInterval(
+            favoritePhotoHomeSlideTimer
+        );
+
+        favoritePhotoHomeSlideTimer =
+            null;
+
+    }
+
+
+    const data =
+        db.load();
+
 
     /* =====================
        設定取得
@@ -345,55 +367,78 @@ function displayFavoritePhotoCard(){
     const settings =
         data.settings?.favoritePhoto || {};
 
+
     const countSetting =
         settings.count ?? 3;
+
 
     const fadeEnabled =
         settings.fade !== false;
 
+
     const interval =
         Number(
-            settings.interval || 7000
+            settings.interval ?? 7000
         );
 
 
     /* =====================
-       お気に入り写真取得
-       ★ お気に入りページと同じデータを使用
+       お気に入りページと
+       完全に同じ写真一覧を使用
     ===================== */
 
     const favorites =
         favoritePhotoGetOrdered();
 
-    let photos = [];
 
-    favorites.forEach(favorite => {
+    const photos = [];
 
-        const photo =
-            favoritePhotoGetData(favorite);
 
-        if(photo){
+    favorites.forEach(
+        favorite => {
 
-            photos.push({
-                ...photo,
-                favoriteId: favorite.id
-            });
+            const photo =
+                favoritePhotoGetData(
+                    favorite
+                );
+
+
+            if(photo){
+
+                photos.push({
+
+                    ...photo,
+
+                    favoriteId:
+                        favorite.id
+
+                });
+
+            }
 
         }
-
-    });
+    );
 
 
     /* =====================
        表示枚数
     ===================== */
 
-    if(countSetting !== "all"){
+    let displayPhotos =
+        photos;
+
+
+    if(
+        countSetting !== "all"
+    ){
 
         const displayCount =
-            Number(countSetting);
+            Number(
+                countSetting
+            );
 
-        photos =
+
+        displayPhotos =
             photos.slice(
                 0,
                 displayCount
@@ -406,12 +451,19 @@ function displayFavoritePhotoCard(){
        写真なし
     ===================== */
 
-    if(photos.length === 0){
+    if(
+        displayPhotos.length === 0
+    ){
 
         box.innerHTML = `
-            <div class="favorite-photo-empty">
+
+            <div
+                class="favorite-photo-empty">
+
                 ⭐ お気に入り写真はありません
+
             </div>
+
         `;
 
         return;
@@ -423,16 +475,28 @@ function displayFavoritePhotoCard(){
        1枚だけ
     ===================== */
 
-    if(photos.length === 1){
+    if(
+        displayPhotos.length === 1
+    ){
+
+        const photo =
+            displayPhotos[0];
+
 
         box.innerHTML = `
 
-            <div class="home-favorite-photo-view">
+            <div
+                class="home-favorite-photo-view">
 
                 <img
-                    src="${photos[0].src}"
+                    src="${photo.src}"
                     class="home-favorite-photo"
-                    onclick="openFavoritePhotoViewer(${photos[0].favoriteId})"
+
+                    onclick="
+                        openFavoritePhotoViewer(
+                            '${photo.favoriteId}'
+                        )
+                    "
                 >
 
             </div>
@@ -445,26 +509,50 @@ function displayFavoritePhotoCard(){
 
 
     /* =====================
-       複数枚スライドショー
+       複数枚
+       スライドショー
     ===================== */
 
     box.innerHTML = `
 
         <div
-            class="home-favorite-slideshow
-            ${fadeEnabled ? "" : "no-fade"}"
+            class="
+                home-favorite-slideshow
+                ${fadeEnabled
+                    ? ""
+                    : "no-fade"
+                }
+            "
         >
 
-            ${photos.map((photo,index) => `
+            ${
+                displayPhotos.map(
+                    (photo,index) => `
 
-                <img
-                    src="${photo.src}"
-                    class="home-favorite-photo ${index === 0 ? "active" : ""}"
-                    data-favorite-index="${index}"
-                    onclick="openFavoritePhotoViewer(${photo.favoriteId})"
-                >
+                        <img
+                            src="${photo.src}"
 
-            `).join("")}
+                            class="
+                                home-favorite-photo
+                                ${
+                                    index === 0
+                                    ? "active"
+                                    : ""
+                                }
+                            "
+
+                            data-favorite-index="${index}"
+
+                            onclick="
+                                openFavoritePhotoViewer(
+                                    '${photo.favoriteId}'
+                                )
+                            "
+                        >
+
+                    `
+                ).join("")
+            }
 
         </div>
 
@@ -472,10 +560,11 @@ function displayFavoritePhotoCard(){
 
 
     /* =====================
-       スライドショー
+       スライドショー開始
     ===================== */
 
     let current = 0;
+
 
     const images =
         box.querySelectorAll(
@@ -483,25 +572,44 @@ function displayFavoritePhotoCard(){
         );
 
 
-    setInterval(() => {
+    if(
+        images.length <= 1
+    ){
 
-        if(images.length <= 1){
-            return;
-        }
+        return;
 
-        images[current].classList.remove(
-            "active"
+    }
+
+
+    favoritePhotoHomeSlideTimer =
+        setInterval(
+            () => {
+
+                images[
+                    current
+                ].classList.remove(
+                    "active"
+                );
+
+
+                current =
+                    (
+                        current + 1
+                    )
+                    %
+                    images.length;
+
+
+                images[
+                    current
+                ].classList.add(
+                    "active"
+                );
+
+
+            },
+            interval
         );
-
-        current =
-            (current + 1)
-            % images.length;
-
-        images[current].classList.add(
-            "active"
-        );
-
-    }, interval);
 
 }
 

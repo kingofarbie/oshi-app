@@ -1,4 +1,3 @@
-
 /* =====================
    ⭐ ホームお気に入り写真設定
 ===================== */
@@ -43,7 +42,9 @@ function loadFavoritePhotoSettings(){
     if(countSelect){
 
         countSelect.value =
-            String(settings.count ?? 3);
+            String(
+                settings.count ?? 3
+            );
 
     }
 
@@ -59,10 +60,18 @@ function loadFavoritePhotoSettings(){
 
     if(fadeBtn){
 
+        const enabled =
+            settings.fade !== false;
+
         fadeBtn.textContent =
-            settings.fade !== false
-            ? "ON"
-            : "OFF";
+            enabled
+            ? "🟢 ON"
+            : "⚪ OFF";
+
+        fadeBtn.classList.toggle(
+            "off",
+            !enabled
+        );
 
     }
 
@@ -79,7 +88,9 @@ function loadFavoritePhotoSettings(){
     if(intervalSelect){
 
         intervalSelect.value =
-            String(settings.interval ?? 7000);
+            String(
+                settings.interval ?? 7000
+            );
 
     }
 
@@ -101,6 +112,7 @@ function changeFavoritePhotoCount(){
         return;
     }
 
+
     const data = db.load();
 
     if(!data.settings){
@@ -120,6 +132,8 @@ function changeFavoritePhotoCount(){
 
     db.save(data);
 
+
+    /* ホーム表示を更新 */
     displayFavoritePhotoCard();
 
 }
@@ -161,14 +175,23 @@ function toggleFavoritePhotoFade(){
 
     if(btn){
 
+        const enabled =
+            data.settings.favoritePhoto.fade;
+
         btn.textContent =
-            data.settings.favoritePhoto.fade
-            ? "ON"
-            : "OFF";
+            enabled
+            ? "🟢 ON"
+            : "⚪ OFF";
+
+        btn.classList.toggle(
+            "off",
+            !enabled
+        );
 
     }
 
 
+    /* ホーム表示を更新 */
     displayFavoritePhotoCard();
 
 }
@@ -207,6 +230,8 @@ function changeFavoritePhotoInterval(){
 
     db.save(data);
 
+
+    /* ホーム表示を更新 */
     displayFavoritePhotoCard();
 
 }
