@@ -411,17 +411,17 @@ function changeMonth(value){
 
 function selectCalendarDate(date){
 
+    console.log("📅 ===============================");
     console.log("📅 selectCalendarDate 実行:", date);
     console.log("📅 date:", date);
     console.log("📅 copyMode:", copyMode);
+
 
     /* =====================
        コピー貼り付け
     ===================== */
 
     if(copyMode){
-
-        console.log("📋 コピー貼り付けモード");
 
         const data = db.load();
 
@@ -457,7 +457,7 @@ function selectCalendarDate(date){
             );
 
 
-        ids.forEach(id=>{
+        ids.forEach(id => {
 
             const event =
                 data.events.find(
@@ -471,6 +471,7 @@ function selectCalendarDate(date){
                 event.start
                 ? event.start.substring(11,16)
                 : null;
+
 
             const endTime =
                 event.end
@@ -507,6 +508,7 @@ function selectCalendarDate(date){
         const copiedCount =
             ids.length;
 
+
         const originalCount =
             copyEventId.length;
 
@@ -516,22 +518,25 @@ function selectCalendarDate(date){
 
 
         /*
-           貼り付け先の日付
+        =====================
+           コピー先の日付を選択
+        =====================
         */
 
-        selectedCalendarDate = date;
+        selectedCalendarDate =
+            date;
 
         window.selectedCalendarDate =
-            selectedCalendarDate;
+            date;
 
 
         console.log(
-            "📅 コピー後 selectedCalendarDate:",
+            "📅 コピー先 selectedCalendarDate:",
             selectedCalendarDate
         );
 
         console.log(
-            "📅 window.selectedCalendarDate:",
+            "📅 コピー先 window.selectedCalendarDate:",
             window.selectedCalendarDate
         );
 
@@ -581,10 +586,12 @@ function selectCalendarDate(date){
     );
 
 
-    selectedCalendarDate = date;
+    selectedCalendarDate =
+        date;
+
 
     window.selectedCalendarDate =
-        selectedCalendarDate;
+        date;
 
 
     console.log(
@@ -592,20 +599,22 @@ function selectCalendarDate(date){
         selectedCalendarDate
     );
 
+
     console.log(
         "📅 window.selectedCalendarDate 設定:",
         window.selectedCalendarDate
     );
 
 
-    /*
-       日付変更時は予定追加フォームを閉じる
-    */
+    /* =====================
+       予定追加フォームを閉じる
+    ===================== */
 
     const form =
         document.getElementById(
-            'event-form-card'
+            "event-form-card"
         );
+
 
     if(form){
 
@@ -615,42 +624,97 @@ function selectCalendarDate(date){
     }
 
 
-    /*
-       入力途中の内容も消す
-    */
+    /* =====================
+       入力途中の内容を消す
+    ===================== */
 
-    clearEventForm();
+    if(typeof clearEventForm === "function"){
+
+        clearEventForm();
+
+    }
 
 
-    /*
+    /* =====================
        カレンダー再描画
-    */
+    ===================== */
 
-    renderCalendar();
+    if(typeof renderCalendar === "function"){
+
+        renderCalendar();
+
+    }
 
 
-    /*
+    /* =====================
+       予定表示更新
+    ===================== */
+
+    if(typeof displayEventList === "function"){
+
+        displayEventList();
+
+    }
+
+
+    if(typeof displaySelectedDateEvents === "function"){
+
+        displaySelectedDateEvents();
+
+    }
+
+
+    /* =====================
        1日手帳へ
-    */
+    ===================== */
 
     switchTab(
-        'plannerPage',
+        "plannerPage",
         null,
         true
     );
 
 
-    /*
-       動画表示
-    */
+    /* =====================
+       🎥 動画表示
+       
+       movie.js が読み込まれていて
+       renderDayMovies が存在する場合だけ実行
+    ===================== */
 
     console.log(
-        "🎥 renderDayMovies 呼び出し"
+        "🎥 renderDayMovies 存在確認:",
+        typeof renderDayMovies
     );
 
-    renderDayMovies();
+
+    if(
+        typeof renderDayMovies === "function"
+    ){
+
+        console.log(
+            "🎥 renderDayMovies 呼び出し"
+        );
+
+        renderDayMovies();
+
+    }else{
+
+        console.error(
+            "❌ renderDayMovies が見つかりません"
+        );
+
+        console.error(
+            "❌ movie.js が読み込まれているか確認してください"
+        );
+
+    }
+
+
+    console.log("📅 ===============================");
 
 }
+
 /* =====================
    選択日の表示更新
 ===================== */
