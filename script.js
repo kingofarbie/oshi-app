@@ -1470,6 +1470,8 @@ async function(){
         "settings.html"
     );
 
+    initAppTitle();
+
     await loadHtml(
         "aboutAppContainer",
         "about.html"
