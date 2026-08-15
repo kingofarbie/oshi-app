@@ -3012,7 +3012,8 @@ async function favoritePhotoShareCurrent(){
 
 
     const favorites =
-        favoritePhotoGetOrdered();
+        favoritePhotoGetPhotos();
+
 
     const favorite =
         favorites.find(
