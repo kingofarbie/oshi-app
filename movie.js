@@ -105,7 +105,7 @@ function addMovie(){
    動画選択・追加
 ========================================================= */
 
-function movieSelected(event){
+async function movieSelected(event){
 
     console.log("🎥 movieSelected 実行");
 
@@ -114,7 +114,10 @@ function movieSelected(event){
             event.target.files || []
         );
 
-    console.log("🎥 選択されたファイル:", files);
+    console.log(
+        "🎥 選択されたファイル:",
+        files
+    );
 
 
     if(!files.length){
@@ -125,8 +128,16 @@ function movieSelected(event){
     const data =
         db.load();
 
-        console.log("🎥 DB:", data);
-console.log("🎥 selectedCalendarDate:", selectedCalendarDate);
+
+    console.log(
+        "🎥 DB:",
+        data
+    );
+
+    console.log(
+        "🎥 selectedCalendarDate:",
+        selectedCalendarDate
+    );
 
 
     if(!data.dayMemories){
@@ -134,9 +145,15 @@ console.log("🎥 selectedCalendarDate:", selectedCalendarDate);
     }
 
 
-    if(!data.dayMemories[selectedCalendarDate]){
+    if(
+        !data.dayMemories[
+            selectedCalendarDate
+        ]
+    ){
 
-        data.dayMemories[selectedCalendarDate] = {
+        data.dayMemories[
+            selectedCalendarDate
+        ] = {
 
             memo: [],
             movies: [],
@@ -159,7 +176,7 @@ console.log("🎥 selectedCalendarDate:", selectedCalendarDate);
     let completed = 0;
 
 
-    files.forEach(file => {
+    for(const file of files){
 
         /*
         =====================
@@ -167,43 +184,103 @@ console.log("🎥 selectedCalendarDate:", selectedCalendarDate);
         =====================
         */
 
-        if(!file.type.startsWith("video/")){
+        if(
+            !file.type.startsWith("video/")
+        ){
 
             completed++;
 
-            return;
+            continue;
 
         }
 
 
-        const reader =
-            new FileReader();
+        try{
 
-
-        reader.onload = function(e){
+            /*
+            =====================
+               動画ID
+            =====================
+            */
 
             const movieId =
                 Date.now() +
                 Math.random();
 
 
+            /*
+            =====================
+               IndexedDBへ保存
+            =====================
+            */
+
+            await saveMediaFile(
+                movieId,
+                file,
+                "movie"
+            );
+
+
+            /*
+            =====================
+               動画URL作成
+            =====================
+            */
+
+            const media =
+                await getMediaFile(
+                    movieId
+                );
+
+
+            const movieURL =
+                createMediaURL(
+                    media
+                );
+
+
+            /*
+            =====================
+               DBには管理情報だけ保存
+            =====================
+            */
+
             movies.push({
 
-                id: movieId,
+                id:
+                    movieId,
 
-                src: e.target.result,
+                /*
+                現在の画面で表示するためのURL
+                */
 
-                type: file.type,
+                src:
+                    movieURL,
 
-                date: selectedCalendarDate,
+                /*
+                IndexedDB上のID
+                */
 
-                favorite: false,
+                mediaId:
+                    movieId,
 
-                star: 0,
+                type:
+                    file.type,
 
-                tags: [],
+                date:
+                    selectedCalendarDate,
 
-                order: movieId
+                favorite:
+                    false,
+
+                star:
+                    0,
+
+                tags:
+                    [],
+
+                order:
+                    movieId
 
             });
 
@@ -211,40 +288,74 @@ console.log("🎥 selectedCalendarDate:", selectedCalendarDate);
             completed++;
 
 
-            /*
-            =====================
-               全ファイル完了
-            =====================
-            */
-
-            if(
-                completed >= files.length
-            ){
-
-                db.save(data);
-
-                renderDayMemory();
-
-            }
-
-        };
+            console.log(
+                "🎥 動画保存完了:",
+                movieId
+            );
 
 
-        reader.readAsDataURL(file);
+        }catch(error){
 
-    });
+            console.error(
+                "🎥 動画保存エラー:",
+                error
+            );
+
+        }
+
+    }
 
 
     /*
     =====================
-       同じファイルを再選択可能
+       管理情報だけ保存
+    =====================
+    */
+
+    try{
+
+        db.save(data);
+
+        console.log(
+            "🎥 動画情報保存完了"
+        );
+
+
+    }catch(error){
+
+        console.error(
+            "🎥 DB保存エラー:",
+            error
+        );
+
+        alert(
+            "動画情報の保存に失敗しました"
+        );
+
+        return;
+
+    }
+
+
+    /*
+    =====================
+       画面更新
+    =====================
+    */
+
+    renderDayMemory();
+
+
+    /*
+    =====================
+       同じファイルを
+       再選択可能にする
     =====================
     */
 
     event.target.value = "";
 
 }
-
 
 /* =========================================================
    ビューア状態リセット
@@ -2394,7 +2505,7 @@ function displayFavorites(){
    1日動画表示
 ========================================================= */
 
-function renderDayMovies(){
+async function renderDayMovies(){
 
     const data =
         db.load();
@@ -2575,6 +2686,71 @@ function renderDayMovies(){
 
     /*
     =====================
+       IndexedDBから
+       動画URLを作成
+    =====================
+    */
+
+    const movieURLs = {};
+
+
+    for(const movie of showMovies){
+
+        const mediaId =
+            movie.mediaId ?? movie.id;
+
+
+        try{
+
+            const media =
+                await getMediaFile(
+                    mediaId
+                );
+
+
+            if(media){
+
+                movieURLs[movie.id] =
+                    createMediaURL(
+                        media
+                    );
+
+            }
+
+        }catch(error){
+
+            console.error(
+                "🎥 IndexedDB動画取得エラー:",
+                error
+            );
+
+        }
+
+    }
+
+
+    /*
+    =====================
+       動画が取得できない場合
+    =====================
+    */
+
+    if(
+        showMovies.some(
+            movie =>
+                !movieURLs[movie.id]
+        )
+    ){
+
+        console.warn(
+            "🎥 一部の動画ファイルを取得できませんでした"
+        );
+
+    }
+
+
+    /*
+    =====================
        動画一覧
     =====================
     */
@@ -2650,6 +2826,10 @@ function renderDayMovies(){
                 );
 
 
+            const movieSrc =
+                movieURLs[movie.id];
+
+
             return `
 
 <div
@@ -2685,24 +2865,44 @@ function renderDayMovies(){
 
 >
 
-<img
-    src="${movie.src}"
+${
+    movieSrc
+    ?
 
-    class="memory-movie"
+    `<video
+        src="${movieSrc}"
 
-    draggable="false"
+        class="memory-movie"
 
-    ${
-        movieSortMode ||
-        movieDeleteMode ||
-        movieShareMode
-        ?
-        ""
-        :
-        `onclick="openMovieViewer(${movie.id})"`
-    }
+        muted
 
->
+        playsinline
+
+        preload="metadata"
+
+        draggable="false"
+
+        ${
+            movieSortMode ||
+            movieDeleteMode ||
+            movieShareMode
+            ?
+            ""
+            :
+            `onclick="openMovieViewer(${movie.id})"`
+        }
+
+    ></video>`
+
+    :
+
+    `<div
+        class="movie-loading"
+    >
+        🎥 読み込み中...
+    </div>`
+
+}
 
 
 ${
@@ -2803,7 +3003,6 @@ ${
         );
 
 }
-
 
 /* =========================================================
    動画ツールバー
