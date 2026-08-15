@@ -336,9 +336,7 @@ function displayFavoritePhotoCard(){
         return;
     }
 
-
     const data = db.load();
-
 
     /* =====================
        設定取得
@@ -347,29 +345,11 @@ function displayFavoritePhotoCard(){
     const settings =
         data.settings?.favoritePhoto || {};
 
-
-    /* =====================
-       表示枚数
-       初期値：3枚
-    ===================== */
-
     const countSetting =
         settings.count ?? 3;
 
-
-    /* =====================
-       フェイド設定
-       初期値：ON
-    ===================== */
-
     const fadeEnabled =
         settings.fade !== false;
-
-
-    /* =====================
-       表示時間
-       初期値：7秒
-    ===================== */
 
     const interval =
         Number(
@@ -379,53 +359,29 @@ function displayFavoritePhotoCard(){
 
     /* =====================
        お気に入り写真取得
+       ★ お気に入りページと同じデータを使用
     ===================== */
+
+    const favorites =
+        favoritePhotoGetOrdered();
 
     let photos = [];
 
+    favorites.forEach(favorite => {
 
-    Object.values(
-        data.dayMemories || {}
-    ).forEach(day => {
+        const photo =
+            favoritePhotoGetData(favorite);
 
-        (day.photos || []).forEach(photo => {
+        if(photo){
 
-            if(photo.favorite){
+            photos.push({
+                ...photo,
+                favoriteId: favorite.id
+            });
 
-                photos.push(photo);
-
-            }
-
-        });
-
-    });
-
-
-    /* =====================
-       自由並べ替え順
-    ===================== */
-
-    photos.sort((a,b) => {
-
-        return (
-            (a.order ?? a.id)
-            -
-            (b.order ?? b.id)
-        );
+        }
 
     });
-
-    console.log(
-    "ホームお気に入り写真:",
-    photos
-);
-console.log(
-    "ホームお気に入り写真枚数:",
-    photos.length
-);
-
-
-
 
 
     /* =====================
@@ -476,7 +432,7 @@ console.log(
                 <img
                     src="${photos[0].src}"
                     class="home-favorite-photo"
-                    onclick="openFavoritePhotoViewer(${photos[0].id})"
+                    onclick="openFavoritePhotoViewer(${photos[0].favoriteId})"
                 >
 
             </div>
@@ -489,7 +445,7 @@ console.log(
 
 
     /* =====================
-       複数枚
+       複数枚スライドショー
     ===================== */
 
     box.innerHTML = `
@@ -505,7 +461,7 @@ console.log(
                     src="${photo.src}"
                     class="home-favorite-photo ${index === 0 ? "active" : ""}"
                     data-favorite-index="${index}"
-                    onclick="openFavoritePhotoViewer(${photo.id})"
+                    onclick="openFavoritePhotoViewer(${photo.favoriteId})"
                 >
 
             `).join("")}
@@ -521,16 +477,11 @@ console.log(
 
     let current = 0;
 
-
     const images =
         box.querySelectorAll(
             ".home-favorite-photo"
         );
 
-
-    /* =====================
-       写真切り替え
-    ===================== */
 
     setInterval(() => {
 
@@ -538,21 +489,17 @@ console.log(
             return;
         }
 
-
         images[current].classList.remove(
             "active"
         );
-
 
         current =
             (current + 1)
             % images.length;
 
-
         images[current].classList.add(
             "active"
         );
-
 
     }, interval);
 
