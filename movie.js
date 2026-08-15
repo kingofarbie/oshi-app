@@ -115,7 +115,7 @@ function movieSelected(event){
         );
 
     console.log("🎥 選択されたファイル:", files);
-    
+
 
     if(!files.length){
         return;
@@ -124,6 +124,9 @@ function movieSelected(event){
 
     const data =
         db.load();
+
+        console.log("🎥 DB:", data);
+console.log("🎥 selectedCalendarDate:", selectedCalendarDate);
 
 
     if(!data.dayMemories){
