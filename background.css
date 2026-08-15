@@ -430,59 +430,26 @@ body.theme-dreamy-star .memory-header > button[onclick*="addComment"]:hover {
 }
 
 
-/* ==================================================
-   🌌 ゆめかわ星空
-   ヘッダータイトルを上下中央に
-================================================== */
 
+/* 🌌 ゆめかわ星空 ヘッダータイトル */
 body.theme-dreamy-star .header {
     display:flex;
     align-items:center;
 }
 
-
-/* ==================================================
-   🌌 ゆめかわ星空
-   設定メニューのボタン
-================================================== */
-
+/* 🌌 ゆめかわ星空 設定メニュー */
 body.theme-dreamy-star .setting-content button {
-
-    background:#faf7ff !important;
-
-    color:#7654a8 !important;
-
-    border:1px solid #d8c8ee !important;
-
-    box-shadow:none;
+    ...
 }
-
 
 body.theme-dreamy-star .setting-content button:hover {
-
-    background:#f1eaff !important;
-
+    ...
 }
-
 
 body.theme-dreamy-star .setting-item > button {
-
-    background:#faf7ff !important;
-
-    color:#7654a8 !important;
-
-    border:1px solid #d8c8ee !important;
-
-    box-shadow:none;
+    ...
 }
-
 
 body.theme-dreamy-star .setting-item > button:hover {
-
-    background:#f1eaff !important;
-
+    ...
 }
-
-
-
-

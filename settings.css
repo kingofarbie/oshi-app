@@ -88,3 +88,27 @@
     color:#777;
 
 }
+
+
+/* =========================
+   ⭐ お気に入り写真
+   フェイド設定
+========================= */
+
+.favorite-fade-setting{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:6px;
+    margin-top:10px;
+}
+
+.favorite-fade-label{
+    width:100%;
+    font-weight:bold;
+}
+
+.favorite-fade-setting .favorite-fade-btn{
+    width:100%;
+    margin:0;
+}

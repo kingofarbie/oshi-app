@@ -625,3 +625,29 @@ body.theme-dreamy-star .tabbar{
 body.theme-basic .header h1 {
     color:#222 !important;
 }
+
+
+/* =========================
+   🌌 ゆめかわ星空
+   設定メニューを淡い紫に
+========================= */
+
+body.theme-dreamy-star .home-menu-list button,
+body.theme-dreamy-star .setting-item > button,
+body.theme-dreamy-star .setting-content button {
+
+    background:#faf7ff !important;
+    color:#7654a8 !important;
+    border:1px solid #d8c8ee !important;
+
+    box-shadow:none !important;
+}
+
+
+body.theme-dreamy-star .home-menu-list button:hover,
+body.theme-dreamy-star .setting-item > button:hover,
+body.theme-dreamy-star .setting-content button:hover {
+
+    background:#f1eaff !important;
+
+}

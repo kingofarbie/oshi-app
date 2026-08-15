@@ -1493,6 +1493,8 @@ async function(){
         "settings.html"
     );
 
+    initFavoritePhotoSettings();
+
 
     await loadHtml(
         "aboutAppContainer",
