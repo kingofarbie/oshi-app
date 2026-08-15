@@ -23,46 +23,74 @@
 <div id="plannerMemory">
 
     <div class="memory-section">
-<div class="memory-header">
 
-    <span>📷 写真</span>
+        <div class="memory-header">
 
-    <div class="memory-header-actions">
+          <span>📷 写真</span>
 
-        <button onclick="addPhoto()">
-            ＋
-        </button>
+            <div class="memory-header-actions">
 
-        <button onclick="startPhotoDeleteMode()">
-            🗑
-        </button>
+                <button onclick="addPhoto()">
+                ＋
+                </button>
 
-        <button onclick="startPhotoShareMode()">
-            📤
-        </button>
+                <button onclick="startPhotoDeleteMode()">
+                🗑
+                </button>
 
-<button onclick="openPhotoSortMenu('calendar')">
-    🔀
-</button>
-    </div>
+                <button onclick="startPhotoShareMode()">
+                📤
+                </button>
 
-</div>
+                <button onclick="openPhotoSortMenu('calendar')">
+                🔀
+                </button>
+            </div>
+
+        </div>
 
         <div id="photoList" class="memory-list">
             写真はありません
         </div>
+
     </div>
+
+
+
 
     <div class="memory-section">
+
         <div class="memory-header">
-            <span>🎥 動画</span>
-            <button onclick="addVideo()">＋</button>
+
+          <span>🎥 動画</span>
+
+            <div class="memory-header-actions">
+
+                <button onclick="addMovie()">
+                ＋
+                </button>
+
+                <button onclick="startMovieDeleteMode()">
+                🗑
+                </button>
+
+                <button onclick="startMovieShareMode()">
+                📤
+                </button>
+
+                <button onclick="openMovieSortMenu('calendar')">
+                🔀
+                </button>
+            </div>
+
         </div>
 
-        <div id="videoList" class="memory-list">
+        <div id="movieList" class="memory-list">
             動画はありません
         </div>
+
     </div>
+
 
 <div class="memory-section">
 
@@ -197,3 +225,11 @@
     style="display:none"
     onchange="photoSelected(event)">
 
+
+    <input
+    type="file"
+    id="moviePicker"
+    accept="video/*"
+    multiple
+    style="display:none"
+    onchange="movieSelected(event)">

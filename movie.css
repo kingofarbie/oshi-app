@@ -1,0 +1,523 @@
+/* =====================
+   動画一覧
+   写真一覧と完全統一
+===================== */
+
+#movieList{
+    display:grid;
+
+    grid-template-columns:
+        repeat(
+            var(--movie-columns, 3),
+            minmax(0,1fr)
+        );
+
+    gap:10px;
+}
+
+
+/* =====================
+   動画ボックス
+===================== */
+
+.memory-movie-box{
+    width:100%;
+
+    aspect-ratio:1/1;
+
+    overflow:hidden;
+
+    border-radius:12px;
+
+    background:var(--surface);
+
+    border:1px solid var(--border);
+
+    position:relative;
+
+    box-shadow:
+        2px 3px 8px rgba(0,0,0,0.08);
+}
+
+
+/* =====================
+   動画削除・共有チェック
+===================== */
+
+.movie-delete-check{
+    position:absolute;
+
+    top:8px;
+    right:8px;
+
+    width:28px;
+    height:28px;
+
+    border-radius:50%;
+
+    background:var(--card);
+
+    border:2px solid var(--border);
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    font-size:20px;
+    font-weight:bold;
+
+    color:var(--accent);
+
+    z-index:20;
+
+    box-shadow:
+        1px 2px 5px rgba(0,0,0,0.12);
+}
+
+
+/* 選択中 */
+
+.movie-delete-selected .movie-delete-check{
+    background:var(--accent);
+
+    border-color:var(--accent);
+
+    color:#fff;
+}
+
+
+/* =====================
+   動画
+===================== */
+
+.memory-movie{
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+
+    display:block;
+}
+
+
+/* =====================
+   動画長押し・選択対策
+===================== */
+
+.memory-movie-box,
+.memory-movie-box img,
+.memory-movie{
+    -webkit-user-select:none;
+    user-select:none;
+
+    -webkit-touch-callout:none;
+}
+
+
+/* =====================
+   動画ビューア
+   写真ビューアと完全統一
+===================== */
+
+#movieViewer{
+    position:fixed;
+
+    top:0;
+    left:0;
+
+    width:100%;
+    height:100%;
+
+    background:rgba(0,0,0,0.85);
+
+    display:none;
+
+    justify-content:center;
+    align-items:center;
+
+    z-index:99999;
+}
+
+
+/* =====================
+   ビューア動画
+===================== */
+
+#movieViewerVideo{
+    max-width:90%;
+    max-height:85%;
+
+    object-fit:contain;
+
+    user-select:none;
+
+    border-radius:12px;
+
+    display:block;
+}
+
+
+/* =====================
+   動画ビューア共通ボタン
+   写真と完全統一
+===================== */
+
+#movieViewer button{
+    position:absolute;
+
+    top:20px;
+
+    width:44px;
+    height:44px;
+
+    border-radius:50%;
+
+    border:none;
+
+    background:var(--card);
+
+    color:var(--text-sub);
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    box-shadow:
+        0 2px 8px rgba(0,0,0,0.25);
+
+    z-index:2;
+}
+
+
+/* =====================
+   閉じる
+===================== */
+
+.movie-close{
+    right:20px;
+
+    font-size:22px;
+}
+
+
+/* =====================
+   削除
+===================== */
+
+.movie-delete{
+    position:absolute;
+
+    top:20px;
+    right:72px;
+
+    width:44px;
+    height:44px;
+
+    border:none;
+    border-radius:50%;
+
+    background:var(--danger);
+
+    color:#fff;
+
+    font-size:20px;
+
+    cursor:pointer;
+
+    z-index:100000;
+}
+
+
+/* =====================
+   お気に入り
+===================== */
+
+.movie-favorite{
+    right:124px;
+
+    font-size:22px;
+}
+
+
+/* =====================
+   共有
+===================== */
+
+.movie-share{
+    right:176px;
+
+    font-size:20px;
+}
+
+
+/* =====================
+   押した時
+===================== */
+
+.movie-close:active,
+.movie-delete:active,
+.movie-favorite:active,
+.movie-share:active{
+    transform:scale(0.9);
+}
+
+
+/* =====================
+   動画ツールバー
+   写真と完全統一
+===================== */
+
+.movie-toolbar{
+    grid-column:1 / -1;
+
+    display:flex;
+
+    justify-content:flex-end;
+    align-items:center;
+
+    margin:4px 0 10px;
+
+    width:100%;
+}
+
+
+.movie-toolbar-title{
+    font-size:18px;
+
+    font-weight:bold;
+
+    white-space:nowrap;
+
+    color:var(--text);
+
+    margin-right:auto;
+}
+
+
+.movie-sort-btn{
+    border:none;
+
+    border-radius:20px;
+
+    padding:8px 14px;
+
+    background:var(--accent);
+
+    color:#fff;
+
+    font-size:14px;
+
+    cursor:pointer;
+
+    box-shadow:
+        2px 3px 7px rgba(0,0,0,0.10);
+}
+
+
+.movie-sort-btn:active{
+    transform:scale(.96);
+}
+
+
+/* =====================
+   動画並べ替えメニュー
+   写真と完全統一
+===================== */
+
+#movieSortMenu{
+    position:fixed;
+
+    left:50%;
+    top:50%;
+
+    transform:translate(-50%,-50%);
+
+    background:var(--card);
+
+    color:var(--text);
+
+    border:1px solid var(--border);
+
+    border-radius:15px;
+
+    padding:15px;
+
+    z-index:10000;
+
+    width:280px;
+
+    box-shadow:
+        0 0 20px rgba(0,0,0,.25);
+}
+
+
+#movieSortMenu button{
+    width:100%;
+
+    margin:6px 0;
+    padding:10px;
+}
+
+
+/* =====================
+   動画自由並べ替え中
+===================== */
+
+.movie-dragging{
+    opacity:0.6;
+
+    transform:scale(1.05);
+
+    z-index:1000;
+
+    box-shadow:
+        0 8px 20px rgba(0,0,0,0.3);
+}
+
+
+/* =====================
+   動画自由並べ替えバー
+   写真と完全統一
+===================== */
+
+.movie-free-bar{
+    grid-column:1 / -1;
+
+    display:flex;
+
+    justify-content:space-between;
+    align-items:center;
+
+    padding:10px;
+
+    background:var(--surface);
+
+    color:var(--text);
+
+    border:1px solid var(--border);
+
+    border-radius:10px;
+
+    margin-bottom:10px;
+
+    box-shadow:
+        2px 3px 8px rgba(0,0,0,0.07);
+}
+
+
+.movie-free-bar button{
+    padding:8px 16px;
+
+    border-radius:20px;
+
+    border:none;
+
+    font-weight:bold;
+}
+
+
+/* =====================
+   動画削除・共有バー
+   写真と完全統一
+===================== */
+
+.movie-delete-bar{
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    width:100%;
+
+    box-sizing:border-box;
+
+    padding:8px 10px;
+
+    margin:0 0 10px 0;
+
+    background:var(--surface);
+
+    color:var(--text);
+
+    border:1px solid var(--border);
+
+    border-radius:12px;
+
+    white-space:nowrap;
+
+    box-shadow:
+        2px 3px 9px rgba(0,0,0,0.10);
+
+    grid-column:1 / -1;
+}
+
+
+.movie-delete-title{
+    font-weight:bold;
+}
+
+
+.movie-delete-count{
+    font-size:14px;
+
+    opacity:.85;
+
+    margin-right:auto;
+}
+
+
+.movie-delete-bar button{
+    border:none;
+
+    border-radius:18px;
+
+    padding:7px 12px;
+
+    font-weight:bold;
+
+    white-space:nowrap;
+}
+
+
+.movie-delete-bar button:last-child{
+    background:var(--danger);
+
+    color:#fff;
+}
+
+
+.movie-delete-bar button:disabled{
+    opacity:.4;
+}
+
+
+/* =====================
+   動画もっと見る
+   写真と完全統一
+===================== */
+
+.favorite-more{
+    grid-column:1 / -1;
+
+    text-align:center;
+
+    padding:12px;
+
+    margin-top:5px;
+
+    border-radius:12px;
+
+    background:var(--accent);
+
+    color:#fff;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    box-shadow:
+        2px 4px 9px rgba(0,0,0,0.10);
+}
