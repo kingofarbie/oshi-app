@@ -410,14 +410,18 @@ function changeMonth(value){
 
 
 function selectCalendarDate(date){
-console.log("📅 selectCalendarDate 実行:", date);
 
+    console.log("📅 selectCalendarDate 実行:", date);
+    console.log("📅 date:", date);
+    console.log("📅 copyMode:", copyMode);
 
     /* =====================
        コピー貼り付け
     ===================== */
 
     if(copyMode){
+
+        console.log("📋 コピー貼り付けモード");
 
         const data = db.load();
 
@@ -463,11 +467,6 @@ console.log("📅 selectCalendarDate 実行:", date);
             if(!event) return;
 
 
-            /*
-               元の開始・終了時刻から
-               時刻部分だけ取り出す
-            */
-
             const startTime =
                 event.start
                 ? event.start.substring(11,16)
@@ -479,10 +478,6 @@ console.log("📅 selectCalendarDate 実行:", date);
                 : null;
 
 
-/*
-   コピー先の日付で
-   start / end を作り直す
-*/
             const newEvent = {
 
                 ...event,
@@ -490,7 +485,6 @@ console.log("📅 selectCalendarDate 実行:", date);
                 id:
                     Date.now() +
                     Math.random(),
-
 
                 start:
                     startTime
@@ -513,44 +507,37 @@ console.log("📅 selectCalendarDate 実行:", date);
         const copiedCount =
             ids.length;
 
-
         const originalCount =
             copyEventId.length;
 
-
-        /*
-           コピー状態を解除
-        */
 
         copyMode = false;
         copyEventId = [];
 
 
         /*
-           貼り付け先の日付を選択状態にする
+           貼り付け先の日付
         */
 
-        selectedCalendarDate =
-            date;
+        selectedCalendarDate = date;
+
+        window.selectedCalendarDate =
+            selectedCalendarDate;
 
 
+        console.log(
+            "📅 コピー後 selectedCalendarDate:",
+            selectedCalendarDate
+        );
 
-console.log("📅 カレンダー選択日:", selectedCalendarDate);
+        console.log(
+            "📅 window.selectedCalendarDate:",
+            window.selectedCalendarDate
+        );
 
-
-window.selectedCalendarDate = selectedCalendarDate;
-            
-
-        /*
-           データ保存
-        */
 
         db.save(data);
 
-
-        /*
-           画面をすべて更新
-        */
 
         renderCalendar();
 
@@ -564,10 +551,6 @@ window.selectedCalendarDate = selectedCalendarDate;
 
         displayCountdown();
 
-
-        /*
-           上限に引っかかった場合
-        */
 
         if(copiedCount < originalCount){
 
@@ -593,8 +576,26 @@ window.selectedCalendarDate = selectedCalendarDate;
        通常の日付選択
     ===================== */
 
-    selectedCalendarDate =
-        date;
+    console.log(
+        "📅 通常の日付選択:"
+    );
+
+
+    selectedCalendarDate = date;
+
+    window.selectedCalendarDate =
+        selectedCalendarDate;
+
+
+    console.log(
+        "📅 selectedCalendarDate 設定:",
+        selectedCalendarDate
+    );
+
+    console.log(
+        "📅 window.selectedCalendarDate 設定:",
+        window.selectedCalendarDate
+    );
 
 
     /*
@@ -637,12 +638,19 @@ window.selectedCalendarDate = selectedCalendarDate;
         null,
         true
     );
+
+
+    /*
+       動画表示
+    */
+
+    console.log(
+        "🎥 renderDayMovies 呼び出し"
+    );
+
     renderDayMovies();
 
-
 }
-
-
 /* =====================
    選択日の表示更新
 ===================== */
