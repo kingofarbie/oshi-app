@@ -2833,7 +2833,7 @@ async function renderDayMovies(){
 
 
             const storedMovie =
-                await getMovieFromIndexedDB(
+                await getMediaFile(
                     id
                 );
 
