@@ -1087,6 +1087,7 @@ const menus = [
     "themeMenu",
     "holidayMenu",
     "memorialMenu",
+    "appTitleMenu",
     "anniversaryMenu",
     "notificationMenu",
     "favoritePhotoMenu",
