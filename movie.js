@@ -2505,7 +2505,7 @@ function displayFavorites(){
 
 console.log("🎥 renderDayMovies を呼び出します");
 
-renderDayMovie();
+renderDayMovies();
 /* =========================================================
    1日動画表示
 ========================================================= */
