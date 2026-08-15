@@ -1789,7 +1789,7 @@ function favoritePhotoOpenViewer(
     document.body.style.overflow =
         "hidden";
 
-}
+
 
 /* =========================================================
    ⭐ ビューア画像変形
@@ -3012,8 +3012,7 @@ async function favoritePhotoShareCurrent(){
 
 
     const favorites =
-        favoritePhotoGetPhotos();
-
+        favoritePhotoGetOrdered();
 
     const favorite =
         favorites.find(
