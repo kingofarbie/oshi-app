@@ -410,6 +410,8 @@ function changeMonth(value){
 
 
 function selectCalendarDate(date){
+console.log("📅 selectCalendarDate 実行:", date);
+
 
     /* =====================
        コピー貼り付け
