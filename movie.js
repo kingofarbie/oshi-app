@@ -232,12 +232,9 @@ async function movieSelected(event){
                     movieId
                 );
 
-console.log(
-    "🎥 IndexedDB取得結果:",
-    media
-);
 
 
+                
 
             const movieURL =
                 createMediaURL(
@@ -2712,6 +2709,12 @@ async function renderDayMovies(){
                 await getMediaFile(
                     mediaId
                 );
+
+
+                console.log(
+    "🎥 IndexedDB取得結果:",
+    media
+);
 
 
             if(media){
