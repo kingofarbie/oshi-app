@@ -1,8 +1,6 @@
 /* =====================
    動画用変数
 ===================== */
-dragStartPoint
-
 
 
 let currentMovieSrc = "";
@@ -29,21 +27,22 @@ let movieTouchStartX = 0;
 let movieTouchStartY = 0;
 
 let movieLongPressTimer = null;
-
+/* =====================
+これ使ってる？
 let dragStartPoint = {
     x: 0,
     y: 0
 };
+===================== */
+let movieDragStartX = 0;
+let movieDragStartY = 0;
 
-let dragStartX = 0;
-let dragStartY = 0;
-
-let lastDistance = 0;
+let movieLastDistance = 0;
 
 let movieTranslateX = 0;
 let movieTranslateY = 0;
 
-let lastTapTime = 0;
+let movieLastTapTime = 0;
 
 
 /* =====================
@@ -74,7 +73,7 @@ let selectedShareMovieIds = [];
    お気に入り表示
 ===================== */
 
-let showAllFavorites = false;
+let movieShowAllFavorites = false;
 
 
 /* =====================
@@ -252,15 +251,15 @@ function resetMovieViewerState(){
 
     movieTranslateY = 0;
 
-    lastDistance = 0;
+    movieLastDistance = 0;
 
-    dragStartX = 0;
+    movieDragStartX = 0;
 
-    dragStartY = 0;
+    movieDragStartY = 0;
 
     movieViewerTouchStartX = 0;
 
-    lastTapTime = 0;
+    movieLastTapTime = 0;
 
 }
 
@@ -1300,11 +1299,11 @@ function movieDragStart(event){
     event.preventDefault();
 
 
-    dragStartX =
+    movieDragStartX =
         event.touches[0].clientX;
 
 
-    dragStartY =
+    movieDragStartY =
         event.touches[0].clientY;
 
 }
@@ -1360,11 +1359,11 @@ function moviePinch(event){
             );
 
 
-        if(lastDistance !== 0){
+        if(movieLastDistance !== 0){
 
             movieScale *=
                 distance /
-                lastDistance;
+                movieLastDistance;
 
 
             /*
@@ -1406,7 +1405,7 @@ function moviePinch(event){
         }
 
 
-        lastDistance =
+        movieLastDistance =
             distance;
 
 
@@ -1440,19 +1439,19 @@ function moviePinch(event){
 
         movieTranslateX +=
             x -
-            dragStartX;
+            movieDragStartX;
 
 
         movieTranslateY +=
             y -
-            dragStartY;
+            movieDragStartY;
 
 
-        dragStartX =
+        movieDragStartX =
             x;
 
 
-        dragStartY =
+        movieDragStartY =
             y;
 
 
@@ -1478,7 +1477,7 @@ function movieDragEnd(event){
         event.changedTouches.length >= 2
     ){
 
-        lastDistance =
+        movieLastDistance =
             0;
 
     }
@@ -1508,7 +1507,7 @@ function movieDoubleTap(event){
 
     if(
         now -
-        lastTapTime <
+        movieLastTapTime <
         300
     ){
 
@@ -1565,7 +1564,7 @@ function movieDoubleTap(event){
     }
 
 
-    lastTapTime =
+    movieLastTapTime =
         now;
 
 }
@@ -2307,7 +2306,7 @@ function displayFavorites(){
         }else{
 
             const showMovies =
-                showAllFavorites
+                movieShowAllFavorites
                 ? movies
                 : movies.slice(0,4);
 
@@ -2343,15 +2342,15 @@ function displayFavorites(){
 <div
     class="favorite-more"
     onclick="
-        showAllFavorites =
-            !showAllFavorites;
+        movieShowAllFavorites =
+            !movieShowAllFavorites;
 
         displayFavorites();
     "
 >
 
     ${
-        showAllFavorites
+        movieShowAllFavorites
         ? "閉じる"
         : "もっと見る"
     }
