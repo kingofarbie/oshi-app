@@ -261,32 +261,27 @@ function switchTab(pageId, event, fromCalendar = false){
     }
 
 
-    /* =====================
-   ⭐ 推し詳細を開いたまま
-   タブ移動した場合は一覧へ戻す
+/* =====================
+   ⭐ 推しタブ
+   推し一覧を再読み込み
 ===================== */
 
-if(
-    pageId !== "oshiPage" &&
-    typeof loadOshiPage === "function"
-){
+if(pageId === 'oshiPage'){
 
-    const detailPage =
-        document.getElementById(
-            "oshiDetailPage"
-        );
+    setTimeout(() => {
 
-    if(
-        detailPage &&
-        detailPage.classList.contains("active")
-    ){
+        if(
+            typeof loadOshiPage ===
+            'function'
+        ){
 
-        loadOshiPage();
+            loadOshiPage();
 
-    }
+        }
+
+    }, 50);
 
 }
-
 
     /* =====================
        ホーム
