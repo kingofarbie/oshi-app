@@ -1,17 +1,20 @@
 /* =====================
    動画用変数
 ===================== */
+dragStartPoint
+
+
 
 let currentMovieSrc = "";
 let currentMovieIndex = 0;
 let currentMovieId = null;
 let movieViewerTouchStartX = 0;
-let favoriteViewMode = false;
+let movieFavoriteViewMode = false;
 
 let movieScale = 1;
 
 let movieSortMode = false;
-let currentSortType = "";
+let movieCurrentSortType = "";
 
 let dragMovieId = null;
 let draggingMovieId = null;
@@ -281,7 +284,7 @@ function getViewerMovies(){
     =====================
     */
 
-    if(favoriteViewMode){
+    if(movieFavoriteViewMode){
 
         movies =
             Object.values(
@@ -551,7 +554,7 @@ function openMovieViewer(id){
     =====================
     */
 
-    favoriteViewMode = false;
+    movieFavoriteViewMode = false;
 
 
     const movies =
@@ -711,7 +714,7 @@ function openFavoriteMovieViewer(id){
     =====================
     */
 
-    favoriteViewMode = true;
+    movieFavoriteViewMode = true;
 
 
     const movies =
@@ -728,7 +731,7 @@ function openFavoriteMovieViewer(id){
 
     if(!movie){
 
-        favoriteViewMode = false;
+        movieFavoriteViewMode = false;
 
         return;
 
@@ -759,7 +762,7 @@ function openFavoriteMovieViewer(id){
 
     if(!video){
 
-        favoriteViewMode = false;
+        movieFavoriteViewMode = false;
 
         return;
 
@@ -889,7 +892,7 @@ function updateMovieViewerButtons(){
     =====================
     */
 
-    if(favoriteViewMode){
+    if(movieFavoriteViewMode){
 
         if(deleteBtn){
 
@@ -1013,7 +1016,7 @@ function closeMovieViewer(){
     =====================
     */
 
-    favoriteViewMode =
+    movieFavoriteViewMode =
         false;
 
 }
@@ -1670,7 +1673,7 @@ function toggleFavoriteMovie(){
     */
 
     if(
-        favoriteViewMode &&
+        movieFavoriteViewMode &&
         !targetMovie.favorite
     ){
 
@@ -2986,7 +2989,7 @@ function setMovieSort(mode){
             [];
 
 
-        currentSortType =
+        movieCurrentSortType =
             type;
 
 
@@ -3762,7 +3765,7 @@ function deleteCurrentMovie(){
     =====================
     */
 
-    if(favoriteViewMode){
+    if(movieFavoriteViewMode){
 
         return;
 
