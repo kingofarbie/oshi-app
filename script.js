@@ -262,6 +262,33 @@ function switchTab(pageId, event, fromCalendar = false){
 
 
     /* =====================
+   ⭐ 推し詳細を開いたまま
+   タブ移動した場合は一覧へ戻す
+===================== */
+
+if(
+    pageId !== "oshiPage" &&
+    typeof loadOshiPage === "function"
+){
+
+    const detailPage =
+        document.getElementById(
+            "oshiDetailPage"
+        );
+
+    if(
+        detailPage &&
+        detailPage.classList.contains("active")
+    ){
+
+        loadOshiPage();
+
+    }
+
+}
+
+
+    /* =====================
        ホーム
     ===================== */
 
