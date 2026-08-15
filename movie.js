@@ -2512,8 +2512,7 @@ console.log("🎥 renderDayMovies を呼び出します");
 async function renderDayMovies(){
 
     console.log("🎥 ===============================");
-    console.log("🎥 renderDayMovies 実行");
-    console.log("🎥 ===============================");
+    console.log("🎥 renderDayMovies 実行開始");
 
 
     /* =====================
@@ -2530,7 +2529,7 @@ async function renderDayMovies(){
 
 
     /* =====================
-       表示対象日
+       表示対象日付
     ===================== */
 
     const selectedDate =
@@ -2544,7 +2543,7 @@ async function renderDayMovies(){
 
 
     /* =====================
-       日付データ取得
+       対象日のデータ
     ===================== */
 
     const day =
@@ -2557,7 +2556,7 @@ async function renderDayMovies(){
 
 
     /* =====================
-       動画表示エリア
+       動画表示場所
     ===================== */
 
     const movieArea =
@@ -2593,7 +2592,7 @@ async function renderDayMovies(){
     ){
 
         console.log(
-            "🎥 この日に動画はありません"
+            "🎥 この日の動画はありません"
         );
 
         movieArea.innerHTML =
@@ -2626,7 +2625,6 @@ async function renderDayMovies(){
         localStorage.getItem(
             "calendarMovieSort"
         ) || "new";
-
 
     console.log(
         "🎥 動画並び順:",
@@ -2740,7 +2738,7 @@ async function renderDayMovies(){
 
 
     /* =====================
-       グリッド設定
+       CSS列数
     ===================== */
 
     movieArea.style.setProperty(
@@ -2755,6 +2753,10 @@ async function renderDayMovies(){
 
     let html = "";
 
+
+    /* =====================
+       モードバー
+    ===================== */
 
     if(movieDeleteMode){
 
@@ -2786,39 +2788,49 @@ async function renderDayMovies(){
 
     for(const movie of showMovies){
 
-        const id =
-            Number(movie.id);
-
+        console.log(
+            "🎥 -------------------------------"
+        );
 
         console.log(
             "🎥 動画処理開始:",
-            {
-                id: id,
-                mediaId: movie.mediaId,
-                oldSrc: movie.src,
-                type: movie.type
-            }
+            movie
         );
 
+
+        const id =
+            Number(
+                movie.mediaId ??
+                movie.id
+            );
+
+
+        console.log(
+            "🎥 使用するIndexedDB ID:",
+            id
+        );
+
+
+        /* =====================
+           選択状態
+        ===================== */
 
         const deleteSelected =
             movieDeleteMode &&
             selectedDeleteMovieIds.includes(
-                id
+                Number(movie.id)
             );
 
 
         const shareSelected =
             movieShareMode &&
             selectedShareMovieIds.includes(
-                id
+                Number(movie.id)
             );
 
 
         /* =================================================
-           ★重要
-           古い movie.src は使わない
-           必ず IndexedDB から取得する
+           IndexedDBからFile取得
         ================================================= */
 
         let movieSrc = "";
@@ -2832,10 +2844,14 @@ async function renderDayMovies(){
             );
 
 
+            /*
+             * ここは movie.js 内にある
+             * saveMediaFile() / getMediaFile()
+             * と同じIndexedDB処理を使う
+             */
+
             const storedMovie =
-                await getMediaFile(
-                    id
-                );
+                await getMediaFile(id);
 
 
             console.log(
@@ -2843,10 +2859,6 @@ async function renderDayMovies(){
                 storedMovie
             );
 
-
-            /* =====================
-               File確認
-            ===================== */
 
             if(
                 storedMovie &&
@@ -2874,9 +2886,11 @@ async function renderDayMovies(){
                 );
 
 
-                /* =====================
-                   ★新しいBlob URL作成
-                ===================== */
+                /*
+                 * 古いblob URLは使わず、
+                 * IndexedDBのFileから
+                 * 毎回新しいURLを作る
+                 */
 
                 movieSrc =
                     URL.createObjectURL(
@@ -2887,15 +2901,6 @@ async function renderDayMovies(){
                 console.log(
                     "🎥 新しい動画URL作成:",
                     movieSrc
-                );
-
-            }
-
-            else{
-
-                console.error(
-                    "❌ IndexedDBに動画Fileがありません:",
-                    id
                 );
 
             }
@@ -2911,8 +2916,28 @@ async function renderDayMovies(){
         }
 
 
+        /* =================================================
+           IndexedDBから取れなかった場合
+           → 古いsrcを最後の保険として使う
+        ================================================= */
+
+        if(!movieSrc){
+
+            console.warn(
+                "⚠️ IndexedDBから取得できなかったため、
+                movie.src を使用します:",
+                movie.src
+            );
+
+
+            movieSrc =
+                movie.src || "";
+
+        }
+
+
         /* =====================
-           URL取得失敗
+           URLなし
         ===================== */
 
         if(!movieSrc){
@@ -2927,27 +2952,21 @@ async function renderDayMovies(){
         }
 
 
-        /* =====================
-           選択状態
-        ===================== */
-
-        const selectedClass =
-            deleteSelected ||
-            shareSelected
-            ? "movie-delete-selected"
-            : "";
-
-
-        /* =====================
+        /* =================================================
            動画HTML
-        ===================== */
+        ================================================= */
 
         html += `
 
 <div
     class="
         memory-movie-box
-        ${selectedClass}
+        ${
+            deleteSelected ||
+            shareSelected
+            ? "movie-delete-selected"
+            : ""
+        }
     "
 
     data-movie-id="${movie.id}"
@@ -3038,9 +3057,9 @@ async function renderDayMovies(){
     }
 
 
-    /* =====================
+    /* =================================================
        もっと見る
-    ===================== */
+    ================================================= */
 
     if(
         movies.length >
@@ -3082,10 +3101,6 @@ async function renderDayMovies(){
 
 
     console.log(
-        "🎥 ==============================="
-    );
-
-    console.log(
         "🎥 動画一覧HTML表示完了:",
         showMovies.length
     );
@@ -3095,6 +3110,7 @@ async function renderDayMovies(){
     );
 
 }
+
 
 /* =========================================================
    動画ツールバー
