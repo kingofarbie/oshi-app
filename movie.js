@@ -232,6 +232,12 @@ async function movieSelected(event){
                     movieId
                 );
 
+console.log(
+    "🎥 IndexedDB取得結果:",
+    media
+);
+
+
 
             const movieURL =
                 createMediaURL(
