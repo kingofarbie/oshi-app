@@ -5,9 +5,7 @@
 let currentMovieSrc = "";
 let currentMovieIndex = 0;
 let currentMovieId = null;
-
-let touchStartX = 0;
-
+let movieViewerTouchStartX = 0;
 let favoriteViewMode = false;
 
 let movieScale = 1;
@@ -257,7 +255,7 @@ function resetMovieViewerState(){
 
     dragStartY = 0;
 
-    touchStartX = 0;
+    movieViewerTouchStartX = 0;
 
     lastTapTime = 0;
 
@@ -1176,7 +1174,7 @@ function movieSwipeStart(event){
     }
 
 
-    touchStartX =
+    movieViewerTouchStartX =
         event.touches[0].clientX;
 
 }
@@ -1217,7 +1215,7 @@ function movieSwipe(event){
 
     const diff =
         touchEndX -
-        touchStartX;
+        movieViewerTouchStartX;
 
 
     /*
