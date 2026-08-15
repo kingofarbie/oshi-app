@@ -107,11 +107,15 @@ function addMovie(){
 
 function movieSelected(event){
 
+    console.log("🎥 movieSelected 実行");
+
     const files =
         Array.from(
             event.target.files || []
         );
 
+    console.log("🎥 選択されたファイル:", files);
+    
 
     if(!files.length){
         return;
