@@ -1,8 +1,7 @@
 /* =====================
    DB
 ===================== */
-
-const DB_KEY = "oshi_app_data";
+const DB_KEY = 'oshi_app_data';
 
 const DEFAULT_DB = {
 

@@ -1,5 +1,4 @@
 
-const DB_KEY = 'oshi_app_data';
 
 const PLAN = {
 
