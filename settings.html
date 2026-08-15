@@ -100,6 +100,48 @@
 </div>
 
 
+<!-- =====================
+     📖 アプリタイトル
+===================== -->
+
+<div class="card setting-item">
+
+    <button
+        type="button"
+        onclick="toggleSetting('appTitleMenu')">
+
+        <span id="appTitleIcon">＋</span>
+        📖 アプリタイトル
+
+    </button>
+
+    <div
+        id="appTitleMenu"
+        class="setting-content"
+        style="display:none;">
+
+        <p>
+            アプリに表示するタイトルを自由に設定できます。
+        </p>
+
+        <input
+            type="text"
+            id="appTitleInput"
+            maxlength="30"
+            placeholder="例：推し活日記">
+
+        <button
+            type="button"
+            onclick="saveAppTitle()">
+            💾 タイトルを保存
+        </button>
+
+    </div>
+
+</div>
+
+
+
 
 
 <!-- =====================
