@@ -2503,13 +2503,16 @@ function displayFavorites(){
 
 }
 
+console.log("🎥 renderDayMovies を呼び出します");
 
+renderDayMemory();
 /* =========================================================
    1日動画表示
 ========================================================= */
 
 async function renderDayMovies(){
 
+    console.log("🎥 renderDayMovies 実行");
     const data =
         db.load();
 
