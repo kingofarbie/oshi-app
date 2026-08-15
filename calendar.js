@@ -531,6 +531,11 @@ function selectCalendarDate(date){
         selectedCalendarDate =
             date;
 
+
+
+console.log("📅 カレンダー選択日:", selectedCalendarDate);
+
+
 window.selectedCalendarDate = selectedCalendarDate;
             
 
