@@ -327,7 +327,7 @@ function displayFavoritePhotoCard(){
 
     const box =
         document.getElementById(
-            "favorite-photo-card"
+            "home-favorite-photo"
         );
 
     if(!box){
