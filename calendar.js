@@ -25,10 +25,6 @@ async function loadCalendarHTML(){
         container.innerHTML =
             await response.text();
 
-        console.log(
-            "calendar.html 読み込み完了"
-        );
-
         renderCalendar();
 
     }catch(error){
@@ -535,6 +531,8 @@ function selectCalendarDate(date){
         selectedCalendarDate =
             date;
 
+window.selectedCalendarDate = selectedCalendarDate;
+            
 
         /*
            データ保存

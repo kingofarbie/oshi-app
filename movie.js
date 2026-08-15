@@ -2516,9 +2516,13 @@ async function renderDayMovies(){
         db.load();
 
 
-    const day =
-        data.dayMemories
-        ?. [selectedCalendarDate];
+const day =
+    data.dayMemories
+    ?. [window.selectedCalendarDate];
+
+console.log("🎥 動画表示用日付:", window.selectedCalendarDate);
+console.log("🎥 動画表示用day:", day);
+
 
 
     const movieArea =
