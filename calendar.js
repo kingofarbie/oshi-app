@@ -630,6 +630,8 @@ window.selectedCalendarDate = selectedCalendarDate;
         null,
         true
     );
+    renderDayMovies();
+
 
 }
 
