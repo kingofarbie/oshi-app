@@ -2515,7 +2515,7 @@ function cancelPhotoDeleteMode(){
 }
 
 
-function deleteSelectedPhotos(){
+async function deleteSelectedPhotos(){
 
     if(
         selectedDeletePhotoIds.length === 0
@@ -2551,23 +2551,90 @@ function deleteSelectedPhotos(){
     }
 
 
-    day.photos =
+    /*
+    =====================
+    削除対象を取得
+    =====================
+    */
+
+    const deletePhotos =
         day.photos.filter(
             photo =>
-                !selectedDeletePhotoIds.includes(
+                selectedDeletePhotoIds.includes(
                     Number(photo.id)
                 )
         );
 
 
-    db.save(data);
+    try{
+
+        /*
+        =====================
+        IndexedDBから
+        写真本体を削除
+        =====================
+        */
+
+        for(
+            const photo of deletePhotos
+        ){
+
+            await deleteMediaFile(
+                photo.id
+            );
+
+        }
 
 
-    photoDeleteMode = false;
+        /*
+        =====================
+        dbから写真情報を削除
+        =====================
+        */
 
-    selectedDeletePhotoIds = [];
+        day.photos =
+            day.photos.filter(
+                photo =>
+                    !selectedDeletePhotoIds.includes(
+                        Number(photo.id)
+                    )
+            );
 
 
-    renderDayMemory();
+        db.save(data);
+
+
+        /*
+        =====================
+        モード解除
+        =====================
+        */
+
+        photoDeleteMode = false;
+
+        selectedDeletePhotoIds = [];
+
+
+        /*
+        =====================
+        画面更新
+        =====================
+        */
+
+        renderDayMemory();
+
+
+    }catch(error){
+
+        console.error(
+            "複数写真削除エラー:",
+            error
+        );
+
+        alert(
+            "写真の削除に失敗しました"
+        );
+
+    }
 
 }
