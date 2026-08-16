@@ -767,7 +767,7 @@ function openMovieViewer(id){
     =====================
     */
 
-    updateFavoriteButton();
+    updateMovieFavoriteButton();
 
 
     /*
@@ -932,7 +932,7 @@ function openFavoriteMovieViewer(id){
     =====================
     */
 
-    updateFavoriteButton();
+    updateMovieFavoriteButton();
 
 
     /*
@@ -1251,7 +1251,7 @@ function showMovie(index){
     =====================
     */
 
-    updateFavoriteButton();
+    updateMovieFavoriteButton();
 
 
     /*
@@ -1773,7 +1773,7 @@ function toggleFavoriteMovie(){
     =====================
     */
 
-    updateFavoriteButton();
+    updateMovieFavoriteButton();
 
 
     /*
@@ -1782,7 +1782,7 @@ function toggleFavoriteMovie(){
     =====================
     */
 
-    displayFavorites();
+    displayMovieFavorites();
 
 
     /*
@@ -1838,7 +1838,7 @@ function toggleFavoriteMovie(){
    お気に入りボタン表示
 ========================================================= */
 
-function updateFavoriteButton(){
+function updateMovieFavoriteButton(){
 
     const btn =
         document.querySelector(
@@ -2316,7 +2316,7 @@ function getMovieShareModeBar(){
    お気に入り動画表示
 ========================================================= */
 
-function displayFavorites(){
+function displayMovieFavorites(){
 
     const data =
         db.load();
@@ -2466,7 +2466,7 @@ function displayFavorites(){
         movieShowAllFavorites =
             !movieShowAllFavorites;
 
-        displayFavorites();
+        displayMovieFavorites();
     "
 >
 
@@ -3317,7 +3317,7 @@ function setMovieSort(mode){
 
         if(type === "favorite"){
 
-            displayFavorites();
+            displayMovieFavorites();
 
         }
 
@@ -3435,7 +3435,7 @@ function setMovieSort(mode){
 
     if(type === "favorite"){
 
-        displayFavorites();
+        displayMovieFavorites();
 
     }
 
