@@ -156,7 +156,7 @@ async function movieSelected(event){
         ] = {
 
             memo: [],
-            movies: [],
+            photos: [],
             videos: [],
             expenses: [],
             rating: 0,
