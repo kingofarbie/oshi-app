@@ -1,0 +1,111 @@
+/* =========================================
+   LINEアプリ内ブラウザ対策
+========================================= */
+
+/* LINE内ブラウザの場合、
+   通常のアプリ画面を表示しない */
+html.line-browser body > *:not(#lineBrowserNotice) {
+    display: none !important;
+}
+
+
+/* =========================
+   LINEブラウザ案内画面
+========================= */
+
+#lineBrowserNotice {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 999999;
+
+    box-sizing: border-box;
+
+    padding:
+        calc(30px + env(safe-area-inset-top))
+        24px
+        calc(30px + env(safe-area-inset-bottom))
+        24px;
+
+    background: #ffffff;
+
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* LINE内ブラウザの場合だけ表示 */
+html.line-browser #lineBrowserNotice {
+    display: flex;
+}
+
+
+.line-browser-notice-inner {
+    width: 100%;
+    max-width: 420px;
+
+    text-align: center;
+}
+
+
+.line-browser-notice-icon {
+    font-size: 56px;
+    margin-bottom: 20px;
+}
+
+
+.line-browser-notice-title {
+    margin: 0 0 20px;
+
+    font-size: 24px;
+    font-weight: 700;
+
+    color: #222;
+}
+
+
+.line-browser-notice-text {
+    margin: 0 auto 28px;
+
+    font-size: 16px;
+    line-height: 1.8;
+
+    color: #444;
+}
+
+
+.line-browser-notice-button {
+    width: 100%;
+    max-width: 320px;
+
+    min-height: 52px;
+
+    border: none;
+    border-radius: 14px;
+
+    background: #222;
+    color: #fff;
+
+    font-size: 16px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 4px 12px rgba(0,0,0,0.15);
+}
+
+
+.line-browser-notice-button:active {
+    transform: scale(0.98);
+}
+
+
+.line-browser-notice-help {
+    margin-top: 18px;
+
+    font-size: 13px;
+    line-height: 1.6;
+
+    color: #777;
+}

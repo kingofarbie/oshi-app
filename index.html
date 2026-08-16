@@ -33,19 +33,74 @@
 <link rel="stylesheet" href="settings.css">
 
 <link rel="stylesheet" href="background.css">
+<link rel="stylesheet" href="line-browser.css">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 
+<script>
+(function () {
 
+    const ua = navigator.userAgent || "";
+
+    const isLineBrowser =
+        /Line\/|LINE/i.test(ua);
+
+    if (isLineBrowser) {
+        document.documentElement.classList.add("line-browser");
+    }
+
+})();
+</script>
 
 </head>
 
 
 <body class="theme-basic">
-    
-<div class="header">
 
+<!-- =================================
+     LINEアプリ内ブラウザ案内
+================================= -->
+
+<div id="lineBrowserNotice">
+
+    <div class="line-browser-notice-inner">
+
+        <div class="line-browser-notice-icon">
+            🌐
+        </div>
+
+        <h2 class="line-browser-notice-title">
+            外部ブラウザで開いてください
+        </h2>
+
+        <p class="line-browser-notice-text">
+            LINEアプリ内では、保存内容や更新内容が
+            正常に反映されない場合があります。<br>
+            推し活手帳をご利用の際は、
+            外部ブラウザで開いてください。
+        </p>
+
+        <button
+            type="button"
+            class="line-browser-notice-button"
+            onclick="openExternalBrowser()">
+
+            🌐 外部ブラウザで開く
+
+        </button>
+
+        <div class="line-browser-notice-help">
+            ボタンで開けない場合は、LINEのメニューから
+            「ブラウザで開く」を選択してください。
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="header">
     <button
         id="homeMenuButton"
         onclick="toggleHomeMenu()"
@@ -477,6 +532,7 @@
 <!-- その他 -->
 <script src="common.js"></script>
 <script src="settings.js"></script>
+
 <script src="photo.js"></script>
 <script src="home.js"></script>
 <script src="home-menu.js"></script>
@@ -590,7 +646,72 @@ ontouchend="photoDragEnd(event);photoDoubleTap(event)">
 
 
 
+<script>
+function openExternalBrowser() {
 
+    const url = window.location.href;
+
+    const ua = navigator.userAgent || "";
+
+    /*
+     * Androidの場合
+     * Chromeを外部ブラウザとして起動するよう試みる
+     */
+    if (/Android/i.test(ua)) {
+
+        try {
+
+            const urlObj = new URL(url);
+
+            const intentUrl =
+                "intent://" +
+                urlObj.host +
+                urlObj.pathname +
+                urlObj.search +
+                urlObj.hash +
+                "#Intent;" +
+                "scheme=https;" +
+                "package=com.android.chrome;" +
+                "end";
+
+            window.location.href = intentUrl;
+
+            return;
+
+        } catch (e) {
+
+            console.log(
+                "Android外部ブラウザ起動に失敗:",
+                e
+            );
+
+        }
+
+    }
+
+
+    /*
+     * iPhone / iPad / その他
+     *
+     * 新しいウィンドウとして開く
+     */
+    const newWindow =
+        window.open(url, "_blank");
+
+    /*
+     * LINE側にブロックされた場合の保険
+     */
+    if (!newWindow) {
+
+        alert(
+            "外部ブラウザを開けませんでした。\n\n" +
+            "LINEのメニューから「ブラウザで開く」を選択してください。"
+        );
+
+    }
+
+}
+</script>
 
 
 
