@@ -68,7 +68,12 @@ function addPhoto(){
 
 }
 
-function photoSelected(event){
+/* =====================
+   写真追加
+   IndexedDB保存対応
+===================== */
+
+async function photoSelected(event){
 
     const files =
         Array.from(
@@ -134,115 +139,183 @@ function photoSelected(event){
                 new Image();
 
 
-            img.onload = function(){
+            img.onload = async function(){
 
-                const MAX = 1000;
+                try{
 
-
-                let width =
-                    img.width;
-
-                let height =
-                    img.height;
+                    const MAX = 1000;
 
 
-                if(width > height){
+                    let width =
+                        img.width;
 
-                    if(width > MAX){
+                    let height =
+                        img.height;
 
-                        height *=
-                            MAX / width;
 
-                        width = MAX;
+                    /* =====================
+                       表示用画像を縮小
+                    ===================== */
+
+                    if(width > height){
+
+                        if(width > MAX){
+
+                            height *=
+                                MAX / width;
+
+                            width = MAX;
+
+                        }
+
+                    }else{
+
+                        if(height > MAX){
+
+                            width *=
+                                MAX / height;
+
+                            height = MAX;
+
+                        }
 
                     }
 
-                }else{
 
-                    if(height > MAX){
-
-                        width *=
-                            MAX / height;
-
-                        height = MAX;
-
-                    }
-
-                }
+                    const canvas =
+                        document.createElement(
+                            "canvas"
+                        );
 
 
-                const canvas =
-                    document.createElement(
-                        "canvas"
-                    );
+                    canvas.width =
+                        width;
+
+                    canvas.height =
+                        height;
 
 
-                canvas.width =
-                    width;
-
-                canvas.height =
-                    height;
-
-
-                const ctx =
-                    canvas.getContext(
-                        "2d"
-                    );
+                    const ctx =
+                        canvas.getContext(
+                            "2d"
+                        );
 
 
-                ctx.drawImage(
-                    img,
-                    0,
-                    0,
-                    width,
-                    height
-                );
-
-
-                const smallImage =
-                    canvas.toDataURL(
-                        "image/jpeg",
-                        0.8
-                    );
-
-
-                photos.push({
-
-                    id:
-                        Date.now()
-                        +
-                        Math.random(),
-
-                    src:
-                        smallImage,
-
-                    favorite:
-                        false,
-
-                    star:
+                    ctx.drawImage(
+                        img,
                         0,
+                        0,
+                        width,
+                        height
+                    );
 
-                    tags:
-                        [],
 
-                    order:
+                    /*
+                    =====================
+                    表示用サムネイル
+                    =====================
+                    */
+
+                    const smallImage =
+                        canvas.toDataURL(
+                            "image/jpeg",
+                            0.8
+                        );
+
+
+                    /*
+                    =====================
+                    写真ID
+                    =====================
+                    */
+
+                    const photoId =
                         Date.now()
                         +
-                        Math.random()
-
-                });
+                        Math.random();
 
 
-                completed++;
+                    /*
+                    =====================
+                    写真本体をIndexedDBへ保存
+                    =====================
+                    */
+
+                    await saveMediaFile(
+                        photoId,
+                        file,
+                        "photo"
+                    );
 
 
-                if(
-                    completed >= files.length
-                ){
+                    /*
+                    =====================
+                    写真情報をdbへ保存
+                    =====================
+                    */
 
-                    db.save(data);
+                    photos.push({
 
-                    renderDayMemory();
+                        id:
+                            photoId,
+
+                        src:
+                            smallImage,
+
+                        favorite:
+                            false,
+
+                        star:
+                            0,
+
+                        tags:
+                            [],
+
+                        order:
+                            photoId
+
+                    });
+
+
+                    completed++;
+
+
+                    /*
+                    =====================
+                    全写真の処理完了
+                    =====================
+                    */
+
+                    if(
+                        completed >= files.length
+                    ){
+
+                        db.save(data);
+
+                        renderDayMemory();
+
+                    }
+
+
+                }catch(error){
+
+                    console.error(
+                        "写真保存エラー:",
+                        error
+                    );
+
+                    completed++;
+
+
+                    if(
+                        completed >= files.length
+                    ){
+
+                        db.save(data);
+
+                        renderDayMemory();
+
+                    }
 
                 }
 
@@ -260,12 +333,15 @@ function photoSelected(event){
     });
 
 
-    /* 同じ写真を再度選択できるようにする */
+    /*
+    =====================
+    同じ写真を再度選択可能
+    =====================
+    */
 
     event.target.value = "";
 
 }
-
 
 /* =====================
    写真ビューア
