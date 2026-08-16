@@ -1038,30 +1038,97 @@ function shareCurrentPhoto(){
 
 }
 
-function deleteCurrentPhoto(){
+async function deleteCurrentPhoto(){
 
     if(!confirm("この写真を削除しますか？")){
         return;
     }
 
+
     const data = db.load();
 
-    const day = data.dayMemories?.[selectedCalendarDate];
+    const day =
+        data.dayMemories?.[
+            selectedCalendarDate
+        ];
 
-    if(!day) return;
 
-    day.photos = day.photos.filter(
-        p => p.src !== currentPhotoSrc
-    );
+    if(!day || !day.photos){
+        return;
+    }
 
-    db.save(data);
 
-    closePhotoViewer();
+    /*
+    =====================
+    削除対象の写真を取得
+    =====================
+    */
 
-    renderDayMemory();
+    const photo =
+        day.photos.find(
+            p => p.id === currentPhotoId
+        );
+
+
+    if(!photo){
+        return;
+    }
+
+
+    /*
+    =====================
+    IndexedDBから
+    写真本体を削除
+    =====================
+    */
+
+    try{
+
+        await deleteMediaFile(
+            photo.id
+        );
+
+
+        /*
+        =====================
+        dbから写真情報を削除
+        =====================
+        */
+
+        day.photos =
+            day.photos.filter(
+                p => p.id !== photo.id
+            );
+
+
+        db.save(data);
+
+
+        /*
+        =====================
+        画面更新
+        =====================
+        */
+
+        closePhotoViewer();
+
+        renderDayMemory();
+
+
+    }catch(error){
+
+        console.error(
+            "写真削除エラー:",
+            error
+        );
+
+        alert(
+            "写真の削除に失敗しました"
+        );
+
+    }
 
 }
-
 
 /* =====================
    写真複数共有
