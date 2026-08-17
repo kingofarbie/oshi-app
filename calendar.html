@@ -2,12 +2,6 @@
      カレンダー
 ===================== -->
 
-
-<!-- =====================
-     カレンダー
-===================== -->
-
-
 <div class="card">
 
     <h2>
@@ -19,18 +13,26 @@
          📤 予定共有
     ===================== -->
 
-    <div class="calendar-share-area">
+<div class="calendar-share-area">
 
-        <button
-            type="button"
-            class="calendar-share-btn"
-            onclick="openEventShareScreen()"
-        >
-            📤 予定を共有
-        </button>
+    <button
+        type="button"
+        class="calendar-share-btn"
+        onclick="openEventShareScreen()"
+    >
+        📤 予定を共有
+    </button>
 
-    </div>
 
+    <button
+        type="button"
+        class="calendar-share-import-btn"
+        onclick="openEventImportScreen()"
+    >
+        📥 予定を取り込む
+    </button>
+
+</div>
 
     <div id="calendar">
     </div>
@@ -38,21 +40,295 @@
 </div>
 
 
+<!-- =====================
+     📤 予定共有画面
+===================== -->
+
+<div
+    id="eventShareScreen"
+    class="event-share-screen"
+    style="display:none;"
+>
+
+    <div class="card">
+
+        <h2>
+            📤 予定を共有
+        </h2>
 
 
+        <!-- =====================
+             共有日時
+        ===================== -->
+
+        <div class="event-share-info">
+
+            <div>
+                🕒 共有日時
+            </div>
+
+            <div
+                id="eventShareDateTime"
+                class="event-share-date-time"
+            >
+            </div>
+
+        </div>
+
+
+        <!-- =====================
+             発信者
+        ===================== -->
+
+        <div class="event-share-form">
+
+            <label for="eventShareSender">
+                👤 発信者
+            </label>
+
+            <input
+                type="text"
+                id="eventShareSender"
+                placeholder="あなたの名前"
+            >
+
+        </div>
+
+
+        <!-- =====================
+             共有先
+        ===================== -->
+
+        <div class="event-share-form">
+
+            <label for="eventShareRecipients">
+                👥 共有先
+            </label>
+
+            <input
+                type="text"
+                id="eventShareRecipients"
+                placeholder="例：田中、佐藤"
+                oninput="normalizeEventShareRecipients()"
+            >
+
+            <small>
+                複数の場合は「、」または「,」で区切ってください
+            </small>
+
+        </div>
+
+
+        <!-- =====================
+             共有期間
+        ===================== -->
+
+        <div class="event-share-form">
+
+            <label for="eventSharePeriod">
+                📅 共有する期間
+            </label>
+
+            <select
+                id="eventSharePeriod"
+                onchange="changeEventSharePeriod()"
+            >
+
+                <option value="1month">
+                    1か月
+                </option>
+
+                <option value="3month" selected>
+                    3か月
+                </option>
+
+                <option value="6month">
+                    6か月
+                </option>
+
+                <option value="1year">
+                    1年
+                </option>
+
+                <option value="all">
+                    すべて
+                </option>
+
+                <option value="custom">
+                    期間を指定
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- =====================
+             カスタム期間
+        ===================== -->
+
+        <div
+            id="eventShareCustomPeriod"
+            class="event-share-custom-period"
+            style="display:none;"
+        >
+
+            <label for="eventShareStartDate">
+                開始日
+            </label>
+
+            <input
+                type="date"
+                id="eventShareStartDate"
+                onchange="renderEventShareList()"
+            >
+
+
+            <label for="eventShareEndDate">
+                終了日
+            </label>
+
+            <input
+                type="date"
+                id="eventShareEndDate"
+                onchange="renderEventShareList()"
+            >
+
+        </div>
+
+
+        <!-- =====================
+             カテゴリ
+        ===================== -->
+
+        <div class="event-share-form">
+
+            <label for="eventShareCategory">
+                📂 カテゴリ
+            </label>
+
+            <select
+                id="eventShareCategory"
+                onchange="changeEventShareCategory()"
+            >
+
+                <option value="all">
+                    すべてのカテゴリ
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- =====================
+             全選択
+        ===================== -->
+
+        <div class="event-share-select-all">
+
+            <label>
+
+                <input
+                    type="checkbox"
+                    id="eventShareSelectAll"
+                >
+
+                ☑️ 表示されている予定をすべて選択
+
+            </label>
+
+        </div>
+
+
+        <!-- =====================
+             選択件数
+        ===================== -->
+
+        <div
+            id="eventShareSelectedCount"
+            class="event-share-selected-count"
+        >
+            0件選択
+        </div>
+
+
+        <!-- =====================
+             予定一覧
+        ===================== -->
+
+        <div
+            id="eventShareEventList"
+            class="event-share-event-list"
+        >
+        </div>
+
+
+        <!-- =====================
+             共有内容確認
+        ===================== -->
+
+        <div
+            id="eventShareSummary"
+            class="event-share-summary"
+        >
+
+            <div class="event-share-summary-title">
+                📋 共有内容
+            </div>
+
+            <div class="event-share-summary-text">
+                予定を選択してください
+            </div>
+
+        </div>
+
+
+        <!-- =====================
+             ボタン
+        ===================== -->
+
+        <div class="event-share-button-area">
+
+            <button
+                type="button"
+                id="eventShareExportBtn"
+                onclick="exportSelectedEventsForShare()"
+                disabled
+            >
+                📤 共有する
+            </button>
+
+
+            <button
+                type="button"
+                onclick="closeEventShareScreen()"
+            >
+                ❌ キャンセル
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
 
 
 <!-- =====================
      カレンダー年月選択
 ===================== -->
 
-<div id="calendarDatePickerModal" class="modal">
+<div
+    id="calendarDatePickerModal"
+    class="modal"
+>
 
     <div class="modal-content">
 
         <h2>
             📅 年月を選択
         </h2>
+
 
         <div class="calendar-date-picker">
 
@@ -88,12 +364,16 @@
         </div>
 
 
-        <button onclick="applyCalendarDatePicker()">
+        <button
+            onclick="applyCalendarDatePicker()"
+        >
             📅 この月へ移動
         </button>
 
 
-        <button onclick="closeCalendarDatePicker()">
+        <button
+            onclick="closeCalendarDatePicker()"
+        >
             ❌ キャンセル
         </button>
 
@@ -103,33 +383,60 @@
 
 
 <!-- =====================
-     モーダルセット（ポップアップ）
+     モーダルセット
 ===================== -->
 
-<div id="dayMenuModal" class="modal">
+
+<!-- =====================
+     日付メニュー
+===================== -->
+
+<div
+    id="dayMenuModal"
+    class="modal"
+>
+
     <div class="modal-content">
 
-        <div id="dayMenuDate" class="modal-title">
+        <div
+            id="dayMenuDate"
+            class="modal-title"
+        >
             日付
         </div>
 
-        <button onclick="addEventFromMenu()">
+
+        <button
+            onclick="addEventFromMenu()"
+        >
             ➕ 予定追加
         </button>
 
-        <button onclick="editEventFromMenu()">
+
+        <button
+            onclick="editEventFromMenu()"
+        >
             ✏️ 予定編集
         </button>
 
-        <button onclick="copyEventFromMenu()">
+
+        <button
+            onclick="copyEventFromMenu()"
+        >
             📋 予定コピー
         </button>
 
-        <button onclick="deleteEventFromMenu()">
+
+        <button
+            onclick="deleteEventFromMenu()"
+        >
             🗑 予定削除
         </button>
 
-        <button onclick="closeDayMenu()">
+
+        <button
+            onclick="closeDayMenu()"
+        >
             ❌ 閉じる
         </button>
 
@@ -138,7 +445,14 @@
 </div>
 
 
-<div id="deleteSelectModal" class="modal">
+<!-- =====================
+     予定削除
+===================== -->
+
+<div
+    id="deleteSelectModal"
+    class="modal"
+>
 
     <div class="modal-content">
 
@@ -146,13 +460,21 @@
             削除する予定を選択
         </h3>
 
-        <div id="deleteEventList"></div>
 
-        <button onclick="deleteSelectedEvents()">
+        <div id="deleteEventList">
+        </div>
+
+
+        <button
+            onclick="deleteSelectedEvents()"
+        >
             🗑 削除
         </button>
 
-        <button onclick="closeDeleteSelectModal()">
+
+        <button
+            onclick="closeDeleteSelectModal()"
+        >
             ❌ キャンセル
         </button>
 
@@ -160,7 +482,15 @@
 
 </div>
 
-<div id="eventSelectModal" class="modal">
+
+<!-- =====================
+     予定編集
+===================== -->
+
+<div
+    id="eventSelectModal"
+    class="modal"
+>
 
     <div class="modal-content">
 
@@ -170,21 +500,28 @@
 
 
         <div id="eventSelectList">
-
         </div>
 
 
-        <button onclick="closeEventSelectModal()">
+        <button
+            onclick="closeEventSelectModal()"
+        >
             ❌ 閉じる
         </button>
-
 
     </div>
 
 </div>
 
 
-<div id="copySelectModal" class="modal">
+<!-- =====================
+     予定コピー
+===================== -->
+
+<div
+    id="copySelectModal"
+    class="modal"
+>
 
     <div class="modal-content">
 
@@ -192,13 +529,21 @@
             コピーする予定を選択
         </h3>
 
-        <div id="copyEventList"></div>
 
-        <button onclick="copySelectedEvents()">
+        <div id="copyEventList">
+        </div>
+
+
+        <button
+            onclick="copySelectedEvents()"
+        >
             📋 コピー
         </button>
 
-        <button onclick="closeCopySelectModal()">
+
+        <button
+            onclick="closeCopySelectModal()"
+        >
             ❌ キャンセル
         </button>
 
@@ -207,4 +552,153 @@
 </div>
 
 
+<!-- =====================
+     📥 予定取り込み画面
+===================== -->
 
+<div
+    id="eventImportScreen"
+    class="event-import-screen"
+    style="display:none;"
+>
+
+    <div class="card">
+
+        <h2>
+            📥 予定を取り込む
+        </h2>
+
+
+        <!-- =====================
+             🔒 プラン案内
+        ===================== -->
+
+        <div
+            id="eventImportPlanNotice"
+            class="event-import-plan-notice"
+            style="display:none;"
+        >
+        </div>
+
+
+        <!-- =====================
+             ファイル選択
+        ===================== -->
+
+        <div class="event-import-file-area">
+
+            <label
+                for="eventImportFile"
+                id="eventImportFileLabel"
+                class="event-import-file-button"
+            >
+                📂 共有ファイルを選択
+            </label>
+
+            <input
+                type="file"
+                id="eventImportFile"
+                accept=".json,application/json"
+                style="display:none;"
+                onchange="handleEventImportFile(event)"
+            >
+
+        </div>
+
+
+        <!-- =====================
+             説明
+        ===================== -->
+
+        <div class="event-import-description">
+
+            「oshi-app-events.json」を選択してください。
+
+        </div>
+
+
+        <!-- =====================
+             共有情報
+        ===================== -->
+
+        <div
+            id="eventImportInfo"
+            class="event-import-info"
+            style="display:none;"
+        >
+
+            <h3>
+                📋 共有情報
+            </h3>
+
+
+            <div>
+                👤 発信者：
+                <span id="eventImportSender"></span>
+            </div>
+
+
+            <div>
+                👥 共有先：
+                <span id="eventImportRecipients"></span>
+            </div>
+
+
+            <div>
+                🕒 共有日時：
+                <span id="eventImportSharedAt"></span>
+            </div>
+
+        </div>
+
+
+        <!-- =====================
+             予定一覧
+        ===================== -->
+
+        <div
+            id="eventImportEventList"
+            class="event-import-event-list"
+        >
+        </div>
+
+
+        <!-- =====================
+             取り込み件数
+        ===================== -->
+
+        <div
+            id="eventImportCount"
+            class="event-import-count"
+        >
+        </div>
+
+
+        <!-- =====================
+             ボタン
+        ===================== -->
+
+        <div class="event-import-button-area">
+
+            <button
+                type="button"
+                id="eventImportExecuteBtn"
+                onclick="importSelectedEvents()"
+                disabled
+            >
+                📥 選択した予定を取り込む
+            </button>
+
+
+            <button
+                type="button"
+                onclick="closeEventImportScreen()"
+            >
+                ❌ キャンセル
+            </button>
+
+        </div>
+
+    </div>
+
+</div>

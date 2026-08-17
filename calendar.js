@@ -2426,6 +2426,59 @@ function normalizeEventShareRecipients(){
 
 function exportSelectedEventsForShare(){
 
+    /* =====================
+       🔒 予定共有プランチェック
+    ===================== */
+
+    const data =
+        db.load();
+
+    const plan =
+        PLAN[data.settings?.plan];
+
+    if(!plan){
+
+        alert(
+            "プラン情報を確認できません。"
+        );
+
+        return;
+
+    }
+
+
+    /* =====================
+       無料プランは利用不可
+    ===================== */
+
+    if(data.settings?.plan === "free"){
+
+        alert(
+            "🔒 予定共有はプレミアム以上で利用できます。"
+        );
+
+        return;
+
+    }
+
+
+    /* =====================
+       共有予定チェック
+    ===================== */
+
+    if(eventShareSelectedIds.length === 0){
+
+        alert(
+            "共有する予定を選択してください。"
+        );
+
+        return;
+
+    }
+
+    /* 以下は現在のコードをそのまま続ける */
+
+
     if(eventShareSelectedIds.length === 0){
 
         alert(
@@ -2841,3 +2894,1264 @@ function changeEventShareCustomDate(){
     updateEventShareSelectedCount();
 
 }
+
+
+
+
+
+/* =====================================================
+   📥 予定取り込み
+===================================================== */
+
+
+/* =====================
+   取り込みデータ
+===================== */
+
+let eventImportData = null;
+
+
+/* =====================
+   取り込み選択ID
+===================== */
+
+let eventImportSelectedIds = [];
+
+
+/* =====================================================
+   📥 取り込み画面を開く
+===================================================== */
+
+function openEventImportScreen(){
+
+    const screen =
+        document.getElementById(
+            "eventImportScreen"
+        );
+
+    if(!screen){
+        return;
+    }
+
+
+    /* =====================
+       🔒 プラン確認
+    ===================== */
+
+    const data =
+        db.load();
+
+    const plan =
+        PLAN[data.settings?.plan];
+
+
+    if(!plan){
+
+        alert(
+            "プラン情報を確認できません。"
+        );
+
+        return;
+
+    }
+
+
+    const isFree =
+        data.settings?.plan === "free";
+
+
+    /* =====================
+       初期化
+    ===================== */
+
+    eventImportData = null;
+
+    eventImportSelectedIds = [];
+
+
+    const fileInput =
+        document.getElementById(
+            "eventImportFile"
+        );
+
+    if(fileInput){
+
+        fileInput.value = "";
+
+    }
+
+
+    const info =
+        document.getElementById(
+            "eventImportInfo"
+        );
+
+    if(info){
+
+        info.style.display = "none";
+
+    }
+
+
+    const list =
+        document.getElementById(
+            "eventImportEventList"
+        );
+
+    if(list){
+
+        list.innerHTML = "";
+
+    }
+
+
+    const count =
+        document.getElementById(
+            "eventImportCount"
+        );
+
+    if(count){
+
+        count.textContent = "";
+
+    }
+
+
+    const button =
+        document.getElementById(
+            "eventImportExecuteBtn"
+        );
+
+    if(button){
+
+        button.disabled = true;
+
+    }
+
+
+    /* =====================
+       🔒 プラン案内
+    ===================== */
+
+    const notice =
+        document.getElementById(
+            "eventImportPlanNotice"
+        );
+
+
+    if(notice){
+
+        if(isFree){
+
+            notice.innerHTML = `
+                🔒 <strong>予定の取り込みは有料プラン限定です。</strong>
+                <br>
+                プレミアム以上のプランで利用できます。
+            `;
+
+            notice.style.display = "block";
+
+        }else{
+
+            notice.innerHTML = `
+                📥 <strong>${plan.name}</strong>で予定を取り込めます。
+            `;
+
+            notice.style.display = "block";
+
+        }
+
+    }
+
+
+    /* =====================
+       📂 ファイル選択ボタン
+    ===================== */
+
+    const fileLabel =
+        document.getElementById(
+            "eventImportFileLabel"
+        );
+
+
+    if(fileLabel){
+
+        if(isFree){
+
+            fileLabel.style.opacity = "0.5";
+
+            fileLabel.style.pointerEvents =
+                "none";
+
+        }else{
+
+            fileLabel.style.opacity = "";
+
+            fileLabel.style.pointerEvents =
+                "";
+
+        }
+
+    }
+
+
+    /* =====================
+       ファイル入力自体も無効化
+    ===================== */
+
+    if(fileInput){
+
+        fileInput.disabled =
+            isFree;
+
+    }
+
+
+    /* =====================
+       画面表示
+    ===================== */
+
+    screen.style.display = "block";
+
+
+    /* =====================
+       カレンダー非表示
+    ===================== */
+
+    const calendar =
+        document.getElementById(
+            "calendar"
+        );
+
+    if(calendar){
+
+        calendar.style.display = "none";
+
+    }
+
+
+    /* =====================
+       上部へ
+    ===================== */
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+
+/* =====================================================
+   📥 取り込み画面を閉じる
+===================================================== */
+
+function closeEventImportScreen(){
+
+    const screen =
+        document.getElementById(
+            "eventImportScreen"
+        );
+
+    if(screen){
+
+        screen.style.display = "none";
+
+    }
+
+
+    const calendar =
+        document.getElementById(
+            "calendar"
+        );
+
+    if(calendar){
+
+        calendar.style.display = "";
+
+    }
+
+}
+
+
+/* =====================================================
+   📂 JSONファイル読み込み
+===================================================== */
+
+function handleEventImportFile(event){
+
+    const file =
+        event.target.files?.[0];
+
+
+    if(!file){
+
+        return;
+
+    }
+
+
+    const reader =
+        new FileReader();
+
+
+    reader.onload =
+        function(){
+
+            try{
+
+                const json =
+                    JSON.parse(
+                        reader.result
+                    );
+
+
+                validateEventShareData(
+                    json
+                );
+
+
+                eventImportData =
+                    json;
+
+
+                eventImportSelectedIds =
+                    [];
+
+
+                renderEventImportInfo();
+
+                renderEventImportList();
+
+
+            }catch(error){
+
+                console.error(
+                    "予定取り込みエラー:",
+                    error
+                );
+
+
+                eventImportData =
+                    null;
+
+
+                alert(
+                    "共有ファイルを読み込めませんでした。\n\n" +
+                    "推し活手帳から作成した共有ファイルか確認してください。"
+                );
+
+            }
+
+        };
+
+
+    reader.onerror =
+        function(){
+
+            alert(
+                "ファイルを読み込めませんでした。"
+            );
+
+        };
+
+
+    reader.readAsText(
+        file,
+        "UTF-8"
+    );
+
+}
+
+
+/* =====================================================
+   🔒 共有データ確認
+===================================================== */
+
+function validateEventShareData(data){
+
+    if(!data){
+
+        throw new Error(
+            "データがありません"
+        );
+
+    }
+
+
+    if(
+        data.type !==
+        "oshi-app-event-share"
+    ){
+
+        throw new Error(
+            "共有ファイルではありません"
+        );
+
+    }
+
+
+    if(
+        !Array.isArray(
+            data.events
+        )
+    ){
+
+        throw new Error(
+            "予定データがありません"
+        );
+
+    }
+
+
+    if(
+        data.version !== 1
+    ){
+
+        throw new Error(
+            "対応していない共有ファイルです"
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   📋 共有情報表示
+===================================================== */
+
+function renderEventImportInfo(){
+
+    if(!eventImportData){
+
+        return;
+
+    }
+
+
+    const info =
+        document.getElementById(
+            "eventImportInfo"
+        );
+
+
+    const sender =
+        document.getElementById(
+            "eventImportSender"
+        );
+
+
+    const recipients =
+        document.getElementById(
+            "eventImportRecipients"
+        );
+
+
+    const sharedAt =
+        document.getElementById(
+            "eventImportSharedAt"
+        );
+
+
+    if(info){
+
+        info.style.display = "block";
+
+    }
+
+
+    if(sender){
+
+        sender.textContent =
+            eventImportData.sender ||
+            "不明";
+
+    }
+
+
+    if(recipients){
+
+        recipients.textContent =
+            Array.isArray(
+                eventImportData.recipients
+            )
+            ? eventImportData.recipients.join("、")
+            : "不明";
+
+    }
+
+
+    if(sharedAt){
+
+        sharedAt.textContent =
+            formatEventImportDate(
+                eventImportData.sharedAt
+            );
+
+    }
+
+}
+
+
+/* =====================================================
+   📅 取り込み予定一覧
+===================================================== */
+
+function renderEventImportList(){
+
+    const list =
+        document.getElementById(
+            "eventImportEventList"
+        );
+
+
+    if(!list){
+
+        return;
+
+    }
+
+
+    if(
+        !eventImportData ||
+        !Array.isArray(
+            eventImportData.events
+        )
+    ){
+
+        list.innerHTML = "";
+
+        return;
+
+    }
+
+
+    const data =
+        db.load();
+
+
+    const existingEvents =
+        data.events || [];
+
+
+    /*
+    =====================
+       選択状態を一度リセット
+    =====================
+    */
+
+    eventImportSelectedIds = [];
+
+
+    list.innerHTML =
+        eventImportData.events
+        .map(event => {
+
+            const duplicate =
+                isDuplicateImportedEvent(
+                    event,
+                    existingEvents
+                );
+
+
+            /*
+            =====================
+               重複していない予定だけ
+               初期選択
+            =====================
+            */
+
+            const checked =
+                !duplicate;
+
+
+            if(
+                checked
+            ){
+
+                eventImportSelectedIds.push(
+                    event.id
+                );
+
+            }
+
+
+            const icon =
+                getCategoryInfo(
+                    event.category
+                )?.icon ||
+                "📅";
+
+
+            return `
+
+                <label
+                    class="event-import-event-item"
+                >
+
+                    <input
+                        type="checkbox"
+                        class="event-import-event-checkbox"
+                        value="${event.id}"
+                        ${checked ? "checked" : ""}
+                        ${duplicate ? "disabled" : ""}
+                        onchange="toggleEventImportSelection(${event.id})"
+                    >
+
+                    <div
+                        class="event-import-event-info"
+                    >
+
+                        <div
+                            class="event-import-event-title"
+                        >
+                            ${icon}
+                            ${escapeEventShareHTML(
+                                event.title ||
+                                "予定"
+                            )}
+                        </div>
+
+
+                        <div
+                            class="event-import-event-date"
+                        >
+                            📅
+                            ${formatEventShareDate(
+                                event.start
+                            )}
+                        </div>
+
+
+                        ${
+                            event.place
+                            ? `
+                            <div
+                                class="event-import-event-place"
+                            >
+                                📍
+                                ${escapeEventShareHTML(
+                                    event.place
+                                )}
+                            </div>
+                            `
+                            : ""
+                        }
+
+
+                        ${
+                            duplicate
+                            ? `
+                            <div
+                                class="event-import-duplicate"
+                            >
+                                ⚠️ すでに登録されています
+                            </div>
+                            `
+                            : ""
+                        }
+
+                    </div>
+
+                </label>
+
+            `;
+
+        })
+        .join("");
+
+
+    updateEventImportCount();
+
+}
+
+/* =====================================================
+   ☑️ 取り込み選択
+===================================================== */
+
+function toggleEventImportSelection(id){
+
+    const index =
+        eventImportSelectedIds
+            .indexOf(id);
+
+
+    if(index === -1){
+
+        eventImportSelectedIds.push(
+            id
+        );
+
+    }else{
+
+        eventImportSelectedIds.splice(
+            index,
+            1
+        );
+
+    }
+
+
+    updateEventImportCount();
+
+}
+
+
+/* =====================================================
+   🔢 取り込み件数
+===================================================== */
+
+function updateEventImportCount(){
+
+    const count =
+        eventImportSelectedIds.length;
+
+
+    const countElement =
+        document.getElementById(
+            "eventImportCount"
+        );
+
+
+    if(countElement){
+
+        countElement.textContent =
+            `${count}件の予定を取り込みます`;
+
+    }
+
+
+    const button =
+        document.getElementById(
+            "eventImportExecuteBtn"
+        );
+
+
+    if(button){
+
+        button.disabled =
+            count === 0;
+
+    }
+
+}
+
+
+/* =====================================================
+   🔍 重複チェック
+===================================================== */
+
+function isDuplicateImportedEvent(
+    importedEvent,
+    existingEvents
+){
+
+    return existingEvents.some(
+        event => {
+
+            if(
+                importedEvent.shareInfo &&
+                importedEvent.shareInfo.sharedAt &&
+                event.shareInfo &&
+                event.shareInfo.sharedAt ===
+                    importedEvent.shareInfo.sharedAt
+            ){
+
+                return (
+                    event.title ===
+                    importedEvent.title &&
+                    event.start ===
+                    importedEvent.start
+                );
+
+            }
+
+
+            return (
+                event.title ===
+                importedEvent.title &&
+                event.start ===
+                importedEvent.start &&
+                event.place ===
+                importedEvent.place
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   📥 予定取り込み実行
+===================================================== */
+
+function importSelectedEvents(){
+
+    /* =====================
+       共有データ確認
+    ===================== */
+
+    if(
+        !eventImportData ||
+        !Array.isArray(
+            eventImportData.events
+        )
+    ){
+
+        alert(
+            "取り込む予定がありません。"
+        );
+
+        return;
+
+    }
+
+
+    /* =====================
+       🔒 プランチェック
+    ===================== */
+
+    const data =
+        db.load();
+
+
+    const plan =
+        PLAN[data.settings?.plan];
+
+
+    if(!plan){
+
+        alert(
+            "プラン情報を確認できません。"
+        );
+
+        return;
+
+    }
+
+
+    /*
+    =====================
+       無料プランは利用不可
+    =====================
+    */
+
+    if(
+        data.settings?.plan === "free"
+    ){
+
+        alert(
+            "🔒 予定の取り込みはプレミアム以上で利用できます。"
+        );
+
+        return;
+
+    }
+
+
+    /* =====================
+       選択確認
+    ===================== */
+
+    if(
+        eventImportSelectedIds.length === 0
+    ){
+
+        alert(
+            "取り込む予定を選択してください。"
+        );
+
+        return;
+
+    }
+
+
+    /* =====================
+       events 初期化
+    ===================== */
+
+    if(
+        !Array.isArray(
+            data.events
+        )
+    ){
+
+        data.events = [];
+
+    }
+
+
+    /* =====================
+       選択された予定
+    ===================== */
+
+    const selectedEvents =
+        eventImportData.events
+        .filter(event =>
+            eventImportSelectedIds
+                .includes(event.id)
+        );
+
+
+    if(
+        selectedEvents.length === 0
+    ){
+
+        alert(
+            "取り込む予定がありません。"
+        );
+
+        return;
+
+    }
+
+
+    /* =====================
+       📊 取り込み前の件数
+    ===================== */
+
+    const originalSelectedCount =
+        selectedEvents.length;
+
+
+    const currentCount =
+        data.events.length;
+
+
+    const limit =
+        plan.eventLimit;
+
+
+    /* =====================
+       残り枠
+    ===================== */
+
+    let remain;
+
+    if(
+        limit === Infinity
+    ){
+
+        remain = Infinity;
+
+    }else{
+
+        remain =
+            Math.max(
+                0,
+                limit - currentCount
+            );
+
+    }
+
+
+    /* =====================
+       上限到達
+    ===================== */
+
+    if(
+        remain === 0
+    ){
+
+        alert(
+            `${plan.name}の予定上限に達しています。\n\n` +
+            `現在の予定数：${currentCount}件\n` +
+            `上限：${limit}件\n\n` +
+            `予定を削除するか、上位プランへ変更すると取り込めます。`
+        );
+
+        return;
+
+    }
+
+
+    /* =====================
+       取り込み対象決定
+    ===================== */
+
+    const importTargets =
+        remain === Infinity
+        ? selectedEvents
+        : selectedEvents.slice(
+            0,
+            remain
+        );
+
+
+    let importedCount = 0;
+
+
+    /* =====================
+       予定取り込み
+    ===================== */
+
+    importTargets.forEach(
+        importedEvent => {
+
+            /* =====================
+               重複確認
+            ===================== */
+
+            if(
+                isDuplicateImportedEvent(
+                    importedEvent,
+                    data.events
+                )
+            ){
+
+                return;
+
+            }
+
+
+            /* =====================
+               新しい予定ID
+            ===================== */
+
+            const newEvent = {
+
+                ...importedEvent,
+
+                id:
+                    Date.now() +
+                    Math.random(),
+
+                importedFromShare:
+                    true,
+
+                importedAt:
+                    new Date().toISOString()
+
+            };
+
+
+            data.events.push(
+                newEvent
+            );
+
+
+            importedCount++;
+
+        }
+    );
+
+
+    /* =====================
+       重複だけだった場合
+    ===================== */
+
+    if(
+        importedCount === 0
+    ){
+
+        alert(
+            "選択した予定はすでに登録されています。"
+        );
+
+        renderEventImportList();
+
+        return;
+
+    }
+
+
+    /* =====================
+       保存
+    ===================== */
+
+    db.save(data);
+
+
+    /* =====================
+       表示更新
+    ===================== */
+
+    renderCalendar();
+
+    displayEventList();
+
+    displaySelectedDateEvents();
+
+    displayHomeSchedule();
+
+    displayUpcomingEvents();
+
+    displayCountdown();
+
+
+    /* =====================
+       共有履歴
+    ===================== */
+
+    if(
+        !data.eventShareImportHistory
+    ){
+
+        data.eventShareImportHistory = [];
+
+    }
+
+
+    data.eventShareImportHistory.push({
+
+        id:
+            Date.now(),
+
+        sender:
+            eventImportData.sender ||
+            "",
+
+        recipients:
+            eventImportData.recipients ||
+            [],
+
+        eventIds:
+            importTargets.map(
+                event => event.id
+            ),
+
+        importedCount:
+            importedCount,
+
+        importedAt:
+            new Date().toISOString(),
+
+        sharedAt:
+            eventImportData.sharedAt ||
+            null
+
+    });
+
+
+    db.save(data);
+
+
+    /* =====================
+       📊 上限による一部取り込み
+    ===================== */
+
+    if(
+        importedCount <
+        originalSelectedCount
+    ){
+
+        alert(
+            `上限に達したので、` +
+            `${originalSelectedCount}件中` +
+            `${importedCount}件しか読み込めませんでした。\n\n` +
+            `現在の予定数：${data.events.length}件\n` +
+            `上限：${limit}件\n\n` +
+            `予定を削除するか、上位プランへ変更すると、残りの予定を再度読み込めます。`
+        );
+
+
+        /*
+        =====================
+           取り込み画面は閉じない
+           
+           → プラン変更後などに
+             同じデータから再取り込み可能
+        =====================
+        */
+
+        renderEventImportList();
+
+        updateEventImportCount();
+
+        return;
+
+    }
+
+
+    /* =====================
+       完全取り込み
+    ===================== */
+
+    alert(
+        `${importedCount}件の予定を取り込みました。`
+    );
+
+
+    closeEventImportScreen();
+
+}
+
+
+/* =====================================================
+   📅 取り込み日時表示
+===================================================== */
+
+function formatEventImportDate(value){
+
+    if(!value){
+
+        return "不明";
+
+    }
+
+
+    const date =
+        new Date(value);
+
+
+    if(
+        Number.isNaN(
+            date.getTime()
+        )
+    ){
+
+        return "不明";
+
+    }
+
+
+    const year =
+        date.getFullYear();
+
+
+    const month =
+        String(
+            date.getMonth() + 1
+        ).padStart(
+            2,
+            "0"
+        );
+
+
+    const day =
+        String(
+            date.getDate()
+        ).padStart(
+            2,
+            "0"
+        );
+
+
+    const hour =
+        String(
+            date.getHours()
+        ).padStart(
+            2,
+            "0"
+        );
+
+
+    const minute =
+        String(
+            date.getMinutes()
+        ).padStart(
+            2,
+            "0"
+        );
+
+
+    return (
+        `${year}/${month}/${day} ` +
+        `${hour}:${minute}`
+    );
+
+}
+
+
