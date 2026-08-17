@@ -1600,16 +1600,16 @@ function renderEventShareList(){
 
 
     /* =====================
-       今日以降だけ
+       📅 共有期間
     ===================== */
 
-    const now =
-        new Date();
+    const range =
+        getEventShareDateRange();
 
-    now.setHours(
-        0,0,0,0
-    );
 
+    /* =====================
+       今日以降＋期間内
+    ===================== */
 
     events =
         events.filter(event => {
@@ -1618,36 +1618,16 @@ function renderEventShareList(){
                 return false;
             }
 
-            const eventDate =
-                new Date(event.start);
-
-            return eventDate >= now;
+            return isEventInSharePeriod(
+                event,
+                range
+            );
 
         });
 
-    /* =====================
-   📅 共有期間で絞り込み
-    ===================== */
-
-    const shareRange =
-        getEventShareDateRange();
-
-    events =
-        events.filter(
-            event =>
-                isEventInSharePeriod(
-                    event,
-                    shareRange
-                )
-    );
-
-
-
-
-
 
     /* =====================
-       カテゴリ絞り込み
+       📂 カテゴリ絞り込み
     ===================== */
 
     const categorySelect =
@@ -1674,7 +1654,7 @@ function renderEventShareList(){
 
 
     /* =====================
-       日付順
+       📅 日付順
     ===================== */
 
     events.sort(
@@ -1685,14 +1665,14 @@ function renderEventShareList(){
 
 
     /* =====================
-       予定なし
+       📭 予定なし
     ===================== */
 
     if(events.length === 0){
 
         list.innerHTML = `
             <div class="event-share-empty">
-                📭 共有できる予定がありません
+                📭 指定した期間に共有できる予定がありません
             </div>
         `;
 
@@ -1704,7 +1684,7 @@ function renderEventShareList(){
 
 
     /* =====================
-       一覧作成
+       📋 一覧作成
     ===================== */
 
     list.innerHTML =
@@ -1791,6 +1771,10 @@ function renderEventShareList(){
 
         }).join("");
 
+
+    /* =====================
+       選択件数更新
+    ===================== */
 
     updateEventShareSelectedCount();
 
@@ -2831,3 +2815,29 @@ document.addEventListener(
 );
 
 
+/* =====================================================
+   📅 共有期間指定の日付変更
+===================================================== */
+
+function changeEventShareCustomDate(){
+
+    eventShareSelectedIds = [];
+
+
+    const selectAll =
+        document.getElementById(
+            "eventShareSelectAll"
+        );
+
+    if(selectAll){
+
+        selectAll.checked = false;
+
+    }
+
+
+    renderEventShareList();
+
+    updateEventShareSelectedCount();
+
+}
