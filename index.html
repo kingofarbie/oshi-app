@@ -541,6 +541,102 @@
 
 
     <!-- =====================
+         共有期間
+    ===================== -->
+
+    <div class="event-share-section">
+
+        <div class="event-share-section-title">
+            🗓 共有する期間
+        </div>
+
+
+        <select
+            id="eventSharePeriod"
+            class="event-share-category"
+            onchange="changeEventSharePeriod()"
+        >
+
+            <option value="1month">
+                今後1か月
+            </option>
+
+            <option value="3month" selected>
+                今後3か月
+            </option>
+
+            <option value="6month">
+                今後6か月
+            </option>
+
+            <option value="1year">
+                今後1年間
+            </option>
+
+            <option value="custom">
+                期間を指定
+            </option>
+
+            <option value="all">
+                すべての予定
+            </option>
+
+        </select>
+
+
+        <!-- =====================
+             期間指定
+        ===================== -->
+
+        <div
+            id="eventShareCustomPeriod"
+            style="display:none; margin-top:10px;"
+        >
+
+            <div class="event-form-row">
+
+                <label for="eventShareStartDate">
+                    開始日
+                </label>
+
+                <input
+                    type="date"
+                    id="eventShareStartDate"
+                    onchange="changeEventSharePeriod()"
+                >
+
+            </div>
+
+
+            <div class="event-form-row">
+
+                <label for="eventShareEndDate">
+                    終了日
+                </label>
+
+                <input
+                    type="date"
+                    id="eventShareEndDate"
+                    onchange="changeEventSharePeriod()"
+                >
+
+            </div>
+
+        </div>
+
+
+        <div class="event-share-help">
+
+            過去の予定は基本的に表示せず、
+            これからの予定を中心に共有できます。
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================
          共有カテゴリ
     ===================== -->
 
@@ -550,18 +646,21 @@
             📂 共有するカテゴリ
         </div>
 
+
         <select
             id="eventShareCategory"
             class="event-share-category"
+            onchange="changeEventShareCategory()"
         >
 
             <option value="all">
-                すべての予定
+                すべてのカテゴリ
             </option>
 
         </select>
 
     </div>
+
 
 
     <!-- =====================
@@ -586,13 +685,16 @@
         </div>
 
 
-        <!-- 全選択 -->
+        <!-- =====================
+             全選択
+        ===================== -->
 
         <label class="event-share-select-all">
 
             <input
                 type="checkbox"
                 id="eventShareSelectAll"
+                onchange="toggleEventShareSelectAll()"
             >
 
             <span>
@@ -602,7 +704,9 @@
         </label>
 
 
-        <!-- 予定一覧をJSで生成 -->
+        <!-- =====================
+             予定一覧をJSで生成
+        ===================== -->
 
         <div
             id="eventShareEventList"
@@ -618,6 +722,7 @@
     </div>
 
 
+
     <!-- =====================
          共有先
     ===================== -->
@@ -625,12 +730,15 @@
     <div class="event-share-section">
 
         <div class="event-share-section-title">
-            👤 共有先
+            👥 共有先
         </div>
 
 
         <div class="event-share-help">
-            複数人に送る場合は「,」で区切って入力してください。
+
+            複数人に送る場合は「,」で区切って入力してください。<br>
+            「、」で入力しても自動的に「,」へ変換します。
+
         </div>
 
 
@@ -640,9 +748,11 @@
             class="event-share-recipient-input"
             placeholder="例：山田太郎,佐藤花子,鈴木一郎"
             autocomplete="off"
+            oninput="normalizeEventShareRecipients()"
         >
 
     </div>
+
 
 
     <!-- =====================
@@ -666,10 +776,13 @@
 
 
         <div class="event-share-help">
+
             共有履歴に記録されます。
+
         </div>
 
     </div>
+
 
 
     <!-- =====================
@@ -694,6 +807,7 @@
     </div>
 
 
+
     <!-- =====================
          共有内容確認
     ===================== -->
@@ -707,6 +821,7 @@
             📋 共有内容
         </div>
 
+
         <div class="event-share-summary-text">
 
             予定を選択してください
@@ -714,6 +829,7 @@
         </div>
 
     </div>
+
 
 
     <!-- =====================
@@ -744,6 +860,7 @@
     </div>
 
 
+
     <!-- =====================
          注意書き
     ===================== -->
@@ -754,20 +871,27 @@
             ℹ️ 共有について
         </div>
 
+
         <p>
-            共有した予定には、共有先と共有日時が記録されます。
+            共有した予定には、
+            共有先と共有日時が記録されます。
         </p>
+
 
         <p>
             受け取った人が予定を取り込むと、
             発信者と受信日時も記録されます。
         </p>
 
+
+        <p>
+            「今後3か月」などの期間を指定すると、
+            その期間内の予定だけを共有できます。
+        </p>
+
     </div>
 
 </div>
-
-
 
 <!-- Firebase（順番固定・完成版） -->
 <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
