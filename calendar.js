@@ -1331,53 +1331,45 @@ document.addEventListener(
 
 
 
-/* =====================================================
-   📤 予定共有機能
-===================================================== */
-
-
 /* =====================
-   📤 共有画面を開く
+   共有対象の予定
 ===================== */
+
+let eventShareSelectedIds = [];
+
+/* =====================================================
+   📤 予定共有画面を開く
+===================================================== */
 
 function openEventShareScreen(){
 
     const screen =
-        document.getElementById(
-            "eventShareScreen"
-        );
+        document.getElementById("eventShareScreen");
 
     if(!screen){
-
         console.log(
             "eventShareScreen が見つかりません"
         );
-
         return;
-
     }
 
 
     /* =====================
-       共有画面表示
+       共有画面を表示
     ===================== */
 
     screen.style.display = "block";
 
 
     /* =====================
-       カレンダーを一時非表示
+       カレンダーを一時的に非表示
     ===================== */
 
     const calendar =
-        document.getElementById(
-            "calendar"
-        );
+        document.getElementById("calendar");
 
     if(calendar){
-
         calendar.style.display = "none";
-
     }
 
 
@@ -1389,36 +1381,19 @@ function openEventShareScreen(){
 
 
     /* =====================
-       期間設定
+       選択状態をリセット
     ===================== */
 
-    const periodSelect =
+    eventShareSelectedIds = [];
+
+
+    const selectAll =
         document.getElementById(
-            "eventSharePeriod"
+            "eventShareSelectAll"
         );
 
-    if(periodSelect){
-
-        periodSelect.value =
-            "3month";
-
-    }
-
-
-    /* =====================
-       期間指定欄を非表示
-    ===================== */
-
-    const customPeriod =
-        document.getElementById(
-            "eventShareCustomPeriod"
-        );
-
-    if(customPeriod){
-
-        customPeriod.style.display =
-            "none";
-
+    if(selectAll){
+        selectAll.checked = false;
     }
 
 
@@ -1437,42 +1412,26 @@ function openEventShareScreen(){
 
 
     /* =====================
-       選択状態リセット
+       選択件数更新
     ===================== */
-
-    const selectAll =
-        document.getElementById(
-            "eventShareSelectAll"
-        );
-
-    if(selectAll){
-
-        selectAll.checked = false;
-
-    }
-
 
     updateEventShareSelectedCount();
 
 
     /* =====================
-       ページ上部
+       上部へ
     ===================== */
 
     window.scrollTo({
-
         top:0,
-
         behavior:"smooth"
-
     });
 
 }
 
-
-/* =====================
-   📤 共有画面を閉じる
-===================== */
+/* =====================================================
+   📤 予定共有画面を閉じる
+===================================================== */
 
 function closeEventShareScreen(){
 
@@ -1483,26 +1442,21 @@ function closeEventShareScreen(){
 
     if(screen){
 
-        screen.style.display =
-            "none";
+        screen.style.display = "none";
 
     }
 
 
     const calendar =
-        document.getElementById(
-            "calendar"
-        );
+        document.getElementById("calendar");
 
     if(calendar){
 
-        calendar.style.display =
-            "";
+        calendar.style.display = "";
 
     }
 
 }
-
 
 /* =====================================================
    🕒 共有日時
@@ -1520,31 +1474,26 @@ function updateEventShareDateTime(){
     }
 
 
-    const now =
-        new Date();
+    const now = new Date();
 
 
     const year =
         now.getFullYear();
-
 
     const month =
         String(
             now.getMonth() + 1
         ).padStart(2,"0");
 
-
     const day =
         String(
             now.getDate()
         ).padStart(2,"0");
 
-
     const hour =
         String(
             now.getHours()
         ).padStart(2,"0");
-
 
     const minute =
         String(
@@ -1553,13 +1502,13 @@ function updateEventShareDateTime(){
 
 
     dateTime.textContent =
-        `${year}/${month}/${day} ${hour}:${minute}`;
+        `${year}/${month}/${day} ` +
+        `${hour}:${minute}`;
 
 }
 
-
 /* =====================================================
-   📂 カテゴリ一覧
+   📂 共有カテゴリ
 ===================================================== */
 
 function updateEventShareCategories(){
@@ -1577,7 +1526,6 @@ function updateEventShareCategories(){
     const data =
         db.load();
 
-
     const categories =
         data.categories || [];
 
@@ -1591,19 +1539,359 @@ function updateEventShareCategories(){
     categories.forEach(category => {
 
         html += `
-            <option value="${escapeEventShareHtml(category.name)}">
-                ${category.icon || ""} ${escapeEventShareHtml(category.name)}
+            <option value="${escapeEventShareHTML(category.name)}">
+                ${category.icon || ""} 
+                ${escapeEventShareHTML(category.name)}
             </option>
         `;
 
     });
 
 
-    select.innerHTML =
-        html;
+    select.innerHTML = html;
+
+
+    /* =====================
+       カテゴリ変更
+    ===================== */
+
+    select.onchange = function(){
+
+        eventShareSelectedIds = [];
+
+        const selectAll =
+            document.getElementById(
+                "eventShareSelectAll"
+            );
+
+        if(selectAll){
+            selectAll.checked = false;
+        }
+
+        renderEventShareList();
+
+        updateEventShareSelectedCount();
+
+    };
 
 }
 
+/* =====================================================
+   📅 共有予定一覧
+===================================================== */
+
+function renderEventShareList(){
+
+    const list =
+        document.getElementById(
+            "eventShareEventList"
+        );
+
+    if(!list){
+        return;
+    }
+
+
+    const data =
+        db.load();
+
+    let events =
+        data.events || [];
+
+
+    /* =====================
+       今日以降だけ
+    ===================== */
+
+    const now =
+        new Date();
+
+    now.setHours(
+        0,0,0,0
+    );
+
+
+    events =
+        events.filter(event => {
+
+            if(!event.start){
+                return false;
+            }
+
+            const eventDate =
+                new Date(event.start);
+
+            return eventDate >= now;
+
+        });
+
+    /* =====================
+   📅 共有期間で絞り込み
+    ===================== */
+
+    const shareRange =
+        getEventShareDateRange();
+
+    events =
+        events.filter(
+            event =>
+                isEventInSharePeriod(
+                    event,
+                    shareRange
+                )
+    );
+
+
+
+
+
+
+    /* =====================
+       カテゴリ絞り込み
+    ===================== */
+
+    const categorySelect =
+        document.getElementById(
+            "eventShareCategory"
+        );
+
+    const selectedCategory =
+        categorySelect
+        ? categorySelect.value
+        : "all";
+
+
+    if(selectedCategory !== "all"){
+
+        events =
+            events.filter(
+                event =>
+                    event.category ===
+                    selectedCategory
+            );
+
+    }
+
+
+    /* =====================
+       日付順
+    ===================== */
+
+    events.sort(
+        (a,b) =>
+            new Date(a.start) -
+            new Date(b.start)
+    );
+
+
+    /* =====================
+       予定なし
+    ===================== */
+
+    if(events.length === 0){
+
+        list.innerHTML = `
+            <div class="event-share-empty">
+                📭 共有できる予定がありません
+            </div>
+        `;
+
+        updateEventShareSelectedCount();
+
+        return;
+
+    }
+
+
+    /* =====================
+       一覧作成
+    ===================== */
+
+    list.innerHTML =
+        events.map(event => {
+
+            const checked =
+                eventShareSelectedIds
+                .includes(event.id)
+                ? "checked"
+                : "";
+
+
+            const date =
+                formatEventShareDate(
+                    event.start
+                );
+
+
+            const category =
+                getCategoryInfo(
+                    event.category
+                );
+
+
+            const icon =
+                category?.icon ||
+                "📅";
+
+
+            return `
+
+                <label
+                    class="event-share-event-item"
+                >
+
+                    <input
+                        type="checkbox"
+                        class="event-share-event-checkbox"
+                        value="${event.id}"
+                        ${checked}
+                        onchange="toggleEventShareSelection(${event.id})"
+                    >
+
+                    <div
+                        class="event-share-event-info"
+                    >
+
+                        <div
+                            class="event-share-event-title"
+                        >
+                            ${icon}
+                            ${escapeEventShareHTML(
+                                event.title ||
+                                "予定"
+                            )}
+                        </div>
+
+                        <div
+                            class="event-share-event-date"
+                        >
+                            📅 ${date}
+                        </div>
+
+                        ${
+                            event.place
+                            ? `
+                            <div
+                                class="event-share-event-place"
+                            >
+                                📍
+                                ${escapeEventShareHTML(
+                                    event.place
+                                )}
+                            </div>
+                            `
+                            : ""
+                        }
+
+                    </div>
+
+                </label>
+
+            `;
+
+        }).join("");
+
+
+    updateEventShareSelectedCount();
+
+}
+
+/* =====================================================
+   ☑️ 個別選択
+===================================================== */
+
+function toggleEventShareSelection(id){
+
+    const index =
+        eventShareSelectedIds
+        .indexOf(id);
+
+
+    if(index === -1){
+
+        eventShareSelectedIds.push(id);
+
+    }else{
+
+        eventShareSelectedIds.splice(
+            index,
+            1
+        );
+
+    }
+
+
+    updateEventShareSelectedCount();
+
+    updateEventShareSummary();
+
+}
+
+/* =====================================================
+   ☑️ 全選択
+===================================================== */
+
+function initEventShareSelectAll(){
+
+    const selectAll =
+        document.getElementById(
+            "eventShareSelectAll"
+        );
+
+    if(!selectAll){
+        return;
+    }
+
+
+    selectAll.onchange = function(){
+
+        const list =
+            document.getElementById(
+                "eventShareEventList"
+            );
+
+        if(!list){
+            return;
+        }
+
+
+        const checkboxes =
+            list.querySelectorAll(
+                ".event-share-event-checkbox"
+            );
+
+
+        eventShareSelectedIds = [];
+
+
+        checkboxes.forEach(
+            checkbox => {
+
+                checkbox.checked =
+                    selectAll.checked;
+
+
+                if(selectAll.checked){
+
+                    eventShareSelectedIds.push(
+                        Number(
+                            checkbox.value
+                        )
+                    );
+
+                }
+
+            }
+        );
+
+
+        updateEventShareSelectedCount();
+
+        updateEventShareSummary();
+
+    };
+
+}
 
 /* =====================================================
    🗓 共有期間変更
@@ -1649,7 +1937,6 @@ function changeEventSharePeriod(){
 
 }
 
-
 /* =====================================================
    📂 カテゴリ変更
 ===================================================== */
@@ -1659,7 +1946,6 @@ function changeEventShareCategory(){
     renderEventShareList();
 
 }
-
 
 /* =====================================================
    📅 共有対象期間取得
@@ -1835,7 +2121,6 @@ function getEventShareDateRange(){
 
 }
 
-
 /* =====================================================
    📅 予定が期間内か確認
 ===================================================== */
@@ -1890,7 +2175,6 @@ function isEventInSharePeriod(
 
 }
 
-
 /* =====================================================
    📅 予定の日付取得
 ===================================================== */
@@ -1932,269 +2216,41 @@ function getEventShareEventDate(event){
 
 }
 
-
-/* =====================================================
-   📅 予定一覧表示
-===================================================== */
-
-function renderEventShareList(){
-
-    const list =
-        document.getElementById(
-            "eventShareEventList"
-        );
-
-
-    if(!list){
-        return;
-    }
-
-
-    const data =
-        db.load();
-
-
-    const events =
-        data.events || [];
-
-
-    const categorySelect =
-        document.getElementById(
-            "eventShareCategory"
-        );
-
-
-    const selectedCategory =
-        categorySelect
-        ? categorySelect.value
-        : "all";
-
-
-    const range =
-        getEventShareDateRange();
-
-
-    /* =====================
-       フィルター
-    ===================== */
-
-    const filtered =
-        events.filter(event => {
-
-
-            /* 期間 */
-
-            if(
-                !isEventInSharePeriod(
-                    event,
-                    range
-                )
-            ){
-
-                return false;
-
-            }
-
-
-            /* カテゴリ */
-
-            if(
-                selectedCategory !== "all" &&
-                event.category !==
-                    selectedCategory
-            ){
-
-                return false;
-
-            }
-
-
-            return true;
-
-        });
-
-
-    /* =====================
-       日付順
-    ===================== */
-
-    filtered.sort(
-        (a,b) => {
-
-            const dateA =
-                getEventShareEventDate(a)
-                ?.getTime() || 0;
-
-            const dateB =
-                getEventShareEventDate(b)
-                ?.getTime() || 0;
-
-            return dateA - dateB;
-
-        }
-    );
-
-
-    /* =====================
-       予定なし
-    ===================== */
-
-    if(filtered.length === 0){
-
-        list.innerHTML = `
-
-            <div class="event-share-empty">
-
-                📅 共有できる予定がありません
-
-            </div>
-
-        `;
-
-
-        updateEventShareSelectedCount();
-
-        return;
-
-    }
-
-
-    /* =====================
-       一覧生成
-    ===================== */
-
-    list.innerHTML =
-
-        filtered.map(
-            (event,index) => {
-
-
-                const date =
-                    getEventShareEventDate(
-                        event
-                    );
-
-
-                const dateText =
-                    date
-                    ? formatEventShareDate(
-                        date
-                    )
-                    : "日時未設定";
-
-
-                const category =
-                    getCategoryInfo(
-                        event.category
-                    );
-
-
-                const icon =
-                    category?.icon ||
-                    "📅";
-
-
-                const title =
-                    event.title ||
-                    "無題の予定";
-
-
-                return `
-
-                    <label
-                        class="event-share-event-item"
-                    >
-
-                        <input
-                            type="checkbox"
-                            class="event-share-event-checkbox"
-                            value="${escapeEventShareHtml(String(event.id))}"
-                            onchange="updateEventShareSelectedCount()"
-                        >
-
-                        <div class="event-share-event-info">
-
-                            <div class="event-share-event-title">
-
-                                ${icon}
-                                ${escapeEventShareHtml(title)}
-
-                            </div>
-
-                            <div class="event-share-event-date">
-
-                                🕒 ${dateText}
-
-                            </div>
-
-                            <div class="event-share-event-category">
-
-                                ${escapeEventShareHtml(
-                                    event.category ||
-                                    "カテゴリなし"
-                                )}
-
-                            </div>
-
-                        </div>
-
-                    </label>
-
-                `;
-
-            }
-        ).join("");
-
-
-    /* =====================
-       全選択状態リセット
-    ===================== */
-
-    const selectAll =
-        document.getElementById(
-            "eventShareSelectAll"
-        );
-
-
-    if(selectAll){
-
-        selectAll.checked = false;
-
-    }
-
-
-    updateEventShareSelectedCount();
-
-}
-
-
 /* =====================================================
    📅 日付表示
 ===================================================== */
 
-function formatEventShareDate(date){
+function formatEventShareDate(value){
+
+    const date =
+        new Date(value);
+
+
+    if(
+        Number.isNaN(
+            date.getTime()
+        )
+    ){
+
+        return "";
+
+    }
+
 
     const year =
         date.getFullYear();
 
-
     const month =
-        String(
-            date.getMonth() + 1
-        ).padStart(2,"0");
-
+        date.getMonth() + 1;
 
     const day =
-        String(
-            date.getDate()
-        ).padStart(2,"0");
+        date.getDate();
 
 
     const hour =
         String(
             date.getHours()
         ).padStart(2,"0");
-
 
     const minute =
         String(
@@ -2209,75 +2265,20 @@ function formatEventShareDate(date){
 
 }
 
-
 /* =====================================================
-   ☑ 全選択
-===================================================== */
-
-function toggleEventShareSelectAll(){
-
-    const selectAll =
-        document.getElementById(
-            "eventShareSelectAll"
-        );
-
-
-    const checkboxes =
-        document.querySelectorAll(
-            ".event-share-event-checkbox"
-        );
-
-
-    if(!selectAll){
-        return;
-    }
-
-
-    checkboxes.forEach(
-        checkbox => {
-
-            checkbox.checked =
-                selectAll.checked;
-
-        }
-    );
-
-
-    updateEventShareSelectedCount();
-
-}
-
-
-/* =====================================================
-   🔢 選択件数更新
+   🔢 選択件数
 ===================================================== */
 
 function updateEventShareSelectedCount(){
 
-    const checkboxes =
-        document.querySelectorAll(
-            ".event-share-event-checkbox"
-        );
-
-
-    const selected =
-        Array.from(
-            checkboxes
-        ).filter(
-            checkbox =>
-                checkbox.checked
-        );
-
-
     const count =
-        selected.length;
+        eventShareSelectedIds.length;
 
 
     const countElement =
         document.getElementById(
             "eventShareSelectedCount"
         );
-
 
     if(countElement){
 
@@ -2287,19 +2288,14 @@ function updateEventShareSelectedCount(){
     }
 
 
-    /* =====================
-       共有ボタン
-    ===================== */
-
-    const exportButton =
+    const exportBtn =
         document.getElementById(
             "eventShareExportBtn"
         );
 
+    if(exportBtn){
 
-    if(exportButton){
-
-        exportButton.disabled =
+        exportBtn.disabled =
             count === 0;
 
     }
@@ -2308,7 +2304,6 @@ function updateEventShareSelectedCount(){
     updateEventShareSummary();
 
 }
-
 
 /* =====================================================
    📋 共有内容確認
@@ -2321,32 +2316,9 @@ function updateEventShareSummary(){
             "eventShareSummary"
         );
 
-
     if(!summary){
         return;
     }
-
-
-    const checkboxes =
-        document.querySelectorAll(
-            ".event-share-event-checkbox"
-        );
-
-
-    const selectedIds =
-        Array.from(
-            checkboxes
-        )
-        .filter(
-            checkbox =>
-                checkbox.checked
-        )
-        .map(
-            checkbox =>
-                String(
-                    checkbox.value
-                )
-        );
 
 
     const text =
@@ -2354,13 +2326,12 @@ function updateEventShareSummary(){
             ".event-share-summary-text"
         );
 
-
     if(!text){
         return;
     }
 
 
-    if(selectedIds.length === 0){
+    if(eventShareSelectedIds.length === 0){
 
         text.textContent =
             "予定を選択してください";
@@ -2374,30 +2345,36 @@ function updateEventShareSummary(){
         db.load();
 
 
-    const events =
-        data.events || [];
-
-
     const selectedEvents =
-        events.filter(
-            event =>
-                selectedIds.includes(
-                    String(event.id)
-                )
+        (data.events || [])
+        .filter(event =>
+            eventShareSelectedIds
+            .includes(event.id)
         );
 
 
-    text.innerHTML = `
+    if(selectedEvents.length === 0){
 
-        <strong>
-            ${selectedEvents.length}件
-        </strong>
-        の予定を共有します。
+        text.textContent =
+            "予定を選択してください";
 
-    `;
+        return;
+
+    }
+
+
+    const names =
+        selectedEvents
+        .map(event =>
+            event.title || "予定"
+        );
+
+
+    text.textContent =
+        `${selectedEvents.length}件の予定を共有します。\n` +
+        names.join("、");
 
 }
-
 
 /* =====================================================
    👥 共有先
@@ -2459,36 +2436,13 @@ function normalizeEventShareRecipients(){
 
 }
 
-
 /* =====================================================
-   📤 共有処理
+   📤 共有実行
 ===================================================== */
 
 function exportSelectedEventsForShare(){
 
-    const checkboxes =
-        document.querySelectorAll(
-            ".event-share-event-checkbox"
-        );
-
-
-    const selectedIds =
-        Array.from(
-            checkboxes
-        )
-        .filter(
-            checkbox =>
-                checkbox.checked
-        )
-        .map(
-            checkbox =>
-                String(
-                    checkbox.value
-                )
-        );
-
-
-    if(selectedIds.length === 0){
+    if(eventShareSelectedIds.length === 0){
 
         alert(
             "共有する予定を選択してください。"
@@ -2500,7 +2454,7 @@ function exportSelectedEventsForShare(){
 
 
     /* =====================
-       共有先
+       共有先取得
     ===================== */
 
     const recipientInput =
@@ -2509,39 +2463,51 @@ function exportSelectedEventsForShare(){
         );
 
 
-    if(recipientInput){
-
-        normalizeEventShareRecipients();
-
-    }
-
-
-    const recipients =
+    let recipients =
         recipientInput
-        ? recipientInput.value
-            .split(",")
-            .map(
-                name =>
-                    name.trim()
-            )
-            .filter(
-                name =>
-                    name.length > 0
-            )
-        : [];
+        ? recipientInput.value.trim()
+        : "";
 
 
-    if(recipients.length === 0){
+    if(!recipients){
 
         alert(
             "共有先を入力してください。"
         );
 
         if(recipientInput){
-
             recipientInput.focus();
-
         }
+
+        return;
+
+    }
+
+
+    /* =====================
+       「、」を「,」へ自動変換
+    ===================== */
+
+    recipients =
+        recipients.replace(/、/g, ",");
+
+
+    /* =====================
+       共有先を整理
+    ===================== */
+
+    const recipientList =
+        recipients
+        .split(",")
+        .map(name => name.trim())
+        .filter(name => name);
+
+
+    if(recipientList.length === 0){
+
+        alert(
+            "共有先を入力してください。"
+        );
 
         return;
 
@@ -2567,16 +2533,12 @@ function exportSelectedEventsForShare(){
     if(!sender){
 
         alert(
-            "発信者の名前を入力してください。"
+            "発信者名を入力してください。"
         );
 
-
         if(senderInput){
-
             senderInput.focus();
-
         }
-
 
         return;
 
@@ -2584,30 +2546,25 @@ function exportSelectedEventsForShare(){
 
 
     /* =====================
-       データ取得
+       予定取得
     ===================== */
 
     const data =
         db.load();
 
 
-    const events =
-        data.events || [];
-
-
     const selectedEvents =
-        events.filter(
-            event =>
-                selectedIds.includes(
-                    String(event.id)
-                )
+        (data.events || [])
+        .filter(event =>
+            eventShareSelectedIds
+            .includes(event.id)
         );
 
 
     if(selectedEvents.length === 0){
 
         alert(
-            "共有する予定が見つかりません。"
+            "共有する予定がありません。"
         );
 
         return;
@@ -2616,82 +2573,261 @@ function exportSelectedEventsForShare(){
 
 
     /* =====================
-       共有日時
+       共有情報
     ===================== */
 
-    const now =
-        new Date();
+    const sharedAt =
+        new Date().toISOString();
 
 
     const shareData = {
 
-        version:1,
+        type:
+            "oshi-app-event-share",
 
-        type:"oshi-app-event-share",
+        version:
+            1,
 
         sharedAt:
-            now.toISOString(),
 
-        sender:sender,
+            sharedAt,
 
-        recipients:recipients,
+        sender:
 
-        events:selectedEvents
+            sender,
+
+        recipients:
+
+            recipientList,
+
+        events:
+
+            selectedEvents.map(event => ({
+
+                ...event,
+
+                shareInfo: {
+
+                    sender:
+                        sender,
+
+                    recipients:
+                        recipientList,
+
+                    sharedAt:
+                        sharedAt
+
+                }
+
+            }))
 
     };
 
 
     /* =====================
-       現段階では確認表示
+       JSON作成
     ===================== */
 
-    console.log(
-        "予定共有データ:",
-        shareData
+    const json =
+        JSON.stringify(
+            shareData,
+            null,
+            2
+        );
+
+
+    /* =====================
+       Web Share API
+    ===================== */
+
+    if(
+        navigator.share &&
+        navigator.canShare
+    ){
+
+        const file =
+            new File(
+                [json],
+                "oshi-app-events.json",
+                {
+                    type:
+                        "application/json"
+                }
+            );
+
+
+        if(
+            navigator.canShare({
+                files:[file]
+            })
+        ){
+
+            navigator.share({
+
+                title:
+                    "推し活手帳 予定共有",
+
+                text:
+                    `${sender}さんから予定が共有されました。`,
+
+                files:[
+                    file
+                ]
+
+            })
+            .then(() => {
+
+                saveEventShareHistory(
+                    recipientList,
+                    sender,
+                    selectedEvents,
+                    sharedAt
+                );
+
+            })
+            .catch(error => {
+
+                console.log(
+                    "共有キャンセル:",
+                    error
+                );
+
+            });
+
+
+            return;
+
+        }
+
+    }
+
+
+    /* =====================
+       Web Share非対応
+       JSONダウンロード
+    ===================== */
+
+    const blob =
+        new Blob(
+            [json],
+            {
+                type:
+                    "application/json"
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(blob);
+
+
+    const a =
+        document.createElement("a");
+
+    a.href = url;
+
+    a.download =
+        "oshi-app-events.json";
+
+    document.body.appendChild(a);
+
+    a.click();
+
+    a.remove();
+
+    URL.revokeObjectURL(url);
+
+
+    saveEventShareHistory(
+        recipientList,
+        sender,
+        selectedEvents,
+        sharedAt
     );
 
 
     alert(
-
-        "共有データを作成しました。\n\n" +
-
-        `予定：${selectedEvents.length}件\n` +
-
-        `共有先：${recipients.join(", ")}\n` +
-
-        `発信者：${sender}`
-
+        "共有用ファイルを作成しました。"
     );
 
 }
 
+/* =====================================================
+   💾 共有履歴
+===================================================== */
+
+function saveEventShareHistory(
+    recipients,
+    sender,
+    events,
+    sharedAt
+){
+
+    const data =
+        db.load();
+
+
+    if(
+        !data.eventShareHistory
+    ){
+
+        data.eventShareHistory = [];
+
+    }
+
+
+    data.eventShareHistory.push({
+
+        id:
+            Date.now(),
+
+        sender:
+            sender,
+
+        recipients:
+            recipients,
+
+        eventIds:
+            events.map(
+                event => event.id
+            ),
+
+        sharedAt:
+            sharedAt
+
+    });
+
+
+    db.save(data);
+
+}
 
 /* =====================================================
    🔒 HTMLエスケープ
 ===================================================== */
 
-function escapeEventShareHtml(value){
+function escapeEventShareHTML(value){
 
     return String(value ?? "")
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-        .replace(
-            /</g,
-            "&lt;"
-        )
-        .replace(
-            />/g,
-            "&gt;"
-        )
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-        .replace(
-            /'/g,
-            "&#039;"
-        );
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
 
 }
+
+/* =====================================================
+   初期化
+===================================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        initEventShareSelectAll();
+
+    }
+);
+
+
