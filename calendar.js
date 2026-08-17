@@ -1326,3 +1326,131 @@ document.addEventListener(
 
     }
 );
+
+
+
+
+
+/* =====================
+   📤 予定共有画面
+===================== */
+
+function openEventShareScreen(){
+
+    const screen =
+        document.getElementById(
+            "eventShareScreen"
+        );
+
+    if(!screen){
+        console.log(
+            "eventShareScreen が見つかりません"
+        );
+        return;
+    }
+
+
+    /* =====================
+       共有画面を表示
+    ===================== */
+
+    screen.style.display = "block";
+
+
+    /* =====================
+       他の画面を一時的に非表示
+    ===================== */
+
+    const calendar =
+        document.getElementById("calendar");
+
+    if(calendar){
+        calendar.style.display = "none";
+    }
+
+
+    /* =====================
+       共有日時
+       現在日時を自動表示
+    ===================== */
+
+    const dateTime =
+        document.getElementById(
+            "eventShareDateTime"
+        );
+
+    if(dateTime){
+
+        const now = new Date();
+
+        const year =
+            now.getFullYear();
+
+        const month =
+            String(
+                now.getMonth() + 1
+            ).padStart(2,"0");
+
+        const day =
+            String(
+                now.getDate()
+            ).padStart(2,"0");
+
+        const hour =
+            String(
+                now.getHours()
+            ).padStart(2,"0");
+
+        const minute =
+            String(
+                now.getMinutes()
+            ).padStart(2,"0");
+
+
+        dateTime.textContent =
+            `${year}/${month}/${day} ` +
+            `${hour}:${minute}`;
+
+    }
+
+
+    /* =====================
+       画面上部へ
+    ===================== */
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+}
+
+
+/* =====================
+   📤 予定共有画面を閉じる
+===================== */
+
+function closeEventShareScreen(){
+
+    const screen =
+        document.getElementById(
+            "eventShareScreen"
+        );
+
+    if(screen){
+
+        screen.style.display = "none";
+
+    }
+
+
+    const calendar =
+        document.getElementById("calendar");
+
+    if(calendar){
+
+        calendar.style.display = "";
+
+    }
+
+}
