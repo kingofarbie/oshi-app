@@ -2823,7 +2823,7 @@ function exportSelectedEventsForShare(){
         alert(
             "📥 共有ファイルを保存しました。\n\n" +
             "保存した「oshi-app-events.json」を\n" +
-            LINEなどで送信してください。"
+            "LINEなどで送信してください。"        
         );
 
 
