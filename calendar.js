@@ -2424,14 +2424,17 @@ function normalizeEventShareRecipients(){
    📤 共有実行
 ===================================================== */
 
+/* =====================================================
+   📤 予定共有・エクスポート
+===================================================== */
+
 function exportSelectedEventsForShare(){
 
     /* =====================
-       🔒 予定共有プランチェック
+       プランチェック
     ===================== */
 
-    const data =
-        db.load();
+    const data = db.load();
 
     const plan =
         PLAN[data.settings?.plan];
@@ -2448,7 +2451,7 @@ function exportSelectedEventsForShare(){
 
 
     /* =====================
-       無料プランは利用不可
+       無料プラン
     ===================== */
 
     if(data.settings?.plan === "free"){
@@ -2466,20 +2469,9 @@ function exportSelectedEventsForShare(){
        共有予定チェック
     ===================== */
 
-    if(eventShareSelectedIds.length === 0){
-
-        alert(
-            "共有する予定を選択してください。"
-        );
-
-        return;
-
-    }
-
-    /* 以下は現在のコードをそのまま続ける */
-
-
-    if(eventShareSelectedIds.length === 0){
+    if(
+        eventShareSelectedIds.length === 0
+    ){
 
         alert(
             "共有する予定を選択してください。"
@@ -2491,14 +2483,13 @@ function exportSelectedEventsForShare(){
 
 
     /* =====================
-       共有先取得
+       共有先
     ===================== */
 
     const recipientInput =
         document.getElementById(
             "eventShareRecipients"
         );
-
 
     let recipients =
         recipientInput
@@ -2513,7 +2504,9 @@ function exportSelectedEventsForShare(){
         );
 
         if(recipientInput){
+
             recipientInput.focus();
+
         }
 
         return;
@@ -2522,16 +2515,14 @@ function exportSelectedEventsForShare(){
 
 
     /* =====================
-       「、」を「,」へ自動変換
+       「、」「，」をカンマへ
     ===================== */
 
     recipients =
-        recipients.replace(/、/g, ",");
+        recipients
+        .replace(/、/g,",")
+        .replace(/，/g,",");
 
-
-    /* =====================
-       共有先を整理
-    ===================== */
 
     const recipientList =
         recipients
@@ -2540,7 +2531,9 @@ function exportSelectedEventsForShare(){
         .filter(name => name);
 
 
-    if(recipientList.length === 0){
+    if(
+        recipientList.length === 0
+    ){
 
         alert(
             "共有先を入力してください。"
@@ -2560,7 +2553,6 @@ function exportSelectedEventsForShare(){
             "eventShareSender"
         );
 
-
     const sender =
         senderInput
         ? senderInput.value.trim()
@@ -2574,7 +2566,9 @@ function exportSelectedEventsForShare(){
         );
 
         if(senderInput){
+
             senderInput.focus();
+
         }
 
         return;
@@ -2583,12 +2577,8 @@ function exportSelectedEventsForShare(){
 
 
     /* =====================
-       予定取得
+       選択予定取得
     ===================== */
-
-    const data =
-        db.load();
-
 
     const selectedEvents =
         (data.events || [])
@@ -2598,7 +2588,9 @@ function exportSelectedEventsForShare(){
         );
 
 
-    if(selectedEvents.length === 0){
+    if(
+        selectedEvents.length === 0
+    ){
 
         alert(
             "共有する予定がありません。"
@@ -2610,12 +2602,18 @@ function exportSelectedEventsForShare(){
 
 
     /* =====================
-       共有情報
+       共有日時
+       ※履歴管理用ではなく
+       共有ファイル内の情報として使用
     ===================== */
 
     const sharedAt =
         new Date().toISOString();
 
+
+    /* =====================
+       共有データ
+    ===================== */
 
     const shareData = {
 
@@ -2626,19 +2624,15 @@ function exportSelectedEventsForShare(){
             1,
 
         sharedAt:
-
             sharedAt,
 
         sender:
-
             sender,
 
         recipients:
-
             recipientList,
 
         events:
-
             selectedEvents.map(event => ({
 
                 ...event,
@@ -2674,26 +2668,34 @@ function exportSelectedEventsForShare(){
 
 
     /* =====================
-       Web Share API
+       ファイル作成
     ===================== */
 
+    const file =
+        new File(
+            [json],
+            "oshi-app-events.json",
+            {
+                type:
+                    "application/json"
+            }
+        );
+
+
+    /* =================================================
+       📱 スマホ共有
+    ================================================= */
+
     if(
-        navigator.share &&
-        navigator.canShare
+        navigator.share
     ){
 
-        const file =
-            new File(
-                [json],
-                "oshi-app-events.json",
-                {
-                    type:
-                        "application/json"
-                }
-            );
-
+        /* =====================
+           ファイル共有対応確認
+        ===================== */
 
         if(
+            navigator.canShare &&
             navigator.canShare({
                 files:[file]
             })
@@ -2714,6 +2716,10 @@ function exportSelectedEventsForShare(){
             })
             .then(() => {
 
+                console.log(
+                    "📤 共有成功"
+                );
+
                 saveEventShareHistory(
                     recipientList,
                     sender,
@@ -2725,8 +2731,30 @@ function exportSelectedEventsForShare(){
             .catch(error => {
 
                 console.log(
-                    "共有キャンセル:",
+                    "📤 共有エラー:",
                     error
+                );
+
+
+                /* =====================
+                   キャンセル
+                ===================== */
+
+                if(
+                    error &&
+                    error.name ===
+                    "AbortError"
+                ){
+
+                    return;
+
+                }
+
+
+                alert(
+                    "共有画面を開けませんでした。\n\n" +
+                    "外部ブラウザ（Chromeなど）で" +
+                    "もう一度お試しください。"
                 );
 
             });
@@ -2739,53 +2767,79 @@ function exportSelectedEventsForShare(){
     }
 
 
-    /* =====================
-       Web Share非対応
-       JSONダウンロード
-    ===================== */
+    /* =================================================
+       📥 共有非対応の場合
+       JSONファイルとして保存
+    ================================================= */
 
-    const blob =
-        new Blob(
-            [json],
-            {
-                type:
-                    "application/json"
-            }
+    try{
+
+        const blob =
+            new Blob(
+                [json],
+                {
+                    type:
+                        "application/json"
+                }
+            );
+
+
+        const url =
+            URL.createObjectURL(blob);
+
+
+        const a =
+            document.createElement("a");
+
+
+        a.href =
+            url;
+
+
+        a.download =
+            "oshi-app-events.json";
+
+
+        document.body.appendChild(a);
+
+
+        a.click();
+
+
+        a.remove();
+
+
+        URL.revokeObjectURL(url);
+
+
+        saveEventShareHistory(
+            recipientList,
+            sender,
+            selectedEvents,
+            sharedAt
         );
 
 
-    const url =
-        URL.createObjectURL(blob);
+        alert(
+            "📥 共有ファイルを保存しました。\n\n" +
+            "保存した「oshi-app-events.json」を\n" +
+            LINEなどで送信してください。"
+        );
 
 
-    const a =
-        document.createElement("a");
+    }catch(error){
 
-    a.href = url;
-
-    a.download =
-        "oshi-app-events.json";
-
-    document.body.appendChild(a);
-
-    a.click();
-
-    a.remove();
-
-    URL.revokeObjectURL(url);
+        console.error(
+            "📥 ファイル作成エラー:",
+            error
+        );
 
 
-    saveEventShareHistory(
-        recipientList,
-        sender,
-        selectedEvents,
-        sharedAt
-    );
+        alert(
+            "共有ファイルを作成できませんでした。"
+        );
 
-
-    alert(
-        "共有用ファイルを作成しました。"
-    );
+    }
 
 }
 
