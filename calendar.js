@@ -3193,7 +3193,22 @@ function saveEventShareHistory(
     }
 
 
+    /* =====================
+       保存
+    ===================== */
+
     db.save(data);
+
+
+    /* =====================
+       📅 予定表示を更新
+    ===================== */
+
+    renderCalendar();
+
+    displaySelectedDateEvents();
+
+    displayEventList();
 
 }
 
