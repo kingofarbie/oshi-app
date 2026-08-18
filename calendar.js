@@ -750,6 +750,10 @@ function updateSelectedDateArea(){
    選択日の予定表示
 ===================== */
 
+/* =====================
+   選択日の予定表示
+===================== */
+
 function displaySelectedDateEvents(){
 
     const box =
@@ -759,91 +763,249 @@ function displaySelectedDateEvents(){
 
     if(!box) return;
 
+
     const events =
-        db.load().events;
+        db.load().events || [];
 
-const list =
-    events
-    .filter(
-        e =>
-            selectedCalendarDate &&
-            e.start &&
-            e.start.startsWith(selectedCalendarDate)
-    )
-    .sort(
-        (a,b) =>
-            new Date(a.start) -
-            new Date(b.start)
-    );    
 
-    if(list.length===0){
+    const list =
+        events
+        .filter(
+            e =>
+                selectedCalendarDate &&
+                e.start &&
+                e.start.startsWith(
+                    selectedCalendarDate
+                )
+        )
+        .sort(
+            (a,b) =>
+                new Date(a.start) -
+                new Date(b.start)
+        );
 
-        box.innerHTML="該当なし";
+
+    if(list.length === 0){
+
+        box.innerHTML =
+            "該当なし";
 
         return;
 
     }
 
-    box.innerHTML=list.map(e=>`
 
-<div class="event-card">
+    box.innerHTML =
+        list.map(e => {
 
-    <div class="event-card-title">
-        ${getCategoryInfo(e.category)?.icon || "📌"}
-        ${e.title}
-    </div>
+            /* =====================
+               📤 送信情報
+            ===================== */
 
-    ${
-        e.start
-        ?
-        `<div>
-            🕒 ${e.start.substring(11,16)}
-            ${
-                e.end
-                ?
-                " ～ " + e.end.substring(11,16)
-                :
-                ""
+            const shareInfo =
+                e.shareInfo;
+
+
+            let shareHTML = "";
+
+
+            if(
+                shareInfo &&
+                shareInfo.sharedAt
+            ){
+
+                const recipients =
+                    Array.isArray(
+                        shareInfo.recipients
+                    )
+                    ? shareInfo.recipients.join("、")
+                    : "";
+
+
+                const sharedDate =
+                    formatEventImportDate(
+                        shareInfo.sharedAt
+                    );
+
+
+                shareHTML = `
+
+                    <div class="event-share-record">
+
+                        <div>
+                            📤 共有済み
+                        </div>
+
+                        ${
+                            recipients
+                            ?
+                            `
+                            <div>
+                                👥 共有先：
+                                ${escapeEventShareHTML(
+                                    recipients
+                                )}
+                            </div>
+                            `
+                            :
+                            ""
+                        }
+
+                        <div>
+                            🕒 共有日時：
+                            ${sharedDate}
+                        </div>
+
+                    </div>
+
+                `;
+
             }
-        </div>`
-        :
-        ""
-    }
 
-    ${
-        e.place
-        ?
-        `<div>📍 ${e.place}</div>`
-        :
-        ""
-    }
 
-    <div class="event-button-area">
+            /* =====================
+               📥 取り込み情報
+            ===================== */
 
-        <button
-        class="icon-btn"
-        onclick="selectEvent(${e.id})">
+            let importHTML = "";
 
-        ✏️
 
-        </button>
+            if(
+                e.importedFromShare &&
+                e.importedAt
+            ){
 
-        <button
-        class="icon-btn delete-btn"
-        onclick="deleteEvent(${e.id})">
+                const sender =
+                    e.shareInfo?.sender ||
+                    "不明";
 
-        🗑️
 
-        </button>
+                const importedDate =
+                    formatEventImportDate(
+                        e.importedAt
+                    );
 
-    </div>
 
-</div>
+                importHTML = `
 
-`).join("");
+                    <div class="event-import-record">
+
+                        <div>
+                            📥 共有予定を取り込みました
+                        </div>
+
+                        <div>
+                            👤 発信者：
+                            ${escapeEventShareHTML(
+                                sender
+                            )}
+                        </div>
+
+                        <div>
+                            🕒 受信日時：
+                            ${importedDate}
+                        </div>
+
+                    </div>
+
+                `;
+
+            }
+
+
+            return `
+
+                <div class="event-card">
+
+                    <div class="event-card-title">
+
+                        ${
+                            getCategoryInfo(
+                                e.category
+                            )?.icon ||
+                            "📌"
+                        }
+
+                        ${escapeEventShareHTML(
+                            e.title
+                        )}
+
+                    </div>
+
+
+                    ${
+                        e.start
+                        ?
+                        `
+                        <div>
+                            🕒 ${e.start.substring(11,16)}
+
+                            ${
+                                e.end
+                                ?
+                                " ～ " +
+                                e.end.substring(
+                                    11,
+                                    16
+                                )
+                                :
+                                ""
+                            }
+                        </div>
+                        `
+                        :
+                        ""
+                    }
+
+
+                    ${
+                        e.place
+                        ?
+                        `
+                        <div>
+                            📍
+                            ${escapeEventShareHTML(
+                                e.place
+                            )}
+                        </div>
+                        `
+                        :
+                        ""
+                    }
+
+
+                    ${shareHTML}
+
+                    ${importHTML}
+
+
+                    <div class="event-button-area">
+
+                        <button
+                            class="icon-btn"
+                            onclick="selectEvent(${e.id})"
+                        >
+                            ✏️
+                        </button>
+
+
+                        <button
+                            class="icon-btn delete-btn"
+                            onclick="deleteEvent(${e.id})"
+                        >
+                            🗑️
+                        </button>
+
+                    </div>
+
+                </div>
+
+            `;
+
+        })
+        .join("");
 
 }
-
 
 function startPress(date, event){
 
@@ -2931,6 +3093,7 @@ function downloadEventShareFile(
 
 /* =====================================================
    💾 共有履歴
+   ＋ 予定そのものにも共有情報を保存
 ===================================================== */
 
 function saveEventShareHistory(
@@ -2943,6 +3106,10 @@ function saveEventShareHistory(
     const data =
         db.load();
 
+
+    /* =====================
+       共有履歴
+    ===================== */
 
     if(
         !data.eventShareHistory
@@ -2973,6 +3140,57 @@ function saveEventShareHistory(
             sharedAt
 
     });
+
+
+    /* =====================
+       📤 予定そのものに
+       共有情報を保存
+    ===================== */
+
+    if(
+        Array.isArray(data.events)
+    ){
+
+        data.events =
+            data.events.map(event => {
+
+                const sharedEvent =
+                    events.find(
+                        target =>
+                            target.id ===
+                            event.id
+                    );
+
+
+                if(!sharedEvent){
+
+                    return event;
+
+                }
+
+
+                return {
+
+                    ...event,
+
+                    shareInfo: {
+
+                        sender:
+                            sender,
+
+                        recipients:
+                            recipients,
+
+                        sharedAt:
+                            sharedAt
+
+                    }
+
+                };
+
+            });
+
+    }
 
 
     db.save(data);
