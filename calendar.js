@@ -1787,8 +1787,7 @@ function renderEventShareList(){
 function toggleEventShareSelection(id){
 
     const index =
-        eventShareSelectedIds
-        .indexOf(id);
+        eventShareSelectedIds.indexOf(id);
 
 
     if(index === -1){
@@ -1805,6 +1804,33 @@ function toggleEventShareSelection(id){
     }
 
 
+    /* =====================
+       すべて選択の状態更新
+    ===================== */
+
+    const selectAll =
+        document.getElementById(
+            "eventShareSelectAll"
+        );
+
+    const checkboxes =
+        document.querySelectorAll(
+            ".event-share-event-checkbox"
+        );
+
+
+    if(
+        selectAll &&
+        checkboxes.length > 0
+    ){
+
+        selectAll.checked =
+            eventShareSelectedIds.length ===
+            checkboxes.length;
+
+    }
+
+
     updateEventShareSelectedCount();
 
     updateEventShareSummary();
@@ -1812,70 +1838,65 @@ function toggleEventShareSelection(id){
 }
 
 /* =====================================================
-   ☑️ 全選択
+   ☑️ すべて選択
 ===================================================== */
 
-function initEventShareSelectAll(){
+function toggleEventShareSelectAll(){
 
     const selectAll =
         document.getElementById(
             "eventShareSelectAll"
         );
 
-    if(!selectAll){
+    const list =
+        document.getElementById(
+            "eventShareEventList"
+        );
+
+    if(
+        !selectAll ||
+        !list
+    ){
         return;
     }
 
 
-    selectAll.onchange = function(){
-
-        const list =
-            document.getElementById(
-                "eventShareEventList"
-            );
-
-        if(!list){
-            return;
-        }
-
-
-        const checkboxes =
-            list.querySelectorAll(
-                ".event-share-event-checkbox"
-            );
-
-
-        eventShareSelectedIds = [];
-
-
-        checkboxes.forEach(
-            checkbox => {
-
-                checkbox.checked =
-                    selectAll.checked;
-
-
-                if(selectAll.checked){
-
-                    eventShareSelectedIds.push(
-                        Number(
-                            checkbox.value
-                        )
-                    );
-
-                }
-
-            }
+    const checkboxes =
+        list.querySelectorAll(
+            ".event-share-event-checkbox"
         );
 
 
-        updateEventShareSelectedCount();
+    eventShareSelectedIds = [];
 
-        updateEventShareSummary();
 
-    };
+    checkboxes.forEach(
+        checkbox => {
+
+            checkbox.checked =
+                selectAll.checked;
+
+
+            if(selectAll.checked){
+
+                eventShareSelectedIds.push(
+                    Number(
+                        checkbox.value
+                    )
+                );
+
+            }
+
+        }
+    );
+
+
+    updateEventShareSelectedCount();
+
+    updateEventShareSummary();
 
 }
+
 
 /* =====================================================
    🗓 共有期間変更
@@ -2973,19 +2994,6 @@ function escapeEventShareHTML(value){
 
 }
 
-/* =====================================================
-   初期化
-===================================================== */
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function(){
-
-        initEventShareSelectAll();
-
-    }
-);
-
 
 /* =====================================================
    📅 共有期間指定の日付変更
@@ -3040,7 +3048,6 @@ let eventImportSelectedIds = [];
 /* =====================================================
    📥 取り込み画面を開く
 ===================================================== */
-
 function openEventImportScreen(){
 
     const screen =
@@ -3260,11 +3267,9 @@ function openEventImportScreen(){
 
 }
 
-
 /* =====================================================
    📥 取り込み画面を閉じる
 ===================================================== */
-
 function closeEventImportScreen(){
 
     const screen =
@@ -3292,11 +3297,9 @@ function closeEventImportScreen(){
 
 }
 
-
 /* =====================================================
    📂 JSONファイル読み込み
 ===================================================== */
-
 function handleEventImportFile(event){
 
     const file =
@@ -3381,12 +3384,9 @@ function handleEventImportFile(event){
     );
 
 }
-
-
 /* =====================================================
    🔒 共有データ確認
 ===================================================== */
-
 function validateEventShareData(data){
 
     if(!data){
@@ -3434,12 +3434,9 @@ function validateEventShareData(data){
     }
 
 }
-
-
 /* =====================================================
    📋 共有情報表示
 ===================================================== */
-
 function renderEventImportInfo(){
 
     if(!eventImportData){
@@ -3511,12 +3508,9 @@ function renderEventImportInfo(){
     }
 
 }
-
-
 /* =====================================================
    📅 取り込み予定一覧
 ===================================================== */
-
 function renderEventImportList(){
 
     const list =
@@ -3688,7 +3682,6 @@ function renderEventImportList(){
 /* =====================================================
    ☑️ 取り込み選択
 ===================================================== */
-
 function toggleEventImportSelection(id){
 
     const index =
@@ -3716,11 +3709,9 @@ function toggleEventImportSelection(id){
 
 }
 
-
 /* =====================================================
    🔢 取り込み件数
 ===================================================== */
-
 function updateEventImportCount(){
 
     const count =

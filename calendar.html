@@ -662,3 +662,226 @@
     </div>
 </div>
 
+
+
+<!-- =====================================================
+     📥 予定取り込み画面
+===================================================== -->
+
+<div
+    id="eventImportScreen"
+    class="event-share-screen"
+    style="display:none;"
+>
+
+    <!-- =====================
+         ヘッダー
+    ===================== -->
+
+    <div class="event-share-header">
+
+        <button
+            type="button"
+            class="event-share-back-btn"
+            onclick="closeEventImportScreen()"
+        >
+            ← 戻る
+        </button>
+
+        <h2>
+            📥 予定を取り込む
+        </h2>
+
+    </div>
+
+
+    <!-- =====================
+         プラン案内
+    ===================== -->
+
+    <div
+        id="eventImportPlanNotice"
+        class="event-share-section"
+        style="display:none;"
+    >
+    </div>
+
+
+    <!-- =====================
+         ファイル選択
+    ===================== -->
+
+    <div class="event-share-section">
+
+        <div class="event-share-section-title">
+            📂 共有ファイル
+        </div>
+
+
+        <label
+            id="eventImportFileLabel"
+            class="event-share-export-btn"
+            style="display:block; text-align:center; cursor:pointer;"
+        >
+
+            📂 JSONファイルを選択
+
+            <input
+                type="file"
+                id="eventImportFile"
+                accept=".json,application/json"
+                onchange="handleEventImportFile(event)"
+                style="display:none;"
+            >
+
+        </label>
+
+
+        <div class="event-share-help">
+
+            「推し活手帳」から共有された
+            <strong>oshi-app-events.json</strong>
+            を選択してください。
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================
+         共有情報
+    ===================== -->
+
+    <div
+        id="eventImportInfo"
+        class="event-share-section"
+        style="display:none;"
+    >
+
+        <div class="event-share-section-title">
+            📋 共有情報
+        </div>
+
+
+        <div class="event-share-help">
+
+            <div>
+                👤 発信者：
+                <span id="eventImportSender">
+                    -
+                </span>
+            </div>
+
+
+            <div>
+                👥 共有先：
+                <span id="eventImportRecipients">
+                    -
+                </span>
+            </div>
+
+
+            <div>
+                🕒 共有日時：
+                <span id="eventImportSharedAt">
+                    -
+                </span>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================
+         取り込み予定
+    ===================== -->
+
+    <div class="event-share-section">
+
+        <div class="event-share-section-header">
+
+            <div class="event-share-section-title">
+                📅 取り込む予定
+            </div>
+
+
+            <div
+                id="eventImportCount"
+                class="event-share-selected-count"
+            >
+            </div>
+
+        </div>
+
+
+        <div
+            id="eventImportEventList"
+            class="event-share-event-list"
+        >
+        </div>
+
+    </div>
+
+
+    <!-- =====================
+         実行ボタン
+    ===================== -->
+
+    <div class="event-share-actions">
+
+        <button
+            type="button"
+            class="event-share-cancel-btn"
+            onclick="closeEventImportScreen()"
+        >
+            キャンセル
+        </button>
+
+
+        <button
+            type="button"
+            id="eventImportExecuteBtn"
+            class="event-share-export-btn"
+            onclick="importSelectedEvents()"
+            disabled
+        >
+            📥 選択した予定を取り込む
+        </button>
+
+    </div>
+
+
+    <!-- =====================
+         注意書き
+    ===================== -->
+
+    <div class="event-share-note">
+
+        <div>
+            ℹ️ 予定の取り込みについて
+        </div>
+
+
+        <p>
+            すでに登録されている予定は
+            自動的に重複チェックされます。
+        </p>
+
+
+        <p>
+            契約プランの予定上限を超える場合は、
+            上限まで取り込まれます。
+        </p>
+
+
+        <p>
+            取り込めなかった予定は、
+            プラン変更後などに同じ共有ファイルから
+            再度取り込むことができます。
+        </p>
+
+    </div>
+
+</div>
+
