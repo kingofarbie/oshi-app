@@ -2603,8 +2603,6 @@ function exportSelectedEventsForShare(){
 
     /* =====================
        共有日時
-       ※履歴管理用ではなく
-       共有ファイル内の情報として使用
     ===================== */
 
     const sharedAt =
@@ -2694,12 +2692,36 @@ function exportSelectedEventsForShare(){
            ファイル共有対応確認
         ===================== */
 
-        if(
-            navigator.canShare &&
-            navigator.canShare({
-                files:[file]
-            })
-        ){
+        let canShareFile = false;
+
+        try{
+
+            if(
+                navigator.canShare
+            ){
+
+                canShareFile =
+                    navigator.canShare({
+                        files:[file]
+                    });
+
+            }
+
+        }catch(error){
+
+            console.log(
+                "canShare確認エラー:",
+                error
+            );
+
+        }
+
+
+        /* =====================
+           ファイル共有可能
+        ===================== */
+
+        if(canShareFile){
 
             navigator.share({
 
@@ -2737,24 +2759,35 @@ function exportSelectedEventsForShare(){
 
 
                 /* =====================
-                   キャンセル
+                   ユーザーがキャンセル
                 ===================== */
 
                 if(
                     error &&
-                    error.name ===
-                    "AbortError"
+                    error.name === "AbortError"
                 ){
+
+                    console.log(
+                        "📤 ユーザーが共有をキャンセル"
+                    );
 
                     return;
 
                 }
 
 
-                alert(
-                    "共有画面を開けませんでした。\n\n" +
-                    "外部ブラウザ（Chromeなど）で" +
-                    "もう一度お試しください。"
+                /* =====================
+                   共有API失敗
+                   ↓
+                   ファイル保存へ
+                ===================== */
+
+                downloadEventShareFile(
+                    json,
+                    recipientList,
+                    sender,
+                    selectedEvents,
+                    sharedAt
                 );
 
             });
@@ -2768,9 +2801,33 @@ function exportSelectedEventsForShare(){
 
 
     /* =================================================
-       📥 共有非対応の場合
-       JSONファイルとして保存
+       📥 共有非対応
+       → JSONファイル保存
     ================================================= */
+
+    downloadEventShareFile(
+        json,
+        recipientList,
+        sender,
+        selectedEvents,
+        sharedAt
+    );
+
+}
+
+
+
+/* =================================================
+   📥 予定共有ファイル保存
+================================================= */
+
+function downloadEventShareFile(
+    json,
+    recipientList,
+    sender,
+    selectedEvents,
+    sharedAt
+){
 
     try{
 
@@ -2809,8 +2866,16 @@ function exportSelectedEventsForShare(){
         a.remove();
 
 
-        URL.revokeObjectURL(url);
+        setTimeout(() => {
 
+            URL.revokeObjectURL(url);
+
+        },1000);
+
+
+        /* =====================
+           共有履歴保存
+        ===================== */
 
         saveEventShareHistory(
             recipientList,
@@ -2823,14 +2888,14 @@ function exportSelectedEventsForShare(){
         alert(
             "📥 共有ファイルを保存しました。\n\n" +
             "保存した「oshi-app-events.json」を\n" +
-            "LINEなどで送信してください。"        
+            "LINEなどで送信してください。"
         );
 
 
     }catch(error){
 
         console.error(
-            "📥 ファイル作成エラー:",
+            "📥 ファイル保存エラー:",
             error
         );
 
@@ -2842,6 +2907,7 @@ function exportSelectedEventsForShare(){
     }
 
 }
+
 /* =====================================================
    💾 共有履歴
 ===================================================== */
