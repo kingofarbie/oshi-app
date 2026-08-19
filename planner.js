@@ -475,99 +475,6 @@ function showPlanner(date, fromCalendar = false){
            共有情報
         ===================== */
 
-        let shareHtml = "";
-
-
-        /* =====================
-           📤 自分が送った側
-        ===================== */
-
-        if(
-            e.shareStatus === "sent"
-        ){
-
-            shareHtml =
-            `
-            <div class="planner-share-info planner-share-sent">
-
-                <div>
-                    📤 共有済み
-                </div>
-
-                ${
-                    e.shareRecipients
-                    ?
-                    `
-                    <div>
-                        👥 共有先：${e.shareRecipients}
-                    </div>
-                    `
-                    :
-                    ""
-                }
-
-                ${
-                    e.sharedAt
-                    ?
-                    `
-                    <div>
-                        🕒 共有日時：${e.sharedAt}
-                    </div>
-                    `
-                    :
-                    ""
-                }
-
-            </div>
-            `;
-
-        }
-
-
-        /* =====================
-           📥 相手が取り込んだ側
-        ===================== */
-
-        if(
-            e.shareStatus === "received"
-        ){
-
-            shareHtml =
-            `
-            <div class="planner-share-info planner-share-received">
-
-                <div>
-                    📥 共有予定を取り込みました
-                </div>
-
-                ${
-                    e.shareSender
-                    ?
-                    `
-                    <div>
-                        👤 発信者：${e.shareSender}
-                    </div>
-                    `
-                    :
-                    ""
-                }
-
-                ${
-                    e.receivedAt
-                    ?
-                    `
-                    <div>
-                        🕒 受信日時：${e.receivedAt}
-                    </div>
-                    `
-                    :
-                    ""
-                }
-
-            </div>
-            `;
-
-        }
 
 
         /* =====================
@@ -654,11 +561,94 @@ function showPlanner(date, fromCalendar = false){
             }
 
 
-            <!-- =====================
-                 📤📥 共有情報
-            ===================== -->
+            /* =====================
+   📤📥 共有情報
+===================== */
 
-            ${shareHtml}
+${
+    e.shareInfo && e.importedFromShare !== true
+    ?
+    `
+    <div class="planner-share-info planner-share-sent">
+
+        <div>
+            📤 共有済み
+        </div>
+
+        ${
+            e.shareInfo.recipients &&
+            e.shareInfo.recipients.length > 0
+            ?
+            `
+            <div>
+                👥 共有先：
+                ${Array.isArray(e.shareInfo.recipients)
+                    ? e.shareInfo.recipients.join("、")
+                    : e.shareInfo.recipients}
+            </div>
+            `
+            :
+            ""
+        }
+
+        ${
+            e.shareInfo.sharedAt
+            ?
+            `
+            <div>
+                🕒 共有日時：
+                ${formatShareDateTime(e.shareInfo.sharedAt)}
+            </div>
+            `
+            :
+            ""
+        }
+
+    </div>
+    `
+    :
+    ""
+}
+
+${
+    e.importedFromShare === true
+    ?
+    `
+    <div class="planner-share-info planner-share-received">
+
+        <div>
+            📥 共有予定を取り込みました
+        </div>
+
+        <div>
+            👤 発信者：
+            ${e.shareInfo?.sender || "不明"}
+        </div>
+
+        ${
+            e.importedAt
+            ?
+            `
+            <div>
+                🕒 受信日時：
+                ${formatShareDateTime(e.importedAt)}
+            </div>
+            `
+            :
+            ""
+        }
+
+    </div>
+    `
+    :
+    ""
+}
+
+
+
+
+
+
 
 
             <div class="planner-event-actions">
@@ -766,6 +756,43 @@ function showPlanner(date, fromCalendar = false){
     setupPlannerSwipe();
 
 }
+
+
+/* =====================
+   共有日時を表示用に変換
+   ISO → 日本時間 24時間表示
+===================== */
+
+function formatShareDateTime(value){
+
+    if(!value){
+        return "";
+    }
+
+    const d = new Date(value);
+
+    if(isNaN(d.getTime())){
+        return value;
+    }
+
+    return new Intl.DateTimeFormat(
+        "ja-JP",
+        {
+            timeZone: "Asia/Tokyo",
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false
+        }
+    )
+    .format(d)
+    .replace(/\//g, "/");
+
+}
+
+
 
 
 
