@@ -44,41 +44,63 @@ function showPlanner(date, fromCalendar = false){
         return;
     }
 
-const d = new Date(date + "T00:00:00");
 
-const dayOfWeek = d.getDay();
+    /* =====================
+       日付情報
+    ===================== */
 
-const holiday =
-    getHoliday(date);
+    const d =
+        new Date(date + "T00:00:00");
 
-const plannerClass =
-    holiday
-    ? "planner-holiday-day"
-    : dayOfWeek === 6
-    ? "planner-saturday"
-    : dayOfWeek === 0
-    ? "planner-sunday"
-    : "";
+    const dayOfWeek =
+        d.getDay();
 
-calendar.style.display = "none";
+    const holiday =
+        getHoliday(date);
 
-planner.classList.remove(
-    "planner-saturday",
-    "planner-sunday",
-    "planner-holiday-day"
-);
+    const plannerClass =
+        holiday
+        ? "planner-holiday-day"
+        : dayOfWeek === 6
+        ? "planner-saturday"
+        : dayOfWeek === 0
+        ? "planner-sunday"
+        : "";
 
-if(plannerClass){
-    planner.classList.add(plannerClass);
-}
 
-planner.style.display = "block";
-const oldAnniversary =
-    planner.querySelector(".planner-anniversary-badge");
+    calendar.style.display = "none";
 
-if(oldAnniversary){
-    oldAnniversary.remove();
-}
+
+    planner.classList.remove(
+        "planner-saturday",
+        "planner-sunday",
+        "planner-holiday-day"
+    );
+
+
+    if(plannerClass){
+
+        planner.classList.add(
+            plannerClass
+        );
+
+    }
+
+
+    planner.style.display = "block";
+
+
+    const oldAnniversary =
+        planner.querySelector(
+            ".planner-anniversary-badge"
+        );
+
+    if(oldAnniversary){
+
+        oldAnniversary.remove();
+
+    }
+
 
     const week =
     [
@@ -92,141 +114,158 @@ if(oldAnniversary){
     ];
 
 
+    /* =====================
+       タイトル
+    ===================== */
 
-title.innerHTML =
-`
-<div class="planner-date-title">
-📅 ${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日(${week[d.getDay()]})
-</div>
-
-${
-    holiday
-    ?
+    title.innerHTML =
     `
-    <div class="planner-holiday">
-        ${holiday.localName}
+    <div class="planner-date-title">
+    📅 ${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日(${week[d.getDay()]})
     </div>
-    `
-    :
-    ""
-}
-`;
-
-/* =====================
-   🎂 記念日・誕生日
-===================== */
-
-const plannerData =
-    db.load();
-
-const anniversaryDays =
-    plannerData.anniversaryDays || [];
-
-const todayAnniversaries =
-    anniversaryDays.filter(m => {
-
-        if(!m.visible || !m.date){
-            return false;
-        }
-
-        if(m.yearly){
-
-            return (
-                m.date.substring(5) ===
-                date.substring(5)
-            );
-
-        }
-
-        return m.date === date;
-
-    });
-
-
-/* =====================
-   記念日バッジ表示
-===================== */
-
-let anniversaryHtml = "";
-
-if(todayAnniversaries.length > 0){
-
-    anniversaryHtml = `
-    <div class="planner-anniversary-badge">
-
-        ${todayAnniversaries.map(m => {
-
-            let icon = "🎉";
-
-            if(m.type === "birthday"){
-                icon = "🎂";
-            }
-            else if(m.type === "anniversary"){
-                icon = "🎉";
-            }
-
-
-return `
-<div
-    class="planner-anniversary-item"
-    onclick="togglePlannerAnniversary(this)"
->
-
-    <span class="planner-anniversary-icon">
-        ${icon}
-    </span>
-
-    <span class="planner-anniversary-text">
-        ${m.title || ""}
-    </span>
 
     ${
-        m.memo
+        holiday
         ?
         `
-        <span class="planner-anniversary-memo">
-            ${m.memo}
-        </span>
+        <div class="planner-holiday">
+            ${holiday.localName}
+        </div>
         `
         :
         ""
     }
-
-</div>
-`;
-
-
-
-        }).join("")}
-
-    </div>
     `;
 
-}
+
+    /* =====================
+       🎂 記念日・誕生日
+    ===================== */
+
+    const plannerData =
+        db.load();
+
+    const anniversaryDays =
+        plannerData.anniversaryDays || [];
+
+    const todayAnniversaries =
+        anniversaryDays.filter(m => {
+
+            if(
+                !m.visible ||
+                !m.date
+            ){
+                return false;
+            }
+
+            if(m.yearly){
+
+                return (
+                    m.date.substring(5) ===
+                    date.substring(5)
+                );
+
+            }
+
+            return m.date === date;
+
+        });
 
 
-/* =====================
-   1日手帳に追加
-===================== */
+    /* =====================
+       記念日バッジ
+    ===================== */
 
-planner.insertAdjacentHTML(
-    "afterbegin",
-    anniversaryHtml
-);
+    let anniversaryHtml = "";
 
 
+    if(todayAnniversaries.length > 0){
+
+        anniversaryHtml =
+        `
+        <div class="planner-anniversary-badge">
+
+            ${todayAnniversaries.map(m => {
+
+                let icon = "🎉";
+
+                if(m.type === "birthday"){
+
+                    icon = "🎂";
+
+                }
+                else if(m.type === "anniversary"){
+
+                    icon = "🎉";
+
+                }
 
 
+                return `
+                <div
+                    class="planner-anniversary-item"
+                    onclick="togglePlannerAnniversary(this)"
+                >
+
+                    <span class="planner-anniversary-icon">
+                        ${icon}
+                    </span>
+
+                    <span class="planner-anniversary-text">
+                        ${m.title || ""}
+                    </span>
+
+                    ${
+                        m.memo
+                        ?
+                        `
+                        <span class="planner-anniversary-memo">
+                            ${m.memo}
+                        </span>
+                        `
+                        :
+                        ""
+                    }
+
+                </div>
+                `;
+
+            }).join("")}
+
+        </div>
+        `;
+
+    }
 
 
-    const now = new Date();
+    /* =====================
+       1日手帳に追加
+    ===================== */
+
+    planner.insertAdjacentHTML(
+        "afterbegin",
+        anniversaryHtml
+    );
+
+
+    /* =====================
+       現在時刻
+    ===================== */
+
+    const now =
+        new Date();
 
     const todayString =
         `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}-${String(now.getDate()).padStart(2,"0")}`;
 
     const currentMinutes =
-        now.getHours()*60 +
+        now.getHours() * 60 +
         now.getMinutes();
+
+
+    /* =====================
+       予定取得
+    ===================== */
 
     const events =
         db.load()
@@ -237,11 +276,11 @@ planner.insertAdjacentHTML(
             e.start.startsWith(date)
         )
         .sort(
-            (a,b)=>
-            new Date(a.start)
-            -
+            (a,b) =>
+            new Date(a.start) -
             new Date(b.start)
         );
+
 
     /* =====================
        30分 = 40px
@@ -249,6 +288,7 @@ planner.insertAdjacentHTML(
 
     const scale =
         40 / 30;
+
 
     /* =====================
        最低表示高さ
@@ -259,21 +299,23 @@ planner.insertAdjacentHTML(
     const minimumEventHeight =
         120;
 
-    let html = `
 
-<div class="planner-layout">
+    let html =
+    `
+    <div class="planner-layout">
 
-<div class="planner-times">
-`;
+        <div class="planner-times">
+    `;
+
 
     /* =====================
        左時間軸
     ===================== */
 
     for(
-        let minute=0;
-        minute<1440;
-        minute+=30
+        let minute = 0;
+        minute < 1440;
+        minute += 30
     ){
 
         const hour =
@@ -282,83 +324,95 @@ planner.insertAdjacentHTML(
         const min =
             minute % 60;
 
-        html += `
-<div class="planner-time-fixed">
-${String(hour).padStart(2,"0")}:${String(min).padStart(2,"0")}
-</div>
-`;
+
+        html +=
+        `
+        <div class="planner-time-fixed">
+            ${String(hour).padStart(2,"0")}:${String(min).padStart(2,"0")}
+        </div>
+        `;
 
     }
 
-    html += `
 
-</div>
+    html +=
+    `
+        </div>
 
-<div class="planner-board">
+        <div class="planner-board">
+    `;
 
-`;
 
     /* =====================
        時間線
     ===================== */
 
-    for(let i=0; i<96; i++){
+    for(
+        let i = 0;
+        i < 96;
+        i++
+    ){
 
         const top =
             15 + (i * 20);
 
+
         if(i % 2 === 0){
 
-            html += `
-<div
-class="planner-line planner-line-major"
-style="top:${top}px;">
-</div>
-`;
+            html +=
+            `
+            <div
+                class="planner-line planner-line-major"
+                style="top:${top}px;">
+            </div>
+            `;
 
-        }else{
+        }
+        else{
 
-            html += `
-<div
-class="planner-line planner-line-minor"
-style="top:${top}px;">
-</div>
-`;
+            html +=
+            `
+            <div
+                class="planner-line planner-line-minor"
+                style="top:${top}px;">
+            </div>
+            `;
 
         }
 
     }
+
 
     /* =====================
        現在時刻ライン
     ===================== */
 
     if(
-        date===todayString
+        date === todayString
     ){
 
         const top =
             15 + (currentMinutes * scale);
 
-        html += `
 
-<div
-class="planner-now-line"
-style="top:${top}px;">
-
-● 現在
-
-</div>
-
-`;
+        html +=
+        `
+        <div
+            class="planner-now-line"
+            style="top:${top}px;"
+        >
+            ● 現在
+        </div>
+        `;
 
     }
 
+
     /* =====================
-       予定配置
+       📌 予定配置
     ===================== */
 
-    events.forEach(e=>{
+    events.forEach(e => {
 
         const start =
             new Date(e.start);
@@ -368,25 +422,26 @@ style="top:${top}px;">
                 e.end || e.start
             );
 
+
         const startMinutes =
-            start.getHours()*60 +
+            start.getHours() * 60 +
             start.getMinutes();
+
 
         const duration =
             Math.max(
                 30,
-                (end-start)/60000
+                (end - start) / 60000
             );
+
 
         const top =
             15 + (startMinutes * scale);
 
-        /* 実際の時間に応じた高さ */
 
         const actualHeight =
             duration * scale;
 
-        /* 通常時は最低3行 */
 
         const displayHeight =
             Math.max(
@@ -394,159 +449,311 @@ style="top:${top}px;">
                 actualHeight
             );
 
+
         const finished =
             end < now;
 
+
         const category =
-            getCategoryInfo(e.category);
+            getCategoryInfo(
+                e.category
+            );
+
 
         const categoryColor =
-            category?.color || "#ffb3cc";
+            category?.color ||
+            "#ffb3cc";
+
 
         const lightColor =
-            getLightCategoryColor(categoryColor);
+            getLightCategoryColor(
+                categoryColor
+            );
 
-        html += `
 
-<div
-class="planner-event ${finished ? "finished-event" : ""}"
-data-event-id="${e.id}"
-data-actual-height="${actualHeight}"
-data-display-height="${displayHeight}"
-style="
-top:${top}px;
-height:${displayHeight}px;
-background:${lightColor};
-border-left-color:${categoryColor};
-"
-ontouchstart="plannerEventTouchStart(event, ${e.id})"
-ontouchend="plannerEventTouchEnd(event, ${e.id})"
-ontouchmove="plannerEventTouchMove(event)"
-onmousedown="plannerEventMouseDown(event, ${e.id})"
-onmouseup="plannerEventMouseUp(event, ${e.id})"
-onmouseleave="plannerEventMouseLeave(event)"
-onclick="plannerEventTap(event, ${e.id})"
->
+        /* =====================
+           共有情報
+        ===================== */
 
-<div class="planner-event-time">
+        let shareHtml = "";
 
-🕒
-${e.start.substring(11,16)}
 
-${
-    e.end
-    ?
-    " ～ " + e.end.substring(11,16)
-    :
-    ""
-}
+        /* =====================
+           📤 自分が送った側
+        ===================== */
 
-</div>
+        if(
+            e.shareStatus === "sent"
+        ){
 
-<div class="planner-event-title">
+            shareHtml =
+            `
+            <div class="planner-share-info planner-share-sent">
 
-${category?.icon || "📌"}
+                <div>
+                    📤 共有済み
+                </div>
 
-<strong>
-${e.title}
-</strong>
+                ${
+                    e.shareRecipients
+                    ?
+                    `
+                    <div>
+                        👥 共有先：${e.shareRecipients}
+                    </div>
+                    `
+                    :
+                    ""
+                }
 
-</div>
+                ${
+                    e.sharedAt
+                    ?
+                    `
+                    <div>
+                        🕒 共有日時：${e.sharedAt}
+                    </div>
+                    `
+                    :
+                    ""
+                }
 
-${
-    e.place
-    ?
-    `
-    <div class="planner-place">
-    📍 ${e.place}
-    </div>
-    `
-    :
-    ""
-}
+            </div>
+            `;
 
-${
-    e.companion
-    ?
-    `
-    <div class="planner-companion">
-    👥 ${e.companion}
-    </div>
-    `
-    :
-    ""
-}
+        }
 
-<div class="planner-event-actions">
 
-<button
-type="button"
-class="planner-edit-btn"
-onclick="plannerEditEvent(event, ${e.id})"
->
-✏️ 編集
-</button>
+        /* =====================
+           📥 相手が取り込んだ側
+        ===================== */
 
-<button
-type="button"
-class="planner-delete-btn"
-onclick="plannerDeleteEvent(event, ${e.id})"
->
-🗑️ 削除
-</button>
+        if(
+            e.shareStatus === "received"
+        ){
 
-</div>
+            shareHtml =
+            `
+            <div class="planner-share-info planner-share-received">
 
-</div>
+                <div>
+                    📥 共有予定を取り込みました
+                </div>
 
-`;
+                ${
+                    e.shareSender
+                    ?
+                    `
+                    <div>
+                        👤 発信者：${e.shareSender}
+                    </div>
+                    `
+                    :
+                    ""
+                }
+
+                ${
+                    e.receivedAt
+                    ?
+                    `
+                    <div>
+                        🕒 受信日時：${e.receivedAt}
+                    </div>
+                    `
+                    :
+                    ""
+                }
+
+            </div>
+            `;
+
+        }
+
+
+        /* =====================
+           付箋
+        ===================== */
+
+        html +=
+        `
+        <div
+            class="planner-event ${finished ? "finished-event" : ""}"
+            data-event-id="${e.id}"
+            data-actual-height="${actualHeight}"
+            data-display-height="${displayHeight}"
+
+            style="
+                top:${top}px;
+                height:${displayHeight}px;
+                background:${lightColor};
+                border-left-color:${categoryColor};
+            "
+
+            ontouchstart="plannerEventTouchStart(event, ${e.id})"
+            ontouchend="plannerEventTouchEnd(event, ${e.id})"
+            ontouchmove="plannerEventTouchMove(event)"
+
+            onmousedown="plannerEventMouseDown(event, ${e.id})"
+            onmouseup="plannerEventMouseUp(event)"
+            onmouseleave="plannerEventMouseLeave(event)"
+
+            onclick="plannerEventTap(event, ${e.id})"
+        >
+
+
+            <div class="planner-event-time">
+
+                🕒
+                ${e.start.substring(11,16)}
+
+                ${
+                    e.end
+                    ?
+                    " ～ " + e.end.substring(11,16)
+                    :
+                    ""
+                }
+
+            </div>
+
+
+            <div class="planner-event-title">
+
+                ${category?.icon || "📌"}
+
+                <strong>
+                    ${e.title}
+                </strong>
+
+            </div>
+
+
+            ${
+                e.place
+                ?
+                `
+                <div class="planner-place">
+                    📍 ${e.place}
+                </div>
+                `
+                :
+                ""
+            }
+
+
+            ${
+                e.companion
+                ?
+                `
+                <div class="planner-companion">
+                    👥 ${e.companion}
+                </div>
+                `
+                :
+                ""
+            }
+
+
+            <!-- =====================
+                 📤📥 共有情報
+            ===================== -->
+
+            ${shareHtml}
+
+
+            <div class="planner-event-actions">
+
+                <button
+                    type="button"
+                    class="planner-edit-btn"
+                    onclick="plannerEditEvent(event, ${e.id})"
+                >
+                    ✏️ 編集
+                </button>
+
+
+                <button
+                    type="button"
+                    class="planner-delete-btn"
+                    onclick="plannerDeleteEvent(event, ${e.id})"
+                >
+                    🗑️ 削除
+                </button>
+
+            </div>
+
+
+        </div>
+        `;
 
     });
 
-    html += `
 
-</div>
+    html +=
+    `
+        </div>
 
-</div>
+    </div>
+    `;
 
-`;
+
+    /* =====================
+       描画
+    ===================== */
 
     timeline.innerHTML =
         html;
 
-// ★ 付箋以外をタップしたら編集モード解除
-timeline.onclick = function(event){
 
-    if(
-        !event.target.closest(".planner-event")
-    ){
-        plannerCancelEditMode();
-    }
+    /* =====================
+       付箋以外をタップ
+       → 編集モード解除
+    ===================== */
 
-};
+    timeline.onclick =
+        function(event){
+
+            if(
+                !event.target.closest(
+                    ".planner-event"
+                )
+            ){
+
+                plannerCancelEditMode();
+
+            }
+
+        };
+
+
+    /* =====================
+       写真・動画
+    ===================== */
 
     renderDayMemory();
+
 
     /* =====================
        現在時刻へ移動
     ===================== */
 
     if(
-        date===todayString
+        date === todayString
     ){
 
-        setTimeout(()=>{
+        setTimeout(() => {
 
             const nowLine =
                 document.querySelector(
                     ".planner-now-line"
                 );
 
+
             if(nowLine){
 
                 nowLine.scrollIntoView({
-                    behavior:"smooth",
-                    block:"center"
+                    behavior: "smooth",
+                    block: "center"
                 });
 
             }
@@ -555,10 +762,10 @@ timeline.onclick = function(event){
 
     }
 
+
     setupPlannerSwipe();
 
 }
-
 
 
 

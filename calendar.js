@@ -2687,19 +2687,13 @@ function exportSelectedEventsForShare(){
         );
 
         if(recipientInput){
-
             recipientInput.focus();
-
         }
 
         return;
 
     }
 
-
-    /* =====================
-       「、」「，」をカンマへ
-    ===================== */
 
     recipients =
         recipients
@@ -2714,9 +2708,7 @@ function exportSelectedEventsForShare(){
         .filter(name => name);
 
 
-    if(
-        recipientList.length === 0
-    ){
+    if(recipientList.length === 0){
 
         alert(
             "共有先を入力してください。"
@@ -2749,9 +2741,7 @@ function exportSelectedEventsForShare(){
         );
 
         if(senderInput){
-
             senderInput.focus();
-
         }
 
         return;
@@ -2767,13 +2757,11 @@ function exportSelectedEventsForShare(){
         (data.events || [])
         .filter(event =>
             eventShareSelectedIds
-            .includes(event.id)
+                .includes(event.id)
         );
 
 
-    if(
-        selectedEvents.length === 0
-    ){
+    if(selectedEvents.length === 0){
 
         alert(
             "共有する予定がありません。"
@@ -2792,8 +2780,50 @@ function exportSelectedEventsForShare(){
         new Date().toISOString();
 
 
+    /* =================================================
+       自分側の予定に共有情報を保存
+    ================================================= */
+
+    data.events =
+        (data.events || []).map(event => {
+
+            if(
+                !eventShareSelectedIds
+                    .includes(event.id)
+            ){
+
+                return event;
+
+            }
+
+
+            return {
+
+                ...event,
+
+                shareStatus:
+                    "sent",
+
+                shareRecipients:
+                    recipientList.join("、"),
+
+                sharedAt:
+                    sharedAt
+
+            };
+
+        });
+
+
     /* =====================
-       共有データ
+       DB保存
+    ===================== */
+
+    db.save(data);
+
+
+    /* =====================
+       共有データ作成
     ===================== */
 
     const shareData = {
@@ -2848,10 +2878,6 @@ function exportSelectedEventsForShare(){
         );
 
 
-    /* =====================
-       ファイル作成
-    ===================== */
-
     const file =
         new File(
             [json],
@@ -2864,24 +2890,16 @@ function exportSelectedEventsForShare(){
 
 
     /* =================================================
-       📱 スマホ共有
+       スマホ共有
     ================================================= */
 
-    if(
-        navigator.share
-    ){
-
-        /* =====================
-           ファイル共有対応確認
-        ===================== */
+    if(navigator.share){
 
         let canShareFile = false;
 
         try{
 
-            if(
-                navigator.canShare
-            ){
+            if(navigator.canShare){
 
                 canShareFile =
                     navigator.canShare({
@@ -2890,7 +2908,8 @@ function exportSelectedEventsForShare(){
 
             }
 
-        }catch(error){
+        }
+        catch(error){
 
             console.log(
                 "canShare確認エラー:",
@@ -2899,10 +2918,6 @@ function exportSelectedEventsForShare(){
 
         }
 
-
-        /* =====================
-           ファイル共有可能
-        ===================== */
 
         if(canShareFile){
 
@@ -2925,12 +2940,29 @@ function exportSelectedEventsForShare(){
                     "📤 共有成功"
                 );
 
+
                 saveEventShareHistory(
                     recipientList,
                     sender,
                     selectedEvents,
                     sharedAt
                 );
+
+
+                /* =====================
+                   1日手帳を更新
+                ===================== */
+
+                if(
+                    selectedCalendarDate
+                ){
+
+                    showPlanner(
+                        selectedCalendarDate,
+                        false
+                    );
+
+                }
 
             })
             .catch(error => {
@@ -2941,29 +2973,15 @@ function exportSelectedEventsForShare(){
                 );
 
 
-                /* =====================
-                   ユーザーがキャンセル
-                ===================== */
-
                 if(
                     error &&
                     error.name === "AbortError"
                 ){
 
-                    console.log(
-                        "📤 ユーザーが共有をキャンセル"
-                    );
-
                     return;
 
                 }
 
-
-                /* =====================
-                   共有API失敗
-                   ↓
-                   ファイル保存へ
-                ===================== */
 
                 downloadEventShareFile(
                     json,
@@ -2984,8 +3002,8 @@ function exportSelectedEventsForShare(){
 
 
     /* =================================================
-       📥 共有非対応
-       → JSONファイル保存
+       共有非対応
+       → ファイル保存
     ================================================= */
 
     downloadEventShareFile(
@@ -2997,8 +3015,6 @@ function exportSelectedEventsForShare(){
     );
 
 }
-
-
 
 /* =================================================
    📥 予定共有ファイル保存
@@ -4053,12 +4069,11 @@ function importSelectedEvents(){
 
 
     /* =====================
-       🔒 プランチェック
+       プランチェック
     ===================== */
 
     const data =
         db.load();
-
 
     const plan =
         PLAN[data.settings?.plan];
@@ -4075,11 +4090,9 @@ function importSelectedEvents(){
     }
 
 
-    /*
-    =====================
-       無料プランは利用不可
-    =====================
-    */
+    /* =====================
+       無料プラン
+    ===================== */
 
     if(
         data.settings?.plan === "free"
@@ -4116,9 +4129,7 @@ function importSelectedEvents(){
     ===================== */
 
     if(
-        !Array.isArray(
-            data.events
-        )
+        !Array.isArray(data.events)
     ){
 
         data.events = [];
@@ -4138,9 +4149,7 @@ function importSelectedEvents(){
         );
 
 
-    if(
-        selectedEvents.length === 0
-    ){
+    if(selectedEvents.length === 0){
 
         alert(
             "取り込む予定がありません。"
@@ -4152,7 +4161,7 @@ function importSelectedEvents(){
 
 
     /* =====================
-       📊 取り込み前の件数
+       取り込み前件数
     ===================== */
 
     const originalSelectedCount =
@@ -4173,9 +4182,7 @@ function importSelectedEvents(){
 
     let remain;
 
-    if(
-        limit === Infinity
-    ){
+    if(limit === Infinity){
 
         remain = Infinity;
 
@@ -4194,15 +4201,12 @@ function importSelectedEvents(){
        上限到達
     ===================== */
 
-    if(
-        remain === 0
-    ){
+    if(remain === 0){
 
         alert(
             `${plan.name}の予定上限に達しています。\n\n` +
             `現在の予定数：${currentCount}件\n` +
-            `上限：${limit}件\n\n` +
-            `予定を削除するか、上位プランへ変更すると取り込めます。`
+            `上限：${limit}件`
         );
 
         return;
@@ -4211,7 +4215,7 @@ function importSelectedEvents(){
 
 
     /* =====================
-       取り込み対象決定
+       取り込み対象
     ===================== */
 
     const importTargets =
@@ -4250,22 +4254,106 @@ function importSelectedEvents(){
 
 
             /* =====================
-               新しい予定ID
+               受信日時
+            ===================== */
+
+            const importedAt =
+                new Date().toISOString();
+
+
+            /* =====================
+               発信者
+            ===================== */
+
+            const sender =
+                eventImportData.sender ||
+                importedEvent.shareInfo?.sender ||
+                "不明";
+
+
+            /* =====================
+               共有先
+            ===================== */
+
+            const recipients =
+                Array.isArray(
+                    eventImportData.recipients
+                )
+                ?
+                eventImportData.recipients
+                :
+                (
+                    importedEvent.shareInfo?.recipients ||
+                    []
+                );
+
+
+            /* =====================
+               共有日時
+            ===================== */
+
+            const sharedAt =
+                eventImportData.sharedAt ||
+                importedEvent.shareInfo?.sharedAt ||
+                null;
+
+
+            /* =====================
+               新しい予定
             ===================== */
 
             const newEvent = {
 
                 ...importedEvent,
 
+                /* 新しいID */
+
                 id:
                     Date.now() +
                     Math.random(),
+
+
+                /* =====================
+                   取り込み情報
+                ===================== */
 
                 importedFromShare:
                     true,
 
                 importedAt:
-                    new Date().toISOString()
+                    importedAt,
+
+
+                /* =====================
+                   受信側として保存
+                ===================== */
+
+                shareStatus:
+                    "received",
+
+                shareSender:
+                    sender,
+
+                receivedAt:
+                    importedAt,
+
+
+                /* =====================
+                   共有情報
+                ===================== */
+
+                shareInfo: {
+
+                    sender:
+                        sender,
+
+                    recipients:
+                        recipients,
+
+                    sharedAt:
+                        sharedAt
+
+                }
 
             };
 
@@ -4282,12 +4370,10 @@ function importSelectedEvents(){
 
 
     /* =====================
-       重複だけだった場合
+       重複だけだった
     ===================== */
 
-    if(
-        importedCount === 0
-    ){
+    if(importedCount === 0){
 
         alert(
             "選択した予定はすでに登録されています。"
@@ -4298,6 +4384,54 @@ function importSelectedEvents(){
         return;
 
     }
+
+
+    /* =====================
+       共有履歴
+    ===================== */
+
+    if(
+        !data.eventShareImportHistory
+    ){
+
+        data.eventShareImportHistory = [];
+
+    }
+
+
+    const historyImportedAt =
+        new Date().toISOString();
+
+
+    data.eventShareImportHistory.push({
+
+        id:
+            Date.now(),
+
+        sender:
+            eventImportData.sender ||
+            "",
+
+        recipients:
+            eventImportData.recipients ||
+            [],
+
+        eventIds:
+            importTargets.map(
+                event => event.id
+            ),
+
+        importedCount:
+            importedCount,
+
+        importedAt:
+            historyImportedAt,
+
+        sharedAt:
+            eventImportData.sharedAt ||
+            null
+
+    });
 
 
     /* =====================
@@ -4325,54 +4459,7 @@ function importSelectedEvents(){
 
 
     /* =====================
-       共有履歴
-    ===================== */
-
-    if(
-        !data.eventShareImportHistory
-    ){
-
-        data.eventShareImportHistory = [];
-
-    }
-
-
-    data.eventShareImportHistory.push({
-
-        id:
-            Date.now(),
-
-        sender:
-            eventImportData.sender ||
-            "",
-
-        recipients:
-            eventImportData.recipients ||
-            [],
-
-        eventIds:
-            importTargets.map(
-                event => event.id
-            ),
-
-        importedCount:
-            importedCount,
-
-        importedAt:
-            new Date().toISOString(),
-
-        sharedAt:
-            eventImportData.sharedAt ||
-            null
-
-    });
-
-
-    db.save(data);
-
-
-    /* =====================
-       📊 上限による一部取り込み
+       上限による一部取り込み
     ===================== */
 
     if(
@@ -4385,19 +4472,9 @@ function importSelectedEvents(){
             `${originalSelectedCount}件中` +
             `${importedCount}件しか読み込めませんでした。\n\n` +
             `現在の予定数：${data.events.length}件\n` +
-            `上限：${limit}件\n\n` +
-            `予定を削除するか、上位プランへ変更すると、残りの予定を再度読み込めます。`
+            `上限：${limit}件`
         );
 
-
-        /*
-        =====================
-           取り込み画面は閉じない
-           
-           → プラン変更後などに
-             同じデータから再取り込み可能
-        =====================
-        */
 
         renderEventImportList();
 
@@ -4420,7 +4497,6 @@ function importSelectedEvents(){
     closeEventImportScreen();
 
 }
-
 
 /* =====================================================
    📅 取り込み日時表示
@@ -4498,3 +4574,110 @@ function formatEventImportDate(value){
 }
 
 
+function getEventShareInfoHTML(event){
+
+    let html = "";
+
+
+    /* =====================
+       📤 自分が共有した予定
+    ===================== */
+
+    if(
+        event?.shareInfo &&
+        event.shareInfo.sharedAt
+    ){
+
+        const recipients =
+            Array.isArray(
+                event.shareInfo.recipients
+            )
+            ?
+            event.shareInfo.recipients.join("、")
+            :
+            "";
+
+
+        html += `
+
+            <div class="planner-share-info">
+
+                <div>
+                    📤 共有済み
+                </div>
+
+                ${
+                    recipients
+                    ?
+                    `
+                    <div>
+                        👥 共有先：
+                        ${escapeEventShareHTML(
+                            recipients
+                        )}
+                    </div>
+                    `
+                    :
+                    ""
+                }
+
+                <div>
+                    🕒 共有日時：
+                    ${formatEventImportDate(
+                        event.shareInfo.sharedAt
+                    )}
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
+
+    /* =====================
+       📥 相手から取り込んだ予定
+    ===================== */
+
+    if(
+        event?.importedFromShare &&
+        event?.importedAt
+    ){
+
+        const sender =
+            event.shareInfo?.sender ||
+            "不明";
+
+
+        html += `
+
+            <div class="planner-import-info">
+
+                <div>
+                    📥 共有予定を取り込みました
+                </div>
+
+                <div>
+                    👤 発信者：
+                    ${escapeEventShareHTML(
+                        sender
+                    )}
+                </div>
+
+                <div>
+                    🕒 受信日時：
+                    ${formatEventImportDate(
+                        event.importedAt
+                    )}
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
+
+    return html;
+
+}
