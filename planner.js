@@ -561,9 +561,6 @@ function showPlanner(date, fromCalendar = false){
             }
 
 
-            /* =====================
-   📤📥 共有情報
-===================== */
 
 ${
     e.shareInfo && e.importedFromShare !== true
