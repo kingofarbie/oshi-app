@@ -386,6 +386,27 @@ ${more}
 }
 
 
+
+/* =====================
+   今日に戻る
+===================== */
+
+function goToToday(){
+
+    currentCalendarDate =
+        new Date();
+
+    selectedCalendarDate =
+        null;
+
+    window.selectedCalendarDate =
+        null;
+
+    renderCalendar();
+
+}
+
+
 /* =====================
    月変更
 ===================== */
