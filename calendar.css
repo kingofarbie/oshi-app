@@ -350,3 +350,13 @@
 
 
 
+.calendar-share-area {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+}
+
+.calendar-share-area button {
+    flex: 1;
+    min-width: 0;
+}
