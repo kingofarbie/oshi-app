@@ -1002,7 +1002,7 @@ function plannerEventMouseLeave(){
 
 /* =====================
    タップ
-   通常 ⇄ 実時間サイズ
+   通常 ⇄ 内容が収まる高さ
 ===================== */
 
 function plannerEventTap(event, id){
@@ -1049,12 +1049,21 @@ function plannerEventTap(event, id){
         return;
     }
 
-    /* 実時間表示中か */
+
+    /* =====================
+       現在の状態
+    ===================== */
 
     const compact =
         eventBox.classList.contains(
             "planner-event-compact"
         );
+
+
+    /* =====================
+       実時間表示中
+       → 通常表示へ戻す
+    ===================== */
 
     if(compact){
 
@@ -1065,16 +1074,45 @@ function plannerEventTap(event, id){
             "planner-event-compact"
         );
 
-    }else{
-
-        eventBox.style.height =
-            `${actualHeight}px`;
-
-        eventBox.classList.add(
-            "planner-event-compact"
-        );
+        return;
 
     }
+
+
+    /* =====================
+       展開表示
+       実時間と内容に必要な高さを比較
+    ===================== */
+
+    /*
+       scrollHeight は、
+       overflow:hidden の中に隠れている
+       内容も含めた「必要な高さ」。
+    */
+
+    const contentHeight =
+        eventBox.scrollHeight;
+
+
+    /*
+       実時間の高さよりも
+       内容の方が大きければ、
+       内容が全部見える高さまで広げる。
+    */
+
+    const expandedHeight =
+        Math.max(
+            actualHeight,
+            contentHeight
+        );
+
+
+    eventBox.style.height =
+        `${expandedHeight}px`;
+
+    eventBox.classList.add(
+        "planner-event-compact"
+    );
 
 }
 
