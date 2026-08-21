@@ -1117,12 +1117,49 @@ function plannerEnterEditMode(id){
         return;
     }
 
+    /* =====================
+       編集モードにする
+    ===================== */
+
     target.classList.add(
         "planner-event-editing"
     );
 
-}
 
+    /* =====================
+       編集・削除ボタンを含めて
+       全内容が見える高さに調整
+    ===================== */
+
+    const actualHeight =
+        Number(
+            target.dataset.actualHeight
+        ) || 40;
+
+
+    /*
+       scrollHeight を取得するため、
+       一度高さ制限を解除
+    */
+
+    target.style.height = "auto";
+
+
+    const contentHeight =
+        target.scrollHeight;
+
+
+    const expandedHeight =
+        Math.max(
+            actualHeight,
+            contentHeight
+        );
+
+
+    target.style.height =
+        `${expandedHeight}px`;
+
+}
 
 function plannerCancelEditMode(){
 
@@ -1135,6 +1172,26 @@ function plannerCancelEditMode(){
             el.classList.remove(
                 "planner-event-editing"
             );
+
+
+            /* =====================
+               編集モード終了
+               → 元の表示高さへ戻す
+            ===================== */
+
+            const displayHeight =
+                Number(
+                    el.dataset.displayHeight
+                );
+
+            if(
+                displayHeight
+            ){
+
+                el.style.height =
+                    `${displayHeight}px`;
+
+            }
 
         });
 
