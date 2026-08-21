@@ -293,11 +293,11 @@ function showPlanner(date, fromCalendar = false){
     /* =====================
        最低表示高さ
        30分 × 3行
-       = 120px
+       = 120px▶修整後　40px
     ===================== */
 
     const minimumEventHeight =
-        120;
+        40;
 
 
     let html =
@@ -1007,8 +1007,6 @@ function plannerEventMouseLeave(){
 
 function plannerEventTap(event, id){
 
-    /* ボタンを押した場合は無視 */
-
     if(
         event.target.closest(
             ".planner-event-actions"
@@ -1022,7 +1020,6 @@ function plannerEventTap(event, id){
         plannerLongPressTriggered = false;
 
         return;
-
     }
 
     const eventBox =
@@ -1049,23 +1046,16 @@ function plannerEventTap(event, id){
         return;
     }
 
-
     /* =====================
-       現在の状態
+       展開中なら元に戻す
     ===================== */
 
-    const compact =
+    const expanded =
         eventBox.classList.contains(
             "planner-event-compact"
         );
 
-
-    /* =====================
-       実時間表示中
-       → 通常表示へ戻す
-    ===================== */
-
-    if(compact){
+    if(expanded){
 
         eventBox.style.height =
             `${displayHeight}px`;
@@ -1075,37 +1065,20 @@ function plannerEventTap(event, id){
         );
 
         return;
-
     }
 
-
     /* =====================
-       展開表示
-       実時間と内容に必要な高さを比較
+       内容が全部見える高さまで拡大
     ===================== */
-
-    /*
-       scrollHeight は、
-       overflow:hidden の中に隠れている
-       内容も含めた「必要な高さ」。
-    */
 
     const contentHeight =
         eventBox.scrollHeight;
-
-
-    /*
-       実時間の高さよりも
-       内容の方が大きければ、
-       内容が全部見える高さまで広げる。
-    */
 
     const expandedHeight =
         Math.max(
             actualHeight,
             contentHeight
         );
-
 
     eventBox.style.height =
         `${expandedHeight}px`;
@@ -1115,7 +1088,6 @@ function plannerEventTap(event, id){
     );
 
 }
-
 
 /* =====================
    長押し
