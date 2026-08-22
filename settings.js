@@ -580,6 +580,9 @@ function loadAppTitle(){
         titleElement.textContent =
             title;
 
+        titleElement.style.visibility = 
+            "visible";
+
     }
 
     const input =
