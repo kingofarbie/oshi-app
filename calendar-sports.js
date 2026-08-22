@@ -34,11 +34,11 @@ function initSportsCalendar(){
 
 function createSportsCalendarUI(){
 
-    const container =
-        document.getElementById(
-            "calendarContainer"
-        );
-
+const container =
+    document.getElementById(
+        "calendar"
+    );
+    
     if(!container){
 
         console.log(
