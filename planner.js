@@ -11,6 +11,11 @@ function showPlanner(date, fromCalendar = false){
 
     selectedCalendarDate = date;
 
+        localStorage.setItem(
+        "oshi_last_planner_date",
+        date
+    );
+
     const calendarBack =
         document.getElementById("plannerCalendarBack");
 
