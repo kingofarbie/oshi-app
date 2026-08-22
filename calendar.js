@@ -4713,13 +4713,6 @@ function getEventShareInfoHTML(event){
 
 function openSportsCalendar() {
 
-    const normalCalendar =
-        document.getElementById("calendar");
-
-    if (normalCalendar) {
-        normalCalendar.style.display = "none";
-    }
-
     initSportsCalendar();
 
     const screen =
