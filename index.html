@@ -3,6 +3,17 @@
 
 <head>
 
+
+    <style>
+    body.preloading .page {
+        visibility: hidden;
+    }
+
+    body.preloading .page.active {
+        visibility: visible;
+    }
+</style>
+
 <meta charset="UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -55,9 +66,24 @@
 
 </head>
 
+<body class="theme-basic preloading">
 
-<body class="theme-basic">
+<script>
+(function () {
 
+    const savedLastPage =
+        localStorage.getItem("oshi_last_page");
+
+    if (savedLastPage) {
+        document.documentElement.dataset.lastPage =
+            savedLastPage;
+    }
+
+})();
+</script>
+
+
+    
 <!-- =================================
      LINEアプリ内ブラウザ案内
 ================================= -->
@@ -115,8 +141,9 @@
      ホーム
 ===================== -->
 
-
 <div id="home" class="page active"></div>
+
+
 
 <div id="homeMenuContainer"></div>
 
@@ -716,6 +743,35 @@ function openExternalBrowser() {
 
 
 
+<script>
+(function () {
+
+    const savedLastPage =
+        localStorage.getItem("oshi_last_page");
+
+    if (savedLastPage) {
+
+        const savedPage =
+            document.getElementById(savedLastPage);
+
+        if (savedPage) {
+
+            document
+                .querySelectorAll(".page")
+                .forEach(page => {
+                    page.classList.remove("active");
+                });
+
+            savedPage.classList.add("active");
+
+        }
+
+    }
+
+    document.body.classList.remove("preloading");
+
+})();
+</script>
 
 
 </body>
