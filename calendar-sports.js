@@ -38,7 +38,7 @@ const container =
     document.getElementById(
         "calendar"
     );
-    
+
     if(!container){
 
         console.log(
@@ -285,40 +285,6 @@ const container =
    スポーツカレンダーを開く
 ===================================================== */
 
-function openSportsCalendar(){
-
-    const normalCalendar =
-        document.getElementById(
-            "calendar"
-        );
-
-    const screen =
-        document.getElementById(
-            "sportsCalendarScreen"
-        );
-
-
-    if(normalCalendar){
-
-        normalCalendar.style.display =
-            "none";
-
-    }
-
-
-    if(screen){
-
-        screen.style.display =
-            "block";
-
-    }
-
-
-    loadSportsSettings();
-
-    renderSportsCalendar();
-
-}
 
 
 /* =====================================================

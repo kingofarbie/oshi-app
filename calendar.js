@@ -4714,3 +4714,4 @@ function getEventShareInfoHTML(event){
 function openSportsCalendar() {
     console.log("openSportsCalendar が呼ばれました");
 }
+
