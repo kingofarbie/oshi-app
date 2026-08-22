@@ -4709,3 +4709,8 @@ function getEventShareInfoHTML(event){
     return html;
 
 }
+
+
+function openSportsCalendar() {
+    alert("スポーツカレンダー");
+}

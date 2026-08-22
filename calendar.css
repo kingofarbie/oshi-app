@@ -360,3 +360,29 @@
     flex: 1;
     min-width: 0;
 }
+
+/* =====================
+   📅 カレンダータイトル行
+===================== */
+
+.calendar-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.calendar-title-row h2 {
+    margin: 0;
+}
+
+.calendar-title-row .calendar-sports-button {
+    flex-shrink: 0;
+    width: auto;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+}
