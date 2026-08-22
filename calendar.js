@@ -4712,6 +4712,21 @@ function getEventShareInfoHTML(event){
 
 
 function openSportsCalendar() {
-    console.log("openSportsCalendar が呼ばれました");
-}
 
+    const normalCalendar =
+        document.getElementById("calendar");
+
+    if (normalCalendar) {
+        normalCalendar.style.display = "none";
+    }
+
+    initSportsCalendar();
+
+    const screen =
+        document.getElementById("sportsCalendarScreen");
+
+    if (screen) {
+        screen.style.display = "block";
+    }
+
+}
