@@ -4712,5 +4712,5 @@ function getEventShareInfoHTML(event){
 
 
 function openSportsCalendar() {
-    alert("スポーツカレンダー");
+    console.log("openSportsCalendar が呼ばれました");
 }
