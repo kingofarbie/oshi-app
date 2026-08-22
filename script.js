@@ -242,12 +242,16 @@ localStorage.setItem(
            → 今日を表示
         */
 
-        if(!fromCalendar){
+if(
+    !fromCalendar &&
+    !localStorage.getItem("oshi_last_planner_date")
+){
 
-            selectedCalendarDate =
-                todayString;
+    selectedCalendarDate =
+        todayString;
 
-        }
+}
+
 
         /* =====================
    1日手帳の表示日を保存
