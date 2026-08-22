@@ -231,12 +231,15 @@ localStorage.setItem(
            → 選択した日を表示
         */
 
-        const plannerDate =
-            fromCalendar
-            ? selectedCalendarDate
-            : todayString;
+const plannerDate =
+    fromCalendar
+    ? selectedCalendarDate
+    : (
+        localStorage.getItem("oshi_last_planner_date")
+        || todayString
+    );
 
-
+    
         /*
            1日手帳タブから直接来た場合
            → 今日を表示
