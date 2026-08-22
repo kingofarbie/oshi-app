@@ -50,50 +50,6 @@ const container =
     }
 
 
-    /* =====================
-       すでに作成済みなら終了
-    ===================== */
-
-    if(
-        document.getElementById(
-            "sportsCalendarButton"
-        )
-    ){
-
-        return;
-
-    }
-
-
-    /* =================================================
-       裏カレンダーボタン
-    ================================================= */
-
-    const button =
-        document.createElement("button");
-
-    button.id =
-        "sportsCalendarButton";
-
-    button.className =
-        "sports-calendar-button";
-
-    button.innerHTML =
-        "🏟️ スポーツ";
-
-    button.onclick =
-        openSportsCalendar;
-
-
-    /* =================================================
-       ボタンをカレンダーの上に追加
-    ================================================= */
-
-    container.insertBefore(
-        button,
-        container.firstChild
-    );
-
 
     /* =================================================
        スポーツ画面
