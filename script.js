@@ -115,6 +115,15 @@ function switchTab(pageId, event, fromCalendar = false){
 
 
     /* =====================
+   最後に開いていたページを保存
+===================== */
+
+localStorage.setItem(
+    "oshi_last_page",
+    pageId
+);
+
+    /* =====================
        ページ切り替え時に
        ☰メニュー表示へ戻す
     ===================== */
@@ -239,6 +248,19 @@ function switchTab(pageId, event, fromCalendar = false){
                 todayString;
 
         }
+
+        /* =====================
+   1日手帳の表示日を保存
+===================== */
+
+if(plannerDate){
+
+    localStorage.setItem(
+        "oshi_last_planner_date",
+        plannerDate
+    );
+
+}
 
 
         setTimeout(() => {
@@ -1584,6 +1606,127 @@ displayFavoritePhotos();
     updateTemplateSelect();
 
         initAppTitle();
+
+
+/* =====================
+   再読み込み時に
+   最後に開いていたページを復元
+===================== */
+
+const lastPage =
+    localStorage.getItem("oshi_last_page");
+
+if(lastPage){
+
+    const targetPage =
+        document.getElementById(lastPage);
+
+    if(targetPage){
+
+        document
+            .querySelectorAll(".page")
+            .forEach(page => {
+                page.classList.remove("active");
+            });
+
+        targetPage.classList.add("active");
+
+        setHomeMenuButton("open");
+
+
+        /* カレンダー */
+        if(lastPage === "calendarPage"){
+
+            renderCalendar();
+
+        }
+
+
+        /* 1日手帳 */
+        if(lastPage === "plannerPage"){
+
+            const savedDate =
+                localStorage.getItem(
+                    "oshi_last_planner_date"
+                );
+
+            if(
+                savedDate &&
+                typeof showPlanner === "function"
+            ){
+
+                selectedCalendarDate =
+                    savedDate;
+
+                showPlanner(
+                    savedDate,
+                    false
+                );
+
+            }
+
+        }
+
+
+        /* 推し */
+        if(lastPage === "oshiPage"){
+
+            if(
+                typeof loadOshiPage === "function"
+            ){
+
+                loadOshiPage();
+
+            }
+
+        }
+
+
+        /* お気に入り */
+        if(lastPage === "favoritePage"){
+
+            if(
+                typeof favoritePhotoRender === "function"
+            ){
+
+                favoritePhotoRender();
+
+            }
+
+        }
+
+
+        /* お金 */
+        if(lastPage === "moneyPage"){
+
+            if(
+                typeof loadMoneyPage === "function"
+            ){
+
+                loadMoneyPage();
+
+            }
+
+        }
+
+
+        /* ホーム */
+        if(lastPage === "home"){
+
+            displayHomeSchedule();
+            displayUpcomingEvents();
+            displayFavoritePhotoCard();
+            favoritePhotoUpdateHomeCount();
+            displayCountdown();
+
+        }
+
+    }
+
+}
+
+
+
 
 
 };
