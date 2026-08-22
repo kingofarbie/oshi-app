@@ -275,6 +275,11 @@ const container =
         screen
     );
 
+    console.log(
+    "🏟️ sportsCalendarScreen 作成完了",
+    document.getElementById("sportsCalendarScreen")
+);
+
 
     renderSportsCalendar();
 
