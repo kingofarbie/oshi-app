@@ -22,10 +22,17 @@ async function loadCalendarHTML(){
             );
         }
 
-        container.innerHTML =
-            await response.text();
+container.innerHTML =
+    await response.text();
 
-        renderCalendar();
+renderCalendar();
+
+if(typeof initSportsCalendar === "function"){
+
+    initSportsCalendar();
+
+}
+        
 
     }catch(error){
 
