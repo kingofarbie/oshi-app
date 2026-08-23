@@ -47,6 +47,8 @@
     font-size: 19px;
     line-height: 1.3;
 
+    color: var(--text);
+
     white-space: nowrap;
     writing-mode: horizontal-tb;
 
@@ -107,7 +109,9 @@
 
     border-radius: 9px;
 
-    background: rgba(255,255,255,0.08);
+    background: var(--surface);
+
+    border: 1px solid var(--border);
 
     box-sizing: border-box;
 }
@@ -122,6 +126,8 @@
 
     font-weight: bold;
     font-size: 15px;
+
+    color: var(--text);
 
     white-space: nowrap;
 }
@@ -165,6 +171,8 @@
 
     font-weight: 500;
 
+    color: var(--text);
+
     white-space: nowrap;
 }
 
@@ -188,12 +196,19 @@
     box-sizing: border-box;
 
     justify-self: end;
+
+    background: var(--card);
+    color: var(--text);
+
+    border: 1px solid var(--border);
+
+    border-radius: 6px;
 }
 
 
-/* =====================
+/* =====================================================
    保存ボタン
-===================== */
+===================================================== */
 
 .sports-save-settings-button {
 
@@ -276,10 +291,10 @@
 
     padding: 0 8px;
 
-    background: #fff;
-    color: #222;
+    background: var(--surface);
+    color: var(--text);
 
-    border: 1px solid rgba(128,128,128,0.35);
+    border: 1px solid var(--border);
 
     border-radius: 4px;
 
@@ -293,6 +308,9 @@
     overflow: hidden;
 
     box-sizing: border-box;
+
+    font-size: 14px;
+    font-weight: bold;
 }
 
 
@@ -325,6 +343,8 @@
     overflow: hidden;
 
     box-sizing: border-box;
+
+    font-size: 13px;
 }
 
 
@@ -369,9 +389,16 @@
     width: 100%;
     max-width: 100%;
 
-    gap: 1px;
+    gap: 0;
 
     box-sizing: border-box;
+
+    border-left: 1px solid var(--border);
+    border-top: 1px solid var(--border);
+
+    overflow: hidden;
+
+    border-radius: 8px 8px 0 0;
 }
 
 
@@ -379,15 +406,41 @@
 
     min-width: 0;
 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
     text-align: center;
 
+    font-size: 13px;
     font-weight: bold;
 
-    padding: 5px 1px;
+    color: var(--text);
+
+    background: var(--surface);
+
+    border-right: 1px solid var(--border);
+    border-bottom: 2px solid var(--border-strong);
+
+    padding: 9px 2px;
 
     box-sizing: border-box;
 
     overflow: hidden;
+}
+
+
+/* 日曜日 */
+
+.sports-week.sunday {
+    color: #e74b67;
+}
+
+
+/* 土曜日 */
+
+.sports-week.saturday {
+    color: #4285e8;
 }
 
 
@@ -405,9 +458,16 @@
     width: 100%;
     max-width: 100%;
 
-    gap: 1px;
+    gap: 0;
 
     box-sizing: border-box;
+
+    border-left: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+
+    overflow: hidden;
+
+    border-radius: 0 0 8px 8px;
 }
 
 
@@ -419,13 +479,18 @@
 
     min-width: 0;
 
-    min-height: 85px;
+    height: 83px;
+
+    background: var(--surface);
+
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
 
     box-sizing: border-box;
 
-    border: 1px solid rgba(128,128,128,0.15);
-
     overflow: hidden;
+
+    opacity: .65;
 }
 
 
@@ -437,17 +502,36 @@
 
     min-width: 0;
 
-    min-height: 85px;
+    height: 83px;
 
     padding: 4px;
 
     box-sizing: border-box;
 
-    border: 1px solid rgba(128,128,128,0.25);
+    background: var(--card);
+
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+
+    border-radius: 0;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
 
     overflow: hidden;
 
     cursor: pointer;
+
+    position: relative;
+}
+
+
+/* ホバー */
+
+.sports-day:hover {
+    background: var(--surface);
 }
 
 
@@ -457,9 +541,16 @@
 
 .sports-day-number {
 
+    font-size: 14px;
     font-weight: bold;
 
-    margin-bottom: 3px;
+    color: var(--text);
+
+    margin-bottom: 1px;
+
+    margin-left: -2px;
+
+    line-height: 1;
 
     white-space: nowrap;
 }
@@ -471,21 +562,37 @@
 
 .sports-game-preview {
 
-    margin-top: 3px;
+    width: 100%;
 
-    padding: 4px;
+    margin-top: 2px;
 
-    border-radius: 5px;
+    padding: 1px 3px;
+
+    background: var(--surface);
+    color: var(--text);
+
+    border: 1px solid var(--border);
+
+    border-radius: 3px;
 
     font-size: 11px;
+    font-weight: bold;
 
-    line-height: 1.3;
+    line-height: 1.1;
 
-    overflow: hidden;
+    min-height: 14px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 
     box-sizing: border-box;
+
+    overflow: hidden;
 }
 
+
+/* 対戦相手 */
 
 .sports-game-preview div {
 
@@ -497,6 +604,8 @@
 }
 
 
+/* スコア */
+
 .sports-game-preview strong {
 
     display: block;
@@ -504,6 +613,8 @@
     margin-top: 2px;
 
     white-space: nowrap;
+
+    color: var(--text);
 }
 
 
@@ -514,14 +625,26 @@
 .sports-day.sunday,
 .sports-week.sunday {
 
-    color: #d33;
+    color: #e74b67;
 }
 
 
 .sports-day.saturday,
 .sports-week.saturday {
 
-    color: #2878d0;
+    color: #4285e8;
+}
+
+
+/* 日付文字も曜日カラーに合わせる */
+
+.sports-day.sunday .sports-day-number {
+    color: #e74b67;
+}
+
+
+.sports-day.saturday .sports-day-number {
+    color: #4285e8;
 }
 
 
@@ -531,9 +654,16 @@
 
 .sports-day.today {
 
-    outline: 2px solid currentColor;
+    background:
+        color-mix(
+            in srgb,
+            var(--accent) 8%,
+            var(--card)
+        );
 
-    outline-offset: -2px;
+    border: 2px solid var(--accent);
+
+    font-weight: bold;
 }
 
 
@@ -568,9 +698,9 @@
 
     border-radius: 12px;
 
-    background: #fff;
+    background: var(--card);
 
-    color: #222;
+    color: var(--text);
 
     box-sizing: border-box;
 }
@@ -623,6 +753,13 @@
 .sports-date-picker select {
 
     padding: 8px;
+
+    background: var(--card);
+    color: var(--text);
+
+    border: 1px solid var(--border);
+
+    border-radius: 6px;
 }
 
 
@@ -790,7 +927,7 @@
 
         font-size: 12px;
 
-        padding: 5px 1px;
+        padding: 7px 1px;
     }
 
 
@@ -800,6 +937,8 @@
 
     .sports-day {
 
+        height: 72px;
+
         min-height: 72px;
 
         padding: 3px;
@@ -808,7 +947,15 @@
 
     .sports-empty-day {
 
+        height: 72px;
+
         min-height: 72px;
+    }
+
+
+    .sports-day-number {
+
+        font-size: 13px;
     }
 
 
@@ -818,9 +965,30 @@
 
     .sports-game-preview {
 
-        padding: 3px;
+        padding: 1px 3px;
 
         font-size: 10px;
+
+        min-height: 13px;
+    }
+
+
+    /* =====================
+       モーダル
+    ===================== */
+
+    .sports-modal {
+
+        padding: 12px;
+    }
+
+
+    .sports-modal-content {
+
+        margin: 30px auto;
+
+        padding: 14px;
+
     }
 
 }
