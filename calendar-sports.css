@@ -26,6 +26,19 @@
 
 
 /* =====================
+   通常カレンダーへ戻る
+===================== */
+
+.sports-back-button {
+    padding: 8px 12px;
+    border: 1px solid rgba(128,128,128,0.35);
+    border-radius: 8px;
+    background: transparent;
+    cursor: pointer;
+}
+
+
+/* =====================
    設定
 ===================== */
 
@@ -88,25 +101,48 @@
 
 
 /* =====================
-   7列カレンダー
+   曜日
 ===================== */
 
-.sports-calendar-grid {
+.sports-week-grid {
     display: grid;
     grid-template-columns: repeat(7, minmax(0, 1fr));
     width: 100%;
     gap: 1px;
+    box-sizing: border-box;
+}
+
+.sports-week {
+    min-width: 0;
+    text-align: center;
+    font-weight: bold;
+    padding: 8px 2px;
+    box-sizing: border-box;
 }
 
 
 /* =====================
-   曜日
+   日付グリッド
 ===================== */
 
-.sports-calendar-week {
-    text-align: center;
-    font-weight: bold;
-    padding: 8px 2px;
+.sports-day-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    width: 100%;
+    gap: 1px;
+    box-sizing: border-box;
+}
+
+
+/* =====================
+   空白セル
+===================== */
+
+.sports-empty-day {
+    min-width: 0;
+    min-height: 90px;
+    box-sizing: border-box;
+    border: 1px solid rgba(128,128,128,0.25);
 }
 
 
@@ -114,13 +150,14 @@
    日付セル
 ===================== */
 
-.sports-calendar-day {
+.sports-day {
     min-width: 0;
     min-height: 90px;
     padding: 5px;
     box-sizing: border-box;
     border: 1px solid rgba(128,128,128,0.25);
     overflow: hidden;
+    cursor: pointer;
 }
 
 
@@ -128,7 +165,7 @@
    日付
 ===================== */
 
-.sports-calendar-date {
+.sports-day-number {
     font-weight: bold;
     margin-bottom: 4px;
 }
@@ -138,23 +175,16 @@
    試合表示
 ===================== */
 
-.sports-game {
+.sports-game-preview {
     margin-top: 4px;
     padding: 5px;
     border-radius: 6px;
     font-size: 12px;
     overflow: hidden;
+    box-sizing: border-box;
 }
 
-.sports-game-title {
-    font-weight: bold;
-}
-
-.sports-game-time {
-    font-size: 11px;
-}
-
-.sports-game-result {
+.sports-game-preview strong {
     font-weight: bold;
 }
 
@@ -163,13 +193,13 @@
    土曜日・日曜日
 ===================== */
 
-.sports-calendar-day.sunday,
-.sports-calendar-week.sunday {
+.sports-day.sunday,
+.sports-week.sunday {
     color: #d33;
 }
 
-.sports-calendar-day.saturday,
-.sports-calendar-week.saturday {
+.sports-day.saturday,
+.sports-week.saturday {
     color: #2878d0;
 }
 
@@ -178,9 +208,18 @@
    今日
 ===================== */
 
-.sports-calendar-day.today {
+.sports-day.today {
     outline: 2px solid currentColor;
     outline-offset: -2px;
+}
+
+
+/* =====================
+   試合あり
+===================== */
+
+.sports-day.has-game {
+    font-weight: normal;
 }
 
 
@@ -243,23 +282,34 @@
 
 @media (max-width: 600px) {
 
-    .sports-calendar-day {
-        min-height: 75px;
-        padding: 3px;
+    .sports-calendar {
+        padding: 2px;
     }
 
-    .sports-calendar-week {
+
+    .sports-week {
         font-size: 12px;
         padding: 6px 1px;
     }
 
-    .sports-game {
+
+    .sports-day,
+    .sports-empty-day {
+        min-height: 75px;
         padding: 3px;
-        font-size: 10px;
     }
 
-    .sports-game-time {
-        font-size: 9px;
+
+    .sports-day-number {
+        font-size: 13px;
+        margin-bottom: 3px;
+    }
+
+
+    .sports-game-preview {
+        padding: 3px;
+        font-size: 10px;
+        border-radius: 4px;
     }
 
 }
