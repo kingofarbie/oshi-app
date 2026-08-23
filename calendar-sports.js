@@ -15,12 +15,46 @@ let sportsCalendarDate = new Date();
 let sportsSelectedDate = null;
 
 
-
-
 /* =====================================================
-   スポーツカレンダーを開く
+   🏟️ スポーツカレンダーを開く
 ===================================================== */
 
+function openSportsCalendar(){
+
+    const normalCalendar =
+        document.getElementById(
+            "calendarContainer"
+        );
+
+    const screen =
+        document.getElementById(
+            "sportsCalendarScreen"
+        );
+
+
+    if(normalCalendar){
+
+        normalCalendar.style.display =
+            "none";
+
+    }
+
+
+    if(screen){
+
+        screen.style.display =
+            "";
+
+    }
+
+
+    loadSportsSettings();
+
+    updateSportsCalendarTitle();
+
+    renderSportsCalendar();
+
+}
 
 
 /* =====================================================
@@ -29,8 +63,10 @@ let sportsSelectedDate = null;
 
 function closeSportsCalendar(){
 
-const normalCalendar =
-    document.getElementById("calendarContainer");
+    const normalCalendar =
+        document.getElementById(
+            "calendarContainer"
+        );
 
 
     const screen =
@@ -255,17 +291,21 @@ function updateSportsCalendarTitle(){
             "sportsCalendarTitle"
         );
 
+
     if(title){
 
         const data =
             db.load();
 
+
         const settings =
             data.sportsCalendar || {};
+
 
         const team =
             settings.team ||
             "チーム未設定";
+
 
         title.innerHTML =
             `🏟️ スポーツカレンダー<br>
@@ -279,23 +319,24 @@ function updateSportsCalendarTitle(){
             "sportsCalendarMonthTitle"
         );
 
+
     if(monthTitle){
 
         const year =
             sportsCalendarDate.getFullYear();
 
+
         const month =
             sportsCalendarDate.getMonth() + 1;
 
-monthTitle.innerHTML =
-    `📅 ${year}年 ${month}月`;
 
-monthTitle.onclick =
-    openSportsCalendarDatePicker;
-    
+        monthTitle.textContent =
+            `📅 ${year}年 ${month}月`;
+
     }
 
 }
+
 
 /* =====================================================
    月変更
@@ -308,11 +349,13 @@ function changeSportsMonth(value){
         value
     );
 
-    updateSportsCalendarTitle();  // ← これを追加
+
+    updateSportsCalendarTitle();
 
     renderSportsCalendar();
 
 }
+
 
 /* =====================================================
    今日
@@ -323,17 +366,283 @@ function goToSportsToday(){
     sportsCalendarDate =
         new Date();
 
-    updateSportsCalendarTitle();  // ← これを追加
+
+    updateSportsCalendarTitle();
 
     renderSportsCalendar();
 
 }
 
+
 /* =====================================================
-   カレンダー描画
+   📅 年月ジャンプを開く
 ===================================================== */
 
-async function renderSportsCalendar(){
+function openSportsCalendarDatePicker(){
+
+    const modal =
+        document.getElementById(
+            "sportsCalendarDatePickerModal"
+        );
+
+
+    const yearSelect =
+        document.getElementById(
+            "sportsCalendarYearSelect"
+        );
+
+
+    const monthSelect =
+        document.getElementById(
+            "sportsCalendarMonthSelect"
+        );
+
+
+    if(
+        !modal ||
+        !yearSelect ||
+        !monthSelect
+    ){
+
+        return;
+
+    }
+
+
+    const currentYear =
+        sportsCalendarDate.getFullYear();
+
+
+    const currentMonth =
+        sportsCalendarDate.getMonth();
+
+
+    yearSelect.innerHTML =
+        "";
+
+
+    /*
+     * 現在の年を中心に
+     * 前後10年を選択可能
+     */
+
+    for(
+        let year = currentYear - 10;
+        year <= currentYear + 10;
+        year++
+    ){
+
+        const option =
+            document.createElement(
+                "option"
+            );
+
+
+        option.value =
+            year;
+
+
+        option.textContent =
+            `${year}年`;
+
+
+        if(
+            year === currentYear
+        ){
+
+            option.selected =
+                true;
+
+        }
+
+
+        yearSelect.appendChild(
+            option
+        );
+
+    }
+
+
+    monthSelect.value =
+        String(currentMonth);
+
+
+    modal.style.display =
+        "block";
+
+}
+
+
+/* =====================================================
+   年月ジャンプ適用
+===================================================== */
+
+function applySportsCalendarDatePicker(){
+
+    const yearSelect =
+        document.getElementById(
+            "sportsCalendarYearSelect"
+        );
+
+
+    const monthSelect =
+        document.getElementById(
+            "sportsCalendarMonthSelect"
+        );
+
+
+    if(
+        !yearSelect ||
+        !monthSelect
+    ){
+
+        return;
+
+    }
+
+
+    const year =
+        Number(
+            yearSelect.value
+        );
+
+
+    const month =
+        Number(
+            monthSelect.value
+        );
+
+
+    if(
+        !Number.isFinite(year) ||
+        !Number.isFinite(month)
+    ){
+
+        return;
+
+    }
+
+
+    sportsCalendarDate =
+        new Date(
+            year,
+            month,
+            1
+        );
+
+
+    closeSportsCalendarDatePicker();
+
+
+    updateSportsCalendarTitle();
+
+    renderSportsCalendar();
+
+}
+
+
+/* =====================================================
+   年月ジャンプを閉じる
+===================================================== */
+
+function closeSportsCalendarDatePicker(){
+
+    const modal =
+        document.getElementById(
+            "sportsCalendarDatePickerModal"
+        );
+
+
+    if(modal){
+
+        modal.style.display =
+            "none";
+
+    }
+
+}
+
+
+/* =====================================================
+   📅 祝日取得
+===================================================== */
+
+/*
+ * 現段階では通常 calendar.js の
+ * 祝日取得処理を直接変更しない。
+ *
+ * 今後、通常カレンダーで使用している
+ * 祝日データ・関数が確認できたら
+ * ここへ完全接続する。
+ *
+ * 外部から holiday データを渡せる構造に
+ * しておく。
+ */
+
+function getSportsHoliday(date){
+
+    /*
+     * 既存の祝日関数が存在する場合は利用
+     */
+
+    if(
+        typeof getHolidayName === "function"
+    ){
+
+        try{
+
+            return getHolidayName(date) || "";
+
+        }catch(e){
+
+        }
+
+    }
+
+
+    if(
+        typeof getHoliday === "function"
+    ){
+
+        try{
+
+            const result =
+                getHoliday(date);
+
+            if(
+                typeof result === "string"
+            ){
+
+                return result;
+
+            }
+
+            if(
+                result &&
+                typeof result.name === "string"
+            ){
+
+                return result.name;
+
+            }
+
+        }catch(e){
+
+        }
+
+    }
+
+
+    return "";
+
+}
+
+
+/* =====================================================
+   🏟️ カレンダー描画
+===================================================== */
+
+function renderSportsCalendar(){
 
     const area =
         document.getElementById(
@@ -367,21 +676,6 @@ async function renderSportsCalendar(){
     const month =
         sportsCalendarDate.getMonth();
 
-        /* =====================
-   🎌 祝日取得
-===================== */
-
-const countryCode =
-    data.settings?.holidayCountry || "JP";
-
-const holidays =
-    await loadHolidays(
-        year,
-        countryCode
-    );
-
-
-
 
     const first =
         new Date(
@@ -400,7 +694,6 @@ const holidays =
 
 
     let html = `
-
 
         <div class="sports-week-grid">
 
@@ -450,19 +743,27 @@ const holidays =
     ){
 
         html += `
-            <div class="sports-empty-day"></div>
+
+            <div
+                class="sports-empty-day"
+            ></div>
+
         `;
 
     }
 
 
     /* =====================
-       日付
+       今日
     ===================== */
 
     const today =
         new Date();
 
+
+    /* =====================
+       日付
+    ===================== */
 
     for(
         let d = 1;
@@ -474,23 +775,16 @@ const holidays =
             `${year}-${String(month + 1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
 
 
-        const dayOfWeek =
+        const dateObject =
             new Date(
                 year,
                 month,
                 d
-            ).getDay();
+            );
 
 
-            const holiday =
-    holidays.find(
-        h => h.date === date
-    );
-
-
-
-
-
+        const dayOfWeek =
+            dateObject.getDay();
 
 
         const isToday =
@@ -503,7 +797,20 @@ const holidays =
             games[date];
 
 
-        let scoreHTML = "";
+        /* =====================
+           祝日
+        ===================== */
+
+        const holiday =
+            getSportsHoliday(date);
+
+
+        /* =====================
+           試合表示
+        ===================== */
+
+        let scoreHTML =
+            "";
 
 
         if(game){
@@ -522,7 +829,9 @@ const holidays =
 
             scoreHTML = `
 
-                <div class="sports-game-preview">
+                <div
+                    class="sports-game-preview"
+                >
 
                     <div>
                         ${escapeSportsHTML(
@@ -544,39 +853,100 @@ const holidays =
         }
 
 
+        /* =====================
+           祝日表示
+        ===================== */
+
+        let holidayHTML =
+            "";
+
+
+        if(holiday){
+
+            holidayHTML = `
+
+                <div
+                    class="sports-holiday-name"
+                >
+                    ${escapeSportsHTML(
+                        holiday
+                    )}
+                </div>
+
+            `;
+
+        }
+
+
+        /* =====================
+           セルクラス
+        ===================== */
+
+        const cellClasses = [
+
+            "sports-day",
+
+            dayOfWeek === 0
+                ? "sunday"
+                : "",
+
+            dayOfWeek === 6
+                ? "saturday"
+                : "",
+
+            holiday
+                ? "holiday"
+                : "",
+
+            isToday
+                ? "today"
+                : "",
+
+            game
+                ? "has-game"
+                : ""
+
+        ]
+        .filter(Boolean)
+        .join(" ");
+
+
+        /* =====================
+           HTML
+        ===================== */
+
         html += `
 
             <div
-                class="
-                    sports-day
-                    ${dayOfWeek === 0 ? "sunday" : ""}
-                    ${dayOfWeek === 6 ? "saturday" : ""}
-                    ${isToday ? "today" : ""}
-                    ${game ? "has-game" : ""}
-                    ${holiday ? "holiday" : ""}
-                "
+                class="${cellClasses}"
                 onclick="openSportsGame('${date}')"
             >
 
-<div class="sports-day-number">
-    ${d}
-</div>
+                <div
+                    class="sports-day-number"
+                >
 
-${
-    holiday
-    ?
-    `
-    <div class="holiday-name">
-        ${escapeSportsHTML(
-            holiday.localName
-        )}
-    </div>
-    `
-    :
-    ""
-}
+                    ${d}
 
-${scoreHTML}
+                    ${
+                        holiday
+                        ? `
+                            <span
+                                class="sports-holiday-label"
+                            >
+                                祝
+                            </span>
+                          `
+                        : ""
+                    }
+
+                </div>
+
+
+                ${holidayHTML}
+
+
+                ${scoreHTML}
 
             </div>
 
@@ -586,7 +956,9 @@ ${scoreHTML}
 
 
     html += `
+
         </div>
+
     `;
 
 
@@ -619,10 +991,6 @@ function openSportsGame(date){
         data.sportsCalendar?.sport ||
         "baseball";
 
-
-    /* =====================
-       現在は野球のみ
-    ===================== */
 
     if(sport === "baseball"){
 
@@ -765,6 +1133,7 @@ function saveSportsGameData(
 
 }
 
+
 /* =====================================================
    初期表示
 ===================================================== */
@@ -804,150 +1173,3 @@ function sportsCalendarToday(){
     goToSportsToday();
 
 }
-
-
-
-function openSportsCalendarDatePicker(){
-
-    const modal =
-        document.getElementById(
-            "sportsCalendarDatePickerModal"
-        );
-
-    const yearSelect =
-        document.getElementById(
-            "sportsCalendarYearSelect"
-        );
-
-    const monthSelect =
-        document.getElementById(
-            "sportsCalendarMonthSelect"
-        );
-
-
-    if(
-        !modal ||
-        !yearSelect ||
-        !monthSelect
-    ){
-
-        return;
-
-    }
-
-
-    const currentYear =
-        sportsCalendarDate.getFullYear();
-
-
-    yearSelect.innerHTML = "";
-
-
-    for(
-        let year = currentYear - 10;
-        year <= currentYear + 10;
-        year++
-    ){
-
-        const option =
-            document.createElement("option");
-
-        option.value =
-            year;
-
-        option.textContent =
-            `${year}年`;
-
-        yearSelect.appendChild(
-            option
-        );
-
-    }
-
-
-    yearSelect.value =
-        currentYear;
-
-
-    monthSelect.value =
-        sportsCalendarDate.getMonth();
-
-
-    modal.style.display =
-        "block";
-
-}
-
-
-function closeSportsCalendarDatePicker(){
-
-    const modal =
-        document.getElementById(
-            "sportsCalendarDatePickerModal"
-        );
-
-    if(modal){
-
-        modal.style.display =
-            "none";
-
-    }
-
-}
-
-
-async function applySportsCalendarDatePicker(){
-
-    const yearSelect =
-        document.getElementById(
-            "sportsCalendarYearSelect"
-        );
-
-    const monthSelect =
-        document.getElementById(
-            "sportsCalendarMonthSelect"
-        );
-
-
-    if(
-        !yearSelect ||
-        !monthSelect
-    ){
-
-        return;
-
-    }
-
-
-    const year =
-        Number(
-            yearSelect.value
-        );
-
-
-    const month =
-        Number(
-            monthSelect.value
-        );
-
-
-    sportsCalendarDate =
-        new Date(
-            year,
-            month,
-            1
-        );
-
-
-    closeSportsCalendarDatePicker();
-
-
-    updateSportsCalendarTitle();
-
-    await renderSportsCalendar();
-
-}
-
-
-
-
