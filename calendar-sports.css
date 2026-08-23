@@ -1,0 +1,265 @@
+/* =====================================================
+   🏟️ スポーツカレンダー
+===================================================== */
+
+.sports-calendar-screen {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+
+/* =====================
+   ヘッダー
+===================== */
+
+.sports-calendar-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+}
+
+.sports-calendar-title {
+    margin: 0;
+    font-size: 20px;
+}
+
+
+/* =====================
+   設定
+===================== */
+
+.sports-calendar-settings {
+    padding: 12px;
+    margin: 10px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.08);
+}
+
+.sports-setting-title {
+    font-weight: bold;
+    margin-bottom: 12px;
+}
+
+.sports-form-group {
+    margin-bottom: 12px;
+}
+
+.sports-form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.sports-form-group select,
+.sports-form-group input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 9px;
+}
+
+
+/* =====================
+   カレンダー操作
+===================== */
+
+.sports-calendar-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px;
+    flex-wrap: wrap;
+}
+
+.sports-calendar-controls button {
+    padding: 8px 12px;
+}
+
+
+/* =====================
+   カレンダー本体
+===================== */
+
+.sports-calendar {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 5px;
+}
+
+
+/* =====================
+   7列カレンダー
+===================== */
+
+.sports-calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    width: 100%;
+    gap: 1px;
+}
+
+
+/* =====================
+   曜日
+===================== */
+
+.sports-calendar-week {
+    text-align: center;
+    font-weight: bold;
+    padding: 8px 2px;
+}
+
+
+/* =====================
+   日付セル
+===================== */
+
+.sports-calendar-day {
+    min-width: 0;
+    min-height: 90px;
+    padding: 5px;
+    box-sizing: border-box;
+    border: 1px solid rgba(128,128,128,0.25);
+    overflow: hidden;
+}
+
+
+/* =====================
+   日付
+===================== */
+
+.sports-calendar-date {
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+
+/* =====================
+   試合表示
+===================== */
+
+.sports-game {
+    margin-top: 4px;
+    padding: 5px;
+    border-radius: 6px;
+    font-size: 12px;
+    overflow: hidden;
+}
+
+.sports-game-title {
+    font-weight: bold;
+}
+
+.sports-game-time {
+    font-size: 11px;
+}
+
+.sports-game-result {
+    font-weight: bold;
+}
+
+
+/* =====================
+   土曜日・日曜日
+===================== */
+
+.sports-calendar-day.sunday,
+.sports-calendar-week.sunday {
+    color: #d33;
+}
+
+.sports-calendar-day.saturday,
+.sports-calendar-week.saturday {
+    color: #2878d0;
+}
+
+
+/* =====================
+   今日
+===================== */
+
+.sports-calendar-day.today {
+    outline: 2px solid currentColor;
+    outline-offset: -2px;
+}
+
+
+/* =====================
+   モーダル
+===================== */
+
+.sports-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(0,0,0,0.5);
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.sports-modal-content {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 16px;
+    border-radius: 14px;
+    background: #fff;
+    color: #222;
+}
+
+.sports-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.sports-modal-title {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.sports-modal-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 15px;
+}
+
+.sports-date-picker {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.sports-date-picker select {
+    padding: 8px;
+}
+
+
+/* =====================
+   スマホ
+===================== */
+
+@media (max-width: 600px) {
+
+    .sports-calendar-day {
+        min-height: 75px;
+        padding: 3px;
+    }
+
+    .sports-calendar-week {
+        font-size: 12px;
+        padding: 6px 1px;
+    }
+
+    .sports-game {
+        padding: 3px;
+        font-size: 10px;
+    }
+
+    .sports-game-time {
+        font-size: 9px;
+    }
+
+}
