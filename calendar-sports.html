@@ -44,13 +44,7 @@
 
     <header class="sports-calendar-header">
 
-<button
-    type="button"
-    class="sports-back-button"
-    onclick="loadCalendarHTML()"
->
-    ◀ 通常カレンダー
-</button>
+        <!-- 左：タイトル -->
 
         <h1
             id="sportsCalendarTitle"
@@ -59,6 +53,16 @@
             🏟️ スポーツカレンダー
         </h1>
 
+
+        <!-- 右：通常カレンダーへ戻る -->
+
+        <button
+            type="button"
+            class="sports-back-button"
+            onclick="loadCalendarHTML()"
+        >
+            ◀ 通常カレンダー
+        </button>
 
     </header>
 
@@ -73,15 +77,16 @@
         class="sports-calendar-settings"
     >
 
-
         <div class="sports-setting-title">
             🏟️ スポーツ設定
         </div>
 
 
-        <!-- スポーツ -->
+        <!-- =====================
+             スポーツ
+        ====================== -->
 
-        <div class="sports-form-group">
+        <div class="sports-form-row">
 
             <label
                 for="sportsTypeSelect"
@@ -145,9 +150,11 @@
 
 
 
-        <!-- ファンのチーム -->
+        <!-- =====================
+             ファンのチーム
+        ====================== -->
 
-        <div class="sports-form-group">
+        <div class="sports-form-row">
 
             <label
                 for="sportsTeamName"
@@ -167,7 +174,9 @@
 
 
 
-        <!-- 設定保存 -->
+        <!-- =====================
+             設定保存
+        ====================== -->
 
         <button
             type="button"
@@ -191,33 +200,45 @@
     >
 
 
+        <!-- 前月 -->
+
         <button
             type="button"
+            class="sports-month-arrow"
             onclick="sportsCalendarPrevMonth()"
         >
             ◀
         </button>
 
 
+        <!-- 年月 -->
+
         <button
             type="button"
             id="sportsCalendarMonthTitle"
+            class="sports-month-title-button"
             onclick="openSportsCalendarDatePicker()"
         >
-            📅 2026年
+            📅 2026年8月
         </button>
 
 
+        <!-- 次月 -->
+
         <button
             type="button"
+            class="sports-month-arrow"
             onclick="sportsCalendarNextMonth()"
         >
             ▶
         </button>
 
 
+        <!-- 今日 -->
+
         <button
             type="button"
+            class="sports-today-button"
             onclick="sportsCalendarToday()"
         >
             📅 今日
@@ -241,9 +262,9 @@
 
 
 
-    <!-- =========================
+    <!-- =================================================
          試合記録モーダル
-    ========================== -->
+    ================================================== -->
 
     <div
         id="sportsGameModal"
@@ -251,14 +272,12 @@
         style="display:none;"
     >
 
-
         <div class="sports-modal-content">
 
 
             <!-- ヘッダー -->
 
             <div class="sports-modal-header">
-
 
                 <div
                     id="sportsGameModalTitle"
@@ -274,7 +293,6 @@
                 >
                     ✕
                 </button>
-
 
             </div>
 
@@ -297,7 +315,6 @@
                 class="sports-modal-buttons"
             >
 
-
                 <button
                     type="button"
                     onclick="saveSportsGame()"
@@ -313,20 +330,18 @@
                     キャンセル
                 </button>
 
-
             </div>
 
 
         </div>
 
-
     </div>
 
 
 
-    <!-- =========================
+    <!-- =================================================
          年月選択モーダル
-    ========================== -->
+    ================================================== -->
 
     <div
         id="sportsCalendarDatePickerModal"
@@ -334,12 +349,12 @@
         style="display:none;"
     >
 
-
         <div class="sports-modal-content">
 
 
-            <div class="sports-modal-header">
+            <!-- ヘッダー -->
 
+            <div class="sports-modal-header">
 
                 <div class="sports-modal-title">
                     📅 年月を選択
@@ -353,15 +368,15 @@
                     ✕
                 </button>
 
-
             </div>
 
 
 
+            <!-- 年月選択 -->
+
             <div
                 class="sports-date-picker"
             >
-
 
                 <label
                     for="sportsCalendarYearSelect"
@@ -439,10 +454,11 @@
 
                 </select>
 
-
             </div>
 
 
+
+            <!-- ボタン -->
 
             <div
                 class="sports-modal-buttons"
@@ -468,14 +484,13 @@
 
         </div>
 
-
     </div>
 
 
 
-    <!-- =========================
+    <!-- =================================================
          試合詳細
-    ========================== -->
+    ================================================== -->
 
     <div
         id="sportsGameDetailModal"
@@ -483,12 +498,12 @@
         style="display:none;"
     >
 
-
         <div class="sports-modal-content">
 
 
-            <div class="sports-modal-header">
+            <!-- ヘッダー -->
 
+            <div class="sports-modal-header">
 
                 <div
                     id="sportsGameDetailTitle"
@@ -505,9 +520,11 @@
                     ✕
                 </button>
 
-
             </div>
 
+
+
+            <!-- 試合詳細 -->
 
             <div
                 id="sportsGameDetail"
@@ -518,7 +535,6 @@
 
 
         </div>
-
 
     </div>
 
