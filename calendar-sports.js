@@ -287,9 +287,12 @@ function updateSportsCalendarTitle(){
         const month =
             sportsCalendarDate.getMonth() + 1;
 
-        monthTitle.textContent =
-            `📅 ${year}年 ${month}月`;
+monthTitle.innerHTML =
+    `📅 ${year}年 ${month}月`;
 
+monthTitle.onclick =
+    openSportsCalendarDatePicker;
+    
     }
 
 }
@@ -330,7 +333,7 @@ function goToSportsToday(){
    カレンダー描画
 ===================================================== */
 
-function renderSportsCalendar(){
+async function renderSportsCalendar(){
 
     const area =
         document.getElementById(
@@ -363,6 +366,21 @@ function renderSportsCalendar(){
 
     const month =
         sportsCalendarDate.getMonth();
+
+        /* =====================
+   🎌 祝日取得
+===================== */
+
+const countryCode =
+    data.settings?.holidayCountry || "JP";
+
+const holidays =
+    await loadHolidays(
+        year,
+        countryCode
+    );
+
+
 
 
     const first =
@@ -464,6 +482,17 @@ function renderSportsCalendar(){
             ).getDay();
 
 
+            const holiday =
+    holidays.find(
+        h => h.date === date
+    );
+
+
+
+
+
+
+
         const isToday =
             today.getFullYear() === year &&
             today.getMonth() === month &&
@@ -524,15 +553,30 @@ function renderSportsCalendar(){
                     ${dayOfWeek === 6 ? "saturday" : ""}
                     ${isToday ? "today" : ""}
                     ${game ? "has-game" : ""}
+                    ${holiday ? "holiday" : ""}
                 "
                 onclick="openSportsGame('${date}')"
             >
 
-                <div class="sports-day-number">
-                    ${d}
-                </div>
+<div class="sports-day-number">
+    ${d}
+</div>
 
-                ${scoreHTML}
+${
+    holiday
+    ?
+    `
+    <div class="holiday-name">
+        ${escapeSportsHTML(
+            holiday.localName
+        )}
+    </div>
+    `
+    :
+    ""
+}
+
+${scoreHTML}
 
             </div>
 
@@ -760,3 +804,150 @@ function sportsCalendarToday(){
     goToSportsToday();
 
 }
+
+
+
+function openSportsCalendarDatePicker(){
+
+    const modal =
+        document.getElementById(
+            "sportsCalendarDatePickerModal"
+        );
+
+    const yearSelect =
+        document.getElementById(
+            "sportsCalendarYearSelect"
+        );
+
+    const monthSelect =
+        document.getElementById(
+            "sportsCalendarMonthSelect"
+        );
+
+
+    if(
+        !modal ||
+        !yearSelect ||
+        !monthSelect
+    ){
+
+        return;
+
+    }
+
+
+    const currentYear =
+        sportsCalendarDate.getFullYear();
+
+
+    yearSelect.innerHTML = "";
+
+
+    for(
+        let year = currentYear - 10;
+        year <= currentYear + 10;
+        year++
+    ){
+
+        const option =
+            document.createElement("option");
+
+        option.value =
+            year;
+
+        option.textContent =
+            `${year}年`;
+
+        yearSelect.appendChild(
+            option
+        );
+
+    }
+
+
+    yearSelect.value =
+        currentYear;
+
+
+    monthSelect.value =
+        sportsCalendarDate.getMonth();
+
+
+    modal.style.display =
+        "block";
+
+}
+
+
+function closeSportsCalendarDatePicker(){
+
+    const modal =
+        document.getElementById(
+            "sportsCalendarDatePickerModal"
+        );
+
+    if(modal){
+
+        modal.style.display =
+            "none";
+
+    }
+
+}
+
+
+async function applySportsCalendarDatePicker(){
+
+    const yearSelect =
+        document.getElementById(
+            "sportsCalendarYearSelect"
+        );
+
+    const monthSelect =
+        document.getElementById(
+            "sportsCalendarMonthSelect"
+        );
+
+
+    if(
+        !yearSelect ||
+        !monthSelect
+    ){
+
+        return;
+
+    }
+
+
+    const year =
+        Number(
+            yearSelect.value
+        );
+
+
+    const month =
+        Number(
+            monthSelect.value
+        );
+
+
+    sportsCalendarDate =
+        new Date(
+            year,
+            month,
+            1
+        );
+
+
+    closeSportsCalendarDatePicker();
+
+
+    updateSportsCalendarTitle();
+
+    await renderSportsCalendar();
+
+}
+
+
+
+
