@@ -4729,8 +4729,12 @@ async function openSportsCalendar() {
             );
         }
 
-        container.innerHTML =
-            await response.text();
+container.innerHTML =
+    await response.text();
+
+loadSportsSettings();
+renderSportsCalendar();
+
 
     } catch (error) {
 

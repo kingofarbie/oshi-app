@@ -255,33 +255,44 @@ function updateSportsCalendarTitle(){
             "sportsCalendarTitle"
         );
 
+    if(title){
 
-    if(!title){
+        const data =
+            db.load();
 
-        return;
+        const settings =
+            data.sportsCalendar || {};
+
+        const team =
+            settings.team ||
+            "チーム未設定";
+
+        title.innerHTML =
+            `🏟️ スポーツカレンダー<br>
+             <span>${escapeSportsHTML(team)}</span>`;
 
     }
 
 
-    const data =
-        db.load();
+    const monthTitle =
+        document.getElementById(
+            "sportsCalendarMonthTitle"
+        );
 
+    if(monthTitle){
 
-    const settings =
-        data.sportsCalendar || {};
+        const year =
+            sportsCalendarDate.getFullYear();
 
+        const month =
+            sportsCalendarDate.getMonth() + 1;
 
-    const team =
-        settings.team ||
-        "チーム未設定";
+        monthTitle.textContent =
+            `📅 ${year}年 ${month}月`;
 
-
-    title.innerHTML =
-        `🏟️ スポーツカレンダー<br>
-         <span>${escapeSportsHTML(team)}</span>`;
+    }
 
 }
-
 
 /* =====================================================
    月変更
@@ -294,11 +305,11 @@ function changeSportsMonth(value){
         value
     );
 
+    updateSportsCalendarTitle();  // ← これを追加
 
     renderSportsCalendar();
 
 }
-
 
 /* =====================================================
    今日
@@ -309,11 +320,11 @@ function goToSportsToday(){
     sportsCalendarDate =
         new Date();
 
+    updateSportsCalendarTitle();  // ← これを追加
 
     renderSportsCalendar();
 
 }
-
 
 /* =====================================================
    カレンダー描画
@@ -371,26 +382,6 @@ function renderSportsCalendar(){
 
 
     let html = `
-
-        <div class="sports-month-header">
-
-            <button
-                onclick="changeSportsMonth(-1)"
-            >
-                ◀
-            </button>
-
-            <div>
-                ${year}年 ${month + 1}月
-            </div>
-
-            <button
-                onclick="changeSportsMonth(1)"
-            >
-                ▶
-            </button>
-
-        </div>
 
 
         <div class="sports-week-grid">
