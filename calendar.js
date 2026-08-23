@@ -27,9 +27,6 @@ container.innerHTML =
 
 renderCalendar();
 
-if(typeof initSportsCalendar === "function"){
-
-    initSportsCalendar();
 
 }
         
@@ -4711,15 +4708,37 @@ function getEventShareInfoHTML(event){
 }
 
 
-function openSportsCalendar() {
+async function openSportsCalendar() {
 
-    initSportsCalendar();
+    const container =
+        document.getElementById("calendarContainer");
 
-    const screen =
-        document.getElementById("sportsCalendarScreen");
+    if (!container) {
+        console.error("calendarContainer がありません");
+        return;
+    }
 
-    if (screen) {
-        screen.style.display = "block";
+    try {
+
+        const response =
+            await fetch("./calendar-sports.html");
+
+        if (!response.ok) {
+            throw new Error(
+                "calendar-sports.html の読み込みに失敗しました"
+            );
+        }
+
+        container.innerHTML =
+            await response.text();
+
+    } catch (error) {
+
+        console.error(
+            "スポーツカレンダー読み込みエラー:",
+            error
+        );
+
     }
 
 }
