@@ -28,7 +28,7 @@ container.innerHTML =
 renderCalendar();
 
 
-}
+
         
 
     }catch(error){
