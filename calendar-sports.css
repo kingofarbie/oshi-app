@@ -10,57 +10,54 @@
 
 /* =====================================================
    ヘッダー
+   左：スポーツカレンダー
+   右：通常カレンダーへ戻る
 ===================================================== */
 
 .sports-calendar-header {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 10px;
-    padding: 10px 12px;
+    width: 100%;
     box-sizing: border-box;
+    padding: 10px 12px;
+}
+
+.sports-calendar-title {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    font-size: 20px;
+    line-height: 1.3;
 }
 
 
-/* 通常カレンダーへ戻る */
+/* =====================================================
+   通常カレンダーへ戻るボタン
+===================================================== */
 
 .sports-back-button {
     flex-shrink: 0;
     padding: 7px 10px;
     border: 1px solid rgba(128,128,128,0.35);
     border-radius: 8px;
-    background: rgba(255,255,255,0.08);
+    background: transparent;
     color: inherit;
     font-size: 13px;
-    font-weight: bold;
+    line-height: 1.2;
     white-space: nowrap;
     cursor: pointer;
 }
 
 
-/* タイトル */
-
-.sports-calendar-title {
-    margin: 0;
-    font-size: 20px;
-    line-height: 1.25;
-}
-
-
-/* タイトル内のチーム名 */
-
-.sports-calendar-title span {
-    font-size: 14px;
-    font-weight: normal;
-}
-
-
 /* =====================================================
-   🏟️ スポーツ設定
+   スポーツ設定
 ===================================================== */
 
 .sports-calendar-settings {
     padding: 12px;
-    margin: 8px 10px;
+    margin: 8px 10px 10px;
     border-radius: 12px;
     background: rgba(255,255,255,0.08);
     box-sizing: border-box;
@@ -68,17 +65,16 @@
 
 .sports-setting-title {
     font-weight: bold;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 .sports-form-group {
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 .sports-form-group label {
     display: block;
     margin-bottom: 5px;
-    font-size: 14px;
 }
 
 .sports-form-group select,
@@ -86,75 +82,41 @@
     width: 100%;
     box-sizing: border-box;
     padding: 9px;
-    border-radius: 7px;
-}
-
-
-/* 設定保存ボタン */
-
-.sports-save-settings-button {
-    width: 100%;
-    padding: 9px 12px;
-    box-sizing: border-box;
 }
 
 
 /* =====================================================
-   📅 カレンダー操作
+   カレンダー操作
 ===================================================== */
 
 .sports-calendar-controls {
     display: flex;
     align-items: center;
     justify-content: center;
-
-    /* 横並び固定 */
-    flex-wrap: nowrap;
-
     gap: 6px;
-
-    padding: 6px 8px;
-
     width: 100%;
     box-sizing: border-box;
+    padding: 8px 10px;
+    flex-wrap: nowrap;
 }
 
-
-/* 操作ボタン共通 */
-
 .sports-calendar-controls button {
-    flex: 0 0 auto;
-
-    min-width: 0;
-
-    padding: 7px 10px;
-
+    flex-shrink: 0;
+    min-height: 36px;
+    padding: 7px 11px;
     border: 1px solid rgba(128,128,128,0.35);
-    border-radius: 7px;
-
-    background: rgba(255,255,255,0.08);
-
+    border-radius: 8px;
+    background: transparent;
     color: inherit;
-
-    font-size: 13px;
-    font-weight: bold;
-
+    font-size: 14px;
+    line-height: 1.2;
     white-space: nowrap;
-
     cursor: pointer;
 }
 
 
-/* 月タイトル */
-
-#sportsCalendarMonthTitle {
-    min-width: 105px;
-    text-align: center;
-}
-
-
 /* =====================================================
-   📅 カレンダー本体
+   カレンダー本体
 ===================================================== */
 
 .sports-calendar {
@@ -166,56 +128,25 @@
 
 /* =====================================================
    月ヘッダー
-   JS側で生成されるもの
+   ※JS側で生成されるもの
+   ※通常の操作ボタンと二重になって見えないよう
+     スポーツカレンダー内部の月ヘッダーは非表示
 ===================================================== */
 
 .sports-month-header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    gap: 10px;
-
-    width: 100%;
-    box-sizing: border-box;
-
-    margin-bottom: 4px;
-}
-
-.sports-month-header button {
-    width: 36px;
-    height: 32px;
-
-    padding: 0;
-
-    border: 1px solid rgba(128,128,128,0.3);
-    border-radius: 7px;
-
-    background: rgba(255,255,255,0.08);
-
-    color: inherit;
-
-    font-size: 14px;
-
-    cursor: pointer;
+    display: none;
 }
 
 
 /* =====================================================
-   7列カレンダー
+   曜日・日付を7列にする
 ===================================================== */
 
 .sports-week-grid,
 .sports-day-grid {
     display: grid;
-
-    grid-template-columns:
-        repeat(7, minmax(0, 1fr));
-
+    grid-template-columns: repeat(7, minmax(0, 1fr));
     width: 100%;
-
-    gap: 1px;
-
     box-sizing: border-box;
 }
 
@@ -225,15 +156,13 @@
 ===================================================== */
 
 .sports-week {
-    text-align: center;
-
-    font-weight: bold;
-
-    padding: 6px 2px;
-
     min-width: 0;
-
     box-sizing: border-box;
+    text-align: center;
+    font-weight: bold;
+    padding: 7px 2px;
+    font-size: 13px;
+    border-bottom: 1px solid rgba(128,128,128,0.25);
 }
 
 
@@ -242,30 +171,35 @@
 ===================================================== */
 
 .sports-day {
+    position: relative;
     min-width: 0;
-
-    min-height: 90px;
-
-    padding: 5px;
-
+    min-height: 85px;
     box-sizing: border-box;
-
-    border: 1px solid rgba(128,128,128,0.25);
-
+    padding: 5px;
+    border-right: 1px solid rgba(128,128,128,0.20);
+    border-bottom: 1px solid rgba(128,128,128,0.20);
     overflow: hidden;
-
     cursor: pointer;
 }
 
 
-/* 空白セル */
+/* 左端のセル */
+
+.sports-day:nth-child(7n + 1) {
+    border-left: 1px solid rgba(128,128,128,0.20);
+}
+
+
+/* =====================================================
+   月初の空白
+===================================================== */
 
 .sports-empty-day {
-    min-height: 90px;
-
+    min-width: 0;
+    min-height: 85px;
     box-sizing: border-box;
-
-    border: 1px solid transparent;
+    border-right: 1px solid rgba(128,128,128,0.20);
+    border-bottom: 1px solid rgba(128,128,128,0.20);
 }
 
 
@@ -275,10 +209,9 @@
 
 .sports-day-number {
     font-weight: bold;
-
-    margin-bottom: 4px;
-
+    font-size: 14px;
     line-height: 1.2;
+    margin-bottom: 4px;
 }
 
 
@@ -287,27 +220,21 @@
 ===================================================== */
 
 .sports-game-preview {
+    width: 100%;
+    box-sizing: border-box;
     margin-top: 4px;
-
-    padding: 5px;
-
-    border-radius: 6px;
-
-    font-size: 12px;
-
+    padding: 4px;
+    border-radius: 5px;
+    font-size: 11px;
     line-height: 1.3;
-
     overflow: hidden;
-
     word-break: break-word;
 }
 
 .sports-game-preview strong {
     display: block;
-
     margin-top: 2px;
-
-    font-size: 13px;
+    font-size: 12px;
 }
 
 
@@ -332,13 +259,12 @@
 
 .sports-day.today {
     outline: 2px solid currentColor;
-
     outline-offset: -2px;
 }
 
 
 /* =====================================================
-   試合あり
+   試合がある日
 ===================================================== */
 
 .sports-day.has-game {
@@ -347,86 +273,54 @@
 
 
 /* =====================================================
-   📝 モーダル
+   モーダル
 ===================================================== */
 
 .sports-modal {
     position: fixed;
-
     inset: 0;
-
     z-index: 1000;
-
     background: rgba(0,0,0,0.5);
-
     padding: 20px;
-
     box-sizing: border-box;
-
-    overflow-y: auto;
 }
-
 
 .sports-modal-content {
     width: 100%;
-
     max-width: 500px;
-
     margin: 50px auto;
-
     padding: 16px;
-
     border-radius: 14px;
-
     background: #fff;
-
     color: #222;
-
     box-sizing: border-box;
 }
 
-
 .sports-modal-header {
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
-
     gap: 10px;
 }
-
 
 .sports-modal-title {
     font-weight: bold;
-
     font-size: 18px;
 }
 
-
 .sports-modal-buttons {
     display: flex;
-
     gap: 10px;
-
     justify-content: flex-end;
-
     margin-top: 15px;
 }
-
 
 .sports-date-picker {
     display: flex;
-
     align-items: center;
-
     gap: 8px;
-
     margin-top: 15px;
-
-    flex-wrap: wrap;
 }
-
 
 .sports-date-picker select {
     padding: 8px;
@@ -434,141 +328,111 @@
 
 
 /* =====================================================
-   📱 スマホ
+   スマホ
 ===================================================== */
 
 @media (max-width: 600px) {
 
-
-    /* ヘッダー */
+    /* -------------------------
+       ヘッダー
+    ------------------------- */
 
     .sports-calendar-header {
-        padding: 8px 8px;
-
-        gap: 7px;
+        padding: 8px 10px;
+        gap: 6px;
     }
-
-
-    .sports-back-button {
-        padding: 6px 8px;
-
-        font-size: 12px;
-    }
-
 
     .sports-calendar-title {
         font-size: 17px;
     }
 
-
-    .sports-calendar-title span {
-        font-size: 12px;
+    .sports-back-button {
+        padding: 6px 8px;
+        font-size: 11px;
     }
 
 
-    /* ---------------------------------
+    /* -------------------------
        カレンダー操作
-    --------------------------------- */
+    ------------------------- */
 
     .sports-calendar-controls {
         gap: 4px;
-
-        padding: 5px 4px;
+        padding: 6px 5px;
     }
-
 
     .sports-calendar-controls button {
-        padding: 6px 7px;
-
-        font-size: 12px;
+        min-height: 34px;
+        padding: 6px 8px;
+        font-size: 13px;
     }
 
 
-    #sportsCalendarMonthTitle {
-        min-width: 92px;
-    }
-
-
-    /* ---------------------------------
+    /* -------------------------
        カレンダー
-    --------------------------------- */
+    ------------------------- */
 
     .sports-calendar {
         padding: 3px;
     }
 
-
     .sports-week {
+        padding: 6px 1px;
         font-size: 12px;
-
-        padding: 5px 1px;
     }
 
+    .sports-day,
+    .sports-empty-day {
+        min-height: 72px;
+    }
 
     .sports-day {
-        min-height: 75px;
-
         padding: 3px;
     }
-
-
-    .sports-empty-day {
-        min-height: 75px;
-    }
-
 
     .sports-day-number {
         font-size: 13px;
-
-        margin-bottom: 2px;
     }
-
 
     .sports-game-preview {
         padding: 3px;
+        font-size: 9px;
+    }
 
+    .sports-game-preview strong {
         font-size: 10px;
     }
 
+}
 
-    .sports-game-preview strong {
-        font-size: 11px;
+
+/* =====================================================
+   さらに小さいスマホ
+===================================================== */
+
+@media (max-width: 380px) {
+
+    .sports-calendar-title {
+        font-size: 15px;
     }
 
-
-    /* ---------------------------------
-       月ヘッダー
-    --------------------------------- */
-
-    .sports-month-header {
-        gap: 6px;
-
-        margin-bottom: 3px;
+    .sports-back-button {
+        padding: 5px 6px;
+        font-size: 10px;
     }
 
+    .sports-calendar-controls {
+        gap: 2px;
+    }
 
-    .sports-month-header button {
-        width: 32px;
-
-        height: 28px;
-
+    .sports-calendar-controls button {
+        padding: 5px 6px;
         font-size: 12px;
     }
 
-
-    /* ---------------------------------
-       モーダル
-    --------------------------------- */
-
-    .sports-modal {
-        padding: 10px;
-    }
-
-
-    .sports-modal-content {
-        margin: 30px auto;
-
-        padding: 12px;
+    .sports-day,
+    .sports-empty-day {
+        min-height: 65px;
     }
 
 }
