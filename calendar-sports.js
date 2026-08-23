@@ -729,3 +729,43 @@ function saveSportsGameData(
     renderSportsCalendar();
 
 }
+
+/* =====================================================
+   初期表示
+===================================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        loadSportsSettings();
+
+        renderSportsCalendar();
+
+    }
+);
+
+
+/* =====================================================
+   HTMLボタン用
+===================================================== */
+
+function sportsCalendarPrevMonth(){
+
+    changeSportsMonth(-1);
+
+}
+
+
+function sportsCalendarNextMonth(){
+
+    changeSportsMonth(1);
+
+}
+
+
+function sportsCalendarToday(){
+
+    goToSportsToday();
+
+}
