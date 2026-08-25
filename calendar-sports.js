@@ -3,6 +3,10 @@
    calendar-sports.js
 
    通常の calendar.js とは分離。
+
+   ・応援スポーツ最大10種類
+   ・スポーツごとに試合データを独立保存
+   ・旧 games 形式との互換性あり
 ===================================================== */
 
 
@@ -72,16 +76,16 @@ const SPORTS_TYPES = [
 ];
 
 
-
-
 /* =====================================================
    通常カレンダーへ戻る
 ===================================================== */
 
 function closeSportsCalendar(){
 
-const normalCalendar =
-    document.getElementById("calendarContainer");
+    const normalCalendar =
+        document.getElementById(
+            "calendarContainer"
+        );
 
 
     const screen =
@@ -102,6 +106,290 @@ const normalCalendar =
 
         normalCalendar.style.display =
             "";
+
+    }
+
+}
+
+
+/* =====================================================
+   🏟️ 現在選択中スポーツの games を取得
+===================================================== */
+
+function getCurrentSportsGames(){
+
+    const data =
+        db.load();
+
+
+    const settings =
+        data.sportsCalendar || {};
+
+
+    const favoriteSports =
+        Array.isArray(
+            settings.favoriteSports
+        )
+        ?
+        settings.favoriteSports
+        :
+        [];
+
+
+    const selectedIndex =
+        typeof settings.selectedIndex === "number"
+        ?
+        settings.selectedIndex
+        :
+        0;
+
+
+    /*
+       新形式
+
+       games:
+       {
+           0: {
+               "2026-08-26": {...}
+           },
+
+           1: {
+               "2026-08-27": {...}
+           }
+       }
+    */
+
+    if(
+        settings.games &&
+        !Array.isArray(settings.games) &&
+        typeof settings.games === "object"
+    ){
+
+        /*
+           新形式のスポーツ別 games が
+           存在する場合
+        */
+
+        if(
+            settings.games[selectedIndex] &&
+            typeof settings.games[selectedIndex] === "object"
+        ){
+
+            return settings.games[selectedIndex];
+
+        }
+
+    }
+
+
+    return {};
+
+}
+
+
+/* =====================================================
+   🏟️ 現在選択中スポーツの games を保存
+===================================================== */
+
+function saveCurrentSportsGames(
+    games
+){
+
+    const data =
+        db.load();
+
+
+    if(!data.sportsCalendar){
+
+        data.sportsCalendar = {};
+
+    }
+
+
+    if(
+        !data.sportsCalendar.games ||
+        typeof data.sportsCalendar.games !== "object"
+    ){
+
+        data.sportsCalendar.games = {};
+
+    }
+
+
+    const selectedIndex =
+        typeof data.sportsCalendar.selectedIndex === "number"
+        ?
+        data.sportsCalendar.selectedIndex
+        :
+        0;
+
+
+    data.sportsCalendar.games[selectedIndex] =
+        games;
+
+
+    db.save(data);
+
+}
+
+
+/* =====================================================
+   🏟️ 旧 games 形式を新形式へ移行
+===================================================== */
+
+function migrateSportsGames(){
+
+    const data =
+        db.load();
+
+
+    if(!data.sportsCalendar){
+
+        return;
+
+    }
+
+
+    const settings =
+        data.sportsCalendar;
+
+
+    /*
+       応援スポーツが無ければ何もしない
+    */
+
+    if(
+        !Array.isArray(
+            settings.favoriteSports
+        ) ||
+        settings.favoriteSports.length === 0
+    ){
+
+        return;
+
+    }
+
+
+    /*
+       すでに新形式なら何もしない
+    */
+
+    if(
+        settings.games &&
+        typeof settings.games === "object" &&
+        !Array.isArray(settings.games)
+    ){
+
+        /*
+           games の中に日付形式が直接入っている場合だけ
+           旧形式と判断する。
+
+           例：
+
+           games = {
+               "2026-08-26": {...}
+           }
+
+           新形式なら、
+
+           games = {
+               "0": {
+                   "2026-08-26": {...}
+               }
+           }
+        */
+
+        const keys =
+            Object.keys(
+                settings.games
+            );
+
+
+        const hasOldDateKey =
+            keys.some(
+                key =>
+                    /^\d{4}-\d{2}-\d{2}$/.test(key)
+            );
+
+
+        if(!hasOldDateKey){
+
+            return;
+
+        }
+
+
+        /*
+           旧 games は現在の sport / team に
+           対応する favoriteSports へ移す
+        */
+
+        const oldSport =
+            settings.sport ||
+            "baseball";
+
+
+        const oldTeam =
+            settings.team ||
+            "";
+
+
+        let targetIndex =
+            Array.isArray(settings.favoriteSports)
+            ?
+            settings.favoriteSports.findIndex(
+                item =>
+                    item &&
+                    item.sport === oldSport &&
+                    item.team === oldTeam
+            )
+            :
+            -1;
+
+
+        /*
+           完全一致しない場合は selectedIndex
+        */
+
+        if(targetIndex < 0){
+
+            targetIndex =
+                typeof settings.selectedIndex === "number"
+                ?
+                settings.selectedIndex
+                :
+                0;
+
+        }
+
+
+        /*
+           念のため範囲調整
+        */
+
+        if(
+            targetIndex < 0 ||
+            targetIndex >=
+            settings.favoriteSports.length
+        ){
+
+            targetIndex = 0;
+
+        }
+
+
+        const oldGames =
+            settings.games;
+
+
+        settings.games = {};
+
+
+        settings.games[targetIndex] =
+            oldGames;
+
+
+        db.save(data);
 
     }
 
@@ -218,6 +506,35 @@ function loadSportsSettings(){
     }
 
 
+    /*
+       旧 games 形式を新形式へ移行
+    */
+
+    migrateSportsGames();
+
+
+    /*
+       現在の sport / team を
+       selectedIndex と同期
+    */
+
+    const current =
+        data.sportsCalendar.favoriteSports[
+            data.sportsCalendar.selectedIndex
+        ];
+
+
+    if(current){
+
+        data.sportsCalendar.sport =
+            current.sport;
+
+        data.sportsCalendar.team =
+            current.team;
+
+    }
+
+
     db.save(data);
 
 
@@ -226,7 +543,6 @@ function loadSportsSettings(){
     updateSportsCalendarTitle();
 
 }
-
 
 
 /* =====================================================
@@ -253,14 +569,18 @@ function saveSportsSettings(){
 
     const sport =
         typeSelect
-        ? typeSelect.value
-        : "baseball";
+        ?
+        typeSelect.value
+        :
+        "baseball";
 
 
     const team =
         teamInput
-        ? teamInput.value.trim()
-        : "";
+        ?
+        teamInput.value.trim()
+        :
+        "";
 
 
     if(!team){
@@ -284,32 +604,67 @@ function saveSportsSettings(){
 
         data.sportsCalendar = {
 
-            sport:
-                sport,
+            selectedIndex: 0,
 
-            team:
-                team,
+            favoriteSports: [],
 
-            games:{}
+            games: {}
 
         };
 
-    }else{
-
-        data.sportsCalendar.sport =
-            sport;
-
-        data.sportsCalendar.team =
-            team;
+    }
 
 
-        if(
-            !data.sportsCalendar.games
-        ){
+    if(
+        !Array.isArray(
+            data.sportsCalendar.favoriteSports
+        )
+    ){
 
-            data.sportsCalendar.games = {};
+        data.sportsCalendar.favoriteSports = [];
 
-        }
+    }
+
+
+    /*
+       現在選択中のスポーツを更新
+    */
+
+    const selectedIndex =
+        typeof data.sportsCalendar.selectedIndex === "number"
+        ?
+        data.sportsCalendar.selectedIndex
+        :
+        0;
+
+
+    data.sportsCalendar.favoriteSports[
+        selectedIndex
+    ] = {
+
+        sport:
+            sport,
+
+        team:
+            team
+
+    };
+
+
+    /*
+       旧コードとの互換
+    */
+
+    data.sportsCalendar.sport =
+        sport;
+
+    data.sportsCalendar.team =
+        team;
+
+
+    if(!data.sportsCalendar.games){
+
+        data.sportsCalendar.games = {};
 
     }
 
@@ -318,6 +673,8 @@ function saveSportsSettings(){
 
 
     updateSportsCalendarTitle();
+
+    renderCurrentFavoriteSports();
 
     renderSportsCalendar();
 
@@ -378,17 +735,44 @@ function updateSportsCalendarTitle(){
             "sportsCalendarTitle"
         );
 
+
     if(title){
 
         const data =
             db.load();
 
+
         const settings =
             data.sportsCalendar || {};
 
+
+        const selectedIndex =
+            typeof settings.selectedIndex === "number"
+            ?
+            settings.selectedIndex
+            :
+            0;
+
+
+        const favoriteSports =
+            Array.isArray(
+                settings.favoriteSports
+            )
+            ?
+            settings.favoriteSports
+            :
+            [];
+
+
+        const current =
+            favoriteSports[selectedIndex];
+
+
         const team =
+            current?.team ||
             settings.team ||
             "チーム未設定";
+
 
         title.innerHTML =
             `🏟️ スポーツカレンダー<br>
@@ -402,23 +786,28 @@ function updateSportsCalendarTitle(){
             "sportsCalendarMonthTitle"
         );
 
+
     if(monthTitle){
 
         const year =
             sportsCalendarDate.getFullYear();
 
+
         const month =
             sportsCalendarDate.getMonth() + 1;
 
-monthTitle.innerHTML =
-    `📅 ${year}年 ${month}月`;
 
-monthTitle.onclick =
-    openSportsCalendarDatePicker;
-    
+        monthTitle.innerHTML =
+            `📅 ${year}年 ${month}月`;
+
+
+        monthTitle.onclick =
+            openSportsCalendarDatePicker;
+
     }
 
 }
+
 
 /* =====================================================
    月変更
@@ -431,11 +820,13 @@ function changeSportsMonth(value){
         value
     );
 
-    updateSportsCalendarTitle();  // ← これを追加
+
+    updateSportsCalendarTitle();
 
     renderSportsCalendar();
 
 }
+
 
 /* =====================================================
    今日
@@ -446,11 +837,13 @@ function goToSportsToday(){
     sportsCalendarDate =
         new Date();
 
-    updateSportsCalendarTitle();  // ← これを追加
+
+    updateSportsCalendarTitle();
 
     renderSportsCalendar();
 
 }
+
 
 /* =====================================================
    カレンダー描画
@@ -479,8 +872,12 @@ async function renderSportsCalendar(){
         data.sportsCalendar || {};
 
 
+    /*
+       現在選択中スポーツ専用 games
+    */
+
     const games =
-        settings.games || {};
+        getCurrentSportsGames();
 
 
     const year =
@@ -490,20 +887,20 @@ async function renderSportsCalendar(){
     const month =
         sportsCalendarDate.getMonth();
 
-        /* =====================
-   🎌 祝日取得
-===================== */
 
-const countryCode =
-    data.settings?.holidayCountry || "JP";
+    /* =====================
+       🎌 祝日取得
+    ===================== */
 
-const holidays =
-    await loadHolidays(
-        year,
-        countryCode
-    );
+    const countryCode =
+        data.settings?.holidayCountry || "JP";
 
 
+    const holidays =
+        await loadHolidays(
+            year,
+            countryCode
+        );
 
 
     const first =
@@ -523,7 +920,6 @@ const holidays =
 
 
     let html = `
-
 
         <div class="sports-week-grid">
 
@@ -580,12 +976,16 @@ const holidays =
 
 
     /* =====================
-       日付
+       今日
     ===================== */
 
     const today =
         new Date();
 
+
+    /* =====================
+       日付
+    ===================== */
 
     for(
         let d = 1;
@@ -605,15 +1005,11 @@ const holidays =
             ).getDay();
 
 
-            const holiday =
-    holidays.find(
-        h => h.date === date
-    );
-
-
-
-
-
+        const holiday =
+            holidays.find(
+                h =>
+                    h.date === date
+            );
 
 
         const isToday =
@@ -681,25 +1077,25 @@ const holidays =
                 onclick="openSportsGame('${date}')"
             >
 
-<div class="sports-day-number">
-    ${d}
-</div>
+                <div class="sports-day-number">
+                    ${d}
+                </div>
 
-${
-    holiday
-    ?
-    `
-    <div class="holiday-name">
-        ${escapeSportsHTML(
-            holiday.localName
-        )}
-    </div>
-    `
-    :
-    ""
-}
+                ${
+                    holiday
+                    ?
+                    `
+                    <div class="holiday-name">
+                        ${escapeSportsHTML(
+                            holiday.localName
+                        )}
+                    </div>
+                    `
+                    :
+                    ""
+                }
 
-${scoreHTML}
+                ${scoreHTML}
 
             </div>
 
@@ -733,14 +1129,49 @@ function openSportsGame(date){
         db.load();
 
 
-    const game =
-        data.sportsCalendar?.games?.[date] ||
-        null;
+    const settings =
+        data.sportsCalendar || {};
+
+
+    const selectedIndex =
+        typeof settings.selectedIndex === "number"
+        ?
+        settings.selectedIndex
+        :
+        0;
+
+
+    const favoriteSports =
+        Array.isArray(
+            settings.favoriteSports
+        )
+        ?
+        settings.favoriteSports
+        :
+        [];
+
+
+    const current =
+        favoriteSports[selectedIndex];
 
 
     const sport =
-        data.sportsCalendar?.sport ||
+        current?.sport ||
+        settings.sport ||
         "baseball";
+
+
+    /*
+       現在選択中スポーツ専用の試合
+    */
+
+    const games =
+        getCurrentSportsGames();
+
+
+    const game =
+        games[date] ||
+        null;
 
 
     /* =====================
@@ -855,29 +1286,54 @@ function saveSportsGameData(
 
         data.sportsCalendar = {
 
-            sport:
-                "baseball",
+            selectedIndex: 0,
 
-            team:
-                "",
+            favoriteSports: [
 
-            games:{}
+                {
+                    sport: "baseball",
+                    team: ""
+                }
+
+            ],
+
+            games: {}
 
         };
 
     }
 
 
-    if(
-        !data.sportsCalendar.games
-    ){
+    if(!data.sportsCalendar.games){
 
         data.sportsCalendar.games = {};
 
     }
 
 
-    data.sportsCalendar.games[date] =
+    const selectedIndex =
+        typeof data.sportsCalendar.selectedIndex === "number"
+        ?
+        data.sportsCalendar.selectedIndex
+        :
+        0;
+
+
+    /*
+       現在選択中スポーツ専用 games
+    */
+
+    if(
+        !data.sportsCalendar.games[selectedIndex] ||
+        typeof data.sportsCalendar.games[selectedIndex] !== "object"
+    ){
+
+        data.sportsCalendar.games[selectedIndex] = {};
+
+    }
+
+
+    data.sportsCalendar.games[selectedIndex][date] =
         game;
 
 
@@ -887,6 +1343,7 @@ function saveSportsGameData(
     renderSportsCalendar();
 
 }
+
 
 /* =====================================================
    初期表示
@@ -929,6 +1386,9 @@ function sportsCalendarToday(){
 }
 
 
+/* =====================================================
+   年月選択
+===================================================== */
 
 function openSportsCalendarDatePicker(){
 
@@ -937,10 +1397,12 @@ function openSportsCalendarDatePicker(){
             "sportsCalendarDatePickerModal"
         );
 
+
     const yearSelect =
         document.getElementById(
             "sportsCalendarYearSelect"
         );
+
 
     const monthSelect =
         document.getElementById(
@@ -973,13 +1435,18 @@ function openSportsCalendarDatePicker(){
     ){
 
         const option =
-            document.createElement("option");
+            document.createElement(
+                "option"
+            );
+
 
         option.value =
             year;
 
+
         option.textContent =
             `${year}年`;
+
 
         yearSelect.appendChild(
             option
@@ -1009,6 +1476,7 @@ function closeSportsCalendarDatePicker(){
             "sportsCalendarDatePickerModal"
         );
 
+
     if(modal){
 
         modal.style.display =
@@ -1025,6 +1493,7 @@ async function applySportsCalendarDatePicker(){
         document.getElementById(
             "sportsCalendarYearSelect"
         );
+
 
     const monthSelect =
         document.getElementById(
@@ -1067,10 +1536,10 @@ async function applySportsCalendarDatePicker(){
 
     updateSportsCalendarTitle();
 
+
     await renderSportsCalendar();
 
 }
-
 
 
 /* =====================================================
@@ -1152,7 +1621,9 @@ function renderCurrentFavoriteSports(){
 
 
             const option =
-                document.createElement("option");
+                document.createElement(
+                    "option"
+                );
 
 
             option.value =
@@ -1206,6 +1677,7 @@ function renderCurrentFavoriteSports(){
 
 }
 
+
 /* =====================================================
    🏟️ 現在の応援スポーツ変更
 ===================================================== */
@@ -1226,7 +1698,9 @@ function changeCurrentFavoriteSport(){
 
 
     const index =
-        Number(select.value);
+        Number(
+            select.value
+        );
 
 
     const data =
@@ -1261,8 +1735,6 @@ function changeCurrentFavoriteSport(){
     /*
        現在選択中のスポーツを
        従来の sport / team にも反映
-
-       ※既存コードとの互換用
     */
 
     data.sportsCalendar.sport =
@@ -1329,7 +1801,7 @@ function openFavoriteSportsSettings(){
 
 
     /*
-       最大10件
+       最大10件分を表示
     */
 
     while(
@@ -1466,8 +1938,18 @@ function saveFavoriteSportsSettings(){
     const favoriteSports = [];
 
 
+    let hasInvalidRow = false;
+
+
     rows.forEach(
         row => {
+
+            if(hasInvalidRow){
+
+                return;
+
+            }
+
 
             const type =
                 row.querySelector(
@@ -1519,6 +2001,8 @@ function saveFavoriteSportsSettings(){
                     "スポーツを選択してください。"
                 );
 
+                hasInvalidRow = true;
+
                 return;
 
             }
@@ -1529,6 +2013,8 @@ function saveFavoriteSportsSettings(){
                 alert(
                     "応援チーム名を入力してください。"
                 );
+
+                hasInvalidRow = true;
 
                 return;
 
@@ -1547,6 +2033,17 @@ function saveFavoriteSportsSettings(){
 
         }
     );
+
+
+    /*
+       入力エラーがあれば保存しない
+    */
+
+    if(hasInvalidRow){
+
+        return;
+
+    }
 
 
     /*
@@ -1656,7 +2153,6 @@ function saveFavoriteSportsSettings(){
 }
 
 
-
 /* =====================================================
    🏟️ 応援スポーツ設定を閉じる
 ===================================================== */
@@ -1677,6 +2173,3 @@ function closeFavoriteSportsSettings(){
     }
 
 }
-
-
-
