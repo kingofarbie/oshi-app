@@ -1274,3 +1274,106 @@
     }
 
 }
+
+
+
+/* =====================================================
+   🏟️ 応援スポーツ設定ヘッダー
+===================================================== */
+
+.favorite-sports-settings-header {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    width: 100%;
+
+    gap: 8px;
+
+    box-sizing: border-box;
+}
+
+
+/* タイトル */
+
+.favorite-sports-settings-header
+.sports-modal-title {
+
+    flex: 1 1 auto;
+
+    min-width: 0;
+
+    white-space: nowrap;
+
+    writing-mode: horizontal-tb;
+
+    font-size: 18px;
+
+    font-weight: bold;
+}
+
+
+/* 右側ボタン */
+
+.favorite-sports-header-buttons {
+
+    flex: 0 0 auto;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 5px;
+}
+
+
+/* 保存・閉じる */
+
+.favorite-sports-icon-button {
+
+    width: 36px;
+    height: 36px;
+
+    padding: 0;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 36px;
+
+    border-radius: 7px;
+
+    font-size: 17px;
+
+    box-sizing: border-box;
+
+    white-space: nowrap;
+}
+
+
+/* スマホ */
+
+@media (max-width: 600px) {
+
+    .favorite-sports-settings-header
+    .sports-modal-title {
+
+        font-size: 16px;
+    }
+
+
+    .favorite-sports-icon-button {
+
+        width: 34px;
+        height: 34px;
+
+        flex-basis: 34px;
+
+        font-size: 16px;
+    }
+
+}

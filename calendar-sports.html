@@ -179,7 +179,7 @@
 
 
 
-    
+
 <!-- =================================================
      🏟️ 応援スポーツ設定モーダル
 ================================================== -->
@@ -194,23 +194,37 @@
 
         <!-- ヘッダー -->
 
-        <div class="sports-modal-header">
+<div class="sports-modal-header favorite-sports-settings-header">
 
-            <div class="sports-modal-title">
-                🏟️ 応援スポーツ設定
-            </div>
+    <div class="sports-modal-title">
+        🏟️ 応援スポーツ設定
+    </div>
 
+    <div class="favorite-sports-header-buttons">
 
-            <button
-                type="button"
-                onclick="saveFavoriteSportsSettings()"
-                class="favorite-sports-save-top-button"
-            >
-                保存
-            </button>
+        <button
+            type="button"
+            class="favorite-sports-icon-button"
+            onclick="saveFavoriteSportsSettings()"
+            aria-label="保存"
+            title="保存"
+        >
+            💾
+        </button>
 
-        </div>
+        <button
+            type="button"
+            class="favorite-sports-icon-button"
+            onclick="closeFavoriteSportsSettingsModal()"
+            aria-label="閉じる"
+            title="閉じる"
+        >
+            ❌
+        </button>
 
+    </div>
+
+</div>
 
         <!-- 説明 -->
 
