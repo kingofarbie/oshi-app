@@ -67,127 +67,44 @@
     </header>
 
 
+<!-- =====================================================
+     🏟️ 現在の応援スポーツ
+===================================================== -->
 
-    <!-- =========================
-         スポーツ設定
-    ========================== -->
+<section class="sports-current-setting">
 
-    <section
-        id="sportsCalendarSettings"
-        class="sports-calendar-settings"
+    <!-- スポーツ選択 -->
+
+    <select
+        id="sportsCurrentSelect"
+        class="sports-current-select"
+        onchange="changeCurrentFavoriteSport()"
     >
 
-        <div class="sports-setting-title">
-            🏟️ スポーツ設定
-        </div>
+    </select>
 
 
-        <!-- =====================
-             スポーツ
-        ====================== -->
+    <!-- 応援チーム名 -->
 
-        <div class="sports-form-row">
-
-            <label
-                for="sportsTypeSelect"
-            >
-                スポーツ
-            </label>
+    <div
+        id="sportsCurrentTeam"
+        class="sports-current-team"
+    >
+        チーム未設定
+    </div>
 
 
-            <select
-                id="sportsTypeSelect"
-                onchange="changeSportsType()"
-            >
+    <!-- 設定 -->
 
-                <option value="baseball">
-                    ⚾ 野球
-                </option>
+    <button
+        type="button"
+        class="sports-open-settings-button"
+        onclick="openFavoriteSportsSettings()"
+    >
+        ⚙ 設定
+    </button>
 
-
-                <option
-                    value="soccer"
-                    disabled
-                >
-                    ⚽ サッカー（準備中）
-                </option>
-
-
-                <option
-                    value="basketball"
-                    disabled
-                >
-                    🏀 バスケットボール（準備中）
-                </option>
-
-
-                <option
-                    value="volleyball"
-                    disabled
-                >
-                    🏐 バレーボール（準備中）
-                </option>
-
-
-                <option
-                    value="rugby"
-                    disabled
-                >
-                    🏉 ラグビー（準備中）
-                </option>
-
-
-                <option
-                    value="tennis"
-                    disabled
-                >
-                    🎾 テニス（準備中）
-                </option>
-
-            </select>
-
-        </div>
-
-
-
-        <!-- =====================
-             ファンのチーム
-        ====================== -->
-
-        <div class="sports-form-row">
-
-            <label
-                for="sportsTeamName"
-            >
-                ファンのチーム名
-            </label>
-
-
-            <input
-                id="sportsTeamName"
-                type="text"
-                placeholder="例：阪神タイガース"
-                autocomplete="off"
-            >
-
-        </div>
-
-
-
-        <!-- =====================
-             設定保存
-        ====================== -->
-
-        <button
-            type="button"
-            class="sports-save-settings-button"
-            onclick="saveSportsSettings()"
-        >
-            💾 設定を保存
-        </button>
-
-
-    </section>
+</section>
 
 
 
@@ -259,6 +176,75 @@
     >
 
     </main>
+
+
+
+    
+<!-- =================================================
+     🏟️ 応援スポーツ設定モーダル
+================================================== -->
+
+<div
+    id="favoriteSportsSettingsModal"
+    class="sports-modal"
+    style="display:none;"
+>
+
+    <div class="sports-modal-content favorite-sports-settings-content">
+
+        <!-- ヘッダー -->
+
+        <div class="sports-modal-header">
+
+            <div class="sports-modal-title">
+                🏟️ 応援スポーツ設定
+            </div>
+
+
+            <button
+                type="button"
+                onclick="saveFavoriteSportsSettings()"
+                class="favorite-sports-save-top-button"
+            >
+                保存
+            </button>
+
+        </div>
+
+
+        <!-- 説明 -->
+
+        <div class="favorite-sports-help">
+            応援するスポーツとチーム名を最大10件まで登録できます。
+        </div>
+
+
+        <!-- 10件の設定 -->
+
+        <div
+            id="favoriteSportsSettingsList"
+            class="favorite-sports-settings-list"
+        >
+
+        </div>
+
+
+        <!-- 閉じる -->
+
+        <div class="sports-modal-buttons">
+
+            <button
+                type="button"
+                onclick="closeFavoriteSportsSettings()"
+            >
+                ❌ キャンセル
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
 
 
 
