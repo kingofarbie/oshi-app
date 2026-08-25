@@ -408,10 +408,9 @@ if(!game){
 function closeSportsGameDetailPage(){
 
     window.location.href =
-        "calendar-sports.html";
+        "index.html?openSportsCalendar=1";
 
 }
-
 
 /* =====================================================
    ⚾ 試合結果ページ 初期表示

@@ -4746,3 +4746,25 @@ renderSportsCalendar();
     }
 
 }
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        const params =
+            new URLSearchParams(
+                window.location.search
+            );
+
+        if(
+            params.get(
+                "openSportsCalendar"
+            ) === "1"
+        ){
+
+            openSportsCalendar();
+
+        }
+
+    }
+);
