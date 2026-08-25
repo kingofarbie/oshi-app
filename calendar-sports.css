@@ -766,7 +766,6 @@
 ===================================================== */
 
 .sports-modal {
-
     position: fixed;
 
     inset: 0;
@@ -775,19 +774,23 @@
 
     background: rgba(0,0,0,0.5);
 
-    padding: 20px;
+    padding: 12px;
 
     box-sizing: border-box;
+
+    /* ★ モーダル全体を縦スクロール可能にする */
+    overflow-y: auto;
+
+    -webkit-overflow-scrolling: touch;
 }
 
 
 .sports-modal-content {
-
     width: 100%;
 
     max-width: 500px;
 
-    margin: 50px auto;
+    margin: 20px auto;
 
     padding: 16px;
 
@@ -800,6 +803,13 @@
     box-sizing: border-box;
 
     border: 1px solid var(--border);
+
+    /* ★ 内容が多くても画面内に収める */
+    max-height: calc(100vh - 40px);
+
+    overflow-y: auto;
+
+    -webkit-overflow-scrolling: touch;
 }
 
 
@@ -1128,3 +1138,139 @@
 
 }
 
+
+/* =====================================================
+   🏟️ 応援スポーツ設定
+===================================================== */
+
+.favorite-sports-settings-content {
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+}
+
+
+.favorite-sports-help {
+    margin: 10px 0 12px;
+
+    font-size: 13px;
+
+    color: var(--text);
+
+    line-height: 1.5;
+}
+
+
+.favorite-sports-settings-list {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+
+    width: 100%;
+}
+
+
+.favorite-sports-row {
+    display: grid;
+
+    grid-template-columns: 24px minmax(120px, 1fr) minmax(0, 1.4fr);
+
+    align-items: center;
+
+    gap: 6px;
+
+    width: 100%;
+
+    box-sizing: border-box;
+}
+
+
+.favorite-sports-number {
+    text-align: center;
+
+    font-size: 13px;
+
+    font-weight: bold;
+
+    color: var(--text);
+}
+
+
+.favorite-sports-row select,
+.favorite-sports-row input {
+    width: 100%;
+
+    min-width: 0;
+
+    height: 36px;
+
+    padding: 5px 7px;
+
+    box-sizing: border-box;
+
+    background: var(--card);
+
+    color: var(--text);
+
+    border: 1px solid var(--border);
+
+    border-radius: 7px;
+
+    font-size: 13px;
+}
+
+
+.favorite-sports-save-top-button {
+    flex: 0 0 auto;
+
+    padding: 7px 12px;
+
+    border-radius: 7px;
+
+    font-size: 13px;
+
+    font-weight: bold;
+}
+
+
+/* =====================================================
+   📱 応援スポーツ設定・スマホ
+===================================================== */
+
+@media (max-width: 600px) {
+
+    .favorite-sports-settings-content {
+        margin: 10px auto;
+
+        padding: 12px;
+
+        max-height: calc(100vh - 20px);
+    }
+
+
+    .favorite-sports-row {
+        grid-template-columns:
+            22px
+            minmax(105px, 1fr)
+            minmax(0, 1.3fr);
+
+        gap: 5px;
+    }
+
+
+    .favorite-sports-row select,
+    .favorite-sports-row input {
+        height: 35px;
+
+        font-size: 12px;
+
+        padding: 5px 6px;
+    }
+
+
+    .favorite-sports-number {
+        font-size: 12px;
+    }
+
+}
