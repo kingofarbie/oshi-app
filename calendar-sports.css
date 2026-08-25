@@ -587,10 +587,15 @@
 
 
 /* =====================================================
-   📅 土日カラー
+   📅 土日・祝祭日
+   通常カレンダーと同じ配色ルール
 ===================================================== */
 
-/* 日曜日 */
+
+/* =========================
+   日曜日
+   赤文字 ＋ 薄い赤背景
+========================= */
 
 .sports-day.sunday {
 
@@ -599,13 +604,16 @@
     background:
         color-mix(
             in srgb,
-            #e74b67 7%,
+            #e74b67 8%,
             var(--card)
         );
 }
 
 
-/* 土曜日 */
+/* =========================
+   土曜日
+   青文字 ＋ 薄い青背景
+========================= */
 
 .sports-day.saturday {
 
@@ -614,21 +622,40 @@
     background:
         color-mix(
             in srgb,
-            #4285e8 7%,
+            #4285e8 8%,
             var(--card)
         );
 }
 
 
-/* 平日 */
+/* =========================
+   祝祭日
+   赤文字 ＋ 薄い赤背景
+========================= */
 
-.sports-day:not(.sunday):not(.saturday) {
+.sports-day.holiday {
+
+    color: #e74b67;
+
+    background:
+        color-mix(
+            in srgb,
+            #e74b67 8%,
+            var(--card)
+        );
+}
+
+
+/* =========================
+   平日
+========================= */
+
+.sports-day:not(.sunday):not(.saturday):not(.holiday) {
 
     color: var(--text);
 
     background: var(--card);
 }
-
 
 /* =====================================================
    🏟️ 試合表示
@@ -760,10 +787,63 @@
 
 
 /* =====================================================
-   今日
+   📅 今日
+   土日・祝日の背景色を維持しつつ
+   今日だけアクセント枠を表示
 ===================================================== */
 
 .sports-day.today {
+
+    border: 2px solid var(--accent);
+
+    font-weight: bold;
+
+    /* 今日の背景色は土日・祝日を優先 */
+}
+
+
+/* 今日 ＋ 日曜日 */
+
+.sports-day.today.sunday {
+
+    background:
+        color-mix(
+            in srgb,
+            #e74b67 8%,
+            var(--card)
+        );
+}
+
+
+/* 今日 ＋ 土曜日 */
+
+.sports-day.today.saturday {
+
+    background:
+        color-mix(
+            in srgb,
+            #4285e8 8%,
+            var(--card)
+        );
+}
+
+
+/* 今日 ＋ 祝日 */
+
+.sports-day.today.holiday {
+
+    background:
+        color-mix(
+            in srgb,
+            #e74b67 8%,
+            var(--card)
+        );
+}
+
+
+/* 今日 ＋ 平日 */
+
+.sports-day.today:not(.sunday):not(.saturday):not(.holiday) {
 
     background:
         color-mix(
@@ -771,12 +851,7 @@
             var(--accent) 8%,
             var(--card)
         );
-
-    border: 2px solid var(--accent);
-
-    font-weight: bold;
 }
-
 
 /* =====================================================
    モーダル
