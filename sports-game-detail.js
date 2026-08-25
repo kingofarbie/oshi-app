@@ -385,7 +385,7 @@ if(!game){
 
                 <button
                     type="button"
-                    onclick="closeSportsGameDetailModal()"
+                    onclick="closeSportsGameDetailPage()"
                 >
                     ❌ 閉じる
                 </button>
@@ -411,3 +411,36 @@ function closeSportsGameDetailPage(){
         "calendar-sports.html";
 
 }
+
+
+/* =====================================================
+   ⚾ 試合結果ページ 初期表示
+===================================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        const params =
+            new URLSearchParams(
+                window.location.search
+            );
+
+
+        const date =
+            params.get("date");
+
+
+        if(!date){
+
+            return;
+
+        }
+
+
+        openBaseballGameView(
+            date
+        );
+
+    }
+);
