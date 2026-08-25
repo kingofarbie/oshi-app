@@ -3,30 +3,29 @@
 ===================================================== */
 
 function openBaseballGameView(
-    date,
-    game
+    date
 ){
-
-    if(!game){
-
-        openBaseballGameForm(
-            date,
-            null
-        );
-
-        return;
-
-    }
 
 
     sportsSelectedDate =
         date;
 
 
-    const modal =
-        document.getElementById(
-            "sportsGameDetailModal"
-        );
+        const games =
+    getCurrentSportsGames();
+
+
+const game =
+    games[date] ||
+    null;
+
+
+if(!game){
+
+    return;
+
+}
+
 
 
     const title =
@@ -41,10 +40,7 @@ function openBaseballGameView(
         );
 
 
-    if(
-        !modal ||
-        !detail
-    ){
+    if(!detail){
 
         return;
 
@@ -401,8 +397,17 @@ function openBaseballGameView(
     `;
 
 
-    modal.style.display =
-        "block";
-
 }
 
+
+
+/* =====================================================
+   ⚾ 試合結果ページを開く
+===================================================== */
+
+function openBaseballGameDetailPage(date){
+
+    window.location.href =
+        `sports-game-detail.html?date=${encodeURIComponent(date)}`;
+
+}

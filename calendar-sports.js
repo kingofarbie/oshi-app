@@ -1188,21 +1188,20 @@ if(sport === "baseball"){
        → 新規入力画面
     */
 
-    if(game){
+if(game){
 
-        openBaseballGameView(
-            date,
-            game
-        );
+    openBaseballGameDetailPage(
+        date
+    );
 
-    }else{
+}else{
 
-        openBaseballGameForm(
-            date,
-            null
-        );
+    openBaseballGameForm(
+        date,
+        null
+    );
 
-    }
+}
 
     return;
 
