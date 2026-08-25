@@ -4756,10 +4756,9 @@ document.addEventListener(
                 window.location.search
             );
 
+
         if(
-            params.get(
-                "openSportsCalendar"
-            ) === "1"
+            params.get("openSportsCalendar") === "1"
         ){
 
             openSportsCalendar();
