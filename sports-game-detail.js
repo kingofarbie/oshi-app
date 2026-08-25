@@ -401,13 +401,3 @@ if(!game){
 
 
 
-/* =====================================================
-   ⚾ 試合結果ページを開く
-===================================================== */
-
-function openBaseballGameDetailPage(date){
-
-    window.location.href =
-        `sports-game-detail.html?date=${encodeURIComponent(date)}`;
-
-}
