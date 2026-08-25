@@ -1174,20 +1174,39 @@ function openSportsGame(date){
         null;
 
 
-    /* =====================
-       現在は野球のみ
-    ===================== */
+/* =====================
+   現在は野球のみ
+===================== */
 
-    if(sport === "baseball"){
+if(sport === "baseball"){
 
-        openBaseballGameForm(
+    /*
+       試合記録がある
+       → 閲覧画面
+
+       試合記録がない
+       → 新規入力画面
+    */
+
+    if(game){
+
+        openBaseballGameView(
             date,
             game
         );
 
-        return;
+    }else{
+
+        openBaseballGameForm(
+            date,
+            null
+        );
 
     }
+
+    return;
+
+}
 
 
     alert(
