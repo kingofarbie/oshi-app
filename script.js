@@ -86,13 +86,16 @@ function switchTab(pageId, event, fromCalendar = false){
        ページ切り替え
     ===================== */
 
-    document
-        .querySelectorAll('.page')
-        .forEach(page => {
+document
+    .querySelectorAll('.page')
+    .forEach(page => {
 
-            page.classList.remove('active');
+        page.classList.remove('active');
 
-        });
+        page.style.display = "";
+
+    });
+
 
 
     const targetPage =
@@ -239,7 +242,7 @@ const plannerDate =
         || todayString
     );
 
-    
+
         /*
            1日手帳タブから直接来た場合
            → 今日を表示
