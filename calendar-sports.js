@@ -2209,10 +2209,11 @@ function openBaseballGameDetailPage(date){
             "sportsGameDetailPage"
         );
 
+
     if(!sportsPage || !detailPage){
 
         console.error(
-            "スポーツ試合結果ページが見つかりません"
+            "スポーツページまたは試合結果ページが見つかりません"
         );
 
         return;
@@ -2229,21 +2230,21 @@ function openBaseballGameDetailPage(date){
 
 
     /*
-       スポーツカレンダーを隠す
+       スポーツカレンダーを完全に非表示
     */
 
-    sportsPage.classList.remove(
-        "active"
-    );
+    sportsPage.classList.remove("active");
+
+    sportsPage.style.display = "none";
 
 
     /*
-       試合結果ページを表示
+       試合結果を表示
     */
 
-    detailPage.classList.add(
-        "active"
-    );
+    detailPage.classList.add("active");
+
+    detailPage.style.display = "block";
 
 
     /*
@@ -2255,4 +2256,3 @@ function openBaseballGameDetailPage(date){
     );
 
 }
-

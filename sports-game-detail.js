@@ -457,26 +457,34 @@ function closeSportsGameDetailPage(){
         );
 
 
+    /*
+       試合結果を非表示
+    */
+
     if(detailPage){
 
-        detailPage.classList.remove(
-            "active"
-        );
+        detailPage.classList.remove("active");
 
-    }
-
-
-    if(sportsPage){
-
-        sportsPage.classList.add(
-            "active"
-        );
+        detailPage.style.display = "none";
 
     }
 
 
     /*
-       スポーツカレンダーを最新状態で再描画
+       スポーツカレンダーを再表示
+    */
+
+    if(sportsPage){
+
+        sportsPage.classList.add("active");
+
+        sportsPage.style.display = "";
+
+    }
+
+
+    /*
+       最新状態で再描画
     */
 
     renderSportsCalendar();
