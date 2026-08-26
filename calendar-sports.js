@@ -2199,7 +2199,60 @@ function closeFavoriteSportsSettings(){
 
 function openBaseballGameDetailPage(date){
 
-    window.location.href =
-        `sports-game-detail.html?date=${encodeURIComponent(date)}`;
+    const sportsPage =
+        document.getElementById(
+            "sportsCalendarPage"
+        );
+
+    const detailPage =
+        document.getElementById(
+            "sportsGameDetailPage"
+        );
+
+    if(!sportsPage || !detailPage){
+
+        console.error(
+            "スポーツ試合結果ページが見つかりません"
+        );
+
+        return;
+
+    }
+
+
+    /*
+       現在の試合日を保存
+    */
+
+    sportsSelectedDate =
+        date;
+
+
+    /*
+       スポーツカレンダーを隠す
+    */
+
+    sportsPage.classList.remove(
+        "active"
+    );
+
+
+    /*
+       試合結果ページを表示
+    */
+
+    detailPage.classList.add(
+        "active"
+    );
+
+
+    /*
+       試合結果を描画
+    */
+
+    openBaseballGameView(
+        date
+    );
 
 }
+

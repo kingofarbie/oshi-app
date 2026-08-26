@@ -439,46 +439,46 @@ if(!game){
 
 
 
+
 /* =====================================================
    ⚾ 試合結果ページ → スポーツカレンダーへ戻る
 ===================================================== */
 
 function closeSportsGameDetailPage(){
 
-    window.location.href =
-        "calendar-sports.html";
+    const detailPage =
+        document.getElementById(
+            "sportsGameDetailPage"
+        );
 
-}
-
-
-/* =====================================================
-   ⚾ 試合結果ページ 初期表示
-===================================================== */
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function(){
-
-        const params =
-            new URLSearchParams(
-                window.location.search
-            );
+    const sportsPage =
+        document.getElementById(
+            "sportsCalendarPage"
+        );
 
 
-        const date =
-            params.get("date");
+    if(detailPage){
 
-
-        if(!date){
-
-            return;
-
-        }
-
-
-        openBaseballGameView(
-            date
+        detailPage.classList.remove(
+            "active"
         );
 
     }
-);
+
+
+    if(sportsPage){
+
+        sportsPage.classList.add(
+            "active"
+        );
+
+    }
+
+
+    /*
+       スポーツカレンダーを最新状態で再描画
+    */
+
+    renderSportsCalendar();
+
+}
