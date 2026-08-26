@@ -51,7 +51,7 @@ function openBaseballGameView(
 
 const games =
     getCurrentSportsGamesForDetail();
-    
+
 
 const game =
     games[date] ||
@@ -446,7 +446,7 @@ if(!game){
 function closeSportsGameDetailPage(){
 
     window.location.href =
-        "sports-calendar.html";
+        "calendar-sports.html";
 
 }
 
