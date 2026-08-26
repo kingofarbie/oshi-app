@@ -1,3 +1,41 @@
+
+function getCurrentSportsGamesForDetail(){
+
+    const data =
+        db.load();
+
+    const settings =
+        data.sportsCalendar || {};
+
+    const selectedIndex =
+        typeof settings.selectedIndex === "number"
+        ?
+        settings.selectedIndex
+        :
+        0;
+
+    const games =
+        settings.games;
+
+    if(
+        games &&
+        !Array.isArray(games) &&
+        typeof games === "object" &&
+        games[selectedIndex] &&
+        typeof games[selectedIndex] === "object"
+    ){
+
+        return games[selectedIndex];
+
+    }
+
+    return {};
+
+}
+
+
+
+
 /* =====================================================
    ⚾ 野球試合 閲覧画面
 ===================================================== */
@@ -11,9 +49,9 @@ function openBaseballGameView(
         date;
 
 
-        const games =
-    getCurrentSportsGames();
-
+const games =
+    getCurrentSportsGamesForDetail();
+    
 
 const game =
     games[date] ||
@@ -408,9 +446,10 @@ if(!game){
 function closeSportsGameDetailPage(){
 
     window.location.href =
-        "index.html?openSportsCalendar=1";
+        "sports-calendar.html";
 
 }
+
 
 /* =====================================================
    ⚾ 試合結果ページ 初期表示
