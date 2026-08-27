@@ -300,6 +300,11 @@ function saveSportsGameEdit(){
             "sportsEditResult"
         );
 
+    const battingOrderSelect =
+    document.getElementById(
+        "sportsEditBattingOrder"
+    );
+
 
     const memoInput =
         document.getElementById(
@@ -371,6 +376,13 @@ const startingPitcher =
         resultSelect.value
         :
         "";
+
+    const battingOrder =
+    battingOrderSelect
+    ?
+    battingOrderSelect.value
+    :
+    "";
 
 
     const memo =
@@ -461,6 +473,9 @@ opponentStartingPitcher:
 
         opponentScores:
             scores.opponentScores,
+
+        battingOrder:
+    battingOrder,
 
         result:
             result,

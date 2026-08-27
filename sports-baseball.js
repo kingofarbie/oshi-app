@@ -1030,6 +1030,11 @@ function renderBaseballGameEditForm(){
             "sportsEditResult"
         );
 
+    const battingOrderSelect =
+    document.getElementById(
+        "sportsEditBattingOrder"
+    );
+
 
     const memoInput =
         document.getElementById(
@@ -1092,6 +1097,14 @@ const opponentPitcherInput =
 
     }
 
+    if(battingOrderSelect){
+
+    battingOrderSelect.value =
+        game.battingOrder ||
+        "";
+
+}
+
 
     /*
        メモ
@@ -1147,6 +1160,50 @@ if(opponentPitcherInput){
         game.opponentScores
         :
         [];
+
+    const opponentFirst =
+    game.battingOrder === "opponent_first";
+
+
+    const scoreRows =
+    document.querySelectorAll(
+        ".baseball-score-table tbody tr"
+    );
+
+if(scoreRows.length >= 2){
+
+    const teamRow =
+        scoreRows[0];
+
+    const opponentRow =
+        scoreRows[1];
+
+    const tbody =
+        teamRow.parentNode;
+
+    if(opponentFirst){
+
+        tbody.appendChild(
+            opponentRow
+        );
+
+        tbody.appendChild(
+            teamRow
+        );
+
+    }else{
+
+        tbody.appendChild(
+            teamRow
+        );
+
+        tbody.appendChild(
+            opponentRow
+        );
+
+    }
+
+}
 
 
     for(
