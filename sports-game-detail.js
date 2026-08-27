@@ -46,7 +46,7 @@ function openBaseballGameView(
 
 
     console.log("★★ openBaseballGameView 本体に入った", date);
-    
+
     sportsSelectedDate =
         date;
 
@@ -58,6 +58,9 @@ function openBaseballGameView(
     const game =
         games[date] ||
         null;
+
+        console.log("★★ game:", game);
+console.log("★★ battingOrder:", game?.battingOrder);
 
 
     if(!game){
