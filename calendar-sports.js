@@ -2254,7 +2254,10 @@ function openBaseballGameDetailPage(date){
 
     console.log("★ openBaseballGameDetailPage → openBaseballGameView", date);
 
-
+console.log(
+    "★★ 呼び出し直前 openBaseballGameView =",
+    openBaseballGameView
+);
     openBaseballGameView(
         date
     );
