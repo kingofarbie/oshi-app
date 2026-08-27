@@ -686,43 +686,6 @@ function saveSportsSettings(){
 }
 
 
-/* =====================================================
-   スポーツ変更
-===================================================== */
-
-function changeSportsType(){
-
-    const typeSelect =
-        document.getElementById(
-            "sportsTypeSelect"
-        );
-
-
-    if(!typeSelect){
-
-        return;
-
-    }
-
-
-    const sport =
-        typeSelect.value;
-
-
-    if(sport !== "baseball"){
-
-        alert(
-            "現在は野球のみ対応しています。"
-        );
-
-
-        typeSelect.value =
-            "baseball";
-
-    }
-
-}
-
 
 /* =====================================================
    タイトル更新
@@ -1025,43 +988,80 @@ async function renderSportsCalendar(){
         let scoreHTML = "";
 
 
-        if(game){
+if(game){
 
-            const teamScore =
-                calculateBaseballTotal(
-                    game.teamScores
-                );
+    let teamScore = 0;
+    let opponentScore = 0;
 
 
-            const opponentScore =
-                calculateBaseballTotal(
-                    game.opponentScores
-                );
+    /*
+       ⚾ 野球
+    */
+
+    if(
+        settings.favoriteSports?.[
+            settings.selectedIndex || 0
+        ]?.sport === "baseball"
+    ){
+
+        teamScore =
+            calculateBaseballTotal(
+                game.teamScores
+            );
+
+        opponentScore =
+            calculateBaseballTotal(
+                game.opponentScores
+            );
+
+    }
 
 
-            scoreHTML = `
+    /*
+       ⚽ サッカー
+    */
 
-                <div class="sports-game-preview">
+    else if(
+        settings.favoriteSports?.[
+            settings.selectedIndex || 0
+        ]?.sport === "soccer"
+    ){
 
-                    <div>
-                        ${escapeSportsHTML(
-                            game.opponent ||
-                            "対戦相手"
-                        )}
-                    </div>
+        teamScore =
+            calculateSoccerTotal(
+                game
+            );
 
-                    <strong>
-                        ${teamScore}
-                        -
-                        ${opponentScore}
-                    </strong>
+        opponentScore =
+            calculateSoccerOpponentTotal(
+                game
+            );
 
-                </div>
+    }
 
-            `;
 
-        }
+    scoreHTML = `
 
+        <div class="sports-game-preview">
+
+            <div>
+                ${escapeSportsHTML(
+                    game.opponent ||
+                    "対戦相手"
+                )}
+            </div>
+
+            <strong>
+                ${teamScore}
+                -
+                ${opponentScore}
+            </strong>
+
+        </div>
+
+    `;
+
+}
 
         html += `
 
