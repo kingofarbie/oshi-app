@@ -1361,13 +1361,22 @@ function closeSoccerGameEditPage(){
    ⚽ サッカー結果閲覧
 ===================================================== */
 
+/* =====================================================
+   ⚽ サッカー結果閲覧
+===================================================== */
+
 function openSoccerGameDetailPage(date){
 
     hideSportsSubPages();
 
-
     sportsSelectedDate =
         date;
+
+
+    const sportsPage =
+        document.getElementById(
+            "sportsCalendarPage"
+        );
 
 
     const detailPage =
@@ -1376,10 +1385,10 @@ function openSoccerGameDetailPage(date){
         );
 
 
-    if(!detailPage){
+    if(!sportsPage || !detailPage){
 
         console.error(
-            "sportsGameDetailPage が見つかりません"
+            "スポーツカレンダーまたは試合結果ページが見つかりません"
         );
 
         return;
@@ -1391,35 +1400,24 @@ function openSoccerGameDetailPage(date){
        スポーツカレンダーを非表示
     */
 
-    const sportsPage =
-        document.getElementById(
-            "sportsCalendarPage"
-        );
+    sportsPage.classList.remove("active");
 
-
-    if(sportsPage){
-
-        sportsPage.style.display =
-            "none";
-
-    }
+    sportsPage.style.display =
+        "none";
 
 
     /*
        共通の試合結果ページを表示
     */
 
+    detailPage.classList.add("active");
+
     detailPage.style.display =
         "block";
 
 
-    detailPage.classList.add(
-        "active"
-    );
-
-
     /*
-       サッカー結果を描画
+       サッカー結果を表示
     */
 
     renderSoccerGameView(
@@ -1428,17 +1426,19 @@ function openSoccerGameDetailPage(date){
 
 }
 
+
 /* =====================================================
    ⚽ 結果画面描画
 ===================================================== */
 
 function renderSoccerGameView(date){
 
-const page =
-    document.getElementById(
-        "sportsGameDetailPage"
-    );
+    const page =
+        document.getElementById(
+            "sportsGameDetail"
+        );
 
+        
     if(!page){
 
         return;
