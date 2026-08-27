@@ -139,6 +139,9 @@ function openBaseballGameView(
         game.opponentStartingPitcher ||
         "";
 
+    const opponentFirst =
+    game.battingOrder === "opponent_first";
+
 
     const teamScores =
         Array.isArray(game.teamScores)
@@ -438,10 +441,9 @@ function openBaseballGameView(
 
 <tbody>
 
-    ${
-        battingOrder === "first"
-        ?
-
+${ 
+    opponentFirst
+    ?
         `
         <!-- =====================
              先攻：応援チーム → 相手チーム
