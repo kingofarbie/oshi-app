@@ -142,6 +142,10 @@ function openBaseballGameView(
     const opponentFirst =
     game.battingOrder === "opponent_first";
 
+    console.log(
+    "★ battingOrder:",
+    game.battingOrder
+);
 
     const teamScores =
         Array.isArray(game.teamScores)
