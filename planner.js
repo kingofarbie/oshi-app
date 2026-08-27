@@ -28,30 +28,28 @@ function showPlanner(date, fromCalendar = false){
 
     }
 
-    const planner =
-        document.getElementById("dayPlanner");
+const planner =
+    document.getElementById("dayPlanner");
 
-    const calendar =
-        document.getElementById("calendar");
+const calendar =
+    document.getElementById("calendar");
 
-    const title =
-        document.getElementById("plannerTitle");
+const title =
+    document.getElementById("plannerTitle");
 
-    const timeline =
-        document.getElementById("plannerTimeline");
+const timeline =
+    document.getElementById("plannerTimeline");
+
 
 if(
     !planner ||
-    !calendar ||
     !title ||
     !timeline
 ){
-
     console.error(
         "1日手帳の表示に必要な要素がありません",
         {
             planner,
-            calendar,
             title,
             timeline
         }
@@ -59,6 +57,7 @@ if(
 
     return;
 }
+
 
     /* =====================
        日付情報
