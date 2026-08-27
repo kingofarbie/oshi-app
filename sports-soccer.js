@@ -1365,39 +1365,62 @@ function openSoccerGameDetailPage(date){
 
     hideSportsSubPages();
 
+
     sportsSelectedDate =
         date;
 
 
-    const sportsPage =
+    const detailPage =
         document.getElementById(
-            "sportsCalendarPage"
-        );
-
-    const soccerPage =
-        document.getElementById(
-            "sportsSoccerPage"
+            "sportsGameDetailPage"
         );
 
 
-    if(!sportsPage || !soccerPage){
+    if(!detailPage){
+
+        console.error(
+            "sportsGameDetailPage が見つかりません"
+        );
 
         return;
 
     }
 
 
-    sportsPage.style.display =
-        "none";
+    /*
+       スポーツカレンダーを非表示
+    */
+
+    const sportsPage =
+        document.getElementById(
+            "sportsCalendarPage"
+        );
 
 
-    soccerPage.style.display =
+    if(sportsPage){
+
+        sportsPage.style.display =
+            "none";
+
+    }
+
+
+    /*
+       共通の試合結果ページを表示
+    */
+
+    detailPage.style.display =
         "block";
 
-    soccerPage.classList.add(
+
+    detailPage.classList.add(
         "active"
     );
 
+
+    /*
+       サッカー結果を描画
+    */
 
     renderSoccerGameView(
         date
@@ -1405,17 +1428,16 @@ function openSoccerGameDetailPage(date){
 
 }
 
-
 /* =====================================================
    ⚽ 結果画面描画
 ===================================================== */
 
 function renderSoccerGameView(date){
 
-    const page =
-        document.getElementById(
-            "sportsSoccerPage"
-        );
+const page =
+    document.getElementById(
+        "sportsGameDetailPage"
+    );
 
     if(!page){
 
@@ -1609,7 +1631,7 @@ function renderSoccerGameView(date){
                 <button
                     type="button"
                     class="sports-back-button"
-                    onclick="closeSoccerGameEditPage()"
+                    onclick="closeSportsGameDetailPage()"
                 >
                     ◀ カレンダーへ戻る
                 </button>
@@ -1746,7 +1768,7 @@ function renderSoccerGameView(date){
 
                     <button
                         type="button"
-                        onclick="closeSoccerGameEditPage()"
+                        onclick="closeSportsGameDetailPage()"
                     >
                         ❌ 閉じる
                     </button>
