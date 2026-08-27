@@ -283,6 +283,17 @@ function renderSportsGameEditForm(){
             "sportsEditMemo"
         );
 
+    const locationInput =
+    document.getElementById(
+        "sportsEditLocation"
+    );
+
+const startingPitcherInput =
+    document.getElementById(
+        "sportsEditStartingPitcher"
+    );
+
+
 
     /*
        応援チーム
@@ -335,6 +346,22 @@ function renderSportsGameEditForm(){
             "";
 
     }
+
+    if(locationInput){
+
+    locationInput.value =
+        game.location ||
+        "";
+
+}
+
+if(startingPitcherInput){
+
+    startingPitcherInput.value =
+        game.startingPitcher ||
+        "";
+
+}
 
 
     /*
@@ -544,6 +571,32 @@ function saveSportsGameEdit(){
         );
 
 
+        const locationInput =
+    document.getElementById(
+        "sportsEditLocation"
+    );
+
+const startingPitcherInput =
+    document.getElementById(
+        "sportsEditStartingPitcher"
+    );
+
+
+    const location =
+    locationInput
+    ?
+    locationInput.value.trim()
+    :
+    "";
+
+const startingPitcher =
+    startingPitcherInput
+    ?
+    startingPitcherInput.value.trim()
+    :
+    "";
+
+
     const team =
         teamInput
         ?
@@ -640,6 +693,12 @@ function saveSportsGameEdit(){
 
         opponent:
             opponent,
+        
+        location:
+    location,
+
+startingPitcher:
+    startingPitcher,
 
         teamScores:
             scores.teamScores,

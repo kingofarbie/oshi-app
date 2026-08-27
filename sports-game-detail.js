@@ -121,6 +121,14 @@ if(!game){
         game.opponent ||
         "対戦相手";
 
+    const location =
+    game.location ||
+    "";
+
+const startingPitcher =
+    game.startingPitcher ||
+    "";
+
 
     const teamScores =
         Array.isArray(game.teamScores)
@@ -356,6 +364,15 @@ if(!game){
                 </div>
 
             </div>
+
+            <div class="baseball-view-info">
+
+    ${location ? `📍 ${escapeSportsHTML(location)}` : ""}
+
+    ${startingPitcher ? `⚾ 先発投手：${escapeSportsHTML(startingPitcher)}` : ""}
+
+</div>
+
 
 
             <!-- 結果 -->

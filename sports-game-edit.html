@@ -24,7 +24,7 @@
             id="sportsGameEditTitle"
             class="sports-calendar-title"
         >
-            🏟️ 試合結果編集
+            ⚾ 試合結果編集
         </h1>
 
         <button
@@ -43,51 +43,195 @@
         class="sports-game-edit-form"
     >
 
+
         <!-- =========================
-             応援チーム
+             チーム情報
         ========================== -->
 
-        <div class="sports-edit-section">
+        <section class="sports-edit-section">
 
-            <label>
-                応援チーム
+            <h2>⚾ 試合情報</h2>
+
+
+            <label for="sportsEditTeam">
+                自分の応援チーム
             </label>
 
             <input
                 type="text"
                 id="sportsEditTeam"
                 placeholder="応援チーム名"
+                autocomplete="off"
             >
 
-        </div>
 
-
-        <!-- =========================
-             対戦相手
-        ========================== -->
-
-        <div class="sports-edit-section">
-
-            <label>
-                対戦相手
+            <label for="sportsEditOpponent">
+                相手チーム
             </label>
 
             <input
                 type="text"
                 id="sportsEditOpponent"
-                placeholder="対戦相手"
+                placeholder="相手チーム名"
+                autocomplete="off"
             >
 
-        </div>
+
+            <label for="sportsEditStadium">
+                📍 場所
+            </label>
+
+            <input
+                type="text"
+                id="sportsEditLocation"
+                placeholder="球場・会場名"
+                autocomplete="off"
+            >
+
+        </section>
+
 
 
         <!-- =========================
-             勝敗
+             スコアボード
         ========================== -->
 
-        <div class="sports-edit-section">
+        <section class="sports-edit-section">
 
-            <label>
+            <h2>📊 スコアボード</h2>
+
+
+            <div class="sports-edit-score-board">
+
+
+                <!-- ヘッダー -->
+
+                <div class="sports-score-row sports-score-header">
+
+                    <div class="sports-score-inning">
+                        回
+                    </div>
+
+                    <div>
+                        応援チーム
+                    </div>
+
+                    <div>
+                        相手
+                    </div>
+
+                </div>
+
+
+                <!-- 1〜12回 -->
+
+                <div class="sports-score-row">
+                    <div class="sports-score-inning">1</div>
+                    <input id="sportsEditTeamScore1" type="number" min="0" inputmode="numeric">
+                    <input id="sportsEditOpponentScore1" type="number" min="0" inputmode="numeric">
+                </div>
+
+                <div class="sports-score-row">
+                    <div class="sports-score-inning">2</div>
+                    <input id="sportsEditTeamScore2" type="number" min="0" inputmode="numeric">
+                    <input id="sportsEditOpponentScore2" type="number" min="0" inputmode="numeric">
+                </div>
+
+                <div class="sports-score-row">
+                    <div class="sports-score-inning">3</div>
+                    <input id="sportsEditTeamScore3" type="number" min="0" inputmode="numeric">
+                    <input id="sportsEditOpponentScore3" type="number" min="0" inputmode="numeric">
+                </div>
+
+                <div class="sports-score-row">
+                    <div class="sports-score-inning">4</div>
+                    <input id="sportsEditTeamScore4" type="number" min="0" inputmode="numeric">
+                    <input id="sportsEditOpponentScore4" type="number" min="0" inputmode="numeric">
+                </div>
+
+                <div class="sports-score-row">
+                    <div class="sports-score-inning">5</div>
+                    <input id="sportsEditTeamScore5" type="number" min="0" inputmode="numeric">
+                    <input id="sportsEditOpponentScore5" type="number" min="0" inputmode="numeric">
+                </div>
+
+                <div class="sports-score-row">
+                    <div class="sports-score-inning">6</div>
+                    <input id="sportsEditTeamScore6" type="number" min="0" inputmode="numeric">
+                    <input id="sportsEditOpponentScore6" type="number" min="0" inputmode="numeric">
+                </div>
+
+                <div class="sports-score-row">
+                    <div class="sports-score-inning">7</div>
+                    <input id="sportsEditTeamScore7" type="number" min="0" inputmode="numeric">
+                    <input id="sportsEditOpponentScore7" type="number" min="0" inputmode="numeric">
+                </div>
+
+                <div class="sports-score-row">
+                    <div class="sports-score-inning">8</div>
+                    <input id="sportsEditTeamScore8" type="number" min="0" inputmode="numeric">
+                    <input id="sportsEditOpponentScore8" type="number" min="0" inputmode="numeric">
+                </div>
+
+                <div class="sports-score-row">
+                    <div class="sports-score-inning">9</div>
+                    <input id="sportsEditTeamScore9" type="number" min="0" inputmode="numeric">
+                    <input id="sportsEditOpponentScore9" type="number" min="0" inputmode="numeric">
+                </div>
+
+                <div class="sports-score-row">
+                    <div class="sports-score-inning">10</div>
+                    <input id="sportsEditTeamScore10" type="number" min="0" inputmode="numeric">
+                    <input id="sportsEditOpponentScore10" type="number" min="0" inputmode="numeric">
+                </div>
+
+                <div class="sports-score-row">
+                    <div class="sports-score-inning">11</div>
+                    <input id="sportsEditTeamScore11" type="number" min="0" inputmode="numeric">
+                    <input id="sportsEditOpponentScore11" type="number" min="0" inputmode="numeric">
+                </div>
+
+                <div class="sports-score-row">
+                    <div class="sports-score-inning">12</div>
+                    <input id="sportsEditTeamScore12" type="number" min="0" inputmode="numeric">
+                    <input id="sportsEditOpponentScore12" type="number" min="0" inputmode="numeric">
+                </div>
+
+
+                <!-- 合計 -->
+
+                <div class="sports-score-row sports-score-total">
+
+                    <div class="sports-score-inning">
+                        計
+                    </div>
+
+                    <div id="sportsEditTeamTotal">
+                        0
+                    </div>
+
+                    <div id="sportsEditOpponentTotal">
+                        0
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================
+             試合結果
+        ========================== -->
+
+        <section class="sports-edit-section">
+
+            <h2>🏆 試合結果</h2>
+
+
+            <label for="sportsEditResult">
                 勝敗
             </label>
 
@@ -106,122 +250,62 @@
                 </option>
 
                 <option value="draw">
-                    🤝 引き分け
+                    🤝 引分
+                </option>
+
+                <option value="cancelled">
+                    ⛔ 中止
                 </option>
 
             </select>
 
-        </div>
+        </section>
+
 
 
         <!-- =========================
-             イニングスコア
+             先発投手
         ========================== -->
 
-        <div class="sports-edit-section">
+        <section class="sports-edit-section">
 
-            <label>
-                ⚾ イニングスコア
+            <h2>⚾ 先発投手</h2>
+
+
+            <label for="sportsEditTeamPitcher">
+                応援チーム 先発投手
             </label>
 
-
-            <div class="sports-edit-score-table">
-
-                <div class="sports-edit-score-header">
-
-                    <span>回</span>
-                    <span>応援チーム</span>
-                    <span>相手</span>
-
-                </div>
+            <input
+                type="text"
+                id="sportsEditStartingPitcher"
+                placeholder="投手名"
+                autocomplete="off"
+            >
 
 
-                <div class="sports-edit-score-row">
-                    <span>1</span>
-                    <input id="sportsEditTeamScore1" type="number" min="0">
-                    <input id="sportsEditOpponentScore1" type="number" min="0">
-                </div>
+            <label for="sportsEditOpponentPitcher">
+                相手チーム 先発投手
+            </label>
 
-                <div class="sports-edit-score-row">
-                    <span>2</span>
-                    <input id="sportsEditTeamScore2" type="number" min="0">
-                    <input id="sportsEditOpponentScore2" type="number" min="0">
-                </div>
+            <input
+                type="text"
+                id="sportsEditOpponentPitcher"
+                placeholder="投手名"
+                autocomplete="off"
+            >
 
-                <div class="sports-edit-score-row">
-                    <span>3</span>
-                    <input id="sportsEditTeamScore3" type="number" min="0">
-                    <input id="sportsEditOpponentScore3" type="number" min="0">
-                </div>
+        </section>
 
-                <div class="sports-edit-score-row">
-                    <span>4</span>
-                    <input id="sportsEditTeamScore4" type="number" min="0">
-                    <input id="sportsEditOpponentScore4" type="number" min="0">
-                </div>
-
-                <div class="sports-edit-score-row">
-                    <span>5</span>
-                    <input id="sportsEditTeamScore5" type="number" min="0">
-                    <input id="sportsEditOpponentScore5" type="number" min="0">
-                </div>
-
-                <div class="sports-edit-score-row">
-                    <span>6</span>
-                    <input id="sportsEditTeamScore6" type="number" min="0">
-                    <input id="sportsEditOpponentScore6" type="number" min="0">
-                </div>
-
-                <div class="sports-edit-score-row">
-                    <span>7</span>
-                    <input id="sportsEditTeamScore7" type="number" min="0">
-                    <input id="sportsEditOpponentScore7" type="number" min="0">
-                </div>
-
-                <div class="sports-edit-score-row">
-                    <span>8</span>
-                    <input id="sportsEditTeamScore8" type="number" min="0">
-                    <input id="sportsEditOpponentScore8" type="number" min="0">
-                </div>
-
-                <div class="sports-edit-score-row">
-                    <span>9</span>
-                    <input id="sportsEditTeamScore9" type="number" min="0">
-                    <input id="sportsEditOpponentScore9" type="number" min="0">
-                </div>
-
-                <div class="sports-edit-score-row">
-                    <span>10</span>
-                    <input id="sportsEditTeamScore10" type="number" min="0">
-                    <input id="sportsEditOpponentScore10" type="number" min="0">
-                </div>
-
-                <div class="sports-edit-score-row">
-                    <span>11</span>
-                    <input id="sportsEditTeamScore11" type="number" min="0">
-                    <input id="sportsEditOpponentScore11" type="number" min="0">
-                </div>
-
-                <div class="sports-edit-score-row">
-                    <span>12</span>
-                    <input id="sportsEditTeamScore12" type="number" min="0">
-                    <input id="sportsEditOpponentScore12" type="number" min="0">
-                </div>
-
-            </div>
-
-        </div>
 
 
         <!-- =========================
              メモ
         ========================== -->
 
-        <div class="sports-edit-section">
+        <section class="sports-edit-section">
 
-            <label>
-                📝 メモ
-            </label>
+            <h2>📝 メモ</h2>
 
             <textarea
                 id="sportsEditMemo"
@@ -229,7 +313,8 @@
                 placeholder="試合についてのメモ"
             ></textarea>
 
-        </div>
+        </section>
+
 
 
         <!-- =========================
@@ -246,20 +331,14 @@
             </button>
 
             <button
-    type="button"
-    onclick="deleteBaseballGame()"
->
-    🗑️ 削除
-</button>
-
-<button
-    type="button"
-    onclick="closeSportsGameEditPage()"
->
-    キャンセル
-</button>
+                type="button"
+                onclick="cancelSportsGameEdit()"
+            >
+                キャンセル
+            </button>
 
         </div>
+
 
     </main>
 

@@ -1469,3 +1469,13 @@
     }
 
 }
+
+
+.baseball-view-info {
+    margin: 12px 0;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: rgba(128, 128, 128, 0.08);
+    line-height: 1.8;
+}
+
