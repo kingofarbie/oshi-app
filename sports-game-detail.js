@@ -44,6 +44,9 @@ function openBaseballGameView(
     date
 ){
 
+
+    console.log("★★ openBaseballGameView 本体に入った", date);
+    
     sportsSelectedDate =
         date;
 
