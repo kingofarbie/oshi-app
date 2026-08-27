@@ -2198,6 +2198,8 @@ function closeFavoriteSportsSettings(){
 
 function openBaseballGameDetailPage(date){
 
+    hideSportsSubPages();
+
     const sportsPage =
         document.getElementById(
             "sportsCalendarPage"
@@ -2259,6 +2261,8 @@ function openBaseballGameDetailPage(date){
 
 async function openBaseballGameEditPage(date){
 
+    hideSportsSubPages();
+
     const sportsPage =
         document.getElementById(
             "sportsCalendarPage"
@@ -2289,5 +2293,50 @@ async function openBaseballGameEditPage(date){
     editPage.style.display = "block";
 
     await loadSportsGameEditHTML();
+
+}
+
+
+
+function hideSportsSubPages(){
+
+    const sportsPage =
+        document.getElementById(
+            "sportsCalendarPage"
+        );
+
+    const detailPage =
+        document.getElementById(
+            "sportsGameDetailPage"
+        );
+
+    const editPage =
+        document.getElementById(
+            "sportsGameEditPage"
+        );
+
+
+    if(sportsPage){
+
+        sportsPage.classList.remove("active");
+        sportsPage.style.display = "none";
+
+    }
+
+
+    if(detailPage){
+
+        detailPage.classList.remove("active");
+        detailPage.style.display = "none";
+
+    }
+
+
+    if(editPage){
+
+        editPage.classList.remove("active");
+        editPage.style.display = "none";
+
+    }
 
 }
