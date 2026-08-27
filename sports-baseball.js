@@ -1161,8 +1161,9 @@ if(opponentPitcherInput){
         :
         [];
 
-const opponentFirst =
-    game.battingOrder === "second";
+    const opponentFirst =
+    game.battingOrder === "opponent_first";
+
     
 
 
