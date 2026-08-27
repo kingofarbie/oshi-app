@@ -2258,6 +2258,92 @@ function openBaseballGameDetailPage(date){
 
 }
 
+/* =====================================================
+   ⚾ 試合結果ページ → スポーツカレンダーへ戻る
+===================================================== */
+
+function closeSportsGameDetailPage(){
+
+    const detailPage =
+        document.getElementById(
+            "sportsGameDetailPage"
+        );
+
+    const editPage =
+        document.getElementById(
+            "sportsGameEditPage"
+        );
+
+    const sportsPage =
+        document.getElementById(
+            "sportsCalendarPage"
+        );
+
+    const sportsScreen =
+        document.getElementById(
+            "sportsCalendarScreen"
+        );
+
+
+    /*
+       結果画面を非表示
+    */
+
+    if(detailPage){
+
+        detailPage.classList.remove("active");
+        detailPage.style.display = "none";
+
+    }
+
+
+    /*
+       編集画面も念のため非表示
+    */
+
+    if(editPage){
+
+        editPage.classList.remove("active");
+        editPage.style.display = "none";
+
+    }
+
+
+    /*
+       スポーツカレンダーを再表示
+    */
+
+    if(sportsPage){
+
+        sportsPage.classList.add("active");
+        sportsPage.style.display = "";
+
+    }
+
+
+    if(sportsScreen){
+
+        sportsScreen.style.display = "";
+
+    }
+
+
+    /*
+       最新状態で再描画
+    */
+
+    renderSportsCalendar();
+
+
+    /*
+       選択日を解除
+    */
+
+    sportsSelectedDate =
+        null;
+
+}
+
 
 async function openBaseballGameEditPage(date){
 
@@ -2297,6 +2383,66 @@ async function openBaseballGameEditPage(date){
 }
 
 
+function closeSportsGameEditPage(){
+
+    const editPage =
+        document.getElementById(
+            "sportsGameEditPage"
+        );
+
+    const sportsPage =
+        document.getElementById(
+            "sportsCalendarPage"
+        );
+
+    const sportsScreen =
+        document.getElementById(
+            "sportsCalendarScreen"
+        );
+
+
+    /*
+       編集画面を非表示
+    */
+
+    if(editPage){
+
+        editPage.classList.remove("active");
+        editPage.style.display = "none";
+
+    }
+
+
+    /*
+       スポーツカレンダーを再表示
+    */
+
+    if(sportsPage){
+
+        sportsPage.classList.add("active");
+        sportsPage.style.display = "";
+
+    }
+
+
+    if(sportsScreen){
+
+        sportsScreen.style.display = "";
+
+    }
+
+
+    /*
+       最新状態で再描画
+    */
+
+    renderSportsCalendar();
+
+
+    sportsSelectedDate =
+        null;
+
+}
 
 function hideSportsSubPages(){
 
