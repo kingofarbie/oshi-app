@@ -290,50 +290,43 @@ function openBaseballGameView(
                  対戦カード
             ========================== -->
 
-            <div class="baseball-view-match">
+<div class="baseball-view-match">
 
-                <div class="baseball-view-team">
+    <div class="baseball-view-team">
 
-                    <div class="baseball-view-team-name">
+        <div class="baseball-view-team-name">
+            ${escapeSportsHTML(team)}
+        </div>
 
-                        ${escapeSportsHTML(team)}
-
-                    </div>
-
-                    <div class="baseball-view-total">
-
-                        ${teamTotal}
-
-                    </div>
-
-                </div>
+    </div>
 
 
-                <div class="baseball-view-vs">
+    <div class="baseball-view-score">
 
-                    −
+        <strong>
+            ${teamTotal}
+        </strong>
 
-                </div>
+        <span>
+            -
+        </span>
+
+        <strong>
+            ${opponentTotal}
+        </strong>
+
+    </div>
 
 
-                <div class="baseball-view-team">
+    <div class="baseball-view-team">
 
-                    <div class="baseball-view-team-name">
+        <div class="baseball-view-team-name">
+            ${escapeSportsHTML(opponent)}
+        </div>
 
-                        ${escapeSportsHTML(opponent)}
+    </div>
 
-                    </div>
-
-                    <div class="baseball-view-total">
-
-                        ${opponentTotal}
-
-                    </div>
-
-                </div>
-
-            </div>
-
+</div>
 
             <!-- =========================
                  試合情報
