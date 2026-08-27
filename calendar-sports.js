@@ -2378,7 +2378,9 @@ async function openBaseballGameEditPage(date){
     editPage.classList.add("active");
     editPage.style.display = "block";
 
-    await loadSportsGameEditHTML();
+await loadSportsGameEditHTML();
+
+renderSportsGameEditForm();
 
 }
 
