@@ -1,0 +1,404 @@
+/* =====================================================
+   ⚽ サッカー
+   sports-soccer.css
+
+   サッカー専用スタイル
+===================================================== */
+
+
+/* =====================================================
+   ⚽ スコアボード全体
+===================================================== */
+
+.soccer-scoreboard {
+
+    width: 100%;
+    max-width: 520px;
+
+    margin: 0 auto;
+
+    border-radius: 16px;
+
+    overflow: hidden;
+
+    background: var(--card-bg, #ffffff);
+
+    border: 1px solid
+        var(--border-color, #dddddd);
+
+}
+
+
+/* =====================================================
+   ⚽ チーム名・最終スコア
+===================================================== */
+
+.soccer-score-header {
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        auto
+        minmax(0, 1fr);
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 20px 14px;
+
+    text-align: center;
+
+    border-bottom: 1px solid
+        var(--border-color, #dddddd);
+
+}
+
+
+.soccer-score-team-name {
+
+    min-width: 0;
+
+    font-size: 15px;
+
+    font-weight: 700;
+
+    overflow-wrap: anywhere;
+
+}
+
+
+.soccer-score-final {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    white-space: nowrap;
+
+}
+
+
+.soccer-score-final strong {
+
+    font-size: 28px;
+
+    line-height: 1;
+
+}
+
+
+.soccer-score-final span {
+
+    font-size: 22px;
+
+    font-weight: 700;
+
+}
+
+
+/* =====================================================
+   ⚽ 前半・後半・延長・PK
+===================================================== */
+
+.soccer-score-row {
+
+    display: grid;
+
+    grid-template-columns:
+        80px
+        minmax(45px, 1fr)
+        24px
+        minmax(45px, 1fr);
+
+    align-items: center;
+
+    min-height: 58px;
+
+    padding: 7px 14px;
+
+    border-bottom: 1px solid
+        var(--border-color, #dddddd);
+
+}
+
+
+.soccer-score-period {
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+}
+
+
+.soccer-score-input {
+
+    width: 100%;
+
+    max-width: 65px;
+
+    height: 40px;
+
+    margin: 0 auto;
+
+    padding: 4px 6px;
+
+    box-sizing: border-box;
+
+    text-align: center;
+
+    font-size: 18px;
+
+    font-weight: 700;
+
+    border: 1px solid
+        var(--border-color, #cccccc);
+
+    border-radius: 8px;
+
+    background: transparent;
+
+}
+
+
+.soccer-score-input:focus {
+
+    outline: 2px solid
+        var(--accent-color, #888888);
+
+    outline-offset: 1px;
+
+}
+
+
+.soccer-score-dash {
+
+    text-align: center;
+
+    font-size: 18px;
+
+    font-weight: 700;
+
+}
+
+
+/* =====================================================
+   ⚽ 合計
+===================================================== */
+
+.soccer-score-total-row {
+
+    display: grid;
+
+    grid-template-columns:
+        80px
+        minmax(45px, 1fr)
+        24px
+        minmax(45px, 1fr);
+
+    align-items: center;
+
+    min-height: 62px;
+
+    padding: 8px 14px;
+
+    background:
+        var(--section-bg, rgba(0,0,0,0.04));
+
+}
+
+
+.soccer-score-total-row strong {
+
+    text-align: center;
+
+    font-size: 20px;
+
+}
+
+
+.soccer-score-total-row
+.soccer-score-period {
+
+    font-size: 15px;
+
+}
+
+
+/* =====================================================
+   ⚽ 追加された延長・PK
+===================================================== */
+
+.soccer-extra-periods {
+
+    width: 100%;
+
+}
+
+
+.soccer-extra-periods
+.soccer-score-row:last-child {
+
+    border-bottom: 1px solid
+        var(--border-color, #dddddd);
+
+}
+
+
+/* =====================================================
+   ⚽ ＋追加ボタン
+===================================================== */
+
+.soccer-add-period-area {
+
+    display: flex;
+
+    justify-content: center;
+
+    margin-top: 14px;
+
+}
+
+
+.soccer-add-period-area button {
+
+    width: 100%;
+
+    max-width: 320px;
+
+    min-height: 46px;
+
+    padding: 9px 16px;
+
+    border: 1px solid
+        var(--border-color, #cccccc);
+
+    border-radius: 12px;
+
+    background: transparent;
+
+    font-size: 15px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+}
+
+
+.soccer-add-period-area button:active {
+
+    transform: scale(0.98);
+
+}
+
+
+/* =====================================================
+   ⚽ スマートフォン
+===================================================== */
+
+@media (max-width: 480px){
+
+    .soccer-score-header {
+
+        gap: 6px;
+
+        padding: 17px 8px;
+
+    }
+
+
+    .soccer-score-team-name {
+
+        font-size: 13px;
+
+    }
+
+
+    .soccer-score-final {
+
+        gap: 5px;
+
+    }
+
+
+    .soccer-score-final strong {
+
+        font-size: 25px;
+
+    }
+
+
+    .soccer-score-final span {
+
+        font-size: 19px;
+
+    }
+
+
+    .soccer-score-row,
+    .soccer-score-total-row {
+
+        grid-template-columns:
+            68px
+            minmax(40px, 1fr)
+            22px
+            minmax(40px, 1fr);
+
+        padding-left: 10px;
+
+        padding-right: 10px;
+
+    }
+
+}
+
+
+/* =====================================================
+   ⚽ 長いチーム名
+===================================================== */
+
+@media (max-width: 360px){
+
+    .soccer-score-header {
+
+        grid-template-columns:
+            minmax(0, 1fr)
+            auto
+            minmax(0, 1fr);
+
+    }
+
+
+    .soccer-score-team-name {
+
+        font-size: 12px;
+
+    }
+
+
+    .soccer-score-final strong {
+
+        font-size: 23px;
+
+    }
+
+
+    .soccer-score-row,
+    .soccer-score-total-row {
+
+        grid-template-columns:
+            62px
+            minmax(36px, 1fr)
+            20px
+            minmax(36px, 1fr);
+
+    }
+
+}

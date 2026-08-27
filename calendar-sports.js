@@ -46,7 +46,7 @@ const SPORTS_TYPES = [
     {
         value: "soccer",
         label: "⚽ サッカー",
-        enabled: false
+        enabled: true
     },
 
     {
@@ -1180,37 +1180,41 @@ function openSportsGame(date){
 
 if(sport === "baseball"){
 
-    /*
-       試合記録がある
-       → 閲覧画面
+    if(game){
 
-       試合記録がない
-       → 新規入力画面
-    */
+        openBaseballGameDetailPage(date);
 
-if(game){
+    }else{
 
-    openBaseballGameDetailPage(
-        date
-    );
+        openBaseballGameEditPage(date);
 
-}else{
-
-    openBaseballGameEditPage(
-        date
-    );
-
-}
+    }
 
     return;
 
 }
 
 
-    alert(
-        "このスポーツはまだ対応していません。"
-    );
+if(sport === "soccer"){
 
+    if(game){
+
+        openSoccerGameDetailPage(date);
+
+    }else{
+
+        openSoccerGameEditPage(date);
+
+    }
+
+    return;
+
+}
+
+
+alert(
+    "このスポーツはまだ対応していません。"
+);
 }
 
 
@@ -2387,6 +2391,66 @@ async function openBaseballGameEditPage(date){
 await loadSportsGameEditHTML();
 
 renderBaseballGameEditForm();
+
+}
+
+
+/* =====================================================
+   ⚽ サッカー試合結果編集ページを開く
+===================================================== */
+
+async function openSoccerGameEditPage(date){
+
+    hideSportsSubPages();
+
+
+    const sportsPage =
+        document.getElementById(
+            "sportsCalendarPage"
+        );
+
+
+    const editPage =
+        document.getElementById(
+            "sportsGameEditPage"
+        );
+
+
+    if(!sportsPage || !editPage){
+
+        console.error(
+            "スポーツカレンダーまたはサッカー試合結果編集ページが見つかりません"
+        );
+
+        return;
+
+    }
+
+
+    sportsSelectedDate =
+        date;
+
+
+    sportsPage.classList.remove("active");
+    sportsPage.style.display = "none";
+
+
+    editPage.classList.add("active");
+    editPage.style.display = "block";
+
+
+    /*
+       sports-soccer.html を読み込む
+    */
+
+    await loadSoccerGameEditHTML();
+
+
+    /*
+       サッカー編集フォームを表示
+    */
+
+    renderSoccerGameEditForm();
 
 }
 
