@@ -978,6 +978,12 @@ function renderBaseballGameEditForm(){
     const currentTeam =
         getCurrentSportsTeamForEdit();
 
+    
+    const team =
+    currentTeam.team ||
+    game.team ||
+    "";
+
 
     const title =
         document.getElementById(
