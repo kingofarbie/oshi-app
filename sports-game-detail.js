@@ -451,21 +451,42 @@ function closeSportsGameDetailPage(){
             "sportsGameDetailPage"
         );
 
+    const editPage =
+        document.getElementById(
+            "sportsGameEditPage"
+        );
+
     const sportsPage =
         document.getElementById(
             "sportsCalendarPage"
         );
 
+    const sportsScreen =
+        document.getElementById(
+            "sportsCalendarScreen"
+        );
+
 
     /*
-       試合結果を非表示
+       結果画面を非表示
     */
 
     if(detailPage){
 
         detailPage.classList.remove("active");
-
         detailPage.style.display = "none";
+
+    }
+
+
+    /*
+       編集画面も念のため非表示
+    */
+
+    if(editPage){
+
+        editPage.classList.remove("active");
+        editPage.style.display = "none";
 
     }
 
@@ -477,8 +498,14 @@ function closeSportsGameDetailPage(){
     if(sportsPage){
 
         sportsPage.classList.add("active");
-
         sportsPage.style.display = "";
+
+    }
+
+
+    if(sportsScreen){
+
+        sportsScreen.style.display = "";
 
     }
 
@@ -488,5 +515,13 @@ function closeSportsGameDetailPage(){
     */
 
     renderSportsCalendar();
+
+
+    /*
+       選択日を解除
+    */
+
+    sportsSelectedDate =
+        null;
 
 }
