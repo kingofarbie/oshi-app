@@ -2305,6 +2305,11 @@ function hideSportsSubPages(){
             "sportsCalendarPage"
         );
 
+    const sportsScreen =
+        document.getElementById(
+            "sportsCalendarScreen"
+        );
+
     const detailPage =
         document.getElementById(
             "sportsGameDetailPage"
@@ -2320,6 +2325,13 @@ function hideSportsSubPages(){
 
         sportsPage.classList.remove("active");
         sportsPage.style.display = "none";
+
+    }
+
+
+    if(sportsScreen){
+
+        sportsScreen.style.display = "none";
 
     }
 
