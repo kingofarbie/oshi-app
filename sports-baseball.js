@@ -803,38 +803,21 @@ closeSportsGameModal();
 
 
 /*
-   保存完了後は
-   カレンダーへ戻らず、
-   今保存した試合の閲覧画面を表示
+   保存後は
+   今保存した試合の閲覧ページへ移動
 */
 
 const savedDate =
     sportsSelectedDate;
 
 
-const savedGames =
-    getCurrentSportsGames();
+if(savedDate){
 
-
-const savedGame =
-    savedGames[savedDate] ||
-    null;
-
-
-if(savedGame){
-
-    openBaseballGameView(
-        savedDate,
-        savedGame
+    openBaseballGameDetailPage(
+        savedDate
     );
 
-}else{
-
-    sportsSelectedDate =
-        null;
-
 }
-
 
 /*
    保存完了メッセージは
