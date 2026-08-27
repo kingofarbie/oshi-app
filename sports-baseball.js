@@ -984,6 +984,10 @@ function renderBaseballGameEditForm(){
     game.team ||
     "";
 
+    const opponent =
+    game.opponent ||
+    "";
+
 
     const title =
         document.getElementById(
