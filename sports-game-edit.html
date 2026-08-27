@@ -96,134 +96,310 @@
 
 
 
-        <!-- =========================
-             スコアボード
-        ========================== -->
+<!-- =========================
+     ⚾ スコアボード
+========================== -->
 
-        <section class="sports-edit-section">
+<section class="sports-edit-section"><h2>📊 スコアボード</h2>
 
-            <h2>📊 スコアボード</h2>
+<div class="baseball-score-wrapper">
 
+    <div class="baseball-score-scroll">
 
-            <div class="sports-edit-score-board">
+        <table class="baseball-score-table">
 
+            <thead>
+                <tr>
 
-                <!-- ヘッダー -->
-
-                <div class="sports-score-row sports-score-header">
-
-                    <div class="sports-score-inning">
+                    <th class="baseball-score-team">
                         回
-                    </div>
+                    </th>
 
-                    <div>
+                    <th>1</th>
+                    <th>2</th>
+                    <th>3</th>
+                    <th>4</th>
+                    <th>5</th>
+                    <th>6</th>
+                    <th>7</th>
+                    <th>8</th>
+                    <th>9</th>
+                    <th>10</th>
+                    <th>11</th>
+                    <th>12</th>
+
+                </tr>
+            </thead>
+
+
+            <tbody>
+
+                <tr>
+
+                    <th class="baseball-score-team">
                         応援チーム
-                    </div>
+                    </th>
 
-                    <div>
-                        相手
-                    </div>
+                    <td>
+                        <input
+                            id="sportsEditTeamScore1"
+                            class="baseball-score-input"
+                            type="number"
+                            min="0"
+                            inputmode="numeric"
+                        >
+                    </td>
 
-                </div>
+                    <td>
+                        <input
+                            id="sportsEditTeamScore2"
+                            class="baseball-score-input"
+                            type="number"
+                            min="0"
+                            inputmode="numeric"
+                        >
+                    </td>
+
+                    <td>
+                        <input
+                            id="sportsEditTeamScore3"
+                            class="baseball-score-input"
+                            type="number"
+                            min="0"
+                            inputmode="numeric"
+                        >
+                    </td>
+
+                    <td>
+                        <input
+                            id="sportsEditTeamScore4"
+                            class="baseball-score-input"
+                            type="number"
+                            min="0"
+                            inputmode="numeric"
+                        >
+                    </td>
+
+                    <td>
+                        <input
+                            id="sportsEditTeamScore5"
+                            class="baseball-score-input"
+                            type="number"
+                            min="0"
+                            inputmode="numeric"
+                        >
+                    </td>
+
+                    <td>
+                        <input
+                            id="sportsEditTeamScore6"
+                            class="baseball-score-input"
+                            type="number"
+                            min="0"
+                            inputmode="numeric"
+                        >
+                    </td>
+
+                    <td>
+                        <input
+                            id="sportsEditTeamScore7"
+                            class="baseball-score-input"
+                            type="number"
+                            min="0"
+                            inputmode="numeric"
+                        >
+                    </td>
+
+                    <td>
+                        <input
+                            id="sportsEditTeamScore8"
+                            class="baseball-score-input"
+                            type="number"
+                            min="0"
+                            inputmode="numeric"
+                        >
+                    </td>
+
+                    <td>
+                        <input
+                            id="sportsEditTeamScore9"
+                            class="baseball-score-input"
+                            type="number"
+                            min="0"
+                            inputmode="numeric"
+                        >
+                    </td>
+
+                    <td>
+                        <input
+                            id="sportsEditTeamScore10"
+                            class="baseball-score-input"
+                            type="number"
+                            min="0"
+                            inputmode="numeric"
+                        >
+                    </td>
+
+                    <td>
+                        <input
+                            id="sportsEditTeamScore11"
+                            class="baseball-score-input"
+                            type="number"
+                            min="0"
+                            inputmode="numeric"
+                        >
+                    </td>
+
+                    <td>
+                        <input
+                            id="sportsEditTeamScore12"
+                            class="baseball-score-input"
+                            type="number"
+                            min="0"
+                            inputmode="numeric"
+                        >
+                    </td>
+
+                </tr>
 
 
-                <!-- 1〜12回 -->
+                <tr>
 
-                <div class="sports-score-row">
-                    <div class="sports-score-inning">1</div>
-                    <input id="sportsEditTeamScore1" type="number" min="0" inputmode="numeric">
-                    <input id="sportsEditOpponentScore1" type="number" min="0" inputmode="numeric">
-                </div>
+                    <th class="baseball-score-team">
+                        相手チーム
+                    </th>
 
-                <div class="sports-score-row">
-                    <div class="sports-score-inning">2</div>
-                    <input id="sportsEditTeamScore2" type="number" min="0" inputmode="numeric">
-                    <input id="sportsEditOpponentScore2" type="number" min="0" inputmode="numeric">
-                </div>
+                    <td>
+                        <input
+                            id="sportsEditOpponentScore1"
+                            class="baseball-score-input"
+                            type="number"
+                            min="0"
+                            inputmode="numeric"
+                        >
+                    </td>
 
-                <div class="sports-score-row">
-                    <div class="sports-score-inning">3</div>
-                    <input id="sportsEditTeamScore3" type="number" min="0" inputmode="numeric">
-                    <input id="sportsEditOpponentScore3" type="number" min="0" inputmode="numeric">
-                </div>
+                    <td>
+                        <input
+                            id="sportsEditOpponentScore2"
+                            class="baseball-score-input"
+                            type="number"
+                            min="0"
+                            inputmode="numeric"
+                        >
+                    </td>
 
-                <div class="sports-score-row">
-                    <div class="sports-score-inning">4</div>
-                    <input id="sportsEditTeamScore4" type="number" min="0" inputmode="numeric">
-                    <input id="sportsEditOpponentScore4" type="number" min="0" inputmode="numeric">
-                </div>
+                    <td>
+                        <input
+                            id="sportsEditOpponentScore3"
+                            class="baseball-score-input"
+                            type="number"
+                            min="0"
+                            inputmode="numeric"
+                        >
+                    </td>
 
-                <div class="sports-score-row">
-                    <div class="sports-score-inning">5</div>
-                    <input id="sportsEditTeamScore5" type="number" min="0" inputmode="numeric">
-                    <input id="sportsEditOpponentScore5" type="number" min="0" inputmode="numeric">
-                </div>
+                    <td>
+                        <input
+                            id="sportsEditOpponentScore4"
+                            class="baseball-score-input"
+                            type="number"
+                            min="0"
+                            inputmode="numeric"
+                        >
+                    </td>
 
-                <div class="sports-score-row">
-                    <div class="sports-score-inning">6</div>
-                    <input id="sportsEditTeamScore6" type="number" min="0" inputmode="numeric">
-                    <input id="sportsEditOpponentScore6" type="number" min="0" inputmode="numeric">
-                </div>
+                    <td>
+                        <input
+                            id="sportsEditOpponentScore5"
+                            class="baseball-score-input"
+                            type="number"
+                            min="0"
+                            inputmode="numeric"
+                        >
+                    </td>
 
-                <div class="sports-score-row">
-                    <div class="sports-score-inning">7</div>
-                    <input id="sportsEditTeamScore7" type="number" min="0" inputmode="numeric">
-                    <input id="sportsEditOpponentScore7" type="number" min="0" inputmode="numeric">
-                </div>
+                    <td>
+                        <input
+                            id="sportsEditOpponentScore6"
+                            class="baseball-score-input"
+                            type="number"
+                            min="0"
+                            inputmode="numeric"
+                        >
+                    </td>
 
-                <div class="sports-score-row">
-                    <div class="sports-score-inning">8</div>
-                    <input id="sportsEditTeamScore8" type="number" min="0" inputmode="numeric">
-                    <input id="sportsEditOpponentScore8" type="number" min="0" inputmode="numeric">
-                </div>
+                    <td>
+                        <input
+                            id="sportsEditOpponentScore7"
+                            class="baseball-score-input"
+                            type="number"
+                            min="0"
+                            inputmode="numeric"
+                        >
+                    </td>
 
-                <div class="sports-score-row">
-                    <div class="sports-score-inning">9</div>
-                    <input id="sportsEditTeamScore9" type="number" min="0" inputmode="numeric">
-                    <input id="sportsEditOpponentScore9" type="number" min="0" inputmode="numeric">
-                </div>
+                    <td>
+                        <input
+                            id="sportsEditOpponentScore8"
+                            class="baseball-score-input"
+                            type="number"
+                            min="0"
+                            inputmode="numeric"
+                        >
+                    </td>
 
-                <div class="sports-score-row">
-                    <div class="sports-score-inning">10</div>
-                    <input id="sportsEditTeamScore10" type="number" min="0" inputmode="numeric">
-                    <input id="sportsEditOpponentScore10" type="number" min="0" inputmode="numeric">
-                </div>
+                    <td>
+                        <input
+                            id="sportsEditOpponentScore9"
+                            class="baseball-score-input"
+                            type="number"
+                            min="0"
+                            inputmode="numeric"
+                        >
+                    </td>
 
-                <div class="sports-score-row">
-                    <div class="sports-score-inning">11</div>
-                    <input id="sportsEditTeamScore11" type="number" min="0" inputmode="numeric">
-                    <input id="sportsEditOpponentScore11" type="number" min="0" inputmode="numeric">
-                </div>
+                    <td>
+                        <input
+                            id="sportsEditOpponentScore10"
+                            class="baseball-score-input"
+                            type="number"
+                            min="0"
+                            inputmode="numeric"
+                        >
+                    </td>
 
-                <div class="sports-score-row">
-                    <div class="sports-score-inning">12</div>
-                    <input id="sportsEditTeamScore12" type="number" min="0" inputmode="numeric">
-                    <input id="sportsEditOpponentScore12" type="number" min="0" inputmode="numeric">
-                </div>
+                    <td>
+                        <input
+                            id="sportsEditOpponentScore11"
+                            class="baseball-score-input"
+                            type="number"
+                            min="0"
+                            inputmode="numeric"
+                        >
+                    </td>
 
+                    <td>
+                        <input
+                            id="sportsEditOpponentScore12"
+                            class="baseball-score-input"
+                            type="number"
+                            min="0"
+                            inputmode="numeric"
+                        >
+                    </td>
 
-                <!-- 合計 -->
+                </tr>
 
-                <div class="sports-score-row sports-score-total">
+            </tbody>
 
-                    <div class="sports-score-inning">
-                        計
-                    </div>
+        </table>
 
-                    <div id="sportsEditTeamTotal">
-                        0
-                    </div>
+    </div>
 
-                    <div id="sportsEditOpponentTotal">
-                        0
-                    </div>
+</div>
 
-                </div>
-
-            </div>
-
-        </section>
-
+</section>
 
 
         <!-- =========================
