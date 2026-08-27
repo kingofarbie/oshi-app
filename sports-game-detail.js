@@ -405,7 +405,7 @@ if(!game){
 
                 <button
                     type="button"
-                    onclick="editBaseballGame()"
+                    onclick="openBaseballGameEditPage(sportsSelectedDate)"
                 >
                     ✏️ 編集
                 </button>
