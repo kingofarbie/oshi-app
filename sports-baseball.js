@@ -1046,6 +1046,11 @@ const startingPitcherInput =
         "sportsEditStartingPitcher"
     );
 
+const opponentPitcherInput =
+    document.getElementById(
+        "sportsEditOpponentPitcher"
+    );
+
 
 
     /*
@@ -1116,6 +1121,13 @@ if(startingPitcherInput){
 
 }
 
+if(opponentPitcherInput){
+
+    opponentPitcherInput.value =
+        game.opponentStartingPitcher ||
+        "";
+
+}
 
     /*
        イニング
