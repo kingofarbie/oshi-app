@@ -1,145 +1,23 @@
 /* =====================================================
-   ⚾ 野球スコアボード
+   ⚾ 野球専用CSS
+   スコアボード
+   編集画面・結果画面 共通
 ===================================================== */
-
-/* =====================================================
-   編集画面
-===================================================== */
-
-.sports-edit-score-board {
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    border-radius: 12px;
-}
-
-
-/*
-   旧スコアボード用
-   1行に横並び
-*/
-
-.sports-edit-score-board .sports-score-row {
-    display: grid;
-
-    grid-template-columns:
-        110px
-        repeat(12, 42px);
-
-    min-width: 614px;
-
-    align-items: center;
-}
-
-
-/* ヘッダー */
-
-.sports-edit-score-board .sports-score-header {
-    background: #222;
-    color: #fff;
-    font-weight: bold;
-}
-
-
-/* 各セル */
-
-.sports-edit-score-board .sports-score-row > div,
-.sports-edit-score-board .sports-score-row > input {
-    width: 42px;
-    height: 42px;
-
-    box-sizing: border-box;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-
-/* 左端 */
-
-.sports-edit-score-board .sports-score-row > div:first-child {
-    width: 110px;
-
-    padding: 0 6px;
-
-    font-size: 13px;
-    font-weight: bold;
-}
-
-
-/* 入力欄 */
-
-.sports-edit-score-board input[type="number"] {
-    margin: 0;
-    padding: 0;
-
-    border: 1px solid #ccc;
-    border-radius: 0;
-
-    background: #fff;
-
-    text-align: center;
-
-    font-size: 17px;
-    font-weight: bold;
-}
-
-
-/* フォーカス */
-
-.sports-edit-score-board input[type="number"]:focus {
-    outline: 2px solid #888;
-    outline-offset: -2px;
-}
-
-
-/* 合計 */
-
-.sports-edit-score-board .sports-score-total {
-    background: #f1f1f1;
-
-    font-weight: bold;
-
-    border-top: 2px solid #333;
-}
-
-
-.sports-edit-score-board .sports-score-total > div:not(:first-child) {
-    font-size: 17px;
-}
-
-
-/* 回 */
-
-.sports-edit-score-board .sports-score-inning {
-    background: #f5f5f5;
-    font-weight: bold;
-}
-
-
-/* ヘッダーの「回」 */
-
-.sports-edit-score-board .sports-score-header .sports-score-inning {
-    background: #222;
-    color: #fff;
-}
 
 
 /* =====================================================
-   現在の野球編集画面
-   baseball-score-table
+   ⚾ 編集画面 スコアボード
 ===================================================== */
 
 .baseball-score-wrapper {
     width: 100%;
     margin-top: 10px;
+    overflow: hidden;
 }
 
 
 .baseball-score-scroll {
     width: 100%;
-
     overflow-x: auto;
     overflow-y: hidden;
 
@@ -147,32 +25,34 @@
 
     border: 1px solid #ccc;
     border-radius: 10px;
+
+    box-sizing: border-box;
 }
 
 
-/*
-   横長の野球スコアボード
-*/
+/* -----------------------------------------------------
+   スコアボード本体
+   必ず横長
+----------------------------------------------------- */
 
 .baseball-score-table {
     border-collapse: collapse;
 
     width: max-content;
-
     min-width: 620px;
 
-    background: #fff;
-
     table-layout: fixed;
+
+    background: #fff;
 }
 
 
-/* 全セル */
+/* -----------------------------------------------------
+   全セル
+----------------------------------------------------- */
 
 .baseball-score-table th,
 .baseball-score-table td {
-    border: 1px solid #ccc;
-
     width: 42px;
     min-width: 42px;
 
@@ -180,16 +60,39 @@
 
     padding: 0;
 
+    border: 1px solid #ccc;
+
     text-align: center;
     vertical-align: middle;
 
     box-sizing: border-box;
+
+    white-space: nowrap;
 }
 
 
-/* 左端のチーム名 */
+/* -----------------------------------------------------
+   上段「1 2 3 ... 12 計」
+----------------------------------------------------- */
 
-.baseball-score-table th:first-child {
+.baseball-score-table thead th {
+    height: 38px;
+
+    background: #222;
+    color: #fff;
+
+    font-size: 13px;
+    font-weight: bold;
+
+    text-align: center;
+}
+
+
+/* -----------------------------------------------------
+   チーム名
+----------------------------------------------------- */
+
+.baseball-score-table th.baseball-score-team {
     width: 110px;
     min-width: 110px;
     max-width: 110px;
@@ -197,46 +100,38 @@
     padding: 0 6px;
 
     background: #f3f3f3;
-
     color: #222;
 
     font-size: 13px;
     font-weight: bold;
 
-    white-space: nowrap;
+    text-align: left;
 
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
 
-/* 上段の回数 */
+/* -----------------------------------------------------
+   ヘッダー左端「チーム」
+----------------------------------------------------- */
 
-.baseball-score-table thead th {
+.baseball-score-table thead th.baseball-score-team {
     background: #222;
-
     color: #fff;
-
-    font-weight: bold;
-    font-size: 13px;
 
     text-align: center;
 }
 
 
-/* 計 */
-
-.baseball-score-table thead th:last-child {
-    width: 55px;
-    min-width: 55px;
-
-    background: #444;
-}
-
-
-/* 入力欄 */
+/* -----------------------------------------------------
+   スコア入力
+----------------------------------------------------- */
 
 .baseball-score-table .baseball-score-input {
+    display: block;
+
     width: 42px;
     min-width: 42px;
 
@@ -249,19 +144,20 @@
     border-radius: 0;
 
     background: #fff;
+    color: #222;
 
     text-align: center;
 
     font-size: 17px;
     font-weight: bold;
 
-    color: #222;
-
     box-sizing: border-box;
 }
 
 
-/* フォーカス */
+/* -----------------------------------------------------
+   入力フォーカス
+----------------------------------------------------- */
 
 .baseball-score-table .baseball-score-input:focus {
     outline: 2px solid #555;
@@ -271,27 +167,41 @@
 }
 
 
-/* 合計 */
+/* -----------------------------------------------------
+   合計
+----------------------------------------------------- */
 
-.baseball-score-table .baseball-score-total {
+.baseball-score-table th.baseball-score-total,
+.baseball-score-table td.baseball-score-total {
     width: 55px;
     min-width: 55px;
+    max-width: 55px;
 
     background: #f1f1f1;
 
+    color: #222;
+
     font-size: 17px;
     font-weight: bold;
+
+    text-align: center;
+}
+
+
+/* -----------------------------------------------------
+   合計ヘッダー
+----------------------------------------------------- */
+
+.baseball-score-table thead th.baseball-score-total {
+    background: #444;
+    color: #fff;
 }
 
 
 /* =====================================================
-   結果画面
+   ⚾ 結果画面
    イニング別スコア
 ===================================================== */
-
-/*
-   横一列にする
-*/
 
 .baseball-view-inning-board {
     width: 100%;
@@ -305,15 +215,32 @@
     border-radius: 10px;
 
     box-sizing: border-box;
+
+    background: #fff;
 }
 
 
-/*
-   ヘッダー＋各行を
-   同じ横幅で揃える
-*/
+/* -----------------------------------------------------
+   ヘッダー
+   回 | 1 | 2 | 3 ... 12
+----------------------------------------------------- */
 
-.baseball-view-inning-header,
+.baseball-view-inning-header {
+    display: grid;
+
+    grid-template-columns:
+        110px
+        repeat(12, 42px);
+
+    width: max-content;
+    min-width: 614px;
+}
+
+
+/* -----------------------------------------------------
+   各イニング
+----------------------------------------------------- */
+
 .baseball-view-inning {
     display: grid;
 
@@ -321,24 +248,14 @@
         110px
         repeat(12, 42px);
 
+    width: max-content;
     min-width: 614px;
-
-    box-sizing: border-box;
 }
 
 
-/* ヘッダー */
-
-.baseball-view-inning-header {
-    background: #222;
-
-    color: #fff;
-
-    font-weight: bold;
-}
-
-
-/* 各セル */
+/* -----------------------------------------------------
+   結果画面セル
+----------------------------------------------------- */
 
 .baseball-view-inning-header > div,
 .baseball-view-inning > div {
@@ -358,10 +275,14 @@
     border-bottom: 1px solid #ccc;
 
     text-align: center;
+
+    white-space: nowrap;
 }
 
 
-/* 左端 */
+/* -----------------------------------------------------
+   左端
+----------------------------------------------------- */
 
 .baseball-view-inning-header > div:first-child,
 .baseball-view-inning > div:first-child {
@@ -379,7 +300,17 @@
 }
 
 
-/* ヘッダー左端 */
+/* -----------------------------------------------------
+   結果画面ヘッダー
+----------------------------------------------------- */
+
+.baseball-view-inning-header {
+    background: #222;
+    color: #fff;
+
+    font-weight: bold;
+}
+
 
 .baseball-view-inning-header > div:first-child {
     background: #222;
@@ -387,33 +318,36 @@
 }
 
 
-/* 回数 */
+/* -----------------------------------------------------
+   回数
+----------------------------------------------------- */
 
 .baseball-view-inning-number {
     background: #f5f5f5;
-
     color: #222;
 
     font-weight: bold;
 }
 
 
-/* 自分のチーム */
+/* -----------------------------------------------------
+   自分のチーム
+----------------------------------------------------- */
 
 .baseball-view-inning-team {
     background: #fff;
-
     color: #222;
 
     font-weight: bold;
 }
 
 
-/* 相手チーム */
+/* -----------------------------------------------------
+   相手チーム
+----------------------------------------------------- */
 
 .baseball-view-inning-opponent {
     background: #fff;
-
     color: #222;
 
     font-weight: bold;
@@ -421,7 +355,7 @@
 
 
 /* =====================================================
-   結果画面
+   ⚾ 結果画面
    最終スコア
 ===================================================== */
 
@@ -463,6 +397,11 @@
 }
 
 
+/* =====================================================
+   結果画面
+   ○○　○ - ○　○○
+===================================================== */
+
 .baseball-view-score {
     display: flex;
 
@@ -494,17 +433,15 @@
 
 
 /* =====================================================
-   スクロールバー
+   ⚾ スクロールバー
 ===================================================== */
 
-.sports-edit-score-board::-webkit-scrollbar,
 .baseball-score-scroll::-webkit-scrollbar,
 .baseball-view-inning-board::-webkit-scrollbar {
     height: 6px;
 }
 
 
-.sports-edit-score-board::-webkit-scrollbar-thumb,
 .baseball-score-scroll::-webkit-scrollbar-thumb,
 .baseball-view-inning-board::-webkit-scrollbar-thumb {
     background: #aaa;
@@ -513,17 +450,30 @@
 }
 
 
+.baseball-score-scroll::-webkit-scrollbar-track,
+.baseball-view-inning-board::-webkit-scrollbar-track {
+    background: #eee;
+}
+
+
 /* =====================================================
-   スマホ
+   📱 スマホ
 ===================================================== */
 
 @media (max-width: 480px) {
 
-    /* 編集 */
+
+    /* -------------------------------------------------
+       編集画面
+    ------------------------------------------------- */
+
+    .baseball-score-table {
+        min-width: 566px;
+    }
+
 
     .baseball-score-table th,
     .baseball-score-table td {
-
         width: 38px;
         min-width: 38px;
 
@@ -531,8 +481,7 @@
     }
 
 
-    .baseball-score-table th:first-child {
-
+    .baseball-score-table th.baseball-score-team {
         width: 90px;
         min-width: 90px;
         max-width: 90px;
@@ -540,22 +489,26 @@
 
 
     .baseball-score-table .baseball-score-input {
-
         width: 38px;
         min-width: 38px;
 
         height: 40px;
+
+        font-size: 16px;
     }
 
 
-    .baseball-score-table .baseball-score-total {
-
+    .baseball-score-table th.baseball-score-total,
+    .baseball-score-table td.baseball-score-total {
         width: 48px;
         min-width: 48px;
+        max-width: 48px;
     }
 
 
-    /* 結果画面 */
+    /* -------------------------------------------------
+       結果画面
+    ------------------------------------------------- */
 
     .baseball-view-inning-header,
     .baseball-view-inning {
@@ -586,7 +539,9 @@
     }
 
 
-    /* 最終スコア */
+    /* -------------------------------------------------
+       最終スコア
+    ------------------------------------------------- */
 
     .baseball-view-match {
 
