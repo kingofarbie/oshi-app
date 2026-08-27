@@ -1161,49 +1161,9 @@ if(opponentPitcherInput){
         :
         [];
 
-    const opponentFirst =
-    game.battingOrder === "opponent_first";
-
-
-    const scoreRows =
-    document.querySelectorAll(
-        ".baseball-score-table tbody tr"
-    );
-
-if(scoreRows.length >= 2){
-
-    const teamRow =
-        scoreRows[0];
-
-    const opponentRow =
-        scoreRows[1];
-
-    const tbody =
-        teamRow.parentNode;
-
-    if(opponentFirst){
-
-        tbody.appendChild(
-            opponentRow
-        );
-
-        tbody.appendChild(
-            teamRow
-        );
-
-    }else{
-
-        tbody.appendChild(
-            teamRow
-        );
-
-        tbody.appendChild(
-            opponentRow
-        );
-
-    }
-
-}
+const opponentFirst =
+    game.battingOrder === "second";
+    
 
 
     for(
@@ -1242,6 +1202,45 @@ if(scoreRows.length >= 2){
         }
 
     }
+
+
+
+
+const scoreTeamName =
+    document.getElementById(
+        "sportsEditScoreTeamName"
+    );
+
+const scoreOpponentName =
+    document.getElementById(
+        "sportsEditScoreOpponentName"
+    );
+
+if(scoreTeamName && scoreOpponentName){
+
+    if(opponentFirst){
+
+        scoreTeamName.textContent =
+            opponent ||
+            "相手チーム";
+
+        scoreOpponentName.textContent =
+            team ||
+            "応援チーム";
+
+    }else{
+
+        scoreTeamName.textContent =
+            team ||
+            "応援チーム";
+
+        scoreOpponentName.textContent =
+            opponent ||
+            "相手チーム";
+
+    }
+
+}
 
 
     /*

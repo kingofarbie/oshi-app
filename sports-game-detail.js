@@ -120,6 +120,10 @@ function openBaseballGameView(
         game.opponent ||
         "対戦相手";
 
+    const battingOrder =
+    game.battingOrder ||
+    "first";
+
 
     const location =
         game.location ||
@@ -432,113 +436,178 @@ function openBaseballGameView(
                         </thead>
 
 
-                        <tbody>
+<tbody>
 
+    ${
+        battingOrder === "first"
+        ?
 
-                            <!-- =====================
-                                 応援チーム
-                            ====================== -->
+        `
+        <!-- =====================
+             先攻：応援チーム → 相手チーム
+        ====================== -->
 
-                            <tr>
+        <tr>
 
-                                <th class="baseball-score-team">
+            <th class="baseball-score-team">
+                ${escapeSportsHTML(team)}
+            </th>
 
-                                    ${escapeSportsHTML(team)}
+            ${
+                Array.from(
+                    { length: 12 },
+                    (_, i) => {
 
-                                </th>
+                        const score =
+                            teamScores[i];
 
-
+                        return `
+                            <td>
                                 ${
-                                    Array.from(
-                                        { length: 12 },
-                                        (_, i) => {
-
-                                            const score =
-                                                teamScores[i];
-
-
-                                            return `
-                                                <td>
-                                                    ${
-                                                        score === "" ||
-                                                        score === undefined
-                                                        ?
-                                                        "-"
-                                                        :
-                                                        escapeSportsHTML(
-                                                            score
-                                                        )
-                                                    }
-                                                </td>
-                                            `;
-
-                                        }
-                                    ).join("")
+                                    score === "" ||
+                                    score === undefined
+                                    ?
+                                    "-"
+                                    :
+                                    escapeSportsHTML(score)
                                 }
+                            </td>
+                        `;
+
+                    }
+                ).join("")
+            }
+
+            <td class="baseball-score-total">
+                ${teamTotal}
+            </td>
+
+        </tr>
 
 
-                                <td class="baseball-score-total">
+        <tr>
 
-                                    ${teamTotal}
+            <th class="baseball-score-team">
+                ${escapeSportsHTML(opponent)}
+            </th>
 
-                                </td>
+            ${
+                Array.from(
+                    { length: 12 },
+                    (_, i) => {
 
-                            </tr>
+                        const score =
+                            opponentScores[i];
 
-
-                            <!-- =====================
-                                 相手チーム
-                            ====================== -->
-
-                            <tr>
-
-                                <th class="baseball-score-team">
-
-                                    ${escapeSportsHTML(opponent)}
-
-                                </th>
-
-
+                        return `
+                            <td>
                                 ${
-                                    Array.from(
-                                        { length: 12 },
-                                        (_, i) => {
-
-                                            const score =
-                                                opponentScores[i];
-
-
-                                            return `
-                                                <td>
-                                                    ${
-                                                        score === "" ||
-                                                        score === undefined
-                                                        ?
-                                                        "-"
-                                                        :
-                                                        escapeSportsHTML(
-                                                            score
-                                                        )
-                                                    }
-                                                </td>
-                                            `;
-
-                                        }
-                                    ).join("")
+                                    score === "" ||
+                                    score === undefined
+                                    ?
+                                    "-"
+                                    :
+                                    escapeSportsHTML(score)
                                 }
+                            </td>
+                        `;
+
+                    }
+                ).join("")
+            }
+
+            <td class="baseball-score-total">
+                ${opponentTotal}
+            </td>
+
+        </tr>
+        `
+
+        :
+
+        `
+        <!-- =====================
+             後攻：相手チーム → 応援チーム
+        ====================== -->
+
+        <tr>
+
+            <th class="baseball-score-team">
+                ${escapeSportsHTML(opponent)}
+            </th>
+
+            ${
+                Array.from(
+                    { length: 12 },
+                    (_, i) => {
+
+                        const score =
+                            opponentScores[i];
+
+                        return `
+                            <td>
+                                ${
+                                    score === "" ||
+                                    score === undefined
+                                    ?
+                                    "-"
+                                    :
+                                    escapeSportsHTML(score)
+                                }
+                            </td>
+                        `;
+
+                    }
+                ).join("")
+            }
+
+            <td class="baseball-score-total">
+                ${opponentTotal}
+            </td>
+
+        </tr>
 
 
-                                <td class="baseball-score-total">
+        <tr>
 
-                                    ${opponentTotal}
+            <th class="baseball-score-team">
+                ${escapeSportsHTML(team)}
+            </th>
 
-                                </td>
+            ${
+                Array.from(
+                    { length: 12 },
+                    (_, i) => {
 
-                            </tr>
+                        const score =
+                            teamScores[i];
 
+                        return `
+                            <td>
+                                ${
+                                    score === "" ||
+                                    score === undefined
+                                    ?
+                                    "-"
+                                    :
+                                    escapeSportsHTML(score)
+                                }
+                            </td>
+                        `;
 
-                        </tbody>
+                    }
+                ).join("")
+            }
 
+            <td class="baseball-score-total">
+                ${teamTotal}
+            </td>
+
+        </tr>
+        `
+    }
+
+</tbody>
                     </table>
 
                 </div>
