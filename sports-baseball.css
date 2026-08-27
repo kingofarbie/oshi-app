@@ -1,0 +1,118 @@
+/* =====================================================
+   ⚾ 野球スコアボード
+===================================================== */
+
+.sports-edit-score-board {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 12px;
+}
+
+
+/* スコア全体 */
+
+.sports-edit-score-board .sports-score-row {
+    display: grid;
+    grid-template-columns: 110px repeat(12, 42px);
+    min-width: 614px;
+    align-items: center;
+}
+
+
+/* ヘッダー */
+
+.sports-edit-score-board .sports-score-header {
+    background: #222;
+    color: #fff;
+    font-weight: bold;
+}
+
+
+/* 各セル */
+
+.sports-edit-score-board .sports-score-row > div,
+.sports-edit-score-board .sports-score-row > input {
+    width: 42px;
+    height: 42px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* チーム名 */
+
+.sports-edit-score-board .sports-score-row > div:first-child {
+    width: 110px;
+    padding: 0 6px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+
+/* 入力欄 */
+
+.sports-edit-score-board input[type="number"] {
+    margin: 0;
+    padding: 0;
+    border: 1px solid #ccc;
+    border-radius: 0;
+    background: #fff;
+    text-align: center;
+    font-size: 17px;
+    font-weight: bold;
+}
+
+
+/* フォーカス */
+
+.sports-edit-score-board input[type="number"]:focus {
+    outline: 2px solid #888;
+    outline-offset: -2px;
+}
+
+
+/* 合計 */
+
+.sports-edit-score-board .sports-score-total {
+    background: #f1f1f1;
+    font-weight: bold;
+    border-top: 2px solid #333;
+}
+
+
+/* 合計の数字 */
+
+.sports-edit-score-board .sports-score-total > div:not(:first-child) {
+    font-size: 17px;
+}
+
+
+/* 回数 */
+
+.sports-edit-score-board .sports-score-inning {
+    background: #f5f5f5;
+    font-weight: bold;
+}
+
+
+/* ヘッダーの「回」 */
+
+.sports-edit-score-board .sports-score-header .sports-score-inning {
+    background: #222;
+    color: #fff;
+}
+
+
+/* スクロールバー */
+
+.sports-edit-score-board::-webkit-scrollbar {
+    height: 6px;
+}
+
+.sports-edit-score-board::-webkit-scrollbar-thumb {
+    background: #aaa;
+    border-radius: 10px;
+}
