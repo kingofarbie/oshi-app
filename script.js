@@ -170,42 +170,37 @@ localStorage.setItem(
 
     }
 
+/* =====================
+   カレンダー
+===================== */
 
-    /* =====================
-       カレンダー
-    ===================== */
+if(pageId === 'calendarPage'){
 
-    if(pageId === 'calendarPage'){
+    /*
+       カレンダーHTMLを再読み込みして
+       DOM構造を確実に復元する
+    */
 
-        const calendar =
-            document.getElementById(
-                'calendar'
+    setTimeout(() => {
+
+        if(
+            typeof loadCalendarHTML ===
+            'function'
+        ){
+
+            loadCalendarHTML();
+
+        }else{
+
+            console.error(
+                "❌ loadCalendarHTML() が見つかりません"
             );
-
-
-        if(calendar){
-
-            calendar.style.display =
-                'block';
 
         }
 
+    }, 50);
 
-        setTimeout(() => {
-
-            if(
-                typeof renderCalendar ===
-                'function'
-            ){
-
-                renderCalendar();
-
-            }
-
-        }, 50);
-
-    }
-
+}
 
     /* =====================
        1日手帳
