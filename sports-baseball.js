@@ -936,6 +936,10 @@ function deleteBaseballGame(){
    ⚾ 野球編集フォーム
 ===================================================== */
 
+/* =====================================================
+   ⚾ 野球編集フォーム
+===================================================== */
+
 function renderBaseballGameEditForm(){
 
     const form =
@@ -978,16 +982,21 @@ function renderBaseballGameEditForm(){
     const currentTeam =
         getCurrentSportsTeamForEdit();
 
-    
+
     const team =
-    currentTeam.team ||
-    game.team ||
-    "";
+        currentTeam.team ||
+        game.team ||
+        "";
+
 
     const opponent =
-    game.opponent ||
-    "";
+        game.opponent ||
+        "";
 
+
+    /* =================================================
+       タイトル
+    ================================================= */
 
     const title =
         document.getElementById(
@@ -1023,6 +1032,10 @@ function renderBaseballGameEditForm(){
     }
 
 
+    /* =================================================
+       入力欄
+    ================================================= */
+
     const teamInput =
         document.getElementById(
             "sportsEditTeam"
@@ -1040,10 +1053,11 @@ function renderBaseballGameEditForm(){
             "sportsEditResult"
         );
 
+
     const battingOrderSelect =
-    document.getElementById(
-        "sportsEditBattingOrder"
-    );
+        document.getElementById(
+            "sportsEditBattingOrder"
+        );
 
 
     const memoInput =
@@ -1051,26 +1065,28 @@ function renderBaseballGameEditForm(){
             "sportsEditMemo"
         );
 
+
     const locationInput =
-    document.getElementById(
-        "sportsEditLocation"
-    );
-
-const startingPitcherInput =
-    document.getElementById(
-        "sportsEditStartingPitcher"
-    );
-
-const opponentPitcherInput =
-    document.getElementById(
-        "sportsEditOpponentPitcher"
-    );
+        document.getElementById(
+            "sportsEditLocation"
+        );
 
 
+    const startingPitcherInput =
+        document.getElementById(
+            "sportsEditStartingPitcher"
+        );
 
-    /*
+
+    const opponentPitcherInput =
+        document.getElementById(
+            "sportsEditOpponentPitcher"
+        );
+
+
+    /* =================================================
        応援チーム
-    */
+    ================================================= */
 
     if(teamInput){
 
@@ -1082,9 +1098,9 @@ const opponentPitcherInput =
     }
 
 
-    /*
+    /* =================================================
        対戦相手
-    */
+    ================================================= */
 
     if(opponentInput){
 
@@ -1095,9 +1111,9 @@ const opponentPitcherInput =
     }
 
 
-    /*
+    /* =================================================
        勝敗
-    */
+    ================================================= */
 
     if(resultSelect){
 
@@ -1107,18 +1123,23 @@ const opponentPitcherInput =
 
     }
 
+
+    /* =================================================
+       先攻・後攻
+    ================================================= */
+
     if(battingOrderSelect){
 
-    battingOrderSelect.value =
-        game.battingOrder ||
-        "";
+        battingOrderSelect.value =
+            game.battingOrder ||
+            "";
 
-}
+    }
 
 
-    /*
+    /* =================================================
        メモ
-    */
+    ================================================= */
 
     if(memoInput){
 
@@ -1128,36 +1149,54 @@ const opponentPitcherInput =
 
     }
 
+
+    /* =================================================
+       場所
+    ================================================= */
+
     if(locationInput){
 
-    locationInput.value =
-        game.location ||
-        "";
+        locationInput.value =
+            game.location ||
+            "";
 
-}
+    }
 
-if(startingPitcherInput){
 
-    startingPitcherInput.value =
-        game.startingPitcher ||
-        "";
+    /* =================================================
+       応援チーム先発投手
+    ================================================= */
 
-}
+    if(startingPitcherInput){
 
-if(opponentPitcherInput){
+        startingPitcherInput.value =
+            game.startingPitcher ||
+            "";
 
-    opponentPitcherInput.value =
-        game.opponentStartingPitcher ||
-        "";
+    }
 
-}
 
-    /*
-       イニング
-    */
+    /* =================================================
+       相手チーム先発投手
+    ================================================= */
+
+    if(opponentPitcherInput){
+
+        opponentPitcherInput.value =
+            game.opponentStartingPitcher ||
+            "";
+
+    }
+
+
+    /* =================================================
+       イニングスコア
+    ================================================= */
 
     const teamScores =
-        Array.isArray(game.teamScores)
+        Array.isArray(
+            game.teamScores
+        )
         ?
         game.teamScores
         :
@@ -1165,16 +1204,13 @@ if(opponentPitcherInput){
 
 
     const opponentScores =
-        Array.isArray(game.opponentScores)
+        Array.isArray(
+            game.opponentScores
+        )
         ?
         game.opponentScores
         :
         [];
-
-    const opponentFirst =
-    game.battingOrder === "opponent_first";
-
-    
 
 
     for(
@@ -1215,48 +1251,55 @@ if(opponentPitcherInput){
     }
 
 
+    /* =================================================
+       先攻・後攻変更イベント
+    ================================================= */
 
+    if(battingOrderSelect){
 
-const scoreTeamName =
-    document.getElementById(
-        "sportsEditScoreTeamName"
-    );
-
-const scoreOpponentName =
-    document.getElementById(
-        "sportsEditScoreOpponentName"
-    );
-
-if(scoreTeamName && scoreOpponentName){
-
-    if(opponentFirst){
-
-        scoreTeamName.textContent =
-            opponent ||
-            "相手チーム";
-
-        scoreOpponentName.textContent =
-            team ||
-            "応援チーム";
-
-    }else{
-
-        scoreTeamName.textContent =
-            team ||
-            "応援チーム";
-
-        scoreOpponentName.textContent =
-            opponent ||
-            "相手チーム";
+        battingOrderSelect.addEventListener(
+            "change",
+            updateBaseballEditBattingOrder
+        );
 
     }
 
-}
-
 
     /*
-       編集画面を表示
+       応援チーム・相手チーム名変更時も
+       スコアボードの名前を更新
     */
+
+    if(teamInput){
+
+        teamInput.addEventListener(
+            "input",
+            updateBaseballEditBattingOrder
+        );
+
+    }
+
+
+    if(opponentInput){
+
+        opponentInput.addEventListener(
+            "input",
+            updateBaseballEditBattingOrder
+        );
+
+    }
+
+
+    /* =================================================
+       初期表示時にも先攻・後攻を反映
+    ================================================= */
+
+    updateBaseballEditBattingOrder();
+
+
+    /* =================================================
+       編集画面を表示
+    ================================================= */
 
     const editPage =
         document.getElementById(
@@ -1278,6 +1321,257 @@ if(scoreTeamName && scoreOpponentName){
 }
 
 
+/* =====================================================
+   ⚾ 編集画面スコアボード
+   先攻・後攻変更
+===================================================== */
+
+function updateBaseballEditBattingOrder(){
+
+    const battingOrderSelect =
+        document.getElementById(
+            "sportsEditBattingOrder"
+        );
+
+    if(!battingOrderSelect){
+
+        return;
+
+    }
+
+
+    const teamInput =
+        document.getElementById(
+            "sportsEditTeam"
+        );
+
+    const opponentInput =
+        document.getElementById(
+            "sportsEditOpponent"
+        );
+
+
+    const team =
+        teamInput
+        ?
+        teamInput.value.trim()
+        :
+        "応援チーム";
+
+
+    const opponent =
+        opponentInput
+        ?
+        opponentInput.value.trim()
+        :
+        "相手チーム";
+
+
+    /* =================================================
+       スコアボードの行
+    ================================================= */
+
+    const teamScoreInput =
+        document.getElementById(
+            "sportsEditTeamScore1"
+        );
+
+    const opponentScoreInput =
+        document.getElementById(
+            "sportsEditOpponentScore1"
+        );
+
+
+    if(
+        !teamScoreInput ||
+        !opponentScoreInput
+    ){
+
+        return;
+
+    }
+
+
+    const teamRow =
+        teamScoreInput.closest(
+            "tr"
+        );
+
+
+    const opponentRow =
+        opponentScoreInput.closest(
+            "tr"
+        );
+
+
+    if(
+        !teamRow ||
+        !opponentRow
+    ){
+
+        return;
+
+    }
+
+
+    const tbody =
+        teamRow.parentElement;
+
+
+    if(!tbody){
+
+        return;
+
+    }
+
+
+    /* =================================================
+       現在の表示順を確認
+    ================================================= */
+
+    const rows =
+        Array.from(
+            tbody.querySelectorAll("tr")
+        );
+
+
+    if(rows.length < 2){
+
+        return;
+
+    }
+
+
+    const firstRow =
+        rows[0];
+
+
+    const secondRow =
+        rows[1];
+
+
+    /* =================================================
+       応援チームが後攻
+    ================================================= */
+
+    if(
+        battingOrderSelect.value ===
+        "opponent_first"
+    ){
+
+        /*
+           相手チーム
+           ↓
+           応援チーム
+        */
+
+        if(firstRow !== opponentRow){
+
+            tbody.insertBefore(
+                opponentRow,
+                teamRow
+            );
+
+        }
+
+    }
+
+
+    /* =================================================
+       応援チームが先攻
+    ================================================= */
+
+    else{
+
+        /*
+           応援チーム
+           ↓
+           相手チーム
+        */
+
+        if(firstRow !== teamRow){
+
+            tbody.insertBefore(
+                teamRow,
+                opponentRow
+            );
+
+        }
+
+    }
+
+
+    /* =================================================
+       行を入れ替えた後の名前
+    ================================================= */
+
+    const currentRows =
+        tbody.querySelectorAll("tr");
+
+
+    if(currentRows.length < 2){
+
+        return;
+
+    }
+
+
+    const firstName =
+        currentRows[0].querySelector(
+            ".baseball-score-team"
+        );
+
+
+    const secondName =
+        currentRows[1].querySelector(
+            ".baseball-score-team"
+        );
+
+
+    if(
+        battingOrderSelect.value ===
+        "opponent_first"
+    ){
+
+        if(firstName){
+
+            firstName.textContent =
+                opponent ||
+                "相手チーム";
+
+        }
+
+
+        if(secondName){
+
+            secondName.textContent =
+                team ||
+                "応援チーム";
+
+        }
+
+    }else{
+
+        if(firstName){
+
+            firstName.textContent =
+                team ||
+                "応援チーム";
+
+        }
+
+
+        if(secondName){
+
+            secondName.textContent =
+                opponent ||
+                "相手チーム";
+
+        }
+
+    }
+
+}
 
 
 
