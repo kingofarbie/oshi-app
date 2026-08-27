@@ -82,8 +82,11 @@ if(
         : "";
 
 
+if(calendar){
+
     calendar.style.display = "none";
 
+}
 
     planner.classList.remove(
         "planner-saturday",
