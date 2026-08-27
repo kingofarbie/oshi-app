@@ -129,6 +129,9 @@ const startingPitcher =
     game.startingPitcher ||
     "";
 
+const opponentStartingPitcher =
+    game.opponentStartingPitcher ||
+    "";
 
     const teamScores =
         Array.isArray(game.teamScores)
@@ -369,7 +372,9 @@ const startingPitcher =
 
     ${location ? `📍 ${escapeSportsHTML(location)}` : ""}
 
-    ${startingPitcher ? `⚾ 先発投手：${escapeSportsHTML(startingPitcher)}` : ""}
+${startingPitcher ? `⚾ ${escapeSportsHTML(team)} 先発：${escapeSportsHTML(startingPitcher)}` : ""}
+
+${opponentStartingPitcher ? `⚾ ${escapeSportsHTML(opponent)} 先発：${escapeSportsHTML(opponentStartingPitcher)}` : ""}
 
 </div>
 
