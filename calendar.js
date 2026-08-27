@@ -59,23 +59,76 @@ async function loadSportsGameEditHTML(){
             "sportsGameEditContainer"
         );
 
+
     if(!container){
+
+        console.error(
+            "sportsGameEditContainer が見つかりません"
+        );
+
         return;
+
     }
+
 
     try{
 
         const response =
-            await fetch("./sports-game-edit.html");
+            await fetch(
+                "./sports-game-edit.html"
+            );
+
 
         if(!response.ok){
+
             throw new Error(
                 "sports-game-edit.html の読み込みに失敗しました"
             );
+
         }
 
-        container.innerHTML =
+
+        const html =
             await response.text();
+
+
+        /*
+           HTML全体ではなく、
+           bodyの中身だけを読み込む。
+
+           これにより、
+
+           <html>
+           <head>
+           <body>
+
+           が index.html の中へ
+           二重に入るのを防ぐ。
+        */
+
+        const parser =
+            new DOMParser();
+
+
+        const doc =
+            parser.parseFromString(
+                html,
+                "text/html"
+            );
+
+
+        container.innerHTML =
+            doc.body.innerHTML;
+
+
+        /*
+           読み込み後、
+           現在のスポーツに合わせて
+           編集フォームを生成
+        */
+
+        renderBaseballGameEditForm();
+
 
     }catch(error){
 
@@ -84,18 +137,23 @@ async function loadSportsGameEditHTML(){
             error
         );
 
+
         container.innerHTML = `
+
             <div class="card">
+
                 <p>
-                    試合結果編集画面を読み込めませんでした。
+                    試合結果編集画面を
+                    読み込めませんでした。
                 </p>
+
             </div>
+
         `;
 
     }
 
 }
-
 
 /* =====================
    カレンダー状態

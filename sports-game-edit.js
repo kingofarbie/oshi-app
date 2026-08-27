@@ -179,272 +179,6 @@ function getCurrentSportsTeamForEdit(){
 }
 
 
-/* =====================================================
-   ⚾ 編集フォーム描画
-===================================================== */
-
-function renderSportsGameEditForm(){
-
-    const form =
-        document.getElementById(
-            "sportsGameEditForm"
-        );
-
-
-    if(!form){
-
-        console.error(
-            "sportsGameEditForm が見つかりません"
-        );
-
-        return;
-
-    }
-
-
-    if(!sportsSelectedDate){
-
-        console.error(
-            "sportsSelectedDate が設定されていません"
-        );
-
-        return;
-
-    }
-
-
-    const games =
-        getCurrentSportsGameForEdit();
-
-
-    const game =
-        games[sportsSelectedDate] ||
-        {};
-
-
-    const currentTeam =
-        getCurrentSportsTeamForEdit();
-
-
-    const title =
-        document.getElementById(
-            "sportsGameEditTitle"
-        );
-
-
-    if(title){
-
-        const dateObject =
-            new Date(
-                `${sportsSelectedDate}T00:00:00`
-            );
-
-
-        const weekdays = [
-            "日",
-            "月",
-            "火",
-            "水",
-            "木",
-            "金",
-            "土"
-        ];
-
-
-        title.textContent =
-            `⚾ ${dateObject.getFullYear()}年` +
-            `${dateObject.getMonth() + 1}月` +
-            `${dateObject.getDate()}日` +
-            `（${weekdays[dateObject.getDay()]}） 試合結果編集`;
-
-    }
-
-
-    const teamInput =
-        document.getElementById(
-            "sportsEditTeam"
-        );
-
-
-    const opponentInput =
-        document.getElementById(
-            "sportsEditOpponent"
-        );
-
-
-    const resultSelect =
-        document.getElementById(
-            "sportsEditResult"
-        );
-
-
-    const memoInput =
-        document.getElementById(
-            "sportsEditMemo"
-        );
-
-    const locationInput =
-    document.getElementById(
-        "sportsEditLocation"
-    );
-
-const startingPitcherInput =
-    document.getElementById(
-        "sportsEditStartingPitcher"
-    );
-
-
-
-    /*
-       応援チーム
-    */
-
-    if(teamInput){
-
-        teamInput.value =
-            currentTeam.team ||
-            game.team ||
-            "";
-
-    }
-
-
-    /*
-       対戦相手
-    */
-
-    if(opponentInput){
-
-        opponentInput.value =
-            game.opponent ||
-            "";
-
-    }
-
-
-    /*
-       勝敗
-    */
-
-    if(resultSelect){
-
-        resultSelect.value =
-            game.result ||
-            "";
-
-    }
-
-
-    /*
-       メモ
-    */
-
-    if(memoInput){
-
-        memoInput.value =
-            game.memo ||
-            "";
-
-    }
-
-    if(locationInput){
-
-    locationInput.value =
-        game.location ||
-        "";
-
-}
-
-if(startingPitcherInput){
-
-    startingPitcherInput.value =
-        game.startingPitcher ||
-        "";
-
-}
-
-
-    /*
-       イニング
-    */
-
-    const teamScores =
-        Array.isArray(game.teamScores)
-        ?
-        game.teamScores
-        :
-        [];
-
-
-    const opponentScores =
-        Array.isArray(game.opponentScores)
-        ?
-        game.opponentScores
-        :
-        [];
-
-
-    for(
-        let i = 0;
-        i < 12;
-        i++
-    ){
-
-        const teamScore =
-            document.getElementById(
-                `sportsEditTeamScore${i + 1}`
-            );
-
-
-        const opponentScore =
-            document.getElementById(
-                `sportsEditOpponentScore${i + 1}`
-            );
-
-
-        if(teamScore){
-
-            teamScore.value =
-                teamScores[i] ??
-                "";
-
-        }
-
-
-        if(opponentScore){
-
-            opponentScore.value =
-                opponentScores[i] ??
-                "";
-
-        }
-
-    }
-
-
-    /*
-       編集画面を表示
-    */
-
-    const editPage =
-        document.getElementById(
-            "sportsGameEditPage"
-        );
-
-
-    if(editPage){
-
-        editPage.classList.add(
-            "active"
-        );
-
-        editPage.style.display =
-            "block";
-
-    }
-
-}
-
 
 /* =====================================================
    ⚾ スコア取得
@@ -583,6 +317,22 @@ const startingPitcherInput =
         "sportsEditStartingPitcher"
     );
 
+    const opponentPitcherInput =
+    document.getElementById(
+        "sportsEditOpponentPitcher"
+    );
+
+    const opponentStartingPitcher =
+    opponentPitcherInput
+    ?
+    opponentPitcherInput.value.trim()
+    :
+    "";
+
+    
+
+    
+
 
     const location =
     locationInput
@@ -702,6 +452,10 @@ const startingPitcher =
 startingPitcher:
     startingPitcher,
 
+opponentStartingPitcher:
+    opponentStartingPitcher,
+
+    
         teamScores:
             scores.teamScores,
 

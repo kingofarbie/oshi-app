@@ -2378,20 +2378,10 @@ async function openBaseballGameEditPage(date){
     editPage.classList.add("active");
     editPage.style.display = "block";
 
-const loaded =
-    await loadSportsGameEditHTML();
+await loadSportsGameEditHTML();
 
-if(!loaded){
+renderBaseballGameEditForm();
 
-    console.error(
-        "試合結果編集HTMLの読み込みに失敗しました"
-    );
-
-    return;
-
-}
-
-renderSportsGameEditForm();
 }
 
 
