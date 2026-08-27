@@ -44,26 +44,24 @@ function openBaseballGameView(
     date
 ){
 
-
     sportsSelectedDate =
         date;
 
 
-const games =
-    getCurrentSportsGamesForDetail();
+    const games =
+        getCurrentSportsGamesForDetail();
 
 
-const game =
-    games[date] ||
-    null;
+    const game =
+        games[date] ||
+        null;
 
 
-if(!game){
+    if(!game){
 
-    return;
+        return;
 
-}
-
+    }
 
 
     const title =
@@ -113,6 +111,7 @@ if(!game){
 
     const team =
         current?.team ||
+        game.team ||
         data.sportsCalendar?.team ||
         "自分のチーム";
 
@@ -121,17 +120,21 @@ if(!game){
         game.opponent ||
         "対戦相手";
 
+
     const location =
-    game.location ||
-    "";
+        game.location ||
+        "";
 
-const startingPitcher =
-    game.startingPitcher ||
-    "";
 
-const opponentStartingPitcher =
-    game.opponentStartingPitcher ||
-    "";
+    const startingPitcher =
+        game.startingPitcher ||
+        "";
+
+
+    const opponentStartingPitcher =
+        game.opponentStartingPitcher ||
+        "";
+
 
     const teamScores =
         Array.isArray(game.teamScores)
@@ -162,7 +165,7 @@ const opponentStartingPitcher =
 
 
     /* =================================================
-       日付表示
+       日付
     ================================================= */
 
     const dateObject =
@@ -228,66 +231,12 @@ const opponentStartingPitcher =
             </div>
         `;
 
-    }
+    }else if(game.result === "cancelled"){
 
-
-    /* =================================================
-       イニングスコア
-    ================================================= */
-
-    let inningRows = "";
-
-
-    const maxInnings =
-        Math.max(
-            teamScores.length,
-            opponentScores.length,
-            9
-        );
-
-
-    for(
-        let i = 0;
-        i < maxInnings;
-        i++
-    ){
-
-        const teamScore =
-            teamScores[i] === "" ||
-            teamScores[i] === undefined
-            ?
-            "-"
-            :
-            teamScores[i];
-
-
-        const opponentScore =
-            opponentScores[i] === "" ||
-            opponentScores[i] === undefined
-            ?
-            "-"
-            :
-            opponentScores[i];
-
-
-        inningRows += `
-
-            <div class="baseball-view-inning">
-
-                <div class="baseball-view-inning-number">
-                    ${i + 1}
-                </div>
-
-                <div class="baseball-view-inning-team">
-                    ${escapeSportsHTML(teamScore)}
-                </div>
-
-                <div class="baseball-view-inning-opponent">
-                    ${escapeSportsHTML(opponentScore)}
-                </div>
-
+        resultHTML = `
+            <div class="baseball-view-result cancelled">
+                ⛔ 中止
             </div>
-
         `;
 
     }
@@ -325,139 +274,334 @@ const opponentStartingPitcher =
 
         <div class="baseball-game-view">
 
-            <!-- 日付 -->
+
+            <!-- =========================
+                 日付
+            ========================== -->
 
             <div class="baseball-view-date">
+
                 ${dateText}
+
             </div>
 
 
-            <!-- 対戦カード -->
+            <!-- =========================
+                 対戦カード
+            ========================== -->
 
             <div class="baseball-view-match">
 
                 <div class="baseball-view-team">
 
                     <div class="baseball-view-team-name">
+
                         ${escapeSportsHTML(team)}
+
                     </div>
 
                     <div class="baseball-view-total">
+
                         ${teamTotal}
+
                     </div>
 
                 </div>
 
 
                 <div class="baseball-view-vs">
+
                     −
+
                 </div>
 
 
                 <div class="baseball-view-team">
 
                     <div class="baseball-view-team-name">
+
                         ${escapeSportsHTML(opponent)}
+
                     </div>
 
                     <div class="baseball-view-total">
+
                         ${opponentTotal}
+
                     </div>
 
                 </div>
 
             </div>
 
+
+            <!-- =========================
+                 試合情報
+            ========================== -->
+
             <div class="baseball-view-info">
 
-    ${location ? `📍 ${escapeSportsHTML(location)}` : ""}
+                ${
+                    location
+                    ?
+                    `📍 ${escapeSportsHTML(location)}`
+                    :
+                    ""
+                }
 
-${startingPitcher ? `⚾ ${escapeSportsHTML(team)} 先発：${escapeSportsHTML(startingPitcher)}` : ""}
+                ${
+                    startingPitcher
+                    ?
+                    `<div>
+                        ⚾ ${escapeSportsHTML(team)}
+                        先発：
+                        ${escapeSportsHTML(startingPitcher)}
+                    </div>`
+                    :
+                    ""
+                }
 
-${opponentStartingPitcher ? `⚾ ${escapeSportsHTML(opponent)} 先発：${escapeSportsHTML(opponentStartingPitcher)}` : ""}
+                ${
+                    opponentStartingPitcher
+                    ?
+                    `<div>
+                        ⚾ ${escapeSportsHTML(opponent)}
+                        先発：
+                        ${escapeSportsHTML(
+                            opponentStartingPitcher
+                        )}
+                    </div>`
+                    :
+                    ""
+                }
 
-</div>
+            </div>
 
 
-
-            <!-- 結果 -->
+            <!-- =========================
+                 結果
+            ========================== -->
 
             ${resultHTML}
 
 
-            <!-- イニング -->
+            <!-- =========================
+                 イニングスコア
+            ========================== -->
 
             <div class="baseball-view-section-title">
+
                 ⚾ イニング別スコア
+
             </div>
 
 
-            <div class="baseball-view-inning-board">
+            <div class="baseball-score-wrapper">
 
-                <div class="baseball-view-inning-header">
+                <div class="baseball-score-scroll">
 
-                    <div>
-                        回
-                    </div>
+                    <table class="baseball-score-table">
 
-                    <div>
-                        ${escapeSportsHTML(team)}
-                    </div>
 
-                    <div>
-                        ${escapeSportsHTML(opponent)}
-                    </div>
+                        <thead>
+
+                            <tr>
+
+                                <th class="baseball-score-team">
+
+                                    チーム
+
+                                </th>
+
+
+                                <th>1</th>
+                                <th>2</th>
+                                <th>3</th>
+                                <th>4</th>
+                                <th>5</th>
+                                <th>6</th>
+                                <th>7</th>
+                                <th>8</th>
+                                <th>9</th>
+                                <th>10</th>
+                                <th>11</th>
+                                <th>12</th>
+
+
+                                <th class="baseball-score-total">
+
+                                    計
+
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+
+                            <!-- =====================
+                                 応援チーム
+                            ====================== -->
+
+                            <tr>
+
+                                <th class="baseball-score-team">
+
+                                    ${escapeSportsHTML(team)}
+
+                                </th>
+
+
+                                ${
+                                    Array.from(
+                                        { length: 12 },
+                                        (_, i) => {
+
+                                            const score =
+                                                teamScores[i];
+
+
+                                            return `
+                                                <td>
+                                                    ${
+                                                        score === "" ||
+                                                        score === undefined
+                                                        ?
+                                                        "-"
+                                                        :
+                                                        escapeSportsHTML(
+                                                            score
+                                                        )
+                                                    }
+                                                </td>
+                                            `;
+
+                                        }
+                                    ).join("")
+                                }
+
+
+                                <td class="baseball-score-total">
+
+                                    ${teamTotal}
+
+                                </td>
+
+                            </tr>
+
+
+                            <!-- =====================
+                                 相手チーム
+                            ====================== -->
+
+                            <tr>
+
+                                <th class="baseball-score-team">
+
+                                    ${escapeSportsHTML(opponent)}
+
+                                </th>
+
+
+                                ${
+                                    Array.from(
+                                        { length: 12 },
+                                        (_, i) => {
+
+                                            const score =
+                                                opponentScores[i];
+
+
+                                            return `
+                                                <td>
+                                                    ${
+                                                        score === "" ||
+                                                        score === undefined
+                                                        ?
+                                                        "-"
+                                                        :
+                                                        escapeSportsHTML(
+                                                            score
+                                                        )
+                                                    }
+                                                </td>
+                                            `;
+
+                                        }
+                                    ).join("")
+                                }
+
+
+                                <td class="baseball-score-total">
+
+                                    ${opponentTotal}
+
+                                </td>
+
+                            </tr>
+
+
+                        </tbody>
+
+                    </table>
 
                 </div>
 
-
-                ${inningRows}
-
             </div>
 
 
-            <!-- メモ -->
+            <!-- =========================
+                 メモ
+            ========================== -->
 
             ${memoHTML}
 
 
-            <!-- ボタン -->
+            <!-- =========================
+                 ボタン
+            ========================== -->
 
             <div class="baseball-view-buttons">
+
 
                 <button
                     type="button"
                     onclick="openBaseballGameEditPage(sportsSelectedDate)"
                 >
+
                     ✏️ 編集
+
                 </button>
+
 
                 <button
                     type="button"
-                        onclick="deleteBaseballGame()"
+                    onclick="deleteBaseballGame()"
                 >
-                        🗑️ 削除
+
+                    🗑️ 削除
+
                 </button>
-
-
-
 
 
                 <button
                     type="button"
                     onclick="closeSportsGameDetailPage()"
                 >
+
                     ❌ 閉じる
+
                 </button>
 
+
             </div>
+
 
         </div>
 
     `;
 
-
 }
-
-
-
