@@ -116,3 +116,214 @@
     background: #aaa;
     border-radius: 10px;
 }
+
+
+/* =====================================================
+   ⚾ 野球スコアボード
+===================================================== */
+
+.baseball-score-wrapper {
+    width: 100%;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+.baseball-score-scroll {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+}
+
+/* スコアボード本体 */
+
+.baseball-score-table {
+    border-collapse: collapse;
+    min-width: 620px;
+    width: max-content;
+    background: #fff;
+}
+
+/* 全セル */
+
+.baseball-score-table th,
+.baseball-score-table td {
+    border: 1px solid #ccc;
+    height: 42px;
+    min-width: 42px;
+    padding: 0;
+    text-align: center;
+    vertical-align: middle;
+    box-sizing: border-box;
+}
+
+/* ヘッダー */
+
+.baseball-score-table thead th {
+    background: #222;
+    color: #fff;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+/* チーム名 */
+
+.baseball-score-table .baseball-score-team {
+    width: 110px;
+    min-width: 110px;
+    max-width: 110px;
+    padding: 0 6px;
+    background: #f3f3f3;
+    color: #222;
+    font-size: 13px;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 入力欄 */
+
+.baseball-score-table .baseball-score-input {
+    width: 42px;
+    min-width: 42px;
+    height: 42px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: #fff;
+    text-align: center;
+    font-size: 17px;
+    font-weight: bold;
+    color: #222;
+    box-sizing: border-box;
+}
+
+/* 入力フォーカス */
+
+.baseball-score-table .baseball-score-input:focus {
+    outline: 2px solid #555;
+    outline-offset: -2px;
+    background: #f7f7f7;
+}
+
+/* 合計列 */
+
+.baseball-score-table .baseball-score-total {
+    min-width: 55px;
+    width: 55px;
+    background: #f1f1f1;
+    font-size: 17px;
+    font-weight: bold;
+}
+
+/* 合計列のヘッダー */
+
+.baseball-score-table thead .baseball-score-total {
+    background: #444;
+    color: #fff;
+}
+
+/* スクロールバー */
+
+.baseball-score-scroll::-webkit-scrollbar {
+    height: 7px;
+}
+
+.baseball-score-scroll::-webkit-scrollbar-thumb {
+    background: #999;
+    border-radius: 10px;
+}
+
+.baseball-score-scroll::-webkit-scrollbar-track {
+    background: #eee;
+}
+
+
+/* =====================================================
+   ⚾ 野球 試合結果メインスコア
+===================================================== */
+
+.baseball-view-match {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    width: 100%;
+    margin: 16px 0;
+    padding: 18px 12px;
+    box-sizing: border-box;
+}
+
+
+.baseball-view-team {
+    flex: 1;
+    min-width: 0;
+    text-align: center;
+}
+
+
+.baseball-view-team-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1.3;
+    word-break: break-word;
+}
+
+
+.baseball-view-score {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+
+.baseball-view-score strong {
+    font-size: 2rem;
+    font-weight: 800;
+    line-height: 1;
+}
+
+
+.baseball-view-score span {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+
+/* スマホ */
+
+@media (max-width: 480px) {
+
+    .baseball-view-match {
+        gap: 8px;
+        padding: 16px 6px;
+    }
+
+
+    .baseball-view-team-name {
+        font-size: 0.95rem;
+    }
+
+
+    .baseball-view-score {
+        gap: 7px;
+    }
+
+
+    .baseball-view-score strong {
+        font-size: 1.7rem;
+    }
+
+
+    .baseball-view-score span {
+        font-size: 1.25rem;
+    }
+
+}
