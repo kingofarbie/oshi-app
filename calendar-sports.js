@@ -1196,9 +1196,8 @@ if(game){
 
 }else{
 
-    openBaseballGameForm(
-        date,
-        null
+    openBaseballGameEditPage(
+        date
     );
 
 }
@@ -2254,5 +2253,41 @@ function openBaseballGameDetailPage(date){
     openBaseballGameView(
         date
     );
+
+}
+
+
+async function openBaseballGameEditPage(date){
+
+    const sportsPage =
+        document.getElementById(
+            "sportsCalendarPage"
+        );
+
+    const editPage =
+        document.getElementById(
+            "sportsGameEditPage"
+        );
+
+    if(!sportsPage || !editPage){
+
+        console.error(
+            "スポーツカレンダーまたは試合結果編集ページが見つかりません"
+        );
+
+        return;
+
+    }
+
+    sportsSelectedDate =
+        date;
+
+    sportsPage.classList.remove("active");
+    sportsPage.style.display = "none";
+
+    editPage.classList.add("active");
+    editPage.style.display = "block";
+
+    await loadSportsGameEditHTML();
 
 }

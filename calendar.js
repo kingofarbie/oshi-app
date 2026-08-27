@@ -51,6 +51,52 @@ renderCalendar();
 }
 
 
+
+async function loadSportsGameEditHTML(){
+
+    const container =
+        document.getElementById(
+            "sportsGameEditContainer"
+        );
+
+    if(!container){
+        return;
+    }
+
+    try{
+
+        const response =
+            await fetch("./sports-game-edit.html");
+
+        if(!response.ok){
+            throw new Error(
+                "sports-game-edit.html の読み込みに失敗しました"
+            );
+        }
+
+        container.innerHTML =
+            await response.text();
+
+    }catch(error){
+
+        console.error(
+            "sports-game-edit.html 読み込みエラー:",
+            error
+        );
+
+        container.innerHTML = `
+            <div class="card">
+                <p>
+                    試合結果編集画面を読み込めませんでした。
+                </p>
+            </div>
+        `;
+
+    }
+
+}
+
+
 /* =====================
    カレンダー状態
 ===================== */
