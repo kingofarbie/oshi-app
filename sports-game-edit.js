@@ -536,6 +536,8 @@ function collectSportsGameScores(){
 
 function saveSportsGameEdit(){
 
+    console.log("★ saveSportsGameEdit 実行");
+
     if(!sportsSelectedDate){
 
         alert(
