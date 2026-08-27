@@ -2252,6 +2252,9 @@ function openBaseballGameDetailPage(date){
        試合結果を描画
     */
 
+    console.log("★ openBaseballGameDetailPage → openBaseballGameView", date);
+
+
     openBaseballGameView(
         date
     );
