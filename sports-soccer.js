@@ -408,6 +408,30 @@ document.getElementById(
 
     </section>
 
+
+        <div class="sports-edit-buttons">
+
+        <button
+            type="button"
+            onclick="saveSoccerGameEdit()"
+        >
+            💾 保存
+        </button>
+
+        <button
+            type="button"
+            onclick="cancelSoccerGameEdit()"
+        >
+            キャンセル
+        </button>
+
+    </div>
+
+
+
+
+
+
     </section>
 `;
 
@@ -621,6 +645,63 @@ document.getElementById(
 
 }
 
+
+function saveSoccerGameEdit(){
+
+    if(!sportsSelectedDate){
+
+        return;
+
+    }
+
+
+    const teamInput =
+        document.getElementById(
+            "soccerEditTeam"
+        );
+
+    const opponentInput =
+        document.getElementById(
+            "soccerEditOpponent"
+        );
+
+    const homeAwaySelect =
+        document.getElementById(
+            "soccerEditHomeAway"
+        );
+
+
+    const game = {
+
+        team:
+            teamInput?.value.trim() ||
+            "",
+
+        opponent:
+            opponentInput?.value.trim() ||
+            "",
+
+        homeAway:
+            homeAwaySelect?.value ||
+            ""
+
+    };
+
+
+    saveSportsGameData(
+        sportsSelectedDate,
+        game
+    );
+
+
+    alert(
+        "⚽ 試合情報を保存しました。"
+    );
+
+
+    closeSportsGameEditPage();
+
+}
 
 /* =====================================================
    input値設定
