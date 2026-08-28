@@ -329,6 +329,66 @@ document.getElementById(
             autocomplete="off"
         >
 
+
+            <section class="sports-edit-section">
+
+        <h2>📊 スコア</h2>
+
+        <div class="soccer-score-row">
+
+            <div>
+                前半
+            </div>
+
+            <input
+                type="number"
+                id="soccerEditTeamFirstHalf"
+                min="0"
+                inputmode="numeric"
+                placeholder="0"
+            >
+
+            <span>-</span>
+
+            <input
+                type="number"
+                id="soccerEditOpponentFirstHalf"
+                min="0"
+                inputmode="numeric"
+                placeholder="0"
+            >
+
+        </div>
+
+
+        <div class="soccer-score-row">
+
+            <div>
+                後半
+            </div>
+
+            <input
+                type="number"
+                id="soccerEditTeamSecondHalf"
+                min="0"
+                inputmode="numeric"
+                placeholder="0"
+            >
+
+            <span>-</span>
+
+            <input
+                type="number"
+                id="soccerEditOpponentSecondHalf"
+                min="0"
+                inputmode="numeric"
+                placeholder="0"
+            >
+
+        </div>
+
+    </section>
+
     </section>
 `;
 
