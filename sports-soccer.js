@@ -211,62 +211,73 @@ async function openSoccerGameEditPage(date){
 
     hideSportsSubPages();
 
-    sportsSelectedDate =
-        date;
-
-
     const sportsPage =
         document.getElementById(
             "sportsCalendarPage"
         );
 
-    const soccerPage =
+    const editPage =
         document.getElementById(
-            "sportsSoccerPage"
+            "sportsGameEditPage"
         );
 
-
-    if(!sportsPage || !soccerPage){
+    if(!sportsPage || !editPage){
 
         console.error(
-            "スポーツカレンダーまたはサッカーページが見つかりません"
+            "スポーツカレンダーまたは編集ページが見つかりません"
         );
 
         return;
 
     }
 
+    sportsSelectedDate = date;
 
-    sportsPage.classList.remove(
-        "active"
+    sportsPage.style.display = "none";
+
+    editPage.style.display = "block";
+    editPage.classList.add("active");
+
+
+    console.log(
+        "① サッカー編集ページ表示開始"
     );
-
-    sportsPage.style.display =
-        "none";
-
-
-    soccerPage.classList.add(
-        "active"
-    );
-
-    soccerPage.style.display =
-        "block";
 
 
     const loaded =
-        await loadSportsSoccerHTML();
+        await loadSportsGameEditHTML();
+
+
+    console.log(
+        "② 共通編集HTML読み込み結果:",
+        loaded
+    );
+
 
     if(!loaded){
+
+        console.error(
+            "③ 編集HTMLの読み込みに失敗"
+        );
 
         return;
 
     }
+
+
+    console.log(
+        "③ 共通編集HTML読み込み完了"
+    );
 
 
     renderSoccerGameEditForm();
 
-}
 
+    console.log(
+        "④ サッカー編集フォーム描画完了"
+    );
+
+}
 
 /* =====================================================
    ⚽ サッカー編集フォーム描画
