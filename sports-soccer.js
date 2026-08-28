@@ -685,20 +685,30 @@ document.getElementById(
 
 function saveSoccerGameEdit(){
 
-if(!sportsSelectedDate){
+    /* =========================
+       試合日チェック
+    ========================= */
 
-    alert(
-        "試合日が設定されていません。\nもう一度、カレンダーから試合日を選択してください。"
-    );
+    if(!sportsSelectedDate){
 
-    console.error(
-        "❌ sportsSelectedDate が空です:",
-        sportsSelectedDate
-    );
+        alert(
+            "試合日が設定されていません。\n" +
+            "もう一度、カレンダーから試合日を選択してください。"
+        );
 
-    return;
+        console.error(
+            "❌ sportsSelectedDate が空です:",
+            sportsSelectedDate
+        );
 
-}
+        return;
+
+    }
+
+
+    /* =========================
+       入力欄取得
+    ========================= */
 
     const teamInput =
         document.getElementById(
@@ -716,22 +726,134 @@ if(!sportsSelectedDate){
         );
 
 
+    const firstHalfTeamInput =
+        document.getElementById(
+            "soccerEditTeamFirstHalf"
+        );
+
+    const firstHalfOpponentInput =
+        document.getElementById(
+            "soccerEditOpponentFirstHalf"
+        );
+
+    const secondHalfTeamInput =
+        document.getElementById(
+            "soccerEditTeamSecondHalf"
+        );
+
+    const secondHalfOpponentInput =
+        document.getElementById(
+            "soccerEditOpponentSecondHalf"
+        );
+
+
+    const locationInput =
+        document.getElementById(
+            "soccerEditLocation"
+        );
+
+    const resultSelect =
+        document.getElementById(
+            "soccerEditResult"
+        );
+
+    const memoInput =
+        document.getElementById(
+            "soccerEditMemo"
+        );
+
+
+    /* =========================
+       現在の試合データ取得
+       既存データを保持する
+    ========================= */
+
+    const games =
+        getCurrentSoccerGames();
+
+    const oldGame =
+        games[sportsSelectedDate] ||
+        {};
+
+
+    /* =========================
+       試合データ作成
+    ========================= */
+
     const game = {
+
+        ...oldGame,
+
+
+        /* チーム */
 
         team:
             teamInput?.value.trim() ||
             "",
 
+
         opponent:
             opponentInput?.value.trim() ||
             "",
 
+
+        /* ホーム・アウェイ */
+
         homeAway:
             homeAwaySelect?.value ||
+            "",
+
+
+        /* 前半 */
+
+        firstHalfTeam:
+            firstHalfTeamInput?.value ||
+            "",
+
+
+        firstHalfOpponent:
+            firstHalfOpponentInput?.value ||
+            "",
+
+
+        /* 後半 */
+
+        secondHalfTeam:
+            secondHalfTeamInput?.value ||
+            "",
+
+
+        secondHalfOpponent:
+            secondHalfOpponentInput?.value ||
+            "",
+
+
+        /* 会場 */
+
+        location:
+            locationInput?.value.trim() ||
+            "",
+
+
+        /* 結果 */
+
+        result:
+            resultSelect?.value ||
+            "",
+
+
+        /* メモ */
+
+        memo:
+            memoInput?.value ||
             ""
 
     };
 
+
+    /* =========================
+       保存
+    ========================= */
 
     saveSportsGameData(
         sportsSelectedDate,
@@ -739,12 +861,19 @@ if(!sportsSelectedDate){
     );
 
 
-    alert(
-        "⚽ 試合情報を保存しました。"
+    console.log(
+        "⚽ サッカー試合結果を保存:",
+        game
     );
 
 
-    closeSportsGameEditPage();
+    /* =========================
+       結果画面へ
+    ========================= */
+
+    openSoccerGameDetailPage(
+        sportsSelectedDate
+    );
 
 }
 
@@ -2056,26 +2185,25 @@ if(game.homeAway === "away"){
                     ${rowsHTML}
 
 
-                    <div class="soccer-view-score-row total">
+<div class="soccer-view-score-row total">
 
-                        <div class="soccer-view-period">
-                            計
-                        </div>
+    <div class="soccer-view-period">
+        計
+    </div>
 
-                        <strong>
-                            ${teamTotal}
-                        </strong>
+    <strong>
+        ${homeScore}
+    </strong>
 
-                        <span>
-                            -
-                        </span>
+    <span>
+        -
+    </span>
 
-                        <strong>
-                            ${opponentTotal}
-                        </strong>
+    <strong>
+        ${awayScore}
+    </strong>
 
-                    </div>
-
+</div>
                 </div>
 
 
