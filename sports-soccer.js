@@ -353,6 +353,25 @@ document.getElementById(
 
         <h2>📊 スコア</h2>
 
+        <div class="soccer-score-teams">
+
+    <div id="soccerEditHomeTeamName">
+        ホーム
+    </div>
+
+    <div>
+        -
+    </div>
+
+    <div id="soccerEditAwayTeamName">
+        アウェイ
+    </div>
+
+</div>
+
+
+
+
         <div class="soccer-score-row">
 
             <div>
@@ -533,6 +552,13 @@ document.getElementById(
             "soccerEditOpponent"
         );
 
+    const homeAwaySelect =
+    document.getElementById(
+        "soccerEditHomeAway"
+    );
+
+    
+
     const locationInput =
         document.getElementById(
             "soccerEditLocation"
@@ -563,6 +589,15 @@ document.getElementById(
             opponent;
 
     }
+
+    if(homeAwaySelect){
+
+    homeAwaySelect.addEventListener(
+        "change",
+        updateSoccerScoreTeamNames
+    );
+
+}
 
 
     if(locationInput){
@@ -702,6 +737,91 @@ function saveSoccerGameEdit(){
     closeSportsGameEditPage();
 
 }
+
+
+function updateSoccerScoreTeamNames(){
+
+    const teamInput =
+        document.getElementById(
+            "soccerEditTeam"
+        );
+
+    const opponentInput =
+        document.getElementById(
+            "soccerEditOpponent"
+        );
+
+    const homeAwaySelect =
+        document.getElementById(
+            "soccerEditHomeAway"
+        );
+
+    const homeName =
+        document.getElementById(
+            "soccerEditHomeTeamName"
+        );
+
+    const awayName =
+        document.getElementById(
+            "soccerEditAwayTeamName"
+        );
+
+
+    if(
+        !homeName ||
+        !awayName
+    ){
+
+        return;
+
+    }
+
+
+    const team =
+        teamInput?.value.trim() ||
+        "応援チーム";
+
+    const opponent =
+        opponentInput?.value.trim() ||
+        "相手チーム";
+
+
+    const homeAway =
+        homeAwaySelect?.value ||
+        "";
+
+
+    if(homeAway === "home"){
+
+        homeName.textContent =
+            team;
+
+        awayName.textContent =
+            opponent;
+
+    }
+    else if(homeAway === "away"){
+
+        homeName.textContent =
+            opponent;
+
+        awayName.textContent =
+            team;
+
+    }
+    else{
+
+        homeName.textContent =
+            "ホーム";
+
+        awayName.textContent =
+            "アウェイ";
+
+    }
+
+}
+
+
 
 /* =====================================================
    input値設定
