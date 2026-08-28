@@ -742,8 +742,7 @@ if(!sportsSelectedDate){
     );
 
 
-    closeSportsGameEditPage();
-
+hideSportsSubPages();
 }
 
 
