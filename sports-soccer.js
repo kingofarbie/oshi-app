@@ -306,6 +306,33 @@ document.getElementById(
 
     }
 
+    form.innerHTML = `
+    <section class="sports-edit-section">
+
+        <h2>⚽ 試合情報</h2>
+
+        <label>自分の応援チーム</label>
+
+        <input
+            type="text"
+            id="soccerEditTeam"
+            placeholder="応援チーム名"
+            autocomplete="off"
+        >
+
+        <label>相手チーム</label>
+
+        <input
+            type="text"
+            id="soccerEditOpponent"
+            placeholder="相手チーム名"
+            autocomplete="off"
+        >
+
+    </section>
+`;
+
+
 
     const games =
         getCurrentSoccerGames();
