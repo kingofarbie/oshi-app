@@ -1175,7 +1175,7 @@ function openSportsGame(date){
 
 
 /* =====================
-   現在は野球のみ
+   現在は野球サッカー
 ===================== */
 
 if(sport === "baseball"){
@@ -1360,8 +1360,6 @@ function saveSportsGameData(
 
     db.save(data);
 
-
-    renderSportsCalendar();
 
 }
 
@@ -2515,6 +2513,8 @@ function closeSportsGameEditPage(){
         null;
 
 }
+
+
 
 function hideSportsSubPages(){
 
