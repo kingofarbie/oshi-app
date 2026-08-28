@@ -742,7 +742,8 @@ if(!sportsSelectedDate){
     );
 
 
-hideSportsSubPages();
+    closeSportsGameEditPage();
+
 }
 
 
@@ -1491,13 +1492,13 @@ function saveSoccerGameEdit(){
     );
 
 
-    alert(
-        "⚽ 試合結果を保存しました。"
-    );
+alert(
+    "⚽ 試合情報を保存しました。"
+);
 
-
-    closeSoccerGameEditPage();
-
+openSoccerGameDetailPage(
+    sportsSelectedDate
+);
 }
 
 

@@ -1361,6 +1361,8 @@ function saveSportsGameData(
     db.save(data);
 
 
+    renderSportsCalendar();
+
 }
 
 
