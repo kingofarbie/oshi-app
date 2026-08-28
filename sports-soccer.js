@@ -1617,11 +1617,10 @@ function saveSoccerGameEdit(){
     };
 
 
-    saveSportsGameData(
-        sportsSelectedDate,
-        game
-    );
-
+saveSoccerGameData(
+    sportsSelectedDate,
+    game
+);
 
 alert(
     "⚽ 試合情報を保存しました。"
@@ -1677,14 +1676,50 @@ function getSoccerNumber(id){
    ⚽ データ保存
 ===================================================== */
 
-function saveSportsGameData(
+function saveSoccerGameData(
     date,
     game
 ){
 
+    /* =========================
+       基本チェック
+    ========================= */
+
+    if(!date){
+
+        console.error(
+            "❌ サッカー試合保存失敗：date がありません",
+            date
+        );
+
+        return false;
+
+    }
+
+
+    if(!game || typeof game !== "object"){
+
+        console.error(
+            "❌ サッカー試合保存失敗：game が不正です",
+            game
+        );
+
+        return false;
+
+    }
+
+
+    /* =========================
+       DB取得
+    ========================= */
+
     const data =
         db.load();
 
+
+    /* =========================
+       sportsCalendar 初期化
+    ========================= */
 
     if(!data.sportsCalendar){
 
@@ -1708,6 +1743,10 @@ function saveSportsGameData(
     }
 
 
+    /* =========================
+       現在選択中スポーツ
+    ========================= */
+
     const selectedIndex =
         typeof data.sportsCalendar.selectedIndex === "number"
         ?
@@ -1715,6 +1754,10 @@ function saveSportsGameData(
         :
         0;
 
+
+    /* =========================
+       スポーツ別 games 初期化
+    ========================= */
 
     if(
         !data.sportsCalendar.games[selectedIndex] ||
@@ -1727,14 +1770,46 @@ function saveSportsGameData(
     }
 
 
-    data.sportsCalendar.games[selectedIndex][date] =
-        game;
+    /* =========================
+       サッカー試合データ保存
+    ========================= */
 
+    data.sportsCalendar.games[selectedIndex][date] =
+        {
+            ...game
+        };
+
+
+    /* =========================
+       DB保存
+    ========================= */
 
     db.save(data);
 
 
+    console.log(
+        "⚽ サッカー試合データ保存完了:",
+        {
+            date:
+                date,
+
+            selectedIndex:
+                selectedIndex,
+
+            game:
+                data.sportsCalendar.games[selectedIndex][date]
+        }
+    );
+
+
+    /* =========================
+       カレンダー更新
+    ========================= */
+
     renderSportsCalendar();
+
+
+    return true;
 
 }
 
