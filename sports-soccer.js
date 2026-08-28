@@ -330,6 +330,25 @@ document.getElementById(
         >
 
 
+        <label>
+    ホーム・アウェイ
+</label>
+
+<select id="soccerEditHomeAway">
+    <option value="">
+        未設定
+    </option>
+
+    <option value="home">
+        応援チームがホーム
+    </option>
+
+    <option value="away">
+        応援チームがアウェイ
+    </option>
+</select>
+
+
             <section class="sports-edit-section">
 
         <h2>📊 スコア</h2>
