@@ -286,14 +286,13 @@ async function openSoccerGameEditPage(date){
 function renderSoccerGameEditForm(){
 
     const form =
-        document.getElementById(
-            "soccerGameEditForm"
-        );
-
+document.getElementById(
+    "sportsGameEditForm"
+);
     if(!form){
 
         console.error(
-            "soccerGameEditForm が見つかりません"
+            "sportsEditForm見つかりません"
         );
 
         return;
