@@ -683,12 +683,20 @@ document.getElementById(
 
 function saveSoccerGameEdit(){
 
-    if(!sportsSelectedDate){
+if(!sportsSelectedDate){
 
-        return;
+    alert(
+        "試合日が設定されていません。\nもう一度、カレンダーから試合日を選択してください。"
+    );
 
-    }
+    console.error(
+        "❌ sportsSelectedDate が空です:",
+        sportsSelectedDate
+    );
 
+    return;
+
+}
 
     const teamInput =
         document.getElementById(
