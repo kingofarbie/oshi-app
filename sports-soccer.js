@@ -1795,6 +1795,17 @@ const opponent =
     game.opponent ||
     "相手チーム";
 
+        const teamTotal =
+        calculateSoccerTotal(
+            game
+        );
+
+    const opponentTotal =
+        calculateSoccerOpponentTotal(
+            game
+        );
+
+
 
 /*
    ホーム・アウェイを判定
@@ -1830,15 +1841,6 @@ if(game.homeAway === "away"){
 
 }
 
-    const teamTotal =
-        calculateSoccerTotal(
-            game
-        );
-
-    const opponentTotal =
-        calculateSoccerOpponentTotal(
-            game
-        );
 
 
     const penaltyEnabled =
