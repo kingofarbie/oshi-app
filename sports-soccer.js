@@ -279,6 +279,8 @@ async function openSoccerGameEditPage(date){
 
 }
 
+
+
 /* =====================================================
    ⚽ サッカー編集フォーム描画
 ===================================================== */
@@ -1785,14 +1787,48 @@ function renderSoccerGameView(date){
     }
 
 
-    const team =
-        game.team ||
-        "応援チーム";
+const team =
+    game.team ||
+    "応援チーム";
 
-    const opponent =
-        game.opponent ||
-        "相手チーム";
+const opponent =
+    game.opponent ||
+    "相手チーム";
 
+
+/*
+   ホーム・アウェイを判定
+*/
+
+let homeTeam =
+    team;
+
+let awayTeam =
+    opponent;
+
+
+let homeScore =
+    teamTotal;
+
+let awayScore =
+    opponentTotal;
+
+
+if(game.homeAway === "away"){
+
+    homeTeam =
+        opponent;
+
+    awayTeam =
+        team;
+
+    homeScore =
+        opponentTotal;
+
+    awayScore =
+        teamTotal;
+
+}
 
     const teamTotal =
         calculateSoccerTotal(
@@ -1971,32 +2007,47 @@ function renderSoccerGameView(date){
                 </div>
 
 
-                <div class="soccer-view-match">
+<div class="soccer-view-match">
 
-                    <div class="soccer-view-team">
-                        ${escapeSportsHTML(team)}
-                    </div>
+    <div class="soccer-view-team">
 
-                    <div class="soccer-view-final">
-                        <strong>
-                            ${teamTotal}
-                        </strong>
+        <small>
+            🏠 ホーム
+        </small>
 
-                        <span>
-                            -
-                        </span>
+        ${escapeSportsHTML(homeTeam)}
 
-                        <strong>
-                            ${opponentTotal}
-                        </strong>
-                    </div>
+    </div>
 
-                    <div class="soccer-view-team">
-                        ${escapeSportsHTML(opponent)}
-                    </div>
 
-                </div>
+    <div class="soccer-view-final">
 
+        <strong>
+            ${homeScore}
+        </strong>
+
+        <span>
+            -
+        </span>
+
+        <strong>
+            ${awayScore}
+        </strong>
+
+    </div>
+
+
+    <div class="soccer-view-team">
+
+        <small>
+            ✈️ アウェイ
+        </small>
+
+        ${escapeSportsHTML(awayTeam)}
+
+    </div>
+
+</div>
 
                 <div class="soccer-view-scoreboard">
 
