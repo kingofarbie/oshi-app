@@ -1438,7 +1438,7 @@ function renderSoccerGameView(date){
             "sportsGameDetail"
         );
 
-        
+
     if(!page){
 
         return;
@@ -1862,3 +1862,69 @@ function escapeSportsHTML(value){
 }
 
 
+/* =====================================================
+   ⚽ サッカー試合結果編集HTML読み込み
+===================================================== */
+
+async function loadSoccerGameEditHTML(){
+
+    const container =
+        document.getElementById(
+            "sportsGameEditContainer"
+        );
+
+    if(!container){
+
+        console.error(
+            "sportsGameEditContainer が見つかりません"
+        );
+
+        return false;
+
+    }
+
+
+    try{
+
+        const response =
+            await fetch(
+                "./sports-game-edit.html"
+            );
+
+
+        if(!response.ok){
+
+            throw new Error(
+                `HTTP ${response.status}`
+            );
+
+        }
+
+
+        const html =
+            await response.text();
+
+
+        container.innerHTML =
+            html;
+
+
+        console.log(
+            "sports-game-edit.html（サッカー）読み込み成功"
+        );
+
+
+        return true;
+
+    }catch(error){
+
+        console.error(
+            "sports-game-edit.html（サッカー）の読み込みに失敗:",
+            error
+        );
+
+        return false;
+
+    }
+
+}
