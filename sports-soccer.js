@@ -195,20 +195,17 @@ function calculateSoccerOpponentTotal(game){
 
 async function openSoccerGameEditPage(date){
 
-    hideSportsSubPages();
-
+    sportsSelectedDate = date;
 
     const sportsPage =
         document.getElementById(
             "sportsCalendarPage"
         );
 
-
     const editPage =
         document.getElementById(
             "sportsGameEditPage"
         );
-
 
     if(
         !sportsPage ||
@@ -223,38 +220,32 @@ async function openSoccerGameEditPage(date){
 
     }
 
-
-    sportsSelectedDate =
-        date;
-
-
     sportsPage.style.display =
         "none";
 
+    sportsPage.classList.remove(
+        "active"
+    );
 
     editPage.style.display =
         "block";
-
 
     editPage.classList.add(
         "active"
     );
 
-
     console.log(
-        "① サッカー編集ページ表示開始"
+        "① サッカー編集ページ表示開始:",
+        date
     );
-
 
     const loaded =
         await loadSoccerGameEditHTML();
-
 
     console.log(
         "② サッカー編集HTML読み込み結果:",
         loaded
     );
-
 
     if(!loaded){
 
@@ -266,16 +257,13 @@ async function openSoccerGameEditPage(date){
 
     }
 
-
     renderSoccerGameEditForm();
-
 
     console.log(
         "④ サッカー編集フォーム描画完了"
     );
 
 }
-
 
 /* =====================================================
    ⚽ 編集フォーム描画
