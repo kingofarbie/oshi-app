@@ -281,6 +281,12 @@ async function openSoccerGameEditPage(date){
 
 
 
+
+
+
+
+
+
 /* =====================================================
    ⚽ サッカー編集フォーム描画
 ===================================================== */
@@ -288,13 +294,14 @@ async function openSoccerGameEditPage(date){
 function renderSoccerGameEditForm(){
 
     const form =
-document.getElementById(
-    "sportsGameEditForm"
-);
+        document.getElementById(
+            "sportsGameEditForm"
+        );
+
     if(!form){
 
         console.error(
-            "sportsEditForm見つかりません"
+            "sportsGameEditForm が見つかりません"
         );
 
         return;
@@ -304,159 +311,18 @@ document.getElementById(
 
     if(!sportsSelectedDate){
 
+        console.error(
+            "❌ sportsSelectedDate がありません"
+        );
+
         return;
 
     }
 
-    form.innerHTML = `
-    <section class="sports-edit-section">
 
-        <h2>⚽ 試合情報</h2>
-
-        <label>自分の応援チーム</label>
-
-        <input
-            type="text"
-            id="soccerEditTeam"
-            placeholder="応援チーム名"
-            autocomplete="off"
-        >
-
-        <label>相手チーム</label>
-
-        <input
-            type="text"
-            id="soccerEditOpponent"
-            placeholder="相手チーム名"
-            autocomplete="off"
-        >
-
-
-        <label>
-    ホーム・アウェイ
-</label>
-
-<select id="soccerEditHomeAway">
-    <option value="">
-        未設定
-    </option>
-
-    <option value="home">
-        応援チームがホーム
-    </option>
-
-    <option value="away">
-        応援チームがアウェイ
-    </option>
-</select>
-
-
-            <section class="sports-edit-section">
-
-        <h2>📊 スコア</h2>
-
-        <div class="soccer-score-teams">
-
-    <div id="soccerEditHomeTeamName">
-        ホーム
-    </div>
-
-    <div>
-        -
-    </div>
-
-    <div id="soccerEditAwayTeamName">
-        アウェイ
-    </div>
-
-</div>
-
-
-
-
-        <div class="soccer-score-row">
-
-            <div>
-                前半
-            </div>
-
-            <input
-                type="number"
-                id="soccerEditTeamFirstHalf"
-                min="0"
-                inputmode="numeric"
-                placeholder="0"
-            >
-
-            <span>-</span>
-
-            <input
-                type="number"
-                id="soccerEditOpponentFirstHalf"
-                min="0"
-                inputmode="numeric"
-                placeholder="0"
-            >
-
-        </div>
-
-
-        <div class="soccer-score-row">
-
-            <div>
-                後半
-            </div>
-
-            <input
-                type="number"
-                id="soccerEditTeamSecondHalf"
-                min="0"
-                inputmode="numeric"
-                placeholder="0"
-            >
-
-            <span>-</span>
-
-            <input
-                type="number"
-                id="soccerEditOpponentSecondHalf"
-                min="0"
-                inputmode="numeric"
-                placeholder="0"
-            >
-
-        </div>
-
-    </section>
-
-
-        <div class="sports-edit-buttons">
-
-        <button
-            type="button"
-            onclick="saveSoccerGameEdit()"
-        >
-            💾 保存
-        </button>
-
-        <button
-            type="button"
-            onclick="cancelSoccerGameEdit()"
-        >
-            キャンセル
-        </button>
-
-    </div>
-
-
-
-
-
-
-    </section>
-`;
-
-
+    /* =========================
+       現在の試合データ
+    ========================= */
 
     const games =
         getCurrentSoccerGames();
@@ -465,11 +331,16 @@ document.getElementById(
         games[sportsSelectedDate] ||
         {};
 
-        console.log(
-    "⚽ 編集画面読み込み game:",
-    game
-);
 
+    console.log(
+        "⚽ 編集画面読み込み game:",
+        game
+    );
+
+
+    /* =========================
+       現在の応援チーム
+    ========================= */
 
     const data =
         db.load();
@@ -498,26 +369,323 @@ document.getElementById(
 
 
     const team =
-        current?.team ||
         game.team ||
-        settings.team ||
+        current?.team ||
         "";
-
 
     const opponent =
         game.opponent ||
         "";
 
 
-    /* =================================================
+    /* =========================
+       編集フォーム
+    ========================= */
+
+    form.innerHTML = `
+
+        <section class="sports-edit-section">
+
+            <h2>⚽ 試合情報</h2>
+
+
+            <label>
+                自分の応援チーム
+            </label>
+
+            <input
+                type="text"
+                id="soccerEditTeam"
+                placeholder="応援チーム名"
+                autocomplete="off"
+            >
+
+
+            <label>
+                相手チーム
+            </label>
+
+            <input
+                type="text"
+                id="soccerEditOpponent"
+                placeholder="相手チーム名"
+                autocomplete="off"
+            >
+
+
+            <label>
+                ホーム・アウェイ
+            </label>
+
+            <select id="soccerEditHomeAway">
+
+                <option value="">
+                    未設定
+                </option>
+
+                <option value="home">
+                    応援チームがホーム
+                </option>
+
+                <option value="away">
+                    応援チームがアウェイ
+                </option>
+
+            </select>
+
+
+            <!-- =====================
+                 スコア
+            ===================== -->
+
+            <section class="sports-edit-section">
+
+                <h2>📊 スコア</h2>
+
+
+                <div class="soccer-score-teams">
+
+                    <div id="soccerEditHomeTeamName">
+                        ホーム
+                    </div>
+
+                    <div>
+                        -
+                    </div>
+
+                    <div id="soccerEditAwayTeamName">
+                        アウェイ
+                    </div>
+
+                </div>
+
+
+                <div class="soccer-score-row">
+
+                    <div>
+                        前半
+                    </div>
+
+                    <input
+                        id="soccerEditTeamFirstHalf"
+                        class="soccer-score-input"
+                        type="number"
+                        min="0"
+                        inputmode="numeric"
+                        placeholder="0"
+                    >
+
+                    <span>
+                        -
+                    </span>
+
+                    <input
+                        id="soccerEditOpponentFirstHalf"
+                        class="soccer-score-input"
+                        type="number"
+                        min="0"
+                        inputmode="numeric"
+                        placeholder="0"
+                    >
+
+                </div>
+
+
+                <div class="soccer-score-row">
+
+                    <div>
+                        後半
+                    </div>
+
+                    <input
+                        id="soccerEditTeamSecondHalf"
+                        class="soccer-score-input"
+                        type="number"
+                        min="0"
+                        inputmode="numeric"
+                        placeholder="0"
+                    >
+
+                    <span>
+                        -
+                    </span>
+
+                    <input
+                        id="soccerEditOpponentSecondHalf"
+                        class="soccer-score-input"
+                        type="number"
+                        min="0"
+                        inputmode="numeric"
+                        placeholder="0"
+                    >
+
+                </div>
+
+
+                <!-- 延長・PK -->
+
+                <div id="soccerExtraPeriods"></div>
+
+
+                <button
+                    type="button"
+                    id="soccerAddPeriodButton"
+                    onclick="addSoccerExtraPeriod()"
+                >
+                    ＋ 延長前半を追加
+                </button>
+
+
+                <!-- 合計 -->
+
+                <div class="soccer-score-row total">
+
+                    <div>
+                        計
+                    </div>
+
+                    <strong id="soccerEditTeamTotal">
+                        0
+                    </strong>
+
+                    <span>
+                        -
+                    </span>
+
+                    <strong id="soccerEditOpponentTotal">
+                        0
+                    </strong>
+
+                </div>
+
+            </section>
+
+
+            <!-- =====================
+                 会場・結果・メモ
+            ===================== -->
+
+            <label>
+                📍 会場
+            </label>
+
+            <input
+                type="text"
+                id="soccerEditLocation"
+                placeholder="会場名"
+                autocomplete="off"
+            >
+
+
+            <label>
+                試合結果
+            </label>
+
+            <select id="soccerEditResult">
+
+                <option value="">
+                    未設定
+                </option>
+
+                <option value="win">
+                    🏆 勝ち
+                </option>
+
+                <option value="lose">
+                    😢 負け
+                </option>
+
+                <option value="draw">
+                    🤝 引き分け
+                </option>
+
+                <option value="cancelled">
+                    ⛔ 中止
+                </option>
+
+            </select>
+
+
+            <label>
+                📝 メモ
+            </label>
+
+            <textarea
+                id="soccerEditMemo"
+                placeholder="メモ"
+            ></textarea>
+
+
+            <!-- =====================
+                 ボタン
+            ===================== -->
+
+            <div class="sports-edit-buttons">
+
+                <button
+                    type="button"
+                    onclick="saveSoccerGameEdit()"
+                >
+                    💾 保存
+                </button>
+
+                <button
+                    type="button"
+                    onclick="cancelSoccerGameEdit()"
+                >
+                    キャンセル
+                </button>
+
+            </div>
+
+        </section>
+
+    `;
+
+
+    /* =========================
+       入力欄取得
+    ========================= */
+
+    const teamInput =
+        document.getElementById(
+            "soccerEditTeam"
+        );
+
+    const opponentInput =
+        document.getElementById(
+            "soccerEditOpponent"
+        );
+
+    const homeAwaySelect =
+        document.getElementById(
+            "soccerEditHomeAway"
+        );
+
+    const locationInput =
+        document.getElementById(
+            "soccerEditLocation"
+        );
+
+    const resultSelect =
+        document.getElementById(
+            "soccerEditResult"
+        );
+
+    const memoInput =
+        document.getElementById(
+            "soccerEditMemo"
+        );
+
+
+    /* =========================
        タイトル
-    ================================================= */
+    ========================= */
 
     const title =
         document.getElementById(
             "soccerGameEditTitle"
         );
-
 
     if(title){
 
@@ -545,42 +713,9 @@ document.getElementById(
     }
 
 
-    /* =================================================
-       チーム
-    ================================================= */
-
-    const teamInput =
-        document.getElementById(
-            "soccerEditTeam"
-        );
-
-    const opponentInput =
-        document.getElementById(
-            "soccerEditOpponent"
-        );
-
-    const homeAwaySelect =
-    document.getElementById(
-        "soccerEditHomeAway"
-    );
-
-    
-
-    const locationInput =
-        document.getElementById(
-            "soccerEditLocation"
-        );
-
-    const resultSelect =
-        document.getElementById(
-            "soccerEditResult"
-        );
-
-    const memoInput =
-        document.getElementById(
-            "soccerEditMemo"
-        );
-
+    /* =========================
+       基本データ復元
+    ========================= */
 
     if(teamInput){
 
@@ -597,14 +732,14 @@ document.getElementById(
 
     }
 
+
     if(homeAwaySelect){
 
-    homeAwaySelect.addEventListener(
-        "change",
-        updateSoccerScoreTeamNames
-    );
+        homeAwaySelect.value =
+            game.homeAway ||
+            "";
 
-}
+    }
 
 
     if(locationInput){
@@ -634,9 +769,9 @@ document.getElementById(
     }
 
 
-    /* =================================================
-       前半・後半
-    ================================================= */
+    /* =========================
+       スコア復元
+    ========================= */
 
     setSoccerInputValue(
         "soccerEditTeamFirstHalf",
@@ -659,9 +794,9 @@ document.getElementById(
     );
 
 
-    /* =================================================
-       追加項目状態
-    ================================================= */
+    /* =========================
+       延長・PK状態
+    ========================= */
 
     soccerExtraPeriods = {
 
@@ -677,16 +812,574 @@ document.getElementById(
     };
 
 
+    /* =========================
+       延長・PK欄描画
+    ========================= */
+
     renderSoccerExtraPeriods();
 
 
+    /* =========================
+       延長・PKスコア復元
+    ========================= */
+
+    setSoccerInputValue(
+        "soccerEditTeamExtraFirstHalf",
+        game.extraFirstHalfTeam
+    );
+
+    setSoccerInputValue(
+        "soccerEditOpponentExtraFirstHalf",
+        game.extraFirstHalfOpponent
+    );
+
+    setSoccerInputValue(
+        "soccerEditTeamExtraSecondHalf",
+        game.extraSecondHalfTeam
+    );
+
+    setSoccerInputValue(
+        "soccerEditOpponentExtraSecondHalf",
+        game.extraSecondHalfOpponent
+    );
+
+    setSoccerInputValue(
+        "soccerEditTeamPenalty",
+        game.penaltyTeam
+    );
+
+    setSoccerInputValue(
+        "soccerEditOpponentPenalty",
+        game.penaltyOpponent
+    );
+
+
+    /* =========================
+       ホーム・アウェイ変更
+    ========================= */
+
+    if(homeAwaySelect){
+
+        homeAwaySelect.addEventListener(
+            "change",
+            updateSoccerScoreTeamNames
+        );
+
+    }
+
+
+    /* =========================
+       初期表示
+    ========================= */
+
+    updateSoccerScoreTeamNames();
+
     updateSoccerScoreboard();
+
+
+    console.log(
+        "④ サッカー編集フォーム描画完了"
+    );
+
+}
+
+
+/* =====================================================
+   ⚽ ホーム・アウェイによるチーム名変更
+===================================================== */
+
+function updateSoccerScoreTeamNames(){
+
+    const teamInput =
+        document.getElementById(
+            "soccerEditTeam"
+        );
+
+    const opponentInput =
+        document.getElementById(
+            "soccerEditOpponent"
+        );
+
+    const homeAwaySelect =
+        document.getElementById(
+            "soccerEditHomeAway"
+        );
+
+    const homeName =
+        document.getElementById(
+            "soccerEditHomeTeamName"
+        );
+
+    const awayName =
+        document.getElementById(
+            "soccerEditAwayTeamName"
+        );
+
+
+    if(
+        !homeName ||
+        !awayName
+    ){
+
+        return;
+
+    }
+
+
+    const team =
+        teamInput?.value.trim() ||
+        "応援チーム";
+
+    const opponent =
+        opponentInput?.value.trim() ||
+        "相手チーム";
+
+    const homeAway =
+        homeAwaySelect?.value ||
+        "";
+
+
+    if(homeAway === "home"){
+
+        homeName.textContent =
+            team;
+
+        awayName.textContent =
+            opponent;
+
+    }
+    else if(homeAway === "away"){
+
+        homeName.textContent =
+            opponent;
+
+        awayName.textContent =
+            team;
+
+    }
+    else{
+
+        homeName.textContent =
+            "ホーム";
+
+        awayName.textContent =
+            "アウェイ";
+
+    }
+
+}
+
+
+/* =====================================================
+   ⚽ input値設定
+===================================================== */
+
+function setSoccerInputValue(
+    id,
+    value
+){
+
+    const input =
+        document.getElementById(
+            id
+        );
+
+    if(!input){
+
+        return;
+
+    }
+
+    input.value =
+        value === undefined ||
+        value === null
+        ?
+        ""
+        :
+        value;
+
+}
+
+
+/* =====================================================
+   ⚽ 延長・PK追加
+===================================================== */
+
+function addSoccerExtraPeriod(){
+
+    if(
+        !soccerExtraPeriods.extraFirstHalf
+    ){
+
+        soccerExtraPeriods.extraFirstHalf =
+            true;
+
+    }
+    else if(
+        !soccerExtraPeriods.extraSecondHalf
+    ){
+
+        soccerExtraPeriods.extraSecondHalf =
+            true;
+
+    }
+    else if(
+        !soccerExtraPeriods.penalty
+    ){
+
+        soccerExtraPeriods.penalty =
+            true;
+
+    }
+    else{
+
+        return;
+
+    }
+
+
+    renderSoccerExtraPeriods();
+
+    updateSoccerScoreboard();
+
+}
+
+
+/* =====================================================
+   ⚽ 延長・PK欄描画
+===================================================== */
+
+function renderSoccerExtraPeriods(){
+
+    const area =
+        document.getElementById(
+            "soccerExtraPeriods"
+        );
+
+    const button =
+        document.getElementById(
+            "soccerAddPeriodButton"
+        );
+
+
+    if(!area){
+
+        return;
+
+    }
+
+
+    let html = "";
+
+
+    if(
+        soccerExtraPeriods.extraFirstHalf
+    ){
+
+        html += `
+
+            <div
+                class="soccer-score-row"
+                data-period="extraFirstHalf"
+            >
+
+                <div>
+                    延長前半
+                </div>
+
+                <input
+                    id="soccerEditTeamExtraFirstHalf"
+                    class="soccer-score-input"
+                    type="number"
+                    min="0"
+                    inputmode="numeric"
+                    placeholder="0"
+                >
+
+                <span>
+                    -
+                </span>
+
+                <input
+                    id="soccerEditOpponentExtraFirstHalf"
+                    class="soccer-score-input"
+                    type="number"
+                    min="0"
+                    inputmode="numeric"
+                    placeholder="0"
+                >
+
+            </div>
+
+        `;
+
+    }
+
+
+    if(
+        soccerExtraPeriods.extraSecondHalf
+    ){
+
+        html += `
+
+            <div
+                class="soccer-score-row"
+                data-period="extraSecondHalf"
+            >
+
+                <div>
+                    延長後半
+                </div>
+
+                <input
+                    id="soccerEditTeamExtraSecondHalf"
+                    class="soccer-score-input"
+                    type="number"
+                    min="0"
+                    inputmode="numeric"
+                    placeholder="0"
+                >
+
+                <span>
+                    -
+                </span>
+
+                <input
+                    id="soccerEditOpponentExtraSecondHalf"
+                    class="soccer-score-input"
+                    type="number"
+                    min="0"
+                    inputmode="numeric"
+                    placeholder="0"
+                >
+
+            </div>
+
+        `;
+
+    }
+
+
+    if(
+        soccerExtraPeriods.penalty
+    ){
+
+        html += `
+
+            <div
+                class="soccer-score-row"
+                data-period="penalty"
+            >
+
+                <div>
+                    PK
+                </div>
+
+                <input
+                    id="soccerEditTeamPenalty"
+                    class="soccer-score-input"
+                    type="number"
+                    min="0"
+                    inputmode="numeric"
+                    placeholder="0"
+                >
+
+                <span>
+                    -
+                </span>
+
+                <input
+                    id="soccerEditOpponentPenalty"
+                    class="soccer-score-input"
+                    type="number"
+                    min="0"
+                    inputmode="numeric"
+                    placeholder="0"
+                >
+
+            </div>
+
+        `;
+
+    }
+
+
+    area.innerHTML =
+        html;
+
+
+    if(button){
+
+        if(
+            !soccerExtraPeriods.extraFirstHalf
+        ){
+
+            button.textContent =
+                "＋ 延長前半を追加";
+
+            button.style.display =
+                "";
+
+        }
+        else if(
+            !soccerExtraPeriods.extraSecondHalf
+        ){
+
+            button.textContent =
+                "＋ 延長後半を追加";
+
+            button.style.display =
+                "";
+
+        }
+        else if(
+            !soccerExtraPeriods.penalty
+        ){
+
+            button.textContent =
+                "＋ PKを追加";
+
+            button.style.display =
+                "";
+
+        }
+        else{
+
+            button.style.display =
+                "none";
+
+        }
+
+    }
+
+}
+
+
+/* =====================================================
+   ⚽ スコアリアルタイム更新
+===================================================== */
+
+function updateSoccerScoreboard(){
+
+    const teamFirst =
+        getSoccerNumber(
+            "soccerEditTeamFirstHalf"
+        );
+
+    const opponentFirst =
+        getSoccerNumber(
+            "soccerEditOpponentFirstHalf"
+        );
+
+
+    const teamSecond =
+        getSoccerNumber(
+            "soccerEditTeamSecondHalf"
+        );
+
+    const opponentSecond =
+        getSoccerNumber(
+            "soccerEditOpponentSecondHalf"
+        );
+
+
+    const teamExtraFirst =
+        getSoccerNumber(
+            "soccerEditTeamExtraFirstHalf"
+        );
+
+    const opponentExtraFirst =
+        getSoccerNumber(
+            "soccerEditOpponentExtraFirstHalf"
+        );
+
+
+    const teamExtraSecond =
+        getSoccerNumber(
+            "soccerEditTeamExtraSecondHalf"
+        );
+
+    const opponentExtraSecond =
+        getSoccerNumber(
+            "soccerEditOpponentExtraSecondHalf"
+        );
+
+
+    const teamTotal =
+        teamFirst +
+        teamSecond +
+        teamExtraFirst +
+        teamExtraSecond;
+
+
+    const opponentTotal =
+        opponentFirst +
+        opponentSecond +
+        opponentExtraFirst +
+        opponentExtraSecond;
+
+
+    const teamTotalElement =
+        document.getElementById(
+            "soccerEditTeamTotal"
+        );
+
+    const opponentTotalElement =
+        document.getElementById(
+            "soccerEditOpponentTotal"
+        );
+
+
+    if(teamTotalElement){
+
+        teamTotalElement.textContent =
+            teamTotal;
+
+    }
+
+
+    if(opponentTotalElement){
+
+        opponentTotalElement.textContent =
+            opponentTotal;
+
+    }
 
 
     updateSoccerScoreTeamNames();
 
 }
 
+
+/* =====================================================
+   ⚽ リアルタイム入力監視
+===================================================== */
+
+document.addEventListener(
+    "input",
+    function(event){
+
+        if(
+            event.target.matches(
+                ".soccer-score-input"
+            ) ||
+            event.target.id ===
+                "soccerEditTeam" ||
+            event.target.id ===
+                "soccerEditOpponent"
+        ){
+
+            updateSoccerScoreboard();
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   ⚽ サッカー試合保存
+===================================================== */
 
 function saveSoccerGameEdit(){
 
@@ -730,28 +1423,6 @@ function saveSoccerGameEdit(){
             "soccerEditHomeAway"
         );
 
-
-    const firstHalfTeamInput =
-        document.getElementById(
-            "soccerEditTeamFirstHalf"
-        );
-
-    const firstHalfOpponentInput =
-        document.getElementById(
-            "soccerEditOpponentFirstHalf"
-        );
-
-    const secondHalfTeamInput =
-        document.getElementById(
-            "soccerEditTeamSecondHalf"
-        );
-
-    const secondHalfOpponentInput =
-        document.getElementById(
-            "soccerEditOpponentSecondHalf"
-        );
-
-
     const locationInput =
         document.getElementById(
             "soccerEditLocation"
@@ -769,95 +1440,151 @@ function saveSoccerGameEdit(){
 
 
     /* =========================
-       現在の試合データ取得
-       既存データを保持
+       チーム名
     ========================= */
 
-    const games =
-        getCurrentSoccerGames();
+    const team =
+        teamInput?.value.trim() ||
+        "";
 
-    const oldGame =
-        games[sportsSelectedDate] ||
-        {};
+    const opponent =
+        opponentInput?.value.trim() ||
+        "";
+
+
+    if(!team){
+
+        alert(
+            "応援チーム名を入力してください。"
+        );
+
+        teamInput?.focus();
+
+        return;
+
+    }
+
+
+    if(!opponent){
+
+        alert(
+            "相手チーム名を入力してください。"
+        );
+
+        opponentInput?.focus();
+
+        return;
+
+    }
 
 
     /* =========================
-       試合データ作成
+       サッカー試合データ
     ========================= */
 
     const game = {
 
-        ...oldGame,
-
-
-        /* チーム */
-
         team:
-            teamInput?.value.trim() ||
-            "",
-
+            team,
 
         opponent:
-            opponentInput?.value.trim() ||
-            "",
-
-
-        /* ホーム・アウェイ */
+            opponent,
 
         homeAway:
             homeAwaySelect?.value ||
+            "",
+
+        location:
+            locationInput?.value.trim() ||
+            "",
+
+        result:
+            resultSelect?.value ||
+            "",
+
+        memo:
+            memoInput?.value.trim() ||
             "",
 
 
         /* 前半 */
 
         firstHalfTeam:
-            firstHalfTeamInput?.value ||
-            "",
-
+            getSoccerNumber(
+                "soccerEditTeamFirstHalf"
+            ),
 
         firstHalfOpponent:
-            firstHalfOpponentInput?.value ||
-            "",
+            getSoccerNumber(
+                "soccerEditOpponentFirstHalf"
+            ),
 
 
         /* 後半 */
 
         secondHalfTeam:
-            secondHalfTeamInput?.value ||
-            "",
-
+            getSoccerNumber(
+                "soccerEditTeamSecondHalf"
+            ),
 
         secondHalfOpponent:
-            secondHalfOpponentInput?.value ||
-            "",
+            getSoccerNumber(
+                "soccerEditOpponentSecondHalf"
+            ),
 
 
-        /* 会場 */
+        /* 延長前半 */
 
-        location:
-            locationInput?.value.trim() ||
-            "",
+        extraFirstHalfEnabled:
+            soccerExtraPeriods.extraFirstHalf,
+
+        extraFirstHalfTeam:
+            getSoccerNumber(
+                "soccerEditTeamExtraFirstHalf"
+            ),
+
+        extraFirstHalfOpponent:
+            getSoccerNumber(
+                "soccerEditOpponentExtraFirstHalf"
+            ),
 
 
-        /* 結果 */
+        /* 延長後半 */
 
-        result:
-            resultSelect?.value ||
-            "",
+        extraSecondHalfEnabled:
+            soccerExtraPeriods.extraSecondHalf,
+
+        extraSecondHalfTeam:
+            getSoccerNumber(
+                "soccerEditTeamExtraSecondHalf"
+            ),
+
+        extraSecondHalfOpponent:
+            getSoccerNumber(
+                "soccerEditOpponentExtraSecondHalf"
+            ),
 
 
-        /* メモ */
+        /* PK */
 
-        memo:
-            memoInput?.value ||
-            ""
+        penaltyEnabled:
+            soccerExtraPeriods.penalty,
+
+        penaltyTeam:
+            getSoccerNumber(
+                "soccerEditTeamPenalty"
+            ),
+
+        penaltyOpponent:
+            getSoccerNumber(
+                "soccerEditOpponentPenalty"
+            )
 
     };
 
 
     /* =========================
-       保存直前確認
+       保存前ログ
     ========================= */
 
     console.log(
@@ -909,758 +1636,8 @@ function saveSoccerGameEdit(){
 
 }
 
-function updateSoccerScoreTeamNames(){
 
-    const teamInput =
-        document.getElementById(
-            "soccerEditTeam"
-        );
 
-    const opponentInput =
-        document.getElementById(
-            "soccerEditOpponent"
-        );
-
-    const homeAwaySelect =
-        document.getElementById(
-            "soccerEditHomeAway"
-        );
-
-    const homeName =
-        document.getElementById(
-            "soccerEditHomeTeamName"
-        );
-
-    const awayName =
-        document.getElementById(
-            "soccerEditAwayTeamName"
-        );
-
-
-    if(
-        !homeName ||
-        !awayName
-    ){
-
-        return;
-
-    }
-
-
-    const team =
-        teamInput?.value.trim() ||
-        "応援チーム";
-
-    const opponent =
-        opponentInput?.value.trim() ||
-        "相手チーム";
-
-
-    const homeAway =
-        homeAwaySelect?.value ||
-        "";
-
-
-    if(homeAway === "home"){
-
-        homeName.textContent =
-            team;
-
-        awayName.textContent =
-            opponent;
-
-    }
-    else if(homeAway === "away"){
-
-        homeName.textContent =
-            opponent;
-
-        awayName.textContent =
-            team;
-
-    }
-    else{
-
-        homeName.textContent =
-            "ホーム";
-
-        awayName.textContent =
-            "アウェイ";
-
-    }
-
-}
-
-
-
-/* =====================================================
-   input値設定
-===================================================== */
-
-function setSoccerInputValue(
-    id,
-    value
-){
-
-    const input =
-        document.getElementById(
-            id
-        );
-
-    if(!input){
-
-        return;
-
-    }
-
-    input.value =
-        value === undefined ||
-        value === null
-        ?
-        ""
-        :
-        value;
-
-}
-
-
-/* =====================================================
-   ⚽ 延長・PK追加
-===================================================== */
-
-function addSoccerExtraPeriod(){
-
-    if(
-        !soccerExtraPeriods.extraFirstHalf
-    ){
-
-        soccerExtraPeriods.extraFirstHalf =
-            true;
-
-    }else if(
-        !soccerExtraPeriods.extraSecondHalf
-    ){
-
-        soccerExtraPeriods.extraSecondHalf =
-            true;
-
-    }else if(
-        !soccerExtraPeriods.penalty
-    ){
-
-        soccerExtraPeriods.penalty =
-            true;
-
-    }else{
-
-        return;
-
-    }
-
-
-    renderSoccerExtraPeriods();
-
-    updateSoccerScoreboard();
-
-}
-
-
-/* =====================================================
-   追加項目描画
-===================================================== */
-
-function renderSoccerExtraPeriods(){
-
-    const area =
-        document.getElementById(
-            "soccerExtraPeriods"
-        );
-
-    const button =
-        document.getElementById(
-            "soccerAddPeriodButton"
-        );
-
-
-    if(!area){
-
-        return;
-
-    }
-
-
-    let html = "";
-
-
-    /* =================================================
-       延長前半
-    ================================================= */
-
-    if(
-        soccerExtraPeriods.extraFirstHalf
-    ){
-
-        html += `
-
-            <div
-                class="soccer-score-row"
-                data-period="extraFirstHalf"
-            >
-
-                <div class="soccer-score-period">
-                    延長前半
-                </div>
-
-                <input
-                    id="soccerEditTeamExtraFirstHalf"
-                    class="soccer-score-input"
-                    type="number"
-                    min="0"
-                    inputmode="numeric"
-                >
-
-                <span class="soccer-score-dash">
-                    -
-                </span>
-
-                <input
-                    id="soccerEditOpponentExtraFirstHalf"
-                    class="soccer-score-input"
-                    type="number"
-                    min="0"
-                    inputmode="numeric"
-                >
-
-            </div>
-
-        `;
-
-    }
-
-
-    /* =================================================
-       延長後半
-    ================================================= */
-
-    if(
-        soccerExtraPeriods.extraSecondHalf
-    ){
-
-        html += `
-
-            <div
-                class="soccer-score-row"
-                data-period="extraSecondHalf"
-            >
-
-                <div class="soccer-score-period">
-                    延長後半
-                </div>
-
-                <input
-                    id="soccerEditTeamExtraSecondHalf"
-                    class="soccer-score-input"
-                    type="number"
-                    min="0"
-                    inputmode="numeric"
-                >
-
-                <span class="soccer-score-dash">
-                    -
-                </span>
-
-                <input
-                    id="soccerEditOpponentExtraSecondHalf"
-                    class="soccer-score-input"
-                    type="number"
-                    min="0"
-                    inputmode="numeric"
-                >
-
-            </div>
-
-        `;
-
-    }
-
-
-    /* =================================================
-       PK
-    ================================================= */
-
-    if(
-        soccerExtraPeriods.penalty
-    ){
-
-        html += `
-
-            <div
-                class="soccer-score-row"
-                data-period="penalty"
-            >
-
-                <div class="soccer-score-period">
-                    PK
-                </div>
-
-                <input
-                    id="soccerEditTeamPenalty"
-                    class="soccer-score-input"
-                    type="number"
-                    min="0"
-                    inputmode="numeric"
-                >
-
-                <span class="soccer-score-dash">
-                    -
-                </span>
-
-                <input
-                    id="soccerEditOpponentPenalty"
-                    class="soccer-score-input"
-                    type="number"
-                    min="0"
-                    inputmode="numeric"
-                >
-
-            </div>
-
-        `;
-
-    }
-
-
-    area.innerHTML =
-        html;
-
-
-    if(button){
-
-        if(
-            !soccerExtraPeriods.extraFirstHalf
-        ){
-
-            button.textContent =
-                "＋ 延長前半を追加";
-
-        }else if(
-            !soccerExtraPeriods.extraSecondHalf
-        ){
-
-            button.textContent =
-                "＋ 延長後半を追加";
-
-        }else if(
-            !soccerExtraPeriods.penalty
-        ){
-
-            button.textContent =
-                "＋ PKを追加";
-
-        }else{
-
-            button.style.display =
-                "none";
-
-        }
-
-    }
-
-}
-
-
-/* =====================================================
-   ⚽ チーム名表示
-===================================================== */
-
-function updateSoccerScoreTeamNames(){
-
-    const teamInput =
-        document.getElementById(
-            "soccerEditTeam"
-        );
-
-    const opponentInput =
-        document.getElementById(
-            "soccerEditOpponent"
-        );
-
-    const teamName =
-        document.getElementById(
-            "soccerEditScoreTeamName"
-        );
-
-    const opponentName =
-        document.getElementById(
-            "soccerEditScoreOpponentName"
-        );
-
-
-    const team =
-        teamInput?.value.trim() ||
-        "応援チーム";
-
-    const opponent =
-        opponentInput?.value.trim() ||
-        "相手チーム";
-
-
-    if(teamName){
-
-        teamName.textContent =
-            team;
-
-    }
-
-
-    if(opponentName){
-
-        opponentName.textContent =
-            opponent;
-
-    }
-
-}
-
-
-/* =====================================================
-   ⚽ スコア計算
-===================================================== */
-
-function updateSoccerScoreboard(){
-
-    const teamFirst =
-        Number(
-            document.getElementById(
-                "soccerEditTeamFirstHalf"
-            )?.value
-        ) || 0;
-
-    const opponentFirst =
-        Number(
-            document.getElementById(
-                "soccerEditOpponentFirstHalf"
-            )?.value
-        ) || 0;
-
-
-    const teamSecond =
-        Number(
-            document.getElementById(
-                "soccerEditTeamSecondHalf"
-            )?.value
-        ) || 0;
-
-    const opponentSecond =
-        Number(
-            document.getElementById(
-                "soccerEditOpponentSecondHalf"
-            )?.value
-        ) || 0;
-
-
-    const teamExtraFirst =
-        Number(
-            document.getElementById(
-                "soccerEditTeamExtraFirstHalf"
-            )?.value
-        ) || 0;
-
-    const opponentExtraFirst =
-        Number(
-            document.getElementById(
-                "soccerEditOpponentExtraFirstHalf"
-            )?.value
-        ) || 0;
-
-
-    const teamExtraSecond =
-        Number(
-            document.getElementById(
-                "soccerEditTeamExtraSecondHalf"
-            )?.value
-        ) || 0;
-
-    const opponentExtraSecond =
-        Number(
-            document.getElementById(
-                "soccerEditOpponentExtraSecondHalf"
-            )?.value
-        ) || 0;
-
-
-    const teamTotal =
-        teamFirst +
-        teamSecond +
-        teamExtraFirst +
-        teamExtraSecond;
-
-
-    const opponentTotal =
-        opponentFirst +
-        opponentSecond +
-        opponentExtraFirst +
-        opponentExtraSecond;
-
-
-    const teamTotalElement =
-        document.getElementById(
-            "soccerEditTeamTotal"
-        );
-
-    const opponentTotalElement =
-        document.getElementById(
-            "soccerEditOpponentTotal"
-        );
-
-
-    const finalTeam =
-        document.getElementById(
-            "soccerEditFinalTeamScore"
-        );
-
-    const finalOpponent =
-        document.getElementById(
-            "soccerEditFinalOpponentScore"
-        );
-
-
-    if(teamTotalElement){
-
-        teamTotalElement.textContent =
-            teamTotal;
-
-    }
-
-
-    if(opponentTotalElement){
-
-        opponentTotalElement.textContent =
-            opponentTotal;
-
-    }
-
-
-    if(finalTeam){
-
-        finalTeam.textContent =
-            teamTotal;
-
-    }
-
-
-    if(finalOpponent){
-
-        finalOpponent.textContent =
-            opponentTotal;
-
-    }
-
-
-    updateSoccerScoreTeamNames();
-
-}
-
-
-/* =====================================================
-   入力イベント
-===================================================== */
-
-document.addEventListener(
-    "input",
-    function(event){
-
-        if(
-            event.target.matches(
-                ".soccer-score-input"
-            ) ||
-            event.target.id ===
-                "soccerEditTeam" ||
-            event.target.id ===
-                "soccerEditOpponent"
-        ){
-
-            updateSoccerScoreboard();
-
-        }
-
-    }
-);
-
-
-/* =====================================================
-   ⚽ 保存
-===================================================== */
-
-function saveSoccerGameEdit(){
-
-    if(!sportsSelectedDate){
-
-        alert(
-            "試合日が設定されていません。"
-        );
-
-        return;
-
-    }
-
-
-    const teamInput =
-        document.getElementById(
-            "soccerEditTeam"
-        );
-
-    const opponentInput =
-        document.getElementById(
-            "soccerEditOpponent"
-        );
-
-    const locationInput =
-        document.getElementById(
-            "soccerEditLocation"
-        );
-
-    const resultSelect =
-        document.getElementById(
-            "soccerEditResult"
-        );
-
-    const memoInput =
-        document.getElementById(
-            "soccerEditMemo"
-        );
-
-
-    const team =
-        teamInput?.value.trim() ||
-        "";
-
-    const opponent =
-        opponentInput?.value.trim() ||
-        "";
-
-
-    if(!team){
-
-        alert(
-            "応援チーム名を入力してください。"
-        );
-
-        teamInput?.focus();
-
-        return;
-
-    }
-
-
-    if(!opponent){
-
-        alert(
-            "相手チーム名を入力してください。"
-        );
-
-        opponentInput?.focus();
-
-        return;
-
-    }
-
-
-    const game = {
-
-        team:
-            team,
-
-        opponent:
-            opponent,
-
-        location:
-            locationInput?.value.trim() ||
-            "",
-
-        result:
-            resultSelect?.value ||
-            "",
-
-        memo:
-            memoInput?.value.trim() ||
-            "",
-
-        firstHalfTeam:
-            getSoccerNumber(
-                "soccerEditTeamFirstHalf"
-            ),
-
-        firstHalfOpponent:
-            getSoccerNumber(
-                "soccerEditOpponentFirstHalf"
-            ),
-
-        secondHalfTeam:
-            getSoccerNumber(
-                "soccerEditTeamSecondHalf"
-            ),
-
-        secondHalfOpponent:
-            getSoccerNumber(
-                "soccerEditOpponentSecondHalf"
-            ),
-
-        extraFirstHalfEnabled:
-            soccerExtraPeriods.extraFirstHalf,
-
-        extraFirstHalfTeam:
-            getSoccerNumber(
-                "soccerEditTeamExtraFirstHalf"
-            ),
-
-        extraFirstHalfOpponent:
-            getSoccerNumber(
-                "soccerEditOpponentExtraFirstHalf"
-            ),
-
-        extraSecondHalfEnabled:
-            soccerExtraPeriods.extraSecondHalf,
-
-        extraSecondHalfTeam:
-            getSoccerNumber(
-                "soccerEditTeamExtraSecondHalf"
-            ),
-
-        extraSecondHalfOpponent:
-            getSoccerNumber(
-                "soccerEditOpponentExtraSecondHalf"
-            ),
-
-        penaltyEnabled:
-            soccerExtraPeriods.penalty,
-
-        penaltyTeam:
-            getSoccerNumber(
-                "soccerEditTeamPenalty"
-            ),
-
-        penaltyOpponent:
-            getSoccerNumber(
-                "soccerEditOpponentPenalty"
-            )
-
-    };
-
-
-saveSoccerGameData(
-    sportsSelectedDate,
-    game
-);
-
-alert(
-    "⚽ 試合情報を保存しました。"
-);
-
-openSoccerGameDetailPage(
-    sportsSelectedDate
-);
-}
 
 
 /* =====================================================
