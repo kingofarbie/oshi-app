@@ -1002,10 +1002,14 @@ function setSoccerInputValue(
 
 
 /* =====================================================
-   ⚽ 延長・PK追加
+   ⚽ 延長・PK追加 / 開閉
 ===================================================== */
 
 function addSoccerExtraPeriod(){
+
+    /*
+       まだ追加されていない項目を順番に追加
+    */
 
     if(
         !soccerExtraPeriods.extraFirstHalf
@@ -1033,6 +1037,13 @@ function addSoccerExtraPeriod(){
     }
     else{
 
+        /*
+           全部追加済みなら
+           開閉だけ切り替える
+        */
+
+        toggleSoccerExtraPeriods();
+
         return;
 
     }
@@ -1046,7 +1057,75 @@ function addSoccerExtraPeriod(){
 
 
 /* =====================================================
-   ⚽ 延長・PK欄描画
+   ⚽ 延長・PK表示部分の開閉
+===================================================== */
+
+function toggleSoccerExtraPeriods(){
+
+    const area =
+        document.getElementById(
+            "soccerExtraPeriods"
+        );
+
+    const button =
+        document.getElementById(
+            "soccerAddPeriodButton"
+        );
+
+
+    if(!area){
+
+        return;
+
+    }
+
+
+    const isClosed =
+        area.style.display === "none";
+
+
+    if(isClosed){
+
+        /*
+           開く
+        */
+
+        area.style.display =
+            "";
+
+        if(button){
+
+            button.textContent =
+                "－ 延長・PKを閉じる";
+
+        }
+
+    }
+    else{
+
+        /*
+           閉じる
+           ※ innerHTML は変更しない
+           → 入力した点数を保持
+        */
+
+        area.style.display =
+            "none";
+
+        if(button){
+
+            button.textContent =
+                "＋ 延長・PKを開く";
+
+        }
+
+    }
+
+}
+
+
+/* =====================================================
+   ⚽ 追加項目描画
 ===================================================== */
 
 function renderSoccerExtraPeriods(){
@@ -1069,8 +1148,21 @@ function renderSoccerExtraPeriods(){
     }
 
 
+    /*
+       現在の表示状態を保持
+       再描画時に勝手に閉じないようにする
+    */
+
+    const wasClosed =
+        area.style.display === "none";
+
+
     let html = "";
 
+
+    /* =================================================
+       延長前半
+    ================================================= */
 
     if(
         soccerExtraPeriods.extraFirstHalf
@@ -1083,7 +1175,7 @@ function renderSoccerExtraPeriods(){
                 data-period="extraFirstHalf"
             >
 
-                <div>
+                <div class="soccer-score-period">
                     延長前半
                 </div>
 
@@ -1093,10 +1185,9 @@ function renderSoccerExtraPeriods(){
                     type="number"
                     min="0"
                     inputmode="numeric"
-                    placeholder="0"
                 >
 
-                <span>
+                <span class="soccer-score-dash">
                     -
                 </span>
 
@@ -1106,7 +1197,6 @@ function renderSoccerExtraPeriods(){
                     type="number"
                     min="0"
                     inputmode="numeric"
-                    placeholder="0"
                 >
 
             </div>
@@ -1115,6 +1205,10 @@ function renderSoccerExtraPeriods(){
 
     }
 
+
+    /* =================================================
+       延長後半
+    ================================================= */
 
     if(
         soccerExtraPeriods.extraSecondHalf
@@ -1127,7 +1221,7 @@ function renderSoccerExtraPeriods(){
                 data-period="extraSecondHalf"
             >
 
-                <div>
+                <div class="soccer-score-period">
                     延長後半
                 </div>
 
@@ -1137,10 +1231,9 @@ function renderSoccerExtraPeriods(){
                     type="number"
                     min="0"
                     inputmode="numeric"
-                    placeholder="0"
                 >
 
-                <span>
+                <span class="soccer-score-dash">
                     -
                 </span>
 
@@ -1150,7 +1243,6 @@ function renderSoccerExtraPeriods(){
                     type="number"
                     min="0"
                     inputmode="numeric"
-                    placeholder="0"
                 >
 
             </div>
@@ -1159,6 +1251,10 @@ function renderSoccerExtraPeriods(){
 
     }
 
+
+    /* =================================================
+       PK
+    ================================================= */
 
     if(
         soccerExtraPeriods.penalty
@@ -1171,7 +1267,7 @@ function renderSoccerExtraPeriods(){
                 data-period="penalty"
             >
 
-                <div>
+                <div class="soccer-score-period">
                     PK
                 </div>
 
@@ -1181,10 +1277,9 @@ function renderSoccerExtraPeriods(){
                     type="number"
                     min="0"
                     inputmode="numeric"
-                    placeholder="0"
                 >
 
-                <span>
+                <span class="soccer-score-dash">
                     -
                 </span>
 
@@ -1194,7 +1289,6 @@ function renderSoccerExtraPeriods(){
                     type="number"
                     min="0"
                     inputmode="numeric"
-                    placeholder="0"
                 >
 
             </div>
@@ -1208,52 +1302,102 @@ function renderSoccerExtraPeriods(){
         html;
 
 
+    /*
+       追加できるものが残っているか
+    */
+
+    const allAdded =
+        soccerExtraPeriods.extraFirstHalf &&
+        soccerExtraPeriods.extraSecondHalf &&
+        soccerExtraPeriods.penalty;
+
+
     if(button){
 
-        if(
-            !soccerExtraPeriods.extraFirstHalf
-        ){
+        if(allAdded){
 
-            button.textContent =
-                "＋ 延長前半を追加";
-
-            button.style.display =
-                "";
-
-        }
-        else if(
-            !soccerExtraPeriods.extraSecondHalf
-        ){
-
-            button.textContent =
-                "＋ 延長後半を追加";
+            /*
+               全部追加済み
+               ＋追加ではなく
+               開閉ボタンにする
+            */
 
             button.style.display =
                 "";
 
-        }
-        else if(
-            !soccerExtraPeriods.penalty
-        ){
+            button.onclick =
+                toggleSoccerExtraPeriods;
 
-            button.textContent =
-                "＋ PKを追加";
 
-            button.style.display =
-                "";
+            if(wasClosed){
+
+                button.textContent =
+                    "＋ 延長・PKを開く";
+
+            }
+            else{
+
+                button.textContent =
+                    "－ 延長・PKを閉じる";
+
+            }
 
         }
         else{
 
+            /*
+               まだ追加できる
+            */
+
+            button.onclick =
+                addSoccerExtraPeriod;
+
             button.style.display =
-                "none";
+                "";
+
+            if(
+                !soccerExtraPeriods.extraFirstHalf
+            ){
+
+                button.textContent =
+                    "＋ 延長前半を追加";
+
+            }
+            else if(
+                !soccerExtraPeriods.extraSecondHalf
+            ){
+
+                button.textContent =
+                    "＋ 延長後半を追加";
+
+            }
+            else if(
+                !soccerExtraPeriods.penalty
+            ){
+
+                button.textContent =
+                    "＋ PKを追加";
+
+            }
 
         }
 
     }
 
-}
 
+    /*
+       閉じていた場合は
+       再描画後も閉じたままにする
+    */
+
+    if(wasClosed){
+
+        area.style.display =
+            "none";
+
+    }
+
+}
 
 /* =====================================================
    ⚽ スコアリアルタイム更新
@@ -1895,10 +2039,6 @@ function closeSoccerGameEditPage(){
 
 }
 
-
-/* =====================================================
-   ⚽ サッカー結果閲覧
-===================================================== */
 
 /* =====================================================
    ⚽ サッカー結果閲覧
