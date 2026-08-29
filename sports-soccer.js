@@ -809,6 +809,17 @@ function saveSoccerGameEdit(){
             "",
 
 
+            console.log(
+    "⚽ 保存直前 homeAway:",
+    homeAwaySelect?.value
+);
+
+console.log(
+    "⚽ 保存する game:",
+    game
+);
+
+
         /* 前半 */
 
         firstHalfTeam:
