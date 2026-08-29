@@ -1329,37 +1329,18 @@ function setSoccerInputValue(
 
 
 /* =====================================================
-   ⚽ 延長項目を追加
+   ⚽ 延長を追加
+   ＋を1回押したら
+   延長前半・延長後半を一気に表示
 ===================================================== */
 
 function addSoccerExtraPeriod(){
 
-    /*
-       延長前半
-    */
+    soccerExtraPeriods.extraFirstHalf =
+        true;
 
-    if(
-        !soccerExtraPeriods.extraFirstHalf
-    ){
-
-        soccerExtraPeriods.extraFirstHalf =
-            true;
-
-    }
-    else if(
-        !soccerExtraPeriods.extraSecondHalf
-    ){
-
-        soccerExtraPeriods.extraSecondHalf =
-            true;
-
-    }
-    else{
-
-        return;
-
-    }
-
+    soccerExtraPeriods.extraSecondHalf =
+        true;
 
     renderSoccerExtraPeriods();
 
@@ -1393,21 +1374,37 @@ function toggleSoccerExtraPeriods(){
 
 
     /*
-       まだ延長が追加されていない
-       → 延長前半を追加
+       まだ延長が設定されていない
+       ↓
+       前半・後半を一気に追加
     */
 
     if(
-        !soccerExtraPeriods.extraFirstHalf
+        !soccerExtraPeriods.extraFirstHalf &&
+        !soccerExtraPeriods.extraSecondHalf
     ){
 
         soccerExtraPeriods.extraFirstHalf =
             true;
 
+        soccerExtraPeriods.extraSecondHalf =
+            true;
+
+
+        renderSoccerExtraPeriods();
+
+
         area.style.display =
             "";
 
-        renderSoccerExtraPeriods();
+
+        if(button){
+
+            button.textContent =
+                "－";
+
+        }
+
 
         updateSoccerScoreboard();
 
@@ -1417,13 +1414,23 @@ function toggleSoccerExtraPeriods(){
 
 
     /*
-       すでに延長が追加されている
-       → 開閉
+       すでに延長が存在する場合
+       ↓
+       表示 / 非表示だけ切り替える
+
+       ※ 延長そのものは削除しない
+       ※ 入力値も保持する
     */
 
     if(
         area.style.display === "none"
     ){
+
+        /*
+           開く
+        */
+
+        renderSoccerExtraPeriods();
 
         area.style.display =
             "";
@@ -1439,13 +1446,47 @@ function toggleSoccerExtraPeriods(){
     else{
 
         /*
-           閉じるだけ。
+           閉じる
+
            HTMLは削除しない。
-           → 点数保持
+           点数も状態も保持する。
         */
+
+        /*
+           念のため現在値を保存
+        */
+
+        soccerExtraScoreValues.extraFirstTeam =
+            document.getElementById(
+                "soccerEditTeamExtraFirstHalf"
+            )?.value ??
+            soccerExtraScoreValues.extraFirstTeam;
+
+
+        soccerExtraScoreValues.extraFirstOpponent =
+            document.getElementById(
+                "soccerEditOpponentExtraFirstHalf"
+            )?.value ??
+            soccerExtraScoreValues.extraFirstOpponent;
+
+
+        soccerExtraScoreValues.extraSecondTeam =
+            document.getElementById(
+                "soccerEditTeamExtraSecondHalf"
+            )?.value ??
+            soccerExtraScoreValues.extraSecondTeam;
+
+
+        soccerExtraScoreValues.extraSecondOpponent =
+            document.getElementById(
+                "soccerEditOpponentExtraSecondHalf"
+            )?.value ??
+            soccerExtraScoreValues.extraSecondOpponent;
+
 
         area.style.display =
             "none";
+
 
         if(button){
 
@@ -1455,6 +1496,9 @@ function toggleSoccerExtraPeriods(){
         }
 
     }
+
+
+    updateSoccerScoreboard();
 
 }
 
@@ -1484,38 +1528,65 @@ function renderSoccerExtraPeriods(){
 
 
     /*
-       現在の入力値を回収
-
-       再描画前に必ず保存する
+       現在表示されている入力値を
+       内部状態へ退避
     */
 
-    soccerExtraScoreValues.extraFirstTeam =
+    const firstTeamInput =
         document.getElementById(
             "soccerEditTeamExtraFirstHalf"
-        )?.value ??
-        soccerExtraScoreValues.extraFirstTeam;
+        );
 
-    soccerExtraScoreValues.extraFirstOpponent =
+    const firstOpponentInput =
         document.getElementById(
             "soccerEditOpponentExtraFirstHalf"
-        )?.value ??
-        soccerExtraScoreValues.extraFirstOpponent;
+        );
 
-    soccerExtraScoreValues.extraSecondTeam =
+    const secondTeamInput =
         document.getElementById(
             "soccerEditTeamExtraSecondHalf"
-        )?.value ??
-        soccerExtraScoreValues.extraSecondTeam;
+        );
 
-    soccerExtraScoreValues.extraSecondOpponent =
+    const secondOpponentInput =
         document.getElementById(
             "soccerEditOpponentExtraSecondHalf"
-        )?.value ??
-        soccerExtraScoreValues.extraSecondOpponent;
+        );
+
+
+    if(firstTeamInput){
+
+        soccerExtraScoreValues.extraFirstTeam =
+            firstTeamInput.value;
+
+    }
+
+
+    if(firstOpponentInput){
+
+        soccerExtraScoreValues.extraFirstOpponent =
+            firstOpponentInput.value;
+
+    }
+
+
+    if(secondTeamInput){
+
+        soccerExtraScoreValues.extraSecondTeam =
+            secondTeamInput.value;
+
+    }
+
+
+    if(secondOpponentInput){
+
+        soccerExtraScoreValues.extraSecondOpponent =
+            secondOpponentInput.value;
+
+    }
 
 
     /*
-       延長が存在しない場合
+       延長が無ければ空にする
     */
 
     if(
@@ -1542,12 +1613,12 @@ function renderSoccerExtraPeriods(){
     }
 
 
+    /*
+       延長前半・後半を両方表示
+    */
+
     let html = "";
 
-
-    /*
-       延長前半
-    */
 
     if(
         soccerExtraPeriods.extraFirstHalf
@@ -1596,10 +1667,6 @@ function renderSoccerExtraPeriods(){
 
     }
 
-
-    /*
-       延長後半
-    */
 
     if(
         soccerExtraPeriods.extraSecondHalf
@@ -1654,7 +1721,7 @@ function renderSoccerExtraPeriods(){
 
 
     /*
-       ＋ / － ボタン
+       ＋ / －表示
     */
 
     if(button){
