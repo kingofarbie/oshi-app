@@ -2408,7 +2408,7 @@ function closeSoccerGameEditPage(){
    ⚽ 結果画面を開く
 ===================================================== */
 
-function openSoccerGameDetailPage(date){
+async function openSoccerGameDetailPage(date){
 
     hideSportsSubPages();
 
@@ -2461,12 +2461,34 @@ function openSoccerGameDetailPage(date){
         "block";
 
 
+    /* =================================================
+       ⚽ サッカー結果HTML読み込み
+    ================================================= */
+
+    const loaded =
+        await loadSoccerGameDetailHTML();
+
+
+    if(!loaded){
+
+        console.error(
+            "❌ サッカー結果HTMLの読み込みに失敗しました"
+        );
+
+        return;
+
+    }
+
+
+    /* =================================================
+       ⚽ 結果内容を描画
+    ================================================= */
+
     renderSoccerGameView(
         date
     );
 
 }
-
 
 /* =====================================================
    ⚽ 結果画面
@@ -3093,7 +3115,7 @@ async function loadSoccerGameEditHTML(){
 
         const response =
             await fetch(
-                "./sports-game-edit.html"
+                "./sports-soccer-edit.html"
             );
 
 
@@ -3126,6 +3148,77 @@ async function loadSoccerGameEditHTML(){
 
         console.error(
             "sports-game-edit.html（サッカー）の読み込みに失敗:",
+            error
+        );
+
+        return false;
+
+    }
+
+}
+
+
+
+/* =====================================================
+   ⚽ 結果HTML読み込み
+===================================================== */
+
+async function loadSoccerGameDetailHTML(){
+
+    const container =
+        document.getElementById(
+            "sportsGameDetailContainer"
+        );
+
+
+    if(!container){
+
+        console.error(
+            "❌ sportsGameDetailContainer が見つかりません"
+        );
+
+        return false;
+
+    }
+
+
+    try{
+
+        const response =
+            await fetch(
+                "./sports-soccer-detail.html"
+            );
+
+
+        if(!response.ok){
+
+            throw new Error(
+                `HTTP ${response.status}`
+            );
+
+        }
+
+
+        const html =
+            await response.text();
+
+
+        container.innerHTML =
+            html;
+
+
+        console.log(
+            "⚽ sports-soccer-detail.html 読み込み成功"
+        );
+
+
+        return true;
+
+    }
+    catch(error){
+
+        console.error(
+            "⚽ sports-soccer-detail.html の読み込みに失敗:",
             error
         );
 
