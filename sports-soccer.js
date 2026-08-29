@@ -465,6 +465,11 @@ document.getElementById(
         games[sportsSelectedDate] ||
         {};
 
+        console.log(
+    "⚽ 編集画面読み込み game:",
+    game
+);
+
 
     const data =
         db.load();
