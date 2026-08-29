@@ -53,7 +53,7 @@ function closeSportsGameDetailModal(){
 
     const modal =
         document.getElementById(
-            "sportsGameDetailModal"
+            "baseballGameDetailModal"
         );
 
 
@@ -90,19 +90,19 @@ function openBaseballGameForm(
 
     const modal =
         document.getElementById(
-            "sportsGameModal"
+            "baseballGameModal"
         );
 
 
     const form =
         document.getElementById(
-            "sportsGameForm"
+            "baseballGameForm"
         );
 
 
     const title =
         document.getElementById(
-            "sportsGameModalTitle"
+            "baseballGameModalTitle"
         );
 
 
@@ -930,12 +930,6 @@ function deleteBaseballGame(){
 }
 
 
-
-
-/* =====================================================
-   ⚾ 野球編集フォーム
-===================================================== */
-
 /* =====================================================
    ⚾ 野球編集フォーム
 ===================================================== */
@@ -944,14 +938,14 @@ function renderBaseballGameEditForm(){
 
     const form =
         document.getElementById(
-            "sportsGameEditForm"
+            "baseballGameEditForm"
         );
 
 
     if(!form){
 
         console.error(
-            "sportsGameEditForm が見つかりません"
+            "baseballGameEditForm が見つかりません"
         );
 
         return;
@@ -971,7 +965,7 @@ function renderBaseballGameEditForm(){
 
 
     const games =
-        getCurrentSportsGameForEdit();
+        getCurrentBaseballGameForEdit();
 
 
     const game =
@@ -980,7 +974,7 @@ function renderBaseballGameEditForm(){
 
 
     const currentTeam =
-        getCurrentSportsTeamForEdit();
+        getCurrentBaseballTeamForEdit();
 
 
     const team =
@@ -1000,7 +994,7 @@ function renderBaseballGameEditForm(){
 
     const title =
         document.getElementById(
-            "sportsGameEditTitle"
+            "baseballGameEditTitle"
         );
 
 
@@ -1038,49 +1032,49 @@ function renderBaseballGameEditForm(){
 
     const teamInput =
         document.getElementById(
-            "sportsEditTeam"
+            "baseballEditTeam"
         );
 
 
     const opponentInput =
         document.getElementById(
-            "sportsEditOpponent"
+            "baseballEditOpponent"
         );
 
 
     const resultSelect =
         document.getElementById(
-            "sportsEditResult"
+            "baseballEditResult"
         );
 
 
     const battingOrderSelect =
         document.getElementById(
-            "sportsEditBattingOrder"
+            "baseballEditBattingOrder"
         );
 
 
     const memoInput =
         document.getElementById(
-            "sportsEditMemo"
+            "baseballEditMemo"
         );
 
 
     const locationInput =
         document.getElementById(
-            "sportsEditLocation"
+            "baseballEditLocation"
         );
 
 
     const startingPitcherInput =
         document.getElementById(
-            "sportsEditStartingPitcher"
+            "baseballEditStartingPitcher"
         );
 
 
     const opponentPitcherInput =
         document.getElementById(
-            "sportsEditOpponentPitcher"
+            "baseballEditOpponentPitcher"
         );
 
 
@@ -1221,13 +1215,13 @@ function renderBaseballGameEditForm(){
 
         const teamScore =
             document.getElementById(
-                `sportsEditTeamScore${i + 1}`
+                `baseballEditTeamScore${i + 1}`
             );
 
 
         const opponentScore =
             document.getElementById(
-                `sportsEditOpponentScore${i + 1}`
+                `baseballEditOpponentScore${i + 1}`
             );
 
 
@@ -1303,7 +1297,7 @@ function renderBaseballGameEditForm(){
 
     const editPage =
         document.getElementById(
-            "sportsGameEditPage"
+            "baseballGameEditPage"
         );
 
 
@@ -1320,7 +1314,6 @@ function renderBaseballGameEditForm(){
 
 }
 
-
 /* =====================================================
    ⚾ 編集画面スコアボード
    先攻・後攻変更
@@ -1330,7 +1323,7 @@ function updateBaseballEditBattingOrder(){
 
     const battingOrderSelect =
         document.getElementById(
-            "sportsEditBattingOrder"
+            "baseballEditBattingOrder"
         );
 
     if(!battingOrderSelect){
@@ -1342,12 +1335,12 @@ function updateBaseballEditBattingOrder(){
 
     const teamInput =
         document.getElementById(
-            "sportsEditTeam"
+            "baseballEditTeam"
         );
 
     const opponentInput =
         document.getElementById(
-            "sportsEditOpponent"
+            "baseballEditOpponent"
         );
 
 
@@ -1373,12 +1366,12 @@ function updateBaseballEditBattingOrder(){
 
     const teamScoreInput =
         document.getElementById(
-            "sportsEditTeamScore1"
+            "baseballEditTeamScore1"
         );
 
     const opponentScoreInput =
         document.getElementById(
-            "sportsEditOpponentScore1"
+            "baseballEditOpponentScore1"
         );
 
 
@@ -1819,9 +1812,6 @@ function updateBaseballEditSideDisplay(){
 }
 
 
-/* =====================================================
-   ⚾ 編集画面から野球試合を保存
-===================================================== */
 
 /* =====================================================
    ⚾ 編集画面から野球試合を保存
@@ -1855,49 +1845,49 @@ function saveBaseballGameFromEditPage(){
 
     const teamInput =
         document.getElementById(
-            "sportsEditTeam"
+            "baseballEditTeam"
         );
 
 
     const opponentInput =
         document.getElementById(
-            "sportsEditOpponent"
+            "baseballEditOpponent"
         );
 
 
     const battingOrderSelect =
         document.getElementById(
-            "sportsEditBattingOrder"
+            "baseballEditBattingOrder"
         );
 
 
     const locationInput =
         document.getElementById(
-            "sportsEditLocation"
+            "baseballEditLocation"
         );
 
 
     const startingPitcherInput =
         document.getElementById(
-            "sportsEditStartingPitcher"
+            "baseballEditStartingPitcher"
         );
 
 
     const opponentPitcherInput =
         document.getElementById(
-            "sportsEditOpponentPitcher"
+            "baseballEditOpponentPitcher"
         );
 
 
     const resultSelect =
         document.getElementById(
-            "sportsEditResult"
+            "baseballEditResult"
         );
 
 
     const memoInput =
         document.getElementById(
-            "sportsEditMemo"
+            "baseballEditMemo"
         );
 
 
@@ -1996,13 +1986,13 @@ function saveBaseballGameFromEditPage(){
 
     const teamInputs =
         document.querySelectorAll(
-            "#sportsGameEditForm [id^='sportsEditTeamScore']"
+            "#baseballGameEditForm [id^='baseballEditTeamScore']"
         );
 
 
     const opponentInputs =
         document.querySelectorAll(
-            "#sportsGameEditForm [id^='sportsEditOpponentScore']"
+            "#baseballGameEditForm [id^='baseballEditOpponentScore']"
         );
 
 

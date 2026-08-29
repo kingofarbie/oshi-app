@@ -14,79 +14,13 @@
 ===================================================== */
 
 
-/* =====================================================
-   ⚾ 編集画面HTML読み込み
-===================================================== */
-
-async function loadSportsGameEditHTML(){
-
-    const container =
-        document.getElementById(
-            "sportsGameEditContainer"
-        );
-
-    if(!container){
-
-        console.error(
-            "sportsGameEditContainer が見つかりません"
-        );
-
-        return false;
-
-    }
-
-
-    try{
-
-        const response =
-            await fetch(
-                "./sports-game-edit.html"
-            );
-
-
-        if(!response.ok){
-
-            throw new Error(
-                `HTTP ${response.status}`
-            );
-
-        }
-
-
-        const html =
-            await response.text();
-
-
-        container.innerHTML =
-            html;
-
-
-        console.log(
-            "sports-game-edit.html 読み込み成功"
-        );
-
-
-        return true;
-
-    }catch(error){
-
-        console.error(
-            "sports-game-edit.html の読み込みに失敗:",
-            error
-        );
-
-        return false;
-
-    }
-
-}
 
 
 /* =====================================================
    ⚾ 現在の試合データ取得
 ===================================================== */
 
-function getCurrentSportsGameForEdit(){
+function getCurrentBaseballGameForEdit(){
 
     const data =
         db.load();
@@ -125,12 +59,11 @@ function getCurrentSportsGameForEdit(){
 
 }
 
-
 /* =====================================================
    ⚾ 現在の応援チーム取得
 ===================================================== */
 
-function getCurrentSportsTeamForEdit(){
+function getCurrentBaseballTeamForEdit(){
 
     const data =
         db.load();
@@ -177,7 +110,6 @@ function getCurrentSportsTeamForEdit(){
     };
 
 }
-
 
 
 /* =====================================================

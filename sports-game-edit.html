@@ -1,550 +1,749 @@
 <!DOCTYPE html>
+
 <html lang="ja">
 
 <head>
 
-    <meta charset="UTF-8">
+```
+<meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
-    <title>試合結果編集 | 推し活手帳</title>
+<title>試合結果編集 | 推し活手帳</title>
 
 
-    <link rel="stylesheet" href="calendar-sports.css">
-<link rel="stylesheet" href="sports-baseball.css">
+<!-- 野球・スポーツ共通CSS -->
+<link
+    rel="stylesheet"
+    href="calendar-sports.css"
+>
+
+<link
+    rel="stylesheet"
+    href="sports-baseball.css"
+>
+```
 
 </head>
 
 <body>
 
-<div id="sportsGameEditScreen">
+<!-- =====================================================
+     ⚾ 野球試合結果編集ページ
+===================================================== -->
 
-    <header class="sports-calendar-header">
+<div
+    id="baseballGameEditPage"
+    class="sports-game-edit-page"
+>
 
-        <h1
-            id="sportsGameEditTitle"
-            class="sports-calendar-title"
-        >
-            ⚾ 試合結果編集
-        </h1>
+```
+<!-- =================================================
+     ヘッダー
+================================================== -->
 
-        <button
-            type="button"
-            class="sports-back-button"
-            onclick="closeSportsGameEditPage()"
-        >
-            ◀ カレンダーへ戻る
-        </button>
-
-    </header>
+<header class="sports-calendar-header">
 
 
-    <main
-        id="sportsGameEditForm"
-        class="sports-game-edit-form"
+    <h1
+        id="baseballGameEditTitle"
+        class="sports-calendar-title"
     >
+        ⚾ 試合結果編集
+    </h1>
 
 
-        <!-- =========================
-             チーム情報
-        ========================== -->
-
-        <section class="sports-edit-section">
-
-            <h2>⚾ 試合情報</h2>
-
-
-            <label for="sportsEditTeam">
-                自分の応援チーム
-            </label>
-
-            <input
-                type="text"
-                id="sportsEditTeam"
-                placeholder="応援チーム名"
-                autocomplete="off"
-            >
+    <button
+        type="button"
+        class="sports-back-button"
+        onclick="closeSportsGameEditPage()"
+    >
+        ◀ カレンダーへ戻る
+    </button>
 
 
-            <label for="sportsEditOpponent">
-                相手チーム
-            </label>
-
-            <input
-                type="text"
-                id="sportsEditOpponent"
-                placeholder="相手チーム名"
-                autocomplete="off"
-            >
+</header>
 
 
 
+<!-- =================================================
+     編集フォーム
+================================================== -->
 
-            <label for="sportsEditBattingOrder">
-    先攻・後攻
-</label><select id="sportsEditBattingOrder"><option value="">
-    未設定
-</option>
-
-<option value="team_first">
-    応援チームが先攻
-</option>
-
-<option value="opponent_first">
-    応援チームが後攻
-</option>
-
-</select>
-
-
-            <label for="sportsEditStadium">
-                📍 場所
-            </label>
-
-            <input
-                type="text"
-                id="sportsEditLocation"
-                placeholder="球場・会場名"
-                autocomplete="off"
-            >
-
-        </section>
-
-
-
-<!-- =========================
-     ⚾ スコアボード
-========================== -->
-
-<section class="sports-edit-section">
-    <h2>📊 スコアボード</h2>
-
-<div class="baseball-score-wrapper">
-
-    <div class="baseball-score-scroll">
-
-        <table class="baseball-score-table">
-
-            <thead>
-                <tr>
-
-                    <th class="baseball-score-team">
-                        回
-                    </th>
-
-                    <th>1</th>
-                    <th>2</th>
-                    <th>3</th>
-                    <th>4</th>
-                    <th>5</th>
-                    <th>6</th>
-                    <th>7</th>
-                    <th>8</th>
-                    <th>9</th>
-                    <th>10</th>
-                    <th>11</th>
-                    <th>12</th>
-
-                </tr>
-            </thead>
-
-
-            <tbody>
-
-                <tr>
-
-<th
-    id="sportsEditScoreTeamName"
-    class="baseball-score-team"
+<main
+    id="baseballGameEditForm"
+    class="sports-game-edit-form"
 >
-    応援チーム
-</th>
-                    <td>
-                        <input
-                            id="sportsEditTeamScore1"
-                            class="baseball-score-input"
-                            type="number"
-                            min="0"
-                            inputmode="numeric"
-                        >
-                    </td>
-
-                    <td>
-                        <input
-                            id="sportsEditTeamScore2"
-                            class="baseball-score-input"
-                            type="number"
-                            min="0"
-                            inputmode="numeric"
-                        >
-                    </td>
-
-                    <td>
-                        <input
-                            id="sportsEditTeamScore3"
-                            class="baseball-score-input"
-                            type="number"
-                            min="0"
-                            inputmode="numeric"
-                        >
-                    </td>
-
-                    <td>
-                        <input
-                            id="sportsEditTeamScore4"
-                            class="baseball-score-input"
-                            type="number"
-                            min="0"
-                            inputmode="numeric"
-                        >
-                    </td>
-
-                    <td>
-                        <input
-                            id="sportsEditTeamScore5"
-                            class="baseball-score-input"
-                            type="number"
-                            min="0"
-                            inputmode="numeric"
-                        >
-                    </td>
-
-                    <td>
-                        <input
-                            id="sportsEditTeamScore6"
-                            class="baseball-score-input"
-                            type="number"
-                            min="0"
-                            inputmode="numeric"
-                        >
-                    </td>
-
-                    <td>
-                        <input
-                            id="sportsEditTeamScore7"
-                            class="baseball-score-input"
-                            type="number"
-                            min="0"
-                            inputmode="numeric"
-                        >
-                    </td>
-
-                    <td>
-                        <input
-                            id="sportsEditTeamScore8"
-                            class="baseball-score-input"
-                            type="number"
-                            min="0"
-                            inputmode="numeric"
-                        >
-                    </td>
-
-                    <td>
-                        <input
-                            id="sportsEditTeamScore9"
-                            class="baseball-score-input"
-                            type="number"
-                            min="0"
-                            inputmode="numeric"
-                        >
-                    </td>
-
-                    <td>
-                        <input
-                            id="sportsEditTeamScore10"
-                            class="baseball-score-input"
-                            type="number"
-                            min="0"
-                            inputmode="numeric"
-                        >
-                    </td>
-
-                    <td>
-                        <input
-                            id="sportsEditTeamScore11"
-                            class="baseball-score-input"
-                            type="number"
-                            min="0"
-                            inputmode="numeric"
-                        >
-                    </td>
-
-                    <td>
-                        <input
-                            id="sportsEditTeamScore12"
-                            class="baseball-score-input"
-                            type="number"
-                            min="0"
-                            inputmode="numeric"
-                        >
-                    </td>
-
-                </tr>
-
-
-                <tr>
-
-<th
-    id="sportsEditScoreOpponentName"
-    class="baseball-score-team"
->
-    相手チーム
-</th>
-                    <td>
-                        <input
-                            id="sportsEditOpponentScore1"
-                            class="baseball-score-input"
-                            type="number"
-                            min="0"
-                            inputmode="numeric"
-                        >
-                    </td>
-
-                    <td>
-                        <input
-                            id="sportsEditOpponentScore2"
-                            class="baseball-score-input"
-                            type="number"
-                            min="0"
-                            inputmode="numeric"
-                        >
-                    </td>
-
-                    <td>
-                        <input
-                            id="sportsEditOpponentScore3"
-                            class="baseball-score-input"
-                            type="number"
-                            min="0"
-                            inputmode="numeric"
-                        >
-                    </td>
-
-                    <td>
-                        <input
-                            id="sportsEditOpponentScore4"
-                            class="baseball-score-input"
-                            type="number"
-                            min="0"
-                            inputmode="numeric"
-                        >
-                    </td>
-
-                    <td>
-                        <input
-                            id="sportsEditOpponentScore5"
-                            class="baseball-score-input"
-                            type="number"
-                            min="0"
-                            inputmode="numeric"
-                        >
-                    </td>
-
-                    <td>
-                        <input
-                            id="sportsEditOpponentScore6"
-                            class="baseball-score-input"
-                            type="number"
-                            min="0"
-                            inputmode="numeric"
-                        >
-                    </td>
-
-                    <td>
-                        <input
-                            id="sportsEditOpponentScore7"
-                            class="baseball-score-input"
-                            type="number"
-                            min="0"
-                            inputmode="numeric"
-                        >
-                    </td>
-
-                    <td>
-                        <input
-                            id="sportsEditOpponentScore8"
-                            class="baseball-score-input"
-                            type="number"
-                            min="0"
-                            inputmode="numeric"
-                        >
-                    </td>
-
-                    <td>
-                        <input
-                            id="sportsEditOpponentScore9"
-                            class="baseball-score-input"
-                            type="number"
-                            min="0"
-                            inputmode="numeric"
-                        >
-                    </td>
-
-                    <td>
-                        <input
-                            id="sportsEditOpponentScore10"
-                            class="baseball-score-input"
-                            type="number"
-                            min="0"
-                            inputmode="numeric"
-                        >
-                    </td>
-
-                    <td>
-                        <input
-                            id="sportsEditOpponentScore11"
-                            class="baseball-score-input"
-                            type="number"
-                            min="0"
-                            inputmode="numeric"
-                        >
-                    </td>
-
-                    <td>
-                        <input
-                            id="sportsEditOpponentScore12"
-                            class="baseball-score-input"
-                            type="number"
-                            min="0"
-                            inputmode="numeric"
-                        >
-                    </td>
-
-                </tr>
-
-            </tbody>
-
-        </table>
-
-    </div>
-
-</div>
-
-</section>
-
-
-        <!-- =========================
-             試合結果
-        ========================== -->
-
-        <section class="sports-edit-section">
-
-            <h2>🏆 試合結果</h2>
-
-
-            <label for="sportsEditResult">
-                勝敗
-            </label>
-
-            <select id="sportsEditResult">
-
-                <option value="">
-                    未設定
-                </option>
-
-                <option value="win">
-                    🏆 勝ち
-                </option>
-
-                <option value="lose">
-                    😢 負け
-                </option>
-
-                <option value="draw">
-                    🤝 引分
-                </option>
-
-                <option value="cancelled">
-                    ⛔ 中止
-                </option>
-
-            </select>
-
-        </section>
-
-
-
-        <!-- =========================
-             先発投手
-        ========================== -->
-
-        <section class="sports-edit-section">
-
-            <h2>⚾ 先発投手</h2>
-
-
-            <label for="sportsEditTeamPitcher">
-                応援チーム 先発投手
-            </label>
-
-            <input
-                type="text"
-                id="sportsEditStartingPitcher"
-                placeholder="投手名"
-                autocomplete="off"
-            >
-
-
-            <label for="sportsEditOpponentPitcher">
-                相手チーム 先発投手
-            </label>
-
-            <input
-                type="text"
-                id="sportsEditOpponentPitcher"
-                placeholder="投手名"
-                autocomplete="off"
-            >
-
-        </section>
-
-
-
-        <!-- =========================
-             メモ
-        ========================== -->
-
-        <section class="sports-edit-section">
-
-            <h2>📝 メモ</h2>
-
-            <textarea
-                id="sportsEditMemo"
-                rows="5"
-                placeholder="試合についてのメモ"
-            ></textarea>
-
-        </section>
-
-
-
-        <!-- =========================
-             ボタン
-        ========================== -->
-
-        <div class="sports-edit-buttons">
-
-            <button
-                type="button"
-                onclick="saveBaseballGameFromEditPage()"
-            >
-                💾 保存
-            </button>
-
-            <button
-                type="button"
-                onclick="cancelSportsGameEdit()"
-            >
-                キャンセル
-            </button>
+
+
+
+    <!-- =============================================
+         ⚾ 試合情報
+    ============================================== -->
+
+    <section class="sports-edit-section">
+
+
+        <h2>
+            ⚾ 試合情報
+        </h2>
+
+
+
+        <!-- 応援チーム -->
+
+        <label for="baseballEditTeam">
+            自分の応援チーム
+        </label>
+
+
+        <input
+            type="text"
+            id="baseballEditTeam"
+            placeholder="応援チーム名"
+            autocomplete="off"
+        >
+
+
+
+        <!-- 相手チーム -->
+
+        <label for="baseballEditOpponent">
+            相手チーム
+        </label>
+
+
+        <input
+            type="text"
+            id="baseballEditOpponent"
+            placeholder="相手チーム名"
+            autocomplete="off"
+        >
+
+
+
+        <!-- 先攻・後攻 -->
+
+        <label for="baseballEditBattingOrder">
+            先攻・後攻
+        </label>
+
+
+        <select
+            id="baseballEditBattingOrder"
+        >
+
+            <option value="">
+                未設定
+            </option>
+
+            <option value="team_first">
+                応援チームが先攻
+            </option>
+
+            <option value="opponent_first">
+                応援チームが後攻
+            </option>
+
+        </select>
+
+
+
+        <!-- 場所 -->
+
+        <label for="baseballEditLocation">
+            📍 場所
+        </label>
+
+
+        <input
+            type="text"
+            id="baseballEditLocation"
+            placeholder="球場・会場名"
+            autocomplete="off"
+        >
+
+
+    </section>
+
+
+
+
+    <!-- =============================================
+         📊 スコアボード
+    ============================================== -->
+
+    <section class="sports-edit-section">
+
+
+        <h2>
+            📊 スコアボード
+        </h2>
+
+
+
+        <div class="baseball-score-wrapper">
+
+
+            <div class="baseball-score-scroll">
+
+
+                <table class="baseball-score-table">
+
+
+                    <thead>
+
+                        <tr>
+
+
+                            <th class="baseball-score-team">
+                                回
+                            </th>
+
+
+                            <th>1</th>
+                            <th>2</th>
+                            <th>3</th>
+                            <th>4</th>
+                            <th>5</th>
+                            <th>6</th>
+                            <th>7</th>
+                            <th>8</th>
+                            <th>9</th>
+                            <th>10</th>
+                            <th>11</th>
+                            <th>12</th>
+
+
+                        </tr>
+
+                    </thead>
+
+
+
+                    <tbody>
+
+
+                        <!-- =================================
+                             応援チーム
+                        ================================== -->
+
+                        <tr>
+
+
+                            <th
+                                id="baseballEditTeamLabel"
+                                class="baseball-score-team"
+                            >
+                                応援チーム
+                            </th>
+
+
+                            <td>
+                                <input
+                                    type="number"
+                                    id="baseballEditTeamScore1"
+                                    class="baseball-score-input"
+                                    min="0"
+                                    max="99"
+                                    inputmode="numeric"
+                                >
+                            </td>
+
+
+                            <td>
+                                <input
+                                    type="number"
+                                    id="baseballEditTeamScore2"
+                                    class="baseball-score-input"
+                                    min="0"
+                                    max="99"
+                                    inputmode="numeric"
+                                >
+                            </td>
+
+
+                            <td>
+                                <input
+                                    type="number"
+                                    id="baseballEditTeamScore3"
+                                    class="baseball-score-input"
+                                    min="0"
+                                    max="99"
+                                    inputmode="numeric"
+                                >
+                            </td>
+
+
+                            <td>
+                                <input
+                                    type="number"
+                                    id="baseballEditTeamScore4"
+                                    class="baseball-score-input"
+                                    min="0"
+                                    max="99"
+                                    inputmode="numeric"
+                                >
+                            </td>
+
+
+                            <td>
+                                <input
+                                    type="number"
+                                    id="baseballEditTeamScore5"
+                                    class="baseball-score-input"
+                                    min="0"
+                                    max="99"
+                                    inputmode="numeric"
+                                >
+                            </td>
+
+
+                            <td>
+                                <input
+                                    type="number"
+                                    id="baseballEditTeamScore6"
+                                    class="baseball-score-input"
+                                    min="0"
+                                    max="99"
+                                    inputmode="numeric"
+                                >
+                            </td>
+
+
+                            <td>
+                                <input
+                                    type="number"
+                                    id="baseballEditTeamScore7"
+                                    class="baseball-score-input"
+                                    min="0"
+                                    max="99"
+                                    inputmode="numeric"
+                                >
+                            </td>
+
+
+                            <td>
+                                <input
+                                    type="number"
+                                    id="baseballEditTeamScore8"
+                                    class="baseball-score-input"
+                                    min="0"
+                                    max="99"
+                                    inputmode="numeric"
+                                >
+                            </td>
+
+
+                            <td>
+                                <input
+                                    type="number"
+                                    id="baseballEditTeamScore9"
+                                    class="baseball-score-input"
+                                    min="0"
+                                    max="99"
+                                    inputmode="numeric"
+                                >
+                            </td>
+
+
+                            <td>
+                                <input
+                                    type="number"
+                                    id="baseballEditTeamScore10"
+                                    class="baseball-score-input"
+                                    min="0"
+                                    max="99"
+                                    inputmode="numeric"
+                                >
+                            </td>
+
+
+                            <td>
+                                <input
+                                    type="number"
+                                    id="baseballEditTeamScore11"
+                                    class="baseball-score-input"
+                                    min="0"
+                                    max="99"
+                                    inputmode="numeric"
+                                >
+                            </td>
+
+
+                            <td>
+                                <input
+                                    type="number"
+                                    id="baseballEditTeamScore12"
+                                    class="baseball-score-input"
+                                    min="0"
+                                    max="99"
+                                    inputmode="numeric"
+                                >
+                            </td>
+
+
+                        </tr>
+
+
+
+
+                        <!-- =================================
+                             相手チーム
+                        ================================== -->
+
+                        <tr>
+
+
+                            <th
+                                id="baseballEditOpponentLabel"
+                                class="baseball-score-team"
+                            >
+                                相手チーム
+                            </th>
+
+
+                            <td>
+                                <input
+                                    type="number"
+                                    id="baseballEditOpponentScore1"
+                                    class="baseball-score-input"
+                                    min="0"
+                                    max="99"
+                                    inputmode="numeric"
+                                >
+                            </td>
+
+
+                            <td>
+                                <input
+                                    type="number"
+                                    id="baseballEditOpponentScore2"
+                                    class="baseball-score-input"
+                                    min="0"
+                                    max="99"
+                                    inputmode="numeric"
+                                >
+                            </td>
+
+
+                            <td>
+                                <input
+                                    type="number"
+                                    id="baseballEditOpponentScore3"
+                                    class="baseball-score-input"
+                                    min="0"
+                                    max="99"
+                                    inputmode="numeric"
+                                >
+                            </td>
+
+
+                            <td>
+                                <input
+                                    type="number"
+                                    id="baseballEditOpponentScore4"
+                                    class="baseball-score-input"
+                                    min="0"
+                                    max="99"
+                                    inputmode="numeric"
+                                >
+                            </td>
+
+
+                            <td>
+                                <input
+                                    type="number"
+                                    id="baseballEditOpponentScore5"
+                                    class="baseball-score-input"
+                                    min="0"
+                                    max="99"
+                                    inputmode="numeric"
+                                >
+                            </td>
+
+
+                            <td>
+                                <input
+                                    type="number"
+                                    id="baseballEditOpponentScore6"
+                                    class="baseball-score-input"
+                                    min="0"
+                                    max="99"
+                                    inputmode="numeric"
+                                >
+                            </td>
+
+
+                            <td>
+                                <input
+                                    type="number"
+                                    id="baseballEditOpponentScore7"
+                                    class="baseball-score-input"
+                                    min="0"
+                                    max="99"
+                                    inputmode="numeric"
+                                >
+                            </td>
+
+
+                            <td>
+                                <input
+                                    type="number"
+                                    id="baseballEditOpponentScore8"
+                                    class="baseball-score-input"
+                                    min="0"
+                                    max="99"
+                                    inputmode="numeric"
+                                >
+                            </td>
+
+
+                            <td>
+                                <input
+                                    type="number"
+                                    id="baseballEditOpponentScore9"
+                                    class="baseball-score-input"
+                                    min="0"
+                                    max="99"
+                                    inputmode="numeric"
+                                >
+                            </td>
+
+
+                            <td>
+                                <input
+                                    type="number"
+                                    id="baseballEditOpponentScore10"
+                                    class="baseball-score-input"
+                                    min="0"
+                                    max="99"
+                                    inputmode="numeric"
+                                >
+                            </td>
+
+
+                            <td>
+                                <input
+                                    type="number"
+                                    id="baseballEditOpponentScore11"
+                                    class="baseball-score-input"
+                                    min="0"
+                                    max="99"
+                                    inputmode="numeric"
+                                >
+                            </td>
+
+
+                            <td>
+                                <input
+                                    type="number"
+                                    id="baseballEditOpponentScore12"
+                                    class="baseball-score-input"
+                                    min="0"
+                                    max="99"
+                                    inputmode="numeric"
+                                >
+                            </td>
+
+
+                        </tr>
+
+
+                    </tbody>
+
+
+                </table>
+
+
+            </div>
+
 
         </div>
 
 
-    </main>
+
+        <!-- =========================================
+             合計スコア表示
+        ========================================== -->
+
+        <div
+            id="baseballEditScorePreview"
+            class="baseball-final-score"
+        >
+
+
+            <span id="baseballEditTeamPreview">
+                応援チーム
+            </span>
+
+
+            <strong>
+                0 - 0
+            </strong>
+
+
+            <span id="baseballEditFinalOpponent">
+                相手チーム
+            </span>
+
+
+        </div>
+
+
+    </section>
+
+
+
+
+    <!-- =============================================
+         🏆 試合結果
+    ============================================== -->
+
+    <section class="sports-edit-section">
+
+
+        <h2>
+            🏆 試合結果
+        </h2>
+
+
+        <label for="baseballEditResult">
+            勝敗
+        </label>
+
+
+        <select
+            id="baseballEditResult"
+        >
+
+            <option value="">
+                未設定
+            </option>
+
+            <option value="win">
+                🏆 勝ち
+            </option>
+
+            <option value="lose">
+                😢 負け
+            </option>
+
+            <option value="draw">
+                🤝 引分
+            </option>
+
+            <option value="cancelled">
+                ⛔ 中止
+            </option>
+
+        </select>
+
+
+    </section>
+
+
+
+
+    <!-- =============================================
+         ⚾ 先発投手
+    ============================================== -->
+
+    <section class="sports-edit-section">
+
+
+        <h2>
+            ⚾ 先発投手
+        </h2>
+
+
+        <label for="baseballEditStartingPitcher">
+            応援チーム 先発投手
+        </label>
+
+
+        <input
+            type="text"
+            id="baseballEditStartingPitcher"
+            placeholder="投手名"
+            autocomplete="off"
+        >
+
+
+
+        <label for="baseballEditOpponentPitcher">
+            相手チーム 先発投手
+        </label>
+
+
+        <input
+            type="text"
+            id="baseballEditOpponentPitcher"
+            placeholder="投手名"
+            autocomplete="off"
+        >
+
+
+    </section>
+
+
+
+
+    <!-- =============================================
+         📝 メモ
+    ============================================== -->
+
+    <section class="sports-edit-section">
+
+
+        <h2>
+            📝 メモ
+        </h2>
+
+
+        <textarea
+            id="baseballEditMemo"
+            rows="5"
+            placeholder="試合についてのメモ"
+        ></textarea>
+
+
+    </section>
+
+
+
+
+    <!-- =============================================
+         💾 ボタン
+    ============================================== -->
+
+    <div class="sports-edit-buttons">
+
+
+        <button
+            type="button"
+            onclick="saveBaseballGameFromEditPage()"
+        >
+            💾 保存
+        </button>
+
+
+        <button
+            type="button"
+            onclick="closeSportsGameEditPage()"
+        >
+            キャンセル
+        </button>
+
+
+    </div>
+
+
+</main>
+```
 
 </div>
 

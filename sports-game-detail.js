@@ -125,10 +125,9 @@ console.log("★★ battingOrder:", game?.battingOrder);
         game.opponent ||
         "対戦相手";
 
-    const battingOrder =
+const battingOrder =
     game.battingOrder ||
-    "first";
-
+    "";
 
     const location =
         game.location ||
