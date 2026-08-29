@@ -770,7 +770,7 @@ function saveSoccerGameEdit(){
 
     /* =========================
        現在の試合データ取得
-       既存データを保持する
+       既存データを保持
     ========================= */
 
     const games =
@@ -807,17 +807,6 @@ function saveSoccerGameEdit(){
         homeAway:
             homeAwaySelect?.value ||
             "",
-
-
-            console.log(
-    "⚽ 保存直前 homeAway:",
-    homeAwaySelect?.value
-);
-
-console.log(
-    "⚽ 保存する game:",
-    game
-);
 
 
         /* 前半 */
@@ -868,13 +857,40 @@ console.log(
 
 
     /* =========================
-       保存
+       保存直前確認
     ========================= */
 
-    saveSportsGameData(
-        sportsSelectedDate,
+    console.log(
+        "⚽ 保存直前 homeAway:",
+        game.homeAway
+    );
+
+    console.log(
+        "⚽ 保存する game:",
         game
     );
+
+
+    /* =========================
+       サッカー専用保存
+    ========================= */
+
+    const saved =
+        saveSoccerGameData(
+            sportsSelectedDate,
+            game
+        );
+
+
+    if(saved === false){
+
+        alert(
+            "⚽ 試合結果の保存に失敗しました。"
+        );
+
+        return;
+
+    }
 
 
     console.log(
@@ -892,7 +908,6 @@ console.log(
     );
 
 }
-
 
 function updateSoccerScoreTeamNames(){
 
