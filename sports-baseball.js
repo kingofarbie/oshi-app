@@ -1823,12 +1823,20 @@ function updateBaseballEditSideDisplay(){
    ⚾ 編集画面から野球試合を保存
 ===================================================== */
 
+/* =====================================================
+   ⚾ 編集画面から野球試合を保存
+===================================================== */
+
 function saveBaseballGameFromEditPage(){
 
     console.log(
         "saveBaseballGameFromEditPage 実行"
     );
 
+
+    /* =====================
+       試合日チェック
+    ===================== */
 
     if(!sportsSelectedDate){
 
@@ -1845,28 +1853,64 @@ function saveBaseballGameFromEditPage(){
        入力値取得
     ===================== */
 
+    const teamInput =
+        document.getElementById(
+            "sportsEditTeam"
+        );
+
+
     const opponentInput =
         document.getElementById(
-            "baseballEditOpponent"
+            "sportsEditOpponent"
         );
 
 
-    const venueInput =
+    const battingOrderSelect =
         document.getElementById(
-            "baseballEditVenue"
+            "sportsEditBattingOrder"
         );
 
 
-    const startTimeInput =
+    const locationInput =
         document.getElementById(
-            "baseballEditStartTime"
+            "sportsEditLocation"
+        );
+
+
+    const startingPitcherInput =
+        document.getElementById(
+            "sportsEditStartingPitcher"
+        );
+
+
+    const opponentPitcherInput =
+        document.getElementById(
+            "sportsEditOpponentPitcher"
+        );
+
+
+    const resultSelect =
+        document.getElementById(
+            "sportsEditResult"
         );
 
 
     const memoInput =
         document.getElementById(
-            "baseballEditMemo"
+            "sportsEditMemo"
         );
+
+
+    /* =====================
+       値
+    ===================== */
+
+    const team =
+        teamInput
+        ?
+        teamInput.value.trim()
+        :
+        "";
 
 
     const opponent =
@@ -1877,18 +1921,42 @@ function saveBaseballGameFromEditPage(){
         "";
 
 
-    const venue =
-        venueInput
+    const battingOrder =
+        battingOrderSelect
         ?
-        venueInput.value.trim()
+        battingOrderSelect.value
         :
         "";
 
 
-    const startTime =
-        startTimeInput
+    const location =
+        locationInput
         ?
-        startTimeInput.value
+        locationInput.value.trim()
+        :
+        "";
+
+
+    const startingPitcher =
+        startingPitcherInput
+        ?
+        startingPitcherInput.value.trim()
+        :
+        "";
+
+
+    const opponentStartingPitcher =
+        opponentPitcherInput
+        ?
+        opponentPitcherInput.value.trim()
+        :
+        "";
+
+
+    const result =
+        resultSelect
+        ?
+        resultSelect.value
         :
         "";
 
@@ -1908,7 +1976,7 @@ function saveBaseballGameFromEditPage(){
     if(!opponent){
 
         alert(
-            "対戦相手を入力してください。"
+            "相手チームを入力してください。"
         );
 
         if(opponentInput){
@@ -1923,29 +1991,18 @@ function saveBaseballGameFromEditPage(){
 
 
     /* =====================
-       表・裏
-    ===================== */
-
-    const side =
-        document.querySelector(
-            'input[name="baseballInningSide"]:checked'
-        )?.value ||
-        "";
-
-
-    /* =====================
-       イニングスコア
+       イニングスコア取得
     ===================== */
 
     const teamInputs =
         document.querySelectorAll(
-            "#sportsGameEditForm [data-team-inning]"
+            "#sportsGameEditForm [id^='sportsEditTeamScore']"
         );
 
 
     const opponentInputs =
         document.querySelectorAll(
-            "#sportsGameEditForm [data-opponent-inning]"
+            "#sportsGameEditForm [id^='sportsEditOpponentScore']"
         );
 
 
@@ -1990,6 +2047,24 @@ function saveBaseballGameFromEditPage(){
 
 
     /* =====================
+       12回分を必ず保持
+    ===================== */
+
+    while(teamScores.length < 12){
+
+        teamScores.push("");
+
+    }
+
+
+    while(opponentScores.length < 12){
+
+        opponentScores.push("");
+
+    }
+
+
+    /* =====================
        合計
     ===================== */
 
@@ -2006,17 +2081,6 @@ function saveBaseballGameFromEditPage(){
 
 
     /* =====================
-       試合結果
-    ===================== */
-
-    const result =
-        document.querySelector(
-            'input[name="baseballResult"]:checked'
-        )?.value ||
-        "";
-
-
-    /* =====================
        保存データ
     ===================== */
 
@@ -2025,17 +2089,23 @@ function saveBaseballGameFromEditPage(){
         sport:
             "baseball",
 
+        team:
+            team,
+
         opponent:
             opponent,
 
-        venue:
-            venue,
+        battingOrder:
+            battingOrder,
 
-        startTime:
-            startTime,
+        location:
+            location,
 
-        inningSide:
-            side,
+        startingPitcher:
+            startingPitcher,
+
+        opponentStartingPitcher:
+            opponentStartingPitcher,
 
         teamScores:
             teamScores,
@@ -2083,7 +2153,7 @@ function saveBaseballGameFromEditPage(){
 
 
     /* =====================
-       保存した日付を保持
+       保存日を保持
     ===================== */
 
     const savedDate =
@@ -2110,7 +2180,6 @@ function saveBaseballGameFromEditPage(){
     }
 
 }
-
 
 
 
