@@ -2546,6 +2546,19 @@ function renderSoccerGameView(date){
         );
 
 
+        console.log(
+    "⚽ 結果画面スコア確認:",
+    {
+        homeAway: game.homeAway,
+        firstHalfTeam: game.firstHalfTeam,
+        firstHalfOpponent: game.firstHalfOpponent,
+        secondHalfTeam: game.secondHalfTeam,
+        secondHalfOpponent: game.secondHalfOpponent,
+        teamTotal: teamTotal,
+        opponentTotal: opponentTotal
+    }
+);
+
     /* =================================================
        ホーム / アウェイ
     ================================================= */
