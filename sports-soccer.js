@@ -924,17 +924,24 @@ function renderSoccerGameEditForm(){
                     homeAwaySelect.value;
 
 
-                if(
-                    soccerPreviousHomeAway &&
-                    newHomeAway &&
-                    soccerPreviousHomeAway !==
-                        newHomeAway
-                ){
+homeAwaySelect.addEventListener(
+    "change",
+    function(){
 
-                    swapSoccerHomeAwayScores();
+        const newHomeAway =
+            homeAwaySelect.value;
 
-                }
 
+        soccerPreviousHomeAway =
+            newHomeAway;
+
+
+        updateSoccerScoreTeamNames();
+
+        updateSoccerScoreboard();
+
+    }
+);
 
                 soccerPreviousHomeAway =
                     newHomeAway;
