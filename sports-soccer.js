@@ -195,6 +195,8 @@ function calculateSoccerOpponentTotal(game){
 
 async function openSoccerGameEditPage(date){
 
+    hideSportsSubPages();
+
     sportsSelectedDate = date;
 
     const sportsPage =

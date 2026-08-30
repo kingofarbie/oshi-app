@@ -2241,77 +2241,6 @@ function closeFavoriteSportsSettings(){
 }
 
 
-/* =====================================================
-   ⚾ 試合結果ページを開く
-===================================================== */
-
-function openBaseballGameDetailPage(date){
-
-    hideSportsSubPages();
-
-    const sportsPage =
-        document.getElementById(
-            "sportsCalendarPage"
-        );
-
-    const detailPage =
-        document.getElementById(
-            "sportsGameDetailPage"
-        );
-
-
-    if(!sportsPage || !detailPage){
-
-        console.error(
-            "スポーツページまたは試合結果ページが見つかりません"
-        );
-
-        return;
-
-    }
-
-
-    /*
-       現在の試合日を保存
-    */
-
-    sportsSelectedDate =
-        date;
-
-
-    /*
-       スポーツカレンダーを完全に非表示
-    */
-
-    sportsPage.classList.remove("active");
-
-    sportsPage.style.display = "none";
-
-
-    /*
-       試合結果を表示
-    */
-
-    detailPage.classList.add("active");
-
-    detailPage.style.display = "block";
-
-
-    /*
-       試合結果を描画
-    */
-
-    console.log("★ openBaseballGameDetailPage → openBaseballGameView", date);
-
-console.log(
-    "★★ 呼び出し直前 openBaseballGameView =",
-    openBaseballGameView
-);
-    openBaseballGameView(
-        date
-    );
-
-}
 
 /* =====================================================
    ⚾ 試合結果ページ → スポーツカレンダーへ戻る
@@ -2400,150 +2329,9 @@ function closeSportsGameDetailPage(){
 }
 
 
-async function openBaseballGameEditPage(date){
-
-    sportsSelectedDate =
-        date;
-
-
-    const sportsPage =
-        document.getElementById(
-            "sportsCalendarPage"
-        );
-
-
-    const editPage =
-        document.getElementById(
-            "sportsGameEditPage"
-        );
-
-
-    if(
-        !sportsPage ||
-        !editPage
-    ){
-
-        console.error(
-            "❌ 野球スポーツカレンダーまたは編集ページが見つかりません"
-        );
-
-        return;
-
-    }
-
-
-    sportsPage.style.display =
-        "none";
-
-    sportsPage.classList.remove(
-        "active"
-    );
-
-
-    editPage.style.display =
-        "block";
-
-    editPage.classList.add(
-        "active"
-    );
-
-
-    console.log(
-        "① 野球編集ページ表示開始:",
-        date
-    );
-
-
-    const loaded =
-        await loadBaseballGameEditHTML();
-
-
-    console.log(
-        "② 野球編集HTML読み込み結果:",
-        loaded
-    );
-
-
-    if(!loaded){
-
-        console.error(
-            "③ 野球編集HTML読み込み失敗"
-        );
-
-        return;
-
-    }
-
-
-    renderBaseballGameEditForm();
-
-
-    console.log(
-        "④ 野球編集フォーム描画完了"
-    );
-
-}
-
-
 /* =====================================================
-   ⚽ サッカー試合結果編集ページを開く
+   試合結果編集ページを開く
 ===================================================== */
-
-async function openSoccerGameEditPage(date){
-console.log("calendar-sports.js版");
-    hideSportsSubPages();
-
-
-    const sportsPage =
-        document.getElementById(
-            "sportsCalendarPage"
-        );
-
-
-    const editPage =
-        document.getElementById(
-            "soccerGameEditPage"
-        );
-
-
-    if(!sportsPage || !editPage){
-
-        console.error(
-            "スポーツカレンダーまたはサッカー試合結果編集ページが見つかりません"
-        );
-
-        return;
-
-    }
-
-
-    sportsSelectedDate =
-        date;
-
-
-    sportsPage.classList.remove("active");
-    sportsPage.style.display = "none";
-
-
-    editPage.classList.add("active");
-    editPage.style.display = "block";
-
-
-    /*
-       sports-soccer.html を読み込む
-    */
-
-    await loadSoccerGameEditHTML();
-
-
-    /*
-       サッカー編集フォームを表示
-    */
-
-    renderSoccerGameEditForm();
-
-}
-
 
 function closeSportsGameEditPage(){
 
@@ -2610,55 +2398,13 @@ function closeSportsGameEditPage(){
 
 function hideSportsSubPages(){
 
-    const sportsPage =
-        document.getElementById(
-            "sportsCalendarPage"
-        );
+    document
+        .querySelectorAll(".sports-sub-page")
+        .forEach(page => {
 
-    const sportsScreen =
-        document.getElementById(
-            "sportsCalendarScreen"
-        );
+            page.classList.remove("active");
+            page.style.display = "none";
 
-    const detailPage =
-        document.getElementById(
-            "sportsGameDetailPage"
-        );
-
-    const editPage =
-        document.getElementById(
-            "sportsGameEditPage"
-        );
-
-
-    if(sportsPage){
-
-        sportsPage.classList.remove("active");
-        sportsPage.style.display = "none";
-
-    }
-
-
-    if(sportsScreen){
-
-        sportsScreen.style.display = "none";
-
-    }
-
-
-    if(detailPage){
-
-        detailPage.classList.remove("active");
-        detailPage.style.display = "none";
-
-    }
-
-
-    if(editPage){
-
-        editPage.classList.remove("active");
-        editPage.style.display = "none";
-
-    }
+        });
 
 }
