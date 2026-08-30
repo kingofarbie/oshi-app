@@ -2622,43 +2622,41 @@ function renderSoccerGameView(date){
        ホーム / アウェイ
     ================================================= */
 
-    let homeTeam =
-        team;
+/* =================================================
+   ホーム / アウェイ
+================================================= */
+
+let homeTeam =
+    team;
+
+let awayTeam =
+    opponent;
+
+let homeScore =
+    teamTotal;
+
+let awayScore =
+    opponentTotal;
 
 
-    let awayTeam =
+/*
+   編集画面で入れ替えた後の
+   保存済みスコアをそのまま表示する。
+
+   homeAway はチーム名の表示順だけに使用する。
+*/
+
+if(
+    game.homeAway === "away"
+){
+
+    homeTeam =
         opponent;
 
+    awayTeam =
+        team;
 
-    let homeScore =
-        teamTotal;
-
-
-    let awayScore =
-        opponentTotal;
-
-
-    if(
-        game.homeAway === "away"
-    ){
-
-        homeTeam =
-            opponent;
-
-
-        awayTeam =
-            team;
-
-
-        homeScore =
-            opponentTotal;
-
-
-        awayScore =
-            teamTotal;
-
-    }
-
+}
 
     /* =================================================
        結果
