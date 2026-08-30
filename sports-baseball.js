@@ -2345,6 +2345,21 @@ function openBaseballGameDetailPage(date){
 
     hideSportsSubPages();
 
+    console.log(
+    "★★ hideSportsSubPages後 detailPage =",
+    document.getElementById("sportsGameDetailPage")
+);
+
+console.log(
+    "★★ hideSportsSubPages後 detail display =",
+    document.getElementById("sportsGameDetailPage")?.style.display
+);
+
+console.log(
+    "★★ hideSportsSubPages後 detail class =",
+    document.getElementById("sportsGameDetailPage")?.className
+);
+
     const sportsPage =
         document.getElementById(
             "sportsCalendarPage"
