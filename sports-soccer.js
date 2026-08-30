@@ -1162,7 +1162,6 @@ function swapSoccerHomeAwayScores(){
                     pair[0]
                 );
 
-
             const right =
                 document.getElementById(
                     pair[1]
@@ -1182,10 +1181,8 @@ function swapSoccerHomeAwayScores(){
             const temp =
                 left.value;
 
-
             left.value =
                 right.value;
-
 
             right.value =
                 temp;
@@ -1194,17 +1191,15 @@ function swapSoccerHomeAwayScores(){
     );
 
 
-    /* =================================================
-       内部保持値も交換
-    ================================================= */
+    /* =========================
+       延長・PKの内部値も交換
+    ========================= */
 
     const tempExtraFirst =
         soccerExtraScoreValues.extraFirstTeam;
 
-
     soccerExtraScoreValues.extraFirstTeam =
         soccerExtraScoreValues.extraFirstOpponent;
-
 
     soccerExtraScoreValues.extraFirstOpponent =
         tempExtraFirst;
@@ -1213,10 +1208,8 @@ function swapSoccerHomeAwayScores(){
     const tempExtraSecond =
         soccerExtraScoreValues.extraSecondTeam;
 
-
     soccerExtraScoreValues.extraSecondTeam =
         soccerExtraScoreValues.extraSecondOpponent;
-
 
     soccerExtraScoreValues.extraSecondOpponent =
         tempExtraSecond;
@@ -1225,19 +1218,28 @@ function swapSoccerHomeAwayScores(){
     const tempPenalty =
         soccerExtraScoreValues.penaltyTeam;
 
-
     soccerExtraScoreValues.penaltyTeam =
         soccerExtraScoreValues.penaltyOpponent;
-
 
     soccerExtraScoreValues.penaltyOpponent =
         tempPenalty;
 
 
+    /*
+       ★ 入れ替えた値を
+       内部保持値へ反映
+    */
+
+    saveSoccerExtraScoreValues();
+
+
+    /*
+       ★ ここでリアルタイム再計算
+    */
+
     updateSoccerScoreboard();
 
 }
-
 
 /* =====================================================
    ⚽ input値設定
