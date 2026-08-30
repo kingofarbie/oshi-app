@@ -2123,6 +2123,11 @@ function saveSoccerGameEdit(){
 
     };
 
+    console.log(
+    "⚽ 保存 homeAway:",
+    game.homeAway
+);
+
 
     console.log(
         "⚽ 保存する game:",
