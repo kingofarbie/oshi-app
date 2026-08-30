@@ -681,5 +681,9 @@ ${
         </div>
 
     `;
+    console.log(
+    "★★ 結果画面HTML描画完了",
+    detail.innerHTML.length
+);
 
 }
