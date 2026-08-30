@@ -904,10 +904,6 @@ function renderSoccerGameEditForm(){
     }
 
 
-    /* =================================================
-       ホーム / アウェイ変更
-    ================================================= */
-
 /* =================================================
    ホーム / アウェイ変更
 ================================================= */
@@ -917,16 +913,24 @@ const homeAwaySelect =
         "soccerEditHomeAway"
     );
 
-
 if(homeAwaySelect){
 
     homeAwaySelect.addEventListener(
         "change",
         function(){
 
+            if(
+                soccerPreviousHomeAway &&
+                homeAwaySelect.value &&
+                soccerPreviousHomeAway !== homeAwaySelect.value
+            ){
+
+                swapSoccerHomeAwayScores();
+
+            }
+
             soccerPreviousHomeAway =
                 homeAwaySelect.value;
-
 
             updateSoccerScoreTeamNames();
 
@@ -936,7 +940,6 @@ if(homeAwaySelect){
     );
 
 }
-
 
 /* =================================================
    ⚽ スコア入力 → リアルタイム更新
