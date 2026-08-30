@@ -2402,49 +2402,87 @@ function closeSportsGameDetailPage(){
 
 async function openBaseballGameEditPage(date){
 
-    hideSportsSubPages();
+    sportsSelectedDate =
+        date;
+
 
     const sportsPage =
         document.getElementById(
             "sportsCalendarPage"
         );
 
-await loadBaseballGameEditHTML();
 
-const editPage =
-    document.getElementById(
-        "baseballGameEditPage"
-    );
-
-console.log(
-    "★★ baseballGameEditPage =",
-    editPage
-);
+    const editPage =
+        document.getElementById(
+            "sportsGameEditPage"
+        );
 
 
-    if(!sportsPage || !editPage){
+    if(
+        !sportsPage ||
+        !editPage
+    ){
 
         console.error(
-            "スポーツカレンダーまたは野球試合結果編集ページが見つかりません"
+            "❌ 野球スポーツカレンダーまたは編集ページが見つかりません"
         );
 
         return;
 
     }
 
-    sportsSelectedDate =
-        date;
 
-    sportsPage.classList.remove("active");
-    sportsPage.style.display = "none";
+    sportsPage.style.display =
+        "none";
 
-    editPage.classList.add("active");
-    editPage.style.display = "block";
+    sportsPage.classList.remove(
+        "active"
+    );
+
+
+    editPage.style.display =
+        "block";
+
+    editPage.classList.add(
+        "active"
+    );
+
+
+    console.log(
+        "① 野球編集ページ表示開始:",
+        date
+    );
+
+
+    const loaded =
+        await loadBaseballGameEditHTML();
+
+
+    console.log(
+        "② 野球編集HTML読み込み結果:",
+        loaded
+    );
+
+
+    if(!loaded){
+
+        console.error(
+            "③ 野球編集HTML読み込み失敗"
+        );
+
+        return;
+
+    }
+
 
     renderBaseballGameEditForm();
 
-}
 
+    console.log(
+        "④ 野球編集フォーム描画完了"
+    );
+
+}
 
 
 /* =====================================================
