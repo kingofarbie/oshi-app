@@ -2190,4 +2190,69 @@ console.log(
 
 
 
+async function loadBaseballGameEditHTML(){
+
+    const container =
+        document.getElementById(
+            "sportsGameEditContainer"
+        );
+
+
+    if(!container){
+
+        console.error(
+            "❌ sportsGameEditContainer が見つかりません"
+        );
+
+        return false;
+
+    }
+
+
+    try{
+
+        const response =
+            await fetch(
+                "./sports-baseball-edit.html"
+            );
+
+
+        if(!response.ok){
+
+            throw new Error(
+                `HTTP ${response.status}`
+            );
+
+        }
+
+
+        const html =
+            await response.text();
+
+
+        container.innerHTML =
+            html;
+
+
+        console.log(
+            "sports-baseball-edit.html（野球）読み込み成功"
+        );
+
+
+        return true;
+
+    }
+    catch(error){
+
+        console.error(
+            "sports-baseball-edit.html（野球）の読み込みに失敗:",
+            error
+        );
+
+        return false;
+
+    }
+
+}
+
 

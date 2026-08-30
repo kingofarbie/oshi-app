@@ -75,14 +75,14 @@ async function loadSportsGameEditHTML(){
 
         const response =
             await fetch(
-                "./sports-game-edit.html"
+                "./sports-baseball-edit.html"
             );
 
 
         if(!response.ok){
 
             throw new Error(
-                "sports-game-edit.html の読み込みに失敗しました"
+                "sports-baseball-edit.html の読み込みに失敗しました"
             );
 
         }
@@ -133,7 +133,7 @@ async function loadSportsGameEditHTML(){
     }catch(error){
 
         console.error(
-            "sports-game-edit.html 読み込みエラー:",
+            "sports-baseball-edit.html 読み込みエラー:",
             error
         );
 
