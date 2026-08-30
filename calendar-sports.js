@@ -2407,4 +2407,16 @@ function hideSportsSubPages(){
 
         });
 
+
+    const sportsScreen =
+        document.getElementById(
+            "sportsCalendarScreen"
+        );
+
+    if(sportsScreen){
+
+        sportsScreen.style.display = "none";
+
+    }
+
 }
