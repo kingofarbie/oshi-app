@@ -908,54 +908,56 @@ function renderSoccerGameEditForm(){
        ホーム / アウェイ変更
     ================================================= */
 
-    const homeAwaySelect =
-        document.getElementById(
-            "soccerEditHomeAway"
+/* =================================================
+   ホーム / アウェイ変更
+================================================= */
+
+const homeAwaySelect =
+    document.getElementById(
+        "soccerEditHomeAway"
+    );
+
+
+if(homeAwaySelect){
+
+    homeAwaySelect.addEventListener(
+        "change",
+        function(){
+
+            soccerPreviousHomeAway =
+                homeAwaySelect.value;
+
+
+            updateSoccerScoreTeamNames();
+
+            updateSoccerScoreboard();
+
+        }
+    );
+
+}
+
+
+/* =================================================
+   ⚽ スコア入力 → リアルタイム更新
+================================================= */
+
+const soccerScoreInputs =
+    form.querySelectorAll(
+        ".soccer-score-input"
+    );
+
+
+soccerScoreInputs.forEach(
+    input => {
+
+        input.addEventListener(
+            "input",
+            updateSoccerScoreboard
         );
-
-
-    if(homeAwaySelect){
-
-        homeAwaySelect.addEventListener(
-            "change",
-            function(){
-
-                const newHomeAway =
-                    homeAwaySelect.value;
-
-
-homeAwaySelect.addEventListener(
-    "change",
-    function(){
-
-        const newHomeAway =
-            homeAwaySelect.value;
-
-
-        soccerPreviousHomeAway =
-            newHomeAway;
-
-
-        updateSoccerScoreTeamNames();
-
-        updateSoccerScoreboard();
 
     }
 );
-
-                soccerPreviousHomeAway =
-                    newHomeAway;
-
-
-                updateSoccerScoreTeamNames();
-
-                updateSoccerScoreboard();
-
-            }
-        );
-
-    }
-
 
     /* =================================================
        チーム名入力
@@ -999,6 +1001,7 @@ homeAwaySelect.addEventListener(
         );
 
     }
+
 
 
     /* =================================================
@@ -1722,6 +1725,10 @@ function renderSoccerPenalty(){
 ===================================================== */
 
 function updateSoccerScoreboard(){
+
+    console.log(
+    "⚽ updateSoccerScoreboard 実行"
+);
 
     const teamFirst =
         getSoccerNumber(
