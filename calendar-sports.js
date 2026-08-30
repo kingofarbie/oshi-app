@@ -1141,6 +1141,14 @@ function openSportsGame(date){
         0;
 
 
+        console.log(
+    "★★ openSportsGame:",
+    "date =", date,
+    "selectedIndex =", selectedIndex,
+    "sport =", sport
+);
+
+
     const favoriteSports =
         Array.isArray(
             settings.favoriteSports
@@ -2372,7 +2380,7 @@ async function openBaseballGameEditPage(date){
     if(!sportsPage || !editPage){
 
         console.error(
-            "スポーツカレンダーまたは試合結果編集ページが見つかりません"
+            "スポーツカレンダーまたは野球試合結果編集ページが見つかりません"
         );
 
         return;
@@ -2388,12 +2396,9 @@ async function openBaseballGameEditPage(date){
     editPage.classList.add("active");
     editPage.style.display = "block";
 
-await loadSportsGameEditHTML();
-
-renderBaseballGameEditForm();
+    renderBaseballGameEditForm();
 
 }
-
 
 /* =====================================================
    ⚽ サッカー試合結果編集ページを開く
