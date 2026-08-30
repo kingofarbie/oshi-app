@@ -1121,9 +1121,17 @@ if(game){
 
 function openSportsGame(date){
 
+    /* =====================
+       選択日を保存
+    ===================== */
+
     sportsSelectedDate =
         date;
 
+
+    /* =====================
+       データ取得
+    ===================== */
 
     const data =
         db.load();
@@ -1133,6 +1141,10 @@ function openSportsGame(date){
         data.sportsCalendar || {};
 
 
+    /* =====================
+       現在選択中スポーツ番号
+    ===================== */
+
     const selectedIndex =
         typeof settings.selectedIndex === "number"
         ?
@@ -1141,13 +1153,9 @@ function openSportsGame(date){
         0;
 
 
-        console.log(
-    "★★ openSportsGame:",
-    "date =", date,
-    "selectedIndex =", selectedIndex,
-    "sport =", sport
-);
-
+    /* =====================
+       お気に入りスポーツ取得
+    ===================== */
 
     const favoriteSports =
         Array.isArray(
@@ -1159,19 +1167,31 @@ function openSportsGame(date){
         [];
 
 
+    /* =====================
+       現在選択中スポーツ
+    ===================== */
+
     const current =
-        favoriteSports[selectedIndex];
+        favoriteSports[selectedIndex] ||
+        {};
 
 
-    const sport =
-        current?.sport ||
+    /* =====================
+       スポーツ種類
+       
+       「sport」という変数名は使わない
+       → 他の処理との衝突を防ぐ
+    ===================== */
+
+    const currentSport =
+        current.sport ||
         settings.sport ||
         "baseball";
 
 
-    /*
-       現在選択中スポーツ専用の試合
-    */
+    /* =====================
+       現在選択中スポーツの試合
+    ===================== */
 
     const games =
         getCurrentSportsGames();
@@ -1182,47 +1202,64 @@ function openSportsGame(date){
         null;
 
 
-/* =====================
-   現在は野球サッカー
-===================== */
+    /* =================================================
+       ⚾ 野球
+    ================================================= */
 
-if(sport === "baseball"){
+    if(currentSport === "baseball"){
 
-    if(game){
+        if(game){
 
-        openBaseballGameDetailPage(date);
+            openBaseballGameDetailPage(
+                date
+            );
 
-    }else{
+        }else{
 
-        openBaseballGameEditPage(date);
+            openBaseballGameEditPage(
+                date
+            );
 
-    }
+        }
 
-    return;
-
-}
-
-
-if(sport === "soccer"){
-
-    if(game){
-
-        openSoccerGameDetailPage(date);
-
-    }else{
-
-        openSoccerGameEditPage(date);
+        return;
 
     }
 
-    return;
 
-}
+    /* =================================================
+       ⚽ サッカー
+    ================================================= */
+
+    if(currentSport === "soccer"){
+
+        if(game){
+
+            openSoccerGameDetailPage(
+                date
+            );
+
+        }else{
+
+            openSoccerGameEditPage(
+                date
+            );
+
+        }
+
+        return;
+
+    }
 
 
-alert(
-    "このスポーツはまだ対応していません。"
-);
+    /* =================================================
+       未対応スポーツ
+    ================================================= */
+
+    alert(
+        "このスポーツはまだ対応していません。"
+    );
+
 }
 
 
