@@ -2434,7 +2434,7 @@ function openSoccerGameDetailPage(date){
 
     const detailScreen =
         document.getElementById(
-            "sports-detail-screen"
+            "sportsGameDetailScreen"
         );
 
 
