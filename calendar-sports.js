@@ -2411,7 +2411,7 @@ async function openBaseballGameEditPage(date){
 
     const editPage =
         document.getElementById(
-            "sportsGameEditPage"
+            "baseballGameEditPage"
         );
 
     if(!sportsPage || !editPage){
@@ -2454,7 +2454,7 @@ async function openSoccerGameEditPage(date){
 
     const editPage =
         document.getElementById(
-            "sportsGameEditPage"
+            "soccerGameEditPage"
         );
 
 
