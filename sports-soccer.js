@@ -3125,7 +3125,7 @@ async function loadSoccerGameEditHTML(){
 
 
         console.log(
-            "sports-game-edit.html（サッカー）読み込み成功"
+            "sports-baseball-edit.html（サッカー）読み込み成功"
         );
 
 
@@ -3135,7 +3135,7 @@ async function loadSoccerGameEditHTML(){
     catch(error){
 
         console.error(
-            "sports-game-edit.html（サッカー）の読み込みに失敗:",
+            "sports-baseball-edit.html（サッカー）の読み込みに失敗:",
             error
         );
 
