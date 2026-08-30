@@ -2142,6 +2142,23 @@ function saveBaseballGameFromEditPage(){
     );
 
 
+
+    console.log(
+    "★★ 保存後 games:",
+    getCurrentSportsGames()
+);
+
+console.log(
+    "★★ 保存後 date:",
+    sportsSelectedDate
+);
+
+console.log(
+    "★★ 保存後 game:",
+    getCurrentSportsGames()[sportsSelectedDate]
+);
+
+
     /* =====================
        保存日を保持
     ===================== */
