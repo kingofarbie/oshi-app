@@ -80,6 +80,8 @@ console.log("★★ battingOrder:", game?.battingOrder);
             "sportsGameDetail"
         );
 
+console.log("★★ detail =", detail);
+
 
     if(!detail){
 
