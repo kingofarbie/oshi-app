@@ -2409,15 +2409,18 @@ async function openBaseballGameEditPage(date){
             "sportsCalendarPage"
         );
 
-    const editPage =
-        document.getElementById(
-            "baseballGameEditPage"
-        );
+await loadBaseballGameEditHTML();
 
-        console.log(
+const editPage =
+    document.getElementById(
+        "baseballGameEditPage"
+    );
+
+console.log(
     "★★ baseballGameEditPage =",
     editPage
 );
+
 
     if(!sportsPage || !editPage){
 
@@ -2441,6 +2444,8 @@ async function openBaseballGameEditPage(date){
     renderBaseballGameEditForm();
 
 }
+
+
 
 /* =====================================================
    ⚽ サッカー試合結果編集ページを開く
