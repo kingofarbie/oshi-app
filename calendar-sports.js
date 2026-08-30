@@ -2452,7 +2452,7 @@ console.log(
 ===================================================== */
 
 async function openSoccerGameEditPage(date){
-
+console.log("calendar-sports.js版");
     hideSportsSubPages();
 
 
