@@ -2414,6 +2414,11 @@ async function openBaseballGameEditPage(date){
             "baseballGameEditPage"
         );
 
+        console.log(
+    "★★ baseballGameEditPage =",
+    editPage
+);
+
     if(!sportsPage || !editPage){
 
         console.error(
