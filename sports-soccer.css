@@ -12,7 +12,7 @@ renderSoccerGameView() に対応
 ⚽ 結果画面全体
 ===================================================== */
 
-.sports-baseball-detail-screen {
+.sports-detail-screen {
 width: 100%;
 min-height: 100vh;
 box-sizing: border-box;

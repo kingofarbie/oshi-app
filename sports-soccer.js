@@ -2410,7 +2410,8 @@ function closeSoccerGameEditPage(){
    ⚽ 結果画面を開く
 ===================================================== */
 
-async function openSoccerGameDetailPage(date){
+
+function openSoccerGameDetailPage(date){
 
     hideSportsSubPages();
 
@@ -2431,66 +2432,72 @@ async function openSoccerGameDetailPage(date){
         );
 
 
+    const detailScreen =
+        document.getElementById(
+            "sports-detail-screen"
+        );
+
+
+    const detail =
+        document.getElementById(
+            "sportsGameDetail"
+        );
+
+
     if(
         !sportsPage ||
-        !detailPage
+        !detailPage ||
+        !detailScreen ||
+        !detail
     ){
 
         console.error(
-            "❌ サッカースポーツカレンダーまたは結果画面が見つかりません"
+            "❌ スポーツ共通の結果画面が見つかりません"
         );
 
         return;
 
     }
 
+
+    /* =========================
+       カレンダーを非表示
+    ========================= */
 
     sportsPage.classList.remove(
         "active"
     );
 
-
     sportsPage.style.display =
         "none";
 
+
+    /* =========================
+       結果画面を表示
+    ========================= */
 
     detailPage.classList.add(
         "active"
     );
 
-
     detailPage.style.display =
         "block";
 
 
-    /* =================================================
-       ⚽ サッカー結果HTML読み込み
-    ================================================= */
-
-    const loaded =
-        await loadSoccerGameDetailHTML();
+    detailScreen.style.display =
+        "";
 
 
-    if(!loaded){
-
-        console.error(
-            "❌ サッカー結果HTMLの読み込みに失敗しました"
-        );
-
-        return;
-
-    }
-
-
-    /* =================================================
-       ⚽ 結果内容を描画
-    ================================================= */
+    /* =========================
+       サッカー結果を描画
+    ========================= */
 
     renderSoccerGameView(
         date
     );
 
 }
+
 
 /* =====================================================
    ⚽ 結果画面
