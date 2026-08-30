@@ -1728,7 +1728,6 @@ function updateSoccerScoreboard(){
             "soccerEditTeamFirstHalf"
         );
 
-
     const opponentFirst =
         getSoccerNumber(
             "soccerEditOpponentFirstHalf"
@@ -1739,7 +1738,6 @@ function updateSoccerScoreboard(){
         getSoccerNumber(
             "soccerEditTeamSecondHalf"
         );
-
 
     const opponentSecond =
         getSoccerNumber(
@@ -1752,7 +1750,6 @@ function updateSoccerScoreboard(){
             "soccerEditTeamExtraFirstHalf"
         );
 
-
     const opponentExtraFirst =
         getSoccerNumber(
             "soccerEditOpponentExtraFirstHalf"
@@ -1764,7 +1761,6 @@ function updateSoccerScoreboard(){
             "soccerEditTeamExtraSecondHalf"
         );
 
-
     const opponentExtraSecond =
         getSoccerNumber(
             "soccerEditOpponentExtraSecondHalf"
@@ -1772,19 +1768,11 @@ function updateSoccerScoreboard(){
 
 
     /*
-       延長入力値を保持
+       延長・PKの内部保持
     */
 
     if(
-        soccerExtraPeriods.extra
-    ){
-
-        saveSoccerExtraScoreValues();
-
-    }
-
-
-    if(
+        soccerExtraPeriods.extra ||
         soccerExtraPeriods.penalty
     ){
 
@@ -1794,8 +1782,9 @@ function updateSoccerScoreboard(){
 
 
     /*
-       通常スコア＋延長
-       PKは含めない
+       =========================
+       通常＋延長 合計
+       =========================
     */
 
     const teamTotal =
@@ -1812,11 +1801,50 @@ function updateSoccerScoreboard(){
         opponentExtraSecond;
 
 
+    /*
+       =========================
+       表示する左右を決定
+       =========================
+
+       home
+       → 応援チーム | 相手
+
+       away
+       → 相手 | 応援チーム
+    */
+
+    let leftTotal =
+        teamTotal;
+
+    let rightTotal =
+        opponentTotal;
+
+
+    if(
+        document.getElementById(
+            "soccerEditHomeAway"
+        )?.value === "away"
+    ){
+
+        leftTotal =
+            opponentTotal;
+
+        rightTotal =
+            teamTotal;
+
+    }
+
+
+    /*
+       =========================
+       合計表示
+       =========================
+    */
+
     const teamTotalElement =
         document.getElementById(
             "soccerEditTeamTotal"
         );
-
 
     const opponentTotalElement =
         document.getElementById(
@@ -1827,7 +1855,7 @@ function updateSoccerScoreboard(){
     if(teamTotalElement){
 
         teamTotalElement.textContent =
-            teamTotal;
+            leftTotal;
 
     }
 
@@ -1835,15 +1863,20 @@ function updateSoccerScoreboard(){
     if(opponentTotalElement){
 
         opponentTotalElement.textContent =
-            opponentTotal;
+            rightTotal;
 
     }
 
 
+    /*
+       =========================
+       チーム名
+       =========================
+    */
+
     updateSoccerScoreTeamNames();
 
 }
-
 
 /* =====================================================
    ⚽ 入力イベント
