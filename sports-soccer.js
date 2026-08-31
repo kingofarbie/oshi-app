@@ -2052,6 +2052,43 @@ function saveSoccerGameEdit(){
        保存データ
     ================================================= */
 
+console.log(
+    "⚽ 保存直前確認:",
+    {
+        homeAway:
+            homeAwaySelect?.value,
+
+        team:
+            team,
+
+        opponent:
+            opponent,
+
+        firstHalfTeam:
+            getSoccerNumber(
+                "soccerEditTeamFirstHalf"
+            ),
+
+        firstHalfOpponent:
+            getSoccerNumber(
+                "soccerEditOpponentFirstHalf"
+            ),
+
+        secondHalfTeam:
+            getSoccerNumber(
+                "soccerEditTeamSecondHalf"
+            ),
+
+        secondHalfOpponent:
+            getSoccerNumber(
+                "soccerEditOpponentSecondHalf"
+            )
+    }
+);
+
+
+
+
     const game = {
 
         ...oldGame,
@@ -2640,10 +2677,12 @@ let awayScore =
 
 
 /*
-   編集画面で入れ替えた後の
-   保存済みスコアをそのまま表示する。
+   応援チームがアウェイの場合
 
-   homeAway はチーム名の表示順だけに使用する。
+   ホーム ＝ 相手チーム
+   アウェイ ＝ 応援チーム
+
+   スコアも同じ順番にする。
 */
 
 if(
@@ -2656,7 +2695,14 @@ if(
     awayTeam =
         team;
 
+    homeScore =
+        opponentTotal;
+
+    awayScore =
+        teamTotal;
+
 }
+
 
     /* =================================================
        結果
