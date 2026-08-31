@@ -1648,7 +1648,7 @@ function renderCurrentFavoriteSports(){
 
 const sportName =
     document.getElementById(
-        "sportsCurrentSport"
+        "sportsCurrentSportName"
     );
 
     if(!select){
@@ -1723,22 +1723,27 @@ const sportName =
 
 if(sportName){
 
+    const currentSport =
+        SPORTS_TYPES.find(
+            s =>
+                s.value === current?.sport
+        );
+
     sportName.textContent =
-        sport.label;
+        currentSport?.label ||
+        "スポーツ未設定";
+
+}        
+
+    }else{
+
+if(sportName){
+
+    sportName.textContent =
+        "スポーツ未設定";
 
 }
-
-
-}else{
-
-    if(sportName){
-
-        sportName.textContent =
-            "スポーツ未設定";
-
     }
-
-}
 
 }
 

@@ -1481,48 +1481,143 @@
 
 
 /* =====================================================
-   現在のスポーツ表示
+   🏟️ 現在の応援スポーツ
 ===================================================== */
 
-.sports-current-setting{
+.sports-current-setting {
 
-    display: flex;
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        auto;
 
     align-items: center;
 
-    gap: 10px;
+    gap: 8px;
 
+    width: calc(100% - 16px);
+
+    margin: 4px 8px 8px;
+
+    box-sizing: border-box;
 }
 
 
-/* スポーツ名 */
+/* 現在のスポーツ名 */
 
-.sports-current-sport{
+.sports-current-sport-name {
 
-    flex: 1;
+    min-width: 0;
+
+    font-size: 18px;
+
+    font-weight: bold;
+
+    color: var(--text);
 
     text-align: left;
 
-    font-size: 1.15rem;
+    white-space: nowrap;
 
-    font-weight: 700;
+    overflow: hidden;
 
+    text-overflow: ellipsis;
 }
 
 
 /* スポーツ選択 */
 
-.sports-current-select{
+.sports-current-select {
 
-    flex-shrink: 0;
+    width: auto;
+
+    min-width: 130px;
+
+    max-width: 180px;
+
+    height: 36px;
+
+    padding: 5px 9px;
+
+    box-sizing: border-box;
+
+    background: var(--card);
+
+    color: var(--text);
+
+    border: 1px solid var(--border);
+
+    border-radius: 7px;
+
+    font-size: 14px;
 
 }
 
 
-/* 設定ボタン */
+/* 設定 */
 
-.sports-open-settings-button{
+.sports-open-settings-button {
 
-    flex-shrink: 0;
+    grid-column: 1 / -1;
+
+    justify-self: end;
+
+    padding: 6px 10px;
+
+    border-radius: 7px;
+
+    font-size: 13px;
+
+    font-weight: bold;
+
+    box-sizing: border-box;
+}
+
+
+/* =====================================================
+   📱 スマホ
+===================================================== */
+
+@media (max-width: 600px) {
+
+    .sports-current-setting {
+
+        width: calc(100% - 14px);
+
+        margin: 3px 7px 6px;
+
+        gap: 6px;
+
+    }
+
+
+    .sports-current-sport-name {
+
+        font-size: 17px;
+
+    }
+
+
+    .sports-current-select {
+
+        min-width: 120px;
+
+        max-width: 155px;
+
+        height: 34px;
+
+        font-size: 13px;
+
+    }
+
+
+    .sports-open-settings-button {
+
+        padding: 5px 9px;
+
+        font-size: 12px;
+
+    }
 
 }
