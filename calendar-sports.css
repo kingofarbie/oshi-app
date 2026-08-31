@@ -1479,3 +1479,50 @@
     line-height: 1.8;
 }
 
+
+/* =====================================================
+   現在のスポーツ表示
+===================================================== */
+
+.sports-current-setting{
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+}
+
+
+/* スポーツ名 */
+
+.sports-current-sport{
+
+    flex: 1;
+
+    text-align: left;
+
+    font-size: 1.15rem;
+
+    font-weight: 700;
+
+}
+
+
+/* スポーツ選択 */
+
+.sports-current-select{
+
+    flex-shrink: 0;
+
+}
+
+
+/* 設定ボタン */
+
+.sports-open-settings-button{
+
+    flex-shrink: 0;
+
+}

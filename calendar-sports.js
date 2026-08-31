@@ -1646,11 +1646,10 @@ function renderCurrentFavoriteSports(){
         );
 
 
-    const team =
-        document.getElementById(
-            "sportsCurrentTeam"
-        );
-
+const sportName =
+    document.getElementById(
+        "sportsCurrentSport"
+    );
 
     if(!select){
 
@@ -1722,24 +1721,24 @@ function renderCurrentFavoriteSports(){
             favoriteSports[selectedIndex];
 
 
-        if(team){
+if(sportName){
 
-            team.textContent =
-                current?.team ||
-                "チーム未設定";
+    sportName.textContent =
+        sport.label;
 
-        }
+}
 
-    }else{
 
-        if(team){
+}else{
 
-            team.textContent =
-                "チーム未設定";
+    if(sportName){
 
-        }
+        sportName.textContent =
+            "スポーツ未設定";
 
     }
+
+}
 
 }
 
