@@ -2695,9 +2695,9 @@ function renderSoccerGameView(date){
 
 
     console.log(
-    "⚽ 結果画面に渡された game:",
-    game
-);
+        "⚽ 結果画面に渡された game:",
+        game
+    );
 
 
     const team =
@@ -2708,32 +2708,6 @@ function renderSoccerGameView(date){
     const opponent =
         game.opponent ||
         "相手チーム";
-
-
-        console.log(
-    "⚽ 結果画面の計算結果:",
-    {
-        homeAway: game.homeAway,
-
-        firstHalfTeam:
-            game.firstHalfTeam,
-
-        firstHalfOpponent:
-            game.firstHalfOpponent,
-
-        secondHalfTeam:
-            game.secondHalfTeam,
-
-        secondHalfOpponent:
-            game.secondHalfOpponent,
-
-        teamTotal:
-            teamTotal,
-
-        opponentTotal:
-            opponentTotal
-    }
-);
 
 
     /*
@@ -2752,108 +2726,165 @@ function renderSoccerGameView(date){
             game
         );
 
-console.log(
-    "⚽ 結果画面・保存データ確認:",
-    {
-        homeAway: game.homeAway,
 
-        team: game.team,
-        opponent: game.opponent,
+    /* =================================================
+       結果画面・保存データ確認
+       ※ teamTotal / opponentTotal 宣言後
+    ================================================= */
 
-        firstHalfTeam:
-            game.firstHalfTeam,
+    console.log(
+        "⚽ 結果画面・保存データ確認:",
+        {
+            homeAway:
+                game.homeAway,
 
-        firstHalfOpponent:
-            game.firstHalfOpponent,
+            team:
+                game.team,
 
-        secondHalfTeam:
-            game.secondHalfTeam,
+            opponent:
+                game.opponent,
 
-        secondHalfOpponent:
-            game.secondHalfOpponent,
+            firstHalfTeam:
+                game.firstHalfTeam,
 
-        extraFirstHalfTeam:
-            game.extraFirstHalfTeam,
+            firstHalfOpponent:
+                game.firstHalfOpponent,
 
-        extraFirstHalfOpponent:
-            game.extraFirstHalfOpponent,
+            secondHalfTeam:
+                game.secondHalfTeam,
 
-        extraSecondHalfTeam:
-            game.extraSecondHalfTeam,
+            secondHalfOpponent:
+                game.secondHalfOpponent,
 
-        extraSecondHalfOpponent:
-            game.extraSecondHalfOpponent,
+            extraFirstHalfTeam:
+                game.extraFirstHalfTeam,
 
-        teamTotal:
-            teamTotal,
+            extraFirstHalfOpponent:
+                game.extraFirstHalfOpponent,
 
-        opponentTotal:
-            opponentTotal
-    }
-);
+            extraSecondHalfTeam:
+                game.extraSecondHalfTeam,
+
+            extraSecondHalfOpponent:
+                game.extraSecondHalfOpponent,
+
+            teamTotal:
+                teamTotal,
+
+            opponentTotal:
+                opponentTotal
+        }
+    );
 
 
+    /* =================================================
+       結果画面の計算結果
+    ================================================= */
 
-        console.log(
-    "⚽ 結果画面スコア確認:",
-    {
-        homeAway: game.homeAway,
-        firstHalfTeam: game.firstHalfTeam,
-        firstHalfOpponent: game.firstHalfOpponent,
-        secondHalfTeam: game.secondHalfTeam,
-        secondHalfOpponent: game.secondHalfOpponent,
-        teamTotal: teamTotal,
-        opponentTotal: opponentTotal
-    }
-);
+    console.log(
+        "⚽ 結果画面の計算結果:",
+        {
+            homeAway:
+                game.homeAway,
+
+            firstHalfTeam:
+                game.firstHalfTeam,
+
+            firstHalfOpponent:
+                game.firstHalfOpponent,
+
+            secondHalfTeam:
+                game.secondHalfTeam,
+
+            secondHalfOpponent:
+                game.secondHalfOpponent,
+
+            teamTotal:
+                teamTotal,
+
+            opponentTotal:
+                opponentTotal
+        }
+    );
+
+
+    /* =================================================
+       結果画面スコア確認
+    ================================================= */
+
+    console.log(
+        "⚽ 結果画面スコア確認:",
+        {
+            homeAway:
+                game.homeAway,
+
+            firstHalfTeam:
+                game.firstHalfTeam,
+
+            firstHalfOpponent:
+                game.firstHalfOpponent,
+
+            secondHalfTeam:
+                game.secondHalfTeam,
+
+            secondHalfOpponent:
+                game.secondHalfOpponent,
+
+            teamTotal:
+                teamTotal,
+
+            opponentTotal:
+                opponentTotal
+        }
+    );
+
 
     /* =================================================
        ホーム / アウェイ
     ================================================= */
 
-/* =================================================
-   ホーム / アウェイ
-================================================= */
-
-let homeTeam =
-    team;
-
-let awayTeam =
-    opponent;
-
-let homeScore =
-    teamTotal;
-
-let awayScore =
-    opponentTotal;
-
-
-/*
-   応援チームがアウェイの場合
-
-   ホーム ＝ 相手チーム
-   アウェイ ＝ 応援チーム
-
-   スコアも同じ順番にする。
-*/
-
-if(
-    game.homeAway === "away"
-){
-
-    homeTeam =
-        opponent;
-
-    awayTeam =
+    let homeTeam =
         team;
 
-    homeScore =
-        opponentTotal;
 
-    awayScore =
+    let awayTeam =
+        opponent;
+
+
+    let homeScore =
         teamTotal;
 
-}
+
+    let awayScore =
+        opponentTotal;
+
+
+    /*
+       応援チームがアウェイの場合
+
+       ホーム ＝ 相手チーム
+       アウェイ ＝ 応援チーム
+
+       スコアも同じ順番にする。
+    */
+
+    if(
+        game.homeAway === "away"
+    ){
+
+        homeTeam =
+            opponent;
+
+        awayTeam =
+            team;
+
+        homeScore =
+            opponentTotal;
+
+        awayScore =
+            teamTotal;
+
+    }
 
 
     /* =================================================
@@ -2880,167 +2911,167 @@ if(
         "";
 
 
-/* =================================================
-   スコア行
-   内部データは「応援チーム基準」
-   表示時に「ホーム・アウェイ順」へ変換する
-================================================= */
+    /* =================================================
+       スコア行
+       内部データは「応援チーム基準」
+       表示時に「ホーム・アウェイ順」へ変換する
+    ================================================= */
 
-const rows = [];
-
-
-/* =================================================
-   ホーム・アウェイ判定
-================================================= */
-
-const isAway =
-    game.homeAway === "away";
+    const rows = [];
 
 
-/* =================================================
-   前半
-================================================= */
+    /* =================================================
+       ホーム・アウェイ判定
+    ================================================= */
 
-rows.push({
-
-    label:
-        "前半",
-
-    home:
-        isAway
-        ?
-        Number(game.firstHalfOpponent) || 0
-        :
-        Number(game.firstHalfTeam) || 0,
-
-    away:
-        isAway
-        ?
-        Number(game.firstHalfTeam) || 0
-        :
-        Number(game.firstHalfOpponent) || 0
-
-});
+    const isAway =
+        game.homeAway === "away";
 
 
-/* =================================================
-   後半
-================================================= */
-
-rows.push({
-
-    label:
-        "後半",
-
-    home:
-        isAway
-        ?
-        Number(game.secondHalfOpponent) || 0
-        :
-        Number(game.secondHalfTeam) || 0,
-
-    away:
-        isAway
-        ?
-        Number(game.secondHalfTeam) || 0
-        :
-        Number(game.secondHalfOpponent) || 0
-
-});
-
-
-/* =================================================
-   延長
-================================================= */
-
-const extraEnabled =
-    game.extraEnabled === true ||
-    game.extraFirstHalfEnabled === true ||
-    game.extraSecondHalfEnabled === true;
-
-
-if(extraEnabled){
+    /* =================================================
+       前半
+    ================================================= */
 
     rows.push({
 
         label:
-            "延長前半",
+            "前半",
 
         home:
             isAway
             ?
-            Number(game.extraFirstHalfOpponent) || 0
+            Number(game.firstHalfOpponent) || 0
             :
-            Number(game.extraFirstHalfTeam) || 0,
+            Number(game.firstHalfTeam) || 0,
 
         away:
             isAway
             ?
-            Number(game.extraFirstHalfTeam) || 0
+            Number(game.firstHalfTeam) || 0
             :
-            Number(game.extraFirstHalfOpponent) || 0
+            Number(game.firstHalfOpponent) || 0
 
     });
 
+
+    /* =================================================
+       後半
+    ================================================= */
 
     rows.push({
 
         label:
-            "延長後半",
+            "後半",
 
         home:
             isAway
             ?
-            Number(game.extraSecondHalfOpponent) || 0
+            Number(game.secondHalfOpponent) || 0
             :
-            Number(game.extraSecondHalfTeam) || 0,
+            Number(game.secondHalfTeam) || 0,
 
         away:
             isAway
             ?
-            Number(game.extraSecondHalfTeam) || 0
+            Number(game.secondHalfTeam) || 0
             :
-            Number(game.extraSecondHalfOpponent) || 0
+            Number(game.secondHalfOpponent) || 0
 
     });
 
-}
+
+    /* =================================================
+       延長
+    ================================================= */
+
+    const extraEnabled =
+        game.extraEnabled === true ||
+        game.extraFirstHalfEnabled === true ||
+        game.extraSecondHalfEnabled === true;
 
 
-/* =================================================
-   PK
-   PKもホーム・アウェイ順
-   ただし「計」には含めない
-================================================= */
+    if(extraEnabled){
 
-const penaltyEnabled =
-    game.penaltyEnabled === true;
+        rows.push({
+
+            label:
+                "延長前半",
+
+            home:
+                isAway
+                ?
+                Number(game.extraFirstHalfOpponent) || 0
+                :
+                Number(game.extraFirstHalfTeam) || 0,
+
+            away:
+                isAway
+                ?
+                Number(game.extraFirstHalfTeam) || 0
+                :
+                Number(game.extraFirstHalfOpponent) || 0
+
+        });
 
 
-if(penaltyEnabled){
+        rows.push({
 
-    rows.push({
+            label:
+                "延長後半",
 
-        label:
-            "PK",
+            home:
+                isAway
+                ?
+                Number(game.extraSecondHalfOpponent) || 0
+                :
+                Number(game.extraSecondHalfTeam) || 0,
 
-        home:
-            isAway
-            ?
-            Number(game.penaltyOpponent) || 0
-            :
-            Number(game.penaltyTeam) || 0,
+            away:
+                isAway
+                ?
+                Number(game.extraSecondHalfTeam) || 0
+                :
+                Number(game.extraSecondHalfOpponent) || 0
 
-        away:
-            isAway
-            ?
-            Number(game.penaltyTeam) || 0
-            :
-            Number(game.penaltyOpponent) || 0
+        });
 
-    });
+    }
 
-}
+
+    /* =================================================
+       PK
+       PKもホーム・アウェイ順
+       ただし「計」には含めない
+    ================================================= */
+
+    const penaltyEnabled =
+        game.penaltyEnabled === true;
+
+
+    if(penaltyEnabled){
+
+        rows.push({
+
+            label:
+                "PK",
+
+            home:
+                isAway
+                ?
+                Number(game.penaltyOpponent) || 0
+                :
+                Number(game.penaltyTeam) || 0,
+
+            away:
+                isAway
+                ?
+                Number(game.penaltyTeam) || 0
+                :
+                Number(game.penaltyOpponent) || 0
+
+        });
+
+    }
 
 
     /* =================================================
@@ -3050,37 +3081,37 @@ if(penaltyEnabled){
     let rowsHTML = "";
 
 
-rows.forEach(
-    row => {
+    rows.forEach(
+        row => {
 
-        rowsHTML += `
+            rowsHTML += `
 
-            <div class="soccer-view-score-row">
+                <div class="soccer-view-score-row">
 
-                <div class="soccer-view-period">
-                    ${escapeSportsHTML(
-                        row.label
-                    )}
+                    <div class="soccer-view-period">
+                        ${escapeSportsHTML(
+                            row.label
+                        )}
+                    </div>
+
+                    <strong>
+                        ${row.home}
+                    </strong>
+
+                    <span>
+                        -
+                    </span>
+
+                    <strong>
+                        ${row.away}
+                    </strong>
+
                 </div>
 
-                <strong>
-                    ${row.home}
-                </strong>
+            `;
 
-                <span>
-                    -
-                </span>
-
-                <strong>
-                    ${row.away}
-                </strong>
-
-            </div>
-
-        `;
-
-    }
-);
+        }
+    );
 
 
     /* =================================================
@@ -3290,6 +3321,7 @@ rows.forEach(
     `;
 
 }
+
 
 
 /* =====================================================
