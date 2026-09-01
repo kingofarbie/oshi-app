@@ -1866,6 +1866,32 @@ function updateSoccerScoreboard(){
 
     }
 
+    const finalTeamScoreElement =
+    document.getElementById(
+        "soccerEditFinalTeamScore"
+    );
+
+const finalOpponentScoreElement =
+    document.getElementById(
+        "soccerEditFinalOpponentScore"
+    );
+
+
+if(finalTeamScoreElement){
+
+    finalTeamScoreElement.textContent =
+        leftTotal;
+
+}
+
+
+if(finalOpponentScoreElement){
+
+    finalOpponentScoreElement.textContent =
+        rightTotal;
+
+}
+
 
     /* =================================================
        チーム名
