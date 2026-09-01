@@ -231,24 +231,13 @@ async function loadSoccerGameEditHTML(){
 
 function getCurrentSoccerGameForEdit(){
 
-    const games =
-        getCurrentSportsGames();
+    const games = getCurrentSoccerGames();
 
-
-    if(
-        !games ||
-        !sportsSelectedDate
-    ){
-
-        return {};
-
+    if(!sportsSelectedDate){
+        return null;
     }
 
-
-    return games[
-        sportsSelectedDate
-    ] || {};
-
+    return games[sportsSelectedDate] || null;
 }
 
 
@@ -1272,18 +1261,19 @@ function updateSoccerEditLive(){
        最終スコア表示
     ================================================= */
 
-    const preview =
-        document.querySelector(
-            "#soccerEditScorePreview strong"
-        );
+const teamScore =
+    document.getElementById("soccerEditFinalTeamScore");
 
+const opponentScore =
+    document.getElementById("soccerEditFinalOpponentScore");
 
-    if(preview){
+if(teamScore){
+    teamScore.textContent = teamTotal;
+}
 
-        preview.textContent =
-            `${teamTotal} - ${opponentTotal}`;
-
-    }
+if(opponentScore){
+    opponentScore.textContent = opponentTotal;
+}
 
 
     /* =================================================
@@ -2606,9 +2596,7 @@ async function openSoccerGameDetailPage(date){
 
 function renderSoccerGameDetail(date){
 
-    const games =
-        getCurrentSportsGames();
-
+const games = getCurrentSoccerGames();
 
     const game =
         games?.[date];
