@@ -74,7 +74,7 @@ async function openSoccerGameEditPage(date){
 
     const editPage =
         document.getElementById(
-            "soccerGameEditPage"
+            "sportsGameEditPage"
         );
 
 
@@ -726,11 +726,10 @@ function renderSoccerGameEditForm(){
        ページ表示
     ================================================= */
 
-    const editPage =
-        document.getElementById(
-            "soccerGameEditPage"
-        );
-
+const editPage =
+    document.getElementById(
+        "sportsGameEditPage"
+    );
 
     if(editPage){
 
@@ -2404,11 +2403,10 @@ function saveSoccerGameData(
 
 function closeSoccerGameEditPage(){
 
-    const editPage =
-        document.getElementById(
-            "soccerGameEditPage"
-        );
-
+const editPage =
+    document.getElementById(
+        "sportsGameEditPage"
+    );
 
     if(editPage){
 
@@ -2515,7 +2513,7 @@ async function openSoccerGameDetailPage(date){
 
     const detailPage =
         document.getElementById(
-            "soccerGameDetailPage"
+            "sportsGameDetailPage"
         );
 
 
@@ -2971,7 +2969,7 @@ function deleteSoccerGame(){
 
 
     const games =
-        getCurrentSportsGames();
+        getCurrentSoccerGames();
 
 
     if(
@@ -3000,7 +2998,7 @@ function deleteSoccerGame(){
     ];
 
 
-    saveCurrentSportsGames(
+    saveCurrentSoccerGames(
         games
     );
 
@@ -3035,7 +3033,7 @@ function closeSoccerGameDetailPage(){
 
     const detailPage =
         document.getElementById(
-            "soccerGameDetailPage"
+            "sportsGameDetailPage"
         );
 
 
