@@ -2851,12 +2851,45 @@ function renderSoccerGameView(date){
         opponent;
 
 
-    let homeScore =
-        teamTotal;
+    /*
+       ★ 結果画面のスコアは
+       「応援チーム基準」の合計を
+       ホーム / アウェイの左右へ変換する。
+       
+       homeAway === "home"
+       → ホーム = 応援チーム
+       → アウェイ = 相手チーム
+
+       homeAway === "away"
+       → ホーム = 相手チーム
+       → アウェイ = 応援チーム
+    */
+
+    let homeScore;
+
+    let awayScore;
 
 
-    let awayScore =
-        opponentTotal;
+    if(
+        game.homeAway === "away"
+    ){
+
+        homeScore =
+            opponentTotal;
+
+        awayScore =
+            teamTotal;
+
+    }
+    else{
+
+        homeScore =
+            teamTotal;
+
+        awayScore =
+            opponentTotal;
+
+    }
 
 
     /*
@@ -2877,12 +2910,6 @@ function renderSoccerGameView(date){
 
         awayTeam =
             team;
-
-        homeScore =
-            opponentTotal;
-
-        awayScore =
-            teamTotal;
 
     }
 
@@ -3321,7 +3348,6 @@ function renderSoccerGameView(date){
     `;
 
 }
-
 
 
 /* =====================================================
