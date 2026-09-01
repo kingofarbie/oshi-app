@@ -2918,35 +2918,6 @@ rows.forEach(
     }
 );
 
-            rowsHTML += `
-
-                <div class="soccer-view-score-row">
-
-                    <div class="soccer-view-period">
-                        ${escapeSportsHTML(
-                            row.label
-                        )}
-                    </div>
-
-                    <strong>
-                        ${leftScore}
-                    </strong>
-
-                    <span>
-                        -
-                    </span>
-
-                    <strong>
-                        ${rightScore}
-                    </strong>
-
-                </div>
-
-            `;
-
-        }
-    );
-
 
     /* =================================================
        日付
