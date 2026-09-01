@@ -689,26 +689,23 @@ function renderSoccerGameEditForm(){
                      合計
                 ====================================== -->
 
-                <div class="soccer-score-row total">
+<div class="soccer-score-row total">
 
-                    <div class="soccer-score-period">
-                        計
-                    </div>
+    <div class="soccer-score-period">
+        計
+    </div>
 
-                    <strong id="soccerEditTeamTotal">
-                        0
-                    </strong>
+    <strong id="soccerEditTeamTotal">
+    </strong>
 
-                    <span>
-                        -
-                    </span>
+    <span>
+        -
+    </span>
 
-                    <strong id="soccerEditOpponentTotal">
-                        0
-                    </strong>
+    <strong id="soccerEditOpponentTotal">
+    </strong>
 
-                </div>
-
+</div>
 
             </section>
 
