@@ -941,26 +941,6 @@ if(homeAwaySelect){
 
 }
 
-/* =================================================
-   ⚽ スコア入力 → リアルタイム更新
-================================================= */
-
-const soccerScoreInputs =
-    form.querySelectorAll(
-        ".soccer-score-input"
-    );
-
-
-soccerScoreInputs.forEach(
-    input => {
-
-        input.addEventListener(
-            "input",
-            updateSoccerScoreboard
-        );
-
-    }
-);
 
     /* =================================================
        チーム名入力
@@ -1724,7 +1704,7 @@ function renderSoccerPenalty(){
 
 
 /* =====================================================
-   ⚽ スコア計算
+   ⚽ 編集画面スコア合計 リアルタイム更新
 ===================================================== */
 
 function updateSoccerScoreboard(){
@@ -1735,7 +1715,28 @@ function updateSoccerScoreboard(){
 
 
     /* =================================================
-       応援チーム基準の得点を取得
+       現在表示されている編集フォーム
+    ================================================= */
+
+    const form =
+        document.getElementById(
+            "sportsGameEditForm"
+        );
+
+
+    if(!form){
+
+        console.error(
+            "❌ sportsGameEditForm が見つかりません"
+        );
+
+        return;
+
+    }
+
+
+    /* =================================================
+       前半
     ================================================= */
 
     const teamFirst =
@@ -1749,6 +1750,10 @@ function updateSoccerScoreboard(){
         );
 
 
+    /* =================================================
+       後半
+    ================================================= */
+
     const teamSecond =
         getSoccerNumber(
             "soccerEditTeamSecondHalf"
@@ -1759,6 +1764,10 @@ function updateSoccerScoreboard(){
             "soccerEditOpponentSecondHalf"
         );
 
+
+    /* =================================================
+       延長
+    ================================================= */
 
     const teamExtraFirst =
         getSoccerNumber(
@@ -1783,14 +1792,7 @@ function updateSoccerScoreboard(){
 
 
     /* =================================================
-       延長・PK内部値を最新化
-    ================================================= */
-
-    saveSoccerExtraScoreValues();
-
-
-    /* =================================================
-       応援チーム基準の合計
+       応援チーム基準で合計
        PKは含めない
     ================================================= */
 
@@ -1809,20 +1811,20 @@ function updateSoccerScoreboard(){
 
 
     /* =================================================
-       ホーム・アウェイ順に変換
+       ホーム / アウェイ
     ================================================= */
+
+    const homeAway =
+        form.querySelector(
+            "#soccerEditHomeAway"
+        )?.value || "";
+
 
     let homeScore =
         teamTotal;
 
     let awayScore =
         opponentTotal;
-
-
-    const homeAway =
-        document.getElementById(
-            "soccerEditHomeAway"
-        )?.value || "";
 
 
     if(homeAway === "away"){
@@ -1838,23 +1840,32 @@ function updateSoccerScoreboard(){
 
     /* =================================================
        編集画面「計」
+       ★ formの中から直接取得
     ================================================= */
 
     const teamTotalElement =
-        document.getElementById(
-            "soccerEditTeamTotal"
+        form.querySelector(
+            "#soccerEditTeamTotal"
         );
 
+
     const opponentTotalElement =
-        document.getElementById(
-            "soccerEditOpponentTotal"
+        form.querySelector(
+            "#soccerEditOpponentTotal"
         );
 
 
     if(teamTotalElement){
 
         teamTotalElement.textContent =
-            homeScore;
+            String(homeScore);
+
+    }
+    else{
+
+        console.error(
+            "❌ soccerEditTeamTotal が見つかりません"
+        );
 
     }
 
@@ -1862,35 +1873,49 @@ function updateSoccerScoreboard(){
     if(opponentTotalElement){
 
         opponentTotalElement.textContent =
-            awayScore;
+            String(awayScore);
+
+    }
+    else{
+
+        console.error(
+            "❌ soccerEditOpponentTotal が見つかりません"
+        );
 
     }
 
+
+    /* =================================================
+       上部の最終スコア
+    ================================================= */
+
     const finalTeamScoreElement =
-    document.getElementById(
-        "soccerEditFinalTeamScore"
-    );
-
-const finalOpponentScoreElement =
-    document.getElementById(
-        "soccerEditFinalOpponentScore"
-    );
+        form.querySelector(
+            "#soccerEditFinalTeamScore"
+        );
 
 
-if(finalTeamScoreElement){
-
-    finalTeamScoreElement.textContent =
-        homeScore;
-
-}
+    const finalOpponentScoreElement =
+        form.querySelector(
+            "#soccerEditFinalOpponentScore"
+        );
 
 
-if(finalOpponentScoreElement){
+    if(finalTeamScoreElement){
 
-    finalOpponentScoreElement.textContent =
-        awayScore;
+        finalTeamScoreElement.textContent =
+            String(homeScore);
 
-}
+    }
+
+
+    if(finalOpponentScoreElement){
+
+        finalOpponentScoreElement.textContent =
+            String(awayScore);
+
+    }
+
 
     /* =================================================
        チーム名
@@ -1898,8 +1923,33 @@ if(finalOpponentScoreElement){
 
     updateSoccerScoreTeamNames();
 
-}
 
+    /* =================================================
+       デバッグ
+    ================================================= */
+
+    console.log(
+        "⚽ 合計更新:",
+        {
+            teamFirst,
+            teamSecond,
+            teamExtraFirst,
+            teamExtraSecond,
+            opponentFirst,
+            opponentSecond,
+            opponentExtraFirst,
+            opponentExtraSecond,
+            teamTotal,
+            opponentTotal,
+            homeAway,
+            homeScore,
+            awayScore,
+            teamTotalElement,
+            opponentTotalElement
+        }
+    );
+
+}
 
 /* =====================================================
    ⚽ 入力イベント
