@@ -2694,6 +2694,12 @@ function renderSoccerGameView(date){
     }
 
 
+    console.log(
+    "⚽ 結果画面に渡された game:",
+    game
+);
+
+
     const team =
         game.team ||
         "応援チーム";
@@ -2702,6 +2708,32 @@ function renderSoccerGameView(date){
     const opponent =
         game.opponent ||
         "相手チーム";
+
+
+        console.log(
+    "⚽ 結果画面の計算結果:",
+    {
+        homeAway: game.homeAway,
+
+        firstHalfTeam:
+            game.firstHalfTeam,
+
+        firstHalfOpponent:
+            game.firstHalfOpponent,
+
+        secondHalfTeam:
+            game.secondHalfTeam,
+
+        secondHalfOpponent:
+            game.secondHalfOpponent,
+
+        teamTotal:
+            teamTotal,
+
+        opponentTotal:
+            opponentTotal
+    }
+);
 
 
     /*
