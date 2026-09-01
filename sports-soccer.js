@@ -1880,7 +1880,7 @@ const finalOpponentScoreElement =
 if(finalTeamScoreElement){
 
     finalTeamScoreElement.textContent =
-        leftTotal;
+        homeScore;
 
 }
 
@@ -1888,10 +1888,9 @@ if(finalTeamScoreElement){
 if(finalOpponentScoreElement){
 
     finalOpponentScoreElement.textContent =
-        rightTotal;
+        awayScore;
 
 }
-
 
     /* =================================================
        チーム名
