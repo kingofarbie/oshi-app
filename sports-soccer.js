@@ -1918,6 +1918,52 @@ function updateSoccerScoreboard(){
 
 
 
+
+    console.log(
+    "⚽ 実際の合計DOM:",
+    {
+        teamTotalElements:
+            document.querySelectorAll(
+                "#soccerEditTeamTotal"
+            ).length,
+
+        opponentTotalElements:
+            document.querySelectorAll(
+                "#soccerEditOpponentTotal"
+            ).length,
+
+        finalTeamElements:
+            document.querySelectorAll(
+                "#soccerEditFinalTeamScore"
+            ).length,
+
+        finalOpponentElements:
+            document.querySelectorAll(
+                "#soccerEditFinalOpponentScore"
+            ).length,
+
+        teamTotalText:
+            document.getElementById(
+                "soccerEditTeamTotal"
+            )?.textContent,
+
+        opponentTotalText:
+            document.getElementById(
+                "soccerEditOpponentTotal"
+            )?.textContent,
+
+        finalTeamText:
+            document.getElementById(
+                "soccerEditFinalTeamScore"
+            )?.textContent,
+
+        finalOpponentText:
+            document.getElementById(
+                "soccerEditFinalOpponentScore"
+            )?.textContent
+    }
+);
+
     console.log(
     "⚽ 合計更新:",
     {
