@@ -1917,6 +1917,38 @@ function updateSoccerScoreboard(){
     }
 
 
+
+    console.log(
+    "⚽ 合計表示確認",
+    {
+        teamFirst,
+        teamSecond,
+        teamExtraFirst,
+        teamExtraSecond,
+
+        opponentFirst,
+        opponentSecond,
+        opponentExtraFirst,
+        opponentExtraSecond,
+
+        teamTotal,
+        opponentTotal,
+
+        teamTotalElement:
+            teamTotalElement,
+
+        opponentTotalElement:
+            opponentTotalElement,
+
+        teamTotalText:
+            teamTotalElement?.textContent,
+
+        opponentTotalText:
+            opponentTotalElement?.textContent
+    }
+);
+
+
     /* =================================================
        チーム名
     ================================================= */
