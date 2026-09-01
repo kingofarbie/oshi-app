@@ -2720,6 +2720,47 @@ function renderSoccerGameView(date){
             game
         );
 
+console.log(
+    "⚽ 結果画面・保存データ確認:",
+    {
+        homeAway: game.homeAway,
+
+        team: game.team,
+        opponent: game.opponent,
+
+        firstHalfTeam:
+            game.firstHalfTeam,
+
+        firstHalfOpponent:
+            game.firstHalfOpponent,
+
+        secondHalfTeam:
+            game.secondHalfTeam,
+
+        secondHalfOpponent:
+            game.secondHalfOpponent,
+
+        extraFirstHalfTeam:
+            game.extraFirstHalfTeam,
+
+        extraFirstHalfOpponent:
+            game.extraFirstHalfOpponent,
+
+        extraSecondHalfTeam:
+            game.extraSecondHalfTeam,
+
+        extraSecondHalfOpponent:
+            game.extraSecondHalfOpponent,
+
+        teamTotal:
+            teamTotal,
+
+        opponentTotal:
+            opponentTotal
+    }
+);
+
+
 
         console.log(
     "⚽ 結果画面スコア確認:",
