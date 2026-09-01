@@ -24,6 +24,7 @@
     class="sports-detail-screen"
 >
 
+
     <!-- =================================================
          ヘッダー
     ================================================== -->
@@ -37,6 +38,7 @@
             ⚽ 試合結果
         </h1>
 
+
         <button
             type="button"
             class="sports-back-button"
@@ -48,14 +50,189 @@
     </header>
 
 
+
     <!-- =================================================
-         サッカー試合詳細
+         試合詳細
     ================================================== -->
 
-<main
-    id="sportsGameDetail"
-    class="ssports-detail"
->
+    <main
+        id="sportsGameDetail"
+        class="soccer-detail"
+    >
+
+
+        <!-- =================================================
+             試合情報
+        ================================================== -->
+
+        <section class="sports-detail-section">
+
+            <div
+                id="soccerDetailTeam"
+                class="soccer-detail-team"
+            >
+                応援チーム
+            </div>
+
+
+            <div
+                id="soccerDetailScore"
+                class="soccer-detail-score"
+            >
+
+                <strong
+                    id="soccerDetailTeamScore"
+                >
+                    0
+                </strong>
+
+
+                <span>
+                    -
+                </span>
+
+
+                <strong
+                    id="soccerDetailOpponentScore"
+                >
+                    0
+                </strong>
+
+            </div>
+
+
+            <div
+                id="soccerDetailOpponent"
+                class="soccer-detail-team"
+            >
+                相手チーム
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             試合結果
+        ================================================== -->
+
+        <section class="sports-detail-section">
+
+            <h2>🏆 試合結果</h2>
+
+
+            <div
+                id="soccerDetailResult"
+                class="soccer-detail-result"
+            >
+                未設定
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             スコア詳細
+        ================================================== -->
+
+        <section class="sports-detail-section">
+
+            <h2>📊 スコア詳細</h2>
+
+
+            <div
+                id="soccerDetailScoreTable"
+                class="soccer-detail-score-table"
+            >
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             試合情報
+        ================================================== -->
+
+        <section class="sports-detail-section">
+
+            <h2>🏟️ 試合情報</h2>
+
+
+            <div class="soccer-detail-info">
+
+
+                <div class="soccer-detail-info-row">
+
+                    <span>
+                        ホーム / アウェイ
+                    </span>
+
+                    <strong
+                        id="soccerDetailHomeAway"
+                    >
+                        未設定
+                    </strong>
+
+                </div>
+
+
+                <div class="soccer-detail-info-row">
+
+                    <span>
+                        📍 場所
+                    </span>
+
+                    <strong
+                        id="soccerDetailLocation"
+                    >
+                        未設定
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             メモ
+        ================================================== -->
+
+        <section class="sports-detail-section">
+
+            <h2>📝 メモ</h2>
+
+
+            <div
+                id="soccerDetailMemo"
+                class="soccer-detail-memo"
+            >
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             編集
+        ================================================== -->
+
+        <div class="sports-detail-buttons">
+
+            <button
+                type="button"
+                onclick="openSoccerGameEditPage(sportsSelectedDate)"
+            >
+                ✏️ 編集
+            </button>
+
+        </div>
+
+
 </main>
 
 </div>
