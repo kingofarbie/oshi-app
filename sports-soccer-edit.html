@@ -1,465 +1,457 @@
-<!DOCTYPE html>
-<html lang="ja">
+<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">
 
-<head>
-
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>サッカー試合結果編集 | 推し活手帳</title>
-
-    <link rel="stylesheet" href="calendar-sports.css">
-    <link rel="stylesheet" href="sports-soccer.css">
-
-</head>
-
-<body>
-
-<div
-    id="soccerGameEditScreen"
-    class="sports-edit-screen"
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
 >
 
-    <!-- =================================================
-         ヘッダー
-    ================================================== -->
+<title>サッカー試合結果編集 | 推し活手帳</title>
 
-    <header class="sports-calendar-header">
+<link rel="stylesheet" href="calendar-sports.css">
+<link rel="stylesheet" href="sports-soccer.css">
 
-        <h1
-            id="soccerGameEditTitle"
-            class="sports-calendar-title"
-        >
-            ⚽ 試合結果編集
-        </h1>
+</head><body><div
+    id="soccerGameEditScreen"
+    class="sports-edit-screen"
+><!-- =================================================
+     ヘッダー
+================================================== -->
 
-        <button
-            type="button"
-            class="sports-back-button"
-            onclick="closeSoccerGameEditPage()"
-        >
-            ◀ カレンダーへ戻る
-        </button>
+<header class="sports-calendar-header">
 
-    </header>
-
-
-    <!-- =================================================
-         編集フォーム
-    ================================================== -->
-
-    <main
-        id="sportsGameEditForm"
-        class="sports-soccer-edit-form"
+    <h1
+        id="soccerGameEditTitle"
+        class="sports-calendar-title"
     >
+        ⚽ 試合結果編集
+    </h1>
+
+    <button
+        type="button"
+        class="sports-back-button"
+        onclick="closeSoccerGameEditPage()"
+    >
+        ◀ カレンダーへ戻る
+    </button>
+
+</header>
+
+
+<!-- =================================================
+     編集フォーム
+================================================== -->
+
+<main
+    id="soccerGameEditForm"
+    class="sports-soccer-edit-form"
+>
+
+
+    <!-- =================================================
+         試合情報
+    ================================================== -->
+
+    <section class="sports-edit-section">
+
+        <h2>⚽ 試合情報</h2>
+
+
+        <!-- 応援チーム -->
+
+        <label for="soccerEditTeam">
+            自分の応援チーム
+        </label>
+
+        <input
+            type="text"
+            id="soccerEditTeam"
+            placeholder="応援チーム名"
+            autocomplete="off"
+        >
+
+
+        <!-- 相手チーム -->
+
+        <label for="soccerEditOpponent">
+            相手チーム
+        </label>
+
+        <input
+            type="text"
+            id="soccerEditOpponent"
+            placeholder="相手チーム名"
+            autocomplete="off"
+        >
+
+
+        <!-- ホーム / アウェイ -->
+
+        <label for="soccerEditHomeAway">
+            🏟️ ホーム / アウェイ
+        </label>
+
+        <select id="soccerEditHomeAway">
+
+            <option value="">
+                未設定
+            </option>
+
+            <option value="home">
+                🏠 ホーム
+            </option>
+
+            <option value="away">
+                ✈️ アウェイ
+            </option>
+
+        </select>
+
+
+        <!-- 場所 -->
+
+        <label for="soccerEditLocation">
+            📍 場所
+        </label>
+
+        <input
+            type="text"
+            id="soccerEditLocation"
+            placeholder="スタジアム・会場名"
+            autocomplete="off"
+        >
+
+</section>
+
+
+<!-- =================================================
+     スコアボード
+================================================== -->
+
+<section class="sports-edit-section">
+
+    <h2>📊 スコアボード</h2>
+
+
+    <div class="soccer-scoreboard">
 
 
         <!-- =================================================
-             試合情報
+             チーム名 + リアルタイム最終スコア
         ================================================== -->
 
-        <section class="sports-edit-section">
+        <div class="soccer-score-header">
 
-            <h2>⚽ 試合情報</h2>
-
-
-            <!-- 応援チーム -->
-
-            <label for="soccerEditTeam">
-                自分の応援チーム
-            </label>
-
-            <input
-                type="text"
-                id="soccerEditTeam"
-                placeholder="応援チーム名"
-                autocomplete="off"
+            <div
+                id="soccerEditScoreTeamName"
+                class="soccer-score-team-name"
             >
+                応援チーム
+            </div>
 
 
-            <!-- 相手チーム -->
+            <div class="soccer-score-final">
 
-            <label for="soccerEditOpponent">
+                <strong
+                    id="soccerEditFinalTeamScore"
+                >
+                    0
+                </strong>
+
+                <span>-</span>
+
+                <strong
+                    id="soccerEditFinalOpponentScore"
+                >
+                    0
+                </strong>
+
+            </div>
+
+
+            <div
+                id="soccerEditScoreOpponentName"
+                class="soccer-score-team-name"
+            >
                 相手チーム
-            </label>
-
-            <input
-                type="text"
-                id="soccerEditOpponent"
-                placeholder="相手チーム名"
-                autocomplete="off"
-            >
-
-
-            <!-- ホーム / アウェイ -->
-
-            <label for="soccerEditHomeAway">
-                🏟️ ホーム / アウェイ
-            </label>
-
-            <select id="soccerEditHomeAway">
-
-                <option value="">
-                    未設定
-                </option>
-
-                <option value="home">
-                    🏠 ホーム
-                </option>
-
-                <option value="away">
-                    ✈️ アウェイ
-                </option>
-
-            </select>
-
-
-            <!-- 場所 -->
-
-            <label for="soccerEditLocation">
-                📍 場所
-            </label>
-
-            <input
-                type="text"
-                id="soccerEditLocation"
-                placeholder="スタジアム・会場名"
-                autocomplete="off"
-            >
-
-        </section>
-
-
-
-        <!-- =================================================
-             スコアボード
-        ================================================== -->
-
-        <section class="sports-edit-section">
-
-            <h2>📊 スコアボード</h2>
-
-
-            <div class="soccer-scoreboard">
-
-
-                <!-- =================================================
-                     チーム名 + リアルタイム最終スコア
-                ================================================== -->
-
-                <div class="soccer-score-header">
-
-
-                    <div
-                        id="soccerEditScoreTeamName"
-                        class="soccer-score-team-name"
-                    >
-                        応援チーム
-                    </div>
-
-
-                    <div class="soccer-score-final">
-
-                        <strong
-                            id="soccerEditFinalTeamScore"
-                        >
-                            0
-                        </strong>
-
-                        <span>-</span>
-
-                        <strong
-                            id="soccerEditFinalOpponentScore"
-                        >
-                            0
-                        </strong>
-
-                    </div>
-
-
-                    <div
-                        id="soccerEditScoreOpponentName"
-                        class="soccer-score-team-name"
-                    >
-                        相手チーム
-                    </div>
-
-                </div>
-
-
-
-                <!-- =================================================
-                     前半
-                ================================================== -->
-
-                <div
-                    class="soccer-score-row"
-                    data-period="firstHalf"
-                >
-
-                    <div class="soccer-score-period">
-                        前半
-                    </div>
-
-
-                    <input
-                        id="soccerEditTeamFirstHalf"
-                        class="soccer-score-input"
-                        type="number"
-                        min="0"
-                        max="99"
-                        inputmode="numeric"
-                        placeholder="0"
-                    >
-
-
-                    <span class="soccer-score-dash">
-                        -
-                    </span>
-
-
-                    <input
-                        id="soccerEditOpponentFirstHalf"
-                        class="soccer-score-input"
-                        type="number"
-                        min="0"
-                        max="99"
-                        inputmode="numeric"
-                        placeholder="0"
-                    >
-
-                </div>
-
-
-
-                <!-- =================================================
-                     後半
-                ================================================== -->
-
-                <div
-                    class="soccer-score-row"
-                    data-period="secondHalf"
-                >
-
-                    <div class="soccer-score-period">
-                        後半
-                    </div>
-
-
-                    <input
-                        id="soccerEditTeamSecondHalf"
-                        class="soccer-score-input"
-                        type="number"
-                        min="0"
-                        max="99"
-                        inputmode="numeric"
-                        placeholder="0"
-                    >
-
-
-                    <span class="soccer-score-dash">
-                        -
-                    </span>
-
-
-                    <input
-                        id="soccerEditOpponentSecondHalf"
-                        class="soccer-score-input"
-                        type="number"
-                        min="0"
-                        max="99"
-                        inputmode="numeric"
-                        placeholder="0"
-                    >
-
-                </div>
-
-
-
-                <!-- =================================================
-                     延長前半・延長後半・PK
-                     JSが必要なときだけここへ追加
-                ================================================== -->
-
-                <div
-                    id="soccerExtraPeriods"
-                    class="soccer-extra-periods"
-                ></div>
-
-
-
-                <!-- =================================================
-                     合計
-                ================================================== -->
-
-                <div
-                    class="soccer-score-total-row"
-                    data-period="total"
-                >
-
-                    <div class="soccer-score-period">
-                        計
-                    </div>
-
-
-                    <strong
-                        id="soccerEditTeamTotal"
-                    >
-                        0
-                    </strong>
-
-
-                    <span class="soccer-score-dash">
-                        -
-                    </span>
-
-
-                    <strong
-                        id="soccerEditOpponentTotal"
-                    >
-                        0
-                    </strong>
-
-                </div>
-
             </div>
-
-
-
-            <!-- =================================================
-                 延長・PK追加設定
-            ================================================== -->
-
-            <div class="soccer-extra-options">
-
-
-                <label class="soccer-check-option">
-
-                    <input
-                        type="checkbox"
-                        id="soccerEditExtraTime"
-                    >
-
-                    <span>
-                        延長前半・後半を追加
-                    </span>
-
-                </label>
-
-
-                <label class="soccer-check-option">
-
-                    <input
-                        type="checkbox"
-                        id="soccerEditPenaltyShootout"
-                    >
-
-                    <span>
-                        PKを追加
-                    </span>
-
-                </label>
-
-            </div>
-
-
-        </section>
-
-
-
-        <!-- =================================================
-             試合結果
-        ================================================== -->
-
-        <section class="sports-edit-section">
-
-            <h2>🏆 試合結果</h2>
-
-
-            <label for="soccerEditResult">
-                勝敗
-            </label>
-
-
-            <select id="soccerEditResult">
-
-                <option value="">
-                    未設定
-                </option>
-
-                <option value="win">
-                    🏆 勝ち
-                </option>
-
-                <option value="lose">
-                    😢 負け
-                </option>
-
-                <option value="draw">
-                    🤝 引き分け
-                </option>
-
-                <option value="cancelled">
-                    ⛔ 中止
-                </option>
-
-            </select>
-
-        </section>
-
-
-
-        <!-- =================================================
-             メモ
-        ================================================== -->
-
-        <section class="sports-edit-section">
-
-            <h2>📝 メモ</h2>
-
-
-            <textarea
-                id="soccerEditMemo"
-                rows="5"
-                placeholder="試合についてのメモ"
-            ></textarea>
-
-        </section>
-
-
-
-        <!-- =================================================
-             保存・キャンセル
-        ================================================== -->
-
-        <div class="sports-edit-buttons">
-
-            <button
-                type="button"
-                onclick="saveSoccerGameEdit()"
-            >
-                💾 保存
-            </button>
-
-
-            <button
-                type="button"
-                onclick="cancelSoccerGameEdit()"
-            >
-                キャンセル
-            </button>
 
         </div>
 
 
-    </main>
+        <!-- =================================================
+             前半
+        ================================================== -->
+
+        <div
+            class="soccer-score-row"
+            data-period="firstHalf"
+        >
+
+            <div class="soccer-score-period">
+                前半
+            </div>
+
+
+            <input
+                id="soccerEditFirstHalfTeam"
+                class="soccer-score-input"
+                type="number"
+                min="0"
+                max="99"
+                inputmode="numeric"
+                placeholder="0"
+            >
+
+
+            <span class="soccer-score-dash">
+                -
+            </span>
+
+
+            <input
+                id="soccerEditFirstHalfOpponent"
+                class="soccer-score-input"
+                type="number"
+                min="0"
+                max="99"
+                inputmode="numeric"
+                placeholder="0"
+            >
+
+        </div>
+
+
+        <!-- =================================================
+             後半
+        ================================================== -->
+
+        <div
+            class="soccer-score-row"
+            data-period="secondHalf"
+        >
+
+            <div class="soccer-score-period">
+                後半
+            </div>
+
+
+            <input
+                id="soccerEditSecondHalfTeam"
+                class="soccer-score-input"
+                type="number"
+                min="0"
+                max="99"
+                inputmode="numeric"
+                placeholder="0"
+            >
+
+
+            <span class="soccer-score-dash">
+                -
+            </span>
+
+
+            <input
+                id="soccerEditSecondHalfOpponent"
+                class="soccer-score-input"
+                type="number"
+                min="0"
+                max="99"
+                inputmode="numeric"
+                placeholder="0"
+            >
+
+        </div>
+
+
+        <!-- =================================================
+             延長・PK表示領域
+
+             現在の sports-soccer.js が
+             必要な入力欄を動的に生成する
+        ================================================== -->
+
+        <div
+            id="soccerEditExtraTimeArea"
+            class="soccer-extra-periods"
+            style="display:none;"
+        >
+
+        </div>
+
+
+        <!-- =================================================
+             PK表示領域
+        ================================================== -->
+
+        <div
+            id="soccerEditPenaltyArea"
+            class="soccer-extra-periods"
+            style="display:none;"
+        >
+
+        </div>
+
+
+        <!-- =================================================
+             合計
+        ================================================== -->
+
+        <div
+            class="soccer-score-total-row"
+            data-period="total"
+        >
+
+            <div class="soccer-score-period">
+                計
+            </div>
+
+
+            <strong
+                id="soccerEditTeamTotal"
+            >
+                0
+            </strong>
+
+
+            <span class="soccer-score-dash">
+                -
+            </span>
+
+
+            <strong
+                id="soccerEditOpponentTotal"
+            >
+                0
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         延長・PK追加設定
+    ================================================== -->
+
+    <div class="soccer-extra-options">
+
+        <label class="soccer-check-option">
+
+            <input
+                type="checkbox"
+                id="soccerEditExtraTime"
+            >
+
+            <span>
+                延長前半・後半を追加
+            </span>
+
+        </label>
+
+
+        <label class="soccer-check-option">
+
+            <input
+                type="checkbox"
+                id="soccerEditPenaltyShootout"
+            >
+
+            <span>
+                PKを追加
+            </span>
+
+        </label>
+
+    </div>
+
+
+</section>
+
+
+<!-- =================================================
+     試合結果
+================================================== -->
+
+<section class="sports-edit-section">
+
+    <h2>🏆 試合結果</h2>
+
+
+    <label for="soccerEditResult">
+        勝敗
+    </label>
+
+
+    <select id="soccerEditResult">
+
+        <option value="">
+            未設定
+        </option>
+
+        <option value="win">
+            🏆 勝ち
+        </option>
+
+        <option value="lose">
+            😢 負け
+        </option>
+
+        <option value="draw">
+            🤝 引き分け
+        </option>
+
+        <option value="cancelled">
+            ⛔ 中止
+        </option>
+
+    </select>
+
+</section>
+
+
+<!-- =================================================
+     メモ
+================================================== -->
+
+<section class="sports-edit-section">
+
+    <h2>📝 メモ</h2>
+
+
+    <textarea
+        id="soccerEditMemo"
+        rows="5"
+        placeholder="試合についてのメモ"
+    ></textarea>
+
+</section>
+
+
+<!-- =================================================
+     保存・キャンセル
+================================================== -->
+
+<div class="sports-edit-buttons">
+
+    <button
+        type="button"
+        onclick="saveSoccerGameFromEditPage()"
+    >
+        💾 保存
+    </button>
+
+
+    <button
+        type="button"
+        onclick="closeSoccerGameEditPage()"
+    >
+        キャンセル
+    </button>
 
 </div>
 
-</body>
 
-</html>
+</main>
+
+</div></body></html>
