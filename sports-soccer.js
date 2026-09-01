@@ -2664,10 +2664,6 @@ function openSoccerGameDetailPage(date){
    ⚽ 結果画面
 ===================================================== */
 
-/* =====================================================
-   ⚽ 結果画面
-===================================================== */
-
 function renderSoccerGameView(date){
 
     const page =
@@ -2704,10 +2700,6 @@ function renderSoccerGameView(date){
     );
 
 
-    /* =================================================
-       基本情報
-    ================================================= */
-
     const team =
         game.team ||
         "応援チーム";
@@ -2718,189 +2710,106 @@ function renderSoccerGameView(date){
         "相手チーム";
 
 
-    const isAway =
-        game.homeAway === "away";
-
-
-    /* =================================================
-       保存データから各スコアを取得
-       ※ 編集画面は一切触らない
-    ================================================= */
-
-    const teamFirst =
-        Number(game.firstHalfTeam) || 0;
-
-    const opponentFirst =
-        Number(game.firstHalfOpponent) || 0;
-
-
-    const teamSecond =
-        Number(game.secondHalfTeam) || 0;
-
-    const opponentSecond =
-        Number(game.secondHalfOpponent) || 0;
-
-
-    const teamExtraFirst =
-        Number(game.extraFirstHalfTeam) || 0;
-
-    const opponentExtraFirst =
-        Number(game.extraFirstHalfOpponent) || 0;
-
-
-    const teamExtraSecond =
-        Number(game.extraSecondHalfTeam) || 0;
-
-    const opponentExtraSecond =
-        Number(game.extraSecondHalfOpponent) || 0;
-
-
-    const teamPenalty =
-        Number(game.penaltyTeam) || 0;
-
-    const opponentPenalty =
-        Number(game.penaltyOpponent) || 0;
-
-
-    /* =================================================
-       ホーム・アウェイ表示位置を確定
-       
-       編集画面と同じく、
-       保存データの homeAway を基準にする。
-
-       home：
-           ホーム = 応援チーム
-           アウェイ = 相手
-
-       away：
-           ホーム = 相手
-           アウェイ = 応援チーム
-    ================================================= */
-
-    const homeTeam =
-        isAway
-        ?
-        opponent
-        :
-        team;
-
-
-    const awayTeam =
-        isAway
-        ?
-        team
-        :
-        opponent;
-
-
-    /* =================================================
-       各時間帯も同じルールでホーム・アウェイ化
-    ================================================= */
-
-    const homeFirst =
-        isAway
-        ?
-        opponentFirst
-        :
-        teamFirst;
-
-
-    const awayFirst =
-        isAway
-        ?
-        teamFirst
-        :
-        opponentFirst;
-
-
-    const homeSecond =
-        isAway
-        ?
-        opponentSecond
-        :
-        teamSecond;
-
-
-    const awaySecond =
-        isAway
-        ?
-        teamSecond
-        :
-        opponentSecond;
-
-
-    const homeExtraFirst =
-        isAway
-        ?
-        opponentExtraFirst
-        :
-        teamExtraFirst;
-
-
-    const awayExtraFirst =
-        isAway
-        ?
-        teamExtraFirst
-        :
-        opponentExtraFirst;
-
-
-    const homeExtraSecond =
-        isAway
-        ?
-        opponentExtraSecond
-        :
-        teamExtraSecond;
-
-
-    const awayExtraSecond =
-        isAway
-        ?
-        teamExtraSecond
-        :
-        opponentExtraSecond;
-
-
-    const homePenalty =
-        isAway
-        ?
-        opponentPenalty
-        :
-        teamPenalty;
-
-
-    const awayPenalty =
-        isAway
-        ?
-        teamPenalty
-        :
-        opponentPenalty;
-
-
-    /* =================================================
+    /*
        通常＋延長の合計
        PKは含めない
-       
-       ★ ここも上で確定した
-          ホーム・アウェイ値をそのまま使用
-    ================================================= */
+    */
 
-    const homeTotal =
-        homeFirst +
-        homeSecond +
-        homeExtraFirst +
-        homeExtraSecond;
+    const teamTotal =
+        calculateSoccerTotal(
+            game
+        );
 
 
-    const awayTotal =
-        awayFirst +
-        awaySecond +
-        awayExtraFirst +
-        awayExtraSecond;
+    const opponentTotal =
+        calculateSoccerOpponentTotal(
+            game
+        );
 
 
     /* =================================================
-       デバッグ確認
+       結果画面・保存データ確認
+       ※ teamTotal / opponentTotal 宣言後
+    ================================================= */
+
+    console.log(
+        "⚽ 結果画面・保存データ確認:",
+        {
+            homeAway:
+                game.homeAway,
+
+            team:
+                game.team,
+
+            opponent:
+                game.opponent,
+
+            firstHalfTeam:
+                game.firstHalfTeam,
+
+            firstHalfOpponent:
+                game.firstHalfOpponent,
+
+            secondHalfTeam:
+                game.secondHalfTeam,
+
+            secondHalfOpponent:
+                game.secondHalfOpponent,
+
+            extraFirstHalfTeam:
+                game.extraFirstHalfTeam,
+
+            extraFirstHalfOpponent:
+                game.extraFirstHalfOpponent,
+
+            extraSecondHalfTeam:
+                game.extraSecondHalfTeam,
+
+            extraSecondHalfOpponent:
+                game.extraSecondHalfOpponent,
+
+            teamTotal:
+                teamTotal,
+
+            opponentTotal:
+                opponentTotal
+        }
+    );
+
+
+    /* =================================================
+       結果画面の計算結果
+    ================================================= */
+
+    console.log(
+        "⚽ 結果画面の計算結果:",
+        {
+            homeAway:
+                game.homeAway,
+
+            firstHalfTeam:
+                game.firstHalfTeam,
+
+            firstHalfOpponent:
+                game.firstHalfOpponent,
+
+            secondHalfTeam:
+                game.secondHalfTeam,
+
+            secondHalfOpponent:
+                game.secondHalfOpponent,
+
+            teamTotal:
+                teamTotal,
+
+            opponentTotal:
+                opponentTotal
+        }
+    );
+
+
+    /* =================================================
+       結果画面スコア確認
     ================================================= */
 
     console.log(
@@ -2909,49 +2818,100 @@ function renderSoccerGameView(date){
             homeAway:
                 game.homeAway,
 
-            homeTeam:
-                homeTeam,
+            firstHalfTeam:
+                game.firstHalfTeam,
 
-            awayTeam:
-                awayTeam,
+            firstHalfOpponent:
+                game.firstHalfOpponent,
 
-            homeFirst:
-                homeFirst,
+            secondHalfTeam:
+                game.secondHalfTeam,
 
-            awayFirst:
-                awayFirst,
+            secondHalfOpponent:
+                game.secondHalfOpponent,
 
-            homeSecond:
-                homeSecond,
+            teamTotal:
+                teamTotal,
 
-            awaySecond:
-                awaySecond,
-
-            homeExtraFirst:
-                homeExtraFirst,
-
-            awayExtraFirst:
-                awayExtraFirst,
-
-            homeExtraSecond:
-                homeExtraSecond,
-
-            awayExtraSecond:
-                awayExtraSecond,
-
-            homePenalty:
-                homePenalty,
-
-            awayPenalty:
-                awayPenalty,
-
-            homeTotal:
-                homeTotal,
-
-            awayTotal:
-                awayTotal
+            opponentTotal:
+                opponentTotal
         }
     );
+
+
+    /* =================================================
+       ホーム / アウェイ
+    ================================================= */
+
+    let homeTeam =
+        team;
+
+
+    let awayTeam =
+        opponent;
+
+
+    /*
+       ★ 結果画面のスコアは
+       「応援チーム基準」の合計を
+       ホーム / アウェイの左右へ変換する。
+       
+       homeAway === "home"
+       → ホーム = 応援チーム
+       → アウェイ = 相手チーム
+
+       homeAway === "away"
+       → ホーム = 相手チーム
+       → アウェイ = 応援チーム
+    */
+
+    let homeScore;
+
+    let awayScore;
+
+
+    if(
+        game.homeAway === "away"
+    ){
+
+        homeScore =
+            opponentTotal;
+
+        awayScore =
+            teamTotal;
+
+    }
+    else{
+
+        homeScore =
+            teamTotal;
+
+        awayScore =
+            opponentTotal;
+
+    }
+
+
+    /*
+       応援チームがアウェイの場合
+
+       ホーム ＝ 相手チーム
+       アウェイ ＝ 応援チーム
+
+       スコアも同じ順番にする。
+    */
+
+    if(
+        game.homeAway === "away"
+    ){
+
+        homeTeam =
+            opponent;
+
+        awayTeam =
+            team;
+
+    }
 
 
     /* =================================================
@@ -2980,9 +2940,19 @@ function renderSoccerGameView(date){
 
     /* =================================================
        スコア行
+       内部データは「応援チーム基準」
+       表示時に「ホーム・アウェイ順」へ変換する
     ================================================= */
 
     const rows = [];
+
+
+    /* =================================================
+       ホーム・アウェイ判定
+    ================================================= */
+
+    const isAway =
+        game.homeAway === "away";
 
 
     /* =================================================
@@ -2995,10 +2965,18 @@ function renderSoccerGameView(date){
             "前半",
 
         home:
-            homeFirst,
+            isAway
+            ?
+            Number(game.firstHalfOpponent) || 0
+            :
+            Number(game.firstHalfTeam) || 0,
 
         away:
-            awayFirst
+            isAway
+            ?
+            Number(game.firstHalfTeam) || 0
+            :
+            Number(game.firstHalfOpponent) || 0
 
     });
 
@@ -3013,10 +2991,18 @@ function renderSoccerGameView(date){
             "後半",
 
         home:
-            homeSecond,
+            isAway
+            ?
+            Number(game.secondHalfOpponent) || 0
+            :
+            Number(game.secondHalfTeam) || 0,
 
         away:
-            awaySecond
+            isAway
+            ?
+            Number(game.secondHalfTeam) || 0
+            :
+            Number(game.secondHalfOpponent) || 0
 
     });
 
@@ -3039,10 +3025,18 @@ function renderSoccerGameView(date){
                 "延長前半",
 
             home:
-                homeExtraFirst,
+                isAway
+                ?
+                Number(game.extraFirstHalfOpponent) || 0
+                :
+                Number(game.extraFirstHalfTeam) || 0,
 
             away:
-                awayExtraFirst
+                isAway
+                ?
+                Number(game.extraFirstHalfTeam) || 0
+                :
+                Number(game.extraFirstHalfOpponent) || 0
 
         });
 
@@ -3053,10 +3047,18 @@ function renderSoccerGameView(date){
                 "延長後半",
 
             home:
-                homeExtraSecond,
+                isAway
+                ?
+                Number(game.extraSecondHalfOpponent) || 0
+                :
+                Number(game.extraSecondHalfTeam) || 0,
 
             away:
-                awayExtraSecond
+                isAway
+                ?
+                Number(game.extraSecondHalfTeam) || 0
+                :
+                Number(game.extraSecondHalfOpponent) || 0
 
         });
 
@@ -3065,7 +3067,8 @@ function renderSoccerGameView(date){
 
     /* =================================================
        PK
-       ※ 計には含めない
+       PKもホーム・アウェイ順
+       ただし「計」には含めない
     ================================================= */
 
     const penaltyEnabled =
@@ -3080,10 +3083,18 @@ function renderSoccerGameView(date){
                 "PK",
 
             home:
-                homePenalty,
+                isAway
+                ?
+                Number(game.penaltyOpponent) || 0
+                :
+                Number(game.penaltyTeam) || 0,
 
             away:
-                awayPenalty
+                isAway
+                ?
+                Number(game.penaltyTeam) || 0
+                :
+                Number(game.penaltyOpponent) || 0
 
         });
 
@@ -3196,7 +3207,7 @@ function renderSoccerGameView(date){
                 <div class="soccer-view-final">
 
                     <strong>
-                        ${homeTotal}
+                        ${homeScore}
                     </strong>
 
                     <span>
@@ -3204,7 +3215,7 @@ function renderSoccerGameView(date){
                     </span>
 
                     <strong>
-                        ${awayTotal}
+                        ${awayScore}
                     </strong>
 
                 </div>
@@ -3237,7 +3248,7 @@ function renderSoccerGameView(date){
                     </div>
 
                     <strong>
-                        ${homeTotal}
+                        ${homeScore}
                     </strong>
 
                     <span>
@@ -3245,7 +3256,7 @@ function renderSoccerGameView(date){
                     </span>
 
                     <strong>
-                        ${awayTotal}
+                        ${awayScore}
                     </strong>
 
                 </div>
@@ -3337,7 +3348,6 @@ function renderSoccerGameView(date){
     `;
 
 }
-
 
 
 /* =====================================================
