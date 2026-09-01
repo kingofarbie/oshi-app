@@ -1919,7 +1919,7 @@ function updateSoccerScoreboard(){
 
 
     console.log(
-    "⚽ 合計表示確認",
+    "⚽ 合計更新:",
     {
         teamFirst,
         teamSecond,
@@ -1934,16 +1934,16 @@ function updateSoccerScoreboard(){
         teamTotal,
         opponentTotal,
 
-        teamTotalElement:
-            teamTotalElement,
+        teamTotalElementFound:
+            !!teamTotalElement,
 
-        opponentTotalElement:
-            opponentTotalElement,
+        opponentTotalElementFound:
+            !!opponentTotalElement,
 
-        teamTotalText:
+        teamTotalDisplayed:
             teamTotalElement?.textContent,
 
-        opponentTotalText:
+        opponentTotalDisplayed:
             opponentTotalElement?.textContent
     }
 );
