@@ -1763,7 +1763,7 @@ function updateSoccerScoreboard(){
 
 
     /* =================================================
-       延長
+       延長前半
     ================================================= */
 
     const teamExtraFirst =
@@ -1776,6 +1776,10 @@ function updateSoccerScoreboard(){
             "soccerEditOpponentExtraFirstHalf"
         );
 
+
+    /* =================================================
+       延長後半
+    ================================================= */
 
     const teamExtraSecond =
         getSoccerNumber(
@@ -1790,7 +1794,7 @@ function updateSoccerScoreboard(){
 
     /* =================================================
        応援チーム基準で合計
-       PKは含めない
+       ★ PKは含めない
     ================================================= */
 
     const teamTotal =
@@ -1808,36 +1812,27 @@ function updateSoccerScoreboard(){
 
 
     /* =================================================
-       ホーム / アウェイ
+       ★★★ 重要 ★★★
+       
+       編集画面の「計」は
+       
+       応援チーム - 相手チーム
+       
+       の順番で固定する。
+
+       ホーム / アウェイによる
+       左右入れ替えはここでは絶対にしない。
     ================================================= */
 
-    const homeAway =
-        form.querySelector(
-            "#soccerEditHomeAway"
-        )?.value || "";
-
-
-    let homeScore =
+    const displayTeamScore =
         teamTotal;
 
-    let awayScore =
+    const displayOpponentScore =
         opponentTotal;
-
-
-    if(homeAway === "away"){
-
-        homeScore =
-            opponentTotal;
-
-        awayScore =
-            teamTotal;
-
-    }
 
 
     /* =================================================
        編集画面「計」
-       ★ formの中から直接取得
     ================================================= */
 
     const teamTotalElement =
@@ -1855,7 +1850,7 @@ function updateSoccerScoreboard(){
     if(teamTotalElement){
 
         teamTotalElement.textContent =
-            String(homeScore);
+            String(displayTeamScore);
 
     }
     else{
@@ -1870,7 +1865,7 @@ function updateSoccerScoreboard(){
     if(opponentTotalElement){
 
         opponentTotalElement.textContent =
-            String(awayScore);
+            String(displayOpponentScore);
 
     }
     else{
@@ -1884,6 +1879,12 @@ function updateSoccerScoreboard(){
 
     /* =================================================
        上部の最終スコア
+       
+       編集画面ではこちらも
+       
+       応援チーム - 相手チーム
+       
+       の順番で固定
     ================================================= */
 
     const finalTeamScoreElement =
@@ -1901,7 +1902,7 @@ function updateSoccerScoreboard(){
     if(finalTeamScoreElement){
 
         finalTeamScoreElement.textContent =
-            String(homeScore);
+            String(displayTeamScore);
 
     }
 
@@ -1909,120 +1910,60 @@ function updateSoccerScoreboard(){
     if(finalOpponentScoreElement){
 
         finalOpponentScoreElement.textContent =
-            String(awayScore);
+            String(displayOpponentScore);
 
     }
-
-
-
-
-    console.log(
-    "⚽ 実際の合計DOM:",
-    {
-        teamTotalElements:
-            document.querySelectorAll(
-                "#soccerEditTeamTotal"
-            ).length,
-
-        opponentTotalElements:
-            document.querySelectorAll(
-                "#soccerEditOpponentTotal"
-            ).length,
-
-        finalTeamElements:
-            document.querySelectorAll(
-                "#soccerEditFinalTeamScore"
-            ).length,
-
-        finalOpponentElements:
-            document.querySelectorAll(
-                "#soccerEditFinalOpponentScore"
-            ).length,
-
-        teamTotalText:
-            document.getElementById(
-                "soccerEditTeamTotal"
-            )?.textContent,
-
-        opponentTotalText:
-            document.getElementById(
-                "soccerEditOpponentTotal"
-            )?.textContent,
-
-        finalTeamText:
-            document.getElementById(
-                "soccerEditFinalTeamScore"
-            )?.textContent,
-
-        finalOpponentText:
-            document.getElementById(
-                "soccerEditFinalOpponentScore"
-            )?.textContent
-    }
-);
-
-    console.log(
-    "⚽ 合計更新:",
-    {
-        teamFirst,
-        teamSecond,
-        teamExtraFirst,
-        teamExtraSecond,
-
-        opponentFirst,
-        opponentSecond,
-        opponentExtraFirst,
-        opponentExtraSecond,
-
-        teamTotal,
-        opponentTotal,
-
-        teamTotalElementFound:
-            !!teamTotalElement,
-
-        opponentTotalElementFound:
-            !!opponentTotalElement,
-
-        teamTotalDisplayed:
-            teamTotalElement?.textContent,
-
-        opponentTotalDisplayed:
-            opponentTotalElement?.textContent
-    }
-);
 
 
     /* =================================================
-       チーム名
-    ================================================= */
-
-    updateSoccerScoreTeamNames();
-
-
-    /* =================================================
-       デバッグ
+       デバッグ確認
     ================================================= */
 
     console.log(
-        "⚽ 合計更新:",
+        "⚽ 編集画面スコア更新:",
         {
             teamFirst,
             teamSecond,
             teamExtraFirst,
             teamExtraSecond,
+
             opponentFirst,
             opponentSecond,
             opponentExtraFirst,
             opponentExtraSecond,
+
             teamTotal,
             opponentTotal,
-            homeAway,
-            homeScore,
-            awayScore,
-            teamTotalElement,
-            opponentTotalElement
+
+            displayTeamScore,
+            displayOpponentScore,
+
+            teamTotalElementFound:
+                !!teamTotalElement,
+
+            opponentTotalElementFound:
+                !!opponentTotalElement,
+
+            teamTotalDisplayed:
+                teamTotalElement?.textContent,
+
+            opponentTotalDisplayed:
+                opponentTotalElement?.textContent,
+
+            finalTeamScoreDisplayed:
+                finalTeamScoreElement?.textContent,
+
+            finalOpponentScoreDisplayed:
+                finalOpponentScoreElement?.textContent
         }
     );
+
+
+    /* =================================================
+       チーム名表示
+    ================================================= */
+
+    updateSoccerScoreTeamNames();
 
 }
 
