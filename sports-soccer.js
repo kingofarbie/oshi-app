@@ -3267,6 +3267,12 @@ function renderSoccerGameDetail(date){
 
     /* =================================================
        通常得点合計
+
+       PKは含めない。
+       前半
+       ＋後半
+       ＋延長前半
+       ＋延長後半
     ================================================= */
 
     const regularTeam =
@@ -3290,15 +3296,24 @@ function renderSoccerGameDetail(date){
 
     /* =================================================
        ホーム / アウェイ
+
+       保存データの
+       team / opponent は変更しない。
+
+       ホーム
+       左 = team
+       右 = opponent
+
+       アウェイ
+       左 = opponent
+       右 = team
     ================================================= */
 
     let leftName =
         team;
 
-
     let rightName =
         opponent;
-
 
     let leftIsTeam =
         true;
@@ -3309,14 +3324,11 @@ function renderSoccerGameDetail(date){
         leftName =
             opponent;
 
-
         rightName =
             team;
 
-
         leftIsTeam =
             false;
-
     }
 
 
@@ -3365,7 +3377,17 @@ function renderSoccerGameDetail(date){
 
 
     /* =================================================
-       前半
+       ⚽ 前半
+
+       保存データ
+       team / opponent
+
+       表示
+       ホーム
+       team - opponent
+
+       アウェイ
+       opponent - team
     ================================================= */
 
     const firstHalfTeam =
@@ -3380,14 +3402,30 @@ function renderSoccerGameDetail(date){
         );
 
 
+    const firstHalfLeft =
+        leftIsTeam
+        ?
+        firstHalfTeam
+        :
+        firstHalfOpponent;
+
+
+    const firstHalfRight =
+        leftIsTeam
+        ?
+        firstHalfOpponent
+        :
+        firstHalfTeam;
+
+
     setSoccerDetailText(
         "soccerDetailFirstHalf",
-        `${firstHalfTeam} - ${firstHalfOpponent}`
+        `${firstHalfLeft} - ${firstHalfRight}`
     );
 
 
     /* =================================================
-       後半
+       ⚽ 後半
     ================================================= */
 
     const secondHalfTeam =
@@ -3402,14 +3440,30 @@ function renderSoccerGameDetail(date){
         );
 
 
+    const secondHalfLeft =
+        leftIsTeam
+        ?
+        secondHalfTeam
+        :
+        secondHalfOpponent;
+
+
+    const secondHalfRight =
+        leftIsTeam
+        ?
+        secondHalfOpponent
+        :
+        secondHalfTeam;
+
+
     setSoccerDetailText(
         "soccerDetailSecondHalf",
-        `${secondHalfTeam} - ${secondHalfOpponent}`
+        `${secondHalfLeft} - ${secondHalfRight}`
     );
 
 
     /* =================================================
-       延長戦
+       ⚽ 延長戦
     ================================================= */
 
     const extraArea =
@@ -3426,32 +3480,93 @@ function renderSoccerGameDetail(date){
             "block"
             :
             "none";
-
     }
 
 
     if(game.extraTime){
 
+        /* ---------------------------------------------
+           延長前半
+        --------------------------------------------- */
+
+        const extraFirstHalfTeam =
+            soccerScoreToNumber(
+                game.extraFirstHalf?.team
+            );
+
+
+        const extraFirstHalfOpponent =
+            soccerScoreToNumber(
+                game.extraFirstHalf?.opponent
+            );
+
+
+        const extraFirstHalfLeft =
+            leftIsTeam
+            ?
+            extraFirstHalfTeam
+            :
+            extraFirstHalfOpponent;
+
+
+        const extraFirstHalfRight =
+            leftIsTeam
+            ?
+            extraFirstHalfOpponent
+            :
+            extraFirstHalfTeam;
+
+
         setSoccerDetailText(
             "soccerDetailExtraFirstHalf",
-            formatSoccerScore(
-                game.extraFirstHalf
-            )
+            `${extraFirstHalfLeft} - ${extraFirstHalfRight}`
         );
+
+
+        /* ---------------------------------------------
+           延長後半
+        --------------------------------------------- */
+
+        const extraSecondHalfTeam =
+            soccerScoreToNumber(
+                game.extraSecondHalf?.team
+            );
+
+
+        const extraSecondHalfOpponent =
+            soccerScoreToNumber(
+                game.extraSecondHalf?.opponent
+            );
+
+
+        const extraSecondHalfLeft =
+            leftIsTeam
+            ?
+            extraSecondHalfTeam
+            :
+            extraSecondHalfOpponent;
+
+
+        const extraSecondHalfRight =
+            leftIsTeam
+            ?
+            extraSecondHalfOpponent
+            :
+            extraSecondHalfTeam;
 
 
         setSoccerDetailText(
             "soccerDetailExtraSecondHalf",
-            formatSoccerScore(
-                game.extraSecondHalf
-            )
+            `${extraSecondHalfLeft} - ${extraSecondHalfRight}`
         );
-
     }
 
 
     /* =================================================
-       PK
+       ⚽ PK
+
+       PKもホーム / アウェイの左右に合わせる。
+       通常合計には含めない。
     ================================================= */
 
     const penaltyArea =
@@ -3468,59 +3583,56 @@ function renderSoccerGameDetail(date){
             "block"
             :
             "none";
-
     }
 
 
     if(game.penaltyShootout){
 
+        const penaltyTeam =
+            soccerScoreToNumber(
+                game.penalty?.team
+            );
+
+
+        const penaltyOpponent =
+            soccerScoreToNumber(
+                game.penalty?.opponent
+            );
+
+
+        const penaltyLeft =
+            leftIsTeam
+            ?
+            penaltyTeam
+            :
+            penaltyOpponent;
+
+
+        const penaltyRight =
+            leftIsTeam
+            ?
+            penaltyOpponent
+            :
+            penaltyTeam;
+
+
         setSoccerDetailText(
             "soccerDetailPenalty",
-            formatSoccerScore(
-                game.penalty
-            )
+            `${penaltyLeft} - ${penaltyRight}`
         );
-
     }
 
 
     /* =================================================
-       合計
-    ================================================= */
+       ⚽ 合計
 
-    /*
-       合計はPKを含まない。
+       PKは含めない。
 
-       前半
-       ＋後半
-       ＋延長前半
-       ＋延長後半
-    */
+       ホーム
+       team - opponent
 
-    const totalText =
-        `${regularTeam} - ${regularOpponent}`;
-
-
-    setSoccerDetailText(
-        "soccerDetailTotal",
-        totalText
-    );
-
-
-    /*
-       旧HTMLとの互換。
-       soccerDetailRegularScore が存在する場合も
-       同じ通常得点合計を表示。
-    */
-
-    setSoccerDetailText(
-        "soccerDetailRegularScore",
-        totalText
-    );
-
-
-    /* =================================================
-       左右合計表示
+       アウェイ
+       opponent - team
     ================================================= */
 
     const leftTotal =
@@ -3538,6 +3650,30 @@ function renderSoccerGameDetail(date){
         :
         regularTeam;
 
+
+    const totalText =
+        `${leftTotal} - ${rightTotal}`;
+
+
+    setSoccerDetailText(
+        "soccerDetailTotal",
+        totalText
+    );
+
+
+    /* =================================================
+       旧HTMLとの互換
+    ================================================= */
+
+    setSoccerDetailText(
+        "soccerDetailRegularScore",
+        totalText
+    );
+
+
+    /* =================================================
+       左右合計表示
+    ================================================= */
 
     document
         .querySelectorAll(
@@ -3601,7 +3737,6 @@ function renderSoccerGameDetail(date){
     );
 
 }
-
 
 /* =====================================================
    ⚽ 旧版互換：結果描画
