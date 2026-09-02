@@ -1034,36 +1034,52 @@ sports-soccer.css
 
 
 /* =====================================================
-⚽ PK入力欄
-左右を同じ大きさにする
+   ⚽ PK入力欄
+   左右同じ大きさ
+   前半・後半・延長スコア欄の約半分
+   ＋ 中央寄せ
 ===================================================== */
 
 .soccer-penalty-area .soccer-score-row {
-    grid-template-columns:
-        minmax(0, 1fr)
-        28px
-        minmax(0, 1fr);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.soccer-penalty-area .soccer-score-row input {
+    width: 50%;
+    max-width: 120px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.soccer-penalty-area .soccer-score-row span {
+    flex: 0 0 auto;
 }
 
 
 /* =====================================================
-⚽ PK入力欄 スマートフォン
+   ⚽ PK入力欄
+   📱 スマートフォン
 ===================================================== */
 
 @media (max-width: 600px) {
 
     .soccer-penalty-area .soccer-score-row {
-        grid-template-columns:
-            minmax(0, 1fr)
-            22px
-            minmax(0, 1fr);
+        gap: 8px;
+    }
+
+    .soccer-penalty-area .soccer-score-row input {
+        width: 50%;
+        max-width: 100px;
     }
 
 }
 
 
 /* =====================================================
-⚽ 編集ボタン
+   ⚽ 編集ボタン
 ===================================================== */
 
 .soccer-edit-buttons button {
@@ -1072,7 +1088,8 @@ sports-soccer.css
 }
 
 
-/* 保存ボタン
+/* =====================================================
+   ⚽ 保存ボタン
    右側なので「保存」と分かるよう少し強調
 ===================================================== */
 
@@ -1083,7 +1100,8 @@ sports-soccer.css
 
 
 /* =====================================================
-⚽ ボタン ホバー
+   ⚽ ボタン
+   ホバー
 ===================================================== */
 
 .soccer-edit-buttons button:hover {
@@ -1091,14 +1109,14 @@ sports-soccer.css
     opacity: 1;
 }
 
-
 .soccer-edit-buttons button:last-child:hover {
     background: rgba(128, 128, 128, 0.36);
 }
 
 
 /* =====================================================
-⚽ ボタン アクティブ
+   ⚽ ボタン
+   アクティブ
 ===================================================== */
 
 .soccer-edit-buttons button:active {
@@ -1107,7 +1125,8 @@ sports-soccer.css
 
 
 /* =====================================================
-📱 スマートフォン
+   📱 編集ボタン
+   スマートフォン
 ===================================================== */
 
 @media (max-width: 600px) {
@@ -1117,3 +1136,4 @@ sports-soccer.css
     }
 
 }
+
