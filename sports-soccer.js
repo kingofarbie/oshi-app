@@ -1222,14 +1222,13 @@ function updateSoccerHomeAwayDisplay() {
     /* =====================================================
        ⚽ チーム名
 
-       保存データ上の
-       team / opponent は変更しない。
+       保存上の team / opponent は変更しない。
 
-       ホーム表示
-       team | opponent
+       ホーム
+       team - opponent
 
-       アウェイ表示
-       opponent | team
+       アウェイ
+       opponent - team
     ===================================================== */
 
     const teamName =
@@ -1263,22 +1262,25 @@ function updateSoccerHomeAwayDisplay() {
 
 
     /* =====================================================
-       ⚽ 前半・後半・延長・PK
+       ⚽ スコア入力欄
 
-       すべてのスコア入力欄を
-       team / opponent の身元を維持したまま
-       ホーム・アウェイ表示に合わせて左右交換する。
+       対象
+       ・前半
+       ・後半
+       ・延長前半
+       ・延長後半
+       ・PK
 
-       ホーム
-       team input - opponent input
+       inputの「値」を交換するのではなく、
+       team / opponent のinput要素そのものを
+       DOM上で左右交換する。
 
-       アウェイ
-       opponent input - team input
+       そのため、
 
-       ★ valueは入れ替えない
-       ★ input要素そのものを移動する
-       ★ IDは変更しない
-       ★ 保存時はIDからteam/opponentを判別できる
+       team input
+       opponent input
+
+       のIDは一切変更しない。
     ===================================================== */
 
     const scoreRows =
@@ -1293,7 +1295,7 @@ function updateSoccerHomeAwayDisplay() {
                 )
             );
 
-        /* PKなど、左右2つの入力欄がある行だけ対象 */
+        /* 左右2つの入力欄がある行だけ */
 
         if (inputs.length !== 2) {
             return;
@@ -1301,7 +1303,8 @@ function updateSoccerHomeAwayDisplay() {
 
 
         /* =================================================
-           team / opponent をIDから判定
+           team / opponent の入力欄を
+           IDから特定
         ================================================= */
 
         const teamInput =
@@ -1320,7 +1323,24 @@ function updateSoccerHomeAwayDisplay() {
 
 
         /* =================================================
-           ホーム・アウェイによる希望位置
+           現在の左右
+        ================================================= */
+
+        const currentLeft =
+            inputs[0];
+
+        const currentRight =
+            inputs[1];
+
+
+        /* =================================================
+           目的の左右
+
+           ホーム
+           team - opponent
+
+           アウェイ
+           opponent - team
         ================================================= */
 
         const desiredLeft =
@@ -1334,15 +1354,8 @@ function updateSoccerHomeAwayDisplay() {
                 : teamInput;
 
 
-        const currentLeft =
-            inputs[0];
-
-        const currentRight =
-            inputs[1];
-
-
         /* =================================================
-           すでに正しい位置なら何もしない
+           すでに正しい場合は何もしない
         ================================================= */
 
         if (
@@ -1354,50 +1367,66 @@ function updateSoccerHomeAwayDisplay() {
 
 
         /* =================================================
-           ⚽ 入力欄そのものを左右交換
+           ⚽ 確実なDOM交換
 
-           例：
+           元の構造
 
-           team = 2
-           opponent = 1
+           label
+           teamInput
+           span
+           opponentInput
 
-           ホーム
-           [team:2] - [opponent:1]
+           ↓
 
-           ↓ アウェイ
+           label
+           opponentInput
+           span
+           teamInput
 
-           [opponent:1] - [team:2]
-
-           valueは変更していない。
-           DOM上のinputそのものを移動している。
+           input.valueは触らない。
+           input要素そのものを移動する。
         ================================================= */
 
-        const marker =
+        const leftMarker =
             document.createComment(
-                "soccer-score-swap"
+                "soccer-left-input"
             );
 
+        const rightMarker =
+            document.createComment(
+                "soccer-right-input"
+            );
+
+
         row.insertBefore(
-            marker,
+            leftMarker,
             currentLeft
         );
 
         row.insertBefore(
-            desiredLeft,
+            rightMarker,
             currentRight
+        );
+
+
+        row.insertBefore(
+            desiredLeft,
+            leftMarker
         );
 
         row.insertBefore(
             desiredRight,
-            marker
+            rightMarker
         );
 
-        marker.remove();
+
+        leftMarker.remove();
+        rightMarker.remove();
     });
 
 
     /* =====================================================
-       ⚽ 一番上の合計得点
+       ⚽ 試合ボード上の合計得点
 
        ホーム
        teamTotal - opponentTotal
@@ -1405,7 +1434,7 @@ function updateSoccerHomeAwayDisplay() {
        アウェイ
        opponentTotal - teamTotal
 
-       合計もinputと同じく
+       こちらも値ではなく
        DOM要素そのものを左右移動する。
     ===================================================== */
 
@@ -1457,27 +1486,41 @@ function updateSoccerHomeAwayDisplay() {
                 currentRight !== desiredRight
             ) {
 
-                const marker =
+                const leftMarker =
                     document.createComment(
-                        "soccer-total-swap"
+                        "soccer-total-left"
                     );
 
+                const rightMarker =
+                    document.createComment(
+                        "soccer-total-right"
+                    );
+
+
                 parent.insertBefore(
-                    marker,
+                    leftMarker,
                     currentLeft
                 );
 
                 parent.insertBefore(
+                    rightMarker,
+                    currentRight
+                );
+
+
+                parent.insertBefore(
                     desiredLeft,
-                    scoreDash
+                    leftMarker
                 );
 
                 parent.insertBefore(
                     desiredRight,
-                    scoreDash.nextSibling
+                    rightMarker
                 );
 
-                marker.remove();
+
+                leftMarker.remove();
+                rightMarker.remove();
             }
         }
     }
@@ -1491,6 +1534,7 @@ function updateSoccerHomeAwayDisplay() {
         getSoccerDisplayedSides()
     );
 }
+
 
 
 function swapSoccerScoreInputs(firstInput, secondInput) {
