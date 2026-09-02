@@ -1,60 +1,102 @@
 <div class="soccer-edit-screen">
 
+    <!-- =========================
+         タイトル
+    ========================== -->
     <h2 id="soccerGameEditTitle">⚽ 試合結果</h2>
 
-    <!-- =========================
-         ホーム / アウェイ
-    ========================== -->
-    <div class="soccer-teams">
 
-        <div class="soccer-team-column">
-            <div class="soccer-team-label">ホーム</div>
+    <!-- =========================
+         応援チーム
+         右端でホーム / アウェイ選択
+    ========================== -->
+    <div class="soccer-team-input-section">
+
+        <label for="soccerEditTeam">
+            応援チーム名
+        </label>
+
+        <div class="soccer-team-input-row">
 
             <input
                 type="text"
                 id="soccerEditTeam"
-                placeholder="ホームチーム"
+                placeholder="応援チーム名"
             >
+
+            <select id="soccerEditHomeAway">
+                <option value="home">ホーム</option>
+                <option value="away">アウェイ</option>
+            </select>
+
         </div>
-
-        <div class="soccer-team-column">
-            <div class="soccer-team-label">アウェイ</div>
-
-            <input
-                type="text"
-                id="soccerEditOpponent"
-                placeholder="アウェイチーム"
-            >
-        </div>
-
-    </div>
-
-
-    <!-- ホーム / アウェイ変更 -->
-    <div class="soccer-home-away-switch">
-
-        <button
-            type="button"
-            id="soccerHomeAwaySwitchButton"
-            onclick="swapSoccerHomeAwayScores()"
-        >
-            ホーム ⇄ アウェイ
-        </button>
 
     </div>
 
 
     <!-- =========================
-         現在スコア
-         自動計算
+         対戦チーム
     ========================== -->
-    <div class="soccer-current-score">
+    <div class="soccer-team-input-section">
 
-        <div class="soccer-score-label">
-            現在スコア
+        <label for="soccerEditOpponent">
+            対戦チーム
+        </label>
+
+        <input
+            type="text"
+            id="soccerEditOpponent"
+            placeholder="対戦チーム名"
+        >
+
+    </div>
+
+
+    <!-- =========================
+         試合表示
+         ホーム / アウェイ
+         リアルタイム得点
+    ========================== -->
+    <div class="soccer-match-display">
+
+        <div class="soccer-match-teams">
+
+            <div class="soccer-match-team">
+
+                <div class="soccer-match-homeaway">
+                    ホーム
+                </div>
+
+                <div
+                    class="soccer-match-team-name"
+                    data-soccer-home-name
+                >
+                    ○○チーム
+                </div>
+
+            </div>
+
+
+            <div class="soccer-match-team">
+
+                <div class="soccer-match-homeaway">
+                    アウェイ
+                </div>
+
+                <div
+                    class="soccer-match-team-name"
+                    data-soccer-away-name
+                >
+                    △△チーム
+                </div>
+
+            </div>
+
         </div>
 
-        <div class="soccer-score-row soccer-score-auto">
+
+        <!-- リアルタイム反映得点 -->
+        <div class="soccer-live-score">
 
             <input
                 type="number"
@@ -72,8 +114,8 @@
 
         </div>
 
-        <div class="soccer-auto-note">
-            ※ 前半・後半・延長戦から自動計算
+        <div class="soccer-live-score-label">
+            リアルタイム反映
         </div>
 
     </div>
@@ -86,13 +128,16 @@
 
         <div class="soccer-score-row">
 
-            <label>前半</label>
+            <div class="soccer-score-period">
+                前半
+            </div>
 
             <input
                 type="number"
                 id="soccerEditFirstHalfTeam"
                 min="0"
                 inputmode="numeric"
+                placeholder="0"
             >
 
             <span>－</span>
@@ -102,6 +147,7 @@
                 id="soccerEditFirstHalfOpponent"
                 min="0"
                 inputmode="numeric"
+                placeholder="0"
             >
 
         </div>
@@ -116,13 +162,16 @@
 
         <div class="soccer-score-row">
 
-            <label>後半</label>
+            <div class="soccer-score-period">
+                後半
+            </div>
 
             <input
                 type="number"
                 id="soccerEditSecondHalfTeam"
                 min="0"
                 inputmode="numeric"
+                placeholder="0"
             >
 
             <span>－</span>
@@ -132,6 +181,7 @@
                 id="soccerEditSecondHalfOpponent"
                 min="0"
                 inputmode="numeric"
+                placeholder="0"
             >
 
         </div>
@@ -144,7 +194,7 @@
     ========================== -->
     <div class="soccer-extra-section">
 
-        <label class="soccer-check-label">
+        <label class="soccer-checkbox-row">
 
             <input
                 type="checkbox"
@@ -159,18 +209,21 @@
         <div
             id="soccerEditExtraTimeArea"
             class="soccer-extra-time-area"
-            style="display:none;"
         >
 
+            <!-- 延長前半 -->
             <div class="soccer-score-row">
 
-                <label>延長前半</label>
+                <div class="soccer-score-period">
+                    延長前半
+                </div>
 
                 <input
                     type="number"
                     id="soccerEditExtraFirstHalfTeam"
                     min="0"
                     inputmode="numeric"
+                    placeholder="0"
                 >
 
                 <span>－</span>
@@ -180,20 +233,25 @@
                     id="soccerEditExtraFirstHalfOpponent"
                     min="0"
                     inputmode="numeric"
+                    placeholder="0"
                 >
 
             </div>
 
 
+            <!-- 延長後半 -->
             <div class="soccer-score-row">
 
-                <label>延長後半</label>
+                <div class="soccer-score-period">
+                    延長後半
+                </div>
 
                 <input
                     type="number"
                     id="soccerEditExtraSecondHalfTeam"
                     min="0"
                     inputmode="numeric"
+                    placeholder="0"
                 >
 
                 <span>－</span>
@@ -203,6 +261,7 @@
                     id="soccerEditExtraSecondHalfOpponent"
                     min="0"
                     inputmode="numeric"
+                    placeholder="0"
                 >
 
             </div>
@@ -217,7 +276,7 @@
     ========================== -->
     <div class="soccer-penalty-section">
 
-        <label class="soccer-check-label">
+        <label class="soccer-checkbox-row">
 
             <input
                 type="checkbox"
@@ -232,18 +291,20 @@
         <div
             id="soccerEditPenaltyArea"
             class="soccer-penalty-area"
-            style="display:none;"
         >
 
             <div class="soccer-score-row">
 
-                <label>PK</label>
+                <div class="soccer-score-period">
+                    PK
+                </div>
 
                 <input
                     type="number"
                     id="soccerEditPenaltyTeam"
                     min="0"
                     inputmode="numeric"
+                    placeholder="0"
                 >
 
                 <span>－</span>
@@ -253,6 +314,7 @@
                     id="soccerEditPenaltyOpponent"
                     min="0"
                     inputmode="numeric"
+                    placeholder="0"
                 >
 
             </div>
@@ -263,64 +325,12 @@
 
 
     <!-- =========================
-         合計
-         自動計算
-    ========================== -->
-    <div class="soccer-total-section">
-
-        <div class="soccer-total-title">
-            合計
-        </div>
-
-        <div class="soccer-total-teams">
-
-            <span
-                data-soccer-home-name
-            >
-                ○○チーム
-            </span>
-
-            <span
-                data-soccer-away-name
-            >
-                △△チーム
-            </span>
-
-        </div>
-
-
-        <div class="soccer-score-row soccer-score-auto">
-
-            <input
-                type="number"
-                id="soccerEditTeamTotal"
-                readonly
-            >
-
-            <span>－</span>
-
-            <input
-                type="number"
-                id="soccerEditOpponentTotal"
-                readonly
-            >
-
-        </div>
-
-        <div class="soccer-auto-note">
-            ※ 自動計算
-        </div>
-
-    </div>
-
-
-    <!-- =========================
-         結果
+         試合結果
     ========================== -->
     <div class="soccer-result-section">
 
         <label for="soccerEditResult">
-            試合結果
+            結果
         </label>
 
         <select id="soccerEditResult">
@@ -419,8 +429,8 @@
 
         <textarea
             id="soccerEditMemo"
-            placeholder="メモ"
             rows="4"
+            placeholder="メモ"
         ></textarea>
 
     </div>
