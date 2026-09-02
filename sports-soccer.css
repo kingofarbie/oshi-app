@@ -1080,21 +1080,12 @@ sports-soccer.css
 
 /* =====================================================
    ⚽ 編集ボタン
+   キャンセル・保存を同じデザインにする
 ===================================================== */
 
 .soccer-edit-buttons button {
     background: rgba(128, 128, 128, 0.12);
     color: inherit;
-}
-
-
-/* =====================================================
-   ⚽ 保存ボタン
-   右側なので「保存」と分かるよう少し強調
-===================================================== */
-
-.soccer-edit-buttons button:last-child {
-    background: rgba(128, 128, 128, 0.28);
     font-weight: 800;
 }
 
@@ -1107,10 +1098,6 @@ sports-soccer.css
 .soccer-edit-buttons button:hover {
     background: rgba(128, 128, 128, 0.20);
     opacity: 1;
-}
-
-.soccer-edit-buttons button:last-child:hover {
-    background: rgba(128, 128, 128, 0.36);
 }
 
 
@@ -1136,4 +1123,3 @@ sports-soccer.css
     }
 
 }
-
