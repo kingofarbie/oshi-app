@@ -1208,93 +1208,343 @@ function getSoccerDisplayedSides(){
    左右のチーム名・スコアを完全に同期
 ===================================================== */
 
-function updateSoccerHomeAwayDisplay(){
+function updateSoccerHomeAwayDisplay() {
 
-    const sides =
-        getSoccerDisplayedSides();
+    const homeAway =
+        document.getElementById("soccerEditHomeAway")?.value || "home";
+
+    const form =
+        document.getElementById("soccerGameEditForm");
+
+    if (!form) return;
 
 
-    /* =================================================
-       チーム名
-    ================================================= */
+    /* =====================================================
+       ⚽ チーム名
+       team / opponent は保存上の身元を維持
+       ホーム・アウェイによって表示位置だけ変更
+    ===================================================== */
 
-    document
-        .querySelectorAll(
-            "[data-soccer-team-name]"
-        )
-        .forEach(
-            element => {
+    const teamName =
+        form.querySelector("[data-soccer-team-name]");
 
-                element.textContent =
-                    sides.leftKey === "team"
-                    ?
-                    sides.leftName
-                    :
-                    sides.rightName;
+    const opponentName =
+        form.querySelector("[data-soccer-opponent-name]");
 
-            }
+    const names =
+        getSoccerEditTeamNames();
+
+    if (teamName && opponentName) {
+
+        if (homeAway === "home") {
+
+            teamName.textContent =
+                names.team;
+
+            opponentName.textContent =
+                names.opponent;
+
+        } else {
+
+            teamName.textContent =
+                names.opponent;
+
+            opponentName.textContent =
+                names.team;
+        }
+    }
+
+
+    /* =====================================================
+       ⚽ 各スコア入力欄
+       
+       ホーム
+       team - opponent
+
+       アウェイ
+       opponent - team
+
+       valueそのものは入れ替えない。
+       team / opponent のinput要素そのものを
+       DOM上で左右移動する。
+
+       input IDは絶対に変更しない。
+       保存時はIDによってteam/opponentを判別する。
+    ===================================================== */
+
+    const scoreRows =
+        form.querySelectorAll(".soccer-score-row");
+
+    scoreRows.forEach(row => {
+
+        const inputs =
+            Array.from(
+                row.querySelectorAll("input[type='number']")
+            );
+
+        if (inputs.length !== 2) return;
+
+        const teamInput =
+            inputs.find(input =>
+                input.id.includes("Team")
+            );
+
+        const opponentInput =
+            inputs.find(input =>
+                input.id.includes("Opponent")
+            );
+
+        if (!teamInput || !opponentInput) return;
+
+
+        const desiredLeft =
+            homeAway === "home"
+                ? teamInput
+                : opponentInput;
+
+        const desiredRight =
+            homeAway === "home"
+                ? opponentInput
+                : teamInput;
+
+        const currentLeft =
+            inputs[0];
+
+        const currentRight =
+            inputs[1];
+
+
+        /* =================================================
+           すでに正しい左右なら何もしない
+        ================================================= */
+
+        if (
+            currentLeft === desiredLeft &&
+            currentRight === desiredRight
+        ) {
+            return;
+        }
+
+
+        /* =================================================
+           ⚽ DOM上で左右を交換
+
+           valueは交換しない。
+           input要素自体を移動することで、
+           名前と得点の対応関係を維持する。
+        ================================================= */
+
+        const marker =
+            document.createComment(
+                "soccer-score-swap"
+            );
+
+        row.insertBefore(
+            marker,
+            currentLeft
         );
 
-
-    document
-        .querySelectorAll(
-            "[data-soccer-opponent-name]"
-        )
-        .forEach(
-            element => {
-
-                element.textContent =
-                    sides.rightKey === "opponent"
-                    ?
-                    sides.rightName
-                    :
-                    sides.leftName;
-
-            }
+        row.insertBefore(
+            desiredLeft,
+            currentRight
         );
 
-
-    /* =================================================
-       ホーム / アウェイ専用表示
-    ================================================= */
-
-    document
-        .querySelectorAll(
-            "[data-soccer-home-name]"
-        )
-        .forEach(
-            element => {
-
-                element.textContent =
-                    sides.leftName;
-
-            }
+        row.insertBefore(
+            desiredRight,
+            marker
         );
 
+        marker.remove();
+    });
 
-    document
-        .querySelectorAll(
-            "[data-soccer-away-name]"
-        )
-        .forEach(
-            element => {
 
-                element.textContent =
-                    sides.rightName;
+    /* =====================================================
+       ⚽ 試合ボード上の合計得点
 
+       ホーム
+       teamTotal - opponentTotal
+
+       アウェイ
+       opponentTotal - teamTotal
+
+       teamTotal / opponentTotal の
+       DOM要素そのものを左右移動する。
+    ===================================================== */
+
+    const teamTotal =
+        document.getElementById("soccerEditTeamTotal");
+
+    const opponentTotal =
+        document.getElementById("soccerEditOpponentTotal");
+
+    const scoreDash =
+        form.querySelector(".soccer-score-dash");
+
+    if (
+        teamTotal &&
+        opponentTotal &&
+        scoreDash
+    ) {
+
+        const parent =
+            scoreDash.parentElement;
+
+        if (parent) {
+
+            const currentLeft =
+                scoreDash.previousElementSibling;
+
+            const currentRight =
+                scoreDash.nextElementSibling;
+
+            const desiredLeft =
+                homeAway === "home"
+                    ? teamTotal
+                    : opponentTotal;
+
+            const desiredRight =
+                homeAway === "home"
+                    ? opponentTotal
+                    : teamTotal;
+
+
+            if (
+                currentLeft !== desiredLeft ||
+                currentRight !== desiredRight
+            ) {
+
+                const marker =
+                    document.createComment(
+                        "soccer-total-swap"
+                    );
+
+                parent.insertBefore(
+                    marker,
+                    currentLeft
+                );
+
+                parent.insertBefore(
+                    desiredLeft,
+                    scoreDash
+                );
+
+                parent.insertBefore(
+                    desiredRight,
+                    scoreDash.nextSibling
+                );
+
+                marker.remove();
             }
-        );
+        }
+    }
 
 
-    /* =================================================
-       左右スコア表示
-    ================================================= */
+    /* =====================================================
+       ⚽ その他の左右表示
+    ===================================================== */
 
     updateSoccerHorizontalScoreDisplay(
-        sides
+        getSoccerDisplayedSides()
+    );
+}
+
+
+
+function swapSoccerScoreInputs(firstInput, secondInput) {
+
+    if (!firstInput || !secondInput) return;
+
+    const parent =
+        firstInput.parentElement;
+
+    if (!parent || parent !== secondInput.parentElement) {
+        return;
+    }
+
+    const marker =
+        document.createComment("soccer-score-swap");
+
+    parent.insertBefore(
+        marker,
+        firstInput
     );
 
+    parent.insertBefore(
+        firstInput,
+        secondInput
+    );
+
+    parent.insertBefore(
+        secondInput,
+        marker
+    );
+
+    marker.remove();
 }
+
+
+
+
+function moveSoccerScoreTotal(
+    leftElement,
+    rightElement,
+    separator
+) {
+
+    if (
+        !leftElement ||
+        !rightElement ||
+        !separator
+    ) {
+        return;
+    }
+
+    const parent =
+        separator.parentElement;
+
+    if (!parent) return;
+
+    /*
+     * すでに
+     *
+     * left - right
+     *
+     * になっている場合は何もしない
+     */
+
+    if (
+        separator.previousElementSibling === leftElement &&
+        separator.nextElementSibling === rightElement
+    ) {
+        return;
+    }
+
+    const marker =
+        document.createComment("soccer-total-swap");
+
+    parent.insertBefore(
+        marker,
+        rightElement
+    );
+
+    parent.insertBefore(
+        leftElement,
+        separator
+    );
+
+    parent.insertBefore(
+        rightElement,
+        separator
+    );
+
+    marker.remove();
+}
+
+
+
+
+
+
 
 /* =====================================================
    ⚽ 左右スコア表示
