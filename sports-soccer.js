@@ -9,6 +9,7 @@
    ・専用編集ページを使用
    ・専用試合結果ページを使用
    ・ホーム / アウェイ対応
+   ・左右表示
    ・前半 / 後半
    ・延長戦はチェックボックスで追加
    ・PK戦はチェックボックスで追加
@@ -29,7 +30,6 @@ function getCurrentSoccerGames(){
     const data =
         db.load();
 
-
     if(
         !data ||
         !data.sportsCalendar
@@ -38,7 +38,6 @@ function getCurrentSoccerGames(){
         return {};
 
     }
-
 
     return (
         data.sportsCalendar.soccerGames ||
@@ -52,31 +51,22 @@ function getCurrentSoccerGames(){
    ⚽ サッカー編集ページ
 ===================================================== */
 
-/**
- * サッカー試合編集ページを開く
- *
- * @param {string} date
- */
 async function openSoccerGameEditPage(date){
 
     hideSportsSubPages();
 
-
     sportsSelectedDate =
         date;
-
 
     const sportsPage =
         document.getElementById(
             "sportsCalendarPage"
         );
 
-
     const editPage =
         document.getElementById(
             "sportsGameEditPage"
         );
-
 
     if(
         !sportsPage ||
@@ -84,7 +74,7 @@ async function openSoccerGameEditPage(date){
     ){
 
         console.error(
-            "❌ サッカーカレンダーまたはサッカー編集ページが見つかりません"
+            "❌ サッカーカレンダーまたは編集ページが見つかりません"
         );
 
         return;
@@ -116,19 +106,12 @@ async function openSoccerGameEditPage(date){
         "block";
 
 
-    console.log(
-        "① サッカー編集ページ表示:",
-        date
-    );
-
-
     /* =====================
        HTML読み込み
     ===================== */
 
     const loaded =
         await loadSoccerGameEditHTML();
-
 
     if(!loaded){
 
@@ -142,15 +125,10 @@ async function openSoccerGameEditPage(date){
 
 
     /* =====================
-       編集フォーム描画
+       フォーム描画
     ===================== */
 
     renderSoccerGameEditForm();
-
-
-    console.log(
-        "② サッカー編集フォーム描画完了"
-    );
 
 }
 
@@ -166,7 +144,6 @@ async function loadSoccerGameEditHTML(){
             "sportsGameEditContainer"
         );
 
-
     if(!container){
 
         console.error(
@@ -177,14 +154,12 @@ async function loadSoccerGameEditHTML(){
 
     }
 
-
     try{
 
         const response =
             await fetch(
                 "./sports-soccer-edit.html"
             );
-
 
         if(!response.ok){
 
@@ -194,19 +169,11 @@ async function loadSoccerGameEditHTML(){
 
         }
 
-
         const html =
             await response.text();
 
-
         container.innerHTML =
             html;
-
-
-        console.log(
-            "sports-soccer-edit.html 読み込み成功"
-        );
-
 
         return true;
 
@@ -231,13 +198,20 @@ async function loadSoccerGameEditHTML(){
 
 function getCurrentSoccerGameForEdit(){
 
-    const games = getCurrentSoccerGames();
+    const games =
+        getCurrentSoccerGames();
 
     if(!sportsSelectedDate){
+
         return null;
+
     }
 
-    return games[sportsSelectedDate] || null;
+    return (
+        games[sportsSelectedDate] ||
+        null
+    );
+
 }
 
 
@@ -252,7 +226,6 @@ function renderSoccerGameEditForm(){
             "soccerGameEditForm"
         );
 
-
     if(!form){
 
         console.error(
@@ -262,7 +235,6 @@ function renderSoccerGameEditForm(){
         return;
 
     }
-
 
     if(!sportsSelectedDate){
 
@@ -280,7 +252,7 @@ function renderSoccerGameEditForm(){
 
 
     const data =
-        db.load();
+        db.load() || {};
 
 
     const settings =
@@ -310,124 +282,128 @@ function renderSoccerGameEditForm(){
 
 
     /* =================================================
-       既存値
+       基本値
     ================================================= */
 
     const team =
-        game.team ||
+        game?.team ||
         defaultTeam ||
         "";
 
 
     const opponent =
-        game.opponent ||
+        game?.opponent ||
         "";
 
 
     const homeAway =
-        game.homeAway ||
+        game?.homeAway ||
         "home";
 
 
     const result =
-        game.result ||
+        game?.result ||
         "";
 
 
     const location =
-        game.location ||
+        game?.location ||
         "";
 
 
     const startingPlayer =
-        game.startingPlayer ||
+        game?.startingPlayer ||
         "";
 
 
     const opponentStartingPlayer =
-        game.opponentStartingPlayer ||
+        game?.opponentStartingPlayer ||
         "";
 
 
     const memo =
-        game.memo ||
+        game?.memo ||
         "";
 
 
     const extraTime =
-        game.extraTime === true;
+        game?.extraTime === true;
 
 
     const penaltyShootout =
-        game.penaltyShootout === true;
+        game?.penaltyShootout === true;
 
+
+    /* =================================================
+       スコア取得
+    ================================================= */
 
     const firstHalfTeam =
         getSoccerScoreValue(
-            game.firstHalf,
+            game?.firstHalf,
             "team"
         );
 
 
     const firstHalfOpponent =
         getSoccerScoreValue(
-            game.firstHalf,
+            game?.firstHalf,
             "opponent"
         );
 
 
     const secondHalfTeam =
         getSoccerScoreValue(
-            game.secondHalf,
+            game?.secondHalf,
             "team"
         );
 
 
     const secondHalfOpponent =
         getSoccerScoreValue(
-            game.secondHalf,
+            game?.secondHalf,
             "opponent"
         );
 
 
     const extraFirstHalfTeam =
         getSoccerScoreValue(
-            game.extraFirstHalf,
+            game?.extraFirstHalf,
             "team"
         );
 
 
     const extraFirstHalfOpponent =
         getSoccerScoreValue(
-            game.extraFirstHalf,
+            game?.extraFirstHalf,
             "opponent"
         );
 
 
     const extraSecondHalfTeam =
         getSoccerScoreValue(
-            game.extraSecondHalf,
+            game?.extraSecondHalf,
             "team"
         );
 
 
     const extraSecondHalfOpponent =
         getSoccerScoreValue(
-            game.extraSecondHalf,
+            game?.extraSecondHalf,
             "opponent"
         );
 
 
     const penaltyTeam =
         getSoccerScoreValue(
-            game.penalty,
+            game?.penalty,
             "team"
         );
 
 
     const penaltyOpponent =
         getSoccerScoreValue(
-            game.penalty,
+            game?.penalty,
             "opponent"
         );
 
@@ -440,7 +416,6 @@ function renderSoccerGameEditForm(){
         document.getElementById(
             "soccerGameEditTitle"
         );
-
 
     if(title){
 
@@ -471,7 +446,7 @@ function renderSoccerGameEditForm(){
 
 
     /* =================================================
-       基本入力欄
+       基本入力
     ================================================= */
 
     const teamInput =
@@ -587,7 +562,7 @@ function renderSoccerGameEditForm(){
 
 
     /* =================================================
-       延長戦チェック
+       延長戦
     ================================================= */
 
     const extraTimeCheckbox =
@@ -605,7 +580,7 @@ function renderSoccerGameEditForm(){
 
 
     /* =================================================
-       PK戦チェック
+       PK戦
     ================================================= */
 
     const penaltyCheckbox =
@@ -623,7 +598,7 @@ function renderSoccerGameEditForm(){
 
 
     /* =================================================
-       基本スコア
+       前半
     ================================================= */
 
     setSoccerScoreInput(
@@ -638,6 +613,10 @@ function renderSoccerGameEditForm(){
     );
 
 
+    /* =================================================
+       後半
+    ================================================= */
+
     setSoccerScoreInput(
         "soccerEditSecondHalfTeam",
         secondHalfTeam
@@ -651,7 +630,7 @@ function renderSoccerGameEditForm(){
 
 
     /* =================================================
-       延長スコア
+       延長前半
     ================================================= */
 
     setSoccerScoreInput(
@@ -665,6 +644,10 @@ function renderSoccerGameEditForm(){
         extraFirstHalfOpponent
     );
 
+
+    /* =================================================
+       延長後半
+    ================================================= */
 
     setSoccerScoreInput(
         "soccerEditExtraSecondHalfTeam",
@@ -695,15 +678,10 @@ function renderSoccerGameEditForm(){
 
 
     /* =================================================
-       延長欄表示
+       表示更新
     ================================================= */
 
     updateSoccerExtraTimeDisplay();
-
-
-    /* =================================================
-       PK欄表示
-    ================================================= */
 
     updateSoccerPenaltyDisplay();
 
@@ -716,31 +694,10 @@ function renderSoccerGameEditForm(){
 
 
     /* =================================================
-       初期リアルタイム更新
+       初期表示
     ================================================= */
 
     updateSoccerEditLive();
-
-
-    /* =================================================
-       ページ表示
-    ================================================= */
-
-const editPage =
-    document.getElementById(
-        "sportsGameEditPage"
-    );
-
-    if(editPage){
-
-        editPage.classList.add(
-            "active"
-        );
-
-        editPage.style.display =
-            "block";
-
-    }
 
 }
 
@@ -827,11 +784,13 @@ function bindSoccerEditEvents(){
 
         "soccerEditFirstHalfTeam",
         "soccerEditFirstHalfOpponent",
+
         "soccerEditSecondHalfTeam",
         "soccerEditSecondHalfOpponent",
 
         "soccerEditExtraFirstHalfTeam",
         "soccerEditExtraFirstHalfOpponent",
+
         "soccerEditExtraSecondHalfTeam",
         "soccerEditExtraSecondHalfOpponent",
 
@@ -872,6 +831,36 @@ function bindSoccerEditEvents(){
     );
 
 
+    /* =================================================
+       ホーム / アウェイ
+    ================================================= */
+
+    const homeAway =
+        document.getElementById(
+            "soccerEditHomeAway"
+        );
+
+
+    if(homeAway){
+
+        homeAway.addEventListener(
+            "change",
+            () => {
+
+                updateSoccerHomeAwayDisplay();
+
+                updateSoccerEditLive();
+
+            }
+        );
+
+    }
+
+
+    /* =================================================
+       延長戦
+    ================================================= */
+
     const extraTimeCheckbox =
         document.getElementById(
             "soccerEditExtraTime"
@@ -893,6 +882,10 @@ function bindSoccerEditEvents(){
 
     }
 
+
+    /* =================================================
+       PK戦
+    ================================================= */
 
     const penaltyCheckbox =
         document.getElementById(
@@ -944,10 +937,7 @@ function updateSoccerExtraTimeDisplay(){
 
 
     const enabled =
-        checkbox
-        ?
-        checkbox.checked
-        :
+        checkbox?.checked ||
         false;
 
 
@@ -979,6 +969,13 @@ function toggleSoccerExtraPeriods(){
 
     }
 
+
+    /*
+       HTML側からこの関数をonclickで呼ぶ場合だけ
+       手動で切り替える。
+
+       changeイベントと二重反転しないようにする。
+    */
 
     checkbox.checked =
         !checkbox.checked;
@@ -1069,10 +1066,7 @@ function updateSoccerPenaltyDisplay(){
 
 
     const enabled =
-        checkbox
-        ?
-        checkbox.checked
-        :
+        checkbox?.checked ||
         false;
 
 
@@ -1128,220 +1122,83 @@ function renderSoccerPenalty(){
 
 
 /* =====================================================
-   ⚽ リアルタイム更新
+   ⚽ チーム名取得
 ===================================================== */
 
-function updateSoccerEditLive(){
+function getSoccerEditTeamNames(){
 
-    const team =
-        document.getElementById(
-            "soccerEditTeam"
-        )?.value.trim() ||
-        "応援チーム";
+    return {
 
-
-    const opponent =
-        document.getElementById(
-            "soccerEditOpponent"
-        )?.value.trim() ||
-        "相手チーム";
-
-
-    /* =================================================
-       通常時間
-    ================================================= */
-
-    const firstHalfTeam =
-        getSoccerNumber(
-            "soccerEditFirstHalfTeam"
-        );
-
-
-    const firstHalfOpponent =
-        getSoccerNumber(
-            "soccerEditFirstHalfOpponent"
-        );
-
-
-    const secondHalfTeam =
-        getSoccerNumber(
-            "soccerEditSecondHalfTeam"
-        );
-
-
-    const secondHalfOpponent =
-        getSoccerNumber(
-            "soccerEditSecondHalfOpponent"
-        );
-
-
-    let teamTotal =
-        firstHalfTeam +
-        secondHalfTeam;
-
-
-    let opponentTotal =
-        firstHalfOpponent +
-        secondHalfOpponent;
-
-
-    /* =================================================
-       延長
-    ================================================= */
-
-    const extraTime =
-        document.getElementById(
-            "soccerEditExtraTime"
-        )?.checked ||
-        false;
-
-
-    if(extraTime){
-
-        teamTotal +=
-            getSoccerNumber(
-                "soccerEditExtraFirstHalfTeam"
-            );
-
-
-        teamTotal +=
-            getSoccerNumber(
-                "soccerEditExtraSecondHalfTeam"
-            );
-
-
-        opponentTotal +=
-            getSoccerNumber(
-                "soccerEditExtraFirstHalfOpponent"
-            );
-
-
-        opponentTotal +=
-            getSoccerNumber(
-                "soccerEditExtraSecondHalfOpponent"
-            );
-
-    }
-
-
-    /* =================================================
-       合計表示
-    ================================================= */
-
-    const teamTotalElement =
-        document.getElementById(
-            "soccerEditTeamTotal"
-        );
-
-
-    const opponentTotalElement =
-        document.getElementById(
-            "soccerEditOpponentTotal"
-        );
-
-
-    if(teamTotalElement){
-
-        teamTotalElement.textContent =
-            teamTotal;
-
-    }
-
-
-    if(opponentTotalElement){
-
-        opponentTotalElement.textContent =
-            opponentTotal;
-
-    }
-
-
-    /* =================================================
-       最終スコア表示
-    ================================================= */
-
-const teamScore =
-    document.getElementById("soccerEditFinalTeamScore");
-
-const opponentScore =
-    document.getElementById("soccerEditFinalOpponentScore");
-
-if(teamScore){
-    teamScore.textContent = teamTotal;
-}
-
-if(opponentScore){
-    opponentScore.textContent = opponentTotal;
-}
-
-
-    /* =================================================
-       チーム名
-    ================================================= */
-
-    updateSoccerTeamNames(
-        team,
-        opponent
-    );
-
-
-    /* =================================================
-       ホーム / アウェイ
-    ================================================= */
-
-    updateSoccerHomeAwayDisplay();
-
-
-    /* =================================================
-       PK表示
-    ================================================= */
-
-    const penaltyEnabled =
-        document.getElementById(
-            "soccerEditPenaltyShootout"
-        )?.checked ||
-        false;
-
-
-    if(penaltyEnabled){
-
-        const penaltyTeam =
-            getSoccerNumber(
-                "soccerEditPenaltyTeam"
-            );
-
-
-        const penaltyOpponent =
-            getSoccerNumber(
-                "soccerEditPenaltyOpponent"
-            );
-
-
-        const penaltyPreview =
+        team:
             document.getElementById(
-                "soccerEditPenaltyPreview"
-            );
+                "soccerEditTeam"
+            )?.value.trim() ||
+            "応援チーム",
 
+        opponent:
+            document.getElementById(
+                "soccerEditOpponent"
+            )?.value.trim() ||
+            "相手チーム"
 
-        if(penaltyPreview){
-
-            penaltyPreview.textContent =
-                `${penaltyTeam} - ${penaltyOpponent}`;
-
-        }
-
-    }
+    };
 
 }
 
 
 /* =====================================================
-   ⚽ スコアボード更新
+   ⚽ ホーム / アウェイ表示名
 ===================================================== */
 
-function updateSoccerScoreboard(){
+function getSoccerDisplayedSides(){
 
-    updateSoccerEditLive();
+    const names =
+        getSoccerEditTeamNames();
+
+
+    const homeAway =
+        document.getElementById(
+            "soccerEditHomeAway"
+        )?.value ||
+        "home";
+
+
+    if(homeAway === "away"){
+
+        return {
+
+            leftName:
+                names.opponent,
+
+            rightName:
+                names.team,
+
+            leftKey:
+                "opponent",
+
+            rightKey:
+                "team"
+
+        };
+
+    }
+
+
+    return {
+
+        leftName:
+            names.team,
+
+        rightName:
+            names.opponent,
+
+        leftKey:
+            "team",
+
+        rightKey:
+            "opponent"
+
+    };
 
 }
 
@@ -1352,173 +1209,328 @@ function updateSoccerScoreboard(){
 
 function updateSoccerHomeAwayDisplay(){
 
-    const homeAway =
-        document.getElementById(
-            "soccerEditHomeAway"
-        )?.value ||
-        "home";
-
-
-    const team =
-        document.getElementById(
-            "soccerEditTeam"
-        )?.value.trim() ||
-        "応援チーム";
-
-
-    const opponent =
-        document.getElementById(
-            "soccerEditOpponent"
-        )?.value.trim() ||
-        "相手チーム";
-
-
-    const teamRow =
-        document.getElementById(
-            "soccerEditTeamRow"
-        );
-
-
-    const opponentRow =
-        document.getElementById(
-            "soccerEditOpponentRow"
-        );
-
-
-    if(
-        !teamRow ||
-        !opponentRow
-    ){
-
-        return;
-
-    }
-
-
-    const tbody =
-        teamRow.parentElement;
-
-
-    if(!tbody){
-
-        return;
-
-    }
+    const sides =
+        getSoccerDisplayedSides();
 
 
     /* =================================================
-       ホーム
+       チーム名
     ================================================= */
 
-    if(homeAway === "home"){
+    const teamLabels =
+        document.querySelectorAll(
+            "[data-soccer-team-name]"
+        );
 
-        if(
-            tbody.firstElementChild !==
-            teamRow
-        ){
 
-            tbody.insertBefore(
-                teamRow,
-                opponentRow
-            );
+    teamLabels.forEach(
+        element => {
+
+            element.textContent =
+                sides.leftKey === "team"
+                ?
+                sides.leftName
+                :
+                sides.rightName;
 
         }
+    );
 
-    }
+
+    const opponentLabels =
+        document.querySelectorAll(
+            "[data-soccer-opponent-name]"
+        );
+
+
+    opponentLabels.forEach(
+        element => {
+
+            element.textContent =
+                sides.leftKey === "opponent"
+                ?
+                sides.leftName
+                :
+                sides.rightName;
+
+        }
+    );
 
 
     /* =================================================
-       アウェイ
+       左右専用表示
     ================================================= */
 
-    else{
+    const homeLabels =
+        document.querySelectorAll(
+            "[data-soccer-home-name]"
+        );
 
-        if(
-            tbody.firstElementChild !==
-            opponentRow
-        ){
 
-            tbody.insertBefore(
-                opponentRow,
-                teamRow
-            );
+    homeLabels.forEach(
+        element => {
+
+            element.textContent =
+                sides.leftKey === "team"
+                ?
+                sides.leftName
+                :
+                sides.rightName;
 
         }
+    );
 
-    }
+
+    const awayLabels =
+        document.querySelectorAll(
+            "[data-soccer-away-name]"
+        );
+
+
+    awayLabels.forEach(
+        element => {
+
+            element.textContent =
+                sides.rightKey === "opponent"
+                ?
+                sides.rightName
+                :
+                sides.leftName;
+
+        }
+    );
 
 
     /* =================================================
-       表示名更新
+       左右スコア表示
     ================================================= */
 
-    const rows =
-        tbody.querySelectorAll(
-            "tr"
-        );
-
-
-    if(rows.length < 2){
-
-        return;
-
-    }
-
-
-    const firstName =
-        rows[0].querySelector(
-            ".soccer-score-team"
-        );
-
-
-    const secondName =
-        rows[1].querySelector(
-            ".soccer-score-team"
-        );
-
-
-    if(homeAway === "home"){
-
-        if(firstName){
-
-            firstName.textContent =
-                team;
-
-        }
-
-
-        if(secondName){
-
-            secondName.textContent =
-                opponent;
-
-        }
-
-    }
-    else{
-
-        if(firstName){
-
-            firstName.textContent =
-                opponent;
-
-        }
-
-
-        if(secondName){
-
-            secondName.textContent =
-                team;
-
-        }
-
-    }
+    updateSoccerHorizontalScoreDisplay(
+        sides
+    );
 
 }
 
 
 /* =====================================================
-   ⚽ ホーム / アウェイ スコア入れ替え
+   ⚽ 左右スコア表示
+===================================================== */
+
+function updateSoccerHorizontalScoreDisplay(
+    sides
+){
+
+    /*
+       HTML側で左右表示を作る場合に対応。
+
+       data-soccer-left-score / right-score
+       があれば、そこへ現在の左右スコアを表示する。
+    */
+
+    const scorePairs = [
+
+        {
+            left:
+                "[data-soccer-left-score='first-half']",
+
+            right:
+                "[data-soccer-right-score='first-half']",
+
+            team:
+                "soccerEditFirstHalfTeam",
+
+            opponent:
+                "soccerEditFirstHalfOpponent"
+
+        },
+
+        {
+            left:
+                "[data-soccer-left-score='second-half']",
+
+            right:
+                "[data-soccer-right-score='second-half']",
+
+            team:
+                "soccerEditSecondHalfTeam",
+
+            opponent:
+                "soccerEditSecondHalfOpponent"
+
+        },
+
+        {
+            left:
+                "[data-soccer-left-score='extra-first-half']",
+
+            right:
+                "[data-soccer-right-score='extra-first-half']",
+
+            team:
+                "soccerEditExtraFirstHalfTeam",
+
+            opponent:
+                "soccerEditExtraFirstHalfOpponent"
+
+        },
+
+        {
+            left:
+                "[data-soccer-left-score='extra-second-half']",
+
+            right:
+                "[data-soccer-right-score='extra-second-half']",
+
+            team:
+                "soccerEditExtraSecondHalfTeam",
+
+            opponent:
+                "soccerEditExtraSecondHalfOpponent"
+
+        },
+
+        {
+            left:
+                "[data-soccer-left-score='penalty']",
+
+            right:
+                "[data-soccer-right-score='penalty']",
+
+            team:
+                "soccerEditPenaltyTeam",
+
+            opponent:
+                "soccerEditPenaltyOpponent"
+
+        }
+
+    ];
+
+
+    scorePairs.forEach(
+        pair => {
+
+            const teamValue =
+                document.getElementById(
+                    pair.team
+                )?.value ?? "";
+
+
+            const opponentValue =
+                document.getElementById(
+                    pair.opponent
+                )?.value ?? "";
+
+
+            const leftValue =
+                sides.leftKey === "team"
+                ?
+                teamValue
+                :
+                opponentValue;
+
+
+            const rightValue =
+                sides.rightKey === "team"
+                ?
+                teamValue
+                :
+                opponentValue;
+
+
+            document
+                .querySelectorAll(pair.left)
+                .forEach(
+                    element => {
+
+                        element.textContent =
+                            leftValue;
+
+                    }
+                );
+
+
+            document
+                .querySelectorAll(pair.right)
+                .forEach(
+                    element => {
+
+                        element.textContent =
+                            rightValue;
+
+                    }
+                );
+
+        }
+    );
+
+
+    /* =================================================
+       合計
+    ================================================= */
+
+    const teamTotal =
+        document.getElementById(
+            "soccerEditTeamTotal"
+        )?.textContent ||
+        "0";
+
+
+    const opponentTotal =
+        document.getElementById(
+            "soccerEditOpponentTotal"
+        )?.textContent ||
+        "0";
+
+
+    const leftTotal =
+        sides.leftKey === "team"
+        ?
+        teamTotal
+        :
+        opponentTotal;
+
+
+    const rightTotal =
+        sides.rightKey === "team"
+        ?
+        teamTotal
+        :
+        opponentTotal;
+
+
+    document
+        .querySelectorAll(
+            "[data-soccer-left-total]"
+        )
+        .forEach(
+            element => {
+
+                element.textContent =
+                    leftTotal;
+
+            }
+        );
+
+
+    document
+        .querySelectorAll(
+            "[data-soccer-right-total]"
+        )
+        .forEach(
+            element => {
+
+                element.textContent =
+                    rightTotal;
+
+            }
+        );
+
+}
+
+
+/* =====================================================
+   ⚽ ホーム / アウェイ変更
 ===================================================== */
 
 function swapSoccerHomeAwayScores(){
@@ -1590,6 +1602,19 @@ function updateSoccerTeamNames(
 
         }
     );
+
+
+    const homeAway =
+        document.getElementById(
+            "soccerEditHomeAway"
+        );
+
+
+    if(homeAway){
+
+        updateSoccerHomeAwayDisplay();
+
+    }
 
 }
 
@@ -1847,6 +1872,254 @@ function calculateSoccerOpponentTotal(
 
 
 /* =====================================================
+   ⚽ リアルタイム更新
+===================================================== */
+
+function updateSoccerEditLive(){
+
+    const names =
+        getSoccerEditTeamNames();
+
+
+    /* =================================================
+       通常時間
+    ================================================= */
+
+    const firstHalfTeam =
+        getSoccerNumber(
+            "soccerEditFirstHalfTeam"
+        );
+
+
+    const firstHalfOpponent =
+        getSoccerNumber(
+            "soccerEditFirstHalfOpponent"
+        );
+
+
+    const secondHalfTeam =
+        getSoccerNumber(
+            "soccerEditSecondHalfTeam"
+        );
+
+
+    const secondHalfOpponent =
+        getSoccerNumber(
+            "soccerEditSecondHalfOpponent"
+        );
+
+
+    let teamTotal =
+        firstHalfTeam +
+        secondHalfTeam;
+
+
+    let opponentTotal =
+        firstHalfOpponent +
+        secondHalfOpponent;
+
+
+    /* =================================================
+       延長戦
+    ================================================= */
+
+    const extraTime =
+        document.getElementById(
+            "soccerEditExtraTime"
+        )?.checked ||
+        false;
+
+
+    if(extraTime){
+
+        teamTotal +=
+            getSoccerNumber(
+                "soccerEditExtraFirstHalfTeam"
+            );
+
+
+        teamTotal +=
+            getSoccerNumber(
+                "soccerEditExtraSecondHalfTeam"
+            );
+
+
+        opponentTotal +=
+            getSoccerNumber(
+                "soccerEditExtraFirstHalfOpponent"
+            );
+
+
+        opponentTotal +=
+            getSoccerNumber(
+                "soccerEditExtraSecondHalfOpponent"
+            );
+
+    }
+
+
+    /* =================================================
+       合計表示
+    ================================================= */
+
+    const teamTotalElement =
+        document.getElementById(
+            "soccerEditTeamTotal"
+        );
+
+
+    const opponentTotalElement =
+        document.getElementById(
+            "soccerEditOpponentTotal"
+        );
+
+
+    if(teamTotalElement){
+
+        teamTotalElement.textContent =
+            teamTotal;
+
+    }
+
+
+    if(opponentTotalElement){
+
+        opponentTotalElement.textContent =
+            opponentTotal;
+
+    }
+
+
+    /* =================================================
+       最終スコア
+    ================================================= */
+
+    const teamScore =
+        document.getElementById(
+            "soccerEditFinalTeamScore"
+        );
+
+
+    const opponentScore =
+        document.getElementById(
+            "soccerEditFinalOpponentScore"
+        );
+
+
+    if(teamScore){
+
+        teamScore.textContent =
+            teamTotal;
+
+    }
+
+
+    if(opponentScore){
+
+        opponentScore.textContent =
+            opponentTotal;
+
+    }
+
+
+    /* =================================================
+       チーム名
+    ================================================= */
+
+    updateSoccerTeamNames(
+        names.team,
+        names.opponent
+    );
+
+
+    /* =================================================
+       ホーム / アウェイ
+    ================================================= */
+
+    updateSoccerHomeAwayDisplay();
+
+
+    /* =================================================
+       PK表示
+    ================================================= */
+
+    const penaltyEnabled =
+        document.getElementById(
+            "soccerEditPenaltyShootout"
+        )?.checked ||
+        false;
+
+
+    const penaltyPreview =
+        document.getElementById(
+            "soccerEditPenaltyPreview"
+        );
+
+
+    if(penaltyPreview){
+
+        if(penaltyEnabled){
+
+            const penaltyTeam =
+                getSoccerNumber(
+                    "soccerEditPenaltyTeam"
+                );
+
+
+            const penaltyOpponent =
+                getSoccerNumber(
+                    "soccerEditPenaltyOpponent"
+                );
+
+
+            const sides =
+                getSoccerDisplayedSides();
+
+
+            const leftPenalty =
+                sides.leftKey === "team"
+                ?
+                penaltyTeam
+                :
+                penaltyOpponent;
+
+
+            const rightPenalty =
+                sides.rightKey === "team"
+                ?
+                penaltyTeam
+                :
+                penaltyOpponent;
+
+
+            penaltyPreview.textContent =
+                `${leftPenalty} - ${rightPenalty}`;
+
+        }
+        else{
+
+            penaltyPreview.textContent =
+                "";
+
+        }
+
+    }
+
+}
+
+
+/* =====================================================
+   ⚽ スコアボード更新
+===================================================== */
+
+function updateSoccerScoreboard(){
+
+    updateSoccerEditLive();
+
+}
+
+
+/* =====================================================
    ⚽ 保存
 ===================================================== */
 
@@ -1985,7 +2258,7 @@ function saveSoccerGameFromEditPage(){
 
 
     /* =================================================
-       通常時間
+       前半
     ================================================= */
 
     const firstHalf = {
@@ -2002,6 +2275,10 @@ function saveSoccerGameFromEditPage(){
 
     };
 
+
+    /* =================================================
+       後半
+    ================================================= */
 
     const secondHalf = {
 
@@ -2233,6 +2510,11 @@ function saveSoccerGameFromEditPage(){
         penalty:
             penalty,
 
+        /*
+           teamTotal / opponentTotal は
+           PKを含まない通常得点合計
+        */
+
         teamTotal:
             teamTotal,
 
@@ -2270,15 +2552,22 @@ function saveSoccerGameFromEditPage(){
        保存
     ================================================= */
 
-    saveSoccerGameData(
-        sportsSelectedDate,
-        game
-    );
+    const saved =
+        saveSoccerGameData(
+            sportsSelectedDate,
+            game
+        );
 
 
-    console.log(
-        "⚽ サッカー試合データ保存完了"
-    );
+    if(saved === false){
+
+        console.error(
+            "❌ サッカー試合データの保存に失敗"
+        );
+
+        return;
+
+    }
 
 
     /* =================================================
@@ -2342,17 +2631,31 @@ function saveSoccerGameData(
     }
 
 
+    /* =================================================
+       共通保存処理を優先
+    ================================================= */
+
     if(
         typeof saveSportsGameData ===
         "function"
     ){
 
-        saveSportsGameData(
-            date,
-            game
-        );
+        const result =
+            saveSportsGameData(
+                date,
+                game
+            );
 
-        return true;
+        /*
+           共通保存関数が戻り値を返さない
+           既存構造にも対応。
+        */
+
+        return result === false
+            ?
+            false
+            :
+            true;
 
     }
 
@@ -2403,10 +2706,11 @@ function saveSoccerGameData(
 
 function closeSoccerGameEditPage(){
 
-const editPage =
-    document.getElementById(
-        "sportsGameEditPage"
-    );
+    const editPage =
+        document.getElementById(
+            "sportsGameEditPage"
+        );
+
 
     if(editPage){
 
@@ -2470,11 +2774,6 @@ async function loadSoccerGameDetailHTML(){
             html;
 
 
-        console.log(
-            "sports-soccer-detail.html 読み込み成功"
-        );
-
-
         return true;
 
     }
@@ -2499,7 +2798,6 @@ async function loadSoccerGameDetailHTML(){
 async function openSoccerGameDetailPage(date){
 
     hideSportsSubPages();
-
 
     sportsSelectedDate =
         date;
@@ -2531,9 +2829,9 @@ async function openSoccerGameDetailPage(date){
     }
 
 
-    /* =====================
+    /* =================================================
        カレンダー非表示
-    ===================== */
+    ================================================= */
 
     sportsPage.classList.remove(
         "active"
@@ -2543,9 +2841,9 @@ async function openSoccerGameDetailPage(date){
         "none";
 
 
-    /* =====================
+    /* =================================================
        結果ページ表示
-    ===================== */
+    ================================================= */
 
     detailPage.classList.add(
         "active"
@@ -2556,7 +2854,7 @@ async function openSoccerGameDetailPage(date){
 
 
     /* =================================================
-       結果HTML読み込み
+       HTML読み込み
     ================================================= */
 
     const container =
@@ -2572,14 +2870,22 @@ async function openSoccerGameDetailPage(date){
         )
     ){
 
-        await loadSoccerGameDetailHTML();
+        const loaded =
+            await loadSoccerGameDetailHTML();
+
+
+        if(!loaded){
+
+            return;
+
+        }
 
     }
 
 
-    /* =====================
+    /* =================================================
        結果描画
-    ===================== */
+    ================================================= */
 
     renderSoccerGameDetail(
         date
@@ -2594,7 +2900,9 @@ async function openSoccerGameDetailPage(date){
 
 function renderSoccerGameDetail(date){
 
-const games = getCurrentSoccerGames();
+    const games =
+        getCurrentSoccerGames();
+
 
     const game =
         games?.[date];
@@ -2622,8 +2930,11 @@ const games = getCurrentSoccerGames();
         "相手チーム";
 
 
+    /* =================================================
+       通常得点合計
+    ================================================= */
+
     const regularTeam =
-        game.teamTotal ??
         calculateSoccerRegularTotal(
             game.firstHalf,
             game.secondHalf,
@@ -2633,7 +2944,6 @@ const games = getCurrentSoccerGames();
 
 
     const regularOpponent =
-        game.opponentTotal ??
         calculateSoccerRegularTotal(
             game.firstHalf,
             game.secondHalf,
@@ -2644,19 +2954,33 @@ const games = getCurrentSoccerGames();
 
 
     /* =================================================
-       通常スコア
+       ホーム / アウェイ
     ================================================= */
 
-    const regularScore =
-        document.getElementById(
-            "soccerDetailRegularScore"
-        );
+    let leftName =
+        team;
 
 
-    if(regularScore){
+    let rightName =
+        opponent;
 
-        regularScore.textContent =
-            `${regularTeam} - ${regularOpponent}`;
+
+    let leftIsTeam =
+        true;
+
+
+    if(game.homeAway === "away"){
+
+        leftName =
+            opponent;
+
+
+        rightName =
+            team;
+
+
+        leftIsTeam =
+            false;
 
     }
 
@@ -2665,43 +2989,65 @@ const games = getCurrentSoccerGames();
        チーム名
     ================================================= */
 
-    const teamName =
-        document.getElementById(
-            "soccerDetailTeam"
+    setSoccerDetailText(
+        "soccerDetailTeam",
+        team
+    );
+
+
+    setSoccerDetailText(
+        "soccerDetailOpponent",
+        opponent
+    );
+
+
+    document
+        .querySelectorAll(
+            "[data-soccer-detail-home-name]"
+        )
+        .forEach(
+            element => {
+
+                element.textContent =
+                    leftName;
+
+            }
         );
 
 
-    const opponentName =
-        document.getElementById(
-            "soccerDetailOpponent"
+    document
+        .querySelectorAll(
+            "[data-soccer-detail-away-name]"
+        )
+        .forEach(
+            element => {
+
+                element.textContent =
+                    rightName;
+
+            }
         );
-
-
-    if(teamName){
-
-        teamName.textContent =
-            team;
-
-    }
-
-
-    if(opponentName){
-
-        opponentName.textContent =
-            opponent;
-
-    }
 
 
     /* =================================================
        前半
     ================================================= */
 
+    const firstHalfTeam =
+        soccerScoreToNumber(
+            game.firstHalf?.team
+        );
+
+
+    const firstHalfOpponent =
+        soccerScoreToNumber(
+            game.firstHalf?.opponent
+        );
+
+
     setSoccerDetailText(
         "soccerDetailFirstHalf",
-        formatSoccerScore(
-            game.firstHalf
-        )
+        `${firstHalfTeam} - ${firstHalfOpponent}`
     );
 
 
@@ -2709,16 +3055,26 @@ const games = getCurrentSoccerGames();
        後半
     ================================================= */
 
+    const secondHalfTeam =
+        soccerScoreToNumber(
+            game.secondHalf?.team
+        );
+
+
+    const secondHalfOpponent =
+        soccerScoreToNumber(
+            game.secondHalf?.opponent
+        );
+
+
     setSoccerDetailText(
         "soccerDetailSecondHalf",
-        formatSoccerScore(
-            game.secondHalf
-        )
+        `${secondHalfTeam} - ${secondHalfOpponent}`
     );
 
 
     /* =================================================
-       延長
+       延長戦
     ================================================= */
 
     const extraArea =
@@ -2794,6 +3150,89 @@ const games = getCurrentSoccerGames();
 
 
     /* =================================================
+       合計
+    ================================================= */
+
+    /*
+       合計はPKを含まない。
+
+       前半
+       ＋後半
+       ＋延長前半
+       ＋延長後半
+    */
+
+    const totalText =
+        `${regularTeam} - ${regularOpponent}`;
+
+
+    setSoccerDetailText(
+        "soccerDetailTotal",
+        totalText
+    );
+
+
+    /*
+       旧HTMLとの互換。
+       soccerDetailRegularScore が存在する場合も
+       同じ通常得点合計を表示。
+    */
+
+    setSoccerDetailText(
+        "soccerDetailRegularScore",
+        totalText
+    );
+
+
+    /* =================================================
+       左右合計表示
+    ================================================= */
+
+    const leftTotal =
+        leftIsTeam
+        ?
+        regularTeam
+        :
+        regularOpponent;
+
+
+    const rightTotal =
+        leftIsTeam
+        ?
+        regularOpponent
+        :
+        regularTeam;
+
+
+    document
+        .querySelectorAll(
+            "[data-soccer-detail-left-total]"
+        )
+        .forEach(
+            element => {
+
+                element.textContent =
+                    leftTotal;
+
+            }
+        );
+
+
+    document
+        .querySelectorAll(
+            "[data-soccer-detail-right-total]"
+        )
+        .forEach(
+            element => {
+
+                element.textContent =
+                    rightTotal;
+
+            }
+        );
+
+
+    /* =================================================
        結果
     ================================================= */
 
@@ -2852,7 +3291,10 @@ function formatSoccerScore(
     score
 ){
 
-    if(!score){
+    if(
+        !score ||
+        typeof score !== "object"
+    ){
 
         return "-";
 
@@ -2993,19 +3435,43 @@ function deleteSoccerGame(){
     }
 
 
-    delete games[
-        sportsSelectedDate
-    ];
-
-
-    saveCurrentSoccerGames(
-        games
-    );
-
-
     const deletedDate =
         sportsSelectedDate;
 
+
+    delete games[
+        deletedDate
+    ];
+
+
+    /* =================================================
+       削除後データ保存
+    ================================================= */
+
+    const data =
+        db.load();
+
+
+    if(!data.sportsCalendar){
+
+        data.sportsCalendar =
+            {};
+
+    }
+
+
+    data.sportsCalendar.soccerGames =
+        games;
+
+
+    db.save(
+        data
+    );
+
+
+    /* =================================================
+       状態リセット
+    ================================================= */
 
     sportsSelectedDate =
         null;
