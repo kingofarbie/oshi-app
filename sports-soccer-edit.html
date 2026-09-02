@@ -3,15 +3,11 @@
     <h2 id="soccerGameEditTitle">⚽ 試合結果</h2>
 
 
-    <!-- =====================
-         チーム設定
-    ====================== -->
+    <!-- チーム設定 -->
     <div class="soccer-team-setting">
 
-        <div
-            id="soccerEditTeamRow"
-            class="soccer-team-setting-row"
-        >
+        <div class="soccer-team-setting-row">
+
             <label for="soccerEditTeam">
                 応援チーム
             </label>
@@ -26,13 +22,12 @@
                 <option value="home">ホーム</option>
                 <option value="away">アウェイ</option>
             </select>
+
         </div>
 
 
-        <div
-            id="soccerEditOpponentRow"
-            class="soccer-team-setting-row"
-        >
+        <div class="soccer-team-setting-row">
+
             <label for="soccerEditOpponent">
                 相手チーム
             </label>
@@ -42,32 +37,27 @@
                 id="soccerEditOpponent"
                 placeholder="相手チーム名を入力"
             >
+
         </div>
 
     </div>
 
 
-    <!-- =====================
-         試合表示
-         チーム名・得点はJSで自動反映
-    ====================== -->
+    <!-- 試合表示 -->
     <div class="soccer-match-board">
 
         <div class="soccer-match-header">
 
             <div class="soccer-match-column">
 
-                <div
-                    class="soccer-match-side"
-                    data-soccer-home-side
-                >
+                <div class="soccer-match-side">
                     ホーム
                 </div>
 
                 <div
                     class="soccer-match-team-name"
-                    data-soccer-team-name
-                ></div>
+                    data-soccer-team-name>
+                </div>
 
             </div>
 
@@ -79,33 +69,26 @@
 
             <div class="soccer-match-column">
 
-                <div
-                    class="soccer-match-side"
-                    data-soccer-opponent-side
-                >
+                <div class="soccer-match-side">
                     アウェイ
                 </div>
 
                 <div
                     class="soccer-match-team-name"
-                    data-soccer-opponent-name
-                ></div>
+                    data-soccer-opponent-name>
+                </div>
 
             </div>
 
         </div>
 
 
-        <!--
-            前半・後半・延長の入力値から
-            JSでリアルタイム計算される通常得点
-        -->
+        <!-- 現在の得点 -->
         <div class="soccer-live-score-row">
 
             <div
                 id="soccerEditTeamTotal"
-                class="soccer-live-score"
-            >
+                class="soccer-live-score">
                 0
             </div>
 
@@ -115,8 +98,7 @@
 
             <div
                 id="soccerEditOpponentTotal"
-                class="soccer-live-score"
-            >
+                class="soccer-live-score">
                 0
             </div>
 
@@ -125,9 +107,7 @@
     </div>
 
 
-    <!-- =====================
-         前半・後半
-    ====================== -->
+    <!-- 前半・後半 -->
     <div class="soccer-score-section">
 
         <div class="soccer-score-row">
@@ -182,9 +162,7 @@
     </div>
 
 
-    <!-- =====================
-         延長
-    ====================== -->
+    <!-- 延長 -->
     <div class="soccer-extra-section">
 
         <label class="soccer-checkbox-row">
@@ -194,9 +172,7 @@
                 id="soccerEditExtraTime"
             >
 
-            <span>
-                延長
-            </span>
+            <span>延長</span>
 
         </label>
 
@@ -260,9 +236,7 @@
     </div>
 
 
-    <!-- =====================
-         PK
-    ====================== -->
+    <!-- PK -->
     <div class="soccer-penalty-section">
 
         <label class="soccer-checkbox-row">
@@ -272,9 +246,7 @@
                 id="soccerEditPenaltyShootout"
             >
 
-            <span>
-                PK
-            </span>
+            <span>PK</span>
 
         </label>
 
@@ -309,9 +281,7 @@
     </div>
 
 
-    <!-- =====================
-         場所
-    ====================== -->
+    <!-- 場所 -->
     <div class="soccer-info-section">
 
         <label for="soccerEditLocation">
@@ -327,9 +297,7 @@
     </div>
 
 
-    <!-- =====================
-         メモ
-    ====================== -->
+    <!-- メモ -->
     <div class="soccer-info-section">
 
         <label for="soccerEditMemo">
@@ -345,9 +313,7 @@
     </div>
 
 
-    <!-- =====================
-         ボタン
-    ====================== -->
+    <!-- ボタン -->
     <div class="soccer-edit-buttons">
 
         <button
