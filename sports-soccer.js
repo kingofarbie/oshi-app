@@ -1205,6 +1205,7 @@ function getSoccerDisplayedSides(){
 
 /* =====================================================
    ⚽ ホーム / アウェイ表示
+   左右のチーム名・スコアを完全に同期
 ===================================================== */
 
 function updateSoccerHomeAwayDisplay(){
@@ -1217,88 +1218,72 @@ function updateSoccerHomeAwayDisplay(){
        チーム名
     ================================================= */
 
-    const teamLabels =
-        document.querySelectorAll(
+    document
+        .querySelectorAll(
             "[data-soccer-team-name]"
+        )
+        .forEach(
+            element => {
+
+                element.textContent =
+                    sides.leftKey === "team"
+                    ?
+                    sides.leftName
+                    :
+                    sides.rightName;
+
+            }
         );
 
 
-    teamLabels.forEach(
-        element => {
-
-            element.textContent =
-                sides.leftKey === "team"
-                ?
-                sides.leftName
-                :
-                sides.rightName;
-
-        }
-    );
-
-
-    const opponentLabels =
-        document.querySelectorAll(
+    document
+        .querySelectorAll(
             "[data-soccer-opponent-name]"
+        )
+        .forEach(
+            element => {
+
+                element.textContent =
+                    sides.rightKey === "opponent"
+                    ?
+                    sides.rightName
+                    :
+                    sides.leftName;
+
+            }
         );
-
-
-    opponentLabels.forEach(
-        element => {
-
-            element.textContent =
-                sides.leftKey === "opponent"
-                ?
-                sides.leftName
-                :
-                sides.rightName;
-
-        }
-    );
 
 
     /* =================================================
-       左右専用表示
+       ホーム / アウェイ専用表示
     ================================================= */
 
-    const homeLabels =
-        document.querySelectorAll(
+    document
+        .querySelectorAll(
             "[data-soccer-home-name]"
+        )
+        .forEach(
+            element => {
+
+                element.textContent =
+                    sides.leftName;
+
+            }
         );
 
 
-    homeLabels.forEach(
-        element => {
-
-            element.textContent =
-                sides.leftKey === "team"
-                ?
-                sides.leftName
-                :
-                sides.rightName;
-
-        }
-    );
-
-
-    const awayLabels =
-        document.querySelectorAll(
+    document
+        .querySelectorAll(
             "[data-soccer-away-name]"
+        )
+        .forEach(
+            element => {
+
+                element.textContent =
+                    sides.rightName;
+
+            }
         );
-
-
-    awayLabels.forEach(
-        element => {
-
-            element.textContent =
-                sides.rightKey === "opponent"
-                ?
-                sides.rightName
-                :
-                sides.leftName;
-
-        }
-    );
 
 
     /* =================================================
@@ -1310,7 +1295,6 @@ function updateSoccerHomeAwayDisplay(){
     );
 
 }
-
 
 /* =====================================================
    ⚽ 左右スコア表示
@@ -1531,6 +1515,7 @@ function updateSoccerHorizontalScoreDisplay(
 
 /* =====================================================
    ⚽ ホーム / アウェイ変更
+   チーム名と左右スコアを完全同期
 ===================================================== */
 
 function swapSoccerHomeAwayScores(){
@@ -1548,6 +1533,10 @@ function swapSoccerHomeAwayScores(){
     }
 
 
+    /* =================================================
+       ホーム ⇔ アウェイ
+    ================================================= */
+
     homeAway.value =
         homeAway.value === "home"
         ?
@@ -1556,7 +1545,16 @@ function swapSoccerHomeAwayScores(){
         "home";
 
 
+    /* =================================================
+       表示更新
+    ================================================= */
+
     updateSoccerHomeAwayDisplay();
+
+
+    /* =================================================
+       リアルタイム合計更新
+    ================================================= */
 
     updateSoccerEditLive();
 
