@@ -2394,11 +2394,11 @@ console.log(
        試合結果を描画
     */
 
-    console.log("★ openBaseballGameDetailPage → openBaseballGameView", date);
+    console.log("★ openBaseballGameDetailPage → showBaseballGameDetail", date);
 
 console.log(
-    "★★ 呼び出し直前 openBaseballGameView =",
-    openBaseballGameView
+    "★★ 呼び出し直前 showBaseballGameDetail =",
+    showBaseballGameDetail
 );
 showBaseballGameDetail(
             date
