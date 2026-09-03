@@ -752,6 +752,13 @@ async function renderSportsCalendar(){
         data.sportsCalendar || {};
 
 
+
+        console.log(
+    "🏟️ sportsCalendar設定:",
+    settings
+);
+
+
     /*
        現在選択中スポーツ専用 games
     */
