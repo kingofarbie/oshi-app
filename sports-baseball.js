@@ -20,29 +20,15 @@ function editBaseballGame(){
 
     }
 
-
     const date =
         sportsSelectedDate;
 
-
-    const games =
-        getCurrentSportsGames();
-
-
-    const game =
-        games[date] ||
-        null;
-
-
-    closeSportsGameDetailModal();
-
-
-    openBaseballGameForm(
-        date,
-        game
+    openBaseballGameEditPage(
+        date
     );
 
 }
+
 
 
 /* =====================================================
