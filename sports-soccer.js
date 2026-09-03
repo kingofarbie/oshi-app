@@ -3025,11 +3025,31 @@ function saveSoccerGameData(
 
 function closeSoccerGameEditPage(){
 
+    /*
+       現在編集中の試合日を保持
+    */
+
+    const date =
+        sportsSelectedDate;
+
+    if(!date){
+
+        console.error(
+            "❌ 編集中の試合日が設定されていません"
+        );
+
+        return;
+
+    }
+
+    /*
+       編集ページを閉じる
+    */
+
     const editPage =
         document.getElementById(
             "sportsGameEditPage"
         );
-
 
     if(editPage){
 
@@ -3042,7 +3062,16 @@ function closeSoccerGameEditPage(){
 
     }
 
+    /*
+       サッカーの詳細ページへ戻る
+    */
+
+    openSoccerGameDetailPage(
+        date
+    );
+
 }
+
 
 
 /* =====================================================
@@ -3732,6 +3761,8 @@ setSoccerDetailText(
 
 }
 
+
+
 /* =====================================================
    ⚽ 旧版互換：結果描画
 ===================================================== */
@@ -3859,6 +3890,8 @@ function editSoccerGame(){
     );
 
 }
+
+
 
 
 /* =====================================================
@@ -4017,3 +4050,6 @@ function closeSoccerGameDetailPage(){
     renderSportsCalendar();
 
 }
+
+
+
