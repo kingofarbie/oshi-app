@@ -4012,6 +4012,21 @@ function closeSoccerGameDetailPage(){
             "sportsGameDetailPage"
         );
 
+    const editPage =
+        document.getElementById(
+            "sportsGameEditPage"
+        );
+
+    const sportsPage =
+        document.getElementById(
+            "sportsCalendarPage"
+        );
+
+    const sportsScreen =
+        document.getElementById(
+            "sportsCalendarScreen"
+        );
+
 
     if(detailPage){
 
@@ -4025,14 +4040,16 @@ function closeSoccerGameDetailPage(){
     }
 
 
-    sportsSelectedDate =
-        null;
+    if(editPage){
 
-
-    const sportsPage =
-        document.getElementById(
-            "sportsCalendarPage"
+        editPage.classList.remove(
+            "active"
         );
+
+        editPage.style.display =
+            "none";
+
+    }
 
 
     if(sportsPage){
@@ -4042,14 +4059,25 @@ function closeSoccerGameDetailPage(){
         );
 
         sportsPage.style.display =
-            "block";
+            "";
+
+    }
+
+
+    if(sportsScreen){
+
+        sportsScreen.style.display =
+            "";
 
     }
 
 
     renderSportsCalendar();
 
-}
 
+    sportsSelectedDate =
+        null;
+
+}
 
 
