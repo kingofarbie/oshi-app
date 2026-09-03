@@ -2308,66 +2308,119 @@ function closeSportsGameDetailPage(){
 
 function closeSportsGameEditPage(){
 
+    /*
+       現在編集中の試合日を保持
+    */
+
+    const date =
+        sportsSelectedDate;
+
+
+    if(!date){
+
+        console.error(
+            "❌ 編集中の試合日が設定されていません"
+        );
+
+        return;
+
+    }
+
+
+    /*
+       現在選択中のスポーツを取得
+    */
+
+    const data =
+        db.load();
+
+    const settings =
+        data.sportsCalendar ||
+        {};
+
+    const selectedIndex =
+        typeof settings.selectedIndex === "number"
+        ?
+        settings.selectedIndex
+        :
+        0;
+
+    const favoriteSports =
+        Array.isArray(
+            settings.favoriteSports
+        )
+        ?
+        settings.favoriteSports
+        :
+        [];
+
+    const currentSport =
+        favoriteSports[selectedIndex] ||
+        {};
+
+    const sport =
+        currentSport.sport ||
+        "";
+
+
+    /*
+       編集ページを閉じる
+    */
+
     const editPage =
         document.getElementById(
             "sportsGameEditPage"
         );
 
-    const sportsPage =
-        document.getElementById(
-            "sportsCalendarPage"
-        );
-
-    const sportsScreen =
-        document.getElementById(
-            "sportsCalendarScreen"
-        );
-
-
-    /*
-       編集画面を非表示
-    */
 
     if(editPage){
 
-        editPage.classList.remove("active");
-        editPage.style.display = "none";
+        editPage.classList.remove(
+            "active"
+        );
+
+        editPage.style.display =
+            "none";
 
     }
 
 
     /*
-       スポーツカレンダーを再表示
+       スポーツ別に詳細ページへ戻る
     */
 
-    if(sportsPage){
+    if(sport === "baseball"){
 
-        sportsPage.classList.add("active");
-        sportsPage.style.display = "";
+        openBaseballGameDetailPage(
+            date
+        );
+
+        return;
 
     }
 
 
-    if(sportsScreen){
+    if(sport === "soccer"){
 
-        sportsScreen.style.display = "";
+        openSoccerGameDetailPage(
+            date
+        );
+
+        return;
 
     }
 
 
     /*
-       最新状態で再描画
+       未対応スポーツ
     */
 
-    renderSportsCalendar();
-
-
-    sportsSelectedDate =
-        null;
+    console.error(
+        "❌ 編集キャンセル時のスポーツが判定できません:",
+        sport
+    );
 
 }
-
-
 
 function hideSportsSubPages(){
 
