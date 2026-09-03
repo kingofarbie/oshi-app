@@ -2400,8 +2400,8 @@ console.log(
     "★★ 呼び出し直前 openBaseballGameView =",
     openBaseballGameView
 );
-    openBaseballGameView(
-        date
+showBaseballGameDetail(
+            date
     );
 
 }

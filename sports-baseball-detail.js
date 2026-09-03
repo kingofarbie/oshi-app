@@ -84,10 +84,7 @@ function getCurrentSportsGamesForDetail(){
    ⚾ 野球試合 閲覧画面
 ===================================================== */
 
-function openBaseballGameView(
-    date
-){
-
+function showBaseballGameDetail(date){
 
     console.log("★★ openBaseballGameView 本体に入った", date);
 
@@ -732,6 +729,5 @@ ${
 );
 
 }
-
 
 

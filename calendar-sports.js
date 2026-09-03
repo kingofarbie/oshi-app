@@ -1038,133 +1038,88 @@ if(game){
 
 function openSportsGame(date){
 
-    /* =====================
-       選択日を保存
-    ===================== */
+    sportsSelectedDate = date;
 
-    sportsSelectedDate =
-        date;
-
-
-    /* =====================
-       データ取得
-    ===================== */
 
     const data =
         db.load();
-
 
     const settings =
         data.sportsCalendar || {};
 
 
-    /* =====================
-       現在選択中スポーツ番号
-    ===================== */
+    /* =================================================
+       現在選択中のスポーツを取得
+    ================================================= */
 
     const selectedIndex =
         typeof settings.selectedIndex === "number"
-        ?
-        settings.selectedIndex
-        :
-        0;
+        ? settings.selectedIndex
+        : 0;
 
-
-    /* =====================
-       お気に入りスポーツ取得
-    ===================== */
 
     const favoriteSports =
-        Array.isArray(
-            settings.favoriteSports
-        )
-        ?
-        settings.favoriteSports
-        :
-        [];
+        Array.isArray(settings.favoriteSports)
+        ? settings.favoriteSports
+        : [];
 
 
-    /* =====================
-       現在選択中スポーツ
-    ===================== */
-
-    const current =
+    const currentSport =
         favoriteSports[selectedIndex] ||
         {};
 
 
-    /* =====================
-       スポーツ種類
-       
-       「sport」という変数名は使わない
-       → 他の処理との衝突を防ぐ
-    ===================== */
-
-    const currentSport =
-        current.sport ||
-        "baseball";
+    const sport =
+        currentSport.sport ||
+        "";
 
 
-    /* =====================
-       現在選択中スポーツの試合
-    ===================== */
+    /* =================================================
+       現在のスポーツの試合データ
+    ================================================= */
 
     const games =
         getCurrentSportsGames();
 
 
     const game =
-        games[date] ||
+        games?.[date] ||
         null;
 
 
     /* =================================================
-       ⚾ 野球
+       結果画面 / 編集画面をスポーツ別に振り分け
     ================================================= */
 
-    if(currentSport === "baseball"){
+    if(sport === "baseball"){
 
         if(game){
 
-            openBaseballGameDetailPage(
-                date
-            );
+            openBaseballGameDetailPage(date);
 
         }else{
 
-            openBaseballGameEditPage(
-                date
-            );
+            openBaseballGameEditPage(date);
 
         }
 
         return;
-
     }
 
 
-    /* =================================================
-       ⚽ サッカー
-    ================================================= */
-
-    if(currentSport === "soccer"){
+    if(sport === "soccer"){
 
         if(game){
 
-            openSoccerGameDetailPage(
-                date
-            );
+            openSoccerGameDetailPage(date);
 
         }else{
 
-            openSoccerGameEditPage(
-                date
-            );
+            openSoccerGameEditPage(date);
 
         }
 
         return;
-
     }
 
 
@@ -1172,11 +1127,28 @@ function openSportsGame(date){
        未対応スポーツ
     ================================================= */
 
+    if(!sport){
+
+        console.error(
+            "❌ 現在選択中のスポーツが設定されていません"
+        );
+
+    }else{
+
+        console.error(
+            "❌ 未対応のスポーツです:",
+            sport
+        );
+
+    }
+
+
     alert(
         "このスポーツはまだ対応していません。"
     );
 
 }
+
 
 
 /* =====================================================
@@ -2446,3 +2418,126 @@ function hideSportsSubPages(){
     }
 
 }
+
+
+
+function openSportsGameDetailPage(date){
+
+    sportsSelectedDate =
+        date;
+
+    const sportsPage =
+        document.getElementById(
+            "sportsCalendarPage"
+        );
+
+    const detailPage =
+        document.getElementById(
+            "sportsGameDetailPage"
+        );
+
+    if(
+        !sportsPage ||
+        !detailPage
+    ){
+
+        console.error(
+            "❌ スポーツカレンダーまたは試合結果ページが見つかりません"
+        );
+
+        return;
+    }
+
+    /* =====================
+       スポーツ判定
+    ===================== */
+
+    const data =
+        db.load();
+
+    const settings =
+        data.sportsCalendar ||
+        {};
+
+    const selectedIndex =
+        typeof settings.selectedIndex === "number"
+        ? settings.selectedIndex
+        : 0;
+
+    const favoriteSports =
+        Array.isArray(
+            settings.favoriteSports
+        )
+        ?
+        settings.favoriteSports
+        :
+        [];
+
+    const currentSport =
+        favoriteSports[selectedIndex] ||
+        {};
+
+    const sport =
+        currentSport.sport ||
+        "";
+
+
+    /* =====================
+       ページ切り替え
+    ===================== */
+
+    hideSportsSubPages();
+
+    sportsPage.classList.remove(
+        "active"
+    );
+
+    sportsPage.style.display =
+        "none";
+
+    detailPage.classList.add(
+        "active"
+    );
+
+    detailPage.style.display =
+        "block";
+
+
+    /* =====================
+       スポーツ別結果表示
+    ===================== */
+
+    if(sport === "baseball"){
+
+        showBaseballGameDetail(
+            date
+        );
+
+        return;
+    }
+
+    if(sport === "soccer"){
+
+        showSoccerGameDetail(
+            date
+        );
+
+        return;
+    }
+
+
+    /* =====================
+       未対応スポーツ
+    ===================== */
+
+    console.error(
+        "❌ 未対応のスポーツです:",
+        sport
+    );
+
+    alert(
+        "このスポーツの試合結果表示にはまだ対応していません。"
+    );
+
+}
+
