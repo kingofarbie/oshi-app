@@ -123,7 +123,8 @@ function getCurrentSportsGames(){
 
 
     const settings =
-        data.sportsCalendar || {};
+        data.sportsCalendar ||
+        {};
 
 
     const favoriteSports =
@@ -145,44 +146,72 @@ function getCurrentSportsGames(){
 
 
     /*
-       新形式
+       ================================================
+       現在選択中のスポーツ
+       ================================================
+    */
+
+    const currentSport =
+        favoriteSports[selectedIndex] ||
+        {};
+
+
+    const sport =
+        currentSport.sport ||
+        "";
+
+
+    /*
+       ================================================
+       スポーツ別 games
+       
+       正式な新方式
 
        games:
        {
-           0: {
-               "2026-08-26": {...}
+           baseball: {
+               "2026-09-12": {...}
            },
 
-           1: {
-               "2026-08-27": {...}
+           soccer: {
+               "2026-09-12": {...}
+           },
+
+           basketball: {
+               "2026-09-12": {...}
            }
        }
+       ================================================
     */
 
     if(
-        settings.games &&
-        !Array.isArray(settings.games) &&
-        typeof settings.games === "object"
+        !sport ||
+        !settings.games ||
+        typeof settings.games !== "object" ||
+        Array.isArray(settings.games)
     ){
 
-        /*
-           新形式のスポーツ別 games が
-           存在する場合
-        */
-
-        if(
-            settings.games[selectedIndex] &&
-            typeof settings.games[selectedIndex] === "object"
-        ){
-
-            return settings.games[selectedIndex];
-
-        }
+        return {};
 
     }
 
 
-    return {};
+    const sportGames =
+        settings.games[sport];
+
+
+    if(
+        !sportGames ||
+        typeof sportGames !== "object" ||
+        Array.isArray(sportGames)
+    ){
+
+        return {};
+
+    }
+
+
+    return sportGames;
 
 }
 
@@ -208,12 +237,23 @@ function saveCurrentSportsGames(
 
     if(
         !data.sportsCalendar.games ||
-        typeof data.sportsCalendar.games !== "object"
+        typeof data.sportsCalendar.games !== "object" ||
+        Array.isArray(data.sportsCalendar.games)
     ){
 
         data.sportsCalendar.games = {};
 
     }
+
+
+    const favoriteSports =
+        Array.isArray(
+            data.sportsCalendar.favoriteSports
+        )
+        ?
+        data.sportsCalendar.favoriteSports
+        :
+        [];
 
 
     const selectedIndex =
@@ -224,176 +264,55 @@ function saveCurrentSportsGames(
         0;
 
 
-    data.sportsCalendar.games[selectedIndex] =
+    const currentSport =
+        favoriteSports[selectedIndex] ||
+        {};
+
+
+    const sport =
+        currentSport.sport ||
+        "";
+
+
+    if(!sport){
+
+        console.error(
+            "❌ 現在選択中のスポーツが取得できません"
+        );
+
+        return false;
+
+    }
+
+
+    if(
+        !games ||
+        typeof games !== "object" ||
+        Array.isArray(games)
+    ){
+
+        console.error(
+            "❌ 保存するスポーツゲームデータが不正です"
+        );
+
+        return false;
+
+    }
+
+
+    data.sportsCalendar.games[sport] =
         games;
 
 
-    db.save(data);
+    db.save(
+        data
+    );
+
+
+    return true;
 
 }
 
-
-/* =====================================================
-   🏟️ 旧 games 形式を新形式へ移行
-===================================================== */
-
-function migrateSportsGames(){
-
-    const data =
-        db.load();
-
-
-    if(!data.sportsCalendar){
-
-        return;
-
-    }
-
-
-    const settings =
-        data.sportsCalendar;
-
-
-    /*
-       応援スポーツが無ければ何もしない
-    */
-
-    if(
-        !Array.isArray(
-            settings.favoriteSports
-        ) ||
-        settings.favoriteSports.length === 0
-    ){
-
-        return;
-
-    }
-
-
-    /*
-       すでに新形式なら何もしない
-    */
-
-    if(
-        settings.games &&
-        typeof settings.games === "object" &&
-        !Array.isArray(settings.games)
-    ){
-
-        /*
-           games の中に日付形式が直接入っている場合だけ
-           旧形式と判断する。
-
-           例：
-
-           games = {
-               "2026-08-26": {...}
-           }
-
-           新形式なら、
-
-           games = {
-               "0": {
-                   "2026-08-26": {...}
-               }
-           }
-        */
-
-        const keys =
-            Object.keys(
-                settings.games
-            );
-
-
-        const hasOldDateKey =
-            keys.some(
-                key =>
-                    /^\d{4}-\d{2}-\d{2}$/.test(key)
-            );
-
-
-        if(!hasOldDateKey){
-
-            return;
-
-        }
-
-
-        /*
-           旧 games は現在の sport / team に
-           対応する favoriteSports へ移す
-        */
-
-        const oldSport =
-            settings.sport ||
-            "baseball";
-
-
-        const oldTeam =
-            settings.team ||
-            "";
-
-
-        let targetIndex =
-            Array.isArray(settings.favoriteSports)
-            ?
-            settings.favoriteSports.findIndex(
-                item =>
-                    item &&
-                    item.sport === oldSport &&
-                    item.team === oldTeam
-            )
-            :
-            -1;
-
-
-        /*
-           完全一致しない場合は selectedIndex
-        */
-
-        if(targetIndex < 0){
-
-            targetIndex =
-                typeof settings.selectedIndex === "number"
-                ?
-                settings.selectedIndex
-                :
-                0;
-
-        }
-
-
-        /*
-           念のため範囲調整
-        */
-
-        if(
-            targetIndex < 0 ||
-            targetIndex >=
-            settings.favoriteSports.length
-        ){
-
-            targetIndex = 0;
-
-        }
-
-
-        const oldGames =
-            settings.games;
-
-
-        settings.games = {};
-
-
-        settings.games[targetIndex] =
-            oldGames;
-
-
-        db.save(data);
-
-    }
-
-}
 
 
 /* =====================================================
@@ -407,7 +326,7 @@ function loadSportsSettings(){
 
 
     /*
-       古いデータ形式との互換性を確保
+       sportsCalendar が無ければ作成
     */
 
     if(!data.sportsCalendar){
@@ -429,36 +348,29 @@ function loadSportsSettings(){
 
         };
 
-        db.save(data);
-
     }
 
 
+    const settings =
+        data.sportsCalendar;
+
+
     /*
-       favoriteSports が無い場合
+       favoriteSports が無ければ作成
     */
 
     if(
         !Array.isArray(
-            data.sportsCalendar.favoriteSports
-        )
+            settings.favoriteSports
+        ) ||
+        settings.favoriteSports.length === 0
     ){
 
-        const oldSport =
-            data.sportsCalendar.sport ||
-            "baseball";
-
-
-        const oldTeam =
-            data.sportsCalendar.team ||
-            "";
-
-
-        data.sportsCalendar.favoriteSports = [
+        settings.favoriteSports = [
 
             {
-                sport: oldSport,
-                team: oldTeam
+                sport: "baseball",
+                team: ""
             }
 
         ];
@@ -471,66 +383,72 @@ function loadSportsSettings(){
     */
 
     if(
-        typeof data.sportsCalendar.selectedIndex
-        !== "number"
+        typeof settings.selectedIndex !== "number"
     ){
 
-        data.sportsCalendar.selectedIndex = 0;
+        settings.selectedIndex = 0;
 
     }
 
 
     /*
-       範囲チェック
+       selectedIndex の範囲チェック
     */
 
     if(
-        data.sportsCalendar.selectedIndex < 0 ||
-        data.sportsCalendar.selectedIndex >=
-        data.sportsCalendar.favoriteSports.length
+        settings.selectedIndex < 0 ||
+        settings.selectedIndex >=
+        settings.favoriteSports.length
     ){
 
-        data.sportsCalendar.selectedIndex = 0;
+        settings.selectedIndex = 0;
 
     }
 
 
     /*
-       games が無ければ作る
+       games が無ければ作成
     */
 
-    if(!data.sportsCalendar.games){
+    if(
+        !settings.games ||
+        typeof settings.games !== "object" ||
+        Array.isArray(settings.games)
+    ){
 
-        data.sportsCalendar.games = {};
+        settings.games = {};
 
     }
 
 
     /*
-       旧 games 形式を新形式へ移行
-    */
-
-    migrateSportsGames();
-
-
-    /*
-       現在の sport / team を
-       selectedIndex と同期
+       現在選択中のスポーツを確認
     */
 
     const current =
-        data.sportsCalendar.favoriteSports[
-            data.sportsCalendar.selectedIndex
+        settings.favoriteSports[
+            settings.selectedIndex
         ];
 
 
-    if(current){
+    /*
+       現在のスポーツ設定が
+       不正なら baseball に戻す
+    */
 
-        data.sportsCalendar.sport =
-            current.sport;
+    if(
+        !current ||
+        !current.sport
+    ){
 
-        data.sportsCalendar.team =
-            current.team;
+        settings.favoriteSports[
+            settings.selectedIndex
+        ] = {
+
+            sport: "baseball",
+            team: ""
+
+        };
 
     }
 
@@ -733,7 +651,6 @@ function updateSportsCalendarTitle(){
 
         const team =
             current?.team ||
-            settings.team ||
             "チーム未設定";
 
 
@@ -1185,7 +1102,6 @@ function openSportsGame(date){
 
     const currentSport =
         current.sport ||
-        settings.sport ||
         "baseball";
 
 
@@ -1377,36 +1293,89 @@ function saveSportsGameData(
     }
 
 
-    const selectedIndex =
-        typeof data.sportsCalendar.selectedIndex === "number"
-        ?
-        data.sportsCalendar.selectedIndex
-        :
-        0;
-
-
     /*
-       現在選択中スポーツ専用 games
+       ================================================
+       保存するスポーツ
+       ================================================
     */
 
-    if(
-        !data.sportsCalendar.games[selectedIndex] ||
-        typeof data.sportsCalendar.games[selectedIndex] !== "object"
-    ){
+    const sport =
+        game?.sport ||
+        "";
 
-        data.sportsCalendar.games[selectedIndex] = {};
+
+    if(!sport){
+
+        console.error(
+            "❌ スポーツ種類が指定されていません"
+        );
+
+        return false;
 
     }
 
 
-    data.sportsCalendar.games[selectedIndex][date] =
+    /*
+       ================================================
+       スポーツ別 games を作成
+       
+       正式な新方式
+
+       games:
+       {
+           baseball: {
+               "2026-09-12": {...}
+           },
+
+           soccer: {
+               "2026-09-12": {...}
+           }
+       }
+       ================================================
+    */
+
+    if(
+        !data.sportsCalendar.games[sport] ||
+        typeof data.sportsCalendar.games[sport] !== "object" ||
+        Array.isArray(data.sportsCalendar.games[sport])
+    ){
+
+        data.sportsCalendar.games[sport] = {};
+
+    }
+
+
+    /*
+       ================================================
+       試合データ保存
+       ================================================
+    */
+
+    data.sportsCalendar.games[sport][date] =
         game;
 
 
-    db.save(data);
+    /*
+       ================================================
+       DB保存
+       ================================================
+    */
 
+    db.save(
+        data
+    );
+
+
+    /*
+       ================================================
+       スポーツカレンダー再描画
+       ================================================
+    */
 
     renderSportsCalendar();
+
+
+    return true;
 
 }
 

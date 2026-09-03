@@ -843,18 +843,15 @@ function deleteBaseballGame(){
     }
 
 
-    /*
-       現在選択中スポーツの games を取得
+/*
+   現在選択中スポーツの games を取得
 
-       ※ sportsCalendar.games[日付]
-       ではなく、
+   sportsCalendar.games[sport][日付]
 
-       sportsCalendar.games[selectedIndex][日付]
-
-       を扱うため、必ず
-       getCurrentSportsGames()
-       を使用する。
-    */
+   の構造を扱うため、
+   getCurrentSportsGames()
+   を使用する。
+*/
 
     const games =
         getCurrentSportsGames();
@@ -1739,7 +1736,6 @@ function updateBaseballEditSideDisplay(){
 
     const team =
         current?.team ||
-        settings.team ||
         "自分のチーム";
 
 

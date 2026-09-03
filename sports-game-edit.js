@@ -27,15 +27,8 @@ function getCurrentBaseballGameForEdit(){
 
 
     const settings =
-        data.sportsCalendar || {};
-
-
-    const selectedIndex =
-        typeof settings.selectedIndex === "number"
-        ?
-        settings.selectedIndex
-        :
-        0;
+        data.sportsCalendar ||
+        {};
 
 
     const games =
@@ -43,21 +36,36 @@ function getCurrentBaseballGameForEdit(){
 
 
     if(
-        games &&
-        typeof games === "object" &&
-        !Array.isArray(games) &&
-        games[selectedIndex] &&
-        typeof games[selectedIndex] === "object"
+        !games ||
+        typeof games !== "object" ||
+        Array.isArray(games)
     ){
 
-        return games[selectedIndex];
+        return {};
 
     }
 
 
-    return {};
+    const baseballGames =
+        games.baseball;
+
+
+    if(
+        !baseballGames ||
+        typeof baseballGames !== "object" ||
+        Array.isArray(baseballGames)
+    ){
+
+        return {};
+
+    }
+
+
+    return baseballGames;
 
 }
+
+
 
 /* =====================================================
    ⚾ 現在の応援チーム取得
@@ -70,7 +78,8 @@ function getCurrentBaseballTeamForEdit(){
 
 
     const settings =
-        data.sportsCalendar || {};
+        data.sportsCalendar ||
+        {};
 
 
     const selectedIndex =
@@ -92,25 +101,23 @@ function getCurrentBaseballTeamForEdit(){
 
 
     const current =
-        favoriteSports[selectedIndex];
+        favoriteSports[selectedIndex] ||
+        {};
 
 
     return {
 
         sport:
-            current?.sport ||
-            settings.sport ||
+            current.sport ||
             "baseball",
 
         team:
-            current?.team ||
-            settings.team ||
+            current.team ||
             ""
 
     };
 
 }
-
 
 /* =====================================================
    ⚾ 編集画面を閉じる

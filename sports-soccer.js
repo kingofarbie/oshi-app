@@ -30,21 +30,46 @@ function getCurrentSoccerGames(){
     const data =
         db.load();
 
+
+    const settings =
+        data.sportsCalendar ||
+        {};
+
+
+    const games =
+        settings.games;
+
+
     if(
-        !data ||
-        !data.sportsCalendar
+        !games ||
+        typeof games !== "object" ||
+        Array.isArray(games)
     ){
 
         return {};
 
     }
 
-    return (
-        data.sportsCalendar.soccerGames ||
-        {}
-    );
+
+    const soccerGames =
+        games.soccer;
+
+
+    if(
+        !soccerGames ||
+        typeof soccerGames !== "object" ||
+        Array.isArray(soccerGames)
+    ){
+
+        return {};
+
+    }
+
+
+    return soccerGames;
 
 }
+
 
 
 /* =====================================================
@@ -277,7 +302,6 @@ function renderSoccerGameEditForm(){
 
     const defaultTeam =
         currentSport.team ||
-        settings.team ||
         "";
 
 
@@ -2966,74 +2990,34 @@ function saveSoccerGameData(
     }
 
 
-    /* =================================================
-       共通保存処理を優先
-    ================================================= */
-
     if(
-        typeof saveSportsGameData ===
+        typeof saveSportsGameData !==
         "function"
     ){
 
-        const result =
-            saveSportsGameData(
-                date,
-                game
-            );
+        console.error(
+            "❌ saveSportsGameData が見つかりません"
+        );
 
-        /*
-           共通保存関数が戻り値を返さない
-           既存構造にも対応。
-        */
-
-        return result === false
-            ?
-            false
-            :
-            true;
+        return false;
 
     }
 
 
-    /* =================================================
-       念のため直接保存
-    ================================================= */
-
-    const data =
-        db.load();
-
-
-    if(!data.sportsCalendar){
-
-        data.sportsCalendar =
-            {};
-
-    }
+    const result =
+        saveSportsGameData(
+            date,
+            game
+        );
 
 
-    if(!data.sportsCalendar.soccerGames){
-
-        data.sportsCalendar.soccerGames =
-            {};
-
-    }
-
-
-    data.sportsCalendar.soccerGames[
-        date
-    ] =
-        game;
-
-
-    db.save(
-        data
-    );
-
-
-    return true;
+    return result === false
+        ?
+        false
+        :
+        true;
 
 }
-
 
 /* =====================================================
    ⚽ 編集ページを閉じる
@@ -3940,7 +3924,21 @@ function deleteSoccerGame(){
     }
 
 
-    data.sportsCalendar.soccerGames =
+    if(
+        !data.sportsCalendar.games ||
+        typeof data.sportsCalendar.games !== "object" ||
+        Array.isArray(
+            data.sportsCalendar.games
+        )
+    ){
+
+        data.sportsCalendar.games =
+            {};
+
+    }
+
+
+    data.sportsCalendar.games.soccer =
         games;
 
 
@@ -3969,7 +3967,6 @@ function deleteSoccerGame(){
     );
 
 }
-
 
 /* =====================================================
    ⚽ 結果ページを閉じる

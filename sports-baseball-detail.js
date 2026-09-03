@@ -4,8 +4,11 @@ function getCurrentSportsGamesForDetail(){
     const data =
         db.load();
 
+
     const settings =
-        data.sportsCalendar || {};
+        data.sportsCalendar ||
+        {};
+
 
     const selectedIndex =
         typeof settings.selectedIndex === "number"
@@ -14,25 +17,67 @@ function getCurrentSportsGamesForDetail(){
         :
         0;
 
-    const games =
-        settings.games;
 
-    if(
-        games &&
-        !Array.isArray(games) &&
-        typeof games === "object" &&
-        games[selectedIndex] &&
-        typeof games[selectedIndex] === "object"
-    ){
+    const favoriteSports =
+        Array.isArray(
+            settings.favoriteSports
+        )
+        ?
+        settings.favoriteSports
+        :
+        [];
 
-        return games[selectedIndex];
+
+    const currentSport =
+        favoriteSports[selectedIndex] ||
+        {};
+
+
+    const sport =
+        currentSport.sport ||
+        "";
+
+
+    if(!sport){
+
+        return {};
 
     }
 
-    return {};
+
+    const games =
+        settings.games;
+
+
+    if(
+        !games ||
+        typeof games !== "object" ||
+        Array.isArray(games)
+    ){
+
+        return {};
+
+    }
+
+
+    const currentGames =
+        games[sport];
+
+
+    if(
+        !currentGames ||
+        typeof currentGames !== "object" ||
+        Array.isArray(currentGames)
+    ){
+
+        return {};
+
+    }
+
+
+    return currentGames;
 
 }
-
 
 
 /* =====================================================
