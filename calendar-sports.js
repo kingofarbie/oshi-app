@@ -2541,3 +2541,90 @@ function openSportsGameDetailPage(date){
 
 }
 
+
+
+function openSportsGameEditPage(date){
+
+    if(!date){
+        console.error("❌ 編集する試合日がありません");
+        return;
+    }
+
+    sportsSelectedDate = date;
+
+    const data = db.load();
+    const settings = data.sportsCalendar || {};
+
+    const selectedIndex =
+        typeof settings.selectedIndex === "number"
+        ? settings.selectedIndex
+        : 0;
+
+    const favoriteSports =
+        Array.isArray(settings.favoriteSports)
+        ? settings.favoriteSports
+        : [];
+
+    const currentSport =
+        favoriteSports[selectedIndex] ||
+        {};
+
+    const sport =
+        currentSport.sport ||
+        "";
+
+    /* =====================
+       ページ切り替え
+    ===================== */
+
+    hideSportsSubPages();
+
+    const sportsPage =
+        document.getElementById(
+            "sportsCalendarPage"
+        );
+
+    const editPage =
+        document.getElementById(
+            "sportsGameEditPage"
+        );
+
+    if(sportsPage){
+        sportsPage.classList.remove("active");
+        sportsPage.style.display = "none";
+    }
+
+    if(editPage){
+        editPage.classList.add("active");
+        editPage.style.display = "block";
+    }
+
+
+    /* =====================
+       スポーツ別編集画面
+    ===================== */
+
+    if(sport === "baseball"){
+
+        openBaseballGameEditPage(date);
+
+        return;
+    }
+
+    if(sport === "soccer"){
+
+        openSoccerGameEditPage(date);
+
+        return;
+    }
+
+
+    console.error(
+        "❌ 未対応のスポーツです:",
+        sport
+    );
+
+    alert(
+        "このスポーツの試合編集にはまだ対応していません。"
+    );
+}
