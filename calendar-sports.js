@@ -944,16 +944,21 @@ if(game){
         ]?.sport === "soccer"
     ){
 
-        teamScore =
-            calculateSoccerTotal(
-                game
-            );
+teamScore =
+    calculateSoccerTotal(
+        game.firstHalf,
+        game.secondHalf,
+        game.extraFirstHalf,
+        game.extraSecondHalf
+    );
 
-        opponentScore =
-            calculateSoccerOpponentTotal(
-                game
-            );
-
+opponentScore =
+    calculateSoccerOpponentTotal(
+        game.firstHalf,
+        game.secondHalf,
+        game.extraFirstHalf,
+        game.extraSecondHalf
+    );
     }
 
 
