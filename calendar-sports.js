@@ -2239,16 +2239,22 @@ function closeSportsGameEditPage(){
        → 共通結果画面へ戻る
     */
 
-    if(sportsSelectedDate){
+const games =
+    getCurrentSportsGames();
 
-        openSportsGameDetailPage(
-            sportsSelectedDate
-        );
 
-        return;
+if(
+    sportsSelectedDate &&
+    games?.[sportsSelectedDate]
+){
 
-    }
+    openSportsGameDetailPage(
+        sportsSelectedDate
+    );
 
+    return;
+
+}
 
     /*
        日付がない場合
