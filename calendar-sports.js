@@ -645,19 +645,8 @@ function updateSportsCalendarTitle(){
             [];
 
 
-        const current =
-            favoriteSports[selectedIndex];
-
-
-        const team =
-            current?.team ||
-            "チーム未設定";
-
-
-        title.innerHTML =
-            `🏟️ スポーツカレンダー<br>
-             <span>${escapeSportsHTML(team)}</span>`;
-
+title.innerHTML =
+    "🏟️ スポーツカレンダー";
     }
 
 
