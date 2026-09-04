@@ -1526,6 +1526,51 @@
 }
 
 
+
+.sports-current-sport-label {
+
+    display: block;
+
+    font-size: 15px;
+
+    font-weight: bold;
+
+    line-height: 1.2;
+
+    color: var(--text);
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+
+.sports-current-team-name {
+
+    display: block;
+
+    margin-top: 2px;
+
+    font-size: 30px;
+
+    font-weight: bold;
+
+    line-height: 1.1;
+
+    color: var(--text);
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+
+
+
 /* スポーツ選択 */
 
 .sports-current-select {
@@ -1597,6 +1642,11 @@
         font-size: 17px;
 
     }
+
+
+
+
+
 
 
     .sports-current-select {
