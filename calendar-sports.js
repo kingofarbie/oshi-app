@@ -2299,6 +2299,26 @@ console.log(
 
 
 
+setTimeout(() => {
+
+    console.log(
+        "★★★ 100ms後 display:",
+        document.getElementById(
+            "sportsCalendarPage"
+        )?.style.display
+    );
+
+    console.log(
+        "★★★ 100ms後 class:",
+        document.getElementById(
+            "sportsCalendarPage"
+        )?.className
+    );
+
+}, 100);
+
+
+
 
 }
 
