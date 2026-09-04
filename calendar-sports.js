@@ -1557,9 +1557,8 @@ const sportName =
                 index;
 
 
-            option.textContent =
-                sport.label;
-
+option.textContent =
+    `${sport.icon || ""} ${sport.label} (${item.team || "チーム未設定"})`;
 
             select.appendChild(
                 option
@@ -1608,6 +1607,7 @@ if(sportName){
     }
 
 }
+
 
 
 /* =====================================================
