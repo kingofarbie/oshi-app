@@ -2281,7 +2281,27 @@ if(
 
     renderSportsCalendar();
 
+
+console.log(
+    "★★ キャンセル後 sportsCalendarPage:",
+    document.getElementById("sportsCalendarPage")
+);
+
+console.log(
+    "★★ キャンセル後 display:",
+    document.getElementById("sportsCalendarPage")?.style.display
+);
+
+console.log(
+    "★★ キャンセル後 class:",
+    document.getElementById("sportsCalendarPage")?.className
+);
+
+
+
+
 }
+
 
 
 function hideSportsSubPages(){
