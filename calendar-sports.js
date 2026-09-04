@@ -2210,7 +2210,8 @@ function closeSportsGameDetailPage(){
    試合結果編集ページを開く
 ===================================================== */
 
-function closeSportsGameEditPage(){
+async function closeSportsGameEditPage(){
+
 
     /*
        編集ページを閉じる
@@ -2279,7 +2280,7 @@ if(
     }
 
 
-    renderSportsCalendar();
+await renderSportsCalendar();
 
 
 console.log(
