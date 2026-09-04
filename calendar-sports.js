@@ -1053,114 +1053,34 @@ function openSportsGame(date){
     sportsSelectedDate = date;
 
 
-    const data =
-        db.load();
-
-    const settings =
-        data.sportsCalendar || {};
-
-
-    /* =================================================
-       現在選択中のスポーツを取得
-    ================================================= */
-
-    const selectedIndex =
-        typeof settings.selectedIndex === "number"
-        ? settings.selectedIndex
-        : 0;
-
-
-    const favoriteSports =
-        Array.isArray(settings.favoriteSports)
-        ? settings.favoriteSports
-        : [];
-
-
-    const currentSport =
-        favoriteSports[selectedIndex] ||
-        {};
-
-
-    const sport =
-        currentSport.sport ||
-        "";
-
-
-    /* =================================================
+    /* =====================
        現在のスポーツの試合データ
-    ================================================= */
+    ===================== */
 
     const games =
         getCurrentSportsGames();
 
 
-    const game =
-        games?.[date] ||
-        null;
+    /* =====================
+       試合あり → 共通結果画面
+       試合なし → 共通編集画面
+    ===================== */
 
+    if(games?.[date]){
 
-    /* =================================================
-       結果画面 / 編集画面をスポーツ別に振り分け
-    ================================================= */
-
-    if(sport === "baseball"){
-
-        if(game){
-
-            openBaseballGameDetailPage(date);
-
-        }else{
-
-            openBaseballGameEditPage(date);
-
-        }
+        openSportsGameDetailPage(
+            date
+        );
 
         return;
     }
 
 
-    if(sport === "soccer"){
-
-        if(game){
-
-            openSoccerGameDetailPage(date);
-
-        }else{
-
-            openSoccerGameEditPage(date);
-
-        }
-
-        return;
-    }
-
-
-    /* =================================================
-       未対応スポーツ
-    ================================================= */
-
-    if(!sport){
-
-        console.error(
-            "❌ 現在選択中のスポーツが設定されていません"
-        );
-
-    }else{
-
-        console.error(
-            "❌ 未対応のスポーツです:",
-            sport
-        );
-
-    }
-
-
-    alert(
-        "このスポーツはまだ対応していません。"
+    openSportsGameEditPage(
+        date
     );
 
 }
-
 
 
 /* =====================================================
