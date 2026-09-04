@@ -2075,27 +2075,11 @@ async function openBaseballGameEditPage(date){
     );
 
 
-    console.log(
-        "① 野球編集ページ表示開始:",
-        date
-    );
-
-
     const loaded =
         await loadBaseballGameEditHTML();
 
 
-    console.log(
-        "② 野球編集HTML読み込み結果:",
-        loaded
-    );
-
-
     if(!loaded){
-
-        console.error(
-            "③ 野球編集HTML読み込み失敗"
-        );
 
         return;
 
@@ -2105,9 +2089,111 @@ async function openBaseballGameEditPage(date){
     renderBaseballGameEditForm();
 
 
-    console.log(
-        "④ 野球編集フォーム描画完了"
-    );
+}
+
+
+
+
+/* =====================================================
+   ⚾ 現在の試合データ取得
+===================================================== */
+
+function getCurrentBaseballGameForEdit(){
+
+    const data =
+        db.load();
+
+
+    const settings =
+        data.sportsCalendar ||
+        {};
+
+
+    const games =
+        settings.games;
+
+
+    if(
+        !games ||
+        typeof games !== "object" ||
+        Array.isArray(games)
+    ){
+
+        return {};
+
+    }
+
+
+    const baseballGames =
+        games.baseball;
+
+
+    if(
+        !baseballGames ||
+        typeof baseballGames !== "object" ||
+        Array.isArray(baseballGames)
+    ){
+
+        return {};
+
+    }
+
+
+    return baseballGames;
 
 }
+
+
+/* =====================================================
+   ⚾ 現在の応援チーム取得
+===================================================== */
+
+function getCurrentBaseballTeamForEdit(){
+
+    const data =
+        db.load();
+
+
+    const settings =
+        data.sportsCalendar ||
+        {};
+
+
+    const selectedIndex =
+        typeof settings.selectedIndex === "number"
+        ?
+        settings.selectedIndex
+        :
+        0;
+
+
+    const favoriteSports =
+        Array.isArray(
+            settings.favoriteSports
+        )
+        ?
+        settings.favoriteSports
+        :
+        [];
+
+
+    const current =
+        favoriteSports[selectedIndex] ||
+        {};
+
+
+    return {
+
+        sport:
+            current.sport ||
+            "baseball",
+
+        team:
+            current.team ||
+            ""
+
+    };
+
+}
+
 
