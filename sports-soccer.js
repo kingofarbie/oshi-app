@@ -2941,7 +2941,7 @@ function saveSoccerGameFromEditPage(){
        編集ページ終了
     ================================================= */
 
-    closeSoccerGameEditPage();
+    closeSportsGameEditPage();
 
 
     /* =================================================
