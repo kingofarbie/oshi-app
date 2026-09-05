@@ -147,7 +147,7 @@ function getCurrentSportsGames(){
 
     /*
        ================================================
-       現在選択中のスポーツ
+       現在選択中のお気に入り
        ================================================
     */
 
@@ -156,36 +156,33 @@ function getCurrentSportsGames(){
         {};
 
 
-    const sport =
-        currentSport.sport ||
-        "";
-
-
     /*
        ================================================
-       スポーツ別 games
-       
-       正式な新方式
+       games
+       お気に入り番号ごとに完全分離
 
        games:
        {
-           baseball: {
+           0: {
                "2026-09-12": {...}
            },
 
-           soccer: {
+           1: {
                "2026-09-12": {...}
            },
 
-           basketball: {
+           2: {
                "2026-09-12": {...}
            }
        }
+
+       0 = 野球（中日）
+       1 = サッカー（グランパス）
+       2 = 野球（サムライJAPAN）
        ================================================
     */
 
     if(
-        !sport ||
         !settings.games ||
         typeof settings.games !== "object" ||
         Array.isArray(settings.games)
@@ -196,14 +193,14 @@ function getCurrentSportsGames(){
     }
 
 
-    const sportGames =
-        settings.games[sport];
+    const favoriteGames =
+        settings.games[selectedIndex];
 
 
     if(
-        !sportGames ||
-        typeof sportGames !== "object" ||
-        Array.isArray(sportGames)
+        !favoriteGames ||
+        typeof favoriteGames !== "object" ||
+        Array.isArray(favoriteGames)
     ){
 
         return {};
@@ -211,7 +208,7 @@ function getCurrentSportsGames(){
     }
 
 
-    return sportGames;
+    return favoriteGames;
 
 }
 
@@ -246,6 +243,20 @@ function saveCurrentSportsGames(
     }
 
 
+    /*
+       ================================================
+       現在選択中のお気に入り番号
+       ================================================
+    */
+
+    const selectedIndex =
+        typeof data.sportsCalendar.selectedIndex === "number"
+        ?
+        data.sportsCalendar.selectedIndex
+        :
+        0;
+
+
     const favoriteSports =
         Array.isArray(
             data.sportsCalendar.favoriteSports
@@ -256,25 +267,18 @@ function saveCurrentSportsGames(
         [];
 
 
-    const selectedIndex =
-        typeof data.sportsCalendar.selectedIndex === "number"
-        ?
-        data.sportsCalendar.selectedIndex
-        :
-        0;
-
-
     const currentSport =
         favoriteSports[selectedIndex] ||
         {};
 
 
-    const sport =
-        currentSport.sport ||
-        "";
+    /*
+       ================================================
+       現在選択中のスポーツが存在するか確認
+       ================================================
+    */
 
-
-    if(!sport){
+    if(!currentSport.sport){
 
         console.error(
             "❌ 現在選択中のスポーツが取得できません"
@@ -284,6 +288,12 @@ function saveCurrentSportsGames(
 
     }
 
+
+    /*
+       ================================================
+       保存データの確認
+       ================================================
+    */
 
     if(
         !games ||
@@ -300,9 +310,27 @@ function saveCurrentSportsGames(
     }
 
 
-    data.sportsCalendar.games[sport] =
+    /*
+       ================================================
+       お気に入り番号ごとに保存
+       
+       games[0] → 1番目のお気に入り
+       games[1] → 2番目のお気に入り
+       games[2] → 3番目のお気に入り
+       
+       同じスポーツでも完全に別管理
+       ================================================
+    */
+
+    data.sportsCalendar.games[selectedIndex] =
         games;
 
+
+    /*
+       ================================================
+       DB保存
+       ================================================
+    */
 
     db.save(
         data
@@ -312,7 +340,6 @@ function saveCurrentSportsGames(
     return true;
 
 }
-
 
 
 /* =====================================================
@@ -1179,28 +1206,54 @@ function saveSportsGameData(
     }
 
 
-    if(!data.sportsCalendar.games){
+    const settings =
+        data.sportsCalendar;
 
-        data.sportsCalendar.games = {};
+
+    if(!settings.games){
+
+        settings.games = {};
 
     }
 
 
     /*
        ================================================
-       保存するスポーツ
+       現在選択中のお気に入り番号
        ================================================
     */
 
-    const sport =
-        game?.sport ||
-        "";
+    const selectedIndex =
+        typeof settings.selectedIndex === "number"
+        ?
+        settings.selectedIndex
+        :
+        0;
 
 
-    if(!sport){
+    const favoriteSports =
+        Array.isArray(settings.favoriteSports)
+        ?
+        settings.favoriteSports
+        :
+        [];
+
+
+    const currentSport =
+        favoriteSports[selectedIndex] ||
+        {};
+
+
+    /*
+       ================================================
+       現在選択中のスポーツを確認
+       ================================================
+    */
+
+    if(!currentSport.sport){
 
         console.error(
-            "❌ スポーツ種類が指定されていません"
+            "❌ 現在選択中のスポーツがありません"
         );
 
         return false;
@@ -1210,30 +1263,39 @@ function saveSportsGameData(
 
     /*
        ================================================
-       スポーツ別 games を作成
+       お気に入り番号ごとに
+       試合データを完全分離
        
-       正式な新方式
+       例：
 
        games:
        {
-           baseball: {
+           0: {
                "2026-09-12": {...}
            },
 
-           soccer: {
+           1: {
+               "2026-09-12": {...}
+           },
+
+           2: {
                "2026-09-12": {...}
            }
        }
+
+       0 = 野球（中日）
+       1 = サッカー（グランパス）
+       2 = 野球（サムライJAPAN）
        ================================================
     */
 
     if(
-        !data.sportsCalendar.games[sport] ||
-        typeof data.sportsCalendar.games[sport] !== "object" ||
-        Array.isArray(data.sportsCalendar.games[sport])
+        !settings.games[selectedIndex] ||
+        typeof settings.games[selectedIndex] !== "object" ||
+        Array.isArray(settings.games[selectedIndex])
     ){
 
-        data.sportsCalendar.games[sport] = {};
+        settings.games[selectedIndex] = {};
 
     }
 
@@ -1244,7 +1306,7 @@ function saveSportsGameData(
        ================================================
     */
 
-    data.sportsCalendar.games[sport][date] =
+    settings.games[selectedIndex][date] =
         game;
 
 
@@ -1271,6 +1333,7 @@ function saveSportsGameData(
     return true;
 
 }
+
 
 
 /* =====================================================
@@ -1934,7 +1997,9 @@ function saveFavoriteSportsSettings(){
 
 
             /*
+               ================================================
                両方空欄なら登録しない
+               ================================================
             */
 
             if(!sport && !teamName){
@@ -1945,8 +2010,9 @@ function saveFavoriteSportsSettings(){
 
 
             /*
-               スポーツだけ / チームだけ
-               の状態は登録不可
+               ================================================
+               スポーツ未選択
+               ================================================
             */
 
             if(!sport){
@@ -1962,6 +2028,12 @@ function saveFavoriteSportsSettings(){
             }
 
 
+            /*
+               ================================================
+               チーム名未入力
+               ================================================
+            */
+
             if(!teamName){
 
                 alert(
@@ -1974,6 +2046,12 @@ function saveFavoriteSportsSettings(){
 
             }
 
+
+            /*
+               ================================================
+               お気に入りスポーツ登録
+               ================================================
+            */
 
             favoriteSports.push({
 
@@ -1990,7 +2068,9 @@ function saveFavoriteSportsSettings(){
 
 
     /*
+       ================================================
        入力エラーがあれば保存しない
+       ================================================
     */
 
     if(hasInvalidRow){
@@ -2001,7 +2081,9 @@ function saveFavoriteSportsSettings(){
 
 
     /*
+       ================================================
        1件以上必要
+       ================================================
     */
 
     if(favoriteSports.length === 0){
@@ -2027,12 +2109,17 @@ function saveFavoriteSportsSettings(){
 
 
     /*
-       現在選択しているものを
-       できるだけ維持
+       ================================================
+       現在選択中のお気に入りを確認
+       ================================================
     */
 
     const oldIndex =
-        data.sportsCalendar.selectedIndex || 0;
+        typeof data.sportsCalendar.selectedIndex === "number"
+        ?
+        data.sportsCalendar.selectedIndex
+        :
+        0;
 
 
     const oldCurrent =
@@ -2043,6 +2130,13 @@ function saveFavoriteSportsSettings(){
 
     let newIndex = 0;
 
+
+    /*
+       ================================================
+       現在選択中のスポーツを
+       新しい設定でもできるだけ維持
+       ================================================
+    */
 
     if(oldCurrent){
 
@@ -2065,6 +2159,12 @@ function saveFavoriteSportsSettings(){
     }
 
 
+    /*
+       ================================================
+       お気に入りスポーツを保存
+       ================================================
+    */
+
     data.sportsCalendar.favoriteSports =
         favoriteSports;
 
@@ -2074,7 +2174,9 @@ function saveFavoriteSportsSettings(){
 
 
     /*
+       ================================================
        既存コードとの互換
+       ================================================
     */
 
     data.sportsCalendar.sport =
@@ -2085,18 +2187,60 @@ function saveFavoriteSportsSettings(){
         favoriteSports[newIndex].team;
 
 
-    if(!data.sportsCalendar.games){
+    /*
+       ================================================
+       games は絶対に削除しない
+       
+       既に保存されている
+       
+       games[0]
+       games[1]
+       games[2]
+       
+       などをそのまま維持する。
+       
+       新しくお気に入りを追加した場合は、
+       その番号の games がまだ無ければ
+       後から試合登録時に作成される。
+       ================================================
+    */
+
+    if(
+        !data.sportsCalendar.games ||
+        typeof data.sportsCalendar.games !== "object" ||
+        Array.isArray(data.sportsCalendar.games)
+    ){
 
         data.sportsCalendar.games = {};
 
     }
 
 
-    db.save(data);
+    /*
+       ================================================
+       DB保存
+       ================================================
+    */
 
+    db.save(
+        data
+    );
+
+
+    /*
+       ================================================
+       設定画面を閉じる
+       ================================================
+    */
 
     closeFavoriteSportsSettings();
 
+
+    /*
+       ================================================
+       表示更新
+       ================================================
+    */
 
     renderCurrentFavoriteSports();
 
@@ -2105,6 +2249,7 @@ function saveFavoriteSportsSettings(){
     renderSportsCalendar();
 
 }
+
 
 
 /* =====================================================

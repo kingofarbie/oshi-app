@@ -24,7 +24,6 @@
 /* =====================================================
    ⚽ 現在のサッカー試合データ取得
 ===================================================== */
-
 function getCurrentSoccerGames(){
 
     const data =
@@ -51,8 +50,33 @@ function getCurrentSoccerGames(){
     }
 
 
+    /*
+       ================================================
+       現在選択中のお気に入り番号
+       ================================================
+    */
+
+    const selectedIndex =
+        typeof settings.selectedIndex === "number"
+        ?
+        settings.selectedIndex
+        :
+        0;
+
+
+    /*
+       ================================================
+       現在選択中のお気に入りの
+       試合データを取得
+       
+       games[0] → 1番目
+       games[1] → 2番目
+       games[2] → 3番目
+       ================================================
+    */
+
     const soccerGames =
-        games.soccer;
+        games[selectedIndex];
 
 
     if(
@@ -69,7 +93,6 @@ function getCurrentSoccerGames(){
     return soccerGames;
 
 }
-
 
 
 /* =====================================================
@@ -4021,8 +4044,14 @@ function deleteSoccerGame(){
     }
 
 
+    /*
+       ================================================
+       現在選択中のお気に入りの試合データを取得
+       ================================================
+    */
+
     const games =
-        getCurrentSoccerGames();
+        getCurrentSportsGames();
 
 
     if(
@@ -4034,6 +4063,12 @@ function deleteSoccerGame(){
 
     }
 
+
+    /*
+       ================================================
+       削除確認
+       ================================================
+    */
 
     if(
         !confirm(
@@ -4050,53 +4085,38 @@ function deleteSoccerGame(){
         sportsSelectedDate;
 
 
+    /*
+       ================================================
+       現在選択中のお気に入りの
+       指定日の試合だけ削除
+       ================================================
+    */
+
     delete games[
         deletedDate
     ];
 
 
-    /* =================================================
+    /*
+       ================================================
        削除後データ保存
-    ================================================= */
+       
+       saveCurrentSportsGames() を使うことで
+       selectedIndex に対応した
+       games[index] に保存する。
+       ================================================
+    */
 
-    const data =
-        db.load();
-
-
-    if(!data.sportsCalendar){
-
-        data.sportsCalendar =
-            {};
-
-    }
-
-
-    if(
-        !data.sportsCalendar.games ||
-        typeof data.sportsCalendar.games !== "object" ||
-        Array.isArray(
-            data.sportsCalendar.games
-        )
-    ){
-
-        data.sportsCalendar.games =
-            {};
-
-    }
-
-
-    data.sportsCalendar.games.soccer =
-        games;
-
-
-    db.save(
-        data
+    saveCurrentSportsGames(
+        games
     );
 
 
-    /* =================================================
+    /*
+       ================================================
        状態リセット
-    ================================================= */
+       ================================================
+    */
 
     sportsSelectedDate =
         null;
@@ -4104,6 +4124,12 @@ function deleteSoccerGame(){
 
     hideSportsSubPages();
 
+
+    /*
+       ================================================
+       カレンダー再描画
+       ================================================
+    */
 
     renderSportsCalendar();
 
@@ -4114,6 +4140,7 @@ function deleteSoccerGame(){
     );
 
 }
+
 
 /* =====================================================
    ⚽ 結果ページを閉じる
