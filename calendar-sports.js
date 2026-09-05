@@ -1590,11 +1590,33 @@ if(sportName){
                 s.value === current?.sport
         );
 
-    sportName.textContent =
-        currentSport?.label ||
-        "スポーツ未設定";
+    const sportLabel =
+        sportName.querySelector(
+            ".sports-current-sport-label"
+        );
 
-}        
+    const teamLabel =
+        sportName.querySelector(
+            ".sports-current-team-name"
+        );
+
+    if(sportLabel){
+
+        sportLabel.textContent =
+            currentSport?.label ||
+            "スポーツ未設定";
+
+    }
+
+    if(teamLabel){
+
+        teamLabel.textContent =
+            current?.team ||
+            "";
+
+    }
+
+}
 
     }else{
 
