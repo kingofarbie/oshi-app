@@ -3122,7 +3122,6 @@ function showSoccerGameDetail(date){
         <!-- 区切り -->
 
         <div class="soccer-match-separator">
-            －
         </div>
 
 
