@@ -1516,47 +1516,33 @@
 
 /* =====================================================
    ⚽ 結果画面 詳細スコア
-   左右のチーム位置に合わせて横並び
+   元のHTML・JSのまま、横並びで大きく表示
 ===================================================== */
 
-.soccer-detail-score-row {
+.soccer-detail-screen .soccer-score-row {
     width: 100%;
     margin-bottom: 16px;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.soccer-detail-score-row label {
-    display: block;
-    width: 100%;
-    margin-bottom: 5px;
-    text-align: center;
-    font-size: 15px;
+.soccer-detail-screen .soccer-score-row label {
+    flex: 0 0 70px;
+    margin: 0 14px 0 0;
+    text-align: right;
+    font-size: 16px;
     font-weight: 800;
 }
 
-.soccer-detail-score-line {
-    display: grid;
-    grid-template-columns:
-        minmax(0, 1fr)
-        40px
-        minmax(0, 1fr);
-    align-items: center;
-    width: 100%;
-}
-
-.soccer-detail-score-number {
+.soccer-detail-screen .soccer-detail-score {
+    flex: 0 0 auto;
+    min-width: 120px;
     text-align: center;
+    white-space: nowrap;
     font-size: 24px;
     line-height: 1;
     font-weight: 900;
-}
-
-.soccer-detail-score-separator {
-    text-align: center;
-    font-size: 22px;
-    line-height: 1;
-    font-weight: 800;
-    opacity: 0.7;
 }
 
 
@@ -1566,28 +1552,19 @@
 
 @media (max-width: 600px) {
 
-    .soccer-detail-score-row {
+    .soccer-detail-screen .soccer-score-row {
         margin-bottom: 14px;
     }
 
-    .soccer-detail-score-row label {
+    .soccer-detail-screen .soccer-score-row label {
+        flex-basis: 60px;
+        margin-right: 10px;
         font-size: 14px;
-        margin-bottom: 5px;
     }
 
-    .soccer-detail-score-line {
-        grid-template-columns:
-            minmax(0, 1fr)
-            30px
-            minmax(0, 1fr);
-    }
-
-    .soccer-detail-score-number {
-        font-size: 21px;
-    }
-
-    .soccer-detail-score-separator {
-        font-size: 20px;
+    .soccer-detail-screen .soccer-detail-score {
+        min-width: 110px;
+        font-size: 22px;
     }
 
 }
