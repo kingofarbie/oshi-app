@@ -1,231 +1,327 @@
 /* =====================================================
-⚽ サッカー
-sports-soccer.css
+   ⚽ サッカー
+   sports-soccer.css
 
-・サッカー編集画面
-・サッカー結果画面
-・sports-baseball.css の共通設計を邪魔しない
+   ・サッカー編集画面
+   ・サッカー結果画面
+   ・sports-baseball.css の共通設計を邪魔しない
 ===================================================== */
 
 
 /* =====================================================
-⚽ 編集画面全体
+   ⚽ 編集画面全体
 ===================================================== */
 
 .soccer-edit-screen {
+
     width: min(100%, 700px);
+
     margin: 0 auto;
+
     padding: 20px 16px 32px;
+
     box-sizing: border-box;
+
 }
 
 
 /* =====================================================
-⚽ 編集画面タイトル
+   ⚽ 編集画面タイトル
 ===================================================== */
 
 .soccer-edit-screen h2 {
+
     margin: 0 0 22px;
+
     text-align: center;
 
     font-size: 21px;
+
     font-weight: 800;
+
 }
 
 
 /* =====================================================
-⚽ チーム設定
+   ⚽ チーム設定
 ===================================================== */
 
 .soccer-team-setting {
+
     display: flex;
+
     flex-direction: column;
+
     gap: 12px;
 
     margin-bottom: 20px;
+
 }
 
 
 .soccer-team-setting-row {
+
     display: grid;
 
-    grid-template-columns: 82px minmax(0, 1fr) auto;
+    grid-template-columns:
+        82px
+        minmax(0, 1fr)
+        auto;
 
     align-items: center;
+
     gap: 10px;
 
     min-height: 44px;
+
 }
 
 
-.soccer-team-setting-row + .soccer-team-setting-row {
-    grid-template-columns: 82px minmax(0, 1fr);
+.soccer-team-setting-row
++ .soccer-team-setting-row {
+
+    grid-template-columns:
+        82px
+        minmax(0, 1fr);
+
 }
 
 
 .soccer-team-setting-row label {
+
     font-size: 14px;
+
     font-weight: 700;
+
     white-space: nowrap;
+
 }
 
 
 .soccer-team-setting-row input,
 .soccer-team-setting-row select {
+
     width: 100%;
+
     min-height: 42px;
 
     padding: 8px 11px;
 
     box-sizing: border-box;
 
-    border: 1px solid rgba(128, 128, 128, 0.3);
+    border: 1px solid rgba(128,128,128,0.3);
+
     border-radius: 10px;
 
     background: transparent;
 
     font: inherit;
+
     font-size: 14px;
+
 }
 
 
 .soccer-team-setting-row input[readonly] {
+
     opacity: 0.8;
+
 }
 
 
 .soccer-team-setting-row select {
+
     width: auto;
+
     min-width: 100px;
+
 }
 
 
 /* =====================================================
-⚽ 試合ボード
+   ⚽ 試合ボード
+   ※結果画面では枠をなくす
 ===================================================== */
 
 .soccer-match-board {
+
     width: 100%;
 
     margin-bottom: 24px;
+
     padding: 18px 12px 16px;
 
     box-sizing: border-box;
 
-    border: 1px solid rgba(128, 128, 128, 0.25);
-    border-radius: 18px;
+    border: none;
 
-    background: rgba(128, 128, 128, 0.05);
+    border-radius: 0;
+
+    background: transparent;
+
 }
 
 
 /* =====================================================
-⚽ ホーム・アウェイ＋チーム名
+   ⚽ ホーム・アウェイ＋チーム名
 ===================================================== */
 
 .soccer-match-header {
+
     display: grid;
 
-    grid-template-columns: minmax(0, 1fr) 32px minmax(0, 1fr);
+    grid-template-columns:
+        minmax(0, 1fr)
+        40px
+        minmax(0, 1fr);
 
-    align-items: center;
+    align-items: end;
 
     width: 100%;
+
 }
 
 
 .soccer-match-column {
+
     min-width: 0;
 
     text-align: center;
+
 }
 
+
+/*
+   ホーム・アウェイの小さい文字は
+   結果画面では表示しない
+*/
 
 .soccer-match-side {
-    margin-bottom: 6px;
 
-    font-size: 12px;
-    font-weight: 700;
+    display: none;
 
-    opacity: 0.65;
 }
 
 
+/*
+   チーム名を大きく
+*/
+
 .soccer-match-team-name {
-    min-height: 24px;
+
+    min-height: 32px;
 
     padding: 0 4px;
 
     box-sizing: border-box;
 
-    font-size: 17px;
-    font-weight: 800;
+    font-size: 26px;
 
-    overflow-wrap: anywhere;
-    word-break: break-word;
-}
+    line-height: 1.25;
 
+    font-weight: 900;
 
-.soccer-match-separator {
     text-align: center;
 
-    font-size: 19px;
-    font-weight: 700;
+    overflow-wrap: anywhere;
 
-    opacity: 0.65;
+    word-break: break-word;
+
 }
 
 
 /* =====================================================
-⚽ 自動計算スコア
+   ⚽ 中央の －
+===================================================== */
+
+.soccer-match-separator {
+
+    text-align: center;
+
+    font-size: 28px;
+
+    line-height: 1;
+
+    font-weight: 800;
+
+    opacity: 0.7;
+
+}
+
+
+/* =====================================================
+   ⚽ 自動計算スコア
+   チーム名の真下に配置
 ===================================================== */
 
 .soccer-live-score-row {
+
     display: grid;
 
-    grid-template-columns: minmax(0, 1fr) 32px minmax(0, 1fr);
+    grid-template-columns:
+        minmax(0, 1fr)
+        40px
+        minmax(0, 1fr);
 
     align-items: center;
 
-    margin-top: 9px;
+    width: 100%;
+
+    margin-top: 10px;
+
 }
 
 
 .soccer-live-score {
+
     text-align: center;
 
-    font-size: 32px;
+    font-size: 48px;
+
     line-height: 1;
 
     font-weight: 900;
+
 }
 
 
 .soccer-score-dash {
+
     text-align: center;
 
-    font-size: 20px;
-    font-weight: 700;
+    font-size: 28px;
 
-    opacity: 0.6;
+    line-height: 1;
+
+    font-weight: 800;
+
+    opacity: 0.65;
+
 }
 
 
 /* =====================================================
-⚽ 通常得点入力
+   ⚽ 通常得点入力
 ===================================================== */
 
 .soccer-score-section {
+
     width: 100%;
 
     margin-bottom: 18px;
+
 }
 
 
 .soccer-score-row {
+
     display: grid;
 
-    grid-template-columns: 60px minmax(0, 1fr) 28px minmax(0, 1fr);
+    grid-template-columns:
+        60px
+        minmax(0, 1fr)
+        28px
+        minmax(0, 1fr);
 
     align-items: center;
 
@@ -234,53 +330,68 @@ sports-soccer.css
     min-height: 50px;
 
     margin-bottom: 8px;
+
 }
 
 
 .soccer-score-row:last-child {
+
     margin-bottom: 0;
+
 }
 
 
 .soccer-score-row label {
+
     font-size: 14px;
+
     font-weight: 700;
+
 }
 
 
 .soccer-score-row input {
+
     width: 100%;
+
     min-height: 44px;
 
     padding: 7px 8px;
 
     box-sizing: border-box;
 
-    border: 1px solid rgba(128, 128, 128, 0.32);
+    border: 1px solid rgba(128,128,128,0.32);
+
     border-radius: 10px;
 
     background: transparent;
 
     font: inherit;
+
     font-size: 18px;
+
     font-weight: 700;
 
     text-align: center;
+
 }
 
 
 .soccer-score-row span {
+
     text-align: center;
 
     font-size: 18px;
+
     font-weight: 700;
 
     opacity: 0.65;
+
 }
 
 
 /* =====================================================
-⚽ 延長
+   ⚽ 延長
 ===================================================== */
 
 .soccer-extra-section,
@@ -289,15 +400,18 @@ sports-soccer.css
     width: 100%;
 
     margin-top: 18px;
+
     margin-bottom: 18px;
 
     padding-top: 15px;
 
-    border-top: 1px solid rgba(128, 128, 128, 0.18);
+    border-top: 1px solid rgba(128,128,128,0.18);
+
 }
 
 
 .soccer-checkbox-row {
+
     display: flex;
 
     align-items: center;
@@ -309,42 +423,52 @@ sports-soccer.css
     margin-bottom: 10px;
 
     font-size: 15px;
+
     font-weight: 800;
 
     cursor: pointer;
+
 }
 
 
 .soccer-checkbox-row input {
+
     width: 20px;
+
     height: 20px;
 
     margin: 0;
 
     cursor: pointer;
+
 }
 
 
 .soccer-extra-time-area,
 .soccer-penalty-area {
+
     width: 100%;
+
 }
 
 
 /* =====================================================
-⚽ PK
+   ⚽ PK
 ===================================================== */
 
 .soccer-penalty-section {
+
     margin-bottom: 22px;
+
 }
 
 
 /* =====================================================
-⚽ 場所・メモ
+   ⚽ 場所・メモ
 ===================================================== */
 
 .soccer-info-section {
+
     display: flex;
 
     flex-direction: column;
@@ -352,74 +476,96 @@ sports-soccer.css
     gap: 7px;
 
     margin-bottom: 16px;
+
 }
 
 
 .soccer-info-section label {
+
     font-size: 14px;
+
     font-weight: 800;
+
 }
 
 
 .soccer-info-section input,
 .soccer-info-section textarea {
+
     width: 100%;
 
     padding: 10px 12px;
 
     box-sizing: border-box;
 
-    border: 1px solid rgba(128, 128, 128, 0.28);
+    border: 1px solid rgba(128,128,128,0.28);
+
     border-radius: 10px;
 
     background: transparent;
 
     font: inherit;
+
     font-size: 14px;
+
 }
 
 
 .soccer-info-section input {
+
     min-height: 44px;
+
 }
 
 
 .soccer-info-section textarea {
+
     min-height: 100px;
 
     resize: vertical;
 
     line-height: 1.6;
+
 }
 
 
 /* =====================================================
-⚽ 編集ボタン
+   ⚽ 編集ボタン
 ===================================================== */
 
 .soccer-edit-buttons {
+
     display: grid;
 
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns:
+        1fr
+        1fr;
 
     gap: 10px;
 
     margin-top: 24px;
+
 }
 
 
 .soccer-edit-buttons button {
+
     min-height: 46px;
 
     padding: 10px 14px;
 
-    border: 1px solid rgba(128, 128, 128, 0.28);
+    border: 1px solid rgba(128,128,128,0.28);
+
     border-radius: 11px;
 
-    background: transparent;
+    background: rgba(128,128,128,0.12);
+
+    color: inherit;
 
     font: inherit;
+
     font-size: 14px;
+
     font-weight: 800;
 
     cursor: pointer;
@@ -428,95 +574,623 @@ sports-soccer.css
         transform 0.15s ease,
         opacity 0.15s ease,
         background 0.15s ease;
+
 }
 
 
 .soccer-edit-buttons button:hover {
-    opacity: 0.85;
+
+    background: rgba(128,128,128,0.20);
+
+    opacity: 1;
+
 }
 
 
 .soccer-edit-buttons button:active {
+
     transform: scale(0.97);
+
 }
 
 
 /* =====================================================
-📱 スマートフォン
+   ⚽ 結果画面全体
+===================================================== */
+
+.sports-detail-screen {
+
+    width: 100%;
+
+    min-height: 100vh;
+
+    box-sizing: border-box;
+
+}
+
+
+/* =====================================================
+   ⚽ 結果内容
+===================================================== */
+
+.soccer-game-view {
+
+    width: min(100%, 700px);
+
+    margin: 0 auto;
+
+    padding: 20px 16px 32px;
+
+    box-sizing: border-box;
+
+}
+
+
+/* =====================================================
+   ⚽ 試合日
+===================================================== */
+
+.soccer-view-date {
+
+    text-align: center;
+
+    font-size: 18px;
+
+    font-weight: 800;
+
+    margin-bottom: 20px;
+
+    opacity: 0.9;
+
+}
+
+
+/* =====================================================
+   ⚽ 対戦カード
+===================================================== */
+
+.soccer-view-match {
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        auto
+        minmax(0, 1fr);
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 20px 14px;
+
+    margin-bottom: 20px;
+
+    border: none;
+
+    border-radius: 0;
+
+    background: transparent;
+
+    box-sizing: border-box;
+
+}
+
+
+/* =====================================================
+   ⚽ チーム名
+===================================================== */
+
+.soccer-view-team {
+
+    min-width: 0;
+
+    text-align: center;
+
+    font-size: 26px;
+
+    line-height: 1.25;
+
+    font-weight: 900;
+
+    overflow-wrap: anywhere;
+
+    word-break: break-word;
+
+}
+
+
+.soccer-view-team small {
+
+    display: none;
+
+}
+
+
+/* =====================================================
+   ⚽ 最終スコア
+===================================================== */
+
+.soccer-view-final {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 10px;
+
+    white-space: nowrap;
+
+}
+
+
+.soccer-view-final strong {
+
+    min-width: 42px;
+
+    text-align: center;
+
+    font-size: 48px;
+
+    line-height: 1;
+
+    font-weight: 900;
+
+}
+
+
+.soccer-view-final span {
+
+    font-size: 28px;
+
+    font-weight: 800;
+
+    opacity: 0.7;
+
+}
+
+
+/* =====================================================
+   ⚽ スコアボード
+   結果画面では枠をなくす
+===================================================== */
+
+.soccer-view-scoreboard {
+
+    width: 100%;
+
+    margin-bottom: 20px;
+
+    border: none;
+
+    border-radius: 0;
+
+    overflow: visible;
+
+    box-sizing: border-box;
+
+}
+
+
+/* =====================================================
+   ⚽ 各スコア行
+===================================================== */
+
+.soccer-view-score-row {
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(90px, 1fr)
+        65px
+        32px
+        65px;
+
+    align-items: center;
+
+    min-height: 58px;
+
+    padding: 9px 12px;
+
+    box-sizing: border-box;
+
+    border-bottom: none;
+
+}
+
+
+/* =====================================================
+   ⚽ 前半・後半・延長・PK
+===================================================== */
+
+.soccer-view-period {
+
+    font-size: 17px;
+
+    font-weight: 800;
+
+}
+
+
+.soccer-view-score-row > strong {
+
+    text-align: center;
+
+    font-size: 24px;
+
+    line-height: 1;
+
+    font-weight: 900;
+
+}
+
+
+.soccer-view-score-row > span {
+
+    text-align: center;
+
+    font-size: 20px;
+
+    font-weight: 700;
+
+    opacity: 0.65;
+
+}
+
+
+/* =====================================================
+   ⚽ 計
+===================================================== */
+
+.soccer-view-score-row.total {
+
+    min-height: 68px;
+
+    background: transparent;
+
+}
+
+
+.soccer-view-score-row.total .soccer-view-period {
+
+    font-size: 18px;
+
+    font-weight: 900;
+
+}
+
+
+.soccer-view-score-row.total strong {
+
+    font-size: 30px;
+
+}
+
+
+/* =====================================================
+   ⚽ 結果
+===================================================== */
+
+.soccer-view-result {
+
+    width: fit-content;
+
+    margin: 0 auto 20px;
+
+    padding: 10px 22px;
+
+    border-radius: 999px;
+
+    font-size: 18px;
+
+    font-weight: 900;
+
+    text-align: center;
+
+    border: 1px solid rgba(128,128,128,0.25);
+
+    background: rgba(128,128,128,0.08);
+
+}
+
+
+/* =====================================================
+   ⚽ 会場
+===================================================== */
+
+.soccer-view-info {
+
+    padding: 13px 15px;
+
+    margin-bottom: 14px;
+
+    border-radius: 12px;
+
+    border: 1px solid rgba(128,128,128,0.20);
+
+    font-size: 15px;
+
+    overflow-wrap: anywhere;
+
+}
+
+
+/* =====================================================
+   ⚽ メモ
+===================================================== */
+
+.soccer-view-memo {
+
+    padding: 15px;
+
+    margin-bottom: 20px;
+
+    border-radius: 12px;
+
+    border: 1px solid rgba(128,128,128,0.20);
+
+    box-sizing: border-box;
+
+}
+
+
+.soccer-view-memo > div {
+
+    margin-bottom: 8px;
+
+    font-size: 15px;
+
+    font-weight: 800;
+
+}
+
+
+.soccer-view-memo p {
+
+    margin: 0;
+
+    font-size: 15px;
+
+    line-height: 1.7;
+
+    white-space: pre-wrap;
+
+    overflow-wrap: anywhere;
+
+}
+
+
+/* =====================================================
+   ⚽ 結果画面ボタン
+===================================================== */
+
+.soccer-view-buttons {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    justify-content: center;
+
+    gap: 10px;
+
+    margin-top: 20px;
+
+}
+
+
+.soccer-view-buttons button {
+
+    min-height: 44px;
+
+    padding: 9px 18px;
+
+    border: 1px solid rgba(128,128,128,0.25);
+
+    border-radius: 10px;
+
+    background: transparent;
+
+    color: inherit;
+
+    font: inherit;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.15s ease,
+        opacity 0.15s ease,
+        background 0.15s ease;
+
+}
+
+
+.soccer-view-buttons button:hover {
+
+    opacity: 0.85;
+
+}
+
+
+.soccer-view-buttons button:active {
+
+    transform: scale(0.97);
+
+}
+
+
+/* =====================================================
+   ⚽ PK入力欄
+===================================================== */
+
+.soccer-penalty-area .soccer-score-row {
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 10px;
+
+}
+
+
+.soccer-penalty-area .soccer-score-row input {
+
+    width: 50%;
+
+    max-width: 120px;
+
+    box-sizing: border-box;
+
+    text-align: center;
+
+}
+
+
+.soccer-penalty-area .soccer-score-row span {
+
+    flex: 0 0 auto;
+
+}
+
+
+/* =====================================================
+   📱 スマートフォン
 ===================================================== */
 
 @media (max-width: 600px) {
 
     .soccer-edit-screen {
-        padding: 16px 12px 28px;
+
+        padding:
+            16px 12px 28px;
+
     }
 
 
     .soccer-edit-screen h2 {
+
         margin-bottom: 18px;
+
         font-size: 20px;
+
     }
 
 
     .soccer-team-setting-row {
-        grid-template-columns: 72px minmax(0, 1fr) auto;
+
+        grid-template-columns:
+            72px
+            minmax(0, 1fr)
+            auto;
+
         gap: 7px;
+
     }
 
 
-    .soccer-team-setting-row + .soccer-team-setting-row {
-        grid-template-columns: 72px minmax(0, 1fr);
+    .soccer-team-setting-row
+    + .soccer-team-setting-row {
+
+        grid-template-columns:
+            72px
+            minmax(0, 1fr);
+
     }
 
 
     .soccer-team-setting-row label {
+
         font-size: 13px;
+
     }
 
 
     .soccer-team-setting-row select {
+
         min-width: 88px;
+
     }
 
 
+    /* ---------------------------------
+       試合ボード
+    --------------------------------- */
+
     .soccer-match-board {
-        padding: 16px 8px 14px;
-        border-radius: 15px;
+
+        padding:
+            14px 4px 12px;
+
+        margin-bottom: 18px;
+
     }
 
 
     .soccer-match-header {
+
         grid-template-columns:
             minmax(0, 1fr)
-            26px
+            30px
             minmax(0, 1fr);
+
     }
 
 
     .soccer-match-team-name {
-        font-size: 15px;
+
+        font-size: 23px;
+
+    }
+
+
+    .soccer-match-separator {
+
+        font-size: 23px;
+
     }
 
 
     .soccer-live-score-row {
+
         grid-template-columns:
             minmax(0, 1fr)
-            26px
+            30px
             minmax(0, 1fr);
+
+        margin-top: 8px;
+
     }
 
 
     .soccer-live-score {
-        font-size: 29px;
+
+        font-size: 42px;
+
     }
 
 
     .soccer-score-dash {
-        font-size: 18px;
+
+        font-size: 23px;
+
     }
 
 
+    /* ---------------------------------
+       編集スコア
+    --------------------------------- */
+
     .soccer-score-row {
+
         grid-template-columns:
             48px
             minmax(0, 1fr)
@@ -524,602 +1198,316 @@ sports-soccer.css
             minmax(0, 1fr);
 
         gap: 6px;
+
     }
 
 
     .soccer-score-row label {
+
         font-size: 13px;
+
     }
 
 
     .soccer-score-row input {
+
         min-height: 43px;
+
         font-size: 17px;
+
     }
 
 
     .soccer-score-row span {
+
         font-size: 17px;
+
+    }
+
+
+    /* ---------------------------------
+       結果画面
+    --------------------------------- */
+
+    .soccer-game-view {
+
+        padding:
+            16px 12px 28px;
+
+    }
+
+
+    .soccer-view-date {
+
+        font-size: 17px;
+
+        margin-bottom: 16px;
+
+    }
+
+
+    .soccer-view-match {
+
+        gap: 6px;
+
+        padding:
+            12px 4px 16px;
+
+        margin-bottom: 12px;
+
+    }
+
+
+    .soccer-view-team {
+
+        font-size: 23px;
+
+    }
+
+
+    .soccer-view-final {
+
+        gap: 5px;
+
+    }
+
+
+    .soccer-view-final strong {
+
+        min-width: 34px;
+
+        font-size: 42px;
+
+    }
+
+
+    .soccer-view-final span {
+
+        font-size: 23px;
+
+    }
+
+
+    .soccer-view-score-row {
+
+        grid-template-columns:
+            minmax(70px, 1fr)
+            48px
+            24px
+            48px;
+
+        min-height: 54px;
+
+        padding:
+            7px 6px;
+
+    }
+
+
+    .soccer-view-period {
+
+        font-size: 15px;
+
+    }
+
+
+    .soccer-view-score-row > strong {
+
+        font-size: 21px;
+
+    }
+
+
+    .soccer-view-score-row > span {
+
+        font-size: 18px;
+
+    }
+
+
+    .soccer-view-score-row.total {
+
+        min-height: 62px;
+
+    }
+
+
+    .soccer-view-score-row.total strong {
+
+        font-size: 27px;
+
+    }
+
+
+    .soccer-view-result {
+
+        font-size: 17px;
+
+        padding:
+            9px 20px;
+
+    }
+
+
+    .soccer-view-info {
+
+        font-size: 14px;
+
+    }
+
+
+    .soccer-view-memo > div {
+
+        font-size: 14px;
+
+    }
+
+
+    .soccer-view-memo p {
+
+        font-size: 14px;
+
+    }
+
+
+    .soccer-view-buttons {
+
+        gap: 8px;
+
+    }
+
+
+    .soccer-view-buttons button {
+
+        flex:
+            1 1 auto;
+
+        min-width: 100px;
+
+    }
+
+
+    .soccer-penalty-area
+    .soccer-score-row {
+
+        gap: 8px;
+
+    }
+
+
+    .soccer-penalty-area
+    .soccer-score-row input {
+
+        width: 50%;
+
+        max-width: 100px;
+
+    }
+
+
+    .soccer-edit-buttons button {
+
+        min-height: 46px;
+
     }
 
 }
 
 
 /* =====================================================
-📱 非常に狭い画面
+   📱 非常に狭い画面
 ===================================================== */
 
 @media (max-width: 380px) {
 
     .soccer-edit-screen {
+
         padding-left: 9px;
+
         padding-right: 9px;
+
     }
 
 
     .soccer-team-setting-row {
-        grid-template-columns: 68px minmax(0, 1fr) auto;
+
+        grid-template-columns:
+            68px
+            minmax(0, 1fr)
+            auto;
+
     }
 
 
-    .soccer-team-setting-row + .soccer-team-setting-row {
-        grid-template-columns: 68px minmax(0, 1fr);
+    .soccer-team-setting-row
+    + .soccer-team-setting-row {
+
+        grid-template-columns:
+            68px
+            minmax(0, 1fr);
+
     }
 
 
     .soccer-team-setting-row select {
+
         min-width: 82px;
+
     }
 
 
     .soccer-match-team-name {
-        font-size: 14px;
+
+        font-size: 21px;
+
     }
 
 
     .soccer-live-score {
-        font-size: 27px;
-    }
 
+        font-size: 38px;
 
-    .soccer-score-row {
-        grid-template-columns:
-            43px
-            minmax(0, 1fr)
-            18px
-            minmax(0, 1fr);
-
-        gap: 5px;
-    }
-
-}
-
-
-/* =====================================================
-⚽ 以下は既存の結果画面用CSS
-   ※現在の詳細画面を維持
-===================================================== */
-
-
-/* =====================================================
-⚽ 結果画面全体
-===================================================== */
-
-.sports-detail-screen {
-    width: 100%;
-    min-height: 100vh;
-    box-sizing: border-box;
-}
-
-
-/* =====================================================
-⚽ 結果内容
-===================================================== */
-
-.soccer-game-view {
-    width: min(100%, 700px);
-    margin: 0 auto;
-    padding: 20px 16px 32px;
-    box-sizing: border-box;
-}
-
-
-/* =====================================================
-⚽ 試合日
-===================================================== */
-
-.soccer-view-date {
-    text-align: center;
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 18px;
-    opacity: 0.85;
-}
-
-
-/* =====================================================
-⚽ 対戦カード
-===================================================== */
-
-.soccer-view-match {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-    align-items: center;
-    gap: 12px;
-
-    padding: 20px 14px;
-    margin-bottom: 20px;
-
-    border-radius: 18px;
-    border: 1px solid rgba(128, 128, 128, 0.25);
-
-    background: rgba(255, 255, 255, 0.06);
-
-    box-sizing: border-box;
-}
-
-
-/* =====================================================
-⚽ チーム名
-===================================================== */
-
-.soccer-view-team {
-    min-width: 0;
-    text-align: center;
-    font-size: 17px;
-    font-weight: 700;
-    overflow-wrap: anywhere;
-    word-break: break-word;
-}
-
-
-.soccer-view-team small {
-    display: block;
-    margin-bottom: 7px;
-    font-size: 12px;
-    font-weight: 500;
-    opacity: 0.7;
-}
-
-
-/* =====================================================
-⚽ 最終スコア
-===================================================== */
-
-.soccer-view-final {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    white-space: nowrap;
-}
-
-
-.soccer-view-final strong {
-    min-width: 32px;
-    text-align: center;
-    font-size: 30px;
-    line-height: 1;
-    font-weight: 800;
-}
-
-
-.soccer-view-final span {
-    font-size: 20px;
-    font-weight: 600;
-    opacity: 0.7;
-}
-
-
-/* =====================================================
-⚽ スコアボード
-===================================================== */
-
-.soccer-view-scoreboard {
-    width: 100%;
-    margin-bottom: 18px;
-    border: 1px solid rgba(128, 128, 128, 0.25);
-    border-radius: 16px;
-    overflow: hidden;
-    box-sizing: border-box;
-}
-
-
-/* =====================================================
-⚽ 各スコア行
-===================================================== */
-
-.soccer-view-score-row {
-    display: grid;
-    grid-template-columns: minmax(90px, 1fr) 55px 24px 55px;
-    align-items: center;
-
-    min-height: 48px;
-    padding: 8px 12px;
-    box-sizing: border-box;
-
-    border-bottom: 1px solid rgba(128, 128, 128, 0.18);
-}
-
-
-.soccer-view-score-row:last-child {
-    border-bottom: none;
-}
-
-
-/* =====================================================
-⚽ 前半・後半・延長・PK
-===================================================== */
-
-.soccer-view-period {
-    font-size: 14px;
-    font-weight: 600;
-}
-
-
-.soccer-view-score-row > strong {
-    text-align: center;
-    font-size: 17px;
-    font-weight: 700;
-}
-
-
-.soccer-view-score-row > span {
-    text-align: center;
-    font-size: 14px;
-    opacity: 0.65;
-}
-
-
-/* =====================================================
-⚽ 計
-===================================================== */
-
-.soccer-view-score-row.total {
-    min-height: 56px;
-    background: rgba(128, 128, 128, 0.08);
-}
-
-
-.soccer-view-score-row.total .soccer-view-period {
-    font-weight: 800;
-}
-
-
-.soccer-view-score-row.total strong {
-    font-size: 20px;
-}
-
-
-/* =====================================================
-⚽ 結果
-===================================================== */
-
-.soccer-view-result {
-    width: fit-content;
-    margin: 0 auto 18px;
-    padding: 9px 20px;
-
-    border-radius: 999px;
-
-    font-size: 16px;
-    font-weight: 800;
-    text-align: center;
-
-    border: 1px solid rgba(128, 128, 128, 0.25);
-    background: rgba(128, 128, 128, 0.08);
-}
-
-
-/* =====================================================
-⚽ 会場
-===================================================== */
-
-.soccer-view-info {
-    padding: 13px 15px;
-    margin-bottom: 14px;
-
-    border-radius: 12px;
-    border: 1px solid rgba(128, 128, 128, 0.20);
-
-    font-size: 14px;
-
-    overflow-wrap: anywhere;
-}
-
-
-/* =====================================================
-⚽ メモ
-===================================================== */
-
-.soccer-view-memo {
-    padding: 15px;
-    margin-bottom: 20px;
-
-    border-radius: 12px;
-    border: 1px solid rgba(128, 128, 128, 0.20);
-
-    box-sizing: border-box;
-}
-
-
-.soccer-view-memo > div {
-    margin-bottom: 8px;
-
-    font-size: 14px;
-    font-weight: 800;
-}
-
-
-.soccer-view-memo p {
-    margin: 0;
-
-    font-size: 14px;
-    line-height: 1.7;
-
-    white-space: pre-wrap;
-    overflow-wrap: anywhere;
-}
-
-
-/* =====================================================
-⚽ 結果画面ボタン
-===================================================== */
-
-.soccer-view-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-
-    gap: 10px;
-
-    margin-top: 20px;
-}
-
-
-.soccer-view-buttons button {
-    min-height: 44px;
-
-    padding: 9px 18px;
-
-    border: 1px solid rgba(128, 128, 128, 0.25);
-    border-radius: 10px;
-
-    background: transparent;
-
-    font: inherit;
-    font-size: 14px;
-    font-weight: 700;
-
-    cursor: pointer;
-
-    transition:
-        transform 0.15s ease,
-        opacity 0.15s ease,
-        background 0.15s ease;
-}
-
-
-.soccer-view-buttons button:hover {
-    opacity: 0.85;
-}
-
-
-.soccer-view-buttons button:active {
-    transform: scale(0.97);
-}
-
-
-/* =====================================================
-📱 結果画面スマートフォン
-===================================================== */
-
-@media (max-width: 600px) {
-
-    .soccer-game-view {
-        padding: 16px 12px 28px;
-    }
-
-
-    .soccer-view-match {
-        gap: 7px;
-        padding: 17px 8px;
-        border-radius: 15px;
     }
 
 
     .soccer-view-team {
-        font-size: 15px;
-    }
 
+        font-size: 21px;
 
-    .soccer-view-team small {
-        font-size: 11px;
-    }
-
-
-    .soccer-view-final {
-        gap: 5px;
     }
 
 
     .soccer-view-final strong {
-        min-width: 27px;
-        font-size: 25px;
+
+        min-width: 29px;
+
+        font-size: 38px;
+
     }
 
 
     .soccer-view-final span {
-        font-size: 17px;
+
+        font-size: 21px;
+
     }
 
 
     .soccer-view-score-row {
+
         grid-template-columns:
-            minmax(75px, 1fr)
+            minmax(62px, 1fr)
             42px
             20px
             42px;
 
-        min-height: 46px;
-        padding: 7px 9px;
-    }
-
-
-    .soccer-view-period {
-        font-size: 13px;
     }
 
 
     .soccer-view-score-row > strong {
-        font-size: 16px;
-    }
 
+        font-size: 20px;
 
-    .soccer-view-score-row.total strong {
-        font-size: 19px;
-    }
-
-
-    .soccer-view-buttons {
-        gap: 8px;
-    }
-
-
-    .soccer-view-buttons button {
-        flex: 1 1 auto;
-        min-width: 100px;
-    }
-
-}
-
-
-/* =====================================================
-📱 結果画面 非常に狭い画面
-===================================================== */
-
-@media (max-width: 380px) {
-
-    .soccer-view-match {
-        grid-template-columns:
-            minmax(0, 1fr)
-            auto
-            minmax(0, 1fr);
-
-        padding-left: 5px;
-        padding-right: 5px;
-    }
-
-
-    .soccer-view-team {
-        font-size: 14px;
-    }
-
-
-    .soccer-view-final strong {
-        min-width: 24px;
-        font-size: 23px;
-    }
-
-
-    .soccer-view-score-row {
-        grid-template-columns:
-            minmax(65px, 1fr)
-            36px
-            18px
-            36px;
-    }
-
-}
-
-
-/* =====================================================
-   ⚽ PK入力欄
-   左右同じ大きさ
-   前半・後半・延長スコア欄の約半分
-   ＋ 中央寄せ
-===================================================== */
-
-.soccer-penalty-area .soccer-score-row {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-}
-
-.soccer-penalty-area .soccer-score-row input {
-    width: 50%;
-    max-width: 120px;
-    box-sizing: border-box;
-    text-align: center;
-}
-
-.soccer-penalty-area .soccer-score-row span {
-    flex: 0 0 auto;
-}
-
-
-/* =====================================================
-   ⚽ PK入力欄
-   📱 スマートフォン
-===================================================== */
-
-@media (max-width: 600px) {
-
-    .soccer-penalty-area .soccer-score-row {
-        gap: 8px;
-    }
-
-    .soccer-penalty-area .soccer-score-row input {
-        width: 50%;
-        max-width: 100px;
-    }
-
-}
-
-
-/* =====================================================
-   ⚽ 編集ボタン
-   キャンセル・保存を同じデザインにする
-===================================================== */
-
-.soccer-edit-buttons button {
-    background: rgba(128, 128, 128, 0.12);
-    color: inherit;
-    font-weight: 800;
-}
-
-
-/* =====================================================
-   ⚽ ボタン
-   ホバー
-===================================================== */
-
-.soccer-edit-buttons button:hover {
-    background: rgba(128, 128, 128, 0.20);
-    opacity: 1;
-}
-
-
-/* =====================================================
-   ⚽ ボタン
-   アクティブ
-===================================================== */
-
-.soccer-edit-buttons button:active {
-    transform: scale(0.97);
-}
-
-
-/* =====================================================
-   📱 編集ボタン
-   スマートフォン
-===================================================== */
-
-@media (max-width: 600px) {
-
-    .soccer-edit-buttons button {
-        min-height: 46px;
     }
 
 }
