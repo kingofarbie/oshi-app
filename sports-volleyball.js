@@ -1146,18 +1146,30 @@ function saveVolleyballGameFromEditPage(){
 
 function closeVolleyballEditPage(){
 
-    hideSportsSubPages();
+    const editPage =
+        document.getElementById(
+            "sportsGameEditPage"
+        );
+
+    const detailPage =
+        document.getElementById(
+            "sportsGameDetailPage"
+        );
 
     const sportsPage =
         document.getElementById(
             "sportsCalendarPage"
         );
 
-    const editPage =
+    const sportsScreen =
         document.getElementById(
-            "sportsGameEditPage"
+            "sportsCalendarScreen"
         );
 
+
+    /* =====================
+       編集画面を閉じる
+    ===================== */
 
     if(editPage){
 
@@ -1167,6 +1179,34 @@ function closeVolleyballEditPage(){
 
         editPage.style.display =
             "none";
+
+    }
+
+
+    /* =====================
+       結果画面を閉じる
+    ===================== */
+
+    if(detailPage){
+
+        detailPage.classList.remove(
+            "active"
+        );
+
+        detailPage.style.display =
+            "none";
+
+    }
+
+
+    /* =====================
+       スポーツカレンダーを表示
+    ===================== */
+
+    if(sportsScreen){
+
+        sportsScreen.style.display =
+            "block";
 
     }
 
