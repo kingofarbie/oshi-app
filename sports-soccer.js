@@ -3171,136 +3171,218 @@ function showSoccerGameDetail(date){
     </div>
 
 </div>
-            <!-- =====================
-                 前半・後半
-            ====================== -->
-
-            <div class="soccer-score-section">
-
-                <div class="soccer-score-row">
-
-                    <label>
-                        前半
-                    </label>
-
-                    <div
-                        id="soccerDetailFirstHalf"
-                        class="soccer-detail-score"
-                    >
-                        －
-                    </div>
-
-                </div>
 
 
-                <div class="soccer-score-row">
 
-                    <label>
-                        後半
-                    </label>
+<!-- =====================
+     前半・後半
+====================== -->
 
-                    <div
-                        id="soccerDetailSecondHalf"
-                        class="soccer-detail-score"
-                    >
-                        －
-                    </div>
+<div class="soccer-score-section">
 
-                </div>
+    <div class="soccer-score-row soccer-detail-score-row">
 
+        <label>
+            前半
+        </label>
+
+        <div class="soccer-detail-score-line">
+
+            <div
+                id="soccerDetailFirstHalfLeft"
+                class="soccer-detail-score-number"
+            >
+                0
             </div>
 
+            <div class="soccer-detail-score-separator">
+                －
+            </div>
 
-            <!-- =====================
-                 延長
-            ====================== -->
+            <div
+                id="soccerDetailFirstHalfRight"
+                class="soccer-detail-score-number"
+            >
+                0
+            </div>
 
-            <div class="soccer-extra-section">
+        </div>
 
-                <div class="soccer-checkbox-row">
+    </div>
 
-                    <span id="soccerDetailExtraCheck">
-                        □ 延長
-                    </span>
 
-                </div>
+    <div class="soccer-score-row soccer-detail-score-row">
 
+        <label>
+            後半
+        </label>
+
+        <div class="soccer-detail-score-line">
+
+            <div
+                id="soccerDetailSecondHalfLeft"
+                class="soccer-detail-score-number"
+            >
+                0
+            </div>
+
+            <div class="soccer-detail-score-separator">
+                －
+            </div>
+
+            <div
+                id="soccerDetailSecondHalfRight"
+                class="soccer-detail-score-number"
+            >
+                0
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================
+     延長
+====================== -->
+
+<div class="soccer-extra-section">
+
+    <div class="soccer-checkbox-row">
+
+        <span id="soccerDetailExtraCheck">
+            □ 延長
+        </span>
+
+    </div>
+
+
+    <div
+        id="soccerDetailExtraTimeArea"
+        class="soccer-extra-time-area"
+    >
+
+        <div class="soccer-score-row soccer-detail-score-row">
+
+            <label>
+                前半
+            </label>
+
+            <div class="soccer-detail-score-line">
 
                 <div
-                    id="soccerDetailExtraTimeArea"
-                    class="soccer-extra-time-area"
+                    id="soccerDetailExtraFirstHalfLeft"
+                    class="soccer-detail-score-number"
                 >
-
-                    <div class="soccer-score-row">
-
-                        <label>
-                            前半
-                        </label>
-
-                        <div
-                            id="soccerDetailExtraFirstHalf"
-                            class="soccer-detail-score"
-                        >
-                            －
-                        </div>
-
-                    </div>
-
-
-                    <div class="soccer-score-row">
-
-                        <label>
-                            後半
-                        </label>
-
-                        <div
-                            id="soccerDetailExtraSecondHalf"
-                            class="soccer-detail-score"
-                        >
-                            －
-                        </div>
-
-                    </div>
-
+                    0
                 </div>
 
-            </div>
-
-
-            <!-- =====================
-                 PK
-            ====================== -->
-
-            <div class="soccer-penalty-section">
-
-                <div class="soccer-checkbox-row">
-
-                    <span id="soccerDetailPenaltyCheck">
-                        □ PK
-                    </span>
-
+                <div class="soccer-detail-score-separator">
+                    －
                 </div>
-
 
                 <div
-                    id="soccerDetailPenaltyArea"
-                    class="soccer-penalty-area"
+                    id="soccerDetailExtraFirstHalfRight"
+                    class="soccer-detail-score-number"
                 >
-
-                    <div class="soccer-score-row">
-
-                        <div
-                            id="soccerDetailPenalty"
-                            class="soccer-detail-score soccer-detail-penalty-score"
-                        >
-                            －
-                        </div>
-
-                    </div>
-
+                    0
                 </div>
 
             </div>
+
+        </div>
+
+
+        <div class="soccer-score-row soccer-detail-score-row">
+
+            <label>
+                後半
+            </label>
+
+            <div class="soccer-detail-score-line">
+
+                <div
+                    id="soccerDetailExtraSecondHalfLeft"
+                    class="soccer-detail-score-number"
+                >
+                    0
+                </div>
+
+                <div class="soccer-detail-score-separator">
+                    －
+                </div>
+
+                <div
+                    id="soccerDetailExtraSecondHalfRight"
+                    class="soccer-detail-score-number"
+                >
+                    0
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================
+     PK
+====================== -->
+
+<div class="soccer-penalty-section">
+
+    <div class="soccer-checkbox-row">
+
+        <span id="soccerDetailPenaltyCheck">
+            □ PK
+        </span>
+
+    </div>
+
+
+    <div
+        id="soccerDetailPenaltyArea"
+        class="soccer-penalty-area"
+    >
+
+        <div class="soccer-score-row soccer-detail-score-row">
+
+            <label>
+                PK
+            </label>
+
+            <div class="soccer-detail-score-line">
+
+                <div
+                    id="soccerDetailPenaltyLeft"
+                    class="soccer-detail-score-number"
+                >
+                    0
+                </div>
+
+                <div class="soccer-detail-score-separator">
+                    －
+                </div>
+
+                <div
+                    id="soccerDetailPenaltyRight"
+                    class="soccer-detail-score-number"
+                >
+                    0
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
 
             <!-- =====================
