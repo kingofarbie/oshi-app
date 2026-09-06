@@ -58,7 +58,7 @@ const SPORTS_TYPES = [
     {
         value: "volleyball",
         label: "🏐 バレーボール",
-        enabled: false
+        enabled: true
     },
 
     {
@@ -983,6 +983,68 @@ opponentScore =
         game.extraSecondHalf
     );
     }
+
+    /*
+   🏐 バレーボール
+*/
+
+else if(
+    settings.favoriteSports?.[
+        settings.selectedIndex || 0
+    ]?.sport === "volleyball"
+){
+
+    const sets =
+        Array.isArray(game.sets)
+        ?
+        game.sets
+        :
+        [];
+
+    teamScore =
+        sets.filter(
+            set => {
+
+                if(
+                    set?.team === "" ||
+                    set?.opponent === "" ||
+                    set?.team == null ||
+                    set?.opponent == null
+                ){
+
+                    return false;
+
+                }
+
+                return Number(set.team) >
+                    Number(set.opponent);
+
+            }
+        ).length;
+
+    opponentScore =
+        sets.filter(
+            set => {
+
+                if(
+                    set?.team === "" ||
+                    set?.opponent === "" ||
+                    set?.team == null ||
+                    set?.opponent == null
+                ){
+
+                    return false;
+
+                }
+
+                return Number(set.opponent) >
+                    Number(set.team);
+
+            }
+        ).length;
+
+}
+
 
 
     scoreHTML = `
@@ -2629,6 +2691,15 @@ function openSportsGameDetailPage(date){
         return;
     }
 
+    if(sport === "volleyball"){
+
+    showVolleyballGameDetail(
+        date
+    );
+
+    return;
+}
+
 
     /* =====================
        未対応スポーツ
@@ -2719,6 +2790,13 @@ function openSportsGameEditPage(date){
 
         openSoccerGameEditPage(date);
 
+        return;
+    }
+
+    if(sport === "volleyball"){
+        
+        openVolleyballGameEditPage(date);
+        
         return;
     }
 
