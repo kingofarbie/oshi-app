@@ -1537,10 +1537,15 @@
 }
 
 .soccer-detail-screen .soccer-detail-score {
-    flex: 0 0 auto;
+    flex: 0 0 120px;
+    width: 120px;
     min-width: 120px;
+    box-sizing: border-box;
+
     text-align: center;
     white-space: nowrap;
+
+    font-family: monospace;
     font-size: 24px;
     line-height: 1;
     font-weight: 900;
@@ -1563,9 +1568,13 @@
         font-size: 14px;
     }
 
-    .soccer-detail-screen .soccer-detail-score {
-        min-width: 110px;
-        font-size: 22px;
-    }
+.soccer-detail-screen .soccer-detail-score {
+    flex-basis: 110px;
+    width: 110px;
+    min-width: 110px;
+
+    font-family: monospace;
+    font-size: 22px;
+}
 
 }
