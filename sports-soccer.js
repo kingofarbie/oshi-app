@@ -3081,46 +3081,6 @@ function showSoccerGameDetail(date){
             </h2>
 
 
-            <!-- =====================
-                 チーム設定
-            ====================== -->
-
-            <div class="soccer-team-setting">
-
-                <div class="soccer-team-setting-row">
-
-                    <label>
-                        応援チーム
-                    </label>
-
-                    <div
-                        id="soccerDetailTeam"
-                        class="soccer-detail-value"
-                    ></div>
-
-                    <div
-                        id="soccerDetailHomeAway"
-                        class="soccer-detail-select-value"
-                    ></div>
-
-                </div>
-
-
-                <div class="soccer-team-setting-row">
-
-                    <label>
-                        相手チーム
-                    </label>
-
-                    <div
-                        id="soccerDetailOpponent"
-                        class="soccer-detail-value"
-                    ></div>
-
-                </div>
-
-            </div>
-
 
             <!-- =====================
                  ホーム・アウェイ
