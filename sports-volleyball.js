@@ -1127,15 +1127,16 @@ function saveVolleyballGameFromEditPage(){
     }
 
 
-    /*
-     * 編集画面から戻る
-     */
+/*
+ * 保存後
+ * → 試合結果画面へ戻る
+ */
 
-    window.location.href =
-        "index.html";
+openSportsGameDetailPage(
+    date
+);
 
-
-    return true;
+return true;
 
 }
 
