@@ -1578,3 +1578,47 @@
 }
 
 }
+
+
+
+/* =====================================================
+   ⚽ 結果画面 PK
+   「－」を通常スコアと同じ中央位置へ
+===================================================== */
+
+.soccer-detail-screen .soccer-penalty-section
+.soccer-penalty-area
+.soccer-score-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.soccer-detail-screen .soccer-penalty-section
+.soccer-detail-score {
+    flex: 0 0 120px;
+    width: 120px;
+    min-width: 120px;
+    box-sizing: border-box;
+
+    text-align: center;
+    white-space: nowrap;
+
+    font-family: monospace;
+    font-size: 24px;
+    line-height: 1;
+    font-weight: 900;
+}
+
+@media (max-width: 600px) {
+
+    .soccer-detail-screen .soccer-penalty-section
+    .soccer-detail-score {
+        flex-basis: 110px;
+        width: 110px;
+        min-width: 110px;
+        font-size: 22px;
+    }
+
+}
