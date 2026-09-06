@@ -1522,14 +1522,15 @@
 .soccer-detail-screen .soccer-score-row {
     width: 100%;
     margin-bottom: 16px;
-    display: flex;
-    align-items: center;
+    display: grid;
+    grid-template-columns: 70px 120px;
     justify-content: center;
+    align-items: center;
 }
 
 .soccer-detail-screen .soccer-score-row label {
     flex: 0 0 70px;
-    margin: 0 14px 0 0;
+    margin: 0;
     text-align: right;
     font-size: 16px;
     font-weight: 800;
