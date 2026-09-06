@@ -3180,7 +3180,7 @@ function showSoccerGameDetail(date){
 
 <div class="soccer-score-section">
 
-    <div class="soccer-score-row soccer-detail-score-row">
+    <div class="soccer-detail-score-row">
 
         <label>
             前半
@@ -3211,7 +3211,7 @@ function showSoccerGameDetail(date){
     </div>
 
 
-    <div class="soccer-score-row soccer-detail-score-row">
+    <div class="soccer-detail-score-row">
 
         <label>
             後半
@@ -3264,10 +3264,10 @@ function showSoccerGameDetail(date){
         class="soccer-extra-time-area"
     >
 
-        <div class="soccer-score-row soccer-detail-score-row">
+        <div class="soccer-detail-score-row">
 
             <label>
-                前半
+                延長前半
             </label>
 
             <div class="soccer-detail-score-line">
@@ -3295,10 +3295,10 @@ function showSoccerGameDetail(date){
         </div>
 
 
-        <div class="soccer-score-row soccer-detail-score-row">
+        <div class="soccer-detail-score-row">
 
             <label>
-                後半
+                延長後半
             </label>
 
             <div class="soccer-detail-score-line">
@@ -3350,7 +3350,7 @@ function showSoccerGameDetail(date){
         class="soccer-penalty-area"
     >
 
-        <div class="soccer-score-row soccer-detail-score-row">
+        <div class="soccer-detail-score-row">
 
             <label>
                 PK
@@ -3383,7 +3383,6 @@ function showSoccerGameDetail(date){
     </div>
 
 </div>
-
 
             <!-- =====================
                  場所
