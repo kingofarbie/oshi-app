@@ -86,6 +86,7 @@
 
 .volleyball-set-row {
     display: grid;
+
     grid-template-columns:
         minmax(80px, 1fr)
         minmax(60px, 80px)
@@ -93,6 +94,7 @@
         minmax(60px, 80px);
 
     align-items: center;
+
     gap: 8px;
 
     margin-bottom: 10px;
@@ -105,18 +107,27 @@
 
 
 .volleyball-set-row input {
+
     width: 100%;
+
     box-sizing: border-box;
+
     padding: 10px 6px;
+
     text-align: center;
+
     border: 1px solid #ccc;
+
     border-radius: 8px;
+
     font-size: 16px;
 }
 
 
 .volleyball-set-row span {
+
     text-align: center;
+
     font-weight: bold;
 }
 
@@ -126,18 +137,27 @@
 ===================================================== */
 
 .sports-edit-buttons {
+
     display: flex;
+
     gap: 10px;
+
     margin-top: 8px;
 }
 
 
 .sports-edit-buttons button {
+
     flex: 1;
+
     padding: 12px;
+
     border: none;
+
     border-radius: 8px;
+
     font-size: 16px;
+
     cursor: pointer;
 }
 
@@ -147,7 +167,9 @@
 ===================================================== */
 
 .volleyball-game-view {
+
     width: 100%;
+
     box-sizing: border-box;
 }
 
@@ -157,43 +179,41 @@
 ===================================================== */
 
 .volleyball-view-date {
+
     text-align: center;
+
     font-weight: bold;
+
     margin-bottom: 20px;
 }
 
 
 /* =====================================================
-   チーム名＋セット勝数
+   チーム名 ＋ セット勝数
 ===================================================== */
 
 .volleyball-view-match {
 
     width: 100%;
+
     box-sizing: border-box;
 
     display: grid;
 
     /*
-       上段
-       左：自チーム
-       右：相手チーム
-
-       下段
-       中央：セット勝数
+       左チーム
+       中央の「－」
+       右チーム
     */
 
     grid-template-columns:
         minmax(0, 1fr)
+        auto
         minmax(0, 1fr);
-
-    grid-template-areas:
-        "team1 team2"
-        "score score";
 
     align-items: center;
 
-    row-gap: 12px;
+    column-gap: 12px;
 
     margin-bottom: 20px;
 }
@@ -207,21 +227,11 @@
 
     min-width: 0;
 
+    width: 100%;
+
     text-align: center;
 
     box-sizing: border-box;
-}
-
-
-.volleyball-view-match
-.volleyball-view-team:first-child {
-    grid-area: team1;
-}
-
-
-.volleyball-view-match
-.volleyball-view-team:last-child {
-    grid-area: team2;
 }
 
 
@@ -235,13 +245,11 @@
 
     font-weight: bold;
 
-    /*
-       以前より大きく
-    */
-
     font-size: 28px;
 
     line-height: 1.25;
+
+    text-align: center;
 
     overflow-wrap: anywhere;
 
@@ -250,40 +258,38 @@
 
 
 /* =====================================================
-   セット勝数
+   チームのセット勝数
 ===================================================== */
 
-.volleyball-view-score {
-
-    grid-area: score;
+.volleyball-view-team-score {
 
     width: 100%;
 
-    display: flex;
+    margin-top: 8px;
 
-    align-items: center;
-
-    justify-content: center;
-
-    gap: 18px;
+    text-align: center;
 
     font-size: 42px;
 
+    font-weight: bold;
+
     line-height: 1;
-
-    white-space: nowrap;
-
-    text-align: center;
 }
 
 
-.volleyball-view-score strong {
+/* =====================================================
+   スコア中央の「－」
+===================================================== */
 
-    min-width: 52px;
+.volleyball-view-score-separator {
+
+    font-size: 36px;
+
+    font-weight: bold;
+
+    line-height: 1;
 
     text-align: center;
-
-    font-size: 42px;
 }
 
 
@@ -292,7 +298,9 @@
 ===================================================== */
 
 .volleyball-view-info {
+
     margin: 12px 0;
+
     text-align: center;
 }
 
@@ -302,30 +310,39 @@
 ===================================================== */
 
 .volleyball-view-result {
+
     margin: 14px 0;
+
     padding: 10px;
+
     text-align: center;
+
     border-radius: 8px;
+
     font-weight: bold;
 }
 
 
 .volleyball-view-result.win {
+
     border: 2px solid currentColor;
 }
 
 
 .volleyball-view-result.lose {
+
     border: 2px solid currentColor;
 }
 
 
 .volleyball-view-result.draw {
+
     border: 2px solid currentColor;
 }
 
 
 .volleyball-view-result.cancelled {
+
     border: 2px solid currentColor;
 }
 
@@ -335,8 +352,11 @@
 ===================================================== */
 
 .volleyball-view-section-title {
+
     margin-top: 18px;
+
     margin-bottom: 10px;
+
     font-weight: bold;
 }
 
@@ -346,14 +366,19 @@
 ===================================================== */
 
 .volleyball-score-wrapper {
+
     width: 100%;
+
     overflow-x: auto;
 }
 
 
 .volleyball-score-table {
+
     width: 100%;
+
     border-collapse: collapse;
+
     min-width: 300px;
 }
 
@@ -370,6 +395,7 @@
 
 
 .volleyball-score-table th {
+
     font-weight: bold;
 }
 
@@ -379,6 +405,7 @@
 ===================================================== */
 
 .volleyball-view-memo {
+
     margin-top: 18px;
 }
 
@@ -437,6 +464,7 @@
     ----------------------------------------------- */
 
     .sports-edit-page {
+
         padding: 14px;
     }
 
@@ -458,25 +486,23 @@
 
 
     .volleyball-set-title {
+
         font-size: 14px;
     }
 
 
     /* -----------------------------------------------
-       チーム名＋スコア
+       チーム名 ＋ スコア
     ----------------------------------------------- */
 
     .volleyball-view-match {
 
         grid-template-columns:
             minmax(0, 1fr)
+            auto
             minmax(0, 1fr);
 
-        grid-template-areas:
-            "team1 team2"
-            "score score";
-
-        row-gap: 10px;
+        column-gap: 6px;
 
         margin-bottom: 18px;
     }
@@ -490,19 +516,17 @@
     }
 
 
-    .volleyball-view-score {
+    .volleyball-view-team-score {
 
-        gap: 12px;
+        margin-top: 6px;
 
         font-size: 36px;
     }
 
 
-    .volleyball-view-score strong {
+    .volleyball-view-score-separator {
 
-        min-width: 44px;
-
-        font-size: 36px;
+        font-size: 30px;
     }
 
 

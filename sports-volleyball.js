@@ -560,44 +560,39 @@ function showVolleyballGameDetail(
             </div>
 
 
-            <div class="volleyball-view-match">
+<div class="volleyball-view-match">
 
-                <div class="volleyball-view-team">
+    <div class="volleyball-view-team">
 
-                    <div class="volleyball-view-team-name">
-                        ${escapeSportsHTML(team)}
-                    </div>
+        <div class="volleyball-view-team-name">
+            ${escapeSportsHTML(team)}
+        </div>
 
-                </div>
+        <div class="volleyball-view-team-score">
+            ${teamSetCount}
+        </div>
 
-
-                <div class="volleyball-view-score">
-
-                    <strong>
-                        ${teamSetCount}
-                    </strong>
-
-                    <span>
-                        -
-                    </span>
-
-                    <strong>
-                        ${opponentSetCount}
-                    </strong>
-
-                </div>
+    </div>
 
 
-                <div class="volleyball-view-team">
+    <div class="volleyball-view-score-separator">
+        -
+    </div>
 
-                    <div class="volleyball-view-team-name">
-                        ${escapeSportsHTML(opponent)}
-                    </div>
 
-                </div>
+    <div class="volleyball-view-team">
 
-            </div>
+        <div class="volleyball-view-team-name">
+            ${escapeSportsHTML(opponent)}
+        </div>
 
+        <div class="volleyball-view-team-score">
+            ${opponentSetCount}
+        </div>
+
+    </div>
+
+</div>
 
             ${
                 location
