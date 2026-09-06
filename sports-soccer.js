@@ -3082,20 +3082,57 @@ function showSoccerGameDetail(date){
 
 
 
-            <!-- =====================
-                 ホーム・アウェイ
-            ====================== -->
+<!-- =====================
+     試合日
+====================== -->
 
-            <div class="soccer-match-board">
+<div class="soccer-view-date">
 
-<div class="soccer-match-header">
+    ${date}
 
-    <div class="soccer-match-column">
+</div>
 
-        <div
-            class="soccer-match-team-name"
-            data-soccer-detail-home-name
-        ></div>
+
+<!-- =====================
+     対戦カード
+====================== -->
+
+<div class="soccer-match-board">
+
+    <div class="soccer-match-header">
+
+        <div class="soccer-match-column">
+
+            <div
+                class="soccer-match-team-name"
+                data-soccer-detail-home-name
+            ></div>
+
+        </div>
+
+
+        <div class="soccer-match-separator">
+            －
+        </div>
+
+
+        <div class="soccer-match-column">
+
+            <div
+                class="soccer-match-team-name"
+                data-soccer-detail-away-name
+            ></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================
+         合計得点
+    ====================== -->
+
+    <div class="soccer-live-score-row">
 
         <div
             id="soccerDetailLeftTotal"
@@ -3104,20 +3141,9 @@ function showSoccerGameDetail(date){
             0
         </div>
 
-    </div>
-
-
-    <div class="soccer-match-separator">
-        －
-    </div>
-
-
-    <div class="soccer-match-column">
-
-        <div
-            class="soccer-match-team-name"
-            data-soccer-detail-away-name
-        ></div>
+        <div class="soccer-score-dash">
+            －
+        </div>
 
         <div
             id="soccerDetailRightTotal"
@@ -3129,8 +3155,6 @@ function showSoccerGameDetail(date){
     </div>
 
 </div>
-            </div>
-
 
             <!-- =====================
                  前半・後半
