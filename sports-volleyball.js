@@ -1146,10 +1146,47 @@ function saveVolleyballGameFromEditPage(){
 
 function closeVolleyballEditPage(){
 
-    window.location.href =
-        "index.html";
+    hideSportsSubPages();
+
+    const sportsPage =
+        document.getElementById(
+            "sportsCalendarPage"
+        );
+
+    const editPage =
+        document.getElementById(
+            "sportsGameEditPage"
+        );
+
+
+    if(editPage){
+
+        editPage.classList.remove(
+            "active"
+        );
+
+        editPage.style.display =
+            "none";
+
+    }
+
+
+    if(sportsPage){
+
+        sportsPage.classList.add(
+            "active"
+        );
+
+        sportsPage.style.display =
+            "block";
+
+    }
+
+
+    renderSportsCalendar();
 
 }
+
 
 /* =====================================================
    🏐 バレー試合編集HTML読み込み
