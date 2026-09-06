@@ -3087,21 +3087,29 @@ function showSoccerGameDetail(date){
 ====================== -->
 
 <div class="soccer-view-date">
-
-    ${date}
-
+    ${(() => {
+        const d = new Date(`${date}T00:00:00`);
+        const week = "日月火水木金土";
+        return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日（${week[d.getDay()]}）`;
+    })()}
 </div>
 
 
 <!-- =====================
-     対戦カード
+     ホーム・アウェイ
 ====================== -->
 
 <div class="soccer-match-board">
 
     <div class="soccer-match-header">
 
+        <!-- ホーム -->
+
         <div class="soccer-match-column">
+
+            <div class="soccer-match-side">
+                ホーム
+            </div>
 
             <div
                 class="soccer-match-team-name"
@@ -3111,12 +3119,20 @@ function showSoccerGameDetail(date){
         </div>
 
 
+        <!-- 区切り -->
+
         <div class="soccer-match-separator">
             －
         </div>
 
 
+        <!-- アウェイ -->
+
         <div class="soccer-match-column">
+
+            <div class="soccer-match-side">
+                アウェイ
+            </div>
 
             <div
                 class="soccer-match-team-name"
@@ -3155,7 +3171,6 @@ function showSoccerGameDetail(date){
     </div>
 
 </div>
-
             <!-- =====================
                  前半・後半
             ====================== -->
