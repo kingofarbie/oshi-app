@@ -3088,69 +3088,47 @@ function showSoccerGameDetail(date){
 
             <div class="soccer-match-board">
 
-                <div class="soccer-match-header">
+<div class="soccer-match-header">
 
-                    <div class="soccer-match-column">
+    <div class="soccer-match-column">
 
-                        <div class="soccer-match-side">
-                            ホーム
-                        </div>
+        <div
+            class="soccer-match-team-name"
+            data-soccer-detail-home-name
+        ></div>
 
-                        <div
-                            class="soccer-match-team-name"
-                            data-soccer-detail-home-name
-                        ></div>
+        <div
+            id="soccerDetailLeftTotal"
+            class="soccer-live-score"
+        >
+            0
+        </div>
 
-                    </div>
-
-
-                    <div class="soccer-match-separator">
-                        －
-                    </div>
+    </div>
 
 
-                    <div class="soccer-match-column">
-
-                        <div class="soccer-match-side">
-                            アウェイ
-                        </div>
-
-                        <div
-                            class="soccer-match-team-name"
-                            data-soccer-detail-away-name
-                        ></div>
-
-                    </div>
-
-                </div>
+    <div class="soccer-match-separator">
+        －
+    </div>
 
 
-                <!-- =====================
-                     合計得点
-                ====================== -->
+    <div class="soccer-match-column">
 
-                <div class="soccer-live-score-row">
+        <div
+            class="soccer-match-team-name"
+            data-soccer-detail-away-name
+        ></div>
 
-                    <div
-                        id="soccerDetailLeftTotal"
-                        class="soccer-live-score"
-                    >
-                        0
-                    </div>
+        <div
+            id="soccerDetailRightTotal"
+            class="soccer-live-score"
+        >
+            0
+        </div>
 
-                    <div class="soccer-score-dash">
-                        －
-                    </div>
+    </div>
 
-                    <div
-                        id="soccerDetailRightTotal"
-                        class="soccer-live-score"
-                    >
-                        0
-                    </div>
-
-                </div>
-
+</div>
             </div>
 
 
