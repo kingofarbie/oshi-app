@@ -1760,7 +1760,7 @@
 
 /* 項目名と左スコアをさらに離す */
 .soccer-detail-screen .soccer-score-row label {
-    margin-right: 20px;
+    margin-right: 60px;
 }
 
 /* スコアの「数字」と「－」の間を広げる */
@@ -1774,7 +1774,7 @@
 @media (max-width: 600px) {
 
     .soccer-detail-screen .soccer-score-row label {
-        margin-right: 19px;
+        margin-right: 57px;
     }
 
     .soccer-detail-screen .soccer-detail-score {
