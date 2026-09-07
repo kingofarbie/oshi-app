@@ -1765,7 +1765,7 @@
 
 /* スコアの「数字」と「－」の間を広げる */
 .soccer-detail-screen .soccer-detail-score {
-    letter-spacing: 8px;
+    letter-spacing: 20px;
 }
 
 
@@ -1778,6 +1778,6 @@
     }
 
     .soccer-detail-screen .soccer-detail-score {
-        letter-spacing: 7px;
+        letter-spacing: 20px;
     }
 }
