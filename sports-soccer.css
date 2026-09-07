@@ -1622,3 +1622,85 @@
     }
 
 }
+
+
+/* =====================================================
+   ⚽ 結果画面 詳細スコア
+   合計スコアの「－」と同じ縦位置に揃える
+   ※ JS・HTML・計算ロジックは変更しない
+===================================================== */
+
+.soccer-detail-screen .soccer-score-row {
+    width: 100%;
+    margin-bottom: 16px;
+
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1fr)
+        40px
+        minmax(0, 1fr);
+
+    align-items: center;
+    position: relative;
+}
+
+.soccer-detail-screen .soccer-score-row label {
+    grid-column: 1;
+    grid-row: 1;
+
+    justify-self: end;
+
+    margin: 0 10px 0 0;
+
+    font-size: 16px;
+    font-weight: 800;
+    text-align: right;
+}
+
+.soccer-detail-screen .soccer-detail-score {
+    grid-column: 1 / 4;
+    grid-row: 1;
+
+    justify-self: center;
+
+    width: 120px;
+    min-width: 120px;
+
+    box-sizing: border-box;
+
+    margin: 0;
+
+    text-align: center;
+    white-space: nowrap;
+
+    font-family: monospace;
+    font-size: 24px;
+    line-height: 1;
+    font-weight: 900;
+}
+
+
+/* ---------- スマホ ---------- */
+
+@media (max-width: 600px) {
+
+    .soccer-detail-screen .soccer-score-row {
+        margin-bottom: 14px;
+
+        grid-template-columns:
+            minmax(0, 1fr)
+            30px
+            minmax(0, 1fr);
+    }
+
+    .soccer-detail-screen .soccer-score-row label {
+        margin-right: 10px;
+        font-size: 14px;
+    }
+
+    .soccer-detail-screen .soccer-detail-score {
+        width: 110px;
+        min-width: 110px;
+        font-size: 22px;
+    }
+}
