@@ -3892,12 +3892,12 @@ function applySoccerDreamySky(){
     ================================================= */
 
     const moonTop =
-        35 +
-        Math.random() * 100;
+        40 +
+        Math.random() * 220;
 
     const moonRight =
-        10 +
-        Math.random() * 35;
+        5 +
+        Math.random() * 75;
 
 
     /* =================================================
@@ -3905,8 +3905,8 @@ function applySoccerDreamySky(){
     ================================================= */
 
     const moonSize =
-        58 +
-        Math.random() * 30;
+        30 +
+        Math.random() * 100;
 
 
     /* =================================================
