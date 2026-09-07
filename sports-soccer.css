@@ -1892,11 +1892,11 @@
 
     position: absolute;
 
-    top: 55px;
-    right: 24px;
+top: var(--soccer-moon-top, 55px);
+right: var(--soccer-moon-right, 24px);
 
-    width: 72px;
-    height: 72px;
+width: var(--soccer-moon-size, 72px);
+height: var(--soccer-moon-size, 72px);
 
     border-radius: 50%;
 
@@ -1929,11 +1929,11 @@
 
     position: absolute;
 
-    top: 47px;
-    right: 6px;
+top: calc(var(--soccer-moon-top, 55px) - 8px);
+right: calc(var(--soccer-moon-right, 24px) - 18px);
 
-    width: 72px;
-    height: 72px;
+width: var(--soccer-moon-size, 72px);
+height: var(--soccer-moon-size, 72px);
 
     border-radius: 50%;
 
@@ -1974,22 +1974,21 @@
 
     .soccer-detail-screen::before {
 
-        top: 48px;
-        right: 16px;
+        top: var(--soccer-moon-top, 48px);
+        right: var(--soccer-moon-right, 16px);
 
-        width: 58px;
-        height: 58px;
+        width: var(--soccer-moon-size, 58px);
+        height: var(--soccer-moon-size, 58px);
 
     }
 
-
     .soccer-detail-screen::after {
 
-        top: 41px;
-        right: 1px;
+        top: calc(var(--soccer-moon-top, 48px) - 7px);
+        right: calc(var(--soccer-moon-right, 16px) - 14px);
 
-        width: 58px;
-        height: 58px;
+        width: var(--soccer-moon-size, 58px);
+        height: var(--soccer-moon-size, 58px);
 
     }
 
