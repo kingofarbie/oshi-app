@@ -1708,19 +1708,28 @@
 
 
 /* =====================================================
-   ⚽ 結果画面 詳細スコア サイズ調整
+   ⚽ 結果画面 詳細スコア 最終サイズ調整
    ※ 中央の「－」の位置は変更しない
 ===================================================== */
 
+/* 前半・後半・延長前半・延長後半 */
 .soccer-detail-screen .soccer-score-row label {
-    font-size: 19px;
-    margin-right: 22px;
+    font-size: 22px;
+    margin-right: 32px;
+    white-space: nowrap;
 }
 
+/* 延長・PK */
+.soccer-detail-screen .soccer-checkbox-row {
+    font-size: 22px;
+    font-weight: 800;
+}
+
+/* スコア */
 .soccer-detail-screen .soccer-detail-score {
-    width: 150px;
-    min-width: 150px;
-    font-size: 30px;
+    width: 170px;
+    min-width: 170px;
+    font-size: 34px;
 }
 
 
@@ -1729,14 +1738,17 @@
 @media (max-width: 600px) {
 
     .soccer-detail-screen .soccer-score-row label {
-        font-size: 17px;
-        margin-right: 16px;
+        font-size: 20px;
+        margin-right: 26px;
+    }
+
+    .soccer-detail-screen .soccer-checkbox-row {
+        font-size: 20px;
     }
 
     .soccer-detail-screen .soccer-detail-score {
-        width: 140px;
-        min-width: 140px;
-        font-size: 28px;
+        width: 155px;
+        min-width: 155px;
+        font-size: 32px;
     }
 }
-
