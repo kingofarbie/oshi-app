@@ -1752,3 +1752,32 @@
         font-size: 32px;
     }
 }
+
+
+/* =====================================================
+   ⚽ 詳細スコア 間隔調整
+===================================================== */
+
+/* 項目名と左スコアをさらに離す */
+.soccer-detail-screen .soccer-score-row label {
+    margin-right: 50px;
+}
+
+/* スコアの「数字」と「－」の間を広げる */
+.soccer-detail-screen .soccer-detail-score {
+    letter-spacing: 8px;
+}
+
+
+/* ---------- スマホ ---------- */
+
+@media (max-width: 600px) {
+
+    .soccer-detail-screen .soccer-score-row label {
+        margin-right: 38px;
+    }
+
+    .soccer-detail-screen .soccer-detail-score {
+        letter-spacing: 7px;
+    }
+}
