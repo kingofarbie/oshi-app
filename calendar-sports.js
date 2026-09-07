@@ -214,6 +214,84 @@ function getCurrentSportsGames(){
 
 
 /* =====================================================
+   🏆 結果が登録されている日だけ取得
+===================================================== */
+
+function getSportsResultDates(){
+
+    const games =
+        getCurrentSportsGames();
+
+    if(
+        !games ||
+        typeof games !== "object"
+    ){
+        return [];
+    }
+
+    return Object.keys(games)
+        .filter(date => {
+
+            const game =
+                games[date];
+
+            return (
+                game &&
+                typeof game === "object"
+            );
+
+        })
+        .sort();
+}
+
+
+
+
+/* =====================================================
+   ◀️ 前の結果がある日を取得
+===================================================== */
+
+function getPreviousSportsResultDate(date){
+
+    const resultDates =
+        getSportsResultDates();
+
+    const index =
+        resultDates.indexOf(date);
+
+    if(index <= 0){
+        return null;
+    }
+
+    return resultDates[index - 1];
+}
+
+
+/* =====================================================
+   ▶️ 次の結果がある日を取得
+===================================================== */
+
+function getNextSportsResultDate(date){
+
+    const resultDates =
+        getSportsResultDates();
+
+    const index =
+        resultDates.indexOf(date);
+
+    if(
+        index === -1 ||
+        index >= resultDates.length - 1
+    ){
+        return null;
+    }
+
+    return resultDates[index + 1];
+}
+
+
+
+/* =====================================================
    🏟️ 現在選択中スポーツの games を保存
 ===================================================== */
 
@@ -1409,6 +1487,39 @@ document.addEventListener(
         loadSportsSettings();
 
         renderSportsCalendar();
+
+
+        /* =================================================
+           👆 スポーツ結果画面
+           左右スワイプを接続
+        ================================================= */
+
+        const sportsResultPage =
+            document.getElementById(
+                "sportsGameDetailPage"
+            );
+
+
+        if(sportsResultPage){
+
+            sportsResultPage.addEventListener(
+                "touchstart",
+                sportsResultTouchStart,
+                {
+                    passive: true
+                }
+            );
+
+
+            sportsResultPage.addEventListener(
+                "touchend",
+                sportsResultTouchEnd,
+                {
+                    passive: true
+                }
+            );
+
+        }
 
     }
 );
@@ -2809,4 +2920,166 @@ function openSportsGameEditPage(date){
     alert(
         "このスポーツの試合編集にはまだ対応していません。"
     );
+}
+
+
+
+/* =====================================================
+   👆 結果画面スワイプ
+   結果がある日だけ前後へ移動
+===================================================== */
+
+function swipeSportsResult(direction){
+
+    const currentDate =
+        sportsSelectedDate;
+
+    if(!currentDate){
+        return;
+    }
+
+    let targetDate = null;
+
+    if(direction === "next"){
+
+        targetDate =
+            getNextSportsResultDate(
+                currentDate
+            );
+
+    }
+
+    if(direction === "previous"){
+
+        targetDate =
+            getPreviousSportsResultDate(
+                currentDate
+            );
+
+    }
+
+    if(!targetDate){
+        return;
+    }
+
+    openSportsGameDetailPage(
+        targetDate
+    );
+}
+
+/* =====================================================
+   👆 スポーツ結果画面
+   左右スワイプで結果のある日だけ移動
+===================================================== */
+
+let sportsResultTouchStartX = 0;
+let sportsResultTouchStartY = 0;
+
+
+/* =====================================================
+   スワイプ開始
+===================================================== */
+
+function sportsResultTouchStart(event){
+
+    if(
+        !event.touches ||
+        !event.touches.length
+    ){
+        return;
+    }
+
+    sportsResultTouchStartX =
+        event.touches[0].clientX;
+
+    sportsResultTouchStartY =
+        event.touches[0].clientY;
+}
+
+
+/* =====================================================
+   スワイプ終了
+===================================================== */
+
+function sportsResultTouchEnd(event){
+
+    if(
+        !event.changedTouches ||
+        !event.changedTouches.length
+    ){
+        return;
+    }
+
+    const endX =
+        event.changedTouches[0].clientX;
+
+    const endY =
+        event.changedTouches[0].clientY;
+
+
+    const diffX =
+        endX -
+        sportsResultTouchStartX;
+
+    const diffY =
+        endY -
+        sportsResultTouchStartY;
+
+
+    /*
+       縦方向の動きが大きい場合は
+       スワイプとして扱わない
+    */
+
+    if(
+        Math.abs(diffY) >
+        Math.abs(diffX)
+    ){
+        return;
+    }
+
+
+    /*
+       少し指を動かしただけでは
+       スワイプと判定しない
+    */
+
+    const SWIPE_THRESHOLD = 60;
+
+    if(
+        Math.abs(diffX) <
+        SWIPE_THRESHOLD
+    ){
+        return;
+    }
+
+
+    /*
+       右へスワイプ
+       → 前の結果
+    */
+
+    if(diffX > 0){
+
+        swipeSportsResult(
+            "previous"
+        );
+
+        return;
+    }
+
+
+    /*
+       左へスワイプ
+       → 次の結果
+    */
+
+    if(diffX < 0){
+
+        swipeSportsResult(
+            "next"
+        );
+
+    }
+
 }
