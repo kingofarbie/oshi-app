@@ -191,23 +191,22 @@
 }
 
 
-/*
-   ホーム・アウェイの小さい文字は
-   結果画面では表示しない
-*/
-
 .soccer-match-side {
+
     display: block;
+
     margin-bottom: 4px;
+
     font-size: 13px;
+
     font-weight: 600;
+
     opacity: 0.7;
+
     text-align: center;
+
 }
 
-/*
-   チーム名を大きく
-*/
 
 .soccer-match-team-name {
 
@@ -1514,312 +1513,258 @@
 
 }
 
+
 /* =====================================================
    ⚽ 結果画面 詳細スコア
-   元のHTML・JSのまま、横並びで大きく表示
+   前半・後半・延長・PKを同じルールで表示
+
+   ・合計スコアの「－」と同じ中心線
+   ・項目名とスコアの間隔を統一
+   ・スコアサイズを統一
+   ・数字と「－」の間隔を統一
+   ・JS / HTML / 計算ロジックは変更しない
 ===================================================== */
-
-.soccer-detail-screen .soccer-score-row {
-    width: 100%;
-    margin-bottom: 16px;
-    display: grid;
-    grid-template-columns: 70px 120px;
-    justify-content: center;
-    align-items: center;
-}
-
-.soccer-detail-screen .soccer-score-row label {
-    flex: 0 0 70px;
-    margin: 0;
-    text-align: right;
-    font-size: 16px;
-    font-weight: 800;
-}
-
-.soccer-detail-screen .soccer-detail-score {
-    flex: 0 0 120px;
-    width: 120px;
-    min-width: 120px;
-    box-sizing: border-box;
-
-    text-align: center;
-    white-space: nowrap;
-
-    font-family: monospace;
-    font-size: 24px;
-    line-height: 1;
-    font-weight: 900;
-}
 
 
 /* ---------------------------------
-   📱 スマートフォン
+   詳細スコアの行
 --------------------------------- */
 
-@media (max-width: 600px) {
-
-    .soccer-detail-screen .soccer-score-row {
-        margin-bottom: 14px;
-    }
-
-    .soccer-detail-screen .soccer-score-row label {
-        flex-basis: 60px;
-        margin-right: 10px;
-        font-size: 14px;
-    }
-
-.soccer-detail-screen .soccer-detail-score {
-    flex-basis: 110px;
-    width: 110px;
-    min-width: 110px;
-
-    font-family: monospace;
-    font-size: 22px;
-}
-
-}
-
-
-
-/* =====================================================
-   ⚽ 結果画面 PK
-   「－」を通常スコアと同じ中央位置へ
-===================================================== */
-
-.soccer-detail-screen .soccer-penalty-section
-.soccer-penalty-area
-.soccer-score-row {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-}
-
-.soccer-detail-screen .soccer-penalty-section
-.soccer-detail-score {
-    flex: 0 0 120px;
-    width: 120px;
-    min-width: 120px;
-    box-sizing: border-box;
-
-    text-align: center;
-    white-space: nowrap;
-
-    font-family: monospace;
-    font-size: 24px;
-    line-height: 1;
-    font-weight: 900;
-}
-
-@media (max-width: 600px) {
-
-    .soccer-detail-screen .soccer-penalty-section
-    .soccer-detail-score {
-        flex-basis: 110px;
-        width: 110px;
-        min-width: 110px;
-        font-size: 22px;
-    }
-
-}
-
-
-/* =====================================================
-   ⚽ 結果画面 詳細スコア
-   合計スコアの「－」と同じ縦位置に揃える
-   ※ JS・HTML・計算ロジックは変更しない
-===================================================== */
-
 .soccer-detail-screen .soccer-score-row {
+
     width: 100%;
+
     margin-bottom: 16px;
 
     display: grid;
+
     grid-template-columns:
         minmax(0, 1fr)
         40px
         minmax(0, 1fr);
 
     align-items: center;
+
     position: relative;
+
 }
 
+
+/* ---------------------------------
+   前半・後半・延長前半・延長後半
+--------------------------------- */
+
 .soccer-detail-screen .soccer-score-row label {
+
     grid-column: 1;
+
     grid-row: 1;
 
     justify-self: end;
 
-    margin: 0 10px 0 0;
+    margin: 0 100px 0 0;
 
-    font-size: 16px;
+    font-size: 22px;
+
     font-weight: 800;
+
     text-align: right;
+
+    white-space: nowrap;
+
 }
 
+
+/* ---------------------------------
+   詳細スコア本体
+
+   3列全部を使って中央配置
+   → 「－」が合計スコアの
+      「－」と同じ中心線になる
+--------------------------------- */
+
 .soccer-detail-screen .soccer-detail-score {
+
     grid-column: 1 / 4;
+
     grid-row: 1;
 
     justify-self: center;
 
-    width: 120px;
-    min-width: 120px;
+    width: 170px;
+
+    min-width: 170px;
 
     box-sizing: border-box;
 
     margin: 0;
 
     text-align: center;
+
     white-space: nowrap;
 
     font-family: monospace;
-    font-size: 24px;
+
+    font-size: 34px;
+
     line-height: 1;
+
     font-weight: 900;
+
+    letter-spacing: 20px;
+
 }
 
 
-/* ---------- スマホ ---------- */
+/* ---------------------------------
+   延長・PK
+   前半・後半と同じ文字サイズ
+--------------------------------- */
+
+.soccer-detail-screen .soccer-checkbox-row {
+
+    font-size: 22px;
+
+    font-weight: 800;
+
+}
+
+
+/* ---------------------------------
+   PKスコア
+
+   通常スコアと完全に同じサイズ・間隔
+--------------------------------- */
+
+.soccer-detail-screen .soccer-penalty-section
+.soccer-detail-score {
+
+    width: 170px;
+
+    min-width: 170px;
+
+    font-size: 34px;
+
+    letter-spacing: 20px;
+
+}
+
+
+/* ---------------------------------
+   PKのスコア行も
+   合計スコアと同じ中心線へ
+--------------------------------- */
+
+.soccer-detail-screen .soccer-penalty-section
+.soccer-penalty-area
+.soccer-score-row {
+
+    width: 100%;
+
+    margin-bottom: 16px;
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        40px
+        minmax(0, 1fr);
+
+    align-items: center;
+
+    position: relative;
+
+}
+
+
+.soccer-detail-screen .soccer-penalty-section
+.soccer-penalty-area
+.soccer-detail-score {
+
+    grid-column: 1 / 4;
+
+    grid-row: 1;
+
+    justify-self: center;
+
+}
+
+
+/* =====================================================
+   📱 結果画面 詳細スコア
+   スマートフォン
+===================================================== */
 
 @media (max-width: 600px) {
 
     .soccer-detail-screen .soccer-score-row {
+
         margin-bottom: 14px;
 
         grid-template-columns:
             minmax(0, 1fr)
             30px
             minmax(0, 1fr);
+
     }
 
+
     .soccer-detail-screen .soccer-score-row label {
-        margin-right: 10px;
-        font-size: 14px;
+
+        margin-right: 100px;
+
+        font-size: 20px;
+
     }
+
 
     .soccer-detail-screen .soccer-detail-score {
-        width: 110px;
-        min-width: 110px;
-        font-size: 22px;
+
+        width: 155px;
+
+        min-width: 155px;
+
+        font-size: 32px;
+
+        letter-spacing: 20px;
+
     }
-}
 
-
-
-/* =====================================================
-   ⚽ 結果画面 詳細スコア 最終サイズ調整
-   ※ 中央の「－」の位置は変更しない
-===================================================== */
-
-/* 前半・後半・延長前半・延長後半 */
-.soccer-detail-screen .soccer-score-row label {
-    font-size: 22px;
-    margin-right: 32px;
-    white-space: nowrap;
-}
-
-/* 延長・PK */
-.soccer-detail-screen .soccer-checkbox-row {
-    font-size: 22px;
-    font-weight: 800;
-}
-
-/* スコア */
-.soccer-detail-screen .soccer-detail-score {
-    width: 170px;
-    min-width: 170px;
-    font-size: 34px;
-}
-
-
-/* ---------- スマホ ---------- */
-
-@media (max-width: 600px) {
-
-    .soccer-detail-screen .soccer-score-row label {
-        font-size: 20px;
-        margin-right: 26px;
-    }
 
     .soccer-detail-screen .soccer-checkbox-row {
+
         font-size: 20px;
+
+        font-weight: 800;
+
     }
 
-    .soccer-detail-screen .soccer-detail-score {
-        width: 155px;
-        min-width: 155px;
-        font-size: 32px;
-    }
-}
-
-
-/* =====================================================
-   ⚽ 詳細スコア 間隔調整
-===================================================== */
-
-/* 項目名と左スコアをさらに離す */
-.soccer-detail-screen .soccer-score-row label {
-    margin-right: 100px;
-}
-
-/* スコアの「数字」と「－」の間を広げる */
-.soccer-detail-screen .soccer-detail-score {
-    letter-spacing: 20px;
-}
-
-
-/* ---------- スマホ ---------- */
-
-@media (max-width: 600px) {
-
-    .soccer-detail-screen .soccer-score-row label {
-        margin-right: 100px;
-    }
-
-    .soccer-detail-screen .soccer-detail-score {
-        letter-spacing: 20px;
-    }
-}
-
-
-
-/* =====================================================
-   ⚽ PK表示を通常スコアと同じサイズ・位置に統一
-===================================================== */
-
-.soccer-detail-screen .soccer-penalty-section
-.soccer-checkbox-row {
-    font-size: 22px;
-    font-weight: 800;
-    margin-bottom: 16px;
-    text-align: center;
-}
-
-.soccer-detail-screen .soccer-penalty-section
-.soccer-detail-score {
-    width: 170px;
-    min-width: 170px;
-    font-size: 34px;
-    letter-spacing: 16px;
-}
-
-
-/* ---------- スマホ ---------- */
-
-@media (max-width: 600px) {
 
     .soccer-detail-screen .soccer-penalty-section
-    .soccer-checkbox-row {
-        font-size: 20px;
+    .soccer-penalty-area
+    .soccer-score-row {
+
         margin-bottom: 14px;
+
+        grid-template-columns:
+            minmax(0, 1fr)
+            30px
+            minmax(0, 1fr);
+
     }
+
 
     .soccer-detail-screen .soccer-penalty-section
     .soccer-detail-score {
+
         width: 155px;
+
         min-width: 155px;
+
         font-size: 32px;
-        letter-spacing: 14px;
+
+        letter-spacing: 20px;
+
     }
+
 }
