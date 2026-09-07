@@ -1781,3 +1781,45 @@
         letter-spacing: 20px;
     }
 }
+
+
+
+/* =====================================================
+   ⚽ PK表示を通常スコアと同じサイズ・位置に統一
+===================================================== */
+
+.soccer-detail-screen .soccer-penalty-section
+.soccer-checkbox-row {
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.soccer-detail-screen .soccer-penalty-section
+.soccer-detail-score {
+    width: 170px;
+    min-width: 170px;
+    font-size: 34px;
+    letter-spacing: 16px;
+}
+
+
+/* ---------- スマホ ---------- */
+
+@media (max-width: 600px) {
+
+    .soccer-detail-screen .soccer-penalty-section
+    .soccer-checkbox-row {
+        font-size: 20px;
+        margin-bottom: 14px;
+    }
+
+    .soccer-detail-screen .soccer-penalty-section
+    .soccer-detail-score {
+        width: 155px;
+        min-width: 155px;
+        font-size: 32px;
+        letter-spacing: 14px;
+    }
+}
