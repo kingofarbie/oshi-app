@@ -1268,6 +1268,10 @@
 }
 
 
+.sports-result-mark.lose {
+    font-size: 23px;
+    font-weight: 900;
+}
 
 /* ○と△をさらに太く見せる */
 
