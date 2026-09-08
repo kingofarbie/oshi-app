@@ -752,8 +752,22 @@
 /* 勝ち・負け・引分 */
 
 .sports-result-mark.win,
-.sports-result-mark.lose,
 .sports-result-mark.draw {
+
+    color: #e74b67;
+
+    font-size: 18px;
+
+    font-weight: 900;
+
+    font-family:
+        Arial,
+        "Noto Sans JP",
+        sans-serif;
+}
+
+
+.sports-result-mark.lose {
 
     color: #e74b67;
 
@@ -766,6 +780,8 @@
         "Noto Sans JP",
         sans-serif;
 }
+
+
 
 /* 予定・中止・延期 */
 
