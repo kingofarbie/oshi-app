@@ -768,6 +768,19 @@
 }
 
 
+/* ○と△を×と同じくらい太く見せる */
+
+.sports-result-mark.win,
+.sports-result-mark.draw {
+
+    text-shadow:
+        0.5px 0 0 #e74b67,
+        -0.5px 0 0 #e74b67,
+        0 0.5px 0 #e74b67,
+        0 -0.5px 0 #e74b67;
+}
+
+
 /* 予定・中止・延期 */
 
 .sports-result-mark.scheduled,
