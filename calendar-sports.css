@@ -726,6 +726,59 @@
 
 
 /* =====================================================
+   🏟️ 試合結果
+===================================================== */
+
+.sports-result-mark {
+
+    display: block;
+
+    width: 100%;
+
+    margin-top: 2px;
+
+    text-align: center;
+
+    font-size: 18px;
+
+    line-height: 1;
+
+    font-weight: 900;
+
+    white-space: nowrap;
+}
+
+
+/* 勝ち・負け・引分 */
+
+.sports-result-mark.win,
+.sports-result-mark.lose,
+.sports-result-mark.draw {
+
+    color: #e74b67;
+
+    font-size: 18px;
+
+    font-weight: 900;
+}
+
+
+/* 予定・中止・延期 */
+
+.sports-result-mark.scheduled,
+.sports-result-mark.cancelled,
+.sports-result-mark.postponed {
+
+    color: var(--text);
+
+    font-size: 11px;
+
+    font-weight: 900;
+}
+
+
+
+/* =====================================================
    📅 祝日
 ===================================================== */
 
