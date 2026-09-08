@@ -700,27 +700,20 @@
 /* 対戦相手 */
 
 .sports-game-preview div {
-
+    text-align: center;
     white-space: nowrap;
-
     overflow: hidden;
-
     text-overflow: ellipsis;
 }
 
 
 /* スコア */
-
 .sports-game-preview strong {
-
     display: block;
-
     margin-top: 2px;
-
+    text-align: center;
     white-space: nowrap;
-
     color: var(--text);
-
     font-size: 12px;
 }
 
