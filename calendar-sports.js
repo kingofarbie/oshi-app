@@ -1004,12 +1004,71 @@ async function renderSportsCalendar(){
 
 
         let scoreHTML = "";
+        let resultMarkHTML = "";
 
 
 if(game){
 
     let teamScore = 0;
     let opponentScore = 0;
+
+        /* =====================
+       試合結果マーク
+    ===================== */
+
+    if(game.result === "win"){
+
+        resultMarkHTML = `
+            <span class="sports-result-mark win">
+                ○
+            </span>
+        `;
+
+    }else if(game.result === "lose"){
+
+        resultMarkHTML = `
+            <span class="sports-result-mark lose">
+                ×
+            </span>
+        `;
+
+    }else if(game.result === "draw"){
+
+        resultMarkHTML = `
+            <span class="sports-result-mark draw">
+                △
+            </span>
+        `;
+
+    }else if(game.result === "scheduled"){
+
+        resultMarkHTML = `
+            <span class="sports-result-mark scheduled">
+                －
+            </span>
+        `;
+
+    }else if(game.result === "cancelled"){
+
+        resultMarkHTML = `
+            <span class="sports-result-mark cancelled">
+                中止
+            </span>
+        `;
+
+    }else if(game.result === "postponed"){
+
+        resultMarkHTML = `
+            <span class="sports-result-mark postponed">
+                延期
+            </span>
+        `;
+
+    }
+
+
+
+
 
 
     /*
@@ -1125,26 +1184,30 @@ else if(
 
 
 
-    scoreHTML = `
+scoreHTML = `
 
-        <div class="sports-game-preview">
+    <div class="sports-game-preview">
 
-            <div>
-                ${escapeSportsHTML(
-                    game.opponent ||
-                    "対戦相手"
-                )}
-            </div>
-
-            <strong>
-                ${teamScore}
-                -
-                ${opponentScore}
-            </strong>
-
+        <div>
+            ${escapeSportsHTML(
+                game.opponent ||
+                "対戦相手"
+            )}
         </div>
 
-    `;
+        <strong>
+            ${teamScore}
+            -
+            ${opponentScore}
+        </strong>
+
+        ${resultMarkHTML}
+
+    </div>
+
+`;
+
+
 
 }
 

@@ -2420,42 +2420,58 @@ const battingOrder =
        結果表示
     ================================================= */
 
-    let resultHTML = "";
+let resultHTML = "";
 
 
-    if(game.result === "win"){
+if(game.result === "win"){
 
-        resultHTML = `
-            <div class="baseball-view-result win">
-                🏆 勝ち
-            </div>
-        `;
+    resultHTML = `
+        <div class="baseball-view-result win">
+            ○ 勝ち
+        </div>
+    `;
 
-    }else if(game.result === "lose"){
+}else if(game.result === "lose"){
 
-        resultHTML = `
-            <div class="baseball-view-result lose">
-                😢 負け
-            </div>
-        `;
+    resultHTML = `
+        <div class="baseball-view-result lose">
+            × 負け
+        </div>
+    `;
 
-    }else if(game.result === "draw"){
+}else if(game.result === "draw"){
 
-        resultHTML = `
-            <div class="baseball-view-result draw">
-                🤝 引き分け
-            </div>
-        `;
+    resultHTML = `
+        <div class="baseball-view-result draw">
+            △ 引分
+        </div>
+    `;
 
-    }else if(game.result === "cancelled"){
+}else if(game.result === "scheduled"){
 
-        resultHTML = `
-            <div class="baseball-view-result cancelled">
-                ⛔ 中止
-            </div>
-        `;
+    resultHTML = `
+        <div class="baseball-view-result scheduled">
+            － 予定
+        </div>
+    `;
 
-    }
+}else if(game.result === "cancelled"){
+
+    resultHTML = `
+        <div class="baseball-view-result cancelled">
+            中止
+        </div>
+    `;
+
+}else if(game.result === "postponed"){
+
+    resultHTML = `
+        <div class="baseball-view-result postponed">
+            延期
+        </div>
+    `;
+
+}
 
 
     /* =================================================
