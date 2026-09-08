@@ -1257,6 +1257,44 @@
     }
 
 
+    .sports-result-mark {
+
+    font-size: 20px;
+
+    font-weight: 900;
+
+    line-height: 1;
+
+}
+
+
+
+/* ○と△をさらに太く見せる */
+
+.sports-result-mark.win,
+.sports-result-mark.draw {
+
+    text-shadow:
+        0.6px 0 0 #e74b67,
+        -0.6px 0 0 #e74b67,
+        0 0.6px 0 #e74b67,
+        0 -0.6px 0 #e74b67;
+}
+
+
+/* 中止・延期・予定 */
+
+.sports-result-mark.scheduled,
+.sports-result-mark.cancelled,
+.sports-result-mark.postponed {
+
+    font-size: 13px;
+
+    font-weight: 900;
+
+}
+
+
     /* =====================
        祝日
     ===================== */
@@ -1712,12 +1750,6 @@
         font-size: 17px;
 
     }
-
-
-
-
-
-
 
     .sports-current-select {
 
