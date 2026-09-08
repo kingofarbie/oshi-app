@@ -4110,34 +4110,48 @@ function setSoccerDetailText(
 ===================================================== */
 
 function getSoccerResultLabel(
-    result
+result
 ){
 
-    switch(result){
+switch(result){
 
-        case "win":
+    case "win":
 
-            return "🏆 勝ち";
-
-
-        case "lose":
-
-            return "😢 負け";
+        return "○ 勝ち";
 
 
-        case "draw":
+    case "lose":
 
-            return "🤝 引き分け";
+        return "× 負け";
 
 
-        default:
+    case "draw":
 
-            return "";
+        return "△ 引分";
 
-    }
+
+    case "scheduled":
+
+        return "－ 予定";
+
+
+    case "cancelled":
+
+        return "中止";
+
+
+    case "postponed":
+
+        return "延期";
+
+
+    default:
+
+        return "";
 
 }
 
+}
 
 /* =====================================================
    ⚽ 試合結果編集へ

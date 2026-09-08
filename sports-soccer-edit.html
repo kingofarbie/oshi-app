@@ -283,18 +283,29 @@
 
     <!-- =====================
          結果
-    ====================== --><div class="soccer-info-section">
+    ====================== -->
+    
+    <div class="soccer-info-section">
 
     <label for="soccerEditResult">試合結果</label>
 
-    <select id="soccerEditResult">
+<select id="soccerEditResult">
+    
+    <option value="">未設定</option>
 
-        <option value="win">勝ち</option>
-        <option value="draw">引き分け</option>
-        <option value="loss">負け</option>
-        <option value="pending">未確定</option>
+<option value="win">○ 勝ち</option>
 
-    </select>
+<option value="lose">× 負け</option>
+
+<option value="draw">△ 引分</option>
+
+<option value="scheduled">－ 予定</option>
+
+<option value="cancelled">中止</option>
+
+<option value="postponed">延期</option>
+
+</select>
 
 </div>
 
