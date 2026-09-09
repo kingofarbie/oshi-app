@@ -1993,3 +1993,438 @@ height: var(--soccer-moon-size, 72px);
     }
 
 }
+
+
+
+
+
+/* =====================================================
+   ⚽ 昼のゆめかわサッカー場背景
+   ===================================================== */
+
+.soccer-field-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+/* -----------------------------------------------------
+   ☀️ 昼空
+   ----------------------------------------------------- */
+
+.soccer-edit-screen {
+    position: relative;
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 75% 12%,
+            rgba(255, 255, 255, 0.9) 0%,
+            rgba(255, 255, 255, 0.35) 12%,
+            transparent 30%
+        ),
+        linear-gradient(
+            180deg,
+            #9edcff 0%,
+            #c9f0ff 45%,
+            #e8fbff 65%,
+            #b9ed9d 65%,
+            #78d46b 100%
+        );
+}
+
+/* -----------------------------------------------------
+   🌱 サッカーコート
+   ----------------------------------------------------- */
+
+.soccer-field-pitch {
+    position: absolute;
+
+    left: -10%;
+    right: -10%;
+    bottom: -5%;
+
+    height: 48%;
+
+    background:
+        repeating-linear-gradient(
+            90deg,
+            rgba(255,255,255,0.035) 0,
+            rgba(255,255,255,0.035) 8%,
+            rgba(0,120,50,0.025) 8%,
+            rgba(0,120,50,0.025) 16%
+        ),
+        linear-gradient(
+            180deg,
+            #83df78 0%,
+            #5dca65 100%
+        );
+
+    border-radius: 50% 50% 0 0;
+
+    box-shadow:
+        inset 0 8px 20px rgba(255,255,255,0.18),
+        inset 0 -20px 35px rgba(0,100,40,0.15);
+}
+
+/* -----------------------------------------------------
+   ⚪ コート中央線
+   ----------------------------------------------------- */
+
+.soccer-field-halfway {
+    position: absolute;
+
+    left: 50%;
+    top: 0;
+    bottom: 0;
+
+    width: 3px;
+
+    background: rgba(255,255,255,0.72);
+
+    transform: translateX(-50%);
+}
+
+/* -----------------------------------------------------
+   ⚪ センターサークル
+   ----------------------------------------------------- */
+
+.soccer-field-center-circle {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 110px;
+    height: 110px;
+
+    border: 3px solid rgba(255,255,255,0.72);
+    border-radius: 50%;
+
+    transform: translate(-50%, -50%);
+}
+
+/* -----------------------------------------------------
+   ⚪ ペナルティエリア
+   ----------------------------------------------------- */
+
+.soccer-field-penalty-area {
+    position: absolute;
+
+    top: 22%;
+
+    width: 22%;
+    height: 56%;
+
+    border: 3px solid rgba(255,255,255,0.68);
+}
+
+.soccer-penalty-left {
+    left: 0;
+    border-left: none;
+    border-radius: 0 20px 20px 0;
+}
+
+.soccer-penalty-right {
+    right: 0;
+    border-right: none;
+    border-radius: 20px 0 0 20px;
+}
+
+/* -----------------------------------------------------
+   ⚪ ゴールエリア
+   ----------------------------------------------------- */
+
+.soccer-field-goal-area {
+    position: absolute;
+
+    top: 36%;
+
+    width: 10%;
+    height: 28%;
+
+    border: 3px solid rgba(255,255,255,0.68);
+}
+
+.soccer-goal-left {
+    left: 0;
+    border-left: none;
+}
+
+.soccer-goal-right {
+    right: 0;
+    border-right: none;
+}
+
+/* -----------------------------------------------------
+   🥅 ゴール
+   ----------------------------------------------------- */
+
+.soccer-field-goal {
+    position: absolute;
+
+    bottom: 22%;
+
+    width: 70px;
+    height: 48px;
+
+    border: 5px solid rgba(255,255,255,0.88);
+
+    border-radius: 4px;
+
+    background:
+        repeating-linear-gradient(
+            0deg,
+            transparent 0,
+            transparent 8px,
+            rgba(255,255,255,0.28) 9px
+        ),
+        repeating-linear-gradient(
+            90deg,
+            transparent 0,
+            transparent 8px,
+            rgba(255,255,255,0.28) 9px
+        );
+
+    box-shadow:
+        0 5px 15px rgba(0,80,40,0.15);
+}
+
+.soccer-field-goal-left {
+    left: 4%;
+}
+
+.soccer-field-goal-right {
+    right: 4%;
+}
+
+/* -----------------------------------------------------
+   ⚽ ボール
+   ----------------------------------------------------- */
+
+.soccer-field-ball {
+    position: absolute;
+
+    left: 48%;
+    bottom: 15%;
+
+    font-size: 42px;
+
+    filter:
+        drop-shadow(0 7px 5px rgba(0,80,40,0.2));
+
+    animation:
+        soccerBallFloat 3.8s ease-in-out infinite;
+}
+
+/* -----------------------------------------------------
+   ☁️ 雲
+   ----------------------------------------------------- */
+
+.soccer-field-cloud {
+    position: absolute;
+
+    width: 130px;
+    height: 42px;
+
+    border-radius: 50px;
+
+    background: rgba(255,255,255,0.72);
+
+    filter: blur(1px);
+
+    box-shadow:
+        30px -12px 0 -3px rgba(255,255,255,0.68),
+        65px -5px 0 4px rgba(255,255,255,0.72);
+}
+
+.soccer-cloud-1 {
+    top: 12%;
+    left: 8%;
+
+    animation:
+        soccerCloudMove1 28s linear infinite;
+}
+
+.soccer-cloud-2 {
+    top: 24%;
+    right: 5%;
+
+    transform: scale(0.75);
+
+    opacity: 0.65;
+
+    animation:
+        soccerCloudMove2 34s linear infinite;
+}
+
+.soccer-cloud-3 {
+    top: 8%;
+    left: 55%;
+
+    transform: scale(0.55);
+
+    opacity: 0.5;
+
+    animation:
+        soccerCloudMove3 40s linear infinite;
+}
+
+/* -----------------------------------------------------
+   ✨ 芝を横切る淡い光
+   ----------------------------------------------------- */
+
+.soccer-field-light {
+    position: absolute;
+
+    left: -30%;
+    bottom: 5%;
+
+    width: 45%;
+    height: 45%;
+
+    background:
+        radial-gradient(
+            ellipse,
+            rgba(255,255,255,0.18),
+            transparent 70%
+        );
+
+    transform: rotate(-8deg);
+
+    animation:
+        soccerFieldLightMove 12s ease-in-out infinite;
+}
+
+/* -----------------------------------------------------
+   🎈 アニメーション
+   ----------------------------------------------------- */
+
+@keyframes soccerBallFloat {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(-8px) rotate(8deg);
+    }
+
+}
+
+@keyframes soccerCloudMove1 {
+
+    0% {
+        transform: translateX(0);
+    }
+
+    50% {
+        transform: translateX(45px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+
+}
+
+@keyframes soccerCloudMove2 {
+
+    0% {
+        transform: translateX(0) scale(0.75);
+    }
+
+    50% {
+        transform: translateX(-55px) scale(0.75);
+    }
+
+    100% {
+        transform: translateX(0) scale(0.75);
+    }
+
+}
+
+@keyframes soccerCloudMove3 {
+
+    0% {
+        transform: translateX(0) scale(0.55);
+    }
+
+    50% {
+        transform: translateX(35px) scale(0.55);
+    }
+
+    100% {
+        transform: translateX(0) scale(0.55);
+    }
+
+}
+
+@keyframes soccerFieldLightMove {
+
+    0% {
+        transform:
+            translateX(0)
+            rotate(-8deg);
+        opacity: 0.25;
+    }
+
+    50% {
+        transform:
+            translateX(260%)
+            rotate(-8deg);
+        opacity: 0.5;
+    }
+
+    100% {
+        transform:
+            translateX(520%)
+            rotate(-8deg);
+        opacity: 0.15;
+    }
+
+}
+
+/* -----------------------------------------------------
+   📱 スマホ
+   ----------------------------------------------------- */
+
+@media (max-width: 600px) {
+
+    .soccer-field-pitch {
+        height: 42%;
+    }
+
+    .soccer-field-center-circle {
+        width: 85px;
+        height: 85px;
+    }
+
+    .soccer-field-goal {
+        width: 52px;
+        height: 38px;
+    }
+
+    .soccer-field-ball {
+        font-size: 34px;
+    }
+
+}
+
+
+/* -----------------------------------------------------
+   ♿ 動きを減らす設定
+   ----------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .soccer-field-ball,
+    .soccer-field-cloud,
+    .soccer-field-light {
+        animation: none;
+    }
+
+}
