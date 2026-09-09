@@ -350,7 +350,7 @@ function renderSoccerGameEditForm(){
 
     const result =
         game?.result ||
-        "pending";
+        "";
 
 
     const location =
