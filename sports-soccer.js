@@ -3081,54 +3081,56 @@ detail.innerHTML = `
              ※背景専用レイヤー
         ================================================= -->
 
-        <div
-            class="soccer-detail-field-bg"
-            aria-hidden="true"
-        >
 
-            <div class="soccer-detail-sky"></div>
+        <div class="soccer-detail-field-bg" aria-hidden="true">
 
-            <div class="soccer-detail-cloud soccer-detail-cloud-1"></div>
+    <!-- 空 -->
+    <div class="soccer-field-sky"></div>
 
-            <div class="soccer-detail-cloud soccer-detail-cloud-2"></div>
+    <!-- 雲 -->
+    <div class="soccer-field-cloud soccer-field-cloud-1"></div>
+    <div class="soccer-field-cloud soccer-field-cloud-2"></div>
+    <div class="soccer-field-cloud soccer-field-cloud-3"></div>
 
-            <div class="soccer-detail-cloud soccer-detail-cloud-3"></div>
+    <!-- サッカーコート -->
+    <div class="soccer-field-pitch">
 
-<div class="soccer-detail-pitch">
+        <!-- コート外周 -->
+        <div class="soccer-field-boundary"></div>
 
-    <!-- コート外枠 -->
-    <div class="soccer-pitch-outline"></div>
+        <!-- 右側ゴールラインは外周右線をそのまま使用 -->
 
-    <!-- ゴールライン -->
-    <div class="soccer-goal-line"></div>
+        <!-- ペナルティエリア -->
+        <div class="soccer-field-penalty-box"></div>
 
-    <!-- ペナルティエリア -->
-    <div class="soccer-penalty-area"></div>
+        <!-- ゴールエリア -->
+        <div class="soccer-field-goal-box"></div>
 
-    <!-- ゴールエリア -->
-    <div class="soccer-goal-area"></div>
+        <!-- PKスポット -->
+        <div class="soccer-field-penalty-spot"></div>
 
-    <!-- ペナルティマーク -->
-    <div class="soccer-penalty-spot"></div>
+        <!-- PKアーク -->
+        <div class="soccer-field-penalty-arc"></div>
 
-    <!-- ペナルティアーク -->
-    <div class="soccer-penalty-arc"></div>
+        <!-- ゴール -->
+        <div class="soccer-field-goal">
 
-    <!-- ゴール -->
-    <div class="soccer-pitch-goal">
-        <div class="soccer-goal-frame"></div>
-        <div class="soccer-goal-net"></div>
+            <div class="soccer-field-goal-frame"></div>
+
+            <div class="soccer-field-goal-net"></div>
+
+        </div>
+
     </div>
+
+    <!-- サッカーボール -->
+    <div class="soccer-field-ball"></div>
+
+    <!-- 光 -->
+    <div class="soccer-field-light"></div>
 
 </div>
 
-            <div class="soccer-detail-ball">
-                ⚽
-            </div>
-
-            <div class="soccer-detail-soft-light"></div>
-
-        </div>
 
 
         <h2 id="soccerGameDetailTitle">
