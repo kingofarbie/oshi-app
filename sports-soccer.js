@@ -3082,23 +3082,21 @@ detail.innerHTML = `
         ================================================= -->
 
 
-        <div class="soccer-detail-field-bg" aria-hidden="true">
+<div class="soccer-detail-field-bg" aria-hidden="true">
 
     <!-- 空 -->
-    <div class="soccer-field-sky"></div>
+    <div class="soccer-detail-sky"></div>
 
     <!-- 雲 -->
-    <div class="soccer-field-cloud soccer-field-cloud-1"></div>
-    <div class="soccer-field-cloud soccer-field-cloud-2"></div>
-    <div class="soccer-field-cloud soccer-field-cloud-3"></div>
+    <div class="soccer-detail-cloud soccer-detail-cloud-1"></div>
+    <div class="soccer-detail-cloud soccer-detail-cloud-2"></div>
+    <div class="soccer-detail-cloud soccer-detail-cloud-3"></div>
 
-    <!-- サッカーコート -->
-    <div class="soccer-field-pitch">
+    <!-- ⚽ ピッチ -->
+    <div class="soccer-detail-pitch">
 
         <!-- コート外周 -->
         <div class="soccer-field-boundary"></div>
-
-        <!-- 右側ゴールラインは外周右線をそのまま使用 -->
 
         <!-- ペナルティエリア -->
         <div class="soccer-field-penalty-box"></div>
@@ -3106,7 +3104,7 @@ detail.innerHTML = `
         <!-- ゴールエリア -->
         <div class="soccer-field-goal-box"></div>
 
-        <!-- PKスポット -->
+        <!-- PKマーク -->
         <div class="soccer-field-penalty-spot"></div>
 
         <!-- PKアーク -->
@@ -3123,14 +3121,13 @@ detail.innerHTML = `
 
     </div>
 
-    <!-- サッカーボール -->
-    <div class="soccer-field-ball"></div>
+    <!-- ボール -->
+    <div class="soccer-detail-ball"></div>
 
-    <!-- 光 -->
-    <div class="soccer-field-light"></div>
+    <!-- 柔らかい光 -->
+    <div class="soccer-detail-soft-light"></div>
 
 </div>
-
 
 
         <h2 id="soccerGameDetailTitle">
