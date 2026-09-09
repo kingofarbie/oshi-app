@@ -3098,8 +3098,6 @@ detail.innerHTML = `
 
             <div class="soccer-detail-goal soccer-detail-goal-left"></div>
 
-            <div class="soccer-detail-goal soccer-detail-goal-right"></div>
-
             <div class="soccer-detail-ball">
                 ⚽
             </div>
