@@ -1934,49 +1934,41 @@
 ===================================================== */
 
 .soccer-detail-pitch {
-
     position: absolute;
 
-    left: -15%;
+    left: -18%;
+    bottom: -12%;
 
-    right: -15%;
-
-    bottom: -8%;
-
-    height: 55%;
-
-    border-radius: 50% 50% 0 0;
+    width: 136%;
+    height: 58%;
 
     background:
-
-        /* 芝の柔らかな縞 */
-
         repeating-linear-gradient(
             90deg,
-            rgba(255,255,255,0.045) 0 55px,
-            rgba(0,100,40,0.035) 55px 110px
+            rgba(255,255,255,0.035) 0 60px,
+            rgba(0,90,35,0.035) 60px 120px
         ),
-
         linear-gradient(
             180deg,
-            #8fd47d 0%,
-            #78c66c 48%,
-            #65b85c 100%
+            #91d783 0%,
+            #7ac86e 50%,
+            #69b95d 100%
         );
 
     transform:
-        perspective(700px)
-        rotateX(52deg);
+        perspective(900px)
+        rotateX(48deg)
+        rotateZ(-4deg);
 
     transform-origin:
         center bottom;
 
-    opacity: 0.32;
+    opacity: 0.34;
 
     filter: blur(2px);
 
+    border-radius: 18px;
 }
-
 
 /* =====================================================
    ⚽ コートライン
