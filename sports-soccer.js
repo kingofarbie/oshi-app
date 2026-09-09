@@ -3083,18 +3083,13 @@ detail.innerHTML = `
 
 <div class="soccer-detail-field-bg" aria-hidden="true">
 
-    <!-- 空 -->
-    <div class="soccer-field-sky"></div>
+    <div class="soccer-field-scene">
 
-    <div class="soccer-field-cloud soccer-field-cloud-1"></div>
-    <div class="soccer-field-cloud soccer-field-cloud-2"></div>
-    <div class="soccer-field-cloud soccer-field-cloud-3"></div>
+        <!-- 芝 -->
+        <div class="soccer-detail-pitch"></div>
 
-    <!-- 芝生 -->
-    <div class="soccer-detail-pitch">
-
-        <!-- コート右側の白線・ゴールをまとめて配置 -->
-        <div class="soccer-field-right-layout">
+        <!-- コートの線・ゴールを全部この中で完成させる -->
+        <div class="soccer-field-markings">
 
             <!-- コート外周 -->
             <div class="soccer-field-boundary"></div>
@@ -3105,10 +3100,10 @@ detail.innerHTML = `
             <!-- ゴールエリア -->
             <div class="soccer-field-goal-box"></div>
 
-            <!-- PKスポット -->
+            <!-- ペナルティスポット -->
             <div class="soccer-field-penalty-spot"></div>
 
-            <!-- PKアーク -->
+            <!-- ペナルティアーク -->
             <div class="soccer-field-penalty-arc"></div>
 
             <!-- ゴール -->
@@ -3120,6 +3115,10 @@ detail.innerHTML = `
         </div>
 
     </div>
+
+    <div class="soccer-field-cloud soccer-field-cloud-1"></div>
+    <div class="soccer-field-cloud soccer-field-cloud-2"></div>
+    <div class="soccer-field-cloud soccer-field-cloud-3"></div>
 
     <div class="soccer-detail-ball"></div>
     <div class="soccer-detail-soft-light"></div>
