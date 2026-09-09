@@ -3081,50 +3081,47 @@ detail.innerHTML = `
              ※背景専用レイヤー
         ================================================= -->
 
-
 <div class="soccer-detail-field-bg" aria-hidden="true">
 
     <!-- 空 -->
-    <div class="soccer-detail-sky"></div>
+    <div class="soccer-field-sky"></div>
 
-    <!-- 雲 -->
-    <div class="soccer-detail-cloud soccer-detail-cloud-1"></div>
-    <div class="soccer-detail-cloud soccer-detail-cloud-2"></div>
-    <div class="soccer-detail-cloud soccer-detail-cloud-3"></div>
+    <div class="soccer-field-cloud soccer-field-cloud-1"></div>
+    <div class="soccer-field-cloud soccer-field-cloud-2"></div>
+    <div class="soccer-field-cloud soccer-field-cloud-3"></div>
 
-    <!-- ⚽ ピッチ -->
+    <!-- 芝生 -->
     <div class="soccer-detail-pitch">
 
-        <!-- コート外周 -->
-        <div class="soccer-field-boundary"></div>
+        <!-- コート右側の白線・ゴールをまとめて配置 -->
+        <div class="soccer-field-right-layout">
 
-        <!-- ペナルティエリア -->
-        <div class="soccer-field-penalty-box"></div>
+            <!-- コート外周 -->
+            <div class="soccer-field-boundary"></div>
 
-        <!-- ゴールエリア -->
-        <div class="soccer-field-goal-box"></div>
+            <!-- ペナルティエリア -->
+            <div class="soccer-field-penalty-box"></div>
 
-        <!-- PKマーク -->
-        <div class="soccer-field-penalty-spot"></div>
+            <!-- ゴールエリア -->
+            <div class="soccer-field-goal-box"></div>
 
-        <!-- PKアーク -->
-        <div class="soccer-field-penalty-arc"></div>
+            <!-- PKスポット -->
+            <div class="soccer-field-penalty-spot"></div>
 
-        <!-- ゴール -->
-        <div class="soccer-field-goal">
+            <!-- PKアーク -->
+            <div class="soccer-field-penalty-arc"></div>
 
-            <div class="soccer-field-goal-frame"></div>
-
-            <div class="soccer-field-goal-net"></div>
+            <!-- ゴール -->
+            <div class="soccer-field-goal">
+                <div class="soccer-field-goal-frame"></div>
+                <div class="soccer-field-goal-net"></div>
+            </div>
 
         </div>
 
     </div>
 
-    <!-- ボール -->
     <div class="soccer-detail-ball"></div>
-
-    <!-- 柔らかい光 -->
     <div class="soccer-detail-soft-light"></div>
 
 </div>
