@@ -3069,17 +3069,49 @@ function showSoccerGameDetail(date){
        共通の sportsGameDetail に生成
     ================================================= */
 
-    detail.innerHTML = `
+detail.innerHTML = `
 
-        <form
-            id="soccerGameDetailForm"
-            class="soccer-edit-screen soccer-detail-screen"
+    <form
+        id="soccerGameDetailForm"
+        class="soccer-edit-screen soccer-detail-screen"
+    >
+
+        <!-- =================================================
+             ⚽ サッカー結果画面 背景
+             ※背景専用レイヤー
+        ================================================= -->
+
+        <div
+            class="soccer-detail-field-bg"
+            aria-hidden="true"
         >
 
-            <h2 id="soccerGameDetailTitle">
-                ⚽ 試合結果
-            </h2>
+            <div class="soccer-detail-sky"></div>
 
+            <div class="soccer-detail-cloud soccer-detail-cloud-1"></div>
+
+            <div class="soccer-detail-cloud soccer-detail-cloud-2"></div>
+
+            <div class="soccer-detail-cloud soccer-detail-cloud-3"></div>
+
+            <div class="soccer-detail-pitch"></div>
+
+            <div class="soccer-detail-goal soccer-detail-goal-left"></div>
+
+            <div class="soccer-detail-goal soccer-detail-goal-right"></div>
+
+            <div class="soccer-detail-ball">
+                ⚽
+            </div>
+
+            <div class="soccer-detail-soft-light"></div>
+
+        </div>
+
+
+        <h2 id="soccerGameDetailTitle">
+            ⚽ 試合結果
+        </h2>
 
 
 <!-- =====================
@@ -3863,7 +3895,7 @@ function showSoccerGameDetail(date){
        🌙✨ ゆめかわ星空をランダム生成
     ================================================= */
 
-    applySoccerDreamySky();
+    applySoccerFieldBackground();
 
 }
 
