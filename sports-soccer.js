@@ -3094,7 +3094,10 @@ detail.innerHTML = `
 
             <div class="soccer-detail-cloud soccer-detail-cloud-3"></div>
 
-            <div class="soccer-detail-pitch"></div>
+<div class="soccer-detail-pitch">
+    <div class="soccer-penalty-area"></div>
+    <div class="soccer-penalty-arc"></div>
+</div>
 
             <div class="soccer-detail-goal soccer-detail-goal-left"></div>
 

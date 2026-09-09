@@ -2305,3 +2305,58 @@
     }
 
 }
+
+
+
+/* =====================================================
+   ⚽ ペナルティエリア
+   ※ ゴールが右側にある前提
+===================================================== */
+
+.soccer-penalty-area {
+    position: absolute;
+
+    top: 22%;
+    right: 0;
+
+    width: 25%;
+    height: 56%;
+
+    border: 3px solid rgba(255,255,255,0.68);
+
+    border-right: none;
+
+    box-sizing: border-box;
+
+    filter: blur(0.4px);
+
+    opacity: 0.9;
+}
+
+
+/* =====================================================
+   ⚽ ペナルティアーク
+   ※ ペナルティマークを中心にした半円
+===================================================== */
+
+.soccer-penalty-arc {
+    position: absolute;
+
+    top: 34%;
+    right: 17%;
+
+    width: 18%;
+    height: 32%;
+
+    border: 3px solid rgba(255,255,255,0.62);
+
+    border-radius: 50%;
+
+    box-sizing: border-box;
+
+    filter: blur(0.4px);
+
+    opacity: 0.85;
+
+    clip-path: inset(0 0 50% 0);
+}
