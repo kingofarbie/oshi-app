@@ -1986,20 +1986,20 @@
     content: "";
     position: absolute;
 
-    left: 18%;
-    right: 18%;
-    top: 12%;
-    bottom: 5%;
+    left: 12%;
+    right: 12%;
+    top: 8%;
+    bottom: 4%;
 
     border:
         3px solid
-        rgba(255,255,255,0.20);
+        rgba(255,255,255,0.38);
 
-    border-radius: 6px;
+    border-radius: 8px;
 
     box-sizing: border-box;
 
-    filter: blur(2px);
+    filter: blur(0.8px);
 }
 
 .soccer-detail-pitch::after {
@@ -2009,20 +2009,19 @@
 
     left: 31%;
     right: 31%;
-    top: 12%;
-    bottom: 5%;
+    top: 8%;
+    bottom: 4%;
 
     border:
         3px solid
-        rgba(255,255,255,0.15);
+        rgba(255,255,255,0.28);
 
-    border-radius: 6px;
+    border-radius: 8px;
 
     box-sizing: border-box;
 
-    filter: blur(2px);
+    filter: blur(0.8px);
 }
-
 
 /* =====================================================
    🥅 ゴール共通
