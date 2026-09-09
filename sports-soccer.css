@@ -1958,7 +1958,7 @@
     transform:
         perspective(900px)
         rotateX(48deg)
-        rotateZ(-12deg);
+        rotateZ(-18deg);
 
     transform-origin:
         center bottom;
