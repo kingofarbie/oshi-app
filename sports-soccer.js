@@ -3095,11 +3095,32 @@ detail.innerHTML = `
             <div class="soccer-detail-cloud soccer-detail-cloud-3"></div>
 
 <div class="soccer-detail-pitch">
-    <div class="soccer-penalty-area"></div>
-    <div class="soccer-penalty-arc"></div>
-</div>
 
-            <div class="soccer-detail-goal soccer-detail-goal-left"></div>
+    <!-- コート外枠 -->
+    <div class="soccer-pitch-outline"></div>
+
+    <!-- ゴールライン -->
+    <div class="soccer-goal-line"></div>
+
+    <!-- ペナルティエリア -->
+    <div class="soccer-penalty-area"></div>
+
+    <!-- ゴールエリア -->
+    <div class="soccer-goal-area"></div>
+
+    <!-- ペナルティマーク -->
+    <div class="soccer-penalty-spot"></div>
+
+    <!-- ペナルティアーク -->
+    <div class="soccer-penalty-arc"></div>
+
+    <!-- ゴール -->
+    <div class="soccer-pitch-goal">
+        <div class="soccer-goal-frame"></div>
+        <div class="soccer-goal-net"></div>
+    </div>
+
+</div>
 
             <div class="soccer-detail-ball">
                 ⚽

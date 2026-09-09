@@ -1929,32 +1929,48 @@
 }
 
 
+
 /* =====================================================
-   🌱 サッカーコート
+   ⚽ サッカー結果画面
+   コート・ペナルティエリア・ゴール
+   ※ 右側ゴール基準
 ===================================================== */
 
 .soccer-detail-pitch {
+
     position: absolute;
 
-    left: -18%;
-    bottom: -12%;
+    left: -16%;
+    bottom: -10%;
 
-    width: 136%;
-    height: 58%;
+    width: 132%;
+    height: 62%;
 
+    overflow: visible;
+
+    /*
+       芝生
+    */
     background:
         repeating-linear-gradient(
             90deg,
-            rgba(255,255,255,0.035) 0 60px,
-            rgba(0,90,35,0.035) 60px 120px
+            rgba(255,255,255,0.045) 0px,
+            rgba(255,255,255,0.045) 70px,
+            rgba(0,90,35,0.035) 70px,
+            rgba(0,90,35,0.035) 140px
         ),
         linear-gradient(
             180deg,
-            #91d783 0%,
-            #7ac86e 50%,
-            #69b95d 100%
+            #9bdc8c 0%,
+            #82cc76 50%,
+            #70bd65 100%
         );
 
+    border-radius: 10px;
+
+    /*
+       斜め上から見たコート
+    */
     transform:
         perspective(900px)
         rotateX(48deg)
@@ -1963,83 +1979,285 @@
     transform-origin:
         center bottom;
 
-    opacity: 0.34;
-
-    filter: blur(2px);
-
-    border-radius: 18px;
-}
-
-/* =====================================================
-   ⚽ コートライン
-===================================================== */
-
-.soccer-detail-pitch::before {
-    content: "";
-    position: absolute;
-
-    left: 10%;
-    right: 10%;
-    top: 8%;
-    bottom: 3%;
-
-    border: 3px solid rgba(255,255,255,0.78);
-    border-radius: 8px;
-
-    box-sizing: border-box;
-
-    filter: blur(0.3px);
-}
-
-.soccer-detail-pitch::after {
-    content: "";
-
-    position: absolute;
-
-    left: 30%;
-    right: 30%;
-    top: 8%;
-    bottom: 3%;
-
-    border: 3px solid rgba(255,255,255,0.42);
-    border-radius: 8px;
-
-    box-sizing: border-box;
-
-    filter: blur(0.3px);
-}
-
-/* =====================================================
-   🥅 ゴール共通
-===================================================== */
-
-.soccer-detail-goal {
-
-    position: absolute;
-
-    width: 125px;
-
-    height: 82px;
-
-    border:
-
-        5px solid
-
-        rgba(255,255,255,0.72);
-
-    border-bottom-width: 4px;
-
-    box-sizing: border-box;
-
-    filter:
-        blur(3px)
-        drop-shadow(
-            0 5px 8px
-            rgba(40,90,60,0.16)
-        );
-
+    /*
+       背景なので柔らかく
+    */
     opacity: 0.42;
 
+    filter: blur(1.8px);
+
+    box-shadow:
+        0 -10px 35px
+        rgba(70,140,75,0.08);
+}
+
+
+/* =====================================================
+   ⚽ コート外枠
+===================================================== */
+
+.soccer-pitch-outline {
+
+    position: absolute;
+
+    left: 4%;
+    right: 4%;
+    top: 6%;
+    bottom: 5%;
+
+    border:
+        4px solid
+        rgba(255,255,255,0.72);
+
+    box-sizing: border-box;
+
+    border-radius: 4px;
+
+    filter: blur(0.35px);
+}
+
+
+/* =====================================================
+   ⚽ 右側ゴールライン
+===================================================== */
+
+.soccer-goal-line {
+
+    position: absolute;
+
+    top: 6%;
+    bottom: 5%;
+
+    right: 4%;
+
+    width: 4px;
+
+    background:
+        rgba(255,255,255,0.82);
+
+    filter:
+        blur(0.35px);
+
+    border-radius: 4px;
+}
+
+
+/* =====================================================
+   ⚽ ペナルティエリア
+===================================================== */
+
+.soccer-penalty-area {
+
+    position: absolute;
+
+    /*
+       ゴールラインから
+       左方向へ伸びる
+    */
+
+    top: 22%;
+
+    right: 4%;
+
+    width: 24%;
+
+    height: 56%;
+
+    box-sizing: border-box;
+
+    /*
+       上・左・下だけ描く
+       右側はゴールラインそのもの
+    */
+
+    border-top:
+        4px solid
+        rgba(255,255,255,0.78);
+
+    border-left:
+        4px solid
+        rgba(255,255,255,0.78);
+
+    border-bottom:
+        4px solid
+        rgba(255,255,255,0.78);
+
+    filter:
+        blur(0.35px);
+}
+
+
+/* =====================================================
+   ⚽ ゴールエリア
+===================================================== */
+
+.soccer-goal-area {
+
+    position: absolute;
+
+    top: 33%;
+
+    right: 4%;
+
+    width: 10%;
+
+    height: 34%;
+
+    box-sizing: border-box;
+
+    border-top:
+        4px solid
+        rgba(255,255,255,0.72);
+
+    border-left:
+        4px solid
+        rgba(255,255,255,0.72);
+
+    border-bottom:
+        4px solid
+        rgba(255,255,255,0.72);
+
+    filter:
+        blur(0.35px);
+}
+
+
+/* =====================================================
+   ⚽ ペナルティマーク
+===================================================== */
+
+.soccer-penalty-spot {
+
+    position: absolute;
+
+    /*
+       ゴールラインから12ヤード相当
+    */
+
+    top: 49%;
+
+    right: 15%;
+
+    width: 8px;
+    height: 8px;
+
+    margin-top: -4px;
+    margin-right: -4px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(255,255,255,0.88);
+
+    filter:
+        blur(0.45px);
+
+    box-shadow:
+        0 0 5px
+        rgba(255,255,255,0.25);
+}
+
+
+/* =====================================================
+   ⚽ ペナルティアーク
+   ペナルティマークを中心にしたD字
+   ※ 右側の半分ではなく
+      フィールド側（左側）を表示
+===================================================== */
+
+.soccer-penalty-arc {
+
+    position: absolute;
+
+    /*
+       ペナルティマークを中心に配置
+    */
+
+    top: 36%;
+
+    right: 8.8%;
+
+    width: 24%;
+
+    height: 26%;
+
+    box-sizing: border-box;
+
+    border:
+        4px solid
+        rgba(255,255,255,0.74);
+
+    border-radius: 50%;
+
+    /*
+       円の左半分だけ表示
+       → ゴール方向ではなく
+          フィールド側へ膨らむD字
+    */
+
+    clip-path:
+        inset(0 50% 0 0);
+
+    filter:
+        blur(0.35px);
+}
+
+
+/* =====================================================
+   🥅 ゴール本体
+===================================================== */
+
+.soccer-pitch-goal {
+
+    position: absolute;
+
+    /*
+       ゴールラインの外側
+    */
+
+    right: -1.8%;
+
+    top: 35%;
+
+    width: 11%;
+
+    height: 30%;
+
+    transform:
+        translateZ(8px);
+
+    filter:
+        blur(1.2px);
+
+    opacity: 0.72;
+}
+
+
+/* =====================================================
+   🥅 ゴールポスト・クロスバー
+===================================================== */
+
+.soccer-goal-frame {
+
+    position: absolute;
+
+    inset: 0;
+
+    border:
+        5px solid
+        rgba(255,255,255,0.82);
+
+    border-left:
+        5px solid
+        rgba(255,255,255,0.82);
+
+    border-radius: 2px;
+
+    box-sizing: border-box;
+
+    box-shadow:
+        0 4px 8px
+        rgba(50,90,60,0.14);
 }
 
 
@@ -2047,104 +2265,106 @@
    🥅 ゴールネット
 ===================================================== */
 
-.soccer-detail-goal::before {
-
-    content: "";
+.soccer-goal-net {
 
     position: absolute;
-
-    inset: 4px;
-
-    background:
-
-        repeating-linear-gradient(
-            0deg,
-            transparent 0 11px,
-            rgba(255,255,255,0.28) 12px 13px
-        ),
-
-        repeating-linear-gradient(
-            90deg,
-            transparent 0 13px,
-            rgba(255,255,255,0.25) 14px 15px
-        );
-
-    opacity: 0.75;
-
-}
-
-
-/* =====================================================
-   🥅 ゴール奥行き
-===================================================== */
-
-.soccer-detail-goal::after {
-
-    content: "";
-
-    position: absolute;
-
-    top: 7px;
-
-    right: -28px;
-
-    width: 28px;
-
-    height: 65px;
-
-    border-top:
-        4px solid
-        rgba(255,255,255,0.52);
-
-    border-right:
-        4px solid
-        rgba(255,255,255,0.52);
-
-    border-bottom:
-        4px solid
-        rgba(255,255,255,0.45);
-
-    transform:
-        skewY(-18deg);
-
-}
-
-
-/* =====================================================
-   🥅 左ゴール
-===================================================== */
-
-.soccer-detail-goal-left {
-
-    top: 38%;
 
     left: 7%;
+    right: 7%;
+
+    top: 8%;
+    bottom: 8%;
+
+    background:
+        repeating-linear-gradient(
+            0deg,
+            transparent 0px,
+            transparent 7px,
+            rgba(255,255,255,0.26) 8px,
+            transparent 9px
+        ),
+        repeating-linear-gradient(
+            90deg,
+            transparent 0px,
+            transparent 7px,
+            rgba(255,255,255,0.26) 8px,
+            transparent 9px
+        );
+
+    border:
+        2px solid
+        rgba(255,255,255,0.42);
+
+    box-sizing: border-box;
 
     transform:
-        scale(0.88)
-        rotate(-2deg);
+        perspective(200px)
+        rotateY(-12deg);
 
+    opacity: 0.65;
 }
 
 
 /* =====================================================
-   🥅 右ゴール
+   📱 スマホ
 ===================================================== */
 
-.soccer-detail-goal-right {
+@media (max-width: 600px) {
 
-    top: 52%;
+    .soccer-detail-pitch {
 
-    right: 5%;
+        left: -28%;
+        bottom: -8%;
 
-    transform:
-        scale(0.70)
-        rotate(2deg);
+        width: 150%;
+        height: 58%;
 
-    opacity: 0.48;
+        transform:
+            perspective(750px)
+            rotateX(48deg)
+            rotateZ(-18deg);
+    }
 
+
+    .soccer-pitch-outline {
+
+        border-width: 3px;
+    }
+
+
+    .soccer-goal-line {
+
+        width: 3px;
+    }
+
+
+    .soccer-penalty-area {
+
+        border-width: 3px;
+    }
+
+
+    .soccer-goal-area {
+
+        border-width: 3px;
+    }
+
+
+    .soccer-penalty-arc {
+
+        border-width: 3px;
+    }
+
+
+    .soccer-pitch-goal {
+
+        right: -3%;
+
+        width: 13%;
+
+        height: 31%;
+    }
 }
-
 
 /* =====================================================
    ⚽ ボール
@@ -2306,57 +2526,3 @@
 
 }
 
-
-
-/* =====================================================
-   ⚽ ペナルティエリア
-   ※ ゴールが右側にある前提
-===================================================== */
-
-.soccer-penalty-area {
-    position: absolute;
-
-    top: 22%;
-    right: 0;
-
-    width: 25%;
-    height: 56%;
-
-    border: 3px solid rgba(255,255,255,0.68);
-
-    border-right: none;
-
-    box-sizing: border-box;
-
-    filter: blur(0.4px);
-
-    opacity: 0.9;
-}
-
-
-/* =====================================================
-   ⚽ ペナルティアーク
-   ※ ペナルティマークを中心にした半円
-===================================================== */
-
-.soccer-penalty-arc {
-    position: absolute;
-
-    top: 34%;
-    right: 17%;
-
-    width: 18%;
-    height: 32%;
-
-    border: 3px solid rgba(255,255,255,0.62);
-
-    border-radius: 50%;
-
-    box-sizing: border-box;
-
-    filter: blur(0.4px);
-
-    opacity: 0.85;
-
-    clip-path: inset(0 0 50% 0);
-}
