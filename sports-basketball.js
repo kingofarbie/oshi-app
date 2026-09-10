@@ -2081,21 +2081,19 @@ function saveBasketballGameData(
    結果画面
    ========================================================= */
 
-function showBasketballGameDetail(
-    date
-){
+function showBasketballGameDetail(date){
 
-    sportsSelectedDate =
-        date;
-
-
-    const container =
+    const detail =
         document.getElementById(
             "sportsGameDetail"
         );
 
+    if(!detail){
 
-    if(!container){
+        console.error(
+            "❌ sportsGameDetail が見つかりません"
+        );
+
         return;
     }
 
@@ -2105,7 +2103,7 @@ function showBasketballGameDetail(
 
 
     const game =
-        games[date];
+        games?.[date];
 
 
     if(
@@ -2113,22 +2111,27 @@ function showBasketballGameDetail(
         game.sport !== "basketball"
     ){
 
-        container.innerHTML =
-            "";
+        console.error(
+            "❌ バスケットボール試合データがありません:",
+            date
+        );
 
         return;
-
     }
 
 
+    /* =================================================
+       基本情報
+    ================================================= */
+
     const team =
         game.team ||
-        "";
+        "応援チーム";
 
 
     const opponent =
         game.opponent ||
-        "";
+        "相手チーム";
 
 
     const homeAway =
@@ -2136,14 +2139,29 @@ function showBasketballGameDetail(
         "home";
 
 
-    let leftName;
-    let rightName;
-    let leftIsTeam;
+    /* =================================================
+       ホーム / アウェイによる表示順
+
+       home
+       左 = team
+       右 = opponent
+
+       away
+       左 = opponent
+       右 = team
+    ================================================= */
+
+    let leftName =
+        team;
+
+    let rightName =
+        opponent;
+
+    let leftIsTeam =
+        true;
 
 
-    if(
-        homeAway === "away"
-    ){
+    if(homeAway === "away"){
 
         leftName =
             opponent;
@@ -2154,19 +2172,12 @@ function showBasketballGameDetail(
         leftIsTeam =
             false;
 
-    }else{
-
-        leftName =
-            team;
-
-        rightName =
-            opponent;
-
-        leftIsTeam =
-            true;
-
     }
 
+
+    /* =================================================
+       第1Q～第4Q
+    ================================================= */
 
     const firstQuarterTeam =
         Number(
@@ -2216,11 +2227,27 @@ function showBasketballGameDetail(
         );
 
 
+    /* =================================================
+       延長戦
+    ================================================= */
+
     const overtimeScores =
         Array.isArray(game.overtime)
-            ? game.overtime
-            : [];
+            ?
+            game.overtime
+            :
+            [];
 
+
+    /* =================================================
+       通常＋延長 合計
+
+       team / opponent のデータを
+       まず応援チーム基準で計算する。
+
+       その後、
+       homeAway に応じて左右を決める。
+    ================================================= */
 
     const teamTotal =
         calculateBasketballTotal(
@@ -2254,142 +2281,88 @@ function showBasketballGameDetail(
 
     const leftTotal =
         leftIsTeam
-            ? teamTotal
-            : opponentTotal;
+            ?
+            teamTotal
+            :
+            opponentTotal;
 
 
     const rightTotal =
         leftIsTeam
-            ? opponentTotal
-            : teamTotal;
+            ?
+            opponentTotal
+            :
+            teamTotal;
 
 
-    const resultLabel =
-        getBasketballResultLabel(
-            game.result
-        );
+    /* =================================================
+       結果画面HTML
+
+       ⚠️ サッカーと同じく
+       結果画面そのものに
+       閉じる / 編集ボタンを持たせる
+    ================================================= */
+
+    detail.innerHTML = `
+
+        <form
+            id="basketballGameDetailForm"
+            class="
+                basketball-edit-screen
+                basketball-detail-screen
+            "
+        >
+
+            <h2 id="basketballGameDetailTitle">
+                🏀 試合結果
+            </h2>
 
 
-    const resultHTML =
-        resultLabel
-            ? `
-                <div class="
-                    basketball-view-result
-                    ${escapeSportsHTML(
-                        game.result || ""
-                    )}
-                ">
-                    ${escapeSportsHTML(
-                        resultLabel
-                    )}
-                </div>
-            `
-            : "";
-
-
-    const overtimeHTML =
-        overtimeScores.length
-            ? `
-                <div class="basketball-detail-overtime">
-
-                    ${overtimeScores
-                        .map(
-                            overtime => {
-
-                                const leftScore =
-                                    leftIsTeam
-                                        ? Number(
-                                            overtime.team || 0
-                                        )
-                                        : Number(
-                                            overtime.opponent || 0
-                                        );
-
-
-                                const rightScore =
-                                    leftIsTeam
-                                        ? Number(
-                                            overtime.opponent || 0
-                                        )
-                                        : Number(
-                                            overtime.team || 0
-                                        );
-
-
-                                return `
-
-                                    <div class="
-                                        basketball-detail-score-row
-                                    ">
-
-                                        <label>
-                                            OT${Number(
-                                                overtime.number || 0
-                                            )}
-                                        </label>
-
-                                        <span>
-                                            ${leftScore}
-                                        </span>
-
-                                        <strong>
-                                            －
-                                        </strong>
-
-                                        <span>
-                                            ${rightScore}
-                                        </span>
-
-                                    </div>
-
-                                `;
-
-                            }
-                        )
-                        .join("")}
-
-                </div>
-            `
-            : "";
-
-
-    container.innerHTML = `
-
-        <div class="basketball-detail-screen">
+            <!-- =====================
+                 試合日
+            ====================== -->
 
             <div class="basketball-detail-date">
+
                 ${escapeSportsHTML(
                     formatBasketballDate(date)
                 )}
+
             </div>
 
 
+            <!-- =====================
+                 ホーム・アウェイ
+            ====================== -->
+
             <div class="basketball-view-match">
+
+                <!-- ホーム -->
 
                 <div class="basketball-view-team">
 
-                    <div class="
-                        basketball-view-side
-                    ">
+                    <div class="basketball-view-side">
                         ホーム
                     </div>
 
-                    <div class="
-                        basketball-view-team-name
-                    ">
+                    <div class="basketball-view-team-name">
+
                         ${escapeSportsHTML(
                             leftName
                         )}
+
                     </div>
 
-                    <div class="
-                        basketball-view-team-score
-                    ">
+                    <div class="basketball-view-team-score">
+
                         ${leftTotal}
+
                     </div>
 
                 </div>
 
+
+                <!-- 区切り -->
 
                 <div class="
                     basketball-view-score-separator
@@ -2398,32 +2371,36 @@ function showBasketballGameDetail(
                 </div>
 
 
+                <!-- アウェイ -->
+
                 <div class="basketball-view-team">
 
-                    <div class="
-                        basketball-view-side
-                    ">
+                    <div class="basketball-view-side">
                         アウェイ
                     </div>
 
-                    <div class="
-                        basketball-view-team-name
-                    ">
+                    <div class="basketball-view-team-name">
+
                         ${escapeSportsHTML(
                             rightName
                         )}
+
                     </div>
 
-                    <div class="
-                        basketball-view-team-score
-                    ">
+                    <div class="basketball-view-team-score">
+
                         ${rightTotal}
+
                     </div>
 
                 </div>
 
             </div>
 
+
+            <!-- =====================
+                 第1Q
+            ====================== -->
 
             <div class="
                 basketball-detail-score-section
@@ -2438,9 +2415,15 @@ function showBasketballGameDetail(
                     </label>
 
                     <span>
-                        ${leftIsTeam
-                            ? firstQuarterTeam
-                            : firstQuarterOpponent}
+
+                        ${
+                            leftIsTeam
+                                ?
+                                firstQuarterTeam
+                                :
+                                firstQuarterOpponent
+                        }
+
                     </span>
 
                     <strong>
@@ -2448,13 +2431,23 @@ function showBasketballGameDetail(
                     </strong>
 
                     <span>
-                        ${leftIsTeam
-                            ? firstQuarterOpponent
-                            : firstQuarterTeam}
+
+                        ${
+                            leftIsTeam
+                                ?
+                                firstQuarterOpponent
+                                :
+                                firstQuarterTeam
+                        }
+
                     </span>
 
                 </div>
 
+
+                <!-- =====================
+                     第2Q
+                ====================== -->
 
                 <div class="
                     basketball-detail-score-row
@@ -2465,9 +2458,15 @@ function showBasketballGameDetail(
                     </label>
 
                     <span>
-                        ${leftIsTeam
-                            ? secondQuarterTeam
-                            : secondQuarterOpponent}
+
+                        ${
+                            leftIsTeam
+                                ?
+                                secondQuarterTeam
+                                :
+                                secondQuarterOpponent
+                        }
+
                     </span>
 
                     <strong>
@@ -2475,13 +2474,23 @@ function showBasketballGameDetail(
                     </strong>
 
                     <span>
-                        ${leftIsTeam
-                            ? secondQuarterOpponent
-                            : secondQuarterTeam}
+
+                        ${
+                            leftIsTeam
+                                ?
+                                secondQuarterOpponent
+                                :
+                                secondQuarterTeam
+                        }
+
                     </span>
 
                 </div>
 
+
+                <!-- =====================
+                     第3Q
+                ====================== -->
 
                 <div class="
                     basketball-detail-score-row
@@ -2492,9 +2501,15 @@ function showBasketballGameDetail(
                     </label>
 
                     <span>
-                        ${leftIsTeam
-                            ? thirdQuarterTeam
-                            : thirdQuarterOpponent}
+
+                        ${
+                            leftIsTeam
+                                ?
+                                thirdQuarterTeam
+                                :
+                                thirdQuarterOpponent
+                        }
+
                     </span>
 
                     <strong>
@@ -2502,13 +2517,23 @@ function showBasketballGameDetail(
                     </strong>
 
                     <span>
-                        ${leftIsTeam
-                            ? thirdQuarterOpponent
-                            : thirdQuarterTeam}
+
+                        ${
+                            leftIsTeam
+                                ?
+                                thirdQuarterOpponent
+                                :
+                                thirdQuarterTeam
+                        }
+
                     </span>
 
                 </div>
 
+
+                <!-- =====================
+                     第4Q
+                ====================== -->
 
                 <div class="
                     basketball-detail-score-row
@@ -2519,9 +2544,15 @@ function showBasketballGameDetail(
                     </label>
 
                     <span>
-                        ${leftIsTeam
-                            ? fourthQuarterTeam
-                            : fourthQuarterOpponent}
+
+                        ${
+                            leftIsTeam
+                                ?
+                                fourthQuarterTeam
+                                :
+                                fourthQuarterOpponent
+                        }
+
                     </span>
 
                     <strong>
@@ -2529,69 +2560,254 @@ function showBasketballGameDetail(
                     </strong>
 
                     <span>
-                        ${leftIsTeam
-                            ? fourthQuarterOpponent
-                            : fourthQuarterTeam}
+
+                        ${
+                            leftIsTeam
+                                ?
+                                fourthQuarterOpponent
+                                :
+                                fourthQuarterTeam
+                        }
+
                     </span>
 
                 </div>
 
 
-                ${overtimeHTML}
+                <!-- =====================
+                     延長
+                ====================== -->
+
+                ${
+                    overtimeScores.length
+                        ?
+                        `
+                            <div class="
+                                basketball-detail-overtime
+                            ">
+
+                                ${
+                                    overtimeScores
+                                        .map(
+                                            overtime => {
+
+                                                const overtimeTeam =
+                                                    Number(
+                                                        overtime.team ||
+                                                        0
+                                                    );
+
+
+                                                const overtimeOpponent =
+                                                    Number(
+                                                        overtime.opponent ||
+                                                        0
+                                                    );
+
+
+                                                const leftScore =
+                                                    leftIsTeam
+                                                        ?
+                                                        overtimeTeam
+                                                        :
+                                                        overtimeOpponent;
+
+
+                                                const rightScore =
+                                                    leftIsTeam
+                                                        ?
+                                                        overtimeOpponent
+                                                        :
+                                                        overtimeTeam;
+
+
+                                                return `
+
+                                                    <div class="
+                                                        basketball-detail-score-row
+                                                    ">
+
+                                                        <label>
+
+                                                            OT${Number(
+                                                                overtime.number ||
+                                                                0
+                                                            )}
+
+                                                        </label>
+
+                                                        <span>
+
+                                                            ${leftScore}
+
+                                                        </span>
+
+                                                        <strong>
+                                                            －
+                                                        </strong>
+
+                                                        <span>
+
+                                                            ${rightScore}
+
+                                                        </span>
+
+                                                    </div>
+
+                                                `;
+
+                                            }
+                                        )
+                                        .join("")
+                                }
+
+                            </div>
+                        `
+                        :
+                        ""
+                }
 
             </div>
 
 
-            ${resultHTML}
+            <!-- =====================
+                 結果
+            ====================== -->
 
+            <div class="
+                basketball-info-section
+            ">
+
+                <label>
+                    結果
+                </label>
+
+                <div
+                    id="basketballDetailResult"
+                    class="basketball-view-result ${
+                        escapeSportsHTML(
+                            game.result || ""
+                        )
+                    }"
+                >
+
+                    ${escapeSportsHTML(
+                        getBasketballResultLabel(
+                            game.result
+                        )
+                    )}
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================
+                 場所
+            ====================== -->
 
             ${
                 game.location
-                    ? `
+                    ?
+                    `
                         <div class="
-                            basketball-detail-info
+                            basketball-info-section
                         ">
-                            <strong>
-                                場所
-                            </strong>
 
-                            <div>
-                                ${escapeSportsHTML(
-                                    game.location
-                                )}
+                            <label>
+                                場所
+                            </label>
+
+                            <div class="
+                                basketball-detail-info
+                            ">
+
+                                <div>
+                                    ${escapeSportsHTML(
+                                        game.location
+                                    )}
+                                </div>
+
                             </div>
+
                         </div>
                     `
-                    : ""
+                    :
+                    ""
             }
 
+
+            <!-- =====================
+                 メモ
+            ====================== -->
 
             ${
                 game.memo
-                    ? `
+                    ?
+                    `
                         <div class="
-                            basketball-detail-info
+                            basketball-info-section
                         ">
-                            <strong>
-                                メモ
-                            </strong>
 
-                            <div>
-                                ${escapeSportsHTML(
-                                    game.memo
-                                )}
+                            <label>
+                                メモ
+                            </label>
+
+                            <div class="
+                                basketball-detail-info
+                            ">
+
+                                <div>
+                                    ${escapeSportsHTML(
+                                        game.memo
+                                    )}
+                                </div>
+
                             </div>
+
                         </div>
                     `
-                    : ""
+                    :
+                    ""
             }
 
-        </div>
+
+            <!-- =====================
+                 ボタン
+            ====================== -->
+
+            <div class="
+                basketball-edit-buttons
+            ">
+
+                <button
+                    type="button"
+                    onclick="closeSportsGameDetailPage()"
+                >
+                    閉じる
+                </button>
+
+
+                <button
+                    type="button"
+                    onclick="
+                        openSportsGameEditPage(
+                            sportsSelectedDate
+                        )
+                    "
+                >
+                    編集
+                </button>
+
+            </div>
+
+
+        </form>
 
     `;
 
-
 }
+
 
 
 /* =========================================================
