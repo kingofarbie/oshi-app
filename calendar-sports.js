@@ -1184,6 +1184,42 @@ else if(
 
 
 
+/*
+   🏀 バスケットボール
+*/
+
+else if(
+    settings.favoriteSports?.[
+        settings.selectedIndex || 0
+    ]?.sport === "basketball"
+){
+
+    teamScore =
+        calculateBasketballTotal(
+            game.firstQuarterTeam,
+            game.secondQuarterTeam,
+            game.thirdQuarterTeam,
+            game.fourthQuarterTeam,
+            game.overtimeScores
+        );
+
+    opponentScore =
+        calculateBasketballTotal(
+            game.firstQuarterOpponent,
+            game.secondQuarterOpponent,
+            game.thirdQuarterOpponent,
+            game.fourthQuarterOpponent,
+            game.overtimeScores,
+            true
+        );
+
+}
+
+
+
+
+
+
 scoreHTML = `
 
     <div class="sports-game-preview">
@@ -2867,12 +2903,21 @@ function openSportsGameDetailPage(date){
 
     if(sport === "volleyball"){
 
-    showVolleyballGameDetail(
-        date
-    );
+        showVolleyballGameDetail(
+            date
+        );
+        
+        return;
+    }
 
-    return;
-}
+    if(sport === "basketball"){
+
+        showBasketballGameDetail(
+            date
+        );
+
+        return;
+    }
 
 
     /* =====================
@@ -2973,6 +3018,16 @@ function openSportsGameEditPage(date){
         
         return;
     }
+
+    if(sport === "basketball"){
+
+        openBasketballGameEditPage(date);
+
+        return;
+    }
+
+
+
 
 
     console.error(

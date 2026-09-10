@@ -1,0 +1,333 @@
+<form id="basketballGameEditForm" class="basketball-edit-screen"><h2 id="basketballGameEditTitle">🏀 試合結果</h2>
+
+
+<!-- チーム設定 -->
+<div class="basketball-team-setting">
+
+    <div class="basketball-team-setting-row">
+
+        <label for="basketballEditTeam">
+            応援チーム
+        </label>
+
+        <input
+            type="text"
+            id="basketballEditTeam"
+            readonly
+        >
+
+        <select id="basketballEditHomeAway">
+
+            <option value="home">
+                ホーム
+            </option>
+
+            <option value="away">
+                アウェイ
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <div class="basketball-team-setting-row">
+
+        <label for="basketballEditOpponent">
+            相手チーム
+        </label>
+
+        <input
+            type="text"
+            id="basketballEditOpponent"
+            placeholder="相手チーム名を入力"
+        >
+
+    </div>
+
+</div>
+
+
+<!-- 試合表示 -->
+<div class="basketball-match-board">
+
+    <div class="basketball-match-header">
+
+        <div class="basketball-match-column">
+
+            <div class="basketball-match-side">
+                ホーム
+            </div>
+
+            <div
+                class="basketball-match-team-name"
+                data-basketball-team-name>
+            </div>
+
+        </div>
+
+
+        <div class="basketball-match-separator">
+            －
+        </div>
+
+
+        <div class="basketball-match-column">
+
+            <div class="basketball-match-side">
+                アウェイ
+            </div>
+
+            <div
+                class="basketball-match-team-name"
+                data-basketball-opponent-name>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- 現在の得点 -->
+    <div class="basketball-live-score-row">
+
+        <div
+            id="basketballEditTeamTotal"
+            class="basketball-live-score">
+            0
+        </div>
+
+        <div class="basketball-score-dash">
+            －
+        </div>
+
+        <div
+            id="basketballEditOpponentTotal"
+            class="basketball-live-score">
+            0
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- 第1Q～第4Q -->
+<div class="basketball-score-section">
+
+    <div class="basketball-score-row">
+
+        <label>
+            第1Q
+        </label>
+
+        <input
+            type="number"
+            id="basketballEditFirstQuarterTeam"
+            min="0"
+            inputmode="numeric"
+        >
+
+        <span>－</span>
+
+        <input
+            type="number"
+            id="basketballEditFirstQuarterOpponent"
+            min="0"
+            inputmode="numeric"
+        >
+
+    </div>
+
+
+    <div class="basketball-score-row">
+
+        <label>
+            第2Q
+        </label>
+
+        <input
+            type="number"
+            id="basketballEditSecondQuarterTeam"
+            min="0"
+            inputmode="numeric"
+        >
+
+        <span>－</span>
+
+        <input
+            type="number"
+            id="basketballEditSecondQuarterOpponent"
+            min="0"
+            inputmode="numeric"
+        >
+
+    </div>
+
+
+    <div class="basketball-score-row">
+
+        <label>
+            第3Q
+        </label>
+
+        <input
+            type="number"
+            id="basketballEditThirdQuarterTeam"
+            min="0"
+            inputmode="numeric"
+        >
+
+        <span>－</span>
+
+        <input
+            type="number"
+            id="basketballEditThirdQuarterOpponent"
+            min="0"
+            inputmode="numeric"
+        >
+
+    </div>
+
+
+    <div class="basketball-score-row">
+
+        <label>
+            第4Q
+        </label>
+
+        <input
+            type="number"
+            id="basketballEditFourthQuarterTeam"
+            min="0"
+            inputmode="numeric"
+        >
+
+        <span>－</span>
+
+        <input
+            type="number"
+            id="basketballEditFourthQuarterOpponent"
+            min="0"
+            inputmode="numeric"
+        >
+
+    </div>
+
+</div>
+
+
+<!-- 延長 -->
+<div class="basketball-extra-section">
+
+    <div
+        id="basketballOvertimeArea"
+        class="basketball-overtime-area"
+    ></div>
+
+
+    <button
+        type="button"
+        id="basketballAddOvertimeButton"
+        class="basketball-add-overtime-button"
+    >
+        ＋ 延長を追加
+    </button>
+
+</div>
+
+
+<!-- 結果 -->
+<div class="basketball-info-section">
+
+    <label for="basketballEditResult">
+        試合結果
+    </label>
+
+    <select id="basketballEditResult">
+
+        <option value="">
+            未設定
+        </option>
+
+        <option value="win">
+            ○ 勝ち
+        </option>
+
+        <option value="lose">
+            × 負け
+        </option>
+
+        <option value="draw">
+            △ 引分
+        </option>
+
+        <option value="scheduled">
+            － 予定
+        </option>
+
+        <option value="cancelled">
+            中止
+        </option>
+
+        <option value="postponed">
+            延期
+        </option>
+
+    </select>
+
+</div>
+
+
+<!-- 場所 -->
+<div class="basketball-info-section">
+
+    <label for="basketballEditLocation">
+        場所
+    </label>
+
+    <input
+        type="text"
+        id="basketballEditLocation"
+        placeholder="試合会場"
+    >
+
+</div>
+
+
+<!-- メモ -->
+<div class="basketball-info-section">
+
+    <label for="basketballEditMemo">
+        メモ
+    </label>
+
+    <textarea
+        id="basketballEditMemo"
+        rows="4"
+        placeholder="メモ"
+    ></textarea>
+
+</div>
+
+
+<!-- ボタン -->
+<div class="basketball-edit-buttons">
+
+    <button
+        type="button"
+        onclick="closeSportsGameEditPage()"
+    >
+        キャンセル
+    </button>
+
+    <button
+        type="button"
+        onclick="saveBasketballGameFromEditPage()"
+    >
+        保存
+    </button>
+
+</div>
+
+</form>

@@ -1,0 +1,785 @@
+/* =========================================================
+   🏀 バスケットボール
+   編集画面
+   ========================================================= */
+
+.basketball-edit-screen {
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   タイトル
+   ========================================================= */
+
+.basketball-edit-screen h2 {
+    margin: 0 0 20px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 900;
+}
+
+
+/* =========================================================
+   チーム設定
+   ========================================================= */
+
+.basketball-team-setting {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.basketball-team-setting-row {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 90px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+}
+
+.basketball-team-setting-row:nth-child(2) {
+    grid-template-columns: 90px minmax(0, 1fr);
+}
+
+.basketball-team-setting-row label {
+    font-size: 15px;
+    font-weight: 800;
+}
+
+.basketball-team-setting-row input,
+.basketball-team-setting-row select {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--surface);
+    color: var(--text);
+    font-size: 15px;
+}
+
+
+/* =========================================================
+   ホーム／アウェイ選択
+   ========================================================= */
+
+#basketballEditHomeAway {
+    width: auto;
+    min-width: 90px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   試合表示
+   ========================================================= */
+
+.basketball-match-board {
+    width: 100%;
+    margin-bottom: 24px;
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   ホーム・アウェイ チーム名
+   ========================================================= */
+
+.basketball-match-header {
+    width: 100%;
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1fr)
+        auto
+        minmax(0, 1fr);
+    align-items: center;
+    column-gap: 12px;
+    box-sizing: border-box;
+}
+
+.basketball-match-column {
+    min-width: 0;
+    width: 100%;
+    text-align: center;
+}
+
+.basketball-match-side {
+    margin-bottom: 4px;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.basketball-match-team-name {
+    width: 100%;
+    min-width: 0;
+    font-size: 26px;
+    line-height: 1.25;
+    font-weight: 900;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.basketball-match-separator {
+    font-size: 32px;
+    line-height: 1;
+    font-weight: 900;
+    text-align: center;
+}
+
+
+/* =========================================================
+   現在の合計得点
+   ========================================================= */
+
+.basketball-live-score-row {
+    width: 100%;
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1fr)
+        40px
+        minmax(0, 1fr);
+    align-items: center;
+    margin-top: 8px;
+    box-sizing: border-box;
+}
+
+.basketball-live-score {
+    text-align: center;
+    font-size: 44px;
+    line-height: 1;
+    font-weight: 900;
+}
+
+.basketball-score-dash {
+    text-align: center;
+    font-size: 34px;
+    line-height: 1;
+    font-weight: 900;
+}
+
+
+/* =========================================================
+   第1Q～第4Q
+   ========================================================= */
+
+.basketball-score-section {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.basketball-score-row {
+    width: 100%;
+    display: grid;
+    grid-template-columns:
+        70px
+        minmax(0, 1fr)
+        40px
+        minmax(0, 1fr);
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    box-sizing: border-box;
+}
+
+.basketball-score-row label {
+    font-size: 17px;
+    font-weight: 900;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.basketball-score-row input {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    padding: 7px 8px;
+    text-align: center;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--surface);
+    color: var(--text);
+    font-size: 22px;
+    font-weight: 800;
+}
+
+.basketball-score-row span {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 900;
+}
+
+
+/* =========================================================
+   延長
+   ========================================================= */
+
+.basketball-extra-section {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.basketball-overtime-area {
+    width: 100%;
+}
+
+
+/* =========================================================
+   延長スコア行
+   ========================================================= */
+
+.basketball-overtime-row {
+    width: 100%;
+    display: grid;
+    grid-template-columns:
+        70px
+        minmax(0, 1fr)
+        40px
+        minmax(0, 1fr)
+        38px;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    box-sizing: border-box;
+}
+
+.basketball-overtime-row label {
+    font-size: 17px;
+    font-weight: 900;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.basketball-overtime-row input {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    padding: 7px 8px;
+    text-align: center;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--surface);
+    color: var(--text);
+    font-size: 22px;
+    font-weight: 800;
+}
+
+.basketball-overtime-row span {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 900;
+}
+
+
+/* =========================================================
+   延長削除ボタン
+   ========================================================= */
+
+.basketball-remove-overtime-button {
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    background: var(--surface);
+    color: var(--text);
+    font-size: 18px;
+    font-weight: 900;
+    line-height: 1;
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   延長追加ボタン
+   ========================================================= */
+
+.basketball-add-overtime-button {
+    display: block;
+    margin: 4px auto 0;
+    padding: 9px 18px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--text);
+    font-size: 15px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   情報欄
+   ========================================================= */
+
+.basketball-info-section {
+    width: 100%;
+    margin-bottom: 16px;
+}
+
+.basketball-info-section label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 15px;
+    font-weight: 900;
+}
+
+.basketball-info-section input,
+.basketball-info-section select,
+.basketball-info-section textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 9px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--surface);
+    color: var(--text);
+    font-size: 15px;
+}
+
+.basketball-info-section textarea {
+    resize: vertical;
+}
+
+
+/* =========================================================
+   編集ボタン
+   ========================================================= */
+
+.basketball-edit-buttons {
+    width: 100%;
+    display: grid;
+    grid-template-columns:
+        1fr
+        1fr;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.basketball-edit-buttons button {
+    width: 100%;
+    padding: 11px 10px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: var(--surface);
+    color: var(--text);
+    font-size: 16px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   結果表示
+   ========================================================= */
+
+.basketball-view-result {
+    width: 100%;
+    margin: 18px 0;
+    text-align: center;
+    font-size: 22px;
+    font-weight: 900;
+    line-height: 1.2;
+}
+
+.basketball-view-result.win,
+.basketball-view-result.lose,
+.basketball-view-result.draw {
+    color: #e74b67;
+}
+
+.basketball-view-result.win,
+.basketball-view-result.draw {
+    text-shadow:
+        0.5px 0 0 #e74b67,
+        -0.5px 0 0 #e74b67,
+        0 0.5px 0 #e74b67,
+        0 -0.5px 0 #e74b67;
+}
+
+.basketball-view-result.scheduled,
+.basketball-view-result.cancelled,
+.basketball-view-result.postponed {
+    color: var(--text);
+    font-size: 20px;
+}
+
+
+/* =========================================================
+   結果画面
+   ========================================================= */
+
+.basketball-detail-screen {
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.basketball-detail-date {
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 900;
+}
+
+
+/* =========================================================
+   結果画面 メインスコア
+   ========================================================= */
+
+.basketball-view-match {
+    width: 100%;
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1fr)
+        auto
+        minmax(0, 1fr);
+    align-items: center;
+    column-gap: 12px;
+    margin-bottom: 22px;
+    box-sizing: border-box;
+}
+
+.basketball-view-team {
+    min-width: 0;
+    width: 100%;
+    text-align: center;
+}
+
+.basketball-view-side {
+    margin-bottom: 4px;
+    font-size: 15px;
+    font-weight: 900;
+}
+
+.basketball-view-team-name {
+    width: 100%;
+    font-size: 28px;
+    line-height: 1.25;
+    font-weight: 900;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.basketball-view-team-score {
+    margin-top: 8px;
+    font-size: 46px;
+    line-height: 1;
+    font-weight: 900;
+}
+
+.basketball-view-score-separator {
+    font-size: 36px;
+    line-height: 1;
+    font-weight: 900;
+    text-align: center;
+}
+
+
+/* =========================================================
+   結果画面 Q・OT
+   ========================================================= */
+
+.basketball-detail-score-section {
+    width: 100%;
+    margin-bottom: 18px;
+}
+
+.basketball-detail-score-row {
+    width: 100%;
+    display: grid;
+    grid-template-columns:
+        70px
+        minmax(0, 1fr)
+        40px
+        minmax(0, 1fr);
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    box-sizing: border-box;
+}
+
+.basketball-detail-score-row label {
+    font-size: 18px;
+    font-weight: 900;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.basketball-detail-score-row span {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 900;
+}
+
+.basketball-detail-score-row strong {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 900;
+}
+
+
+/* =========================================================
+   結果画面 情報
+   ========================================================= */
+
+.basketball-detail-info {
+    width: 100%;
+    margin-top: 14px;
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    box-sizing: border-box;
+}
+
+.basketball-detail-info strong {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 14px;
+    font-weight: 900;
+}
+
+.basketball-detail-info div {
+    font-size: 15px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+
+/* =========================================================
+   スマートフォン
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    .basketball-edit-screen {
+        padding: 14px;
+    }
+
+
+    .basketball-edit-screen h2 {
+        margin-bottom: 16px;
+        font-size: 22px;
+    }
+
+
+    .basketball-team-setting-row {
+        grid-template-columns:
+            78px
+            minmax(0, 1fr)
+            auto;
+        gap: 6px;
+    }
+
+
+    .basketball-team-setting-row:nth-child(2) {
+        grid-template-columns:
+            78px
+            minmax(0, 1fr);
+    }
+
+
+    .basketball-team-setting-row label {
+        font-size: 14px;
+    }
+
+
+    .basketball-team-setting-row input,
+    .basketball-team-setting-row select {
+        padding: 7px 8px;
+        font-size: 14px;
+    }
+
+
+    #basketballEditHomeAway {
+        min-width: 82px;
+    }
+
+
+    .basketball-match-header {
+        column-gap: 6px;
+    }
+
+
+    .basketball-match-side {
+        font-size: 13px;
+    }
+
+
+    .basketball-match-team-name {
+        font-size: 23px;
+    }
+
+
+    .basketball-match-separator {
+        font-size: 28px;
+    }
+
+
+    .basketball-live-score-row {
+        grid-template-columns:
+            minmax(0, 1fr)
+            30px
+            minmax(0, 1fr);
+    }
+
+
+    .basketball-live-score {
+        font-size: 40px;
+    }
+
+
+    .basketball-score-dash {
+        font-size: 30px;
+    }
+
+
+    .basketball-score-row {
+        grid-template-columns:
+            58px
+            minmax(0, 1fr)
+            30px
+            minmax(0, 1fr);
+        gap: 6px;
+        margin-bottom: 10px;
+    }
+
+
+    .basketball-score-row label {
+        font-size: 15px;
+    }
+
+
+    .basketball-score-row input {
+        padding: 6px;
+        font-size: 20px;
+    }
+
+
+    .basketball-score-row span {
+        font-size: 21px;
+    }
+
+
+    .basketball-overtime-row {
+        grid-template-columns:
+            58px
+            minmax(0, 1fr)
+            30px
+            minmax(0, 1fr)
+            34px;
+        gap: 6px;
+        margin-bottom: 10px;
+    }
+
+
+    .basketball-overtime-row label {
+        font-size: 15px;
+    }
+
+
+    .basketball-overtime-row input {
+        padding: 6px;
+        font-size: 20px;
+    }
+
+
+    .basketball-overtime-row span {
+        font-size: 21px;
+    }
+
+
+    .basketball-remove-overtime-button {
+        width: 30px;
+        height: 30px;
+        font-size: 16px;
+    }
+
+
+    .basketball-add-overtime-button {
+        padding: 8px 15px;
+        font-size: 14px;
+    }
+
+
+    .basketball-detail-screen {
+        padding: 14px;
+    }
+
+
+    .basketball-detail-date {
+        font-size: 17px;
+        margin-bottom: 16px;
+    }
+
+
+    .basketball-view-match {
+        column-gap: 6px;
+        margin-bottom: 18px;
+    }
+
+
+    .basketball-view-side {
+        font-size: 13px;
+    }
+
+
+    .basketball-view-team-name {
+        font-size: 24px;
+    }
+
+
+    .basketball-view-team-score {
+        margin-top: 6px;
+        font-size: 40px;
+    }
+
+
+    .basketball-view-score-separator {
+        font-size: 30px;
+    }
+
+
+    .basketball-detail-score-row {
+        grid-template-columns:
+            58px
+            minmax(0, 1fr)
+            30px
+            minmax(0, 1fr);
+        gap: 6px;
+        margin-bottom: 10px;
+    }
+
+
+    .basketball-detail-score-row label {
+        font-size: 16px;
+    }
+
+
+    .basketball-detail-score-row span,
+    .basketball-detail-score-row strong {
+        font-size: 21px;
+    }
+
+
+    .basketball-view-result {
+        font-size: 20px;
+    }
+
+
+    .basketball-view-result.scheduled,
+    .basketball-view-result.cancelled,
+    .basketball-view-result.postponed {
+        font-size: 18px;
+    }
+
+}
