@@ -1027,10 +1027,36 @@ function renumberBasketballOvertimeRows(){
 
 function getBasketballEditTeamNames(){
 
+    const data =
+        db.load();
+
+
+    const settings =
+        data.settings || {};
+
+
+    const favoriteSports =
+        settings.favoriteSports || [];
+
+
+    const selectedIndex =
+        settings.selectedIndex || 0;
+
+
+    const selectedSport =
+        favoriteSports[selectedIndex];
+
+
+    const team =
+        selectedSport?.team ||
+        "";
+
+
     const teamInput =
         document.getElementById(
             "basketballEditTeam"
         );
+
 
     const opponentInput =
         document.getElementById(
@@ -1038,11 +1064,22 @@ function getBasketballEditTeamNames(){
         );
 
 
+    /*
+       応援チームは設定から取得
+    */
+
+    if(teamInput){
+
+        teamInput.value =
+            team;
+
+    }
+
+
     return {
 
         team:
-            teamInput?.value ||
-            "",
+            team,
 
         opponent:
             opponentInput?.value ||
