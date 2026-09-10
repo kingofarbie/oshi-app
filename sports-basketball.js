@@ -1213,54 +1213,38 @@ function updateBasketballHomeAwayDisplay(){
         getBasketballDisplayedSides();
 
 
-    /*
-       🏀 チーム名表示
-    */
+    /* =====================
+       チーム名
+    ===================== */
 
-    const teamNameElements =
-        document.querySelectorAll(
+    document
+        .querySelectorAll(
             "[data-basketball-team-name]"
-        );
-
-
-    teamNameElements.forEach(
-        element => {
+        )
+        .forEach(element => {
 
             element.textContent =
-                sides.leftIsTeam
-                    ? sides.leftName
-                    : sides.rightName;
+                sides.leftName;
 
-        }
-    );
+        });
 
 
-    /*
-       🏀 相手チーム名表示
-    */
-
-    const opponentNameElements =
-        document.querySelectorAll(
+    document
+        .querySelectorAll(
             "[data-basketball-opponent-name]"
-        );
-
-
-    opponentNameElements.forEach(
-        element => {
+        )
+        .forEach(element => {
 
             element.textContent =
-                sides.leftIsTeam
-                    ? sides.rightName
-                    : sides.leftName;
+                sides.rightName;
 
-        }
-    );
+        });
 
 
-    /*
-       🏀 Q1〜Q4
-       ホーム／アウェイの左右を入れ替える
-    */
+    /* =====================
+       Q1～Q4
+       左右を表示順に合わせる
+    ===================== */
 
     const quarterPairs = [
 
@@ -1287,74 +1271,61 @@ function updateBasketballHomeAwayDisplay(){
     ];
 
 
-    /*
-       現在のDOM上の左右と
-       表示したい左右が違う場合だけ入れ替える
-    */
+    quarterPairs.forEach(pair => {
 
-    quarterPairs.forEach(
-        pair => {
+        const teamInput =
+            document.getElementById(pair[0]);
 
-            const teamInput =
-                document.getElementById(
-                    pair[0]
-                );
-
-            const opponentInput =
-                document.getElementById(
-                    pair[1]
-                );
+        const opponentInput =
+            document.getElementById(pair[1]);
 
 
-            if(
-                !teamInput ||
-                !opponentInput
-            ){
-                return;
-            }
+        if(
+            !teamInput ||
+            !opponentInput
+        ){
+            return;
+        }
 
 
-            const teamIsLeft =
+        const teamIsLeft =
+            Boolean(
                 teamInput.compareDocumentPosition(
                     opponentInput
                 ) &
-                Node.DOCUMENT_POSITION_FOLLOWING;
+                Node.DOCUMENT_POSITION_FOLLOWING
+            );
 
 
-            const shouldTeamBeLeft =
-                sides.leftIsTeam;
+        if(
+            teamIsLeft !==
+            sides.leftIsTeam
+        ){
 
-
-            if(
-                Boolean(teamIsLeft) !==
-                shouldTeamBeLeft
-            ){
-
-                swapBasketballScoreInputs(
-                    teamInput,
-                    opponentInput
-                );
-
-            }
+            swapBasketballScoreInputs(
+                teamInput,
+                opponentInput
+            );
 
         }
-    );
+
+    });
 
 
-    /*
-       🏀 横方向の表示を更新
-    */
+    /* =====================
+       合計
+    ===================== */
 
-    updateBasketballHorizontalScoreDisplay(
+    updateBasketballDisplayedTotalOrder(
         sides
     );
 
 
-    /*
-       🏀 合計得点の左右表示を更新
-    */
+    /* =====================
+       OT
+    ===================== */
 
-    updateBasketballDisplayedTotalOrder(
+    updateBasketballOvertimeDisplayOrder(
         sides
     );
 
@@ -1496,42 +1467,49 @@ function updateBasketballDisplayedTotalOrder(
         );
 
 
-    const dash =
-        document.querySelector(
-            ".basketball-score-dash"
-        );
-
-
     if(
         !teamTotal ||
-        !opponentTotal ||
-        !dash
+        !opponentTotal
     ){
         return;
     }
 
 
+    const parent =
+        teamTotal.parentElement;
+
+
     if(
-        !sides.leftIsTeam
+        !parent ||
+        parent !== opponentTotal.parentElement
+    ){
+        return;
+    }
+
+
+    const teamIsLeft =
+        Boolean(
+            teamTotal.compareDocumentPosition(
+                opponentTotal
+            ) &
+            Node.DOCUMENT_POSITION_FOLLOWING
+        );
+
+
+    if(
+        teamIsLeft !==
+        sides.leftIsTeam
     ){
 
-        teamTotal.dataset.basketballSide =
-            "right";
-
-        opponentTotal.dataset.basketballSide =
-            "left";
-
-    }else{
-
-        teamTotal.dataset.basketballSide =
-            "left";
-
-        opponentTotal.dataset.basketballSide =
-            "right";
+        swapBasketballScoreInputs(
+            teamTotal,
+            opponentTotal
+        );
 
     }
 
 }
+
 
 
 /* =========================================================
@@ -3037,4 +3015,62 @@ function swapBasketballScoreInputs(firstInput, secondInput) {
     );
 
     marker.remove();
+}
+
+
+
+function updateBasketballOvertimeDisplayOrder(
+    sides
+){
+
+    const overtimeRows =
+        document.querySelectorAll(
+            ".basketball-overtime-row"
+        );
+
+
+    overtimeRows.forEach(row => {
+
+        const teamInput =
+            row.querySelector(
+                ".basketball-overtime-team"
+            );
+
+        const opponentInput =
+            row.querySelector(
+                ".basketball-overtime-opponent"
+            );
+
+
+        if(
+            !teamInput ||
+            !opponentInput
+        ){
+            return;
+        }
+
+
+        const teamIsLeft =
+            Boolean(
+                teamInput.compareDocumentPosition(
+                    opponentInput
+                ) &
+                Node.DOCUMENT_POSITION_FOLLOWING
+            );
+
+
+        if(
+            teamIsLeft !==
+            sides.leftIsTeam
+        ){
+
+            swapBasketballScoreInputs(
+                teamInput,
+                opponentInput
+            );
+
+        }
+
+    });
+
 }
