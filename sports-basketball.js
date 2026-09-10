@@ -424,39 +424,45 @@ function renderBasketballGameEditForm(){
     }
 
 
+    /*
+       現在のデータ
+    */
+
+    const data =
+        db.load();
+
+
+    const selectedIndex =
+        typeof data.sportsCalendar?.selectedIndex === "number"
+        ?
+        data.sportsCalendar.selectedIndex
+        :
+        0;
+
+
+    const favoriteSports =
+        Array.isArray(
+            data.sportsCalendar?.favoriteSports
+        )
+        ?
+        data.sportsCalendar.favoriteSports
+        :
+        [];
+
+
+    const currentFavorite =
+        favoriteSports[selectedIndex] ||
+        {};
+
+
     const game =
-        getCurrentBasketballGameForEdit();
+        getCurrentBasketballGameForEdit() ||
+        {};
 
 
-    const team =
-        game.team ||
-        "";
-
-
-    const opponent =
-        game.opponent ||
-        "";
-
-
-    const homeAway =
-        game.homeAway ||
-        "home";
-
-
-    const result =
-        game.result ||
-        "";
-
-
-    const location =
-        game.location ||
-        "";
-
-
-    const memo =
-        game.memo ||
-        "";
-
+    /*
+       タイトル
+    */
 
     const title =
         document.getElementById(
@@ -467,11 +473,19 @@ function renderBasketballGameEditForm(){
 
         title.textContent =
             sportsSelectedDate
-                ? `🏀 ${sportsSelectedDate} 試合結果`
-                : "🏀 試合結果";
+                ?
+                `🏀 ${sportsSelectedDate} 試合結果`
+                :
+                "🏀 試合結果";
 
     }
 
+
+    /*
+       =====================
+       応援チーム
+       =====================
+    */
 
     const teamInput =
         document.getElementById(
@@ -479,10 +493,20 @@ function renderBasketballGameEditForm(){
         );
 
     if(teamInput){
+
         teamInput.value =
-            team;
+            currentFavorite.team ||
+            game.team ||
+            "";
+
     }
 
+
+    /*
+       =====================
+       対戦相手
+       =====================
+    */
 
     const opponentInput =
         document.getElementById(
@@ -490,10 +514,19 @@ function renderBasketballGameEditForm(){
         );
 
     if(opponentInput){
+
         opponentInput.value =
-            opponent;
+            game.opponent ||
+            "";
+
     }
 
+
+    /*
+       =====================
+       ホーム／アウェイ
+       =====================
+    */
 
     const homeAwaySelect =
         document.getElementById(
@@ -503,10 +536,17 @@ function renderBasketballGameEditForm(){
     if(homeAwaySelect){
 
         homeAwaySelect.value =
-            homeAway;
+            game.homeAway ||
+            "home";
 
     }
 
+
+    /*
+       =====================
+       結果
+       =====================
+    */
 
     const resultSelect =
         document.getElementById(
@@ -516,10 +556,17 @@ function renderBasketballGameEditForm(){
     if(resultSelect){
 
         resultSelect.value =
-            result;
+            game.result ||
+            "";
 
     }
 
+
+    /*
+       =====================
+       場所
+       =====================
+    */
 
     const locationInput =
         document.getElementById(
@@ -529,10 +576,17 @@ function renderBasketballGameEditForm(){
     if(locationInput){
 
         locationInput.value =
-            location;
+            game.location ||
+            "";
 
     }
 
+
+    /*
+       =====================
+       メモ
+       =====================
+    */
 
     const memoInput =
         document.getElementById(
@@ -542,14 +596,17 @@ function renderBasketballGameEditForm(){
     if(memoInput){
 
         memoInput.value =
-            memo;
+            game.memo ||
+            "";
 
     }
 
 
-    /* =====================
-       第1Q～第4Q
-       ===================== */
+    /*
+       =====================
+       第1Q
+       =====================
+    */
 
     setBasketballScoreInput(
         "basketballEditFirstQuarterTeam",
@@ -562,6 +619,12 @@ function renderBasketballGameEditForm(){
     );
 
 
+    /*
+       =====================
+       第2Q
+       =====================
+    */
+
     setBasketballScoreInput(
         "basketballEditSecondQuarterTeam",
         game.secondQuarter?.team
@@ -572,6 +635,12 @@ function renderBasketballGameEditForm(){
         game.secondQuarter?.opponent
     );
 
+
+    /*
+       =====================
+       第3Q
+       =====================
+    */
 
     setBasketballScoreInput(
         "basketballEditThirdQuarterTeam",
@@ -584,6 +653,12 @@ function renderBasketballGameEditForm(){
     );
 
 
+    /*
+       =====================
+       第4Q
+       =====================
+    */
+
     setBasketballScoreInput(
         "basketballEditFourthQuarterTeam",
         game.fourthQuarter?.team
@@ -595,25 +670,49 @@ function renderBasketballGameEditForm(){
     );
 
 
-    /* =====================
+    /*
+       =====================
        延長戦
-       ===================== */
+       =====================
+    */
 
     renderBasketballOvertimeRows(
         Array.isArray(game.overtime)
-            ? game.overtime
-            : []
+            ?
+            game.overtime
+            :
+            []
     );
 
+
+    /*
+       =====================
+       イベント登録
+       =====================
+    */
 
     bindBasketballEditEvents();
 
 
+    /*
+       =====================
+       ホーム／アウェイ表示更新
+       =====================
+    */
+
     updateBasketballHomeAwayDisplay();
+
+
+    /*
+       =====================
+       リアルタイム得点更新
+       =====================
+    */
 
     updateBasketballEditLive();
 
 }
+
 
 
 /* =========================================================
@@ -1027,36 +1126,10 @@ function renumberBasketballOvertimeRows(){
 
 function getBasketballEditTeamNames(){
 
-    const data =
-        db.load();
-
-
-    const settings =
-        data.settings || {};
-
-
-    const favoriteSports =
-        settings.favoriteSports || [];
-
-
-    const selectedIndex =
-        settings.selectedIndex || 0;
-
-
-    const selectedSport =
-        favoriteSports[selectedIndex];
-
-
-    const team =
-        selectedSport?.team ||
-        "";
-
-
     const teamInput =
         document.getElementById(
             "basketballEditTeam"
         );
-
 
     const opponentInput =
         document.getElementById(
@@ -1064,22 +1137,11 @@ function getBasketballEditTeamNames(){
         );
 
 
-    /*
-       応援チームは設定から取得
-    */
-
-    if(teamInput){
-
-        teamInput.value =
-            team;
-
-    }
-
-
     return {
 
         team:
-            team,
+            teamInput?.value ||
+            "",
 
         opponent:
             opponentInput?.value ||
