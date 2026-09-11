@@ -1597,7 +1597,7 @@
         minmax(0, 1fr)
         auto;
 
-    align-items: center;
+    align-items:start;
 
     gap: 8px;
 
@@ -1606,6 +1606,10 @@
     margin: 4px 8px 8px;
 
     box-sizing: border-box;
+}
+
+.sports-current-select {
+    margin-top: 4px;
 }
 
 
