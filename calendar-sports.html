@@ -73,30 +73,23 @@
 
 <section class="sports-current-setting">
 
-    <!-- 現在のスポーツ名 -->
-<div
-    id="sportsCurrentSportName"
-    class="sports-current-sport-name"
->
-    <span class="sports-current-sport-label">
-        スポーツ未設定
-    </span>
-
-    <span class="sports-current-team-name">
-    </span>
-</div>
-
-    <!-- スポーツ選択 -->
-    <select
-        id="sportsCurrentSelect"
-        class="sports-current-select"
-        onchange="changeCurrentFavoriteSport()"
+    <div
+        id="sportsCurrentSportName"
+        class="sports-current-sport-name"
     >
+        <span class="sports-current-sport-label">
+            スポーツ未設定
+        </span>
 
-    </select>
+        <select
+            id="sportsCurrentSelect"
+            class="sports-current-select"
+            onchange="changeCurrentFavoriteSport()"
+        ></select>
 
+        <span class="sports-current-team-name"></span>
+    </div>
 
-    <!-- 設定 -->
     <button
         type="button"
         class="sports-open-settings-button"
@@ -106,6 +99,7 @@
     </button>
 
 </section>
+
 
 
     <!-- =========================
