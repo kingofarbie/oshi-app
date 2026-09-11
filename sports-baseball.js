@@ -2087,23 +2087,15 @@ if(game.result === "win"){
             ${escapeSportsHTML(team)}
         </div>
 
+        <div class="baseball-view-team-score">
+            ${teamTotal}
+        </div>
+
     </div>
 
 
-    <div class="baseball-view-score">
-
-        <strong>
-            ${teamTotal}
-        </strong>
-
-        <span>
-            -
-        </span>
-
-        <strong>
-            ${opponentTotal}
-        </strong>
-
+    <div class="baseball-view-score-separator">
+        -
     </div>
 
 
@@ -2113,10 +2105,13 @@ if(game.result === "win"){
             ${escapeSportsHTML(opponent)}
         </div>
 
+        <div class="baseball-view-team-score">
+            ${opponentTotal}
+        </div>
+
     </div>
 
 </div>
-
             <!-- =========================
                  試合情報
             ========================== -->
