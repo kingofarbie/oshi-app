@@ -4270,26 +4270,15 @@ function deleteSoccerGame(){
        ================================================
     */
 
-if(
-    !confirm(
-        "この試合記録を削除しますか？"
-    )
-){
+    if(
+        !confirm(
+            "この試合記録を削除しますか？"
+        )
+    ){
 
-    /*
-       削除をキャンセルした場合、
-       削除ボタンに残っているフォーカスを解除する
-    */
-
-    if(document.activeElement){
-
-        document.activeElement.blur();
+        return;
 
     }
-
-    return;
-
-}
 
 
     const deletedDate =
