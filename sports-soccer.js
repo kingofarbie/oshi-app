@@ -3399,13 +3399,6 @@ detail.innerHTML = `
 
     <button
         type="button"
-        onclick="closeSportsGameDetailPage()"
-    >
-        閉じる
-    </button>
-
-    <button
-        type="button"
         onclick="openSportsGameEditPage(sportsSelectedDate)"
     >
         編集
@@ -3418,8 +3411,16 @@ detail.innerHTML = `
         削除
     </button>
 
+    <button
+        type="button"
+        onclick="closeSportsGameDetailPage()"
+    >
+        閉じる
+    </button>
+
 </div>
-        </form>
+
+</form>
 
     `;
 
