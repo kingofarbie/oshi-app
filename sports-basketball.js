@@ -2754,29 +2754,38 @@ function showBasketballGameDetail(date){
                  ボタン
             ====================== -->
 
-            <div class="
-                basketball-edit-buttons
-            ">
+<div class="
+    basketball-edit-buttons
+">
 
-                <button
-                    type="button"
-                    onclick="closeSportsGameDetailPage()"
-                >
-                    閉じる
-                </button>
+    <button
+        type="button"
+        onclick="closeSportsGameDetailPage()"
+    >
+        閉じる
+    </button>
 
 
-                <button
-                    type="button"
-                    onclick="
-                        openSportsGameEditPage(
-                            sportsSelectedDate
-                        )
-                    "
-                >
-                    編集
-                </button>
+    <button
+        type="button"
+        onclick="
+            openSportsGameEditPage(
+                sportsSelectedDate
+            )
+        "
+    >
+        編集
+    </button>
 
+
+    <button
+        type="button"
+        onclick="deleteBasketballGame()"
+    >
+        削除
+    </button>
+
+</div>
             </div>
 
 

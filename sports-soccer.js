@@ -3395,24 +3395,30 @@ detail.innerHTML = `
                  ボタン
             ====================== -->
 
-            <div class="soccer-edit-buttons">
+<div class="soccer-edit-buttons">
 
-                <button
-                    type="button"
-                    onclick="closeSportsGameDetailPage()"
-                >
-                    閉じる
-                </button>
+    <button
+        type="button"
+        onclick="closeSportsGameDetailPage()"
+    >
+        閉じる
+    </button>
 
-                <button
-                    type="button"
-                    onclick="openSportsGameEditPage(sportsSelectedDate)"
-                >
-                    編集
-                </button>
+    <button
+        type="button"
+        onclick="openSportsGameEditPage(sportsSelectedDate)"
+    >
+        編集
+    </button>
 
-            </div>
+    <button
+        type="button"
+        onclick="deleteSoccerGame()"
+    >
+        削除
+    </button>
 
+</div>
         </form>
 
     `;
