@@ -2760,14 +2760,6 @@ function showBasketballGameDetail(date){
 
     <button
         type="button"
-        onclick="closeSportsGameDetailPage()"
-    >
-        閉じる
-    </button>
-
-
-    <button
-        type="button"
         onclick="
             openSportsGameEditPage(
                 sportsSelectedDate
@@ -2785,7 +2777,17 @@ function showBasketballGameDetail(date){
         削除
     </button>
 
+
+    <button
+        type="button"
+        onclick="closeSportsGameDetailPage()"
+    >
+        閉じる
+    </button>
+
 </div>
+
+
             </div>
 
 
