@@ -379,20 +379,15 @@
 
 .baseball-view-team {
     flex: 1;
-
     min-width: 0;
-
     text-align: center;
 }
 
 
 .baseball-view-team-name {
-    font-size: 1.1rem;
-
-    font-weight: 700;
-
+    font-size: 2.2rem;
+    font-weight: 800;
     line-height: 1.3;
-
     word-break: break-word;
 }
 
@@ -408,7 +403,7 @@
     align-items: center;
     justify-content: center;
 
-    gap: 10px;
+    gap: 14px;
 
     flex-shrink: 0;
 
@@ -417,22 +412,19 @@
 
 
 .baseball-view-score strong {
-    font-size: 2rem;
+    font-size: 4rem;
 
-    font-weight: 800;
+    font-weight: 900;
 
     line-height: 1;
 }
 
 
 .baseball-view-score span {
-    font-size: 1.5rem;
+    font-size: 3rem;
 
-    font-weight: 700;
+    font-weight: 800;
 }
-
-
-
 
 /* =====================================================
    ⚾ 結果画面ボタン
