@@ -626,27 +626,33 @@
 
     .baseball-view-team-name {
 
-        font-size: 0.95rem;
+        font-size: 2.2rem;
+
+        font-weight: 800;
     }
 
 
     .baseball-view-score {
 
-        gap: 7px;
+        gap: 10px;
     }
 
 
     .baseball-view-score strong {
 
-        font-size: 1.7rem;
+        font-size: 4rem;
+
+        font-weight: 900;
     }
 
 
     .baseball-view-score span {
 
-        font-size: 1.25rem;
-    }
+        font-size: 3rem;
 
+        font-weight: 800;
+    }
+    
 }
 
 
