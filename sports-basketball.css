@@ -352,27 +352,110 @@
    編集ボタン
    ========================================================= */
 
+/* =====================================================
+   🏀 結果画面ボタン
+   編集
+   削除
+   閉じる
+   縦3つ
+===================================================== */
+
 .basketball-edit-buttons {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+
     width: 100%;
-    display: grid;
-    grid-template-columns:
-        1fr
-        1fr;
-    gap: 10px;
-    margin-top: 20px;
+
+    max-width: 420px;
+
+    margin: 24px auto 0;
+
 }
 
+
 .basketball-edit-buttons button {
+
     width: 100%;
-    padding: 11px 10px;
-    border: 1px solid var(--border);
-    border-radius: 7px;
-    background: var(--surface);
-    color: var(--text);
-    font-size: 16px;
-    font-weight: 900;
+
+    min-height: 54px;
+
+    padding: 12px 16px;
+
+    box-sizing: border-box;
+
+    border: 1px solid rgba(128,128,128,0.28);
+
+    border-radius: 11px;
+
+    background: rgba(128,128,128,0.12);
+
+    color: inherit;
+
+    font: inherit;
+
+    font-size: 18px;
+
+    font-weight: 800;
+
     cursor: pointer;
+
+    transition:
+        transform 0.15s ease,
+        opacity 0.15s ease,
+        background 0.15s ease;
+
 }
+
+
+.basketball-edit-buttons button:hover {
+
+    background: rgba(128,128,128,0.20);
+
+    opacity: 1;
+
+}
+
+
+.basketball-edit-buttons button:active {
+
+    transform: scale(0.97);
+
+}
+
+
+/* =====================================================
+   📱 スマートフォン
+===================================================== */
+
+@media (max-width: 600px) {
+
+    .basketball-edit-buttons {
+
+        gap: 12px;
+
+        width: 100%;
+
+        margin-top: 22px;
+
+    }
+
+
+    .basketball-edit-buttons button {
+
+        min-height: 54px;
+
+        padding: 12px 16px;
+
+        font-size: 18px;
+
+    }
+
+}
+
 
 
 /* =========================================================
