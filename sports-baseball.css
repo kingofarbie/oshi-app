@@ -432,6 +432,87 @@
 }
 
 
+
+
+/* =====================================================
+   ⚾ 結果画面ボタン
+   編集・削除・閉じる
+   縦3つ
+===================================================== */
+
+.baseball-view-buttons {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+
+    width: 100%;
+
+    max-width: 420px;
+
+    margin: 24px auto 0;
+
+}
+
+
+.baseball-view-buttons button {
+
+    width: 100%;
+
+    min-height: 54px;
+
+    padding: 12px 16px;
+
+    box-sizing: border-box;
+
+    border: 1px solid rgba(128,128,128,0.28);
+
+    border-radius: 11px;
+
+    background: rgba(128,128,128,0.12);
+
+    color: inherit;
+
+    font: inherit;
+
+    font-size: 18px;
+
+    font-weight: 800;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.15s ease,
+        opacity 0.15s ease,
+        background 0.15s ease;
+
+}
+
+
+/* PCなど本当にhoverできる環境だけhoverを適用 */
+
+@media (hover: hover) and (pointer: fine) {
+
+    .baseball-view-buttons button:hover {
+
+        background: rgba(128,128,128,0.20);
+
+        opacity: 1;
+
+    }
+
+}
+
+
+.baseball-view-buttons button:active {
+
+    transform: scale(0.97);
+
+}
+
+
 /* =====================================================
    ⚾ スクロールバー
 ===================================================== */
