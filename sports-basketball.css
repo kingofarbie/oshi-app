@@ -411,14 +411,17 @@
 }
 
 
-.basketball-edit-buttons button:hover {
+@media (hover: hover) and (pointer: fine) {
 
-    background: rgba(128,128,128,0.20);
+    .basketball-edit-buttons button:hover {
 
-    opacity: 1;
+        background: rgba(128,128,128,0.20);
+
+        opacity: 1;
+
+    }
 
 }
-
 
 .basketball-edit-buttons button:active {
 
