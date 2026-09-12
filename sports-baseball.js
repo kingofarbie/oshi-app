@@ -2101,28 +2101,39 @@ if(game.result === "win"){
     <!-- 外野芝 -->
     <div class="stadium-bg-outfield"></div>
 
-    <!-- 内野 -->
-    <div class="stadium-bg-infield">
+<!-- =================================================
+     ⚾ 内野
+================================================= -->
 
-        <!-- 内野芝 -->
-        <div class="stadium-bg-diamond-grass"></div>
+<div class="stadium-bg-infield">
 
-        <!-- 土のベースライン -->
-        <div class="stadium-bg-diamond-dirt"></div>
+    <!-- 内野の土 -->
+    <div class="stadium-infield-diamond"></div>
 
-        <!-- 白線 -->
-        <div class="stadium-bg-foul-line stadium-bg-foul-line-left"></div>
-        <div class="stadium-bg-foul-line stadium-bg-foul-line-right"></div>
+    <!-- 内野芝 -->
+    <div class="stadium-infield-grass-area"></div>
 
-        <!-- ベース -->
-        <div class="stadium-bg-base stadium-bg-third-base"></div>
-        <div class="stadium-bg-base stadium-bg-first-base"></div>
+    <!-- ファウルライン -->
+    <div class="stadium-foul-line stadium-foul-line-left"></div>
+    <div class="stadium-foul-line stadium-foul-line-right"></div>
 
-        <!-- ホームベース -->
-        <div class="stadium-bg-home-base"></div>
+    <!-- ベースライン -->
+    <div class="stadium-base-line base-line-first"></div>
+    <div class="stadium-base-line base-line-third"></div>
 
-    </div>
+    <!-- 1塁 -->
+    <div class="stadium-base-new stadium-first-base"></div>
 
+    <!-- 2塁 -->
+    <div class="stadium-base-new stadium-second-base"></div>
+
+    <!-- 3塁 -->
+    <div class="stadium-base-new stadium-third-base"></div>
+
+    <!-- ホーム -->
+    <div class="stadium-home-base-new"></div>
+
+</div>
     <!-- 手前の芝 -->
     <div class="stadium-bg-foreground"></div>
 

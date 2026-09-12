@@ -1802,3 +1802,395 @@
     }
 
 }
+
+
+
+
+
+/* =====================================================
+   ⚾ 野球場・内野 完全配置
+   ホーム → 1塁 → 2塁 → 3塁 → ホーム
+===================================================== */
+
+
+/* =====================================================
+   内野エリア
+===================================================== */
+
+.stadium-bg-infield {
+
+    position: absolute;
+
+    z-index: 7;
+
+    left: 50%;
+
+    bottom: -65px;
+
+    width: 360px;
+
+    height: 300px;
+
+    transform: translateX(-50%);
+
+}
+
+
+/* =====================================================
+   内野の土
+   ダイヤモンドの外側
+===================================================== */
+
+.stadium-infield-diamond {
+
+    position: absolute;
+
+    left: 50%;
+
+    top: 28px;
+
+    width: 245px;
+
+    height: 245px;
+
+    transform:
+        translateX(-50%)
+        rotate(45deg);
+
+    background:
+        repeating-linear-gradient(
+            25deg,
+            rgba(255,255,255,.035) 0 5px,
+            rgba(0,0,0,.025) 5px 10px
+        ),
+        linear-gradient(
+            135deg,
+            #bd7545 0%,
+            #c9824e 50%,
+            #a95d35 100%
+        );
+
+    box-shadow:
+        inset 0 0 30px rgba(70,30,10,.22);
+
+}
+
+
+/* =====================================================
+   内野中央の芝
+===================================================== */
+
+.stadium-infield-grass-area {
+
+    position: absolute;
+
+    z-index: 1;
+
+    left: 50%;
+
+    top: 95px;
+
+    width: 105px;
+
+    height: 105px;
+
+    transform:
+        translateX(-50%)
+        rotate(45deg);
+
+    background:
+        repeating-linear-gradient(
+            90deg,
+            #438f4b 0 8px,
+            #34823f 8px 16px
+        );
+
+}
+
+
+/* =====================================================
+   ベースライン
+   1塁 ↔ 2塁 ↔ 3塁 ↔ ホーム
+===================================================== */
+
+.stadium-base-line {
+
+    position: absolute;
+
+    z-index: 10;
+
+    height: 4px;
+
+    background: rgba(255,255,255,.9);
+
+    box-shadow:
+        0 1px 3px rgba(0,0,0,.2);
+
+    transform-origin: left center;
+
+}
+
+
+/* ホーム → 1塁 */
+
+.base-line-first {
+
+    left: 50%;
+
+    top: 228px;
+
+    width: 155px;
+
+    transform: rotate(-40deg);
+
+}
+
+
+/* ホーム → 3塁 */
+
+.base-line-third {
+
+    left: 50%;
+
+    top: 228px;
+
+    width: 155px;
+
+    transform: rotate(-140deg);
+
+}
+
+
+/* =====================================================
+   ファウルライン
+   ホームから外野方向へ延長
+===================================================== */
+
+.stadium-foul-line {
+
+    position: absolute;
+
+    z-index: 11;
+
+    width: 250px;
+
+    height: 4px;
+
+    background: rgba(255,255,255,.92);
+
+    box-shadow:
+        0 1px 3px rgba(0,0,0,.2);
+
+    transform-origin: left center;
+
+}
+
+
+/* 1塁側ファウルライン */
+
+.stadium-foul-line-right {
+
+    left: 50%;
+
+    top: 228px;
+
+    transform:
+        rotate(-40deg);
+
+}
+
+
+/* 3塁側ファウルライン */
+
+.stadium-foul-line-left {
+
+    left: 50%;
+
+    top: 228px;
+
+    transform:
+        rotate(-140deg);
+
+}
+
+
+/* =====================================================
+   ベース
+===================================================== */
+
+.stadium-base-new {
+
+    position: absolute;
+
+    z-index: 14;
+
+    width: 17px;
+
+    height: 17px;
+
+    background: #fff;
+
+    transform: rotate(45deg);
+
+    box-shadow:
+        1px 2px 4px rgba(0,0,0,.35);
+
+}
+
+
+/* =====================================================
+   1塁
+===================================================== */
+
+.stadium-first-base {
+
+    left: calc(50% + 91px);
+
+    top: 168px;
+
+}
+
+
+/* =====================================================
+   2塁
+===================================================== */
+
+.stadium-second-base {
+
+    left: calc(50% - 8px);
+
+    top: 68px;
+
+}
+
+
+/* =====================================================
+   3塁
+===================================================== */
+
+.stadium-third-base {
+
+    left: calc(50% - 108px);
+
+    top: 168px;
+
+}
+
+
+/* =====================================================
+   ホームベース
+===================================================== */
+
+.stadium-home-base-new {
+
+    position: absolute;
+
+    z-index: 15;
+
+    left: 50%;
+
+    top: 228px;
+
+    width: 25px;
+
+    height: 25px;
+
+    transform:
+        translateX(-50%)
+        rotate(45deg);
+
+    background: #fff;
+
+    box-shadow:
+        1px 3px 5px rgba(0,0,0,.35);
+
+}
+
+
+/* =====================================================
+   スマホ
+===================================================== */
+
+@media (max-width: 600px) {
+
+    .stadium-bg-infield {
+
+        width: 320px;
+
+        height: 280px;
+
+        bottom: -60px;
+
+    }
+
+
+    .stadium-infield-diamond {
+
+        width: 220px;
+
+        height: 220px;
+
+        top: 28px;
+
+    }
+
+
+    .stadium-infield-grass-area {
+
+        width: 94px;
+
+        height: 94px;
+
+        top: 91px;
+
+    }
+
+
+    .stadium-first-base {
+
+        left: calc(50% + 82px);
+
+        top: 163px;
+
+    }
+
+
+    .stadium-second-base {
+
+        left: calc(50% - 8px);
+
+        top: 72px;
+
+    }
+
+
+    .stadium-third-base {
+
+        left: calc(50% - 98px);
+
+        top: 163px;
+
+    }
+
+
+    .stadium-home-base-new {
+
+        top: 221px;
+
+    }
+
+
+    .stadium-base-line {
+
+        width: 140px;
+
+    }
+
+
+    .stadium-foul-line {
+
+        width: 220px;
+
+    }
+
+}
