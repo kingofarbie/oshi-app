@@ -1027,3 +1027,459 @@
 
 
 
+/* =====================================================
+   ⚾ CSS野球場背景
+   画像・写真・SVGなし
+===================================================== */
+
+.css-baseball-stadium {
+
+    position: relative;
+
+    width: 100%;
+    height: 420px;
+
+    overflow: hidden;
+
+    background: #6fa8d8;
+
+    isolation: isolate;
+}
+
+
+/* =====================================================
+   空
+===================================================== */
+
+.stadium-sky {
+
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 0;
+
+    background:
+        linear-gradient(
+            to bottom,
+            #4d91c9 0%,
+            #82bde5 48%,
+            #b9dced 68%,
+            #79ad69 100%
+        );
+}
+
+
+/* =====================================================
+   雲
+===================================================== */
+
+.stadium-cloud {
+
+    position: absolute;
+
+    z-index: 1;
+
+    width: 180px;
+    height: 45px;
+
+    border-radius: 50px;
+
+    background:
+        radial-gradient(
+            circle at 25% 70%,
+            rgba(255,255,255,.95) 0 25px,
+            transparent 26px
+        ),
+        radial-gradient(
+            circle at 48% 48%,
+            rgba(255,255,255,.98) 0 34px,
+            transparent 35px
+        ),
+        radial-gradient(
+            circle at 70% 68%,
+            rgba(255,255,255,.92) 0 25px,
+            transparent 26px
+        );
+
+    filter: blur(1px);
+
+    opacity: .8;
+}
+
+.cloud-1 {
+
+    top: 48px;
+    left: -30px;
+
+    transform: scale(.9);
+}
+
+.cloud-2 {
+
+    top: 90px;
+    right: -45px;
+
+    transform: scale(.7);
+}
+
+
+/* =====================================================
+   スタンド
+===================================================== */
+
+.stadium-stands {
+
+    position: absolute;
+
+    left: -10%;
+    right: -10%;
+    top: 105px;
+
+    height: 105px;
+
+    z-index: 3;
+
+    transform:
+        perspective(500px)
+        rotateX(8deg);
+
+    background:
+        linear-gradient(
+            to bottom,
+            #4b4f55 0%,
+            #292d32 28%,
+            #17191c 100%
+        );
+
+    box-shadow:
+        0 -8px 20px rgba(0,0,0,.2),
+        inset 0 10px 20px rgba(255,255,255,.08);
+
+}
+
+
+/* =====================================================
+   観客
+===================================================== */
+
+.stadium-crowd {
+
+    position: absolute;
+
+    inset: 15px 3% 12px;
+
+    background:
+
+        radial-gradient(
+            circle,
+            rgba(255,255,255,.85) 0 2px,
+            transparent 2.5px
+        ) 0 0 / 9px 9px,
+
+        radial-gradient(
+            circle,
+            rgba(80,130,180,.9) 0 2px,
+            transparent 2.5px
+        ) 4px 4px / 11px 11px;
+
+    opacity: .7;
+
+}
+
+
+/* =====================================================
+   照明塔
+===================================================== */
+
+.stadium-light {
+
+    position: absolute;
+
+    z-index: 5;
+
+    width: 7px;
+    height: 155px;
+
+    top: 25px;
+
+    background:
+        linear-gradient(
+            to right,
+            #252525,
+            #858585,
+            #252525
+        );
+
+    box-shadow:
+        2px 3px 5px rgba(0,0,0,.4);
+
+}
+
+.stadium-light::before {
+
+    content: "";
+
+    position: absolute;
+
+    left: -15px;
+    top: -8px;
+
+    width: 37px;
+    height: 15px;
+
+    border-radius: 5px;
+
+    background:
+        repeating-linear-gradient(
+            90deg,
+            #fff 0 4px,
+            #cfcfcf 4px 7px
+        );
+
+    box-shadow:
+        0 0 18px rgba(255,245,190,.8);
+
+}
+
+.light-left {
+
+    left: 12%;
+
+    transform: rotate(4deg);
+
+}
+
+.light-right {
+
+    right: 12%;
+
+    transform: rotate(-4deg);
+
+}
+
+
+/* =====================================================
+   外野
+===================================================== */
+
+.stadium-outfield {
+
+    position: absolute;
+
+    z-index: 4;
+
+    left: -15%;
+    right: -15%;
+
+    bottom: 45px;
+
+    height: 245px;
+
+    border-radius:
+        50% 50% 0 0;
+
+    background:
+
+        repeating-linear-gradient(
+            105deg,
+            rgba(255,255,255,.035) 0 18px,
+            rgba(0,0,0,.035) 18px 36px
+        ),
+
+        linear-gradient(
+            to bottom,
+            #3e914b,
+            #24743a 65%,
+            #175c30
+        );
+
+    box-shadow:
+        inset 0 20px 35px rgba(255,255,255,.06);
+
+}
+
+
+/* =====================================================
+   内野の土
+===================================================== */
+
+.stadium-infield {
+
+    position: absolute;
+
+    z-index: 6;
+
+    left: 50%;
+    bottom: -75px;
+
+    width: 300px;
+    height: 270px;
+
+    transform:
+        translateX(-50%)
+        rotate(45deg);
+
+    background:
+
+        repeating-linear-gradient(
+            25deg,
+            rgba(255,255,255,.035) 0 5px,
+            rgba(0,0,0,.025) 5px 10px
+        ),
+
+        linear-gradient(
+            135deg,
+            #b56b3c,
+            #c9824d 48%,
+            #9d542f
+        );
+
+    box-shadow:
+        inset 0 0 35px rgba(70,30,10,.22);
+
+}
+
+
+/* =====================================================
+   内野中央の芝
+===================================================== */
+
+.stadium-infield-grass {
+
+    position: absolute;
+
+    z-index: 7;
+
+    left: 50%;
+    bottom: 100px;
+
+    width: 110px;
+    height: 110px;
+
+    transform:
+        translateX(-50%)
+        rotate(45deg);
+
+    background:
+
+        repeating-linear-gradient(
+            90deg,
+            #318143 0 9px,
+            #3d914d 9px 18px
+        );
+
+    box-shadow:
+        0 0 20px rgba(0,0,0,.12);
+
+}
+
+
+/* =====================================================
+   白線
+===================================================== */
+
+.stadium-line {
+
+    position: absolute;
+
+    z-index: 8;
+
+    bottom: 107px;
+
+    width: 185px;
+    height: 5px;
+
+    background: rgba(255,255,255,.95);
+
+    box-shadow:
+        0 1px 3px rgba(0,0,0,.2);
+
+}
+
+.line-left {
+
+    left: calc(50% - 185px);
+
+    transform:
+        rotate(27deg);
+
+    transform-origin: right center;
+
+}
+
+.line-right {
+
+    left: 50%;
+
+    transform:
+        rotate(-27deg);
+
+    transform-origin: left center;
+
+}
+
+
+/* =====================================================
+   ベース
+===================================================== */
+
+.stadium-base {
+
+    position: absolute;
+
+    z-index: 10;
+
+    width: 17px;
+    height: 17px;
+
+    background: #fff;
+
+    box-shadow:
+        1px 2px 4px rgba(0,0,0,.3);
+
+    transform: rotate(45deg);
+
+}
+
+.base-third {
+
+    left: calc(50% - 78px);
+    bottom: 126px;
+
+}
+
+.base-first {
+
+    right: calc(50% - 78px);
+    bottom: 126px;
+
+}
+
+
+/* =====================================================
+   ホームベース
+===================================================== */
+
+.stadium-home {
+
+    position: absolute;
+
+    z-index: 11;
+
+    left: 50%;
+    bottom: 48px;
+
+    width: 27px;
+    height: 27px;
+
+    transform:
+        translateX(-50%)
+        rotate(45deg);
+
+    background: #fff;
+
+    box-shadow:
+        1px 3px 5px rgba(0,0,0,.3);
+
+}

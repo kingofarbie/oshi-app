@@ -2064,6 +2064,50 @@ if(game.result === "win"){
         <div class="baseball-game-view">
 
 
+        <div class="css-baseball-stadium">
+
+    <!-- 空 -->
+    <div class="stadium-sky"></div>
+
+    <!-- 雲 -->
+    <div class="stadium-cloud cloud-1"></div>
+    <div class="stadium-cloud cloud-2"></div>
+
+    <!-- スタンド -->
+    <div class="stadium-stands">
+        <div class="stadium-crowd"></div>
+    </div>
+
+    <!-- 照明塔 -->
+    <div class="stadium-light light-left">
+        <span></span>
+    </div>
+
+    <div class="stadium-light light-right">
+        <span></span>
+    </div>
+
+    <!-- 外野 -->
+    <div class="stadium-outfield"></div>
+
+    <!-- 内野 -->
+    <div class="stadium-infield"></div>
+
+    <!-- 内野芝 -->
+    <div class="stadium-infield-grass"></div>
+
+    <!-- ベースライン -->
+    <div class="stadium-line line-left"></div>
+    <div class="stadium-line line-right"></div>
+
+    <!-- ベース -->
+    <div class="stadium-base base-third"></div>
+    <div class="stadium-base base-first"></div>
+    <div class="stadium-home"></div>
+
+</div>
+
+
             <!-- =========================
                  日付
             ========================== -->
