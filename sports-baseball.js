@@ -2064,49 +2064,69 @@ if(game.result === "win"){
         <div class="baseball-game-view">
 
 
-        <div class="css-baseball-stadium">
+<div class="baseball-stadium-bg">
 
     <!-- 空 -->
-    <div class="stadium-sky"></div>
+    <div class="stadium-bg-sky"></div>
 
     <!-- 雲 -->
-    <div class="stadium-cloud cloud-1"></div>
-    <div class="stadium-cloud cloud-2"></div>
+    <div class="stadium-bg-cloud stadium-bg-cloud-left"></div>
+    <div class="stadium-bg-cloud stadium-bg-cloud-right"></div>
+
+    <!-- 照明塔：スタンドより奥 -->
+    <div class="stadium-bg-light stadium-bg-light-left">
+        <div class="stadium-bg-light-head"></div>
+    </div>
+
+    <div class="stadium-bg-light stadium-bg-light-right">
+        <div class="stadium-bg-light-head"></div>
+    </div>
 
     <!-- スタンド -->
-    <div class="stadium-stands">
-        <div class="stadium-crowd"></div>
+    <div class="stadium-bg-stands">
+
+        <!-- 観客 -->
+        <div class="stadium-bg-crowd"></div>
+
+        <!-- スタンドの段差 -->
+        <div class="stadium-bg-stand-row row-1"></div>
+        <div class="stadium-bg-stand-row row-2"></div>
+        <div class="stadium-bg-stand-row row-3"></div>
+
     </div>
 
-    <!-- 照明塔 -->
-    <div class="stadium-light light-left">
-        <span></span>
-    </div>
+    <!-- 外野フェンス -->
+    <div class="stadium-bg-fence"></div>
 
-    <div class="stadium-light light-right">
-        <span></span>
-    </div>
-
-    <!-- 外野 -->
-    <div class="stadium-outfield"></div>
+    <!-- 外野芝 -->
+    <div class="stadium-bg-outfield"></div>
 
     <!-- 内野 -->
-    <div class="stadium-infield"></div>
+    <div class="stadium-bg-infield">
 
-    <!-- 内野芝 -->
-    <div class="stadium-infield-grass"></div>
+        <!-- 内野芝 -->
+        <div class="stadium-bg-diamond-grass"></div>
 
-    <!-- ベースライン -->
-    <div class="stadium-line line-left"></div>
-    <div class="stadium-line line-right"></div>
+        <!-- 土のベースライン -->
+        <div class="stadium-bg-diamond-dirt"></div>
 
-    <!-- ベース -->
-    <div class="stadium-base base-third"></div>
-    <div class="stadium-base base-first"></div>
-    <div class="stadium-home"></div>
+        <!-- 白線 -->
+        <div class="stadium-bg-foul-line stadium-bg-foul-line-left"></div>
+        <div class="stadium-bg-foul-line stadium-bg-foul-line-right"></div>
+
+        <!-- ベース -->
+        <div class="stadium-bg-base stadium-bg-third-base"></div>
+        <div class="stadium-bg-base stadium-bg-first-base"></div>
+
+        <!-- ホームベース -->
+        <div class="stadium-bg-home-base"></div>
+
+    </div>
+
+    <!-- 手前の芝 -->
+    <div class="stadium-bg-foreground"></div>
 
 </div>
-
 
             <!-- =========================
                  日付
