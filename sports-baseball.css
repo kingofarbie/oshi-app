@@ -1680,43 +1680,8 @@
 ===================================================== */
 
 .stadium-bg-foreground {
-
-    position: absolute;
-
-    z-index: 16;
-
-    left: -20%;
-
-    right: -20%;
-
-    bottom: -80px;
-
-    height: 145px;
-
-    background:
-
-        repeating-linear-gradient(
-            100deg,
-            rgba(255,255,255,.035) 0 18px,
-            rgba(0,0,0,.04) 18px 36px
-        ),
-
-        linear-gradient(
-            to bottom,
-            #27723a,
-            #195c2f
-        );
-
-    clip-path:
-        polygon(
-            0 35%,
-            100% 35%,
-            100% 100%,
-            0 100%
-        );
-
+    display: none;
 }
-
 
 /* =====================================================
    スマホ
