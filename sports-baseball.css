@@ -1418,21 +1418,17 @@
 ===================================================== */
 
 .stadium-bg-outfield {
-
     position: absolute;
 
     z-index: 6;
 
     left: -20%;
-
     right: -20%;
 
     top: 225px;
-
     bottom: 0;
 
     background:
-
         repeating-linear-gradient(
             100deg,
             rgba(255,255,255,.045) 0 18px,
@@ -1442,12 +1438,11 @@
         linear-gradient(
             to bottom,
             #438e4d 0%,
-            #2d7b3d 55%,
-            #1e6232 100%
+            #327f40 35%,
+            #286f38 70%,
+            #1d5e31 100%
         );
-
 }
-
 
 /* =====================================================
    内野全体
@@ -1684,32 +1679,45 @@
    手前の芝
 ===================================================== */
 
-.stadium-bg-outfield {
+.stadium-bg-foreground {
+
     position: absolute;
 
-    z-index: 6;
+    z-index: 16;
 
     left: -20%;
+
     right: -20%;
 
-    top: 225px;
-    bottom: 0;
+    bottom: -80px;
+
+    height: 145px;
 
     background:
+
         repeating-linear-gradient(
             100deg,
-            rgba(255,255,255,.045) 0 18px,
-            rgba(0,0,0,.035) 18px 36px
+            rgba(255,255,255,.035) 0 18px,
+            rgba(0,0,0,.04) 18px 36px
         ),
 
         linear-gradient(
             to bottom,
-            #438e4d 0%,
-            #327f40 35%,
-            #286f38 70%,
-            #1d5e31 100%
+            #27723a,
+            #195c2f
         );
+
+    clip-path:
+        polygon(
+            0 35%,
+            100% 35%,
+            100% 100%,
+            0 100%
+        );
+
 }
+
+
 /* =====================================================
    スマホ
 ===================================================== */
