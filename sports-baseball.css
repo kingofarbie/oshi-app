@@ -1024,6 +1024,93 @@
 
 
 
+/* =====================================================
+   ⚾ 野球編集画面
+   スコアボード上部の現在スコア
+===================================================== */
+
+.baseball-edit-score-summary {
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1fr)
+        auto
+        minmax(0, 1fr);
+
+    align-items: start;
+
+    width: 100%;
+    margin: 0 0 10px;
+    padding: 14px 8px 10px;
+
+    box-sizing: border-box;
+    text-align: center;
+}
+
+
+.baseball-edit-summary-team {
+    min-width: 0;
+}
+
+
+.baseball-edit-summary-team-name {
+    min-width: 0;
+
+    font-size: 1.4rem;
+    font-weight: 800;
+    line-height: 1.2;
+
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+
+.baseball-edit-summary-score {
+    margin-top: 4px;
+
+    font-size: 3.4rem;
+    font-weight: 900;
+    line-height: 1;
+}
+
+
+.baseball-edit-summary-separator {
+    align-self: end;
+
+    margin: 0 8px 4px;
+
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1;
+}
+
+
+@media (max-width: 600px) {
+
+    .baseball-edit-score-summary {
+        padding: 12px 4px 8px;
+    }
+
+
+    .baseball-edit-summary-team-name {
+        font-size: 1.15rem;
+    }
+
+
+    .baseball-edit-summary-score {
+        font-size: 3.2rem;
+    }
+
+
+    .baseball-edit-summary-separator {
+        margin-left: 5px;
+        margin-right: 5px;
+        font-size: 2.3rem;
+    }
+
+}
+
+
+
 
 
 
