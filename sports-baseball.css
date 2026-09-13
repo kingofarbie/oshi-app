@@ -1684,45 +1684,32 @@
    手前の芝
 ===================================================== */
 
-.stadium-bg-foreground {
-
+.stadium-bg-outfield {
     position: absolute;
 
-    z-index: 16;
+    z-index: 6;
 
     left: -20%;
-
     right: -20%;
 
-    bottom: -80px;
-
-    height: 145px;
+    top: 225px;
+    bottom: 0;
 
     background:
-
         repeating-linear-gradient(
             100deg,
-            rgba(255,255,255,.035) 0 18px,
-            rgba(0,0,0,.04) 18px 36px
+            rgba(255,255,255,.045) 0 18px,
+            rgba(0,0,0,.035) 18px 36px
         ),
 
         linear-gradient(
             to bottom,
-            #27723a,
-            #195c2f
+            #438e4d 0%,
+            #327f40 35%,
+            #286f38 70%,
+            #1d5e31 100%
         );
-
-    clip-path:
-        polygon(
-            0 35%,
-            100% 35%,
-            100% 100%,
-            0 100%
-        );
-
 }
-
-
 /* =====================================================
    スマホ
 ===================================================== */
