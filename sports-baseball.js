@@ -275,6 +275,267 @@ function deleteBaseballGame(){
    ⚾ 野球編集フォーム
 ===================================================== */
 
+/* =====================================================
+   ⚾ 野球編集画面
+   リアルタイム合計更新
+===================================================== */
+
+function updateBaseballEditScoreSummary(){
+
+    const form =
+        document.getElementById(
+            "baseballGameEditForm"
+        );
+
+
+    if(!form){
+
+        return;
+
+    }
+
+
+    /* =================================================
+       チーム名
+    ================================================= */
+
+    const teamInput =
+        document.getElementById(
+            "baseballEditTeam"
+        );
+
+
+    const opponentInput =
+        document.getElementById(
+            "baseballEditOpponent"
+        );
+
+
+    const team =
+        teamInput
+        ?
+        teamInput.value.trim()
+        :
+        "";
+
+
+    const opponent =
+        opponentInput
+        ?
+        opponentInput.value.trim()
+        :
+        "";
+
+
+    /* =================================================
+       12イニングの合計
+    ================================================= */
+
+    let teamTotal = 0;
+
+    let opponentTotal = 0;
+
+
+    for(
+        let i = 1;
+        i <= 12;
+        i++
+    ){
+
+        const teamScore =
+            document.getElementById(
+                `baseballEditTeamScore${i}`
+            );
+
+
+        const opponentScore =
+            document.getElementById(
+                `baseballEditOpponentScore${i}`
+            );
+
+
+        if(
+            teamScore &&
+            teamScore.value.trim() !== ""
+        ){
+
+            const value =
+                Number(
+                    teamScore.value
+                );
+
+
+            if(
+                Number.isFinite(value)
+            ){
+
+                teamTotal +=
+                    value;
+
+            }
+
+        }
+
+
+        if(
+            opponentScore &&
+            opponentScore.value.trim() !== ""
+        ){
+
+            const value =
+                Number(
+                    opponentScore.value
+                );
+
+
+            if(
+                Number.isFinite(value)
+            ){
+
+                opponentTotal +=
+                    value;
+
+            }
+
+        }
+
+    }
+
+
+    /* =================================================
+       ⚾ 上部スコア表示
+    ================================================= */
+
+    const scoreSummary =
+        form.querySelector(
+            ".baseball-edit-score-summary"
+        );
+
+
+    if(scoreSummary){
+
+        const nameElements =
+            scoreSummary.querySelectorAll(
+                ".baseball-edit-summary-team-name"
+            );
+
+
+        const scoreElements =
+            scoreSummary.querySelectorAll(
+                ".baseball-edit-summary-score"
+            );
+
+
+        if(nameElements[0]){
+
+            nameElements[0].textContent =
+                team ||
+                "応援チーム";
+
+        }
+
+
+        if(nameElements[1]){
+
+            nameElements[1].textContent =
+                opponent ||
+                "相手チーム";
+
+        }
+
+
+        if(scoreElements[0]){
+
+            scoreElements[0].textContent =
+                teamTotal;
+
+        }
+
+
+        if(scoreElements[1]){
+
+            scoreElements[1].textContent =
+                opponentTotal;
+
+        }
+
+    }
+
+
+    /* =================================================
+       ⚾ スコアボード右端「計」
+       チームごとの行に直接反映
+    ================================================= */
+
+    const teamFirstScore =
+        document.getElementById(
+            "baseballEditTeamScore1"
+        );
+
+
+    const opponentFirstScore =
+        document.getElementById(
+            "baseballEditOpponentScore1"
+        );
+
+
+    const teamRow =
+        teamFirstScore
+        ?
+        teamFirstScore.closest("tr")
+        :
+        null;
+
+
+    const opponentRow =
+        opponentFirstScore
+        ?
+        opponentFirstScore.closest("tr")
+        :
+        null;
+
+
+    if(teamRow){
+
+        const totalCell =
+            teamRow.querySelector(
+                ".baseball-score-total"
+            );
+
+
+        if(totalCell){
+
+            totalCell.textContent =
+                teamTotal;
+
+        }
+
+    }
+
+
+    if(opponentRow){
+
+        const totalCell =
+            opponentRow.querySelector(
+                ".baseball-score-total"
+            );
+
+
+        if(totalCell){
+
+            totalCell.textContent =
+                opponentTotal;
+
+        }
+
+    }
+
+}
+
+/* =====================================================
+   ⚾ 野球試合結果編集画面
+===================================================== */
+
 function renderBaseballGameEditForm(){
 
     const form =
@@ -316,17 +577,6 @@ function renderBaseballGameEditForm(){
 
     const currentTeam =
         getCurrentBaseballTeamForEdit();
-
-
-    const team =
-        currentTeam.team ||
-        game.team ||
-        "";
-
-
-    const opponent =
-        game.opponent ||
-        "";
 
 
     /* =================================================
@@ -612,6 +862,7 @@ function renderBaseballGameEditForm(){
                     "div"
                 );
 
+
             scoreSummary.className =
                 "baseball-edit-score-summary";
 
@@ -660,150 +911,8 @@ function renderBaseballGameEditForm(){
 
 
     /* =================================================
-       ⚾ リアルタイム合計更新
-    ================================================= */
-
-    function updateBaseballEditScoreSummary(){
-
-        if(!scoreSummary){
-            return;
-        }
-
-
-        const teamName =
-            teamInput?.value ||
-            "";
-
-
-        const opponentName =
-            opponentInput?.value ||
-            "";
-
-
-        let teamTotal = 0;
-
-        let opponentTotal = 0;
-
-
-        for(
-            let i = 1;
-            i <= 12;
-            i++
-        ){
-
-            const teamScore =
-                document.getElementById(
-                    `baseballEditTeamScore${i}`
-                );
-
-
-            const opponentScore =
-                document.getElementById(
-                    `baseballEditOpponentScore${i}`
-                );
-
-
-            const teamValue =
-                Number(
-                    teamScore?.value
-                );
-
-
-            const opponentValue =
-                Number(
-                    opponentScore?.value
-                );
-
-
-            if(
-                Number.isFinite(
-                    teamValue
-                )
-            ){
-
-                teamTotal +=
-                    teamValue;
-
-            }
-
-
-            if(
-                Number.isFinite(
-                    opponentValue
-                )
-            ){
-
-                opponentTotal +=
-                    opponentValue;
-
-            }
-
-        }
-
-
-        const teamNameElement =
-            scoreSummary.querySelector(
-                ".baseball-edit-summary-team:first-child .baseball-edit-summary-team-name"
-            );
-
-
-        const opponentNameElement =
-            scoreSummary.querySelector(
-                ".baseball-edit-summary-team:last-child .baseball-edit-summary-team-name"
-            );
-
-
-        const teamScoreElement =
-            scoreSummary.querySelector(
-                ".baseball-edit-summary-team:first-child .baseball-edit-summary-score"
-            );
-
-
-        const opponentScoreElement =
-            scoreSummary.querySelector(
-                ".baseball-edit-summary-team:last-child .baseball-edit-summary-score"
-            );
-
-
-        if(teamNameElement){
-
-            teamNameElement.textContent =
-                teamName ||
-                "応援チーム";
-
-        }
-
-
-        if(opponentNameElement){
-
-            opponentNameElement.textContent =
-                opponentName ||
-                "相手チーム";
-
-        }
-
-
-        if(teamScoreElement){
-
-            teamScoreElement.textContent =
-                teamTotal;
-
-        }
-
-
-        if(opponentScoreElement){
-
-            opponentScoreElement.textContent =
-                opponentTotal;
-
-        }
-
-    }
-
-
-    /* =================================================
-       ⚾ スコア入力イベント
-       入力するたびに合計を更新
+       ⚾ スコア入力
+       入力するたびにリアルタイム更新
     ================================================= */
 
     for(
@@ -843,8 +952,7 @@ function renderBaseballGameEditForm(){
 
 
     /* =================================================
-       チーム名変更時
-       スコアボード上部にも即反映
+       チーム名変更
     ================================================= */
 
     if(teamInput){
@@ -876,13 +984,19 @@ function renderBaseballGameEditForm(){
 
 
     /* =================================================
-       先攻・後攻変更イベント
+       先攻・後攻変更
     ================================================= */
 
     if(battingOrderSelect){
 
         battingOrderSelect.onchange =
-            updateBaseballEditBattingOrder;
+            function(){
+
+                updateBaseballEditBattingOrder();
+
+                updateBaseballEditScoreSummary();
+
+            };
 
     }
 
@@ -918,7 +1032,6 @@ function renderBaseballGameEditForm(){
     }
 
 }
-
 
 /* =====================================================
    ⚾ 編集画面スコアボード

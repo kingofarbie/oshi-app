@@ -4,7 +4,6 @@
 
 <head>
 
-
 <meta charset="UTF-8">
 
 <meta
@@ -26,10 +25,11 @@
     href="sports-baseball.css"
 >
 
-
 </head>
 
+
 <body>
+
 
 <!-- =====================================================
      ⚾ 野球試合結果編集ページ
@@ -54,6 +54,7 @@
     >
         ⚾ 試合結果編集
     </h1>
+
 
 </header>
 
@@ -175,6 +176,79 @@
 
 
 
+        <!-- =========================================
+             リアルタイム合計スコア
+             ※ sports-baseball.js
+                updateBaseballEditScoreSummary()
+                が直接更新する
+        ========================================== -->
+
+        <div
+            id="baseballEditScorePreview"
+            class="baseball-edit-score-summary"
+        >
+
+
+            <div class="baseball-edit-summary-team">
+
+
+                <div
+                    id="baseballEditTeamPreview"
+                    class="baseball-edit-summary-team-name"
+                >
+                    応援チーム
+                </div>
+
+
+                <div
+                    class="baseball-edit-summary-score"
+                >
+                    0
+                </div>
+
+
+            </div>
+
+
+
+            <div
+                class="baseball-edit-summary-separator"
+            >
+                -
+            </div>
+
+
+
+            <div class="baseball-edit-summary-team">
+
+
+                <div
+                    id="baseballEditFinalOpponent"
+                    class="baseball-edit-summary-team-name"
+                >
+                    相手チーム
+                </div>
+
+
+                <div
+                    class="baseball-edit-summary-score"
+                >
+                    0
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+        <!-- =========================================
+             ⚾ イニングスコア
+        ========================================== -->
+
         <div class="baseball-score-wrapper">
 
 
@@ -189,7 +263,9 @@
                         <tr>
 
 
-                            <th class="baseball-score-team">
+                            <th
+                                class="baseball-score-team"
+                            >
                                 回
                             </th>
 
@@ -206,6 +282,13 @@
                             <th>10</th>
                             <th>11</th>
                             <th>12</th>
+
+                            <!-- 合計 -->
+                            <th
+                                class="baseball-score-total"
+                            >
+                                計
+                            </th>
 
 
                         </tr>
@@ -376,6 +459,14 @@
                             </td>
 
 
+                            <!-- 応援チーム合計 -->
+                            <td
+                                class="baseball-score-total"
+                            >
+                                0
+                            </td>
+
+
                         </tr>
 
 
@@ -540,6 +631,14 @@
                             </td>
 
 
+                            <!-- 相手チーム合計 -->
+                            <td
+                                class="baseball-score-total"
+                            >
+                                0
+                            </td>
+
+
                         </tr>
 
 
@@ -550,35 +649,6 @@
 
 
             </div>
-
-
-        </div>
-
-
-
-        <!-- =========================================
-             合計スコア表示
-        ========================================== -->
-
-        <div
-            id="baseballEditScorePreview"
-            class="baseball-final-score"
-        >
-
-
-            <span id="baseballEditTeamPreview">
-                応援チーム
-            </span>
-
-
-            <strong>
-                0 - 0
-            </strong>
-
-
-            <span id="baseballEditFinalOpponent">
-                相手チーム
-            </span>
 
 
         </div>
@@ -606,39 +676,40 @@
         </label>
 
 
-<select
-    id="baseballEditResult"
->
+        <select
+            id="baseballEditResult"
+        >
 
-    <option value="">
-        未設定
-    </option>
+            <option value="">
+                未設定
+            </option>
 
-    <option value="win">
-        ○ 勝ち
-    </option>
+            <option value="win">
+                ○ 勝ち
+            </option>
 
-    <option value="lose">
-        × 負け
-    </option>
+            <option value="lose">
+                × 負け
+            </option>
 
-    <option value="draw">
-        △ 引分
-    </option>
+            <option value="draw">
+                △ 引分
+            </option>
 
-    <option value="scheduled">
-        － 予定
-    </option>
+            <option value="scheduled">
+                － 予定
+            </option>
 
-    <option value="cancelled">
-        中止
-    </option>
+            <option value="cancelled">
+                中止
+            </option>
 
-    <option value="postponed">
-        延期
-    </option>
+            <option value="postponed">
+                延期
+            </option>
 
-</select>
+        </select>
+
 
     </section>
 
@@ -740,24 +811,9 @@
 
 
 </main>
-```
+
 
 </div>
-
-
-
-
-<div class="baseball-decoration">
-
-    <div class="css-baseball-ball"></div>
-
-    <div class="css-baseball-glove"></div>
-
-    <div class="css-baseball-bat"></div>
-
-</div>
-
-
 
 
 </body>
