@@ -1123,7 +1123,7 @@
 
     position: absolute;
 
-    inset: 0;
+    inset: -8px;
 
     z-index: 0;
 
@@ -1132,8 +1132,16 @@
     pointer-events: none;
 
     background: #79acd0;
-}
 
+    /*
+       ⚾ 背景を薄くぼかす
+       文字・スコア側には影響しない
+    */
+    filter: blur(5px);
+
+    opacity: .72;
+
+}
 
 /* =====================================================
    結果画面を背景の上に表示
