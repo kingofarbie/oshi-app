@@ -3090,8 +3090,25 @@ function swipeSportsResult(direction){
    左右スワイプで結果のある日だけ移動
 ===================================================== */
 
+/* =====================================================
+   👆 スポーツ結果画面
+   左右スワイプで結果のある日だけ移動
+
+   ・スコアボード内から開始したタッチは
+     試合切り替え判定から除外
+   ・横スクロールとの誤判定を防止
+   ・横移動量を厳しく設定
+===================================================== */
+
 let sportsResultTouchStartX = 0;
 let sportsResultTouchStartY = 0;
+
+
+/*
+   スワイプ開始位置が
+   スコアボード内かどうか
+*/
+let sportsResultTouchStartedInScoreboard = false;
 
 
 /* =====================================================
@@ -3107,11 +3124,48 @@ function sportsResultTouchStart(event){
         return;
     }
 
+
+    const touch =
+        event.touches[0];
+
+
     sportsResultTouchStartX =
-        event.touches[0].clientX;
+        touch.clientX;
 
     sportsResultTouchStartY =
-        event.touches[0].clientY;
+        touch.clientY;
+
+
+    /*
+       ================================================
+       タッチ開始位置を確認
+
+       スコアボード内から始まった場合は
+       試合切り替え対象から完全除外する。
+
+       closest() を使うことで、
+       table・input・スクロール領域など
+       スコアボード内部のどこから触っても
+       スコアボード扱いになる。
+       ================================================
+    */
+
+    const target =
+        touch.target;
+
+
+    sportsResultTouchStartedInScoreboard =
+        !!(
+            target &&
+            target.closest &&
+            target.closest(
+                ".baseball-score-wrapper, " +
+                ".soccer-score-wrapper, " +
+                ".volleyball-score-wrapper, " +
+                ".basketball-score-wrapper"
+            )
+        );
+
 }
 
 
@@ -3127,6 +3181,29 @@ function sportsResultTouchEnd(event){
     ){
         return;
     }
+
+
+    /*
+       ================================================
+       スコアボード内から始まったタッチは
+       ここで完全終了。
+
+       横スクロールしても
+       次の試合へ移動しない。
+       ================================================
+    */
+
+    if(
+        sportsResultTouchStartedInScoreboard
+    ){
+
+        sportsResultTouchStartedInScoreboard =
+            false;
+
+        return;
+
+    }
+
 
     const endX =
         event.changedTouches[0].clientX;
@@ -3145,36 +3222,66 @@ function sportsResultTouchEnd(event){
 
 
     /*
+       ================================================
        縦方向の動きが大きい場合は
        スワイプとして扱わない
+       ================================================
     */
 
     if(
         Math.abs(diffY) >
         Math.abs(diffX)
     ){
+
         return;
+
     }
 
 
     /*
-       少し指を動かしただけでは
-       スワイプと判定しない
+       ================================================
+       スワイプ判定を少し厳しくする
+
+       以前：
+       60px
+
+       今回：
+       100px
+
+       さらに横移動が縦移動の
+       1.5倍以上必要。
+       ================================================
     */
 
-    const SWIPE_THRESHOLD = 60;
+    const SWIPE_THRESHOLD =
+        100;
+
 
     if(
         Math.abs(diffX) <
         SWIPE_THRESHOLD
     ){
+
         return;
+
+    }
+
+
+    if(
+        Math.abs(diffX) <
+        Math.abs(diffY) * 1.5
+    ){
+
+        return;
+
     }
 
 
     /*
+       ================================================
        右へスワイプ
        → 前の結果
+       ================================================
     */
 
     if(diffX > 0){
@@ -3184,12 +3291,15 @@ function sportsResultTouchEnd(event){
         );
 
         return;
+
     }
 
 
     /*
+       ================================================
        左へスワイプ
        → 次の結果
+       ================================================
     */
 
     if(diffX < 0){
