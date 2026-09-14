@@ -157,7 +157,7 @@ async function movieSelected(event){
 
             memo: [],
             photos: [],
-            videos: [],
+            movies: [],
             expenses: [],
             rating: 0,
             comment: ""
@@ -167,11 +167,20 @@ async function movieSelected(event){
     }
 
 
-    const movies =
-        data.dayMemories[
-            selectedCalendarDate
-        ].movies;
+let movies =
+    data.dayMemories[
+        selectedCalendarDate
+    ].movies;
 
+if(!Array.isArray(movies)){
+
+    movies = [];
+
+    data.dayMemories[
+        selectedCalendarDate
+    ].movies = movies;
+
+}
 
     let completed = 0;
 
