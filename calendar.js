@@ -250,24 +250,14 @@ const holidays =
 
 <div class="calendar-header">
 
-<button onclick="changeMonth(-1)">
-◀
-</button>
-
-
-<div
-    class="calendar-title"
-    onclick="openCalendarDatePicker()"
->
-    ${year}年 ${month + 1}月
-</div>
-
-<button onclick="changeMonth(1)">
-▶
-</button>
+    <div
+        class="calendar-title"
+        onclick="openCalendarDatePicker()"
+    >
+        ${year}年 ${month + 1}月
+    </div>
 
 </div>
-
 
 <div class="calendar-grid">
 
