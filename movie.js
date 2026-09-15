@@ -4503,16 +4503,16 @@ function movieSwipeEnd(e){
 
 function setupMovieViewerSwipe(){
 
-    const viewer =
+    const video =
         document.getElementById(
-            "movieViewer"
+            "movieViewerVideo"
         );
 
-    if(!viewer){
+    if(!video){
         return;
     }
 
-    viewer.addEventListener(
+    video.addEventListener(
         "touchstart",
         movieSwipeStart,
         {
@@ -4521,7 +4521,7 @@ function setupMovieViewerSwipe(){
         }
     );
 
-    viewer.addEventListener(
+    video.addEventListener(
         "touchend",
         movieSwipeEnd,
         {
