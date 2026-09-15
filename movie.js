@@ -369,6 +369,8 @@ if(!Array.isArray(movies)){
 
 }
 
+
+
 /* =========================================================
    ビューア状態リセット
 ========================================================= */
@@ -2541,10 +2543,10 @@ async function renderDayMovies(){
        表示対象日付
     ===================== */
 
-    const selectedDate =
-        window.selectedCalendarDate ||
-        selectedCalendarDate;
+const selectedDate =
+    selectedCalendarDate;
 
+    
     console.log(
         "🎥 動画表示用日付:",
         selectedDate

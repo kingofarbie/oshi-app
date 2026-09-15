@@ -2635,6 +2635,8 @@ function renderDayMemory(){
     renderDayMemos();
 
     renderDayPhotos();
+    
+    renderDayMovies();
 
 }
 
