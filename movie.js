@@ -677,8 +677,7 @@ function getViewerMovies(){
    動画ビューアを開く
 ========================================================= */
 
-function openMovieViewer(id){
-
+async function openMovieViewer(id){
     /*
     =====================
        通常動画ビューに戻す
@@ -716,8 +715,20 @@ function openMovieViewer(id){
         movie.id;
 
 
+const media =
+    await getMediaFile(
+        Number(movie.mediaId)
+    );
+
+if(media && media.file){
+
     currentMovieSrc =
-        movie.src;
+        URL.createObjectURL(
+            media.file
+        );
+
+}
+
 
 
     currentMovieIndex =
@@ -753,9 +764,9 @@ function openMovieViewer(id){
 
     video.pause();
 
-    video.src =
-        movie.src;
-
+video.src =
+    currentMovieSrc;
+    
     video.load();
 
 
