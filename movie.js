@@ -1169,26 +1169,27 @@ function closeMovieViewer(){
    動画表示
 ========================================================= */
 
-function showMovie(index){
+/* =====================
+   動画ビューアー表示
+   スワイプ切り替え対応
+===================== */
+
+async function showMovie(index){
 
     const movies =
         getViewerMovies();
-
 
     if(!movies.length){
 
         closeMovieViewer();
 
         return;
-
     }
 
 
-    /*
-    =====================
-       循環
-    =====================
-    */
+    /* =====================
+       前後ループ
+    ===================== */
 
     if(index >= movies.length){
 
@@ -1196,18 +1197,15 @@ function showMovie(index){
 
     }
 
-
     if(index < 0){
 
-        index =
-            movies.length - 1;
+        index = movies.length - 1;
 
     }
 
 
     const movie =
         movies[index];
-
 
     if(!movie){
 
@@ -1216,23 +1214,77 @@ function showMovie(index){
     }
 
 
+    /* =====================
+       現在位置を更新
+    ===================== */
+
     currentMovieIndex =
         index;
-
 
     currentMovieId =
         movie.id;
 
 
-    currentMovieSrc =
-        movie.src;
+    /* =====================
+       IndexedDBから動画取得
+    ===================== */
 
+    const media =
+        await getMediaFile(
+            Number(movie.mediaId)
+        );
+
+
+    if(!media || !media.file){
+
+        console.warn(
+            "動画ファイルを取得できません:",
+            movie
+        );
+
+        return;
+
+    }
+
+
+    /* =====================
+       古いObjectURLを解放
+    ===================== */
+
+    if(
+        currentMovieSrc &&
+        currentMovieSrc.startsWith("blob:")
+    ){
+
+        try{
+
+            URL.revokeObjectURL(
+                currentMovieSrc
+            );
+
+        }catch(e){}
+
+    }
+
+
+    /* =====================
+       新しい動画URLを作成
+    ===================== */
+
+    currentMovieSrc =
+        URL.createObjectURL(
+            media.file
+        );
+
+
+    /* =====================
+       動画要素
+    ===================== */
 
     const video =
         document.getElementById(
             "movieViewerVideo"
         );
-
 
     if(!video){
 
@@ -1240,12 +1292,6 @@ function showMovie(index){
 
     }
 
-
-    /*
-    =====================
-       動画切り替え
-    =====================
-    */
 
     video.pause();
 
@@ -1255,11 +1301,9 @@ function showMovie(index){
     video.load();
 
 
-    /*
-    =====================
-       ズーム状態リセット
-    =====================
-    */
+    /* =====================
+       ビューアー状態リセット
+    ===================== */
 
     resetMovieViewerState();
 
@@ -1268,32 +1312,36 @@ function showMovie(index){
         "translate(0px,0px) scale(1)";
 
 
-    /*
-    =====================
-       お気に入り状態更新
-    =====================
-    */
+    /* =====================
+       ボタン更新
+    ===================== */
 
     updateMovieFavoriteButton();
-
-
-    /*
-    =====================
-       ボタン状態更新
-    =====================
-    */
 
     updateMovieViewerButtons();
 
 
-    /*
-    =====================
+    /* =====================
        再生
-    =====================
-    */
+    ===================== */
 
-    video.play()
-        .catch(() => {});
+    try{
+
+        await video.play();
+
+    }catch(e){
+
+        /*
+         自動再生がブラウザに
+         拒否された場合はそのまま
+         ユーザー操作で再生可能
+        */
+
+        console.log(
+            "動画の自動再生が拒否されました"
+        );
+
+    }
 
 }
 
