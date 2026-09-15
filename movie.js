@@ -729,6 +729,8 @@ if(media && media.file){
 
 }
 
+console.log("🎥 ビューワ動画URL:", currentMovieSrc);
+
 
 
     currentMovieIndex =
@@ -766,7 +768,7 @@ if(media && media.file){
 
 video.src =
     currentMovieSrc;
-    
+
     video.load();
 
 
