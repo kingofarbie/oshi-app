@@ -740,6 +740,36 @@ ontouchend="photoDragEnd(event);photoDoubleTap(event)">
 </div>
 
 
+<div id="movieSortMenu" class="movie-sort-menu" style="display:none;">
+
+    <button onclick="setMovieSort('new')">
+        🆕 新しい順
+    </button>
+
+    <button onclick="setMovieSort('old')">
+        📜 古い順
+    </button>
+
+    <button onclick="setMovieSort('favoriteNew')">
+        ⭐ お気に入り順（新しい順）
+    </button>
+
+    <button onclick="setMovieSort('favoriteOld')">
+        ⭐ お気に入り順（古い順）
+    </button>
+
+    <button onclick="setMovieSort('free')">
+        ✋ 自由
+    </button>
+
+    <button onclick="closeMovieSortMenu()">
+        ❌ 閉じる
+    </button>
+
+</div>
+
+
+
 
 <script>
 function openExternalBrowser() {
