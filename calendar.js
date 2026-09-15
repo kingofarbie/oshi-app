@@ -343,16 +343,30 @@ const hasAnniversary =
 const dayMemory =
     data.dayMemories?.[date];
 
-const hasPhoto =
+const hasPhotoOrMovie =
     !!(
         dayMemory &&
-        dayMemory.photos &&
-        dayMemory.photos.length > 0
+        (
+            (
+                Array.isArray(dayMemory.photos) &&
+                dayMemory.photos.length > 0
+            )
+            ||
+            (
+                Array.isArray(dayMemory.movies) &&
+                dayMemory.movies.length > 0
+            )
+        )
     );
+
+
 
 const dayIcons =
     (hasAnniversary ? '<span class="calendar-day-icon">🎉</span>' : '') +
-    (hasPhoto ? '<span class="calendar-day-icon">📸</span>' : '');
+    (hasPhotoOrMovie ? '<span class="calendar-day-icon">📸</span>' : '');
+        
+
+
     
         const isToday =
             today.getFullYear() === year
