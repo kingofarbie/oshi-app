@@ -23,7 +23,6 @@ let isMovieDragging = false;
 
 let movieTouchMoved = false;
 
-let movieTouchStartX = 0;
 let movieTouchStartY = 0;
 
 let movieLongPressTimer = null;
@@ -4388,175 +4387,86 @@ async function deleteCurrentMovie(){
 }
 
 
-/* =====================================================
-   🎥 動画ビューアー スワイプ
-   写真ビューアーと同じ考え方で
-   左 → 次の動画
-   右 → 前の動画
-===================================================== */
-
-let movieViewerTouchStartX = 0;
-let movieViewerTouchStartY = 0;
-
-
 /* =====================
-   スワイプ開始
+   動画ビューアー スワイプ
+   写真ビューアーと同じ方式
 ===================== */
 
-function movieSwipeStart(event){
-
-    if(!event.touches){
-        return;
-    }
-
-    if(event.touches.length !== 1){
-        return;
-    }
-
-    movieViewerTouchStartX =
-        event.touches[0].clientX;
-
-    movieViewerTouchStartY =
-        event.touches[0].clientY;
-}
+let movieTouchStartX = 0;
 
 
 /* =====================
-   スワイプ終了
+   動画スワイプ
 ===================== */
 
 function movieSwipe(event){
+
+    /*
+    拡大中はスワイプしない
+    */
 
     if(movieScale > 1){
         return;
     }
 
-    if(
-        !event.changedTouches ||
-        event.changedTouches.length !== 1
-    ){
-        return;
-    }
 
-    const touch =
-        event.changedTouches[0];
+    /*
+    1本指以外は無視
+    */
 
-    const diffX =
-        touch.clientX -
-        movieViewerTouchStartX;
-
-    const diffY =
-        touch.clientY -
-        movieViewerTouchStartY;
-
-
-    /* 縦方向の操作は無視 */
-
-    if(
-        Math.abs(diffX) < 60 ||
-        Math.abs(diffX) <= Math.abs(diffY)
-    ){
+    if(event.changedTouches.length !== 1){
         return;
     }
 
 
-    /* =====================
-       次の動画
-    ===================== */
+    /*
+    指を離した位置
+    */
 
-    if(diffX < 0){
+    const touchEndX =
+        event.changedTouches[0].clientX;
 
-        const movies =
-            getViewerMovies();
 
-        if(
-            currentMovieIndex <
-            movies.length - 1
-        ){
+    /*
+    横方向の移動量
+    */
 
-            openMovieViewer(
-                movies[
-                    currentMovieIndex + 1
-                ].id
-            );
-        }
+    const diff =
+        touchEndX - movieTouchStartX;
 
+
+    /*
+    小さい移動は無視
+    */
+
+    if(Math.abs(diff) < 60){
         return;
     }
 
 
-    /* =====================
-       前の動画
-    ===================== */
+    /*
+    左スワイプ
+    → 次の動画
+    */
 
-    if(diffX > 0){
+    if(diff < 0){
 
-        const movies =
-            getViewerMovies();
-
-        if(
-            currentMovieIndex > 0
-        ){
-
-            openMovieViewer(
-                movies[
-                    currentMovieIndex - 1
-                ].id
-            );
-        }
-    }
-
-}
-
-
-/* =====================
-   ビューアーへ登録
-===================== */
-
-function setupMovieViewerSwipe(){
-
-    const viewer =
-        document.getElementById(
-            "movieViewer"
+        showMovie(
+            currentMovieIndex + 1
         );
 
-    if(!viewer){
-        return;
+    }else{
+
+
+        /*
+        右スワイプ
+        → 前の動画
+        */
+
+        showMovie(
+            currentMovieIndex - 1
+        );
+
     }
-
-
-    viewer.addEventListener(
-        "touchstart",
-        movieSwipeStart,
-        {
-            passive: true
-        }
-    );
-
-
-    viewer.addEventListener(
-        "touchend",
-        movieSwipe,
-        {
-            passive: true
-        }
-    );
-
-}
-
-
-if(
-    document.readyState ===
-    "loading"
-){
-
-    document.addEventListener(
-        "DOMContentLoaded",
-        setupMovieViewerSwipe
-    );
-
-}else{
-
-    setupMovieViewerSwipe();
 
 }

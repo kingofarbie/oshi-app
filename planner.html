@@ -265,11 +265,13 @@
         ✕
     </button>
 
-    <video
-        id="movieViewerVideo"
-        playsinline
-        controls>
-    </video>
+<video
+    id="movieViewerVideo"
+    playsinline
+    controls
+    ontouchstart="movieTouchStartX = event.touches[0].clientX;"
+    ontouchend="movieSwipe(event)">
+</video>
 
 </div>
 
