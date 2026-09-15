@@ -332,14 +332,14 @@
     position: absolute;
 
     right: 6px;
-    top: 50%;
+    bottom: 7px;
 
-    transform: translateY(-50%);
+    transform: none;
 
-    width: 72px;
+    width: 90px;
     height: 34px;
 
-    padding: 0 7px;
+    padding: 0 8px;
 
     border-radius: 8px;
 
@@ -355,7 +355,6 @@
 
     white-space: nowrap;
 }
-
 
 /* =====================================================
    カレンダー本体
