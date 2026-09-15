@@ -4514,17 +4514,24 @@ document.addEventListener(
             return;
         }
 
-        viewer.addEventListener(
-            "touchstart",
-            movieSwipeStart,
-            { passive: true }
-        );
+viewer.addEventListener(
+    "touchstart",
+    movieSwipeStart,
+    {
+        passive: true,
+        capture: true
+    }
+);
 
-        viewer.addEventListener(
-            "touchend",
-            movieSwipeEnd,
-            { passive: true }
-        );
+viewer.addEventListener(
+    "touchend",
+    movieSwipeEnd,
+    {
+        passive: true,
+        capture: true
+    }
+);
+
 
     }
 );
