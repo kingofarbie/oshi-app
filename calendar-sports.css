@@ -296,7 +296,6 @@
 ===================================================== */
 
 .sports-month-title-button {
-
     display: block;
 
     width: 100%;
@@ -322,7 +321,6 @@
 
     white-space: nowrap;
 }
-
 
 /* =====================================================
    今日ボタン
@@ -1136,21 +1134,22 @@
 
 .sports-month-title-button {
 
-    flex: 1 1 auto;
+    flex: none;
 
-    width: auto;
+    width: 100%;
 
-    max-width: 220px;
+    max-width: none;
 
     height: 52px;
 
-    padding: 0 10px;
+    padding: 0;
 
-    border-radius: 10px;
+    border-radius: 0;
 
     font-size: 28px;
-}
 
+    text-align: center;
+}
 
 .sports-today-button {
     position: absolute;
