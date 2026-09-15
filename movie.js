@@ -2546,7 +2546,7 @@ async function renderDayMovies(){
 const selectedDate =
     selectedCalendarDate;
 
-    
+
     console.log(
         "🎥 動画表示用日付:",
         selectedDate
@@ -3458,394 +3458,331 @@ function setMovieSort(mode){
 
 /* =========================================================
    動画自由並べ替え
+   長押しのみドラッグ
+   短い操作はスクロール
 ========================================================= */
-
 
 /* 指を置いた時 */
 
 document.addEventListener(
-    "touchstart",
-    function(e){
+"touchstart",
+function(e){
 
-        if(!movieSortMode){
-
-            return;
-
-        }
+    if(!movieSortMode){
+        return;
+    }
 
 
-        const box =
-            e.target.closest(
-                ".memory-movie-box"
-            );
-
-
-        if(!box){
-
-            return;
-
-        }
-
-
-        if(
-            !e.touches ||
-            e.touches.length !== 1
-        ){
-
-            return;
-
-        }
-
-
-        draggingMovieId =
-            Number(
-                box.dataset.movieId
-            );
-
-
-        draggingMovieElement =
-            box;
-
-
-        movieTouchMoved =
-            false;
-
-
-        movieTouchStartX =
-            e.touches[0].clientX;
-
-
-        movieTouchStartY =
-            e.touches[0].clientY;
-
-
-        clearTimeout(
-            movieLongPressTimer
+    const box =
+        e.target.closest(
+            ".memory-movie-box"
         );
 
 
-        movieLongPressTimer =
-            setTimeout(
-                () => {
-
-                    if(movieTouchMoved){
-
-                        return;
-
-                    }
-
-
-                    isMovieDragging =
-                        true;
-
-
-                    box.classList.add(
-                        "movie-dragging"
-                    );
-
-
-                    if(
-                        navigator.vibrate
-                    ){
-
-                        navigator.vibrate(
-                            30
-                        );
-
-                    }
-
-                },
-                300
-            );
-
-    },
-    {
-        passive: true
+    if(!box){
+        return;
     }
-);
 
 
-/* =========================================================
-   動画自由並べ替え移動
-========================================================= */
-
-document.addEventListener(
-    "touchmove",
-    function(e){
-
-        if(!movieSortMode){
-
-            return;
-
-        }
+    draggingMovieId =
+        Number(
+            box.dataset.movieId
+        );
 
 
-        if(
-            !e.touches ||
-            e.touches.length !== 1
-        ){
-
-            return;
-
-        }
+    draggingMovieElement =
+        box;
 
 
-        /*
-        =====================
-           ドラッグ開始前
-           → 通常スクロール
-        =====================
-        */
-
-        if(!isMovieDragging){
-
-            const dx =
-                Math.abs(
-                    e.touches[0].clientX -
-                    movieTouchStartX
-                );
+    movieTouchMoved = false;
 
 
-            const dy =
-                Math.abs(
-                    e.touches[0].clientY -
-                    movieTouchStartY
-                );
+    movieTouchStartX =
+        e.touches[0].clientX;
+
+    movieTouchStartY =
+        e.touches[0].clientY;
 
 
-            if(
-                dx > 10 ||
-                dy > 10
-            ){
-
-                movieTouchMoved =
-                    true;
+    movieLongPressTimer =
+        setTimeout(()=>{
 
 
-                clearTimeout(
-                    movieLongPressTimer
-                );
+            /* 長押し成功 */
 
-            }
-
-
-            return;
-
-        }
-
-
-        /*
-        =====================
-           ドラッグ中
-        =====================
-        */
-
-        e.preventDefault();
-
-
-        const touch =
-            e.touches[0];
-
-
-        const boxes =
-            [
-                ...document.querySelectorAll(
-                    ".memory-movie-box"
-                )
-            ];
-
-
-        let targetBox =
-            null;
-
-
-        boxes.forEach(box => {
-
-            if(
-                box ===
-                draggingMovieElement
-            ){
-
+            if(movieTouchMoved){
                 return;
-
             }
 
 
-            const rect =
-                box.getBoundingClientRect();
+            isMovieDragging = true;
 
 
-            if(
-
-                touch.clientX >=
-                rect.left &&
-
-                touch.clientX <=
-                rect.right &&
-
-                touch.clientY >=
-                rect.top &&
-
-                touch.clientY <=
-                rect.bottom
-
-            ){
-
-                targetBox =
-                    box;
-
-            }
-
-        });
-
-
-        if(!targetBox){
-
-            return;
-
-        }
-
-
-        /*
-        =====================
-           DOM上で位置交換
-        =====================
-        */
-
-        const parent =
-            draggingMovieElement.parentNode;
-
-
-        const nextAfterTarget =
-            targetBox.nextSibling;
-
-
-        const nextAfterDragging =
-            draggingMovieElement.nextSibling;
-
-
-        if(
-            nextAfterDragging ===
-            targetBox
-        ){
-
-            parent.insertBefore(
-                targetBox,
-                draggingMovieElement
-            );
-
-        }
-
-
-        else if(
-            nextAfterTarget ===
-            draggingMovieElement
-        ){
-
-            parent.insertBefore(
-                draggingMovieElement,
-                targetBox
-            );
-
-        }
-
-
-        else{
-
-            parent.insertBefore(
-                draggingMovieElement,
-                targetBox
-            );
-
-
-            parent.insertBefore(
-                targetBox,
-                nextAfterDragging
-            );
-
-        }
-
-    },
-    {
-        passive: false
-    }
-);
-
-
-/* =========================================================
-   自由並べ替え終了
-========================================================= */
-
-document.addEventListener(
-    "touchend",
-    function(){
-
-        clearTimeout(
-            movieLongPressTimer
-        );
-
-
-        if(draggingMovieElement){
-
-            draggingMovieElement.classList.remove(
+            box.classList.add(
                 "movie-dragging"
             );
 
-        }
+
+            if(navigator.vibrate){
+
+                navigator.vibrate(30);
+
+            }
 
 
-        isMovieDragging =
-            false;
+        },70);
 
 
-        draggingMovieId =
-            null;
-
-
-        draggingMovieElement =
-            null;
-
-    },
-    {
-        passive: true
-    }
+},
+{
+    passive:true
+}
 );
 
 
-/* =========================================================
-   自由並べ替えバー
-========================================================= */
+
+/* =====================================================
+   動画移動
+   指が入った動画枠と位置交換
+===================================================== */
+
+document.addEventListener(
+"touchmove",
+function(e){
+
+    if(!movieSortMode){
+        return;
+    }
+
+
+    /* =====================
+       ドラッグ開始前
+       → 普通にスクロール
+    ===================== */
+
+    if(!isMovieDragging){
+
+        const dx =
+            Math.abs(
+                e.touches[0].clientX -
+                movieTouchStartX
+            );
+
+        const dy =
+            Math.abs(
+                e.touches[0].clientY -
+                movieTouchStartY
+            );
+
+
+        if(dx > 10 || dy > 10){
+
+            movieTouchMoved = true;
+
+
+            clearTimeout(
+                movieLongPressTimer
+            );
+
+
+            draggingMovieId = null;
+
+        }
+
+
+        return;
+
+    }
+
+
+    /* =====================
+       ドラッグ中だけ
+       スクロール停止
+    ===================== */
+
+    e.preventDefault();
+
+
+    const touch =
+        e.touches[0];
+
+
+    /* 指が入っている動画枠を取得 */
+
+    const boxes =
+        [
+            ...document.querySelectorAll(
+                ".memory-movie-box"
+            )
+        ];
+
+
+    let targetBox = null;
+
+
+    boxes.forEach(box=>{
+
+        if(
+            box === draggingMovieElement
+        ){
+            return;
+        }
+
+
+        const rect =
+            box.getBoundingClientRect();
+
+
+        if(
+
+            touch.clientX >= rect.left &&
+            touch.clientX <= rect.right &&
+            touch.clientY >= rect.top &&
+            touch.clientY <= rect.bottom
+
+        ){
+
+            targetBox = box;
+
+        }
+
+    });
+
+
+    if(!targetBox){
+        return;
+    }
+
+
+    /* =====================
+       位置を完全に交換
+    ===================== */
+
+    const parent =
+        draggingMovieElement.parentNode;
+
+
+    const targetParent =
+        targetBox.parentNode;
+
+
+    const nextAfterTarget =
+        targetBox.nextSibling;
+
+
+    const nextAfterDragging =
+        draggingMovieElement.nextSibling;
+
+
+    if(
+        nextAfterDragging === targetBox
+    ){
+
+        parent.insertBefore(
+            targetBox,
+            draggingMovieElement
+        );
+
+    }else if(
+        nextAfterTarget === draggingMovieElement
+    ){
+
+        parent.insertBefore(
+            draggingMovieElement,
+            targetBox
+        );
+
+    }else{
+
+        parent.insertBefore(
+            draggingMovieElement,
+            targetBox
+        );
+
+
+        parent.insertBefore(
+            targetBox,
+            nextAfterDragging
+        );
+
+    }
+
+},
+{
+    passive:false
+}
+);
+
+
+
+/* 指を離した時 */
+
+document.addEventListener(
+"touchend",
+function(){
+
+
+    clearTimeout(
+        movieLongPressTimer
+    );
+
+
+    if(draggingMovieElement){
+
+        draggingMovieElement.classList.remove(
+            "movie-dragging"
+        );
+
+    }
+
+
+    isMovieDragging = false;
+
+
+    draggingMovieId = null;
+
+
+},
+{
+    passive:true
+}
+);
+
+
+
+/* =====================================================
+   動画自由並べ替えバー
+===================================================== */
 
 function getMovieFreeModeBar(){
 
-    return `
+return `
 
 <div class="movie-free-bar">
 
     <div>
-
         📷 自由変更中<br>
 
         <small>
-            動画を長押ししてドラッグしてください
+        動画をドラッグして並べ替えてください
         </small>
 
     </div>
 
 
     <button
-        onclick="finishMovieSort()">
+    onclick="finishMovieSort()">
 
         完了
 
     </button>
+
 
 </div>
 
 `;
 
 }
-
 
 /* =========================================================
    自由並べ替え保存
