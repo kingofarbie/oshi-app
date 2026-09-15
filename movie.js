@@ -6,7 +6,7 @@
 let currentMovieSrc = "";
 let currentMovieIndex = 0;
 let currentMovieId = null;
-let movieViewerTouchStartX = 0;
+
 let movieFavoriteViewMode = false;
 
 let movieScale = 1;
@@ -25,8 +25,6 @@ let movieTouchMoved = false;
 
 let movieTouchStartX = 0;
 let movieTouchStartY = 0;
-let movieSwipeStartX = 0;
-let movieSwipeStartY = 0;
 
 let movieLongPressTimer = null;
 /* =====================
@@ -673,35 +671,6 @@ function getViewerMovies(){
     return movies;
 
 }
-
-
-
-function showMovieByIndex(index){
-
-    const movies =
-        getViewerMovies();
-
-    if(!movies.length){
-        return;
-    }
-
-    if(
-        index < 0 ||
-        index >= movies.length
-    ){
-        return;
-    }
-
-    const movie =
-        movies[index];
-
-    if(!movie){
-        return;
-    }
-
-    openMovieViewer(movie.id);
-}
-
 
 
 /* =========================================================
@@ -4418,112 +4387,158 @@ async function deleteCurrentMovie(){
     renderDayMovies();
 }
 
-function movieSwipeStart(e){
 
-    const touch =
-        e.touches[0];
+/* =====================================================
+   🎥 動画ビューアー スワイプ
+   写真ビューアーと同じ考え方で
+   左 → 次の動画
+   右 → 前の動画
+===================================================== */
 
-    if(!touch){
+let movieViewerTouchStartX = 0;
+let movieViewerTouchStartY = 0;
+
+
+/* =====================
+   スワイプ開始
+===================== */
+
+function movieSwipeStart(event){
+
+    if(!event.touches){
         return;
     }
 
-    movieSwipeStartX =
-        touch.clientX;
+    if(event.touches.length !== 1){
+        return;
+    }
 
-    movieSwipeStartY =
-        touch.clientY;
+    movieViewerTouchStartX =
+        event.touches[0].clientX;
+
+    movieViewerTouchStartY =
+        event.touches[0].clientY;
 }
 
-function movieSwipeEnd(e){
 
-    const touch =
-        e.changedTouches[0];
+/* =====================
+   スワイプ終了
+===================== */
 
-    if(!touch){
+function movieSwipe(event){
+
+    if(movieScale > 1){
         return;
     }
 
-    const dx =
-        touch.clientX -
-        movieSwipeStartX;
-
-    const dy =
-        touch.clientY -
-        movieSwipeStartY;
-
     if(
-        Math.abs(dx) < 80 ||
-        Math.abs(dx) < Math.abs(dy)
+        !event.changedTouches ||
+        event.changedTouches.length !== 1
     ){
         return;
     }
 
-    if(dx < 0){
+    const touch =
+        event.changedTouches[0];
 
-        showMovieByIndex(
-            currentMovieIndex + 1
-        );
+    const diffX =
+        touch.clientX -
+        movieViewerTouchStartX;
 
-    }else{
-
-        showMovieByIndex(
-            currentMovieIndex - 1
-        );
-
-    }
-}
+    const diffY =
+        touch.clientY -
+        movieViewerTouchStartY;
 
 
+    /* 縦方向の操作は無視 */
 
-function setupMovieViewerSwipe(){
-
-    const video =
-        document.getElementById(
-            "movieViewerVideo"
-        );
-
-    if(!video){
+    if(
+        Math.abs(diffX) < 60 ||
+        Math.abs(diffX) <= Math.abs(diffY)
+    ){
         return;
     }
 
-    video.addEventListener(
-        "pointerdown",
-        function(e){
 
-            movieSwipeStart({
-                touches: [
-                    {
-                        clientX: e.clientX,
-                        clientY: e.clientY
-                    }
-                ]
-            });
+    /* =====================
+       次の動画
+    ===================== */
 
-        },
+    if(diffX < 0){
+
+        const movies =
+            getViewerMovies();
+
+        if(
+            currentMovieIndex <
+            movies.length - 1
+        ){
+
+            openMovieViewer(
+                movies[
+                    currentMovieIndex + 1
+                ].id
+            );
+        }
+
+        return;
+    }
+
+
+    /* =====================
+       前の動画
+    ===================== */
+
+    if(diffX > 0){
+
+        const movies =
+            getViewerMovies();
+
+        if(
+            currentMovieIndex > 0
+        ){
+
+            openMovieViewer(
+                movies[
+                    currentMovieIndex - 1
+                ].id
+            );
+        }
+    }
+
+}
+
+
+/* =====================
+   ビューアーへ登録
+===================== */
+
+function setupMovieViewerSwipe(){
+
+    const viewer =
+        document.getElementById(
+            "movieViewer"
+        );
+
+    if(!viewer){
+        return;
+    }
+
+
+    viewer.addEventListener(
+        "touchstart",
+        movieSwipeStart,
         {
-            passive: true,
-            capture: true
+            passive: true
         }
     );
 
 
-    video.addEventListener(
-        "pointerup",
-        function(e){
-
-            movieSwipeEnd({
-                changedTouches: [
-                    {
-                        clientX: e.clientX,
-                        clientY: e.clientY
-                    }
-                ]
-            });
-
-        },
+    viewer.addEventListener(
+        "touchend",
+        movieSwipe,
         {
-            passive: true,
-            capture: true
+            passive: true
         }
     );
 
