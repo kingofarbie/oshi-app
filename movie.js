@@ -25,6 +25,8 @@ let movieTouchMoved = false;
 
 let movieTouchStartX = 0;
 let movieTouchStartY = 0;
+let movieSwipeStartX = 0;
+let movieSwipeStartY = 0;
 
 let movieLongPressTimer = null;
 /* =====================
@@ -671,6 +673,35 @@ function getViewerMovies(){
     return movies;
 
 }
+
+
+
+function showMovieByIndex(index){
+
+    const movies =
+        getViewerMovies();
+
+    if(!movies.length){
+        return;
+    }
+
+    if(
+        index < 0 ||
+        index >= movies.length
+    ){
+        return;
+    }
+
+    const movie =
+        movies[index];
+
+    if(!movie){
+        return;
+    }
+
+    openMovieViewer(movie.id);
+}
+
 
 
 /* =========================================================
@@ -4414,4 +4445,88 @@ async function deleteCurrentMovie(){
 
     renderDayMovies();
 }
+
+function movieSwipeStart(e){
+
+    const touch =
+        e.touches[0];
+
+    if(!touch){
+        return;
+    }
+
+    movieSwipeStartX =
+        touch.clientX;
+
+    movieSwipeStartY =
+        touch.clientY;
+}
+
+function movieSwipeEnd(e){
+
+    const touch =
+        e.changedTouches[0];
+
+    if(!touch){
+        return;
+    }
+
+    const dx =
+        touch.clientX -
+        movieSwipeStartX;
+
+    const dy =
+        touch.clientY -
+        movieSwipeStartY;
+
+    if(
+        Math.abs(dx) < 80 ||
+        Math.abs(dx) < Math.abs(dy)
+    ){
+        return;
+    }
+
+    if(dx < 0){
+
+        showMovieByIndex(
+            currentMovieIndex + 1
+        );
+
+    }else{
+
+        showMovieByIndex(
+            currentMovieIndex - 1
+        );
+
+    }
+}
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        const viewer =
+            document.getElementById(
+                "movieViewer"
+            );
+
+        if(!viewer){
+            return;
+        }
+
+        viewer.addEventListener(
+            "touchstart",
+            movieSwipeStart,
+            { passive: true }
+        );
+
+        viewer.addEventListener(
+            "touchend",
+            movieSwipeEnd,
+            { passive: true }
+        );
+
+    }
+);
+
 
