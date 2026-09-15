@@ -4501,39 +4501,50 @@ function movieSwipeEnd(e){
     }
 }
 
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
+function setupMovieViewerSwipe(){
 
-        const viewer =
-            document.getElementById(
-                "movieViewer"
-            );
+    const viewer =
+        document.getElementById(
+            "movieViewer"
+        );
 
-        if(!viewer){
-            return;
+    if(!viewer){
+        return;
+    }
+
+    viewer.addEventListener(
+        "touchstart",
+        movieSwipeStart,
+        {
+            passive: true,
+            capture: true
         }
+    );
 
-viewer.addEventListener(
-    "touchstart",
-    movieSwipeStart,
-    {
-        passive: true,
-        capture: true
-    }
-);
+    viewer.addEventListener(
+        "touchend",
+        movieSwipeEnd,
+        {
+            passive: true,
+            capture: true
+        }
+    );
 
-viewer.addEventListener(
-    "touchend",
-    movieSwipeEnd,
-    {
-        passive: true,
-        capture: true
-    }
-);
+}
 
 
-    }
-);
+if(
+    document.readyState ===
+    "loading"
+){
 
+    document.addEventListener(
+        "DOMContentLoaded",
+        setupMovieViewerSwipe
+    );
 
+}else{
+
+    setupMovieViewerSwipe();
+
+}
