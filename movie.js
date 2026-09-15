@@ -4487,17 +4487,40 @@ function setupMovieViewerSwipe(){
     }
 
     video.addEventListener(
-        "touchstart",
-        movieSwipeStart,
+        "pointerdown",
+        function(e){
+
+            movieSwipeStart({
+                touches: [
+                    {
+                        clientX: e.clientX,
+                        clientY: e.clientY
+                    }
+                ]
+            });
+
+        },
         {
             passive: true,
             capture: true
         }
     );
 
+
     video.addEventListener(
-        "touchend",
-        movieSwipeEnd,
+        "pointerup",
+        function(e){
+
+            movieSwipeEnd({
+                changedTouches: [
+                    {
+                        clientX: e.clientX,
+                        clientY: e.clientY
+                    }
+                ]
+            });
+
+        },
         {
             passive: true,
             capture: true
