@@ -18,6 +18,12 @@ let sportsCalendarDate = new Date();
 
 let sportsSelectedDate = null;
 
+/* =====================
+   スポーツカレンダー月スワイプ
+===================== */
+
+let sportsCalendarSwipeStartX = 0;
+let sportsCalendarSwipeStartY = 0;
 
 /* =====================================================
    🏟️ 応援スポーツ設定
@@ -1295,6 +1301,101 @@ scoreHTML = `
 
     area.innerHTML =
         html;
+
+
+        /* =====================
+   スポーツカレンダー月スワイプ
+===================== */
+
+area.ontouchstart =
+    function(event){
+
+        if(
+            event.touches.length !== 1
+        ){
+            return;
+        }
+
+        sportsCalendarSwipeStartX =
+            event.touches[0].clientX;
+
+        sportsCalendarSwipeStartY =
+            event.touches[0].clientY;
+
+    };
+
+
+area.ontouchend =
+    function(event){
+
+        if(
+            event.changedTouches.length !== 1
+        ){
+            return;
+        }
+
+        const touch =
+            event.changedTouches[0];
+
+
+        const diffX =
+            touch.clientX -
+            sportsCalendarSwipeStartX;
+
+        const diffY =
+            touch.clientY -
+            sportsCalendarSwipeStartY;
+
+
+        /*
+           縦スクロールを
+           月スワイプとして扱わない
+        */
+
+        if(
+            Math.abs(diffX) < 60
+        ){
+            return;
+        }
+
+
+        if(
+            Math.abs(diffX) <=
+            Math.abs(diffY)
+        ){
+            return;
+        }
+
+
+        /* =====================
+           左スワイプ
+           → 次月
+        ===================== */
+
+        if(diffX < 0){
+
+            changeSportsMonth(1);
+
+        }
+
+
+        /* =====================
+           右スワイプ
+           → 前月
+        ===================== */
+
+        else{
+
+            changeSportsMonth(-1);
+
+        }
+
+    };
+
+
+
+
+
 
 }
 

@@ -518,15 +518,9 @@ area.innerHTML = html;
 area.ontouchstart =
     function(event){
 
-        console.log("① カレンダー touchstart 発火");
-
         if(
             event.touches.length !== 1
         ){
-            console.log(
-                "② touchstart 中止：touches.length =",
-                event.touches.length
-            );
             return;
         }
 
@@ -536,31 +530,21 @@ area.ontouchstart =
         calendarSwipeStartY =
             event.touches[0].clientY;
 
-        console.log(
-            "③ スワイプ開始位置：",
-            calendarSwipeStartX,
-            calendarSwipeStartY
-        );
     };
 
 
 area.ontouchend =
     function(event){
 
-        console.log("④ カレンダー touchend 発火");
-
         if(
             event.changedTouches.length !== 1
         ){
-            console.log(
-                "⑤ touchend 中止：changedTouches.length =",
-                event.changedTouches.length
-            );
             return;
         }
 
         const touch =
             event.changedTouches[0];
+
 
         const diffX =
             touch.clientX -
@@ -570,19 +554,15 @@ area.ontouchend =
             touch.clientY -
             calendarSwipeStartY;
 
-        console.log(
-            "⑥ スワイプ移動量：",
-            "diffX =", diffX,
-            "diffY =", diffY
-        );
 
+        /*
+           縦スクロールを
+           月スワイプとして扱わない
+        */
 
         if(
             Math.abs(diffX) < 60
         ){
-            console.log(
-                "⑦ 中止：横方向の移動が60px未満"
-            );
             return;
         }
 
@@ -591,31 +571,35 @@ area.ontouchend =
             Math.abs(diffX) <=
             Math.abs(diffY)
         ){
-            console.log(
-                "⑧ 中止：縦方向の移動が横方向以上"
-            );
             return;
         }
 
 
-        if(diffX < 0){
+        /* =====================
+           左スワイプ
+           → 次月
+        ===================== */
 
-            console.log(
-                "⑨ 左スワイプ → 次の月"
-            );
+        if(diffX < 0){
 
             changeMonth(1);
 
         }
+
+
+        /* =====================
+           右スワイプ
+           → 前月
+        ===================== */
+
         else{
 
-            console.log(
-                "⑩ 右スワイプ → 前の月"
-            );
-
             changeMonth(-1);
+
         }
+
     };
+
 
 updateSelectedDateArea();
 
