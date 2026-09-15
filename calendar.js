@@ -167,6 +167,15 @@ let selectedCalendarDate = null;
 let editingEventId = null;
 
 
+/* =====================
+   カレンダー月スワイプ
+===================== */
+
+let calendarSwipeStartX = 0;
+let calendarSwipeStartY = 0;
+
+
+
 let pressTimer;
 let menuDate = null;
 let selectedEventId = null;
@@ -499,11 +508,101 @@ ${more}
 
 
 
-    area.innerHTML = html;
+area.innerHTML = html;
 
 
+/* =====================
+   カレンダー月スワイプ
+===================== */
 
-    updateSelectedDateArea();
+area.ontouchstart =
+    function(event){
+
+        if(
+            event.touches.length !== 1
+        ){
+            return;
+        }
+
+        calendarSwipeStartX =
+            event.touches[0].clientX;
+
+        calendarSwipeStartY =
+            event.touches[0].clientY;
+
+    };
+
+
+area.ontouchend =
+    function(event){
+
+        if(
+            event.changedTouches.length !== 1
+        ){
+            return;
+        }
+
+        const touch =
+            event.changedTouches[0];
+
+
+        const diffX =
+            touch.clientX -
+            calendarSwipeStartX;
+
+        const diffY =
+            touch.clientY -
+            calendarSwipeStartY;
+
+
+        /*
+           縦スクロールを
+           月スワイプとして扱わない
+        */
+
+        if(
+            Math.abs(diffX) < 60
+        ){
+            return;
+        }
+
+
+        if(
+            Math.abs(diffX) <=
+            Math.abs(diffY)
+        ){
+            return;
+        }
+
+
+        /* =====================
+           左スワイプ
+           → 次月
+        ===================== */
+
+        if(diffX < 0){
+
+            changeMonth(1);
+
+        }
+
+
+        /* =====================
+           右スワイプ
+           → 前月
+        ===================== */
+
+        else{
+
+            changeMonth(-1);
+
+        }
+
+    };
+
+
+updateSelectedDateArea();
+
 
 }
 
