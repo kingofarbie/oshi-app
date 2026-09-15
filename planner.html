@@ -238,41 +238,25 @@
     onchange="movieSelected(event)">
 
 
-
-    <!-- =====================
-     🎥 動画ビューア
-===================== -->
+    <!-- 動画ビューア -->
 <div id="movieViewer">
 
-    <!-- お気に入り -->
-    <button
-        class="movie-favorite"
-        onclick="toggleMovieFavorite()">
-        ☆
-    </button>
+    <button class="movie-favorite">☆</button>
 
-    <!-- 共有 -->
-    <button
-        class="movie-share"
-        onclick="shareCurrentMovie()">
+    <button class="movie-share">
         📤
     </button>
 
-    <!-- 削除 -->
-    <button
-        class="movie-delete"
-        onclick="deleteCurrentMovie()">
+    <button class="movie-delete">
         🗑
     </button>
 
-    <!-- 閉じる -->
     <button
         class="movie-close"
         onclick="closeMovieViewer()">
         ✕
     </button>
 
-    <!-- 動画本体 -->
     <video
         id="movieViewerVideo"
         playsinline
@@ -280,3 +264,5 @@
     </video>
 
 </div>
+
+
