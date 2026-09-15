@@ -241,15 +241,23 @@
     <!-- 動画ビューア -->
 <div id="movieViewer">
 
-    <button class="movie-favorite">☆</button>
+    <button
+    class="movie-favorite"
+    onclick="toggleFavoriteMovie()">
+    ☆
+</button>
 
-    <button class="movie-share">
-        📤
-    </button>
+<button
+    class="movie-share"
+    onclick="shareCurrentMovie()">
+    📤
+</button>
 
-    <button class="movie-delete">
-        🗑
-    </button>
+<button
+    class="movie-delete"
+    onclick="deleteCurrentMovie()">
+    🗑
+</button>
 
     <button
         class="movie-close"

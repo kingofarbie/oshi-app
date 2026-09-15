@@ -1942,6 +1942,40 @@ function updateMovieFavoriteButton(){
 }
 
 
+function toggleFavoriteMovie(){
+
+    const data = db.load();
+
+    let targetMovie = null;
+
+    Object.values(data.dayMemories || {}).some(day => {
+
+        const movie =
+            (day.movies || []).find(
+                p => Number(p.id) === Number(currentMovieId)
+            );
+
+        if(movie){
+
+            targetMovie = movie;
+
+            return true;
+        }
+
+        return false;
+    });
+
+    if(!targetMovie) return;
+
+    targetMovie.favorite =
+        !targetMovie.favorite;
+
+    db.save(data);
+
+    updateMovieFavoriteButton();
+}
+
+
 /* =========================================================
    現在の動画を共有
 ========================================================= */
@@ -4235,3 +4269,149 @@ function deleteSelectedMovies(){
     renderDayMemory();
 
 }
+
+async function shareCurrentMovie(){
+
+    if(!currentMovieId) return;
+
+    const data = db.load();
+
+    let targetMovie = null;
+
+    Object.values(data.dayMemories || {}).some(day => {
+
+        const movie =
+            (day.movies || []).find(
+                p => Number(p.id) === Number(currentMovieId)
+            );
+
+        if(movie){
+
+            targetMovie = movie;
+
+            return true;
+        }
+
+        return false;
+    });
+
+    if(!targetMovie) return;
+
+    const media =
+        await getMediaFile(
+            Number(targetMovie.mediaId)
+        );
+
+    if(!media || !media.file) return;
+
+    const file =
+        new File(
+            [media.file],
+            "oshi-movie.mp4",
+            {
+                type:
+                    media.file.type ||
+                    "video/mp4"
+            }
+        );
+
+    if(
+        navigator.share &&
+        navigator.canShare &&
+        navigator.canShare({
+            files: [file]
+        })
+    ){
+
+        try{
+
+            await navigator.share({
+                files: [file]
+            });
+
+        }catch(e){
+
+            if(e.name !== "AbortError"){
+                console.error(
+                    "動画共有エラー:",
+                    e
+                );
+            }
+
+        }
+
+    }else{
+
+        alert(
+            "この端末では動画ファイルの共有に対応していません。"
+        );
+
+    }
+}
+
+
+async function deleteCurrentMovie(){
+
+    if(!currentMovieId) return;
+
+    const data = db.load();
+
+    let targetMovie = null;
+    let targetDay = null;
+
+    Object.entries(data.dayMemories || {}).some(
+        ([date, day]) => {
+
+            const movie =
+                (day.movies || []).find(
+                    p => Number(p.id) === Number(currentMovieId)
+                );
+
+            if(movie){
+
+                targetMovie = movie;
+                targetDay = day;
+
+                return true;
+            }
+
+            return false;
+        }
+    );
+
+    if(!targetMovie || !targetDay) return;
+
+    const ok =
+        confirm("この動画を削除しますか？");
+
+    if(!ok) return;
+
+    targetDay.movies =
+        (targetDay.movies || []).filter(
+            p =>
+                Number(p.id) !==
+                Number(currentMovieId)
+        );
+
+    db.save(data);
+
+    try{
+
+        await deleteMediaFile(
+            Number(targetMovie.mediaId)
+        );
+
+    }catch(e){
+
+        console.warn(
+            "動画ファイル削除エラー:",
+            e
+        );
+
+    }
+
+    closeMovieViewer();
+
+    renderDayMovies();
+}
+
