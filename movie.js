@@ -1331,34 +1331,6 @@ function showMovie(index){
 
 
 /* =========================================================
-   スワイプ開始
-========================================================= */
-
-function movieSwipeStart(event){
-
-    if(!event.touches){
-
-        return;
-
-    }
-
-
-    if(
-        event.touches.length !== 1
-    ){
-
-        return;
-
-    }
-
-
-    movieViewerTouchStartX =
-        event.touches[0].clientX;
-
-}
-
-
-/* =========================================================
    動画スワイプ
 ========================================================= */
 
@@ -4500,6 +4472,8 @@ function movieSwipeEnd(e){
 
     }
 }
+
+
 
 function setupMovieViewerSwipe(){
 
