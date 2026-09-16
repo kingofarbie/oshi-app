@@ -4038,118 +4038,6 @@ function cancelMovieDeleteMode(){
 }
 
 
-/* =========================================================
-   現在の動画を1件削除
-========================================================= */
-
-function deleteCurrentMovie(){
-
-    if(!currentMovieId){
-
-        return;
-
-    }
-
-
-    /*
-    =====================
-       お気に入りビューでは
-       削除させない
-    =====================
-    */
-
-    if(movieFavoriteViewMode){
-
-        return;
-
-    }
-
-
-    if(
-        !confirm(
-            "この動画を削除しますか？"
-        )
-    ){
-
-        return;
-
-    }
-
-
-    const data =
-        db.load();
-
-
-    let deleted =
-        false;
-
-
-    /*
-    =====================
-       現在の動画IDを
-       全日付から探して削除
-    =====================
-    */
-
-    Object.values(
-        data.dayMemories || {}
-    )
-    .forEach(day => {
-
-        if(!day.movies){
-
-            return;
-
-        }
-
-
-        const before =
-            day.movies.length;
-
-
-        day.movies =
-            day.movies.filter(
-                movie =>
-                    Number(movie.id) !==
-                    Number(currentMovieId)
-            );
-
-
-        if(
-            day.movies.length !==
-            before
-        ){
-
-            deleted =
-                true;
-
-        }
-
-    });
-
-
-    if(!deleted){
-
-        return;
-
-    }
-
-
-    db.save(data);
-
-
-    /*
-    =====================
-       ビューア終了
-    =====================
-    */
-
-    closeMovieViewer();
-
-
-    renderDayMemory();
-
-}
 
 
 /* =========================================================
@@ -4339,6 +4227,10 @@ async function shareCurrentMovie(){
 
     }
 }
+
+/* =========================================================
+   現在の動画を1件削除
+========================================================= */
 
 
 async function deleteCurrentMovie(){
