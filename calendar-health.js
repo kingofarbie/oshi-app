@@ -24,58 +24,42 @@ let healthCalendarHolidays = {};
    💊 健康カレンダーを開く
 ===================================================== */
 
-function openHealthCalendar() {
+async function openHealthCalendar() {
 
     const container =
-        document.getElementById("calendar");
+        document.getElementById("calendarContainer");
 
     if (!container) {
+        console.error("calendarContainer がありません");
         return;
     }
 
+    try {
 
-    /*
-     * CSSを確実に読み込む
-     */
-    ensureHealthCalendarCSS();
+        const response =
+            await fetch("./calendar-health.html");
 
-
-    fetch("calendar-health.html")
-        .then(response => {
-
-            if (!response.ok) {
-
-                throw new Error(
-                    "calendar-health.html の読み込みに失敗しました"
-                );
-
-            }
-
-            return response.text();
-
-        })
-        .then(html => {
-
-            container.innerHTML = html;
-
-            initializeHealthCalendar();
-
-        })
-        .catch(error => {
-
-            console.error(
-                "健康カレンダー読み込みエラー:",
-                error
+        if (!response.ok) {
+            throw new Error(
+                "calendar-health.html の読み込みに失敗しました"
             );
+        }
 
-            container.innerHTML =
-                "<p>健康カレンダーを読み込めませんでした。</p>";
+        container.innerHTML =
+            await response.text();
 
-        });
+        initializeHealthCalendar();
+
+    } catch (error) {
+
+        console.error(
+            "健康カレンダー読み込みエラー:",
+            error
+        );
+
+    }
 
 }
-
-
 
 /* =====================================================
    💊 CSSを確実に読み込む
