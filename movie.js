@@ -2125,172 +2125,266 @@ function startMovieShareMode(){
 
 async function shareSelectedMovies(){
 
-    if(
-        selectedShareMovieIds.length === 0
+if(
+    selectedShareMovieIds.length === 0
+){
+
+    alert(
+        "共有する動画を選択してください"
+    );
+
+    return;
+
+}
+
+
+const data =
+    db.load();
+
+
+const movies =
+    data.dayMemories
+    ?. [selectedCalendarDate]
+    ?. movies || [];
+
+
+const selectedMovies =
+    movies.filter(
+        movie =>
+            selectedShareMovieIds.includes(
+                Number(movie.id)
+            )
+    );
+
+
+if(
+    selectedMovies.length === 0
+){
+
+    return;
+
+}
+
+
+try{
+
+    const files = [];
+
+
+    /*
+    =====================
+       選択した動画を
+       IndexedDBから取得
+    =====================
+    */
+
+    for(
+        let i = 0;
+        i < selectedMovies.length;
+        i++
     ){
 
-        alert(
-            "共有する動画を選択してください"
-        );
-
-        return;
-
-    }
+        const movie =
+            selectedMovies[i];
 
 
-    const data =
-        db.load();
-
-
-    const movies =
-        data.dayMemories
-        ?. [selectedCalendarDate]
-        ?. movies || [];
-
-
-    const selectedMovies =
-        movies.filter(
-            movie =>
-                selectedShareMovieIds.includes(
-                    Number(movie.id)
+        const media =
+            await getMediaFile(
+                Number(
+                    movie.mediaId ??
+                    movie.id
                 )
-        );
-
-
-    if(
-        selectedMovies.length === 0
-    ){
-
-        return;
-
-    }
-
-
-    try{
-
-        const files =
-            [];
-
-
-        for(
-            let i = 0;
-            i < selectedMovies.length;
-            i++
-        ){
-
-            const movie =
-                selectedMovies[i];
-
-
-            const response =
-                await fetch(
-                    movie.src
-                );
-
-
-            const blob =
-                await response.blob();
-
-
-            const extension =
-                movie.type === "video/webm"
-                ? "webm"
-                :
-                movie.type === "video/ogg"
-                ? "ogv"
-                :
-                "mp4";
-
-
-            const file =
-                new File(
-                    [blob],
-                    `oshi-movie-${i + 1}.${extension}`,
-                    {
-                        type:
-                            blob.type ||
-                            movie.type ||
-                            "video/mp4"
-                    }
-                );
-
-
-            files.push(file);
-
-        }
+            );
 
 
         if(
-            !navigator.share ||
-            !navigator.canShare ||
-            !navigator.canShare({
-                files
-            })
+            !media ||
+            !media.file
         ){
 
-            alert(
-                "この端末では複数動画の共有に対応していません"
+            console.warn(
+                "共有する動画ファイルを取得できません:",
+                movie
             );
 
-            return;
+            continue;
 
         }
-
-
-        await navigator.share({
-
-            files,
-
-            title:
-                "推し活手帳",
-
-            text:
-                `${files.length}本の動画`
-
-        });
 
 
         /*
         =====================
-           共有完了
+           拡張子
         =====================
         */
 
-        movieShareMode =
-            false;
+        const extension =
+            movie.type === "video/webm"
+            ? "webm"
+            :
+            movie.type === "video/ogg"
+            ? "ogv"
+            :
+            movie.type === "video/m4v"
+            ? "m4v"
+            :
+            "mp4";
 
 
-        selectedShareMovieIds =
-            [];
+        /*
+        =====================
+           IndexedDBのFileから
+           共有用Fileを作成
+        =====================
+        */
+
+        const file =
+            new File(
+                [media.file],
+                `oshi-movie-${i + 1}.${extension}`,
+                {
+                    type:
+                        media.file.type ||
+                        movie.type ||
+                        "video/mp4"
+                }
+            );
 
 
-        renderDayMovies();
-
-    }catch(error){
-
-        if(
-            error &&
-            error.name === "AbortError"
-        ){
-
-            return;
-
-        }
-
-
-        console.error(
-            "動画複数共有エラー:",
-            error
-        );
-
-
-        alert(
-            "動画を共有できませんでした"
-        );
+        files.push(file);
 
     }
 
+
+    /*
+    =====================
+       動画が取得できなかった
+    =====================
+    */
+
+    if(
+        files.length === 0
+    ){
+
+        alert(
+            "共有する動画ファイルを取得できませんでした"
+        );
+
+        return;
+
+    }
+
+
+    /*
+    =====================
+       端末の共有対応確認
+    =====================
+    */
+
+    if(
+        !navigator.share ||
+        !navigator.canShare
+    ){
+
+        alert(
+            "この端末では動画共有に対応していません"
+        );
+
+        return;
+
+    }
+
+
+    /*
+    =====================
+       ファイル共有対応確認
+    =====================
+    */
+
+    if(
+        !navigator.canShare({
+            files
+        })
+    ){
+
+        alert(
+            "この端末では複数動画の共有に対応していません"
+        );
+
+        return;
+
+    }
+
+
+    /*
+    =====================
+       共有
+    =====================
+    */
+
+    await navigator.share({
+
+        files,
+
+        title:
+            "推し活手帳",
+
+        text:
+            `${files.length}本の動画`
+
+    });
+
+
+    /*
+    =====================
+       共有完了
+    =====================
+    */
+
+    movieShareMode =
+        false;
+
+
+    selectedShareMovieIds =
+        [];
+
+
+    renderDayMovies();
+
+
+}catch(error){
+
+    /*
+    =====================
+       ユーザーが
+       共有画面を閉じた場合
+    =====================
+    */
+
+    if(
+        error &&
+        error.name === "AbortError"
+    ){
+
+        return;
+
+    }
+
+
+    console.error(
+        "動画複数共有エラー:",
+        error
+    );
+
+
+    alert(
+        "動画を共有できませんでした"
+    );
+
 }
+
+}
+
 
 
 /* =========================================================
