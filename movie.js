@@ -847,166 +847,123 @@ video.src =
    お気に入り動画ビューア
 ========================================================= */
 
-function openFavoriteMovieViewer(id){
-
-    /*
-    =====================
-       お気に入りビューON
-    =====================
-    */
+async function openFavoriteMovieViewer(id){
 
     movieFavoriteViewMode = true;
 
-
-    const movies =
-        getViewerMovies();
-
+    const movies = getViewerMovies();
 
     const movie =
         movies.find(
-            p =>
-                Number(p.id) ===
-                Number(id)
+            p => Number(p.id) === Number(id)
         );
-
 
     if(!movie){
 
         movieFavoriteViewMode = false;
 
         return;
-
     }
 
-
-    currentMovieId =
-        movie.id;
-
-
-    currentMovieSrc =
-        movie.src;
-
+    currentMovieId = movie.id;
 
     currentMovieIndex =
         movies.findIndex(
-            p =>
-                Number(p.id) ===
-                Number(id)
+            p => Number(p.id) === Number(id)
         );
 
+    const media =
+        await getMediaFile(
+            Number(movie.mediaId ?? movie.id)
+        );
+
+    if(!media || !media.file){
+
+        console.warn(
+            "お気に入り動画を取得できません:",
+            movie
+        );
+
+        movieFavoriteViewMode = false;
+
+        return;
+    }
+
+    if(
+        currentMovieSrc &&
+        currentMovieSrc.startsWith("blob:")
+    ){
+
+        try{
+
+            URL.revokeObjectURL(
+                currentMovieSrc
+            );
+
+        }catch(e){}
+
+    }
+
+    currentMovieSrc =
+        URL.createObjectURL(
+            media.file
+        );
 
     const video =
         document.getElementById(
             "movieViewerVideo"
         );
 
-
     if(!video){
 
         movieFavoriteViewMode = false;
 
         return;
-
     }
-
-
-    /*
-    =====================
-       動画セット
-    =====================
-    */
 
     video.pause();
 
     video.src =
-        movie.src;
+        currentMovieSrc;
 
     video.load();
 
-
-    /*
-    =====================
-       再生位置
-    =====================
-    */
-
-    video.currentTime =
-        0;
-
-
-    /*
-    =====================
-       ビューア状態リセット
-    =====================
-    */
+    video.currentTime = 0;
 
     resetMovieViewerState();
-
 
     video.style.transform =
         "translate(0px,0px) scale(1)";
 
-
-    /*
-    =====================
-       お気に入りボタン
-    =====================
-    */
-
     updateMovieFavoriteButton();
 
-
-    /*
-    =====================
-       お気に入りビューでは
-       削除ボタンを非表示
-    =====================
-    */
-
     updateMovieViewerButtons();
-
-
-    /*
-    =====================
-       ビューア表示
-    =====================
-    */
 
     const viewer =
         document.getElementById(
             "movieViewer"
         );
 
-
     if(!viewer){
 
+        movieFavoriteViewMode = false;
+
         return;
-
     }
-
 
     viewer.style.display =
         "flex";
 
-
     viewer.style.zIndex =
         "9999";
-
 
     document.body.style.overflow =
         "hidden";
 
-
-    /*
-    =====================
-       自動再生
-    =====================
-    */
-
-    video.play()
-        .catch(() => {});
+    video.play().catch(() => {});
 
 }
+
 
 
 /* =========================================================
