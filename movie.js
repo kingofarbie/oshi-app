@@ -388,8 +388,6 @@ function resetMovieViewerState(){
 
     movieDragStartY = 0;
 
-    movieViewerTouchStartX = 0;
-
     movieLastTapTime = 0;
 
 }
