@@ -12,11 +12,15 @@
 
     <title>健康カレンダー | 推し活手帳</title>
 
+    <link
+        rel="stylesheet"
+        href="calendar-health.css"
+    >
+
 </head>
 
 
 <body>
-
 
 <div
     id="healthCalendarScreen"
@@ -24,13 +28,11 @@
 >
 
 
-    <!-- =================================================
+    <!-- =========================
          ヘッダー
-    ================================================== -->
+    ========================== -->
 
-    <header
-        class="health-calendar-header"
-    >
+    <header class="health-calendar-header">
 
         <h1
             id="healthCalendarTitle"
@@ -51,19 +53,18 @@
     </header>
 
 
-    <!-- =================================================
-         カレンダー操作
-    ================================================== -->
 
-    <section
-        class="health-calendar-controls"
-    >
+    <!-- =========================
+         月・今日
+    ========================== -->
+
+    <section class="health-calendar-controls">
 
         <div
             id="healthCalendarMonthTitle"
             class="health-month-title-button"
+            onclick="openHealthCalendarDatePicker()"
         >
-            📅 2026年 9月
         </div>
 
 
@@ -78,19 +79,22 @@
     </section>
 
 
-    <!-- =================================================
-         カレンダー
-    ================================================== -->
+
+    <!-- =========================
+         カレンダー本体
+    ========================== -->
 
     <main
         id="healthCalendar"
         class="health-calendar"
-    ></main>
+    >
+    </main>
 
 
-    <!-- =================================================
-         年月選択モーダル
-    ================================================== -->
+
+    <!-- =========================
+         年月選択
+    ========================== -->
 
     <div
         id="healthCalendarDatePickerModal"
@@ -98,18 +102,12 @@
         style="display:none;"
     >
 
-        <div
-            class="health-modal-content"
-        >
+        <div class="health-modal-content">
 
 
-            <div
-                class="health-modal-header"
-            >
+            <div class="health-modal-header">
 
-                <div
-                    class="health-modal-title"
-                >
+                <div class="health-modal-title">
                     📅 年月を選択
                 </div>
 
@@ -124,9 +122,8 @@
             </div>
 
 
-            <div
-                class="health-date-picker"
-            >
+
+            <div class="health-date-picker">
 
                 <label
                     for="healthCalendarYearSelect"
@@ -137,7 +134,8 @@
 
                 <select
                     id="healthCalendarYearSelect"
-                ></select>
+                >
+                </select>
 
 
                 <label
@@ -169,9 +167,8 @@
             </div>
 
 
-            <div
-                class="health-modal-buttons"
-            >
+
+            <div class="health-modal-buttons">
 
                 <button
                     type="button"
@@ -198,6 +195,8 @@
 
 </div>
 
+
+<script src="calendar-health.js"></script>
 
 </body>
 
