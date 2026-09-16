@@ -10,26 +10,20 @@
 
 .calendar-header{
     display:flex;
-    justify-content:space-between;
     align-items:center;
+    justify-content:center;
+
+    width:100%;
+    box-sizing:border-box;
+
     margin-bottom:10px;
 }
 
-.calendar-header button{
-    width:auto;
-
-    padding:8px 14px;
-    margin:0;
-
-    border-radius:8px;
-}
-
 .calendar-title{
-    font-size:22px;
+    font-size:28px;
     font-weight:bold;
     text-align:center;
 }
-
 
 /* =========================
    曜日
