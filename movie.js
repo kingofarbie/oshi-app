@@ -1995,97 +1995,6 @@ function toggleFavoriteMovie(){
 }
 
 
-/* =========================================================
-   現在の動画を共有
-========================================================= */
-
-async function shareCurrentMovie(){
-
-    if(!currentMovieSrc){
-
-        return;
-
-    }
-
-
-    try{
-
-        const response =
-            await fetch(
-                currentMovieSrc
-            );
-
-
-        const blob =
-            await response.blob();
-
-
-        const movie =
-            new File(
-                [blob],
-                "oshi-movie.mp4",
-                {
-                    type:
-                        blob.type ||
-                        "video/mp4"
-                }
-            );
-
-
-        if(
-            !navigator.share ||
-            !navigator.canShare ||
-            !navigator.canShare({
-                files: [movie]
-            })
-        ){
-
-            alert(
-                "この端末では動画共有に対応していません"
-            );
-
-            return;
-
-        }
-
-
-        await navigator.share({
-
-            files: [movie],
-
-            title:
-                "推し活手帳",
-
-            text:
-                "推し活動画"
-
-        });
-
-    }catch(error){
-
-        if(
-            error &&
-            error.name === "AbortError"
-        ){
-
-            return;
-
-        }
-
-
-        console.error(
-            "動画共有エラー:",
-            error
-        );
-
-
-        alert(
-            "動画を共有できませんでした"
-        );
-
-    }
-
-}
 
 
 /* =========================================================
@@ -4382,6 +4291,11 @@ function deleteSelectedMovies(){
     renderDayMemory();
 
 }
+
+/* =========================================================
+   現在の動画を共有
+========================================================= */
+
 
 async function shareCurrentMovie(){
 
