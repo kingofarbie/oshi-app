@@ -775,3 +775,518 @@
     }
 
 }
+
+
+
+
+/* =====================================================
+   📖 健康 日めくり
+===================================================== */
+
+.health-daily-page {
+
+    width: 100%;
+
+    max-width: 700px;
+
+    margin: 0 auto;
+
+    box-sizing: border-box;
+
+    padding: 8px 10px 30px;
+
+}
+
+
+
+/* =====================================================
+   日めくりヘッダー
+===================================================== */
+
+.health-daily-header {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin-bottom: 8px;
+
+}
+
+
+.health-daily-header h1 {
+
+    flex: 1;
+
+    margin: 0;
+
+    font-size: 22px;
+
+    font-weight: 700;
+
+}
+
+
+
+.health-daily-back-button {
+
+    flex-shrink: 0;
+
+    padding: 8px 12px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 8px;
+
+    background: var(--surface);
+
+    color: var(--text);
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+}
+
+
+
+/* =====================================================
+   日付
+===================================================== */
+
+.health-daily-date-row {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 10px;
+
+    margin-bottom: 12px;
+
+}
+
+
+
+.health-daily-date {
+
+    flex: 1;
+
+    text-align: center;
+
+    font-size: 26px;
+
+    font-weight: 700;
+
+}
+
+
+
+.health-daily-date-button {
+
+    width: 46px;
+
+    height: 46px;
+
+    flex-shrink: 0;
+
+    border: 1px solid var(--border);
+
+    border-radius: 10px;
+
+    background: var(--surface);
+
+    color: var(--text);
+
+    font-size: 20px;
+
+    font-weight: 700;
+
+}
+
+
+
+/* =====================================================
+   セクション
+===================================================== */
+
+.health-daily-section {
+
+    margin-top: 12px;
+
+    padding: 14px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 12px;
+
+    background: var(--card);
+
+}
+
+
+
+.health-daily-section h2 {
+
+    margin: 0 0 10px;
+
+    font-size: 18px;
+
+    font-weight: 700;
+
+}
+
+
+
+/* =====================================================
+   服薬
+===================================================== */
+
+.health-medication-list {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+
+}
+
+
+
+.health-medication-row {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+}
+
+
+
+.health-medication-name {
+
+    flex: 1;
+
+    font-size: 17px;
+
+    font-weight: 700;
+
+}
+
+
+
+.health-medication-button {
+
+    min-width: 120px;
+
+    min-height: 44px;
+
+    padding: 8px 12px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 9px;
+
+    background: var(--surface);
+
+    color: var(--text);
+
+    font-size: 15px;
+
+    font-weight: 700;
+
+}
+
+
+
+.health-medication-button.taken {
+
+    background: var(--accent);
+
+    color: #fff;
+
+}
+
+
+
+/* =====================================================
+   入力
+===================================================== */
+
+.health-input-row {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    flex-wrap: wrap;
+
+}
+
+
+
+.health-input-row input {
+
+    width: 120px;
+
+    height: 48px;
+
+    box-sizing: border-box;
+
+    padding: 8px 10px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 9px;
+
+    background: var(--surface);
+
+    color: var(--text);
+
+    font-size: 20px;
+
+    text-align: center;
+
+}
+
+
+
+.health-input-row span {
+
+    font-size: 17px;
+
+    font-weight: 700;
+
+}
+
+
+
+/* =====================================================
+   セレクト
+===================================================== */
+
+.health-large-select {
+
+    width: 100%;
+
+    min-height: 50px;
+
+    padding: 8px 12px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 9px;
+
+    background: var(--surface);
+
+    color: var(--text);
+
+    font-size: 17px;
+
+}
+
+
+
+/* =====================================================
+   🌸 生理
+===================================================== */
+
+.health-menstrual-button {
+
+    width: 100%;
+
+    min-height: 52px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 10px;
+
+    background: var(--surface);
+
+    color: var(--text);
+
+    font-size: 17px;
+
+    font-weight: 700;
+
+}
+
+
+
+.health-menstrual-button.active {
+
+    background: var(--accent);
+
+    color: #fff;
+
+}
+
+
+
+/* =====================================================
+   その他
+===================================================== */
+
+.health-other-toggle-button {
+
+    width: 100%;
+
+    min-height: 50px;
+
+    margin-top: 14px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 10px;
+
+    background: var(--surface);
+
+    color: var(--text);
+
+    font-size: 16px;
+
+    font-weight: 700;
+
+}
+
+
+
+.health-other-fields {
+
+    width: 100%;
+
+}
+
+
+
+/* =====================================================
+   メモ
+===================================================== */
+
+.health-memo-input {
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 10px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 9px;
+
+    background: var(--surface);
+
+    color: var(--text);
+
+    font-size: 16px;
+
+    resize: vertical;
+
+}
+
+
+
+/* =====================================================
+   保存
+===================================================== */
+
+.health-save-button {
+
+    width: 100%;
+
+    min-height: 54px;
+
+    margin-top: 18px;
+
+    border: none;
+
+    border-radius: 11px;
+
+    background: var(--accent);
+
+    color: #fff;
+
+    font-size: 18px;
+
+    font-weight: 700;
+
+}
+
+
+
+/* =====================================================
+   スマホ
+===================================================== */
+
+@media (max-width: 600px) {
+
+    .health-daily-page {
+
+        padding: 6px 8px 25px;
+
+    }
+
+
+    .health-daily-header h1 {
+
+        font-size: 21px;
+
+    }
+
+
+    .health-daily-back-button {
+
+        padding: 7px 9px;
+
+        font-size: 12px;
+
+    }
+
+
+    .health-daily-date {
+
+        font-size: 24px;
+
+    }
+
+
+    .health-daily-date-button {
+
+        width: 44px;
+
+        height: 44px;
+
+    }
+
+
+    .health-daily-section {
+
+        padding: 12px;
+
+    }
+
+
+    .health-daily-section h2 {
+
+        font-size: 17px;
+
+    }
+
+
+    .health-medication-button {
+
+        min-width: 110px;
+
+    }
+
+}
