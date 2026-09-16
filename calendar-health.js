@@ -4,7 +4,9 @@
 
    ・健康カレンダー
    ・📖 日めくり
-   ・健康データは data.healthCalendar に保存
+   ・服薬記録
+   ・服薬記録削除
+   ・健康データ保存
 ===================================================== */
 
 
@@ -20,6 +22,8 @@ let healthCalendarHolidays = {};
 
 let healthDailyDate = null;
 
+let healthMedicationDeleteTarget = null;
+
 
 
 /* =====================================================
@@ -30,6 +34,7 @@ async function openHealthCalendar() {
 
     const container =
         document.getElementById("calendarContainer");
+
 
     if (!container) {
 
@@ -62,7 +67,6 @@ async function openHealthCalendar() {
 
 
         initializeHealthCalendar();
-
 
     }
     catch (error) {
@@ -130,7 +134,7 @@ function updateHealthCalendarTitle() {
 
 
 /* =====================================================
-   今日
+   📅 今日
 ===================================================== */
 
 function healthCalendarToday() {
@@ -160,7 +164,7 @@ function healthCalendarToday() {
 
 
 /* =====================================================
-   年月選択
+   📅 年月選択
 ===================================================== */
 
 function initializeHealthCalendarDatePicker() {
@@ -224,7 +228,7 @@ function initializeHealthCalendarDatePicker() {
 
 
 /* =====================================================
-   年月選択を開く
+   📅 年月選択を開く
 ===================================================== */
 
 function openHealthCalendarDatePicker() {
@@ -276,7 +280,7 @@ function openHealthCalendarDatePicker() {
 
 
 /* =====================================================
-   年月選択を閉じる
+   📅 年月選択を閉じる
 ===================================================== */
 
 function closeHealthCalendarDatePicker() {
@@ -300,7 +304,7 @@ function closeHealthCalendarDatePicker() {
 
 
 /* =====================================================
-   年月適用
+   📅 年月を適用
 ===================================================== */
 
 function applyHealthCalendarDatePicker() {
@@ -352,7 +356,7 @@ function applyHealthCalendarDatePicker() {
 
 
 /* =====================================================
-   健康データ取得
+   💾 健康データ取得
 ===================================================== */
 
 function getHealthCalendarData() {
@@ -422,6 +426,49 @@ function getHealthCalendarData() {
 
 
 /* =====================================================
+   💾 健康データ保存
+===================================================== */
+
+function saveHealthCalendarData(data) {
+
+    try {
+
+        const raw =
+            localStorage.getItem(
+                "oshi_app_data"
+            );
+
+
+        const allData =
+            raw
+                ? JSON.parse(raw)
+                : {};
+
+
+        allData.healthCalendar =
+            data;
+
+
+        localStorage.setItem(
+            "oshi_app_data",
+            JSON.stringify(allData)
+        );
+
+    }
+    catch (error) {
+
+        console.error(
+            "健康データの保存に失敗しました:",
+            error
+        );
+
+    }
+
+}
+
+
+
+/* =====================================================
    健康記録アイコン
 ===================================================== */
 
@@ -467,8 +514,20 @@ function getHealthRecordIcons(record) {
 
 
     if (
-        record.bloodPressure ||
-        record.pulse !== undefined
+        record.bloodPressure &&
+        (
+            record.bloodPressure.systolic ||
+            record.bloodPressure.diastolic
+        )
+    ) {
+
+        icons.push("🩺");
+
+    }
+    else if (
+        record.pulse !== undefined &&
+        record.pulse !== null &&
+        record.pulse !== ""
     ) {
 
         icons.push("🩺");
@@ -490,7 +549,7 @@ function getHealthRecordIcons(record) {
 
 
 /* =====================================================
-   カレンダー描画
+   📅 カレンダー描画
 ===================================================== */
 
 function renderHealthCalendar() {
@@ -541,7 +600,9 @@ function renderHealthCalendar() {
     let html = "";
 
 
-    /* 曜日 */
+    /* =================================================
+       曜日
+    ================================================= */
 
     html += `
         <div class="health-week-grid">
@@ -583,6 +644,8 @@ function renderHealthCalendar() {
     `;
 
 
+    /* 月初の空白 */
+
     for (
         let i = 0;
         i < startWeek;
@@ -601,6 +664,10 @@ function renderHealthCalendar() {
             new Date()
         );
 
+
+    /* =================================================
+       日付
+    ================================================= */
 
     for (
         let day = 1;
@@ -737,6 +804,8 @@ function renderHealthCalendar() {
     }
 
 
+    /* 月末の空白 */
+
     const totalCells =
         startWeek + lastDate;
 
@@ -778,7 +847,7 @@ function renderHealthCalendar() {
 
 
 /* =====================================================
-   📖 日めくりを開く
+   📖 日付選択
 ===================================================== */
 
 function selectHealthCalendarDate(dateString) {
@@ -798,7 +867,7 @@ function selectHealthCalendarDate(dateString) {
 
 
 /* =====================================================
-   📖 日めくり表示
+   📖 日めくりを開く
 ===================================================== */
 
 function openHealthDailyView() {
@@ -971,7 +1040,7 @@ function healthDailyNextDay() {
 
 
 /* =====================================================
-   📖 日めくりデータ読み込み
+   📖 日めくり読み込み
 ===================================================== */
 
 function loadHealthDailyRecord() {
@@ -1127,10 +1196,10 @@ function loadHealthDailyRecord() {
 
 
 /* =====================================================
-   💊 服薬
+   💊 服薬ボタン
 ===================================================== */
 
-function takeHealthMedication(type) {
+function toggleHealthMedication(type) {
 
     const data =
         getHealthCalendarData();
@@ -1150,20 +1219,37 @@ function takeHealthMedication(type) {
     }
 
 
-    if (!data.records[healthDailyDate].medications) {
+    const record =
+        data.records[
+            healthDailyDate
+        ];
 
-        data.records[healthDailyDate].medications = {};
+
+    if (!record.medications) {
+
+        record.medications = {};
 
     }
 
 
     /*
-     * 服用した時刻を自動保存
+     * すでに服用済みなら削除確認
      */
 
-    data.records[
-        healthDailyDate
-    ].medications[type] = {
+    if (record.medications[type]) {
+
+        openHealthMedicationDeleteModal(type);
+
+        return;
+
+    }
+
+
+    /*
+     * 新規服用記録
+     */
+
+    record.medications[type] = {
 
         takenAt:
             new Date().toISOString()
@@ -1175,9 +1261,7 @@ function takeHealthMedication(type) {
 
 
     updateHealthMedicationButtons(
-        data.records[
-            healthDailyDate
-        ].medications
+        record.medications
     );
 
 }
@@ -1210,15 +1294,17 @@ function updateHealthMedicationButtons(
 
                 button.classList.add("taken");
 
+
                 button.textContent =
                     "✓ 服用済み";
+
 
                 if (medication.takenAt) {
 
                     button.title =
-                        formatHealthTakenTime(
+                        `服用時刻 ${formatHealthTakenTime(
                             medication.takenAt
-                        );
+                        )}`;
 
                 }
 
@@ -1227,14 +1313,161 @@ function updateHealthMedicationButtons(
 
                 button.classList.remove("taken");
 
+
                 button.textContent =
                     "服用した";
+
 
                 button.title = "";
 
             }
 
         });
+
+}
+
+
+
+/* =====================================================
+   💊 削除確認を開く
+===================================================== */
+
+function openHealthMedicationDeleteModal(type) {
+
+    healthMedicationDeleteTarget =
+        type;
+
+
+    const modal =
+        document.getElementById(
+            "healthMedicationDeleteModal"
+        );
+
+
+    const message =
+        document.getElementById(
+            "healthMedicationDeleteMessage"
+        );
+
+
+    if (!modal) {
+        return;
+    }
+
+
+    const names = {
+
+        morning: "🌅 朝",
+
+        noon: "☀️ 昼",
+
+        night: "🌙 夜"
+
+    };
+
+
+    if (message) {
+
+        message.textContent =
+            `${names[type] || ""} の服用記録を削除しますか？`;
+
+    }
+
+
+    modal.style.display =
+        "block";
+
+}
+
+
+
+/* =====================================================
+   💊 削除確認を閉じる
+===================================================== */
+
+function closeHealthMedicationDeleteModal() {
+
+    const modal =
+        document.getElementById(
+            "healthMedicationDeleteModal"
+        );
+
+
+    if (modal) {
+
+        modal.style.display =
+            "none";
+
+    }
+
+
+    healthMedicationDeleteTarget =
+        null;
+
+}
+
+
+
+/* =====================================================
+   💊 服薬記録削除
+===================================================== */
+
+function confirmDeleteHealthMedication() {
+
+    if (!healthMedicationDeleteTarget) {
+
+        closeHealthMedicationDeleteModal();
+
+        return;
+
+    }
+
+
+    const data =
+        getHealthCalendarData();
+
+
+    const record =
+        data.records?.[healthDailyDate];
+
+
+    if (
+        record &&
+        record.medications
+    ) {
+
+        delete record.medications[
+            healthMedicationDeleteTarget
+        ];
+
+
+        /*
+         * 薬の記録が全部なくなったら
+         * medications自体を削除
+         */
+
+        if (
+            Object.keys(
+                record.medications
+            ).length === 0
+        ) {
+
+            delete record.medications;
+
+        }
+
+
+        saveHealthCalendarData(data);
+
+    }
+
+
+    updateHealthMedicationButtons(
+        record?.medications
+    );
+
+
+    closeHealthMedicationDeleteModal();
 
 }
 
@@ -1316,7 +1549,7 @@ function toggleHealthMenstrual() {
 
 
 /* =====================================================
-   🌸 生理ボタン表示
+   🌸 生理ボタン
 ===================================================== */
 
 function updateHealthMenstrualButton(active) {
@@ -1534,49 +1767,6 @@ function saveHealthDailyRecord() {
     alert(
         "健康記録を保存しました"
     );
-
-}
-
-
-
-/* =====================================================
-   💾 健康データ保存
-===================================================== */
-
-function saveHealthCalendarData(data) {
-
-    try {
-
-        const raw =
-            localStorage.getItem(
-                "oshi_app_data"
-            );
-
-
-        const allData =
-            raw
-                ? JSON.parse(raw)
-                : {};
-
-
-        allData.healthCalendar =
-            data;
-
-
-        localStorage.setItem(
-            "oshi_app_data",
-            JSON.stringify(allData)
-        );
-
-    }
-    catch (error) {
-
-        console.error(
-            "健康データの保存に失敗しました:",
-            error
-        );
-
-    }
 
 }
 
