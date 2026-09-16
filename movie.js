@@ -1961,42 +1961,6 @@ function updateMovieFavoriteButton(){
 }
 
 
-function toggleFavoriteMovie(){
-
-    const data = db.load();
-
-    let targetMovie = null;
-
-    Object.values(data.dayMemories || {}).some(day => {
-
-        const movie =
-            (day.movies || []).find(
-                p => Number(p.id) === Number(currentMovieId)
-            );
-
-        if(movie){
-
-            targetMovie = movie;
-
-            return true;
-        }
-
-        return false;
-    });
-
-    if(!targetMovie) return;
-
-    targetMovie.favorite =
-        !targetMovie.favorite;
-
-    db.save(data);
-
-    updateMovieFavoriteButton();
-}
-
-
-
-
 /* =========================================================
    動画複数共有モード開始
 ========================================================= */
