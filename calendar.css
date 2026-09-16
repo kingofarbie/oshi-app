@@ -380,3 +380,14 @@
     font-weight: bold;
     cursor: pointer;
 }
+
+.calendar-title-row .calendar-health-button {
+    flex-shrink: 0;
+    width: auto;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+}
