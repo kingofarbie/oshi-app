@@ -12,25 +12,11 @@
 
     <title>健康カレンダー | 推し活手帳</title>
 
-
-    <!-- =========================
-         健康カレンダーCSS
-    ========================== -->
-
-    <link
-        rel="stylesheet"
-        href="calendar-health.css"
-    >
-
 </head>
 
 
 <body>
 
-
-<!-- =====================================================
-     💊 健康カレンダー
-===================================================== -->
 
 <div
     id="healthCalendarScreen"
@@ -38,13 +24,13 @@
 >
 
 
-    <!-- =========================
+    <!-- =================================================
          ヘッダー
-    ========================== -->
+    ================================================== -->
 
-    <header class="health-calendar-header">
-
-        <!-- 左：タイトル -->
+    <header
+        class="health-calendar-header"
+    >
 
         <h1
             id="healthCalendarTitle"
@@ -53,8 +39,6 @@
             💊 健康カレンダー
         </h1>
 
-
-        <!-- 右：通常カレンダーへ戻る -->
 
         <button
             type="button"
@@ -67,25 +51,21 @@
     </header>
 
 
-
-    <!-- =========================
+    <!-- =================================================
          カレンダー操作
-    ========================= -->
+    ================================================== -->
 
     <section
         class="health-calendar-controls"
     >
 
-        <!-- 年月 -->
-
         <div
             id="healthCalendarMonthTitle"
             class="health-month-title-button"
-            onclick="openHealthCalendarDatePicker()"
-        ></div>
+        >
+            📅 2026年 9月
+        </div>
 
-
-        <!-- 今日 -->
 
         <button
             type="button"
@@ -98,18 +78,14 @@
     </section>
 
 
-
-    <!-- =========================
-         健康カレンダー本体
-    ========================= -->
+    <!-- =================================================
+         カレンダー
+    ================================================== -->
 
     <main
         id="healthCalendar"
         class="health-calendar"
-    >
-
-    </main>
-
+    ></main>
 
 
     <!-- =================================================
@@ -122,14 +98,18 @@
         style="display:none;"
     >
 
-        <div class="health-modal-content">
+        <div
+            class="health-modal-content"
+        >
 
 
-            <!-- ヘッダー -->
+            <div
+                class="health-modal-header"
+            >
 
-            <div class="health-modal-header">
-
-                <div class="health-modal-title">
+                <div
+                    class="health-modal-title"
+                >
                     📅 年月を選択
                 </div>
 
@@ -144,9 +124,6 @@
             </div>
 
 
-
-            <!-- 年月選択 -->
-
             <div
                 class="health-date-picker"
             >
@@ -160,10 +137,7 @@
 
                 <select
                     id="healthCalendarYearSelect"
-                >
-
-                </select>
-
+                ></select>
 
 
                 <label
@@ -177,61 +151,23 @@
                     id="healthCalendarMonthSelect"
                 >
 
-                    <option value="0">
-                        1月
-                    </option>
-
-                    <option value="1">
-                        2月
-                    </option>
-
-                    <option value="2">
-                        3月
-                    </option>
-
-                    <option value="3">
-                        4月
-                    </option>
-
-                    <option value="4">
-                        5月
-                    </option>
-
-                    <option value="5">
-                        6月
-                    </option>
-
-                    <option value="6">
-                        7月
-                    </option>
-
-                    <option value="7">
-                        8月
-                    </option>
-
-                    <option value="8">
-                        9月
-                    </option>
-
-                    <option value="9">
-                        10月
-                    </option>
-
-                    <option value="10">
-                        11月
-                    </option>
-
-                    <option value="11">
-                        12月
-                    </option>
+                    <option value="0">1月</option>
+                    <option value="1">2月</option>
+                    <option value="2">3月</option>
+                    <option value="3">4月</option>
+                    <option value="4">5月</option>
+                    <option value="5">6月</option>
+                    <option value="6">7月</option>
+                    <option value="7">8月</option>
+                    <option value="8">9月</option>
+                    <option value="9">10月</option>
+                    <option value="10">11月</option>
+                    <option value="11">12月</option>
 
                 </select>
 
             </div>
 
-
-
-            <!-- ボタン -->
 
             <div
                 class="health-modal-buttons"
@@ -261,16 +197,6 @@
 
 
 </div>
-
-
-
-<!-- =====================================================
-     JavaScript
-===================================================== -->
-
-<script
-    src="calendar-health.js"
-></script>
 
 
 </body>

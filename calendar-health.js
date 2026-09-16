@@ -2,104 +2,222 @@
    💊 健康カレンダー
    calendar-health.js
 
-   ・スポーツカレンダーとは完全分離
-   ・通常カレンダーと同じ基本仕様
-   ・年月移動
+   calendar-sports.js の
+   カレンダー表示・操作仕様を踏襲。
+
+   ・スポーツデータとは完全分離
+   ・healthCalendar のみ使用
+   ・月移動
    ・今日
    ・年月選択
-   ・日曜 / 土曜
    ・祝日
-   ・今日表示
-   ・選択日
+   ・月スワイプ
+   ・日付選択
 ===================================================== */
 
 
 /* =====================================================
-   💊 健康カレンダー状態
+   状態
 ===================================================== */
 
-let healthCalendarDate = new Date();
+let healthCalendarDate =
+    new Date();
 
-let healthSelectedDate = null;
+let healthSelectedDate =
+    null;
 
 
 /* =====================================================
-   💊 健康カレンダーを開く
+   💊 健康カレンダー月スワイプ
 ===================================================== */
 
-function openHealthCalendar() {
+let healthCalendarSwipeStartX =
+    0;
 
-    /*
-     * 通常カレンダー側から呼ばれた場合、
-     * calendar-health.html を読み込む。
-     *
-     * loadCalendarHTML() と同じ構成を想定。
-     */
+let healthCalendarSwipeStartY =
+    0;
 
-    const container =
-        document.getElementById("calendar");
 
-    if (!container) {
+/* =====================================================
+   通常カレンダーへ戻る
+===================================================== */
 
-        console.error(
-            "通常カレンダーの #calendar が見つかりません。"
+function closeHealthCalendar(){
+
+    const normalCalendar =
+        document.getElementById(
+            "calendarContainer"
         );
 
-        return;
+
+    const screen =
+        document.getElementById(
+            "healthCalendarScreen"
+        );
+
+
+    if(screen){
+
+        screen.style.display =
+            "none";
+
     }
 
 
-    fetch("calendar-health.html")
+    if(normalCalendar){
 
-        .then(response => {
+        normalCalendar.style.display =
+            "";
 
-            if (!response.ok) {
-
-                throw new Error(
-                    "calendar-health.html の読み込みに失敗しました。"
-                );
-
-            }
-
-            return response.text();
-
-        })
-
-        .then(html => {
-
-            container.innerHTML = html;
-
-            /*
-             * 読み込んだHTML内のscriptは
-             * innerHTMLでは実行されないため、
-             * 健康JSの初期化をここで行う。
-             */
-
-            initializeHealthCalendar();
-
-        })
-
-        .catch(error => {
-
-            console.error(
-                "健康カレンダー読み込みエラー:",
-                error
-            );
-
-        });
+    }
 
 }
 
 
 /* =====================================================
-   💊 健康カレンダー初期化
+   💊 健康カレンダー入口
 ===================================================== */
 
-function initializeHealthCalendar() {
+async function openHealthCalendar(){
 
-    healthCalendarDate = new Date();
+    const container =
+        document.getElementById(
+            "calendar"
+        );
 
-    healthSelectedDate = null;
+
+    if(!container){
+
+        console.error(
+            "❌ 通常カレンダーの表示領域が見つかりません"
+        );
+
+        return;
+
+    }
+
+
+    try{
+
+        const response =
+            await fetch(
+                "calendar-health.html"
+            );
+
+
+        if(!response.ok){
+
+            throw new Error(
+                "calendar-health.html の読み込みに失敗しました"
+            );
+
+        }
+
+
+        const html =
+            await response.text();
+
+
+        /*
+           =================================================
+           HTMLを読み込み
+           =================================================
+        */
+
+        container.innerHTML =
+            html;
+
+
+        /*
+           =================================================
+           健康CSSを確実に読み込む
+
+           innerHTMLで読み込んだHTML内の
+           linkに依存しない。
+           =================================================
+        */
+
+        loadHealthCalendarCSS();
+
+
+        /*
+           =================================================
+           初期化
+           =================================================
+        */
+
+        initializeHealthCalendar();
+
+
+    }catch(error){
+
+        console.error(
+            "❌ 健康カレンダーを開けません:",
+            error
+        );
+
+        alert(
+            "健康カレンダーを開けませんでした。"
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   💊 健康CSS読み込み
+===================================================== */
+
+function loadHealthCalendarCSS(){
+
+    const existing =
+        document.querySelector(
+            'link[data-health-calendar-css="true"]'
+        );
+
+
+    if(existing){
+
+        return;
+
+    }
+
+
+    const link =
+        document.createElement(
+            "link"
+        );
+
+
+    link.rel =
+        "stylesheet";
+
+    link.href =
+        "calendar-health.css";
+
+    link.dataset.healthCalendarCss =
+        "true";
+
+
+    document.head.appendChild(
+        link
+    );
+
+}
+
+
+/* =====================================================
+   初期化
+===================================================== */
+
+function initializeHealthCalendar(){
+
+    healthCalendarDate =
+        new Date();
+
+    healthSelectedDate =
+        null;
 
 
     updateHealthCalendarTitle();
@@ -110,42 +228,64 @@ function initializeHealthCalendar() {
 
 
 /* =====================================================
-   📅 月タイトル更新
+   タイトル更新
 ===================================================== */
 
-function updateHealthCalendarTitle() {
+function updateHealthCalendarTitle(){
 
     const title =
+        document.getElementById(
+            "healthCalendarTitle"
+        );
+
+
+    if(title){
+
+        title.innerHTML =
+            "💊 健康カレンダー";
+
+    }
+
+
+    const monthTitle =
         document.getElementById(
             "healthCalendarMonthTitle"
         );
 
-    if (!title) {
-        return;
+
+    if(monthTitle){
+
+        const year =
+            healthCalendarDate.getFullYear();
+
+
+        const month =
+            healthCalendarDate.getMonth() + 1;
+
+
+        monthTitle.innerHTML =
+            `📅 ${year}年 ${month}月`;
+
+
+        monthTitle.onclick =
+            openHealthCalendarDatePicker;
+
     }
-
-
-    const year =
-        healthCalendarDate.getFullYear();
-
-    const month =
-        healthCalendarDate.getMonth() + 1;
-
-
-    title.textContent =
-        `📅 ${year}年${month}月`;
 
 }
 
 
 /* =====================================================
-   ◀ 前月
+   月変更
 ===================================================== */
 
-function healthCalendarPrevMonth() {
+function changeHealthMonth(
+    value
+){
 
     healthCalendarDate.setMonth(
-        healthCalendarDate.getMonth() - 1
+        healthCalendarDate.getMonth() +
+        value
     );
 
 
@@ -157,185 +297,43 @@ function healthCalendarPrevMonth() {
 
 
 /* =====================================================
-   ▶ 次月
+   今日
 ===================================================== */
 
-function healthCalendarNextMonth() {
-
-    healthCalendarDate.setMonth(
-        healthCalendarDate.getMonth() + 1
-    );
-
-
-    updateHealthCalendarTitle();
-
-    renderHealthCalendar();
-
-}
-
-
-/* =====================================================
-   📅 今日
-===================================================== */
-
-function healthCalendarToday() {
-
-    healthCalendarDate = new Date();
-
-    healthSelectedDate = null;
-
-
-    updateHealthCalendarTitle();
-
-    renderHealthCalendar();
-
-}
-
-
-/* =====================================================
-   📅 年月選択モーダル
-===================================================== */
-
-function openHealthCalendarDatePicker() {
-
-    const modal =
-        document.getElementById(
-            "healthCalendarDatePickerModal"
-        );
-
-    const yearSelect =
-        document.getElementById(
-            "healthCalendarYearSelect"
-        );
-
-    const monthSelect =
-        document.getElementById(
-            "healthCalendarMonthSelect"
-        );
-
-
-    if (
-        !modal ||
-        !yearSelect ||
-        !monthSelect
-    ) {
-        return;
-    }
-
-
-    /*
-     * 現在年を中心に前後10年を表示
-     */
-
-    const currentYear =
-        healthCalendarDate.getFullYear();
-
-
-    yearSelect.innerHTML = "";
-
-
-    for (
-        let year = currentYear - 10;
-        year <= currentYear + 10;
-        year++
-    ) {
-
-        const option =
-            document.createElement("option");
-
-        option.value = year;
-
-        option.textContent =
-            `${year}年`;
-
-        yearSelect.appendChild(option);
-
-    }
-
-
-    yearSelect.value =
-        currentYear;
-
-
-    monthSelect.value =
-        healthCalendarDate.getMonth();
-
-
-    modal.style.display = "flex";
-
-}
-
-
-/* =====================================================
-   ❌ 年月選択を閉じる
-===================================================== */
-
-function closeHealthCalendarDatePicker() {
-
-    const modal =
-        document.getElementById(
-            "healthCalendarDatePickerModal"
-        );
-
-
-    if (!modal) {
-        return;
-    }
-
-
-    modal.style.display = "none";
-
-}
-
-
-/* =====================================================
-   📅 年月選択を適用
-===================================================== */
-
-function applyHealthCalendarDatePicker() {
-
-    const yearSelect =
-        document.getElementById(
-            "healthCalendarYearSelect"
-        );
-
-    const monthSelect =
-        document.getElementById(
-            "healthCalendarMonthSelect"
-        );
-
-
-    if (
-        !yearSelect ||
-        !monthSelect
-    ) {
-        return;
-    }
-
-
-    const year =
-        Number(yearSelect.value);
-
-    const month =
-        Number(monthSelect.value);
-
+function goToHealthToday(){
 
     healthCalendarDate =
-        new Date(
-            year,
-            month,
-            1
-        );
+        new Date();
 
-
-    healthSelectedDate = null;
-
-
-    closeHealthCalendarDatePicker();
 
     updateHealthCalendarTitle();
 
     renderHealthCalendar();
+
+}
+
+
+/* =====================================================
+   HTMLボタン用
+===================================================== */
+
+function healthCalendarPrevMonth(){
+
+    changeHealthMonth(-1);
+
+}
+
+
+function healthCalendarNextMonth(){
+
+    changeHealthMonth(1);
+
+}
+
+
+function healthCalendarToday(){
+
+    goToHealthToday();
 
 }
 
@@ -344,95 +342,114 @@ function applyHealthCalendarDatePicker() {
    💊 健康データ取得
 ===================================================== */
 
-function getHealthCalendarData() {
+function getHealthCalendarData(){
+
+    const data =
+        db.load();
+
 
     /*
-     * まだ健康記録機能は実装していないため、
-     * 現段階では空データを返す。
-     *
-     * 後で data.healthCalendar を接続する。
-     */
+       sportsCalendar には触れない。
 
-    try {
+       健康データは必ず
+       healthCalendar に保存する。
+    */
 
-        const raw =
-            localStorage.getItem(
-                "oshi_app_data"
-            );
-
-
-        if (!raw) {
-
-            return {
-                records: {}
-            };
-
-        }
-
-
-        const data =
-            JSON.parse(raw);
-
-
-        if (
-            !data.healthCalendar
-        ) {
-
-            return {
-                records: {}
-            };
-
-        }
-
-
-        return data.healthCalendar;
-
-    } catch (error) {
-
-        console.error(
-            "健康データ取得エラー:",
-            error
-        );
-
+    if(
+        !data.healthCalendar ||
+        typeof data.healthCalendar !== "object" ||
+        Array.isArray(data.healthCalendar)
+    ){
 
         return {
+
             records: {}
+
         };
 
     }
+
+
+    const health =
+        data.healthCalendar;
+
+
+    if(
+        !health.records ||
+        typeof health.records !== "object" ||
+        Array.isArray(health.records)
+    ){
+
+        return {
+
+            records: {}
+
+        };
+
+    }
+
+
+    return health;
 
 }
 
 
 /* =====================================================
-   📅 健康カレンダー描画
+   💊 健康カレンダー描画
 ===================================================== */
 
-function renderHealthCalendar() {
+async function renderHealthCalendar(){
 
-    const calendar =
+    const area =
         document.getElementById(
             "healthCalendar"
         );
 
 
-    if (!calendar) {
+    if(!area){
+
         return;
+
     }
 
 
     const year =
         healthCalendarDate.getFullYear();
 
+
     const month =
         healthCalendarDate.getMonth();
 
 
     /*
-     * その月の1日
-     */
+       =================================================
+       祝日
+       =================================================
+    */
 
-    const firstDay =
+    const data =
+        db.load();
+
+
+    const countryCode =
+        data.settings?.holidayCountry ||
+        "JP";
+
+
+    const holidays =
+        await loadHolidays(
+            year,
+            countryCode
+        );
+
+
+    /*
+       =================================================
+       月初・月末
+       =================================================
+    */
+
+    const first =
         new Date(
             year,
             month,
@@ -440,11 +457,7 @@ function renderHealthCalendar() {
         );
 
 
-    /*
-     * その月の最終日
-     */
-
-    const lastDay =
+    const last =
         new Date(
             year,
             month + 1,
@@ -453,30 +466,27 @@ function renderHealthCalendar() {
 
 
     /*
-     * 月初の曜日
-     * 日曜 = 0
-     */
-
-    const startWeekday =
-        firstDay.getDay();
-
-
-    const daysInMonth =
-        lastDay.getDate();
-
+       =================================================
+       健康データ
+       =================================================
+    */
 
     const healthData =
         getHealthCalendarData();
 
 
-    let html = "";
+    const records =
+        healthData.records ||
+        {};
 
 
-    /* =================================================
-       曜日
-    ================================================= */
+    /*
+       =================================================
+       HTML開始
+       =================================================
+    */
 
-    html += `
+    let html = `
 
         <div class="health-week-grid">
 
@@ -510,146 +520,268 @@ function renderHealthCalendar() {
 
         </div>
 
-    `;
 
-
-    /* =================================================
-       日付
-    ================================================= */
-
-    html += `
         <div class="health-day-grid">
     `;
 
 
     /*
-     * 月初までの空白
-     */
+       =================================================
+       月初の空白
+       =================================================
+    */
 
-    for (
+    for(
         let i = 0;
-        i < startWeekday;
+        i < first.getDay();
         i++
-    ) {
+    ){
 
         html += `
-            <div class="health-empty-day"></div>
+
+            <div
+                class="health-empty-day"
+            ></div>
+
         `;
 
     }
 
 
     /*
-     * 日付生成
-     */
+       =================================================
+       今日
+       =================================================
+    */
 
     const today =
         new Date();
 
-    const todayString =
-        formatHealthDate(today);
 
+    /*
+       =================================================
+       日付
+       =================================================
+    */
 
-    for (
-        let day = 1;
-        day <= daysInMonth;
-        day++
-    ) {
+    for(
+        let d = 1;
+        d <= last.getDate();
+        d++
+    ){
 
         const date =
+            `${year}-${String(month + 1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+
+
+        const dayOfWeek =
             new Date(
                 year,
                 month,
-                day
+                d
+            ).getDay();
+
+
+        const holiday =
+            holidays.find(
+                h =>
+                    h.date === date
             );
 
 
-        const dateString =
-            formatHealthDate(date);
+        const isToday =
+            today.getFullYear() === year &&
+            today.getMonth() === month &&
+            today.getDate() === d;
 
 
-        const weekday =
-            date.getDay();
-
-
-        let classes =
-            "health-day";
-
-
-        if (weekday === 0) {
-
-            classes +=
-                " sunday";
-
-        }
-
-
-        if (weekday === 6) {
-
-            classes +=
-                " saturday";
-
-        }
-
-
-        if (
-            dateString === todayString
-        ) {
-
-            classes +=
-                " today";
-
-        }
-
-
-        if (
+        const isSelected =
             healthSelectedDate ===
-            dateString
-        ) {
-
-            classes +=
-                " selected";
-
-        }
+            date;
 
 
-        const record =
-            healthData.records?.[
-                dateString
-            ];
-
-
-        let recordHTML = "";
+        const dayRecord =
+            records[date];
 
 
         /*
-         * 健康記録が存在する場合
-         */
+           =================================================
+           健康記録アイコン
+           =================================================
+        */
 
-        if (record) {
+        let recordHTML =
+            "";
 
-            recordHTML = `
-                <div class="health-day-records">
-                    <span class="health-record-icon">
-                        💊
-                    </span>
-                </div>
-            `;
+
+        if(
+            dayRecord &&
+            typeof dayRecord === "object"
+        ){
+
+            const icons = [];
+
+
+            /*
+               💊 服薬
+            */
+
+            if(
+                dayRecord.medication
+            ){
+
+                icons.push(
+                    "💊"
+                );
+
+            }
+
+
+            /*
+               🌡️ 体温
+            */
+
+            if(
+                dayRecord.temperature != null
+            ){
+
+                icons.push(
+                    "🌡️"
+                );
+
+            }
+
+
+            /*
+               🩺 血圧
+            */
+
+            if(
+                dayRecord.bloodPressure
+            ){
+
+                icons.push(
+                    "🩺"
+                );
+
+            }
+
+
+            /*
+               ❤️ 脈拍
+            */
+
+            if(
+                dayRecord.pulse != null
+            ){
+
+                icons.push(
+                    "❤️"
+                );
+
+            }
+
+
+            /*
+               🌸 月経
+            */
+
+            if(
+                dayRecord.menstrual
+            ){
+
+                icons.push(
+                    "🌸"
+                );
+
+            }
+
+
+            /*
+               😊 体調
+            */
+
+            if(
+                dayRecord.condition
+            ){
+
+                icons.push(
+                    "😊"
+                );
+
+            }
+
+
+            if(
+                icons.length > 0
+            ){
+
+                recordHTML = `
+
+                    <div
+                        class="health-day-records"
+                    >
+
+                        ${icons
+                            .map(
+                                icon =>
+                                    `<span class="health-record-icon">${icon}</span>`
+                            )
+                            .join("")
+                        }
+
+                    </div>
+
+                `;
+
+            }
 
         }
 
+
+        /*
+           =================================================
+           日付セル
+           =================================================
+        */
 
         html += `
 
             <div
-                class="${classes}"
-                data-date="${dateString}"
-                onclick="selectHealthCalendarDate('${dateString}')"
+                class="
+                    health-day
+                    ${dayOfWeek === 0 ? "sunday" : ""}
+                    ${dayOfWeek === 6 ? "saturday" : ""}
+                    ${isToday ? "today" : ""}
+                    ${isSelected ? "selected" : ""}
+                    ${holiday ? "holiday" : ""}
+                "
+                onclick="openHealthDay('${date}')"
             >
 
-                <div class="health-day-number">
-                    ${day}
+                <div
+                    class="health-day-number"
+                >
+                    ${d}
                 </div>
+
+
+                ${
+                    holiday
+                    ?
+                    `
+                    <div
+                        class="holiday-name"
+                    >
+                        ${escapeHealthHTML(
+                            holiday.localName
+                        )}
+                    </div>
+                    `
+                    :
+                    ""
+                }
+
 
                 ${recordHTML}
 
@@ -661,170 +793,364 @@ function renderHealthCalendar() {
 
 
     html += `
+
         </div>
+
     `;
 
 
-    calendar.innerHTML =
+    area.innerHTML =
         html;
 
 
     /*
-     * 祝日取得
-     */
+       =================================================
+       💊 健康カレンダー月スワイプ
+       スポーツと同じ判定
+       =================================================
+    */
 
-    loadHealthHolidays(
-        year
+    area.ontouchstart =
+        function(event){
+
+            if(
+                event.touches.length !== 1
+            ){
+
+                return;
+
+            }
+
+
+            healthCalendarSwipeStartX =
+                event.touches[0].clientX;
+
+
+            healthCalendarSwipeStartY =
+                event.touches[0].clientY;
+
+        };
+
+
+    area.ontouchend =
+        function(event){
+
+            if(
+                event.changedTouches.length !== 1
+            ){
+
+                return;
+
+            }
+
+
+            const touch =
+                event.changedTouches[0];
+
+
+            const diffX =
+                touch.clientX -
+                healthCalendarSwipeStartX;
+
+
+            const diffY =
+                touch.clientY -
+                healthCalendarSwipeStartY;
+
+
+            /*
+               縦スクロールを
+               月スワイプとして扱わない
+            */
+
+            if(
+                Math.abs(diffX) < 60
+            ){
+
+                return;
+
+            }
+
+
+            if(
+                Math.abs(diffX) <=
+                Math.abs(diffY)
+            ){
+
+                return;
+
+            }
+
+
+            /*
+               左スワイプ
+               → 次月
+            */
+
+            if(diffX < 0){
+
+                changeHealthMonth(
+                    1
+                );
+
+            }
+
+
+            /*
+               右スワイプ
+               → 前月
+            */
+
+            else{
+
+                changeHealthMonth(
+                    -1
+                );
+
+            }
+
+        };
+
+}
+
+
+/* =====================================================
+   💊 健康日付タップ
+===================================================== */
+
+function openHealthDay(
+    date
+){
+
+    healthSelectedDate =
+        date;
+
+
+    /*
+       今は健康日めくり画面が
+       未実装なので、まず選択状態だけ更新。
+    */
+
+    renderHealthCalendar();
+
+
+    console.log(
+        "💊 健康カレンダー選択日:",
+        date
     );
 
 }
 
 
 /* =====================================================
-   📅 日付選択
+   健康HTMLエスケープ
 ===================================================== */
 
-function selectHealthCalendarDate(
-    dateString
-) {
+function escapeHealthHTML(
+    value
+){
 
-    healthSelectedDate =
-        dateString;
-
-
-    renderHealthCalendar();
+    return String(
+        value ?? ""
+    )
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
+    );
 
 }
 
 
 /* =====================================================
-   📅 日付 → YYYY-MM-DD
+   年月選択
 ===================================================== */
 
-function formatHealthDate(
-    date
-) {
+function openHealthCalendarDatePicker(){
 
-    const year =
-        date.getFullYear();
-
-    const month =
-        String(
-            date.getMonth() + 1
-        ).padStart(2, "0");
-
-    const day =
-        String(
-            date.getDate()
-        ).padStart(2, "0");
+    const modal =
+        document.getElementById(
+            "healthCalendarDatePickerModal"
+        );
 
 
-    return `${year}-${month}-${day}`;
+    const yearSelect =
+        document.getElementById(
+            "healthCalendarYearSelect"
+        );
 
-}
+
+    const monthSelect =
+        document.getElementById(
+            "healthCalendarMonthSelect"
+        );
 
 
-/* =====================================================
-   🎌 祝日
-===================================================== */
-
-function loadHealthHolidays(
-    year
-) {
-
-    /*
-     * 既存 holiday.js の
-     * loadHolidays() を利用する。
-     *
-     * ただし、健康側の表示処理は
-     * health専用で行う。
-     */
-
-    if (
-        typeof loadHolidays !==
-        "function"
-    ) {
+    if(
+        !modal ||
+        !yearSelect ||
+        !monthSelect
+    ){
 
         return;
 
     }
 
 
+    const currentYear =
+        healthCalendarDate.getFullYear();
+
+
+    yearSelect.innerHTML =
+        "";
+
+
     /*
-     * 日本の祝日
-     */
+       スポーツと同じ
+       前後10年
+    */
 
-    loadHolidays(
-        year,
-        "JP"
-    )
+    for(
+        let year = currentYear - 10;
+        year <= currentYear + 10;
+        year++
+    ){
 
-        .then(holidays => {
-
-            if (
-                !Array.isArray(
-                    holidays
-                )
-            ) {
-                return;
-            }
-
-
-            holidays.forEach(
-                holiday => {
-
-                    const dateString =
-                        holiday.date;
-
-
-                    const day =
-                        document.querySelector(
-                            `.health-day[data-date="${dateString}"]`
-                        );
-
-
-                    if (!day) {
-                        return;
-                    }
-
-
-                    day.classList.add(
-                        "holiday"
-                    );
-
-
-                    const name =
-                        document.createElement(
-                            "div"
-                        );
-
-
-                    name.className =
-                        "health-holiday-name";
-
-
-                    name.textContent =
-                        holiday.localName ||
-                        holiday.name ||
-                        "祝日";
-
-
-                    day.appendChild(
-                        name
-                    );
-
-                }
+        const option =
+            document.createElement(
+                "option"
             );
 
-        })
 
-        .catch(error => {
+        option.value =
+            year;
 
-            console.error(
-                "健康カレンダー祝日取得エラー:",
-                error
-            );
 
-        });
+        option.textContent =
+            `${year}年`;
+
+
+        yearSelect.appendChild(
+            option
+        );
+
+    }
+
+
+    yearSelect.value =
+        currentYear;
+
+
+    monthSelect.value =
+        healthCalendarDate.getMonth();
+
+
+    modal.style.display =
+        "block";
 
 }
+
+
+/* =====================================================
+   年月選択を閉じる
+===================================================== */
+
+function closeHealthCalendarDatePicker(){
+
+    const modal =
+        document.getElementById(
+            "healthCalendarDatePickerModal"
+        );
+
+
+    if(modal){
+
+        modal.style.display =
+            "none";
+
+    }
+
+}
+
+
+/* =====================================================
+   年月適用
+===================================================== */
+
+async function applyHealthCalendarDatePicker(){
+
+    const yearSelect =
+        document.getElementById(
+            "healthCalendarYearSelect"
+        );
+
+
+    const monthSelect =
+        document.getElementById(
+            "healthCalendarMonthSelect"
+        );
+
+
+    if(
+        !yearSelect ||
+        !monthSelect
+    ){
+
+        return;
+
+    }
+
+
+    const year =
+        Number(
+            yearSelect.value
+        );
+
+
+    const month =
+        Number(
+            monthSelect.value
+        );
+
+
+    healthCalendarDate =
+        new Date(
+            year,
+            month,
+            1
+        );
+
+
+    closeHealthCalendarDatePicker();
+
+
+    updateHealthCalendarTitle();
+
+
+    await renderHealthCalendar();
+
+}
+
+
+/* =====================================================
+   初期状態
+===================================================== */
+
+console.log(
+    "💊 calendar-health.js 読み込み完了"
+);

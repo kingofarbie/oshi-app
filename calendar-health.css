@@ -1,32 +1,45 @@
- /* =====================================================
-    💊 健康カレンダー
-    calendar-health.css
+/* =====================================================
+   💊 健康カレンダー
+   calendar-health.css
 
-    ・スポーツカレンダーと同じ基本レイアウト
-    ・通常カレンダーと同じカレンダー仕様
-    ・休日 / 土曜 / 日曜 / 今日を表示
-    ・スポーツ側のCSSとは完全分離
+   calendar-sports.css の
+   カレンダー表示仕様を完全に踏襲。
+
+   ・レイアウト
+   ・サイズ
+   ・余白
+   ・文字サイズ
+   ・土日
+   ・祝日
+   ・今日
+   ・年月表示
+   ・今日ボタン
+   ・モーダル
+   ・スマホ表示
+
+   はスポーツカレンダーと同じ。
+
+   ※スポーツ専用設定・試合表示は持たない。
 ===================================================== */
 
 
 /* =====================================================
-   💊 健康カレンダー全体
+   画面
 ===================================================== */
 
 .health-calendar-screen {
 
     width: 100%;
-    min-height: 100vh;
+    max-width: 100%;
 
     box-sizing: border-box;
 
-    padding: 0 12px 30px;
-
+    overflow-x: hidden;
 }
 
 
 /* =====================================================
-   💊 ヘッダー
+   ヘッダー
 ===================================================== */
 
 .health-calendar-header {
@@ -34,160 +47,198 @@
     display: flex;
 
     align-items: center;
-    justify-content: space-between;
-
-    gap: 10px;
 
     width: 100%;
+    max-width: 100%;
 
-    margin-bottom: 14px;
+    gap: 8px;
 
-}
+    padding: 8px 10px;
 
-
-.health-calendar-title {
-
-    margin: 0;
-
-    font-size: 20px;
-    font-weight: 700;
-
-    line-height: 1.3;
-
-}
-
-
-.health-back-button {
-
-    flex-shrink: 0;
-
-    border: none;
-    border-radius: 10px;
-
-    padding: 8px 12px;
-
-    font-size: 13px;
-    font-weight: 600;
-
-    cursor: pointer;
-
-    background: #f1f1f1;
-    color: #333;
-
-}
-
-
-.health-back-button:active {
-
-    transform: scale(0.97);
-
+    box-sizing: border-box;
 }
 
 
 /* =====================================================
-   💊 カレンダー操作
+   健康カレンダータイトル
+===================================================== */
+
+.health-calendar-title {
+
+    flex: 1 1 auto;
+
+    min-width: 0;
+
+    margin: 0;
+
+    font-size: 22px;
+    font-weight: bold;
+
+    line-height: 1.3;
+
+    color: var(--text);
+
+    text-align: left;
+
+    white-space: nowrap;
+
+    writing-mode: horizontal-tb;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+
+/* =====================================================
+   通常カレンダーへ戻る
+===================================================== */
+
+.health-back-button {
+
+    flex: 0 0 auto;
+
+    width: auto;
+
+    max-width: 150px;
+
+    margin-left: auto;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 8px 12px;
+
+    border-radius: 8px;
+
+    white-space: nowrap;
+
+    writing-mode: horizontal-tb;
+
+    box-sizing: border-box;
+
+    font-size: 13px;
+
+    font-weight: bold;
+}
+
+
+/* =====================================================
+   📅 カレンダー操作
 ===================================================== */
 
 .health-calendar-controls {
 
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    gap: 10px;
+    position: relative;
 
     width: 100%;
+    max-width: 100%;
 
-    margin-bottom: 12px;
+    padding: 4px 6px 4px;
 
+    box-sizing: border-box;
 }
 
 
 /* =====================================================
-   📅 年月ボタン
+   年月ボタン
 ===================================================== */
 
 .health-month-title-button {
 
-    display: flex;
+    display: block;
 
-    align-items: center;
-    justify-content: center;
+    width: 100%;
 
-    min-width: 150px;
+    height: auto;
 
-    min-height: 40px;
+    margin: 0 auto;
 
-    padding: 7px 14px;
+    padding: 0;
+
+    background: transparent;
+
+    color: var(--text);
+
+    border: none;
+
+    border-radius: 0;
 
     box-sizing: border-box;
 
-    border-radius: 10px;
+    font-size: 28px;
 
-    font-size: 17px;
-    font-weight: 700;
+    font-weight: bold;
+
+    line-height: 1.2;
+
+    text-align: center;
+
+    white-space: nowrap;
 
     cursor: pointer;
-
-    user-select: none;
-
-}
-
-
-.health-month-title-button:active {
-
-    transform: scale(0.97);
-
 }
 
 
 /* =====================================================
-   📅 今日ボタン
+   今日ボタン
 ===================================================== */
 
 .health-today-button {
 
-    min-height: 40px;
+    position: absolute;
 
-    padding: 7px 14px;
+    right: 6px;
 
-    border: none;
-    border-radius: 10px;
+    bottom: 4px;
+
+    transform: none;
+
+    width: 90px;
+
+    height: 34px;
+
+    padding: 0 8px;
+
+    border-radius: 8px;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    box-sizing: border-box;
 
     font-size: 14px;
-    font-weight: 600;
 
-    cursor: pointer;
+    font-weight: bold;
 
-    background: #f1f1f1;
-    color: #333;
-
-}
-
-
-.health-today-button:active {
-
-    transform: scale(0.97);
-
+    white-space: nowrap;
 }
 
 
 /* =====================================================
-   📅 カレンダー本体
+   カレンダー本体
 ===================================================== */
 
 .health-calendar {
 
     width: 100%;
 
+    max-width: 100%;
+
     box-sizing: border-box;
 
+    padding: 2px 4px 5px;
+
+    overflow: hidden;
 }
 
 
 /* =====================================================
-   📅 曜日
+   曜日
 ===================================================== */
 
 .health-week-grid {
@@ -199,39 +250,72 @@
 
     width: 100%;
 
-    margin-bottom: 4px;
+    max-width: 100%;
 
+    gap: 0;
+
+    box-sizing: border-box;
+
+    border-left: 1px solid var(--border);
+
+    border-top: 1px solid var(--border);
+
+    overflow: hidden;
+
+    border-radius: 8px 8px 0 0;
 }
 
 
 .health-week {
 
+    min-width: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
     text-align: center;
 
-    font-size: 12px;
-    font-weight: 700;
+    font-size: 13px;
 
-    padding: 5px 0;
+    font-weight: bold;
 
+    color: var(--text);
+
+    background: var(--surface);
+
+    border-right: 1px solid var(--border);
+
+    border-bottom: 2px solid var(--border-strong);
+
+    padding: 9px 2px;
+
+    box-sizing: border-box;
+
+    overflow: hidden;
 }
 
+
+/* 日曜日 */
 
 .health-week.sunday {
 
-    color: #e53935;
-
+    color: #e74b67;
 }
 
 
+/* 土曜日 */
+
 .health-week.saturday {
 
-    color: #1976d2;
-
+    color: #4285e8;
 }
 
 
 /* =====================================================
-   📅 日付グリッド
+   日付グリッド
 ===================================================== */
 
 .health-day-grid {
@@ -243,159 +327,250 @@
 
     width: 100%;
 
-    gap: 3px;
+    max-width: 100%;
 
+    gap: 0;
+
+    box-sizing: border-box;
+
+    border-left: 1px solid var(--border);
+
+    border-bottom: 1px solid var(--border);
+
+    overflow: hidden;
+
+    border-radius: 0 0 8px 8px;
 }
 
 
 /* =====================================================
-   📅 空白
+   空白セル
 ===================================================== */
 
 .health-empty-day {
 
-    min-height: 72px;
+    min-width: 0;
 
-    border-radius: 8px;
+    height: 83px;
 
+    background: var(--surface);
+
+    border-right: 1px solid var(--border);
+
+    border-bottom: 1px solid var(--border);
+
+    box-sizing: border-box;
+
+    overflow: hidden;
+
+    opacity: .65;
 }
 
 
 /* =====================================================
-   📅 日付
+   日付セル
 ===================================================== */
 
 .health-day {
 
-    position: relative;
+    min-width: 0;
+
+    height: 83px;
+
+    background: var(--card);
+
+    border-right: 1px solid var(--border);
+
+    border-bottom: 1px solid var(--border);
+
+    border-radius: 0;
 
     display: flex;
 
     flex-direction: column;
 
-    align-items: center;
-
     justify-content: flex-start;
 
-    min-height: 72px;
+    align-items: flex-start;
 
-    padding: 5px 3px;
+    padding: 4px;
 
     box-sizing: border-box;
 
-    border-radius: 8px;
-
     cursor: pointer;
 
-    overflow: hidden;
+    position: relative;
 
+    overflow: hidden;
+}
+
+
+/* ホバー */
+
+.health-day:hover {
+
+    background: var(--surface);
 }
 
 
 /* =====================================================
-   📅 日付番号
+   日付
 ===================================================== */
 
 .health-day-number {
 
-    width: 28px;
-    height: 28px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 50%;
-
     font-size: 14px;
-    font-weight: 600;
 
+    font-weight: bold;
+
+    color: inherit;
+
+    margin-bottom: 1px;
+
+    margin-left: -2px;
+
+    line-height: 1;
+
+    white-space: nowrap;
 }
 
 
 /* =====================================================
-   🔴 日曜
+   日曜日
 ===================================================== */
 
 .health-day.sunday {
 
-    color: #e53935;
+    color: #e74b67;
 
+    background:
+        color-mix(
+            in srgb,
+            #e74b67 8%,
+            var(--card)
+        );
 }
 
 
 /* =====================================================
-   🔵 土曜
+   土曜日
 ===================================================== */
 
 .health-day.saturday {
 
-    color: #1976d2;
+    color: #4285e8;
 
+    background:
+        color-mix(
+            in srgb,
+            #4285e8 8%,
+            var(--card)
+        );
 }
 
 
 /* =====================================================
-   ⭐ 今日
-===================================================== */
-
-.health-day.today {
-
-    font-weight: 700;
-
-}
-
-
-.health-day.today .health-day-number {
-
-    outline: 2px solid currentColor;
-
-}
-
-
-/* =====================================================
-   📌 選択日
-===================================================== */
-
-.health-day.selected {
-
-    box-shadow:
-        inset 0 0 0 2px currentColor;
-
-}
-
-
-/* =====================================================
-   🎌 祝日
+   祝日
 ===================================================== */
 
 .health-day.holiday {
 
-    color: #e53935;
+    color: #e74b67;
 
+    background:
+        color-mix(
+            in srgb,
+            #e74b67 8%,
+            var(--card)
+        );
 }
 
 
 /* =====================================================
-   🎌 祝日名
+   平日
 ===================================================== */
 
-.health-holiday-name {
+.health-day:not(.sunday):not(.saturday):not(.holiday) {
+
+    color: var(--text);
+
+    background: var(--card);
+}
+
+
+/* =====================================================
+   💊 健康記録表示
+===================================================== */
+
+.health-day-records {
 
     width: 100%;
 
     margin-top: 2px;
 
-    padding: 0 2px;
+    display: flex;
+
+    flex-wrap: wrap;
+
+    align-items: center;
+
+    gap: 2px;
 
     box-sizing: border-box;
 
-    font-size: 9px;
+    overflow: hidden;
+}
+
+
+.health-record-icon {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 14px;
+
+    line-height: 1;
+
+    white-space: nowrap;
+}
+
+
+/* =====================================================
+   📅 祝日
+===================================================== */
+
+.health-holiday-label,
+.holiday-label {
+
+    font-size: 8px;
+
+    color: #ff6b81;
+
+    margin-left: 2px;
+
+    line-height: 1;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+
+.health-holiday-name,
+.holiday-name {
+
+    font-size: 11px;
+
+    color: #e53935;
+
+    font-weight: bold;
 
     line-height: 1.2;
-
-    text-align: center;
 
     white-space: nowrap;
 
@@ -403,57 +578,87 @@
 
     text-overflow: ellipsis;
 
+    margin-top: 2px;
 }
 
 
 /* =====================================================
-   💊 健康記録表示エリア
+   📅 今日
 ===================================================== */
 
-.health-day-records {
+.health-day.today {
 
-    display: flex;
+    border: 2px solid var(--accent);
 
-    flex-wrap: wrap;
+    font-weight: bold;
+}
 
-    align-items: center;
-    justify-content: center;
 
-    gap: 2px;
+/* 今日 ＋ 日曜日 */
 
-    width: 100%;
+.health-day.today.sunday {
 
-    margin-top: 3px;
+    background:
+        color-mix(
+            in srgb,
+            #e74b67 8%,
+            var(--card)
+        );
+}
 
+
+/* 今日 ＋ 土曜日 */
+
+.health-day.today.saturday {
+
+    background:
+        color-mix(
+            in srgb,
+            #4285e8 8%,
+            var(--card)
+        );
+}
+
+
+/* 今日 ＋ 祝日 */
+
+.health-day.today.holiday {
+
+    background:
+        color-mix(
+            in srgb,
+            #e74b67 8%,
+            var(--card)
+        );
+}
+
+
+/* 今日 ＋ 平日 */
+
+.health-day.today:not(.sunday):not(.saturday):not(.holiday) {
+
+    background:
+        color-mix(
+            in srgb,
+            var(--accent) 8%,
+            var(--card)
+        );
 }
 
 
 /* =====================================================
-   💊 健康記録アイコン
+   選択中の日付
 ===================================================== */
 
-.health-record-icon {
+.health-day.selected {
 
-    font-size: 13px;
-
-    line-height: 1;
-
+    box-shadow:
+        inset 0 0 0 2px var(--accent);
 }
 
 
 /* =====================================================
-   📅 日付タップ
-===================================================== */
-
-.health-day:active {
-
-    transform: scale(0.98);
-
-}
-
-
-/* =====================================================
-   📅 年月選択モーダル
+   モーダル
 ===================================================== */
 
 .health-modal {
@@ -462,230 +667,302 @@
 
     inset: 0;
 
-    z-index: 9999;
+    z-index: 1000;
 
-    display: flex;
+    background: rgba(0,0,0,0.5);
 
-    align-items: center;
-    justify-content: center;
-
-    padding: 20px;
+    padding: 12px;
 
     box-sizing: border-box;
 
-    background: rgba(0, 0, 0, 0.45);
+    overflow-y: auto;
 
+    -webkit-overflow-scrolling: touch;
 }
 
-
-/* =====================================================
-   📅 モーダル本体
-===================================================== */
 
 .health-modal-content {
 
-    width: min(100%, 420px);
+    width: 100%;
+
+    max-width: 500px;
+
+    margin: 20px auto;
+
+    padding: 16px;
+
+    border-radius: 12px;
+
+    background: var(--card);
+
+    color: var(--text);
 
     box-sizing: border-box;
 
-    padding: 18px;
+    border: 1px solid var(--border);
 
-    border-radius: 16px;
+    max-height: calc(100vh - 40px);
 
-    background: #fff;
+    overflow-y: auto;
 
+    -webkit-overflow-scrolling: touch;
 }
 
-
-/* =====================================================
-   📅 モーダルヘッダー
-===================================================== */
 
 .health-modal-header {
 
     display: flex;
 
     align-items: center;
+
     justify-content: space-between;
 
     gap: 10px;
-
-    margin-bottom: 18px;
-
 }
 
 
 .health-modal-title {
 
-    font-size: 17px;
-    font-weight: 700;
+    font-weight: bold;
 
+    font-size: 18px;
 }
 
 
-.health-modal-header button {
+.health-modal-buttons {
 
-    width: 36px;
-    height: 36px;
+    display: flex;
 
-    padding: 0;
+    gap: 10px;
 
-    border: none;
-    border-radius: 50%;
+    justify-content: flex-end;
 
-    background: #f1f1f1;
-
-    font-size: 16px;
-
-    cursor: pointer;
-
+    margin-top: 15px;
 }
 
-
-/* =====================================================
-   📅 年月選択
-===================================================== */
 
 .health-date-picker {
 
     display: flex;
 
     align-items: center;
-    justify-content: center;
 
     gap: 8px;
 
-    margin-bottom: 18px;
-
-}
-
-
-.health-date-picker label {
-
-    font-size: 14px;
-    font-weight: 600;
-
+    margin-top: 15px;
 }
 
 
 .health-date-picker select {
 
-    min-width: 90px;
+    padding: 8px;
 
-    min-height: 40px;
+    background: var(--card);
 
-    padding: 5px 8px;
+    color: var(--text);
 
-    border: 1px solid #ccc;
-    border-radius: 8px;
+    border: 1px solid var(--border);
 
-    background: #fff;
-
-    font-size: 15px;
-
-}
-
-
-/* =====================================================
-   📅 モーダルボタン
-===================================================== */
-
-.health-modal-buttons {
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 8px;
-
-}
-
-
-.health-modal-buttons button {
-
-    width: 100%;
-
-    min-height: 44px;
-
-    border: none;
-    border-radius: 10px;
+    border-radius: 7px;
 
     font-size: 14px;
-    font-weight: 600;
-
-    cursor: pointer;
-
-}
-
-
-.health-modal-buttons button:active {
-
-    transform: scale(0.98);
-
 }
 
 
 /* =====================================================
-   📱 スマートフォン
+   📱 スマホ
 ===================================================== */
 
 @media (max-width: 600px) {
 
-    .health-calendar-screen {
 
-        padding-left: 8px;
-        padding-right: 8px;
+    /* =====================
+       ヘッダー
+    ===================== */
 
+    .health-calendar-header {
+
+        gap: 5px;
+
+        padding: 6px 7px;
     }
 
 
     .health-calendar-title {
 
-        font-size: 18px;
-
+        font-size: 19px;
     }
 
 
     .health-back-button {
 
-        padding: 7px 9px;
+        max-width: 125px;
+
+        padding: 6px 8px;
+
+        border-radius: 6px;
 
         font-size: 12px;
+    }
 
+
+    /* =====================
+       カレンダー操作
+    ===================== */
+
+    .health-calendar-controls {
+
+        gap: 3px;
+
+        padding: 3px 3px 6px;
     }
 
 
     .health-month-title-button {
 
-        min-width: 135px;
+        flex: none;
 
-        font-size: 16px;
+        width: 100%;
 
+        max-width: none;
+
+        height: auto;
+
+        padding: 0;
+
+        border-radius: 0;
+
+        font-size: 28px;
+
+        line-height: 1.2;
+
+        text-align: center;
     }
 
 
-    .health-day,
+    .health-today-button {
+
+        position: absolute;
+
+        right: 6px;
+
+        bottom: 4px;
+
+        transform: none;
+
+        width: 82px;
+
+        height: 34px;
+
+        padding: 0 8px;
+
+        border-radius: 8px;
+
+        display: inline-flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        box-sizing: border-box;
+
+        font-size: 14px;
+
+        font-weight: bold;
+
+        white-space: nowrap;
+    }
+
+
+    /* =====================
+       曜日
+    ===================== */
+
+    .health-week {
+
+        font-size: 13px;
+
+        padding: 8px 1px;
+    }
+
+
+    /* =====================
+       日付
+    ===================== */
+
+    .health-day {
+
+        height: 83px;
+
+        min-height: 83px;
+
+        padding: 4px;
+    }
+
+
     .health-empty-day {
 
-        min-height: 64px;
+        height: 83px;
 
+        min-height: 83px;
     }
 
 
     .health-day-number {
 
-        width: 26px;
-        height: 26px;
-
-        font-size: 13px;
-
+        font-size: 14px;
     }
 
 
-    .health-holiday-name {
+    /* =====================
+       健康記録
+    ===================== */
+
+    .health-record-icon {
+
+        font-size: 13px;
+    }
+
+
+    /* =====================
+       祝日
+    ===================== */
+
+    .health-holiday-label,
+    .holiday-label {
 
         font-size: 8px;
+    }
 
+
+    .health-holiday-name,
+    .holiday-name {
+
+        font-size: 10px;
+    }
+
+
+    /* =====================
+       モーダル
+    ===================== */
+
+    .health-modal {
+
+        padding: 12px;
+    }
+
+
+    .health-modal-content {
+
+        margin: 30px auto;
+
+        padding: 14px;
+    }
+
+
+    .health-modal-title {
+
+        font-size: 17px;
     }
 
 }
