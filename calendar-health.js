@@ -27,6 +27,9 @@ let healthDailyDate = null;
 let healthMedicationDeleteTarget = null;
 
 
+/* =====================================================
+   📊 健康グラフ
+===================================================== */
 /*
  * グラフ状態
  */
@@ -43,7 +46,6 @@ let healthGraphMetric = "temperature";
 let healthHolidayLoadedYear = null;
 
 let healthHolidayLoadingYear = null;
-
 
 
 /* =====================================================
@@ -3584,4 +3586,209 @@ function escapeHealthCalendarHTML(
             "&#039;"
         );
 
+}
+
+
+/* =====================================================
+   📊 健康グラフ画面
+===================================================== */
+
+function openHealthGraph() {
+
+    const calendarPage =
+        document.getElementById("healthCalendarPage");
+
+    const dailyPage =
+        document.getElementById("healthDailyPage");
+
+    const graphPage =
+        document.getElementById("healthGraphPage");
+
+
+    if (!graphPage) {
+        console.error("healthGraphPage がありません");
+        return;
+    }
+
+
+    if (calendarPage) {
+        calendarPage.style.display = "none";
+    }
+
+
+    if (dailyPage) {
+        dailyPage.style.display = "none";
+    }
+
+
+    graphPage.style.display = "block";
+
+
+    updateHealthGraphButtons();
+    renderHealthGraph();
+}
+
+
+
+/* =====================================================
+   📊 健康グラフを閉じる
+===================================================== */
+
+function closeHealthGraph() {
+
+    const calendarPage =
+        document.getElementById("healthCalendarPage");
+
+    const dailyPage =
+        document.getElementById("healthDailyPage");
+
+    const graphPage =
+        document.getElementById("healthGraphPage");
+
+
+    if (graphPage) {
+        graphPage.style.display = "none";
+    }
+
+
+    if (dailyPage) {
+        dailyPage.style.display = "none";
+    }
+
+
+    if (calendarPage) {
+        calendarPage.style.display = "block";
+    }
+}
+
+
+
+/* =====================================================
+   📊 グラフ表示期間
+===================================================== */
+
+function setHealthGraphPeriod(days) {
+
+    healthGraphPeriod = Number(days) || 7;
+
+    updateHealthGraphButtons();
+    renderHealthGraph();
+}
+
+
+
+/* =====================================================
+   📊 グラフ表示項目
+===================================================== */
+
+function setHealthGraphMetric(metric) {
+
+    healthGraphMetric = metric || "temperature";
+
+    updateHealthGraphButtons();
+    renderHealthGraph();
+}
+
+
+
+/* =====================================================
+   📊 ボタン状態更新
+===================================================== */
+
+function updateHealthGraphButtons() {
+
+    document
+        .querySelectorAll(".health-graph-period-button")
+        .forEach(button => {
+
+            const period =
+                Number(button.dataset.period);
+
+            button.classList.toggle(
+                "active",
+                period === healthGraphPeriod
+            );
+
+            button.onclick = () => {
+                setHealthGraphPeriod(period);
+            };
+
+        });
+
+
+    document
+        .querySelectorAll(".health-graph-metric-button")
+        .forEach(button => {
+
+            const metric =
+                button.dataset.metric;
+
+            button.classList.toggle(
+                "active",
+                metric === healthGraphMetric
+            );
+
+            button.onclick = () => {
+                setHealthGraphMetric(metric);
+            };
+
+        });
+}
+
+
+
+/* =====================================================
+   📊 グラフ描画
+   ※ 現段階では画面確認用
+===================================================== */
+
+function renderHealthGraph() {
+
+    const title =
+        document.getElementById("healthGraphTitle");
+
+    const chart =
+        document.getElementById("healthGraphChart");
+
+    const noData =
+        document.getElementById("healthGraphNoData");
+
+
+    if (!chart) {
+        return;
+    }
+
+
+    const metricNames = {
+
+        temperature: "🌡️ 体温",
+
+        bloodPressure: "🩺 血圧",
+
+        pulse: "❤️ 脈拍",
+
+        weight: "⚖️ 体重",
+
+        sleep: "😴 睡眠",
+
+        water: "💧 水分"
+
+    };
+
+
+    if (title) {
+
+        title.textContent =
+            metricNames[healthGraphMetric]
+            || "🌡️ 体温";
+
+    }
+
+
+    chart.innerHTML = "";
+
+
+    if (noData) {
+        noData.style.display = "block";
+    }
 }
