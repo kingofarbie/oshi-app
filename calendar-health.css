@@ -1508,15 +1508,6 @@
 }
 
 
-/* =====================================================
-   📅 表示期間
-   ラジオボタン風に横3つ
-   ===================================================== */
-
-/* =====================================================
-   📅 表示期間
-   ラジオボタン風
-   ===================================================== */
 
 /* =====================================================
    📅 表示期間
@@ -1527,20 +1518,31 @@
     display: flex;
     width: 100%;
     gap: 6px;
+    margin: 0;
 }
 
 .health-graph-period-button {
     flex: 1;
+
+    width: auto !important;
     min-width: 0;
-    padding: 6px 4px;
-    border: none;
-    background: transparent;
-    border-radius: 0;
+
+    margin: 0 !important;
+    padding: 6px 4px !important;
+
+    border: none !important;
+    border-radius: 0 !important;
+
+    background: transparent !important;
+    color: var(--text) !important;
+
     font-size: 15px;
     font-weight: bold;
+
     cursor: pointer;
     white-space: nowrap;
-    color: inherit;
+
+    box-shadow: none !important;
 }
 
 /* 未選択 */
@@ -1554,8 +1556,6 @@
 .health-graph-period-button.active::before {
     content: "◉";
 }
-
-
 
 
 /* =====================================================
