@@ -3682,11 +3682,20 @@ function initializeHealthGraphSelection() {
     );
 
     /*
-     * hitAreaは一番上に置く
+     * タップ・ドラッグを確実に受け取る
      */
-    group.appendChild(hitArea);
+    hitArea.setAttribute(
+        "pointer-events",
+        "all"
+    );
 
-    svg.appendChild(group);
+    group.appendChild(
+        hitArea
+    );
+
+    svg.appendChild(
+        group
+    );
 
     /*
      * 選択位置を更新
@@ -3707,7 +3716,8 @@ function initializeHealthGraphSelection() {
             (width / rect.width);
 
         let relativeX =
-            svgX - padding.left;
+            svgX -
+            padding.left;
 
         /*
          * 範囲内に収める
@@ -3726,16 +3736,20 @@ function initializeHealthGraphSelection() {
          */
         const step =
             dates.length > 1
-                ? chartWidth / (dates.length - 1)
+                ? chartWidth /
+                  (dates.length - 1)
                 : 0;
 
         let index = 0;
 
         if (step > 0) {
+
             index =
                 Math.round(
-                    relativeX / step
+                    relativeX /
+                    step
                 );
+
         }
 
         index =
@@ -3761,6 +3775,9 @@ function initializeHealthGraphSelection() {
                     : chartWidth / 2
             );
 
+        /*
+         * 縦線
+         */
         line.setAttribute(
             "x1",
             x
@@ -3770,6 +3787,15 @@ function initializeHealthGraphSelection() {
             "x2",
             x
         );
+
+        /*
+         * 縦線を確実に表示
+         */
+        line.style.display =
+            "block";
+
+        line.style.visibility =
+            "visible";
 
         /*
          * 日付
@@ -3816,7 +3842,7 @@ function initializeHealthGraphSelection() {
         );
 
         /*
-         * 表示
+         * 選択表示
          */
         group.style.display =
             "block";
@@ -3829,7 +3855,7 @@ function initializeHealthGraphSelection() {
         "none";
 
     /*
-     * タップ・ドラッグ
+     * タップ・ドラッグ開始
      */
     hitArea.addEventListener(
         "pointerdown",
@@ -3848,6 +3874,9 @@ function initializeHealthGraphSelection() {
         }
     );
 
+    /*
+     * ポインター移動
+     */
     hitArea.addEventListener(
         "pointermove",
         event => {
@@ -3856,15 +3885,16 @@ function initializeHealthGraphSelection() {
              * PCのマウス
              */
             if (
-                event.pointerType === "mouse"
-                &&
+                event.pointerType === "mouse" &&
                 !healthGraphDragging
             ) {
+
                 updateSelection(
                     event.clientX
                 );
 
                 return;
+
             }
 
             /*
@@ -3873,13 +3903,19 @@ function initializeHealthGraphSelection() {
             if (
                 healthGraphDragging
             ) {
+
                 updateSelection(
                     event.clientX
                 );
+
             }
+
         }
     );
 
+    /*
+     * タップ・ドラッグ終了
+     */
     hitArea.addEventListener(
         "pointerup",
         event => {
@@ -3888,15 +3924,23 @@ function initializeHealthGraphSelection() {
                 false;
 
             try {
+
                 hitArea.releasePointerCapture(
                     event.pointerId
                 );
+
             } catch (error) {
+
                 // 何もしない
+
             }
+
         }
     );
 
+    /*
+     * 操作キャンセル
+     */
     hitArea.addEventListener(
         "pointercancel",
         event => {
@@ -3905,12 +3949,17 @@ function initializeHealthGraphSelection() {
                 false;
 
             try {
+
                 hitArea.releasePointerCapture(
                     event.pointerId
                 );
+
             } catch (error) {
+
                 // 何もしない
+
             }
+
         }
     );
 
@@ -3925,17 +3974,18 @@ function initializeHealthGraphSelection() {
         event => {
 
             if (
-                event.pointerType === "mouse"
-                &&
+                event.pointerType === "mouse" &&
                 !healthGraphDragging
             ) {
+
                 group.style.display =
                     "none";
+
             }
+
         }
     );
 }
-
 
 /* =====================================================
    📅 グラフ日付表示

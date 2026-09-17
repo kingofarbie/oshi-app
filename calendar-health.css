@@ -1666,33 +1666,37 @@
     stroke-width: 2 !important;
 }
 
+
 /* =====================================================
    📊 健康グラフ 選択表示
 ===================================================== */
 
 .health-graph-selection-line {
-    stroke: currentColor;
-    stroke-width: 2;
+    stroke: #7c4dff !important;
+    stroke-width: 3 !important;
     stroke-dasharray: 5 4;
     pointer-events: none;
 }
 
 .health-graph-selection-label {
-    fill: currentColor;
+    fill: #7c4dff !important;
     font-size: 13px;
     font-weight: bold;
     pointer-events: none;
 }
 
 .health-graph-selection-value {
-    fill: currentColor;
+    fill: #7c4dff !important;
     font-size: 14px;
     font-weight: bold;
     pointer-events: none;
 }
 
 .health-graph-selection-hit-area {
-    fill: transparent;
+    fill: rgba(124, 77, 255, 0.001) !important;
     cursor: crosshair;
     touch-action: none;
+    pointer-events: all !important;
 }
+
+
