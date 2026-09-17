@@ -1439,3 +1439,20 @@
     }
 
 }
+
+
+/* =====================================================
+   📊 健康グラフボタン
+   ===================================================== */
+
+.health-graph-button {
+    flex-shrink: 0;
+    width: auto;
+    padding: 6px 10px;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    white-space: nowrap;
+}
