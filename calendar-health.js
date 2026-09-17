@@ -1913,43 +1913,125 @@ function saveHealthDailyRecord() {
         );
 
 
+/* =====================================================
+   数値入力
+   ・入力されている場合だけ保存
+   ・空欄は保存しない
+   ・placeholder はデータにならない
+===================================================== */
+
+if (temperature?.value !== "") {
     record.temperature =
-        temperature?.value || "";
+        Number(temperature.value);
+} else {
+    delete record.temperature;
+}
 
 
-    record.bloodPressure = {
+/* =====================================================
+   🩺 血圧
+   ・収縮期、拡張期を個別に保存
+   ・両方空欄なら bloodPressure 自体を削除
+===================================================== */
 
-        systolic:
-            systolic?.value || "",
+const hasSystolic =
+    systolic?.value !== "";
 
-        diastolic:
-            diastolic?.value || ""
+const hasDiastolic =
+    diastolic?.value !== "";
 
-    };
+if (hasSystolic || hasDiastolic) {
+
+    record.bloodPressure = {};
+
+    if (hasSystolic) {
+        record.bloodPressure.systolic =
+            Number(systolic.value);
+    }
+
+    if (hasDiastolic) {
+        record.bloodPressure.diastolic =
+            Number(diastolic.value);
+    }
+
+} else {
+
+    delete record.bloodPressure;
+
+}
 
 
+/* =====================================================
+   💓 脈拍
+===================================================== */
+
+if (pulse?.value !== "") {
     record.pulse =
-        pulse?.value || "";
+        Number(pulse.value);
+} else {
+    delete record.pulse;
+}
 
 
+/* =====================================================
+   😊 体調
+===================================================== */
+
+if (condition?.value !== "") {
     record.condition =
-        condition?.value || "";
+        condition.value;
+} else {
+    delete record.condition;
+}
 
 
+/* =====================================================
+   😴 睡眠
+===================================================== */
+
+if (sleep?.value !== "") {
     record.sleep =
-        sleep?.value || "";
+        Number(sleep.value);
+} else {
+    delete record.sleep;
+}
 
 
+/* =====================================================
+   💧 水分
+===================================================== */
+
+if (water?.value !== "") {
     record.water =
-        water?.value || "";
+        Number(water.value);
+} else {
+    delete record.water;
+}
 
 
+/* =====================================================
+   ⚖️ 体重
+===================================================== */
+
+if (weight?.value !== "") {
     record.weight =
-        weight?.value || "";
+        Number(weight.value);
+} else {
+    delete record.weight;
+}
 
 
+/* =====================================================
+   📝 メモ
+===================================================== */
+
+if (memo?.value !== "") {
     record.memo =
-        memo?.value || "";
+        memo.value;
+} else {
+    delete record.memo;
+}
+
 
 
     saveHealthCalendarData(
@@ -3589,206 +3671,3 @@ function escapeHealthCalendarHTML(
 }
 
 
-/* =====================================================
-   📊 健康グラフ画面
-===================================================== */
-
-function openHealthGraph() {
-
-    const calendarPage =
-        document.getElementById("healthCalendarPage");
-
-    const dailyPage =
-        document.getElementById("healthDailyPage");
-
-    const graphPage =
-        document.getElementById("healthGraphPage");
-
-
-    if (!graphPage) {
-        console.error("healthGraphPage がありません");
-        return;
-    }
-
-
-    if (calendarPage) {
-        calendarPage.style.display = "none";
-    }
-
-
-    if (dailyPage) {
-        dailyPage.style.display = "none";
-    }
-
-
-    graphPage.style.display = "block";
-
-
-    updateHealthGraphButtons();
-    renderHealthGraph();
-}
-
-
-
-/* =====================================================
-   📊 健康グラフを閉じる
-===================================================== */
-
-function closeHealthGraph() {
-
-    const calendarPage =
-        document.getElementById("healthCalendarPage");
-
-    const dailyPage =
-        document.getElementById("healthDailyPage");
-
-    const graphPage =
-        document.getElementById("healthGraphPage");
-
-
-    if (graphPage) {
-        graphPage.style.display = "none";
-    }
-
-
-    if (dailyPage) {
-        dailyPage.style.display = "none";
-    }
-
-
-    if (calendarPage) {
-        calendarPage.style.display = "block";
-    }
-}
-
-
-
-/* =====================================================
-   📊 グラフ表示期間
-===================================================== */
-
-function setHealthGraphPeriod(days) {
-
-    healthGraphPeriod = Number(days) || 7;
-
-    updateHealthGraphButtons();
-    renderHealthGraph();
-}
-
-
-
-/* =====================================================
-   📊 グラフ表示項目
-===================================================== */
-
-function setHealthGraphMetric(metric) {
-
-    healthGraphMetric = metric || "temperature";
-
-    updateHealthGraphButtons();
-    renderHealthGraph();
-}
-
-
-
-/* =====================================================
-   📊 ボタン状態更新
-===================================================== */
-
-function updateHealthGraphButtons() {
-
-    document
-        .querySelectorAll(".health-graph-period-button")
-        .forEach(button => {
-
-            const period =
-                Number(button.dataset.period);
-
-            button.classList.toggle(
-                "active",
-                period === healthGraphPeriod
-            );
-
-            button.onclick = () => {
-                setHealthGraphPeriod(period);
-            };
-
-        });
-
-
-    document
-        .querySelectorAll(".health-graph-metric-button")
-        .forEach(button => {
-
-            const metric =
-                button.dataset.metric;
-
-            button.classList.toggle(
-                "active",
-                metric === healthGraphMetric
-            );
-
-            button.onclick = () => {
-                setHealthGraphMetric(metric);
-            };
-
-        });
-}
-
-
-
-/* =====================================================
-   📊 グラフ描画
-   ※ 現段階では画面確認用
-===================================================== */
-
-function renderHealthGraph() {
-
-    const title =
-        document.getElementById("healthGraphTitle");
-
-    const chart =
-        document.getElementById("healthGraphChart");
-
-    const noData =
-        document.getElementById("healthGraphNoData");
-
-
-    if (!chart) {
-        return;
-    }
-
-
-    const metricNames = {
-
-        temperature: "🌡️ 体温",
-
-        bloodPressure: "🩺 血圧",
-
-        pulse: "❤️ 脈拍",
-
-        weight: "⚖️ 体重",
-
-        sleep: "😴 睡眠",
-
-        water: "💧 水分"
-
-    };
-
-
-    if (title) {
-
-        title.textContent =
-            metricNames[healthGraphMetric]
-            || "🌡️ 体温";
-
-    }
-
-
-    chart.innerHTML = "";
-
-
-    if (noData) {
-        noData.style.display = "block";
-    }
-}
