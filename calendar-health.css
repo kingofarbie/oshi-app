@@ -1560,26 +1560,52 @@
 
 /* =====================================================
    📊 表示項目
+   ラジオボタン風
    ===================================================== */
 
 .health-graph-metric-buttons {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    width: 100%;
+    gap: 0;
+    margin: 0;
 }
 
 .health-graph-metric-button {
-    padding: 8px 12px;
-    border: 1px solid #ccc;
-    border-radius: 18px;
-    background: #fff;
-    font-size: 14px;
+    flex: 0 0 25%;
+
+    width: auto !important;
+    min-width: 0;
+
+    margin: 0 !important;
+    padding: 6px 4px !important;
+
+    border: none !important;
+    border-radius: 0 !important;
+
+    background: transparent !important;
+    color: var(--text) !important;
+
+    font-size: 15px;
     font-weight: bold;
+
     cursor: pointer;
+    white-space: nowrap;
+
+    box-shadow: none !important;
+    text-align: left;
 }
 
-.health-graph-metric-button.active {
-    font-weight: bold;
+/* 未選択 */
+.health-graph-metric-button::before {
+    content: "○";
+    margin-right: 5px;
+    font-size: 18px;
+}
+
+/* 選択中 */
+.health-graph-metric-button.active::before {
+    content: "◉";
 }
 
 
