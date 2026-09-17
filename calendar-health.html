@@ -84,7 +84,10 @@
         </main>
 
 
-        <!-- 年月選択 -->
+
+        <!-- =================================================
+             年月選択
+        ================================================== -->
 
         <div
             id="healthCalendarDatePickerModal"
@@ -208,7 +211,9 @@
 
 
 
-        <!-- 日付 -->
+        <!-- =================================================
+             日付
+        ================================================== -->
 
         <div class="health-daily-date-row">
 
@@ -254,6 +259,8 @@
             <div class="health-medication-list">
 
 
+                <!-- 朝 -->
+
                 <div class="health-medication-row">
 
                     <div class="health-medication-name">
@@ -264,13 +271,15 @@
                         type="button"
                         class="health-medication-button"
                         data-medication="morning"
-                        onclick="takeHealthMedication('morning')"
+                        onclick="toggleHealthMedication('morning')"
                     >
                         服用した
                     </button>
 
                 </div>
 
+
+                <!-- 昼 -->
 
                 <div class="health-medication-row">
 
@@ -282,13 +291,15 @@
                         type="button"
                         class="health-medication-button"
                         data-medication="noon"
-                        onclick="takeHealthMedication('noon')"
+                        onclick="toggleHealthMedication('noon')"
                     >
                         服用した
                     </button>
 
                 </div>
 
+
+                <!-- 夜 -->
 
                 <div class="health-medication-row">
 
@@ -300,7 +311,7 @@
                         type="button"
                         class="health-medication-button"
                         data-medication="night"
-                        onclick="takeHealthMedication('night')"
+                        onclick="toggleHealthMedication('night')"
                     >
                         服用した
                     </button>
@@ -507,6 +518,8 @@
         >
 
 
+            <!-- 睡眠 -->
+
             <section class="health-daily-section">
 
                 <h2>
@@ -532,6 +545,8 @@
             </section>
 
 
+            <!-- 水分 -->
+
             <section class="health-daily-section">
 
                 <h2>
@@ -555,6 +570,8 @@
 
             </section>
 
+
+            <!-- 体重 -->
 
             <section class="health-daily-section">
 
@@ -581,6 +598,8 @@
             </section>
 
 
+            <!-- メモ -->
+
             <section class="health-daily-section">
 
                 <h2>
@@ -601,7 +620,7 @@
 
 
         <!-- =================================================
-             保存
+             💾 保存
         ================================================== -->
 
         <button
@@ -614,6 +633,68 @@
 
 
     </div>
+
+
+
+    <!-- =================================================
+         💊 服薬記録削除確認
+    ================================================== -->
+
+    <div
+        id="healthMedicationDeleteModal"
+        class="health-modal"
+        style="display:none;"
+    >
+
+        <div class="health-modal-content health-medication-delete-modal">
+
+            <div class="health-modal-header">
+
+                <div class="health-modal-title">
+                    💊 服薬記録
+                </div>
+
+                <button
+                    type="button"
+                    onclick="closeHealthMedicationDeleteModal()"
+                    aria-label="閉じる"
+                >
+                    ✕
+                </button>
+
+            </div>
+
+
+            <div
+                id="healthMedicationDeleteMessage"
+                class="health-medication-delete-message"
+            >
+            </div>
+
+
+            <div class="health-modal-buttons">
+
+                <button
+                    type="button"
+                    onclick="closeHealthMedicationDeleteModal()"
+                >
+                    キャンセル
+                </button>
+
+
+                <button
+                    type="button"
+                    onclick="confirmDeleteHealthMedication()"
+                >
+                    削除する
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
 
 </div>
 

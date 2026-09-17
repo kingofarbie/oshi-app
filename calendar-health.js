@@ -5,6 +5,7 @@
    ・健康カレンダー
    ・📖 日めくり
    ・服薬記録
+   ・服薬記録時刻
    ・服薬記録削除
    ・健康データ保存
 ===================================================== */
@@ -25,6 +26,18 @@ let healthDailyDate = null;
 let healthMedicationDeleteTarget = null;
 
 
+/*
+ * 祝日読み込み状態
+ *
+ * 同じ年を何度も取得して
+ * render → load → render → load...
+ * になるのを防ぐ
+ */
+let healthHolidayLoadedYear = null;
+
+let healthHolidayLoadingYear = null;
+
+
 
 /* =====================================================
    💊 健康カレンダーを開く
@@ -33,7 +46,9 @@ let healthMedicationDeleteTarget = null;
 async function openHealthCalendar() {
 
     const container =
-        document.getElementById("calendarContainer");
+        document.getElementById(
+            "calendarContainer"
+        );
 
 
     if (!container) {
@@ -50,7 +65,9 @@ async function openHealthCalendar() {
     try {
 
         const response =
-            await fetch("./calendar-health.html");
+            await fetch(
+                "./calendar-health.html"
+            );
 
 
         if (!response.ok) {
@@ -96,6 +113,13 @@ function initializeHealthCalendar() {
         formatHealthDate(
             healthCalendarDate
         );
+
+
+    healthCalendarHolidays = {};
+
+    healthHolidayLoadedYear = null;
+
+    healthHolidayLoadingYear = null;
 
 
     updateHealthCalendarTitle();
@@ -200,7 +224,9 @@ function initializeHealthCalendarDatePicker() {
     ) {
 
         const option =
-            document.createElement("option");
+            document.createElement(
+                "option"
+            );
 
 
         option.value =
@@ -211,7 +237,9 @@ function initializeHealthCalendarDatePicker() {
             `${year}年`;
 
 
-        yearSelect.appendChild(option);
+        yearSelect.appendChild(
+            option
+        );
 
     }
 
@@ -327,11 +355,15 @@ function applyHealthCalendarDatePicker() {
 
 
     const year =
-        Number(yearSelect.value);
+        Number(
+            yearSelect.value
+        );
 
 
     const month =
-        Number(monthSelect.value);
+        Number(
+            monthSelect.value
+        );
 
 
     healthCalendarDate =
@@ -343,6 +375,19 @@ function applyHealthCalendarDatePicker() {
 
 
     healthSelectedDate = null;
+
+
+    /*
+     * 年が変わった場合は
+     * 新しい年の祝日を取得
+     */
+    if (
+        healthHolidayLoadedYear !== year
+    ) {
+
+        healthCalendarHolidays = {};
+
+    }
 
 
     updateHealthCalendarTitle();
@@ -487,6 +532,10 @@ function getHealthRecordIcons(record) {
     const icons = [];
 
 
+    /*
+     * 💊 服薬
+     */
+
     if (record.medications) {
 
         if (
@@ -502,6 +551,10 @@ function getHealthRecordIcons(record) {
     }
 
 
+    /*
+     * 🌡️ 体温
+     */
+
     if (
         record.temperature !== undefined &&
         record.temperature !== null &&
@@ -512,6 +565,11 @@ function getHealthRecordIcons(record) {
 
     }
 
+
+    /*
+     * 🩺 血圧
+     * または脈拍
+     */
 
     if (
         record.bloodPressure &&
@@ -534,6 +592,10 @@ function getHealthRecordIcons(record) {
 
     }
 
+
+    /*
+     * 🌸 生理
+     */
 
     if (record.menstrual) {
 
@@ -644,7 +706,9 @@ function renderHealthCalendar() {
     `;
 
 
-    /* 月初の空白 */
+    /*
+     * 月初の空白
+     */
 
     for (
         let i = 0;
@@ -696,7 +760,9 @@ function renderHealthCalendar() {
 
 
         const icons =
-            getHealthRecordIcons(record);
+            getHealthRecordIcons(
+                record
+            );
 
 
         let classes =
@@ -756,6 +822,10 @@ function renderHealthCalendar() {
         `;
 
 
+        /*
+         * 祝日名
+         */
+
         if (
             healthCalendarHolidays &&
             healthCalendarHolidays[dateString]
@@ -771,6 +841,10 @@ function renderHealthCalendar() {
 
         }
 
+
+        /*
+         * 健康記録アイコン
+         */
 
         if (icons.length > 0) {
 
@@ -804,7 +878,9 @@ function renderHealthCalendar() {
     }
 
 
-    /* 月末の空白 */
+    /*
+     * 月末の空白
+     */
 
     const totalCells =
         startWeek + lastDate;
@@ -840,7 +916,18 @@ function renderHealthCalendar() {
         html;
 
 
-    loadHealthHolidays(year);
+    /*
+     * 必要な年だけ祝日を取得
+     */
+
+    if (
+        healthHolidayLoadedYear !== year &&
+        healthHolidayLoadingYear !== year
+    ) {
+
+        loadHealthHolidays(year);
+
+    }
 
 }
 
@@ -850,7 +937,9 @@ function renderHealthCalendar() {
    📖 日付選択
 ===================================================== */
 
-function selectHealthCalendarDate(dateString) {
+function selectHealthCalendarDate(
+    dateString
+) {
 
     healthSelectedDate =
         dateString;
@@ -1005,6 +1094,11 @@ function healthDailyPreviousDay() {
     healthDailyDate =
         formatHealthDate(date);
 
+
+    /*
+     * 日付が別月になった場合でも
+     * その日の記録を読み込む
+     */
 
     loadHealthDailyRecord();
 
@@ -1233,12 +1327,15 @@ function toggleHealthMedication(type) {
 
 
     /*
-     * すでに服用済みなら削除確認
+     * すでに服用済みなら
+     * 削除確認へ
      */
 
     if (record.medications[type]) {
 
-        openHealthMedicationDeleteModal(type);
+        openHealthMedicationDeleteModal(
+            type
+        );
 
         return;
 
@@ -1246,18 +1343,28 @@ function toggleHealthMedication(type) {
 
 
     /*
+     * =============================================
      * 新規服用記録
+     *
+     * クリックした瞬間の日時を保存
+     * =============================================
      */
+
+    const takenAt =
+        new Date();
+
 
     record.medications[type] = {
 
         takenAt:
-            new Date().toISOString()
+            takenAt.toISOString()
 
     };
 
 
-    saveHealthCalendarData(data);
+    saveHealthCalendarData(
+        data
+    );
 
 
     updateHealthMedicationButtons(
@@ -1292,33 +1399,56 @@ function updateHealthMedicationButtons(
 
             if (medication) {
 
-                button.classList.add("taken");
+                button.classList.add(
+                    "taken"
+                );
+
+
+                /*
+                 * 服用済み＋服用時刻
+                 */
+
+                const time =
+                    medication.takenAt
+                        ? formatHealthTakenTime(
+                            medication.takenAt
+                        )
+                        : "";
 
 
                 button.textContent =
-                    "✓ 服用済み";
+                    time
+                        ? `✓ 服用済み ${time}`
+                        : "✓ 服用済み";
 
 
-                if (medication.takenAt) {
+                if (time) {
 
                     button.title =
-                        `服用時刻 ${formatHealthTakenTime(
-                            medication.takenAt
-                        )}`;
+                        `服用時刻 ${time}`;
+
+                }
+                else {
+
+                    button.title =
+                        "";
 
                 }
 
             }
             else {
 
-                button.classList.remove("taken");
+                button.classList.remove(
+                    "taken"
+                );
 
 
                 button.textContent =
                     "服用した";
 
 
-                button.title = "";
+                button.title =
+                    "";
 
             }
 
@@ -1332,7 +1462,9 @@ function updateHealthMedicationButtons(
    💊 削除確認を開く
 ===================================================== */
 
-function openHealthMedicationDeleteModal(type) {
+function openHealthMedicationDeleteModal(
+    type
+) {
 
     healthMedicationDeleteTarget =
         type;
@@ -1366,10 +1498,34 @@ function openHealthMedicationDeleteModal(type) {
     };
 
 
+    /*
+     * 現在の服用時刻も確認画面に表示
+     */
+
+    const data =
+        getHealthCalendarData();
+
+
+    const medication =
+        data.records?.[
+            healthDailyDate
+        ]?.medications?.[type];
+
+
+    const time =
+        medication?.takenAt
+            ? formatHealthTakenTime(
+                medication.takenAt
+            )
+            : "";
+
+
     if (message) {
 
         message.textContent =
-            `${names[type] || ""} の服用記録を削除しますか？`;
+            time
+                ? `${names[type] || ""} の服用記録を削除しますか？\n服用時刻：${time}`
+                : `${names[type] || ""} の服用記録を削除しますか？`;
 
     }
 
@@ -1428,7 +1584,9 @@ function confirmDeleteHealthMedication() {
 
 
     const record =
-        data.records?.[healthDailyDate];
+        data.records?.[
+            healthDailyDate
+        ];
 
 
     if (
@@ -1457,7 +1615,9 @@ function confirmDeleteHealthMedication() {
         }
 
 
-        saveHealthCalendarData(data);
+        saveHealthCalendarData(
+            data
+        );
 
     }
 
@@ -1474,10 +1634,12 @@ function confirmDeleteHealthMedication() {
 
 
 /* =====================================================
-   💊 服用時刻
+   💊 服用時刻表示
 ===================================================== */
 
-function formatHealthTakenTime(value) {
+function formatHealthTakenTime(
+    value
+) {
 
     const date =
         new Date(value);
@@ -1494,9 +1656,21 @@ function formatHealthTakenTime(value) {
     }
 
 
+    /*
+     * 端末のローカル時刻で表示
+     *
+     * 例
+     * 14:32
+     */
+
     return (
-        `${String(date.getHours()).padStart(2, "0")}:` +
-        `${String(date.getMinutes()).padStart(2, "0")}`
+        `${String(
+            date.getHours()
+        ).padStart(2, "0")}:` +
+
+        `${String(
+            date.getMinutes()
+        ).padStart(2, "0")}`
     );
 
 }
@@ -1535,7 +1709,9 @@ function toggleHealthMenstrual() {
         ].menstrual;
 
 
-    saveHealthCalendarData(data);
+    saveHealthCalendarData(
+        data
+    );
 
 
     updateHealthMenstrualButton(
@@ -1552,7 +1728,9 @@ function toggleHealthMenstrual() {
    🌸 生理ボタン
 ===================================================== */
 
-function updateHealthMenstrualButton(active) {
+function updateHealthMenstrualButton(
+    active
+) {
 
     const button =
         document.getElementById(
@@ -1567,7 +1745,10 @@ function updateHealthMenstrualButton(active) {
 
     if (active) {
 
-        button.classList.add("active");
+        button.classList.add(
+            "active"
+        );
+
 
         button.textContent =
             "✓ 記録済み";
@@ -1575,7 +1756,10 @@ function updateHealthMenstrualButton(active) {
     }
     else {
 
-        button.classList.remove("active");
+        button.classList.remove(
+            "active"
+        );
+
 
         button.textContent =
             "記録する";
@@ -1776,7 +1960,9 @@ function saveHealthDailyRecord() {
    📅 祝日
 ===================================================== */
 
-function loadHealthHolidays(year) {
+function loadHealthHolidays(
+    year
+) {
 
     if (
         typeof loadHolidays !== "function"
@@ -1787,42 +1973,103 @@ function loadHealthHolidays(year) {
     }
 
 
+    /*
+     * 既に読み込み済みなら何もしない
+     */
+
+    if (
+        healthHolidayLoadedYear === year
+    ) {
+
+        return;
+
+    }
+
+
+    /*
+     * 既に読み込み中なら何もしない
+     */
+
+    if (
+        healthHolidayLoadingYear === year
+    ) {
+
+        return;
+
+    }
+
+
+    healthHolidayLoadingYear =
+        year;
+
+
     loadHolidays(
         year,
         "JP"
     )
     .then(holidays => {
 
+        /*
+         * 現在表示中の年と違う場合は
+         * 画面を更新しない
+         */
+
         healthCalendarHolidays = {};
 
 
         if (Array.isArray(holidays)) {
 
-            holidays.forEach(holiday => {
+            holidays.forEach(
+                holiday => {
 
-                if (
-                    holiday &&
-                    holiday.date
-                ) {
-
-                    healthCalendarHolidays[
+                    if (
+                        holiday &&
                         holiday.date
-                    ] =
-                        holiday.localName ||
-                        holiday.name ||
-                        "";
+                    ) {
+
+                        healthCalendarHolidays[
+                            holiday.date
+                        ] =
+                            holiday.localName ||
+                            holiday.name ||
+                            "";
+
+                    }
 
                 }
-
-            });
+            );
 
         }
 
 
-        renderHealthCalendar();
+        healthHolidayLoadedYear =
+            year;
+
+
+        healthHolidayLoadingYear =
+            null;
+
+
+        /*
+         * 取得した年が現在表示中の年なら
+         * カレンダーを更新
+         */
+
+        if (
+            healthCalendarDate.getFullYear() ===
+            year
+        ) {
+
+            renderHealthCalendar();
+
+        }
 
     })
     .catch(error => {
+
+        healthHolidayLoadingYear =
+            null;
+
 
         console.error(
             "健康カレンダー祝日取得エラー:",
@@ -1863,7 +2110,9 @@ function createHealthDate(
    日付フォーマット
 ===================================================== */
 
-function formatHealthDate(date) {
+function formatHealthDate(
+    date
+) {
 
     const y =
         date.getFullYear();
@@ -1872,13 +2121,19 @@ function formatHealthDate(date) {
     const m =
         String(
             date.getMonth() + 1
-        ).padStart(2, "0");
+        ).padStart(
+            2,
+            "0"
+        );
 
 
     const d =
         String(
             date.getDate()
-        ).padStart(2, "0");
+        ).padStart(
+            2,
+            "0"
+        );
 
 
     return `${y}-${m}-${d}`;
