@@ -644,6 +644,168 @@
 
 
 
+
+
+
+        <!-- =================================================
+         📊 健康グラフ
+    ================================================== -->
+
+    <div
+        id="healthGraphPage"
+        class="health-graph-page"
+        style="display:none;"
+    >
+
+        <header class="health-graph-header">
+
+            <button
+                type="button"
+                class="health-back-button"
+                onclick="closeHealthGraph()"
+            >
+                ◀ 健康カレンダー
+            </button>
+
+            <h1>
+                📊 健康グラフ
+            </h1>
+
+        </header>
+
+
+        <div class="health-graph-control-section">
+
+            <div class="health-graph-control-title">
+                表示期間
+            </div>
+
+
+            <div class="health-graph-period-buttons">
+
+                <button
+                    type="button"
+                    class="health-graph-period-button active"
+                    data-period="7"
+                >
+                    1週間
+                </button>
+
+                <button
+                    type="button"
+                    class="health-graph-period-button"
+                    data-period="30"
+                >
+                    1か月
+                </button>
+
+                <button
+                    type="button"
+                    class="health-graph-period-button"
+                    data-period="90"
+                >
+                    3か月
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="health-graph-control-section">
+
+            <div class="health-graph-control-title">
+                表示項目
+            </div>
+
+
+            <div class="health-graph-metric-buttons">
+
+                <button
+                    type="button"
+                    class="health-graph-metric-button active"
+                    data-metric="temperature"
+                >
+                    🌡️ 体温
+                </button>
+
+                <button
+                    type="button"
+                    class="health-graph-metric-button"
+                    data-metric="bloodPressure"
+                >
+                    🩺 血圧
+                </button>
+
+                <button
+                    type="button"
+                    class="health-graph-metric-button"
+                    data-metric="pulse"
+                >
+                    ❤️ 脈拍
+                </button>
+
+                <button
+                    type="button"
+                    class="health-graph-metric-button"
+                    data-metric="weight"
+                >
+                    ⚖️ 体重
+                </button>
+
+                <button
+                    type="button"
+                    class="health-graph-metric-button"
+                    data-metric="sleep"
+                >
+                    😴 睡眠
+                </button>
+
+                <button
+                    type="button"
+                    class="health-graph-metric-button"
+                    data-metric="water"
+                >
+                    💧 水分
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <section class="health-graph-chart-section">
+
+            <div
+                id="healthGraphTitle"
+                class="health-graph-title"
+            >
+                🌡️ 体温
+            </div>
+
+
+            <div
+                id="healthGraphChart"
+                class="health-graph-chart"
+            ></div>
+
+
+            <div
+                id="healthGraphNoData"
+                class="health-graph-no-data"
+                style="display:none;"
+            >
+                この期間の記録はありません
+            </div>
+
+        </section>
+
+    </div>
+
+
+
+
+
     <!-- =================================================
          💊 服薬記録削除確認
     ================================================== -->
