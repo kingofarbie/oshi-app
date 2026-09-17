@@ -1513,6 +1513,11 @@
    ラジオボタン風に横3つ
    ===================================================== */
 
+/* =====================================================
+   📅 表示期間
+   ラジオボタン風
+   ===================================================== */
+
 .health-graph-period-buttons {
     display: flex;
     width: 100%;
@@ -1522,19 +1527,31 @@
 .health-graph-period-button {
     flex: 1;
     min-width: 0;
-    padding: 9px 4px;
-    border: 1px solid #ccc;
-    border-radius: 20px;
-    background: #fff;
+    padding: 8px 4px;
+    border: none;
+    border-radius: 18px;
+    background: transparent;
     font-size: 14px;
     font-weight: bold;
     cursor: pointer;
+    white-space: nowrap;
 }
 
+/* 選択中 */
 .health-graph-period-button.active {
-    font-weight: bold;
+    background: rgba(255, 105, 180, 0.15);
+    box-shadow: inset 0 0 0 1px rgba(255, 105, 180, 0.45);
 }
 
+/* 選択中の丸 */
+.health-graph-period-button.active::before {
+    content: "◉ ";
+}
+
+/* 未選択の丸 */
+.health-graph-period-button:not(.active)::before {
+    content: "○ ";
+}
 
 /* =====================================================
    📊 表示項目
