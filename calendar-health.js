@@ -4,6 +4,7 @@
 
    ・健康カレンダー
    ・📖 日めくり
+   ・📊 グラフ
    ・服薬記録
    ・服薬記録時刻
    ・服薬記録削除
@@ -27,12 +28,18 @@ let healthMedicationDeleteTarget = null;
 
 
 /*
- * 祝日読み込み状態
- *
- * 同じ年を何度も取得して
- * render → load → render → load...
- * になるのを防ぐ
+ * グラフ状態
  */
+
+let healthGraphPeriod = 7;
+
+let healthGraphMetric = "temperature";
+
+
+/*
+ * 祝日読み込み状態
+ */
+
 let healthHolidayLoadedYear = null;
 
 let healthHolidayLoadingYear = null;
@@ -115,11 +122,25 @@ function initializeHealthCalendar() {
         );
 
 
+    healthDailyDate =
+        healthSelectedDate;
+
+
     healthCalendarHolidays = {};
 
     healthHolidayLoadedYear = null;
 
     healthHolidayLoadingYear = null;
+
+
+    /*
+     * グラフ初期状態
+     */
+
+    healthGraphPeriod = 7;
+
+    healthGraphMetric =
+        "temperature";
 
 
     updateHealthCalendarTitle();
@@ -381,6 +402,7 @@ function applyHealthCalendarDatePicker() {
      * 年が変わった場合は
      * 新しい年の祝日を取得
      */
+
     if (
         healthHolidayLoadedYear !== year
     ) {
@@ -973,8 +995,22 @@ function openHealthDailyView() {
         );
 
 
+    const graphPage =
+        document.getElementById(
+            "healthGraphPage"
+        );
+
+
     if (!calendarPage || !dailyPage) {
         return;
+    }
+
+
+    if (graphPage) {
+
+        graphPage.style.display =
+            "none";
+
     }
 
 
@@ -1094,11 +1130,6 @@ function healthDailyPreviousDay() {
     healthDailyDate =
         formatHealthDate(date);
 
-
-    /*
-     * 日付が別月になった場合でも
-     * その日の記録を読み込む
-     */
 
     loadHealthDailyRecord();
 
@@ -1343,11 +1374,7 @@ function toggleHealthMedication(type) {
 
 
     /*
-     * =============================================
      * 新規服用記録
-     *
-     * クリックした瞬間の日時を保存
-     * =============================================
      */
 
     const takenAt =
@@ -1403,10 +1430,6 @@ function updateHealthMedicationButtons(
                     "taken"
                 );
 
-
-                /*
-                 * 服用済み＋服用時刻
-                 */
 
                 const time =
                     medication.takenAt
@@ -1497,10 +1520,6 @@ function openHealthMedicationDeleteModal(
 
     };
 
-
-    /*
-     * 現在の服用時刻も確認画面に表示
-     */
 
     const data =
         getHealthCalendarData();
@@ -1599,11 +1618,6 @@ function confirmDeleteHealthMedication() {
         ];
 
 
-        /*
-         * 薬の記録が全部なくなったら
-         * medications自体を削除
-         */
-
         if (
             Object.keys(
                 record.medications
@@ -1655,13 +1669,6 @@ function formatHealthTakenTime(
 
     }
 
-
-    /*
-     * 端末のローカル時刻で表示
-     *
-     * 例
-     * 14:32
-     */
 
     return (
         `${String(
@@ -1957,6 +1964,1424 @@ function saveHealthDailyRecord() {
 
 
 /* =====================================================
+   📊 グラフ
+===================================================== */
+
+
+/*
+ * グラフ画面を開く
+ */
+
+function openHealthGraph() {
+
+    const calendarPage =
+        document.getElementById(
+            "healthCalendarPage"
+        );
+
+
+    const dailyPage =
+        document.getElementById(
+            "healthDailyPage"
+        );
+
+
+    const graphPage =
+        document.getElementById(
+            "healthGraphPage"
+        );
+
+
+    if (!graphPage) {
+
+        console.error(
+            "healthGraphPage がありません"
+        );
+
+        return;
+
+    }
+
+
+    if (calendarPage) {
+
+        calendarPage.style.display =
+            "none";
+
+    }
+
+
+    if (dailyPage) {
+
+        dailyPage.style.display =
+            "none";
+
+    }
+
+
+    graphPage.style.display =
+        "block";
+
+
+    updateHealthGraphControls();
+
+    renderHealthGraph();
+
+}
+
+
+
+/*
+ * グラフ画面を閉じる
+ */
+
+function closeHealthGraph() {
+
+    const graphPage =
+        document.getElementById(
+            "healthGraphPage"
+        );
+
+
+    const calendarPage =
+        document.getElementById(
+            "healthCalendarPage"
+        );
+
+
+    if (graphPage) {
+
+        graphPage.style.display =
+            "none";
+
+    }
+
+
+    if (calendarPage) {
+
+        calendarPage.style.display =
+            "block";
+
+    }
+
+
+    renderHealthCalendar();
+
+}
+
+
+
+/*
+ * 期間変更
+ */
+
+function setHealthGraphPeriod(
+    days
+) {
+
+    const value =
+        Number(days);
+
+
+    if (
+        value !== 7 &&
+        value !== 30 &&
+        value !== 90
+    ) {
+
+        return;
+
+    }
+
+
+    healthGraphPeriod =
+        value;
+
+
+    updateHealthGraphControls();
+
+    renderHealthGraph();
+
+}
+
+
+
+/*
+ * 項目変更
+ */
+
+function setHealthGraphMetric(
+    metric
+) {
+
+    const allowed = [
+
+        "temperature",
+
+        "bloodPressure",
+
+        "pulse",
+
+        "weight",
+
+        "sleep",
+
+        "water"
+
+    ];
+
+
+    if (
+        !allowed.includes(metric)
+    ) {
+
+        return;
+
+    }
+
+
+    healthGraphMetric =
+        metric;
+
+
+    updateHealthGraphControls();
+
+    renderHealthGraph();
+
+}
+
+
+
+/*
+ * ボタン状態更新
+ */
+
+function updateHealthGraphControls() {
+
+    document
+        .querySelectorAll(
+            ".health-graph-period-button"
+        )
+        .forEach(button => {
+
+            const period =
+                Number(
+                    button.dataset.period
+                );
+
+
+            button.classList.toggle(
+                "active",
+                period === healthGraphPeriod
+            );
+
+        });
+
+
+    document
+        .querySelectorAll(
+            ".health-graph-metric-button"
+        )
+        .forEach(button => {
+
+            const metric =
+                button.dataset.metric;
+
+
+            button.classList.toggle(
+                "active",
+                metric === healthGraphMetric
+            );
+
+        });
+
+}
+
+
+
+/*
+ * グラフタイトル
+ */
+
+function getHealthGraphMetricInfo(
+    metric
+) {
+
+    const info = {
+
+        temperature: {
+
+            title: "🌡️ 体温",
+
+            unit: "℃",
+
+            decimals: 1
+
+        },
+
+
+        bloodPressure: {
+
+            title: "🩺 血圧",
+
+            unit: "mmHg",
+
+            decimals: 0
+
+        },
+
+
+        pulse: {
+
+            title: "❤️ 脈拍",
+
+            unit: "bpm",
+
+            decimals: 0
+
+        },
+
+
+        weight: {
+
+            title: "⚖️ 体重",
+
+            unit: "kg",
+
+            decimals: 1
+
+        },
+
+
+        sleep: {
+
+            title: "😴 睡眠",
+
+            unit: "時間",
+
+            decimals: 1
+
+        },
+
+
+        water: {
+
+            title: "💧 水分",
+
+            unit: "ml",
+
+            decimals: 0
+
+        }
+
+    };
+
+
+    return (
+        info[metric] ||
+        info.temperature
+    );
+
+}
+
+
+
+/*
+ * グラフ用の日付一覧
+ */
+
+function getHealthGraphDates() {
+
+    const endDate =
+        healthDailyDate
+            ? createHealthDate(
+                healthDailyDate
+            )
+            : new Date();
+
+
+    const dates = [];
+
+
+    for (
+        let i = healthGraphPeriod - 1;
+        i >= 0;
+        i--
+    ) {
+
+        const date =
+            new Date(endDate);
+
+
+        date.setDate(
+            date.getDate() - i
+        );
+
+
+        dates.push(
+            formatHealthDate(date)
+        );
+
+    }
+
+
+    return dates;
+
+}
+
+
+
+/*
+ * 数値変換
+ */
+
+function healthGraphNumber(
+    value
+) {
+
+    if (
+        value === undefined ||
+        value === null ||
+        value === ""
+    ) {
+
+        return null;
+
+    }
+
+
+    const number =
+        Number(value);
+
+
+    if (
+        !Number.isFinite(number)
+    ) {
+
+        return null;
+
+    }
+
+
+    return number;
+
+}
+
+
+
+/*
+ * グラフデータ取得
+ */
+
+function getHealthGraphSeries() {
+
+    const data =
+        getHealthCalendarData();
+
+
+    const dates =
+        getHealthGraphDates();
+
+
+    const series = {
+
+        dates,
+
+        values: []
+
+    };
+
+
+    dates.forEach(dateString => {
+
+        const record =
+            data.records?.[dateString];
+
+
+        if (!record) {
+
+            series.values.push(
+                null
+            );
+
+            return;
+
+        }
+
+
+        let value = null;
+
+
+        switch (
+            healthGraphMetric
+        ) {
+
+            case "temperature":
+
+                value =
+                    healthGraphNumber(
+                        record.temperature
+                    );
+
+                break;
+
+
+            case "bloodPressure":
+
+                value = {
+
+                    systolic:
+                        healthGraphNumber(
+                            record.bloodPressure?.systolic
+                        ),
+
+                    diastolic:
+                        healthGraphNumber(
+                            record.bloodPressure?.diastolic
+                        )
+
+                };
+
+
+                if (
+                    value.systolic === null &&
+                    value.diastolic === null
+                ) {
+
+                    value = null;
+
+                }
+
+                break;
+
+
+            case "pulse":
+
+                value =
+                    healthGraphNumber(
+                        record.pulse
+                    );
+
+                break;
+
+
+            case "weight":
+
+                value =
+                    healthGraphNumber(
+                        record.weight
+                    );
+
+                break;
+
+
+            case "sleep":
+
+                value =
+                    healthGraphNumber(
+                        record.sleep
+                    );
+
+                break;
+
+
+            case "water":
+
+                value =
+                    healthGraphNumber(
+                        record.water
+                    );
+
+                break;
+
+        }
+
+
+        series.values.push(
+            value
+        );
+
+    });
+
+
+    return series;
+
+}
+
+
+
+/*
+ * SVG要素作成
+ */
+
+function createHealthSVGElement(
+    name,
+    attributes = {}
+) {
+
+    const SVG_NS =
+        "http://www.w3.org/2000/svg";
+
+
+    const element =
+        document.createElementNS(
+            SVG_NS,
+            name
+        );
+
+
+    Object.entries(
+        attributes
+    ).forEach(
+        ([key, value]) => {
+
+            element.setAttribute(
+                key,
+                String(value)
+            );
+
+        }
+    );
+
+
+    return element;
+
+}
+
+
+
+/*
+ * SVGテキスト
+ */
+
+function createHealthSVGText(
+    text,
+    x,
+    y,
+    className
+) {
+
+    const element =
+        createHealthSVGElement(
+            "text",
+            {
+                x,
+                y
+            }
+        );
+
+
+    if (className) {
+
+        element.setAttribute(
+            "class",
+            className
+        );
+
+    }
+
+
+    element.textContent =
+        text;
+
+
+    return element;
+
+}
+
+
+
+/*
+ * グラフ描画
+ */
+
+function renderHealthGraph() {
+
+    const chart =
+        document.getElementById(
+            "healthGraphChart"
+        );
+
+
+    const noData =
+        document.getElementById(
+            "healthGraphNoData"
+        );
+
+
+    const title =
+        document.getElementById(
+            "healthGraphTitle"
+        );
+
+
+    if (!chart) {
+        return;
+    }
+
+
+    const info =
+        getHealthGraphMetricInfo(
+            healthGraphMetric
+        );
+
+
+    if (title) {
+
+        title.textContent =
+            info.title;
+
+    }
+
+
+    chart.innerHTML = "";
+
+
+    if (noData) {
+
+        noData.style.display =
+            "none";
+
+    }
+
+
+    const series =
+        getHealthGraphSeries();
+
+
+    /*
+     * データの存在確認
+     */
+
+    let hasData = false;
+
+
+    series.values.forEach(value => {
+
+        if (
+            healthGraphMetric ===
+            "bloodPressure"
+        ) {
+
+            if (
+                value &&
+                (
+                    value.systolic !== null ||
+                    value.diastolic !== null
+                )
+            ) {
+
+                hasData = true;
+
+            }
+
+        }
+        else if (
+            value !== null
+        ) {
+
+            hasData = true;
+
+        }
+
+    });
+
+
+    if (!hasData) {
+
+        if (noData) {
+
+            noData.style.display =
+                "block";
+
+        }
+
+        return;
+
+    }
+
+
+    /*
+     * グラフサイズ
+     */
+
+    const width =
+        Math.max(
+            320,
+            chart.clientWidth || 700
+        );
+
+
+    const height =
+        390;
+
+
+    const padding = {
+
+        top: 30,
+
+        right: 20,
+
+        bottom: 65,
+
+        left: 58
+
+    };
+
+
+    const graphWidth =
+        width -
+        padding.left -
+        padding.right;
+
+
+    const graphHeight =
+        height -
+        padding.top -
+        padding.bottom;
+
+
+    /*
+     * SVG
+     */
+
+    const svg =
+        createHealthSVGElement(
+            "svg",
+            {
+                viewBox:
+                    `0 0 ${width} ${height}`,
+
+                width:
+                    "100%",
+
+                height:
+                    height,
+
+                role:
+                    "img",
+
+                "aria-label":
+                    info.title
+
+            }
+        );
+
+
+    /*
+     * 数値を集める
+     */
+
+    const numericValues = [];
+
+
+    series.values.forEach(value => {
+
+        if (
+            healthGraphMetric ===
+            "bloodPressure"
+        ) {
+
+            if (
+                value?.systolic !== null &&
+                value?.systolic !== undefined
+            ) {
+
+                numericValues.push(
+                    value.systolic
+                );
+
+            }
+
+
+            if (
+                value?.diastolic !== null &&
+                value?.diastolic !== undefined
+            ) {
+
+                numericValues.push(
+                    value.diastolic
+                );
+
+            }
+
+        }
+        else if (
+            value !== null
+        ) {
+
+            numericValues.push(
+                value
+            );
+
+        }
+
+    });
+
+
+    let minValue =
+        Math.min(
+            ...numericValues
+        );
+
+
+    let maxValue =
+        Math.max(
+            ...numericValues
+        );
+
+
+    /*
+     * 少し余白をつける
+     */
+
+    if (
+        minValue === maxValue
+    ) {
+
+        minValue -= 1;
+
+        maxValue += 1;
+
+    }
+    else {
+
+        const range =
+            maxValue - minValue;
+
+
+        minValue -=
+            range * 0.1;
+
+
+        maxValue +=
+            range * 0.1;
+
+    }
+
+
+    /*
+     * グリッド5本
+     */
+
+    const gridCount = 5;
+
+
+    for (
+        let i = 0;
+        i <= gridCount;
+        i++
+    ) {
+
+        const ratio =
+            i / gridCount;
+
+
+        const y =
+            padding.top +
+            graphHeight * ratio;
+
+
+        const line =
+            createHealthSVGElement(
+                "line",
+                {
+
+                    x1:
+                        padding.left,
+
+                    y1:
+                        y,
+
+                    x2:
+                        padding.left +
+                        graphWidth,
+
+                    y2:
+                        y,
+
+                    class:
+                        "health-graph-grid-line"
+
+                }
+            );
+
+
+        svg.appendChild(
+            line
+        );
+
+
+        const value =
+            maxValue -
+            (
+                maxValue -
+                minValue
+            ) *
+            ratio;
+
+
+        const label =
+            createHealthSVGText(
+                formatHealthGraphValue(
+                    value,
+                    info.decimals
+                ),
+                padding.left - 10,
+                y + 5,
+                "health-graph-axis-label"
+            );
+
+
+        label.setAttribute(
+            "text-anchor",
+            "end"
+        );
+
+
+        svg.appendChild(
+            label
+        );
+
+    }
+
+
+    /*
+     * X軸日付
+     */
+
+    const dateCount =
+        series.dates.length;
+
+
+    const xStep =
+        dateCount > 1
+            ? graphWidth /
+              (dateCount - 1)
+            : 0;
+
+
+    const labelStep =
+        healthGraphPeriod === 7
+            ? 1
+            : healthGraphPeriod === 30
+                ? 5
+                : 15;
+
+
+    series.dates.forEach(
+        (dateString, index) => {
+
+            if (
+                index % labelStep !== 0 &&
+                index !== dateCount - 1
+            ) {
+
+                return;
+
+            }
+
+
+            const x =
+                padding.left +
+                xStep * index;
+
+
+            const date =
+                createHealthDate(
+                    dateString
+                );
+
+
+            const label =
+                createHealthSVGText(
+                    `${date.getMonth() + 1}/${date.getDate()}`,
+                    x,
+                    height - 25,
+                    "health-graph-date-label"
+                );
+
+
+            label.setAttribute(
+                "text-anchor",
+                "middle"
+            );
+
+
+            svg.appendChild(
+                label
+            );
+
+        }
+    );
+
+
+    /*
+     * 線を作る
+     */
+
+    if (
+        healthGraphMetric ===
+        "bloodPressure"
+    ) {
+
+        renderHealthGraphLine(
+            svg,
+            series,
+            "systolic",
+            minValue,
+            maxValue,
+            padding,
+            graphWidth,
+            graphHeight,
+            xStep
+        );
+
+
+        renderHealthGraphLine(
+            svg,
+            series,
+            "diastolic",
+            minValue,
+            maxValue,
+            padding,
+            graphWidth,
+            graphHeight,
+            xStep
+        );
+
+    }
+    else {
+
+        renderHealthGraphLine(
+            svg,
+            series,
+            "value",
+            minValue,
+            maxValue,
+            padding,
+            graphWidth,
+            graphHeight,
+            xStep
+        );
+
+    }
+
+
+    /*
+     * 単位
+     */
+
+    const unit =
+        createHealthSVGText(
+            info.unit,
+            padding.left,
+            18,
+            "health-graph-unit-label"
+        );
+
+
+    svg.appendChild(
+        unit
+    );
+
+
+    chart.appendChild(
+        svg
+    );
+
+
+    /*
+     * 血圧凡例
+     */
+
+    if (
+        healthGraphMetric ===
+        "bloodPressure"
+    ) {
+
+        const legend =
+            document.createElement(
+                "div"
+            );
+
+
+        legend.className =
+            "health-graph-legend";
+
+
+        legend.innerHTML = `
+            <span class="health-graph-legend-item">
+                <span class="health-graph-legend-line systolic"></span>
+                最高血圧
+            </span>
+
+            <span class="health-graph-legend-item">
+                <span class="health-graph-legend-line diastolic"></span>
+                最低血圧
+            </span>
+        `;
+
+
+        chart.appendChild(
+            legend
+        );
+
+    }
+
+}
+
+
+
+/*
+ * グラフ線描画
+ */
+
+function renderHealthGraphLine(
+    svg,
+    series,
+    type,
+    minValue,
+    maxValue,
+    padding,
+    graphWidth,
+    graphHeight,
+    xStep
+) {
+
+    const points = [];
+
+
+    series.values.forEach(
+        (value, index) => {
+
+            let numericValue =
+                null;
+
+
+            if (
+                type === "systolic"
+            ) {
+
+                numericValue =
+                    value?.systolic ??
+                    null;
+
+            }
+            else if (
+                type === "diastolic"
+            ) {
+
+                numericValue =
+                    value?.diastolic ??
+                    null;
+
+            }
+            else {
+
+                numericValue =
+                    value;
+
+            }
+
+
+            if (
+                numericValue === null ||
+                numericValue === undefined
+            ) {
+
+                points.push(null);
+
+                return;
+
+            }
+
+
+            const x =
+                padding.left +
+                xStep * index;
+
+
+            const ratio =
+                (
+                    maxValue -
+                    numericValue
+                ) /
+                (
+                    maxValue -
+                    minValue
+                );
+
+
+            const y =
+                padding.top +
+                graphHeight * ratio;
+
+
+            points.push({
+
+                x,
+
+                y
+
+            });
+
+        }
+    );
+
+
+    /*
+     * 欠測部分で線を切る
+     */
+
+    let currentPath = "";
+
+
+    const paths = [];
+
+
+    points.forEach(point => {
+
+        if (!point) {
+
+            if (currentPath) {
+
+                paths.push(
+                    currentPath
+                );
+
+                currentPath = "";
+
+            }
+
+            return;
+
+        }
+
+
+        if (!currentPath) {
+
+            currentPath =
+                `M ${point.x} ${point.y}`;
+
+        }
+        else {
+
+            currentPath +=
+                ` L ${point.x} ${point.y}`;
+
+        }
+
+    });
+
+
+    if (currentPath) {
+
+        paths.push(
+            currentPath
+        );
+
+    }
+
+
+    paths.forEach(pathData => {
+
+        const path =
+            createHealthSVGElement(
+                "path",
+                {
+
+                    d:
+                        pathData,
+
+                    fill:
+                        "none",
+
+                    class:
+                        `health-graph-line ${type}`
+
+                }
+            );
+
+
+        svg.appendChild(
+            path
+        );
+
+    });
+
+
+    /*
+     * 記録点
+     */
+
+    points.forEach(point => {
+
+        if (!point) {
+            return;
+        }
+
+
+        const circle =
+            createHealthSVGElement(
+                "circle",
+                {
+
+                    cx:
+                        point.x,
+
+                    cy:
+                        point.y,
+
+                    r:
+                        4,
+
+                    class:
+                        `health-graph-point ${type}`
+
+                }
+            );
+
+
+        svg.appendChild(
+            circle
+        );
+
+    });
+
+}
+
+
+
+/*
+ * グラフ数値表示
+ */
+
+function formatHealthGraphValue(
+    value,
+    decimals
+) {
+
+    if (
+        !Number.isFinite(value)
+    ) {
+
+        return "";
+
+    }
+
+
+    return Number(
+        value
+    ).toFixed(
+        decimals
+    );
+
+}
+
+
+
+/* =====================================================
    📅 祝日
 ===================================================== */
 
@@ -1973,10 +3398,6 @@ function loadHealthHolidays(
     }
 
 
-    /*
-     * 既に読み込み済みなら何もしない
-     */
-
     if (
         healthHolidayLoadedYear === year
     ) {
@@ -1985,10 +3406,6 @@ function loadHealthHolidays(
 
     }
 
-
-    /*
-     * 既に読み込み中なら何もしない
-     */
 
     if (
         healthHolidayLoadingYear === year
@@ -2008,11 +3425,6 @@ function loadHealthHolidays(
         "JP"
     )
     .then(holidays => {
-
-        /*
-         * 現在表示中の年と違う場合は
-         * 画面を更新しない
-         */
 
         healthCalendarHolidays = {};
 
@@ -2049,11 +3461,6 @@ function loadHealthHolidays(
         healthHolidayLoadingYear =
             null;
 
-
-        /*
-         * 取得した年が現在表示中の年なら
-         * カレンダーを更新
-         */
 
         if (
             healthCalendarDate.getFullYear() ===
