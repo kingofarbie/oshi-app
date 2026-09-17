@@ -2417,43 +2417,49 @@ function getHealthGraphMetricInfo(
 
 function getHealthGraphDates() {
 
+    /*
+     * 📊 グラフの基準日
+     *
+     * ・カレンダーで日付を選択している場合
+     *   → その日を基準にする
+     *
+     * ・まだ日付を選択していない場合
+     *   → 今日を基準にする
+     */
     const endDate =
-        healthDailyDate
-            ? createHealthDate(
-                healthDailyDate
-            )
+        healthSelectedDate
+            ? createHealthDate(healthSelectedDate)
             : new Date();
-
 
     const dates = [];
 
-
+    /*
+     * 基準日を含めて、
+     * 選択した期間の日数分だけ過去へ遡る
+     *
+     * 7日  → 基準日を含む7日間
+     * 30日 → 基準日を含む30日間
+     * 90日 → 基準日を含む90日間
+     */
     for (
         let i = healthGraphPeriod - 1;
         i >= 0;
         i--
     ) {
 
-        const date =
-            new Date(endDate);
-
+        const date = new Date(endDate);
 
         date.setDate(
             date.getDate() - i
         );
 
-
         dates.push(
             formatHealthDate(date)
         );
-
     }
 
-
     return dates;
-
 }
-
 
 
 /*

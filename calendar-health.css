@@ -1653,15 +1653,15 @@
 ===================================================== */
 
 .health-graph-line {
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 3;
+    fill: none !important;
+    stroke: #7c4dff !important;
+    stroke-width: 3 !important;
     stroke-linecap: round;
     stroke-linejoin: round;
 }
 
 .health-graph-point {
-    fill: currentColor;
-    stroke: currentColor;
-    stroke-width: 2;
+    fill: #7c4dff !important;
+    stroke: #7c4dff !important;
+    stroke-width: 2 !important;
 }
