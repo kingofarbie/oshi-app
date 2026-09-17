@@ -1646,3 +1646,22 @@
     color: #aaa;
     opacity: 1;
 }
+
+
+/* =====================================================
+   📊 健康グラフ 折れ線
+===================================================== */
+
+.health-graph-line {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.health-graph-point {
+    fill: currentColor;
+    stroke: currentColor;
+    stroke-width: 2;
+}
