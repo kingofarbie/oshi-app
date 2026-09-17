@@ -3260,6 +3260,12 @@ function renderHealthGraph() {
 
     }
 
+
+        /* グラフ描画が全部終わった後 */
+
+    initializeHealthGraphSelection();
+
+
 }
 
 
@@ -3481,6 +3487,559 @@ function renderHealthGraphLine(
     });
 
 }
+
+
+
+/* =====================================================
+   📊 健康グラフ 選択表示
+===================================================== */
+
+let healthGraphSelectedIndex = null;
+let healthGraphDragging = false;
+
+
+/* =====================================================
+   選択表示をセット
+===================================================== */
+
+function initializeHealthGraphSelection() {
+
+    const chart =
+        document.getElementById("healthGraphChart");
+
+    if (!chart) return;
+
+    const svg =
+        chart.querySelector("svg");
+
+    if (!svg) return;
+
+    /*
+     * 既存の選択用要素があれば削除
+     */
+    svg
+        .querySelectorAll(
+            ".health-graph-selection-group"
+        )
+        .forEach(element => {
+            element.remove();
+        });
+
+    /*
+     * 現在のグラフの日付
+     */
+    const dates =
+        getHealthGraphDates();
+
+    if (!dates.length) return;
+
+    /*
+     * viewBox
+     */
+    const viewBox =
+        svg.viewBox.baseVal;
+
+    const width =
+        viewBox.width;
+
+    const height =
+        viewBox.height;
+
+    /*
+     * 現在のグラフと同じ余白
+     */
+    const padding = {
+        top: 30,
+        right: 20,
+        bottom: 65,
+        left: 58
+    };
+
+    const chartWidth =
+        width -
+        padding.left -
+        padding.right;
+
+    const chartHeight =
+        height -
+        padding.top -
+        padding.bottom;
+
+    /*
+     * 選択表示用グループ
+     */
+    const group =
+        document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "g"
+        );
+
+    group.setAttribute(
+        "class",
+        "health-graph-selection-group"
+    );
+
+    /*
+     * 縦線
+     */
+    const line =
+        document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "line"
+        );
+
+    line.setAttribute(
+        "class",
+        "health-graph-selection-line"
+    );
+
+    line.setAttribute(
+        "y1",
+        padding.top
+    );
+
+    line.setAttribute(
+        "y2",
+        padding.top + chartHeight
+    );
+
+    group.appendChild(line);
+
+    /*
+     * 日付表示
+     */
+    const dateText =
+        document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "text"
+        );
+
+    dateText.setAttribute(
+        "class",
+        "health-graph-selection-label"
+    );
+
+    dateText.setAttribute(
+        "text-anchor",
+        "middle"
+    );
+
+    group.appendChild(dateText);
+
+    /*
+     * 数値表示
+     */
+    const valueText =
+        document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "text"
+        );
+
+    valueText.setAttribute(
+        "class",
+        "health-graph-selection-value"
+    );
+
+    valueText.setAttribute(
+        "text-anchor",
+        "middle"
+    );
+
+    group.appendChild(valueText);
+
+    /*
+     * グラフ上のタッチ・クリック判定
+     */
+    const hitArea =
+        document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "rect"
+        );
+
+    hitArea.setAttribute(
+        "class",
+        "health-graph-selection-hit-area"
+    );
+
+    hitArea.setAttribute(
+        "x",
+        padding.left
+    );
+
+    hitArea.setAttribute(
+        "y",
+        padding.top
+    );
+
+    hitArea.setAttribute(
+        "width",
+        chartWidth
+    );
+
+    hitArea.setAttribute(
+        "height",
+        chartHeight
+    );
+
+    /*
+     * hitAreaは一番上に置く
+     */
+    group.appendChild(hitArea);
+
+    svg.appendChild(group);
+
+    /*
+     * 選択位置を更新
+     */
+    function updateSelection(clientX) {
+
+        const rect =
+            svg.getBoundingClientRect();
+
+        if (!rect.width) return;
+
+        /*
+         * SVG座標へ変換
+         */
+        const svgX =
+            (clientX - rect.left)
+            *
+            (width / rect.width);
+
+        let relativeX =
+            svgX - padding.left;
+
+        /*
+         * 範囲内に収める
+         */
+        relativeX =
+            Math.max(
+                0,
+                Math.min(
+                    chartWidth,
+                    relativeX
+                )
+            );
+
+        /*
+         * 一番近い日付
+         */
+        const step =
+            dates.length > 1
+                ? chartWidth / (dates.length - 1)
+                : 0;
+
+        let index = 0;
+
+        if (step > 0) {
+            index =
+                Math.round(
+                    relativeX / step
+                );
+        }
+
+        index =
+            Math.max(
+                0,
+                Math.min(
+                    dates.length - 1,
+                    index
+                )
+            );
+
+        healthGraphSelectedIndex =
+            index;
+
+        /*
+         * 選択X座標
+         */
+        const x =
+            padding.left +
+            (
+                dates.length > 1
+                    ? index * step
+                    : chartWidth / 2
+            );
+
+        line.setAttribute(
+            "x1",
+            x
+        );
+
+        line.setAttribute(
+            "x2",
+            x
+        );
+
+        /*
+         * 日付
+         */
+        const date =
+            dates[index];
+
+        dateText.textContent =
+            formatHealthGraphDisplayDate(
+                date
+            );
+
+        dateText.setAttribute(
+            "x",
+            x
+        );
+
+        dateText.setAttribute(
+            "y",
+            18
+        );
+
+        /*
+         * 数値
+         */
+        const record =
+            getHealthCalendarData()
+                .records?.[date];
+
+        valueText.textContent =
+            getHealthGraphDisplayValue(
+                record,
+                healthGraphMetric
+            );
+
+        valueText.setAttribute(
+            "x",
+            x
+        );
+
+        valueText.setAttribute(
+            "y",
+            38
+        );
+
+        /*
+         * 表示
+         */
+        group.style.display =
+            "block";
+    }
+
+    /*
+     * 最初は非表示
+     */
+    group.style.display =
+        "none";
+
+    /*
+     * タップ・ドラッグ
+     */
+    hitArea.addEventListener(
+        "pointerdown",
+        event => {
+
+            healthGraphDragging =
+                true;
+
+            hitArea.setPointerCapture(
+                event.pointerId
+            );
+
+            updateSelection(
+                event.clientX
+            );
+        }
+    );
+
+    hitArea.addEventListener(
+        "pointermove",
+        event => {
+
+            /*
+             * PCのマウス
+             */
+            if (
+                event.pointerType === "mouse"
+                &&
+                !healthGraphDragging
+            ) {
+                updateSelection(
+                    event.clientX
+                );
+
+                return;
+            }
+
+            /*
+             * スマホのドラッグ
+             */
+            if (
+                healthGraphDragging
+            ) {
+                updateSelection(
+                    event.clientX
+                );
+            }
+        }
+    );
+
+    hitArea.addEventListener(
+        "pointerup",
+        event => {
+
+            healthGraphDragging =
+                false;
+
+            try {
+                hitArea.releasePointerCapture(
+                    event.pointerId
+                );
+            } catch (error) {
+                // 何もしない
+            }
+        }
+    );
+
+    hitArea.addEventListener(
+        "pointercancel",
+        event => {
+
+            healthGraphDragging =
+                false;
+
+            try {
+                hitArea.releasePointerCapture(
+                    event.pointerId
+                );
+            } catch (error) {
+                // 何もしない
+            }
+        }
+    );
+
+    /*
+     * PCではグラフから離れたら
+     * 選択表示を消す
+     *
+     * スマホでは選択状態を残す
+     */
+    hitArea.addEventListener(
+        "pointerleave",
+        event => {
+
+            if (
+                event.pointerType === "mouse"
+                &&
+                !healthGraphDragging
+            ) {
+                group.style.display =
+                    "none";
+            }
+        }
+    );
+}
+
+
+/* =====================================================
+   📅 グラフ日付表示
+===================================================== */
+
+function formatHealthGraphDisplayDate(date) {
+
+    const parts =
+        date.split("-");
+
+    if (parts.length !== 3) {
+        return date;
+    }
+
+    return (
+        Number(parts[1]) +
+        "/" +
+        Number(parts[2])
+    );
+}
+
+
+/* =====================================================
+   📊 グラフ数値表示
+===================================================== */
+
+function getHealthGraphDisplayValue(
+    record,
+    metric
+) {
+
+    if (!record) {
+        return "記録なし";
+    }
+
+    if (metric === "temperature") {
+
+        return record.temperature != null
+            ? `${record.temperature}℃`
+            : "記録なし";
+    }
+
+    if (metric === "bloodPressure") {
+
+        const systolic =
+            record.bloodPressure?.systolic;
+
+        const diastolic =
+            record.bloodPressure?.diastolic;
+
+        if (
+            systolic == null
+            &&
+            diastolic == null
+        ) {
+            return "記録なし";
+        }
+
+        if (
+            systolic != null
+            &&
+            diastolic != null
+        ) {
+            return `${systolic}/${diastolic} mmHg`;
+        }
+
+        if (systolic != null) {
+            return `上 ${systolic} mmHg`;
+        }
+
+        return `下 ${diastolic} mmHg`;
+    }
+
+    if (metric === "pulse") {
+
+        return record.pulse != null
+            ? `${record.pulse} bpm`
+            : "記録なし";
+    }
+
+    if (metric === "weight") {
+
+        return record.weight != null
+            ? `${record.weight} kg`
+            : "記録なし";
+    }
+
+    if (metric === "sleep") {
+
+        return record.sleep != null
+            ? `${record.sleep} 時間`
+            : "記録なし";
+    }
+
+    if (metric === "water") {
+
+        return record.water != null
+            ? `${record.water} ml`
+            : "記録なし";
+    }
+
+    return "記録なし";
+}
+
 
 
 

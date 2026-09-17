@@ -1665,3 +1665,34 @@
     stroke: #7c4dff !important;
     stroke-width: 2 !important;
 }
+
+/* =====================================================
+   📊 健康グラフ 選択表示
+===================================================== */
+
+.health-graph-selection-line {
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-dasharray: 5 4;
+    pointer-events: none;
+}
+
+.health-graph-selection-label {
+    fill: currentColor;
+    font-size: 13px;
+    font-weight: bold;
+    pointer-events: none;
+}
+
+.health-graph-selection-value {
+    fill: currentColor;
+    font-size: 14px;
+    font-weight: bold;
+    pointer-events: none;
+}
+
+.health-graph-selection-hit-area {
+    fill: transparent;
+    cursor: crosshair;
+    touch-action: none;
+}
