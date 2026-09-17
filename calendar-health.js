@@ -2107,10 +2107,51 @@ function openHealthGraph() {
         "block";
 
 
+    /*
+     * 📅 期間ボタン
+     */
+
+    document
+        .querySelectorAll(
+            ".health-graph-period-button"
+        )
+        .forEach(button => {
+
+            button.onclick = () => {
+
+                setHealthGraphPeriod(
+                    button.dataset.period
+                );
+
+            };
+
+        });
+
+
+    /*
+     * 📊 表示項目ボタン
+     */
+
+    document
+        .querySelectorAll(
+            ".health-graph-metric-button"
+        )
+        .forEach(button => {
+
+            button.onclick = () => {
+
+                setHealthGraphMetric(
+                    button.dataset.metric
+                );
+
+            };
+
+        });
+
+
     updateHealthGraphControls();
 
     renderHealthGraph();
-
 }
 
 
