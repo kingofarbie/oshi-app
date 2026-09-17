@@ -3502,40 +3502,63 @@ let healthGraphDragging = false;
    選択表示をセット
 ===================================================== */
 
+/* =====================================================
+   📊 健康グラフ 選択表示
+===================================================== */
+
+let healthGraphSelectedIndex = null;
+let healthGraphDragging = false;
+
+
+/* =====================================================
+   選択表示をセット
+===================================================== */
+
 function initializeHealthGraphSelection() {
 
     const chart =
-        document.getElementById("healthGraphChart");
+        document.getElementById(
+            "healthGraphChart"
+        );
 
     if (!chart) return;
+
 
     const svg =
         chart.querySelector("svg");
 
     if (!svg) return;
 
+
     /*
-     * 既存の選択用要素があれば削除
+     * 既存の選択用要素を削除
      */
+
     svg
         .querySelectorAll(
             ".health-graph-selection-group"
         )
         .forEach(element => {
+
             element.remove();
+
         });
+
 
     /*
      * 現在のグラフの日付
      */
+
     const dates =
         getHealthGraphDates();
 
     if (!dates.length) return;
 
+
     /*
      * viewBox
      */
+
     const viewBox =
         svg.viewBox.baseVal;
 
@@ -3545,183 +3568,274 @@ function initializeHealthGraphSelection() {
     const height =
         viewBox.height;
 
+
     /*
      * 現在のグラフと同じ余白
      */
+
     const padding = {
+
         top: 30,
+
         right: 20,
+
         bottom: 65,
+
         left: 58
+
     };
+
 
     const chartWidth =
         width -
         padding.left -
         padding.right;
 
+
     const chartHeight =
         height -
         padding.top -
         padding.bottom;
 
+
     /*
      * 選択表示用グループ
      */
+
     const group =
         document.createElementNS(
             "http://www.w3.org/2000/svg",
             "g"
         );
 
+
     group.setAttribute(
         "class",
         "health-graph-selection-group"
     );
 
+
+    /*
+     * グループ自体は表示状態にする
+     *
+     * ※ hitAreaを受け取れるようにするため
+     */
+
+    group.style.display =
+        "block";
+
+
     /*
      * 縦線
      */
+
     const line =
         document.createElementNS(
             "http://www.w3.org/2000/svg",
             "line"
         );
 
+
     line.setAttribute(
         "class",
         "health-graph-selection-line"
     );
+
 
     line.setAttribute(
         "y1",
         padding.top
     );
 
+
     line.setAttribute(
         "y2",
         padding.top + chartHeight
     );
 
-    group.appendChild(line);
+
+    line.style.display =
+        "none";
+
+
+    group.appendChild(
+        line
+    );
+
 
     /*
      * 日付表示
      */
+
     const dateText =
         document.createElementNS(
             "http://www.w3.org/2000/svg",
             "text"
         );
 
+
     dateText.setAttribute(
         "class",
         "health-graph-selection-label"
     );
+
 
     dateText.setAttribute(
         "text-anchor",
         "middle"
     );
 
-    group.appendChild(dateText);
+
+    dateText.style.display =
+        "none";
+
+
+    group.appendChild(
+        dateText
+    );
+
 
     /*
      * 数値表示
      */
+
     const valueText =
         document.createElementNS(
             "http://www.w3.org/2000/svg",
             "text"
         );
 
+
     valueText.setAttribute(
         "class",
         "health-graph-selection-value"
     );
+
 
     valueText.setAttribute(
         "text-anchor",
         "middle"
     );
 
-    group.appendChild(valueText);
+
+    valueText.style.display =
+        "none";
+
+
+    group.appendChild(
+        valueText
+    );
+
 
     /*
      * グラフ上のタッチ・クリック判定
+     *
+     * ここは最初から有効にする
      */
+
     const hitArea =
         document.createElementNS(
             "http://www.w3.org/2000/svg",
             "rect"
         );
 
+
     hitArea.setAttribute(
         "class",
         "health-graph-selection-hit-area"
     );
+
 
     hitArea.setAttribute(
         "x",
         padding.left
     );
 
+
     hitArea.setAttribute(
         "y",
         padding.top
     );
+
 
     hitArea.setAttribute(
         "width",
         chartWidth
     );
 
+
     hitArea.setAttribute(
         "height",
         chartHeight
     );
 
-    /*
-     * タップ・ドラッグを確実に受け取る
-     */
+
+    hitArea.setAttribute(
+        "fill",
+        "rgba(124, 77, 255, 0.001)"
+    );
+
+
     hitArea.setAttribute(
         "pointer-events",
         "all"
     );
 
+
     group.appendChild(
         hitArea
     );
+
+
+    /*
+     * SVGへ追加
+     */
 
     svg.appendChild(
         group
     );
 
+
     /*
      * 選択位置を更新
      */
-    function updateSelection(clientX) {
+
+    function updateSelection(
+        clientX
+    ) {
 
         const rect =
             svg.getBoundingClientRect();
 
+
         if (!rect.width) return;
+
 
         /*
          * SVG座標へ変換
          */
+
         const svgX =
-            (clientX - rect.left)
+            (
+                clientX -
+                rect.left
+            )
             *
-            (width / rect.width);
+            (
+                width /
+                rect.width
+            );
+
 
         let relativeX =
             svgX -
             padding.left;
 
+
         /*
-         * 範囲内に収める
+         * グラフ範囲内に制限
          */
+
         relativeX =
             Math.max(
                 0,
@@ -3731,16 +3845,20 @@ function initializeHealthGraphSelection() {
                 )
             );
 
+
         /*
-         * 一番近い日付
+         * 日付間隔
          */
+
         const step =
             dates.length > 1
                 ? chartWidth /
                   (dates.length - 1)
                 : 0;
 
+
         let index = 0;
+
 
         if (step > 0) {
 
@@ -3752,6 +3870,7 @@ function initializeHealthGraphSelection() {
 
         }
 
+
         index =
             Math.max(
                 0,
@@ -3761,12 +3880,15 @@ function initializeHealthGraphSelection() {
                 )
             );
 
+
         healthGraphSelectedIndex =
             index;
+
 
         /*
          * 選択X座標
          */
+
         const x =
             padding.left +
             (
@@ -3775,55 +3897,69 @@ function initializeHealthGraphSelection() {
                     : chartWidth / 2
             );
 
+
         /*
          * 縦線
          */
+
         line.setAttribute(
             "x1",
             x
         );
+
 
         line.setAttribute(
             "x2",
             x
         );
 
-        /*
-         * 縦線を確実に表示
-         */
+
         line.style.display =
             "block";
+
 
         line.style.visibility =
             "visible";
 
+
         /*
          * 日付
          */
+
         const date =
             dates[index];
+
 
         dateText.textContent =
             formatHealthGraphDisplayDate(
                 date
             );
 
+
         dateText.setAttribute(
             "x",
             x
         );
+
 
         dateText.setAttribute(
             "y",
             18
         );
 
+
+        dateText.style.display =
+            "block";
+
+
         /*
          * 数値
          */
+
         const record =
             getHealthCalendarData()
                 .records?.[date];
+
 
         valueText.textContent =
             getHealthGraphDisplayValue(
@@ -3831,32 +3967,29 @@ function initializeHealthGraphSelection() {
                 healthGraphMetric
             );
 
+
         valueText.setAttribute(
             "x",
             x
         );
+
 
         valueText.setAttribute(
             "y",
             38
         );
 
-        /*
-         * 選択表示
-         */
-        group.style.display =
+
+        valueText.style.display =
             "block";
+
     }
 
-    /*
-     * 最初は非表示
-     */
-    group.style.display =
-        "none";
 
     /*
      * タップ・ドラッグ開始
      */
+
     hitArea.addEventListener(
         "pointerdown",
         event => {
@@ -3864,26 +3997,34 @@ function initializeHealthGraphSelection() {
             healthGraphDragging =
                 true;
 
+
             hitArea.setPointerCapture(
                 event.pointerId
             );
 
+
             updateSelection(
                 event.clientX
             );
+
         }
     );
+
 
     /*
      * ポインター移動
      */
+
     hitArea.addEventListener(
         "pointermove",
         event => {
 
             /*
              * PCのマウス
+             *
+             * hoverで表示
              */
+
             if (
                 event.pointerType === "mouse" &&
                 !healthGraphDragging
@@ -3897,9 +4038,11 @@ function initializeHealthGraphSelection() {
 
             }
 
+
             /*
              * スマホのドラッグ
              */
+
             if (
                 healthGraphDragging
             ) {
@@ -3913,9 +4056,11 @@ function initializeHealthGraphSelection() {
         }
     );
 
+
     /*
      * タップ・ドラッグ終了
      */
+
     hitArea.addEventListener(
         "pointerup",
         event => {
@@ -3923,13 +4068,15 @@ function initializeHealthGraphSelection() {
             healthGraphDragging =
                 false;
 
+
             try {
 
                 hitArea.releasePointerCapture(
                     event.pointerId
                 );
 
-            } catch (error) {
+            }
+            catch (error) {
 
                 // 何もしない
 
@@ -3938,9 +4085,11 @@ function initializeHealthGraphSelection() {
         }
     );
 
+
     /*
      * 操作キャンセル
      */
+
     hitArea.addEventListener(
         "pointercancel",
         event => {
@@ -3948,13 +4097,15 @@ function initializeHealthGraphSelection() {
             healthGraphDragging =
                 false;
 
+
             try {
 
                 hitArea.releasePointerCapture(
                     event.pointerId
                 );
 
-            } catch (error) {
+            }
+            catch (error) {
 
                 // 何もしない
 
@@ -3963,12 +4114,14 @@ function initializeHealthGraphSelection() {
         }
     );
 
+
     /*
      * PCではグラフから離れたら
      * 選択表示を消す
      *
-     * スマホでは選択状態を残す
+     * スマホでは残す
      */
+
     hitArea.addEventListener(
         "pointerleave",
         event => {
@@ -3978,14 +4131,25 @@ function initializeHealthGraphSelection() {
                 !healthGraphDragging
             ) {
 
-                group.style.display =
+                line.style.display =
+                    "none";
+
+
+                dateText.style.display =
+                    "none";
+
+
+                valueText.style.display =
                     "none";
 
             }
 
         }
     );
+
 }
+
+
 
 /* =====================================================
    📅 グラフ日付表示
