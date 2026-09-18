@@ -39,7 +39,7 @@
 
 
 /* =====================================================
-   タイトル
+   💊 健康カレンダー タイトル
 ===================================================== */
 
 .health-calendar-title {
@@ -61,7 +61,7 @@
 
 
 /* =====================================================
-   ◀ 通常カレンダー
+   ◀ 通常カレンダー ＋ 📊 グラフ
 ===================================================== */
 
 .health-calendar-header .health-back-button {
@@ -73,26 +73,7 @@
     flex-shrink: 0;
     width: 150px;
     max-width: 150px;
-    box-sizing: border-box;
-
-    padding: 8px 12px;
-
-    border: 1px solid var(--border);
-    border-radius: 10px;
-
-    background: var(--surface);
-    color: var(--text);
-
-    font-size: 15px;
-    font-weight: 800;
-
-    white-space: nowrap;
 }
-
-
-/* =====================================================
-   📊 グラフ
-===================================================== */
 
 .health-calendar-header .health-graph-button {
     grid-column: 2;
@@ -101,20 +82,6 @@
     flex-shrink: 0;
     width: 150px;
     max-width: 150px;
-    box-sizing: border-box;
-
-    padding: 8px 12px;
-
-    border: 1px solid var(--border);
-    border-radius: 10px;
-
-    background: var(--surface);
-    color: var(--text);
-
-    font-size: 15px;
-    font-weight: 800;
-
-    white-space: nowrap;
 }
 
 
