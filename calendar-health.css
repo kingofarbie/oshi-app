@@ -24,66 +24,98 @@
    ヘッダー
 ===================================================== */
 
+/* =====================================================
+   💊 健康カレンダー ヘッダー
+===================================================== */
+
 .health-calendar-header {
-
-    display: flex;
-
-    align-items: flex-end;
-
-    gap: 8px;
-
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto auto;
+    column-gap: 8px;
+    row-gap: 6px;
     padding: 8px 10px;
-
 }
 
-.health-calendar-title {
 
-    flex: 1;
+/* =====================================================
+   タイトル
+===================================================== */
+
+.health-calendar-title {
+    grid-column: 1;
+    grid-row: 1;
+
+    align-self: end;
 
     min-width: 0;
-
     margin: 0;
 
     font-size: 22px;
-
     font-weight: 800;
 
     white-space: nowrap;
-
     overflow: hidden;
-
     text-overflow: ellipsis;
-
 }
 
 
+/* =====================================================
+   ◀ 通常カレンダー
+===================================================== */
 
-.health-back-button {
+.health-calendar-header .health-back-button {
+    grid-column: 2;
+    grid-row: 1;
+
+    align-self: end;
 
     flex-shrink: 0;
-
-    width: auto;
-
+    width: 150px;
     max-width: 150px;
+    box-sizing: border-box;
 
     padding: 8px 12px;
 
     border: 1px solid var(--border);
-
     border-radius: 10px;
 
     background: var(--surface);
-
     color: var(--text);
 
     font-size: 15px;
-
     font-weight: 800;
 
     white-space: nowrap;
-
 }
 
+
+/* =====================================================
+   📊 グラフ
+===================================================== */
+
+.health-calendar-header .health-graph-button {
+    grid-column: 2;
+    grid-row: 2;
+
+    flex-shrink: 0;
+    width: 150px;
+    max-width: 150px;
+    box-sizing: border-box;
+
+    padding: 8px 12px;
+
+    border: 1px solid var(--border);
+    border-radius: 10px;
+
+    background: var(--surface);
+    color: var(--text);
+
+    font-size: 15px;
+    font-weight: 800;
+
+    white-space: nowrap;
+}
 
 
 /* =====================================================
