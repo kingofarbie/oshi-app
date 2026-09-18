@@ -1973,36 +1973,28 @@
 
 /* =====================================================
    👴 健康管理
-   年配の方でも見やすい大きめ表示
+   年配の方でも見やすい追加調整
 ===================================================== */
 
-.health-calendar-screen {
-
-    font-size: 20px;
-}
-
-
 /* -------------------------
-   見出し
+   入力欄
+   ※元の指定がある項目はそちらを使用
 ------------------------- */
 
-.health-calendar-screen h1 {
+.health-calendar-screen input,
+.health-calendar-screen textarea,
+.health-calendar-screen select {
 
-    font-size: 30px;
-    font-weight: 900;
-
-}
-
-.health-calendar-screen h2 {
-
-    font-size: 26px;
-    font-weight: 900;
+    font-size: 22px;
+    font-weight: 800;
+    min-height: 54px;
 
 }
 
 
 /* -------------------------
-   項目名
+   健康記録の項目名
+   ※元の指定がない項目のみ対象
 ------------------------- */
 
 .health-calendar-screen label,
@@ -2016,59 +2008,6 @@
 
 
 /* -------------------------
-   入力欄
-------------------------- */
-
-.health-calendar-screen input,
-.health-calendar-screen textarea,
-.health-calendar-screen select {
-
-    font-size: 22px;
-    font-weight: 800;
-
-    min-height: 54px;
-
-}
-
-
-/* -------------------------
-   通常ボタン
-------------------------- */
-
-.health-calendar-screen button {
-
-    font-size: 21px;
-    font-weight: 900;
-
-    min-height: 54px;
-
-}
-
-
-/* -------------------------
-   薬の服用ボタン
-   fit-contentで横幅を抑える
-------------------------- */
-
-.health-calendar-screen
-.health-medication-button {
-
-    width: fit-content;
-    max-width: 100%;
-
-    min-height: 58px;
-
-    padding: 12px 18px;
-
-    font-size: 28px;
-    font-weight: 900;
-
-    white-space: nowrap;
-
-}
-
-
-/* -------------------------
    説明・補足
 ------------------------- */
 
@@ -2077,35 +2016,6 @@
 
     font-size: 19px;
     font-weight: 700;
-
     line-height: 1.7;
-
-}
-
-
-/* -------------------------
-   カレンダー日付
-------------------------- */
-
-.health-calendar-screen
-.health-calendar-day {
-
-    font-size: 20px;
-    font-weight: 900;
-
-}
-
-
-/* -------------------------
-   保存ボタン
-------------------------- */
-
-.health-calendar-screen
-.health-save-button {
-
-    min-height: 64px;
-
-    font-size: 24px;
-    font-weight: 900;
 
 }
