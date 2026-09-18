@@ -35,34 +35,36 @@
     <div id="healthCalendarPage">
 
 
-        <header class="health-calendar-header">
+<header class="health-calendar-header">
 
-            <h1
-                id="healthCalendarTitle"
-                class="health-calendar-title"
-            >
-                💊 健康カレンダー
-            </h1>
+    <h1
+        id="healthCalendarTitle"
+        class="health-calendar-title"
+    >
+        💊 健康カレンダー
+    </h1>
 
-            <button
-    type="button"
-    class="health-graph-button"
-    onclick="openHealthGraph()"
->
-    📊 グラフ
-</button>
+    <div class="health-calendar-header-buttons">
 
+        <button
+            type="button"
+            class="health-back-button"
+            onclick="loadCalendarHTML()"
+        >
+            ◀ 通常カレンダー
+        </button>
 
-            <button
-                type="button"
-                class="health-back-button"
-                onclick="loadCalendarHTML()"
-            >
-                ◀ 通常カレンダー
-            </button>
+        <button
+            type="button"
+            class="health-graph-button"
+            onclick="openHealthGraph()"
+        >
+            📊 グラフ
+        </button>
 
-        </header>
+    </div>
 
+</header>
 
         <section class="health-calendar-controls">
 
