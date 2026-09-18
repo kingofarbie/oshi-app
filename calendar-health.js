@@ -3513,15 +3513,15 @@ function initializeHealthGraphSelection() {
     if (!chart) return;
 
 
+    /*
+     * 既存の選択用要素を削除
+     */
+
     const svg =
         chart.querySelector("svg");
 
     if (!svg) return;
 
-
-    /*
-     * 既存の選択用要素を削除
-     */
 
     svg
         .querySelectorAll(
@@ -3604,12 +3604,6 @@ function initializeHealthGraphSelection() {
     );
 
 
-    /*
-     * グループ自体は表示状態にする
-     *
-     * ※ hitAreaを受け取れるようにするため
-     */
-
     group.style.display =
         "block";
 
@@ -3631,9 +3625,14 @@ function initializeHealthGraphSelection() {
     );
 
 
+    /*
+     * 日付・数値の下から
+     * 縦線を開始する
+     */
+
     line.setAttribute(
         "y1",
-        padding.top
+        58
     );
 
 
@@ -3718,8 +3717,6 @@ function initializeHealthGraphSelection() {
 
     /*
      * グラフ上のタッチ・クリック判定
-     *
-     * ここは最初から有効にする
      */
 
     const hitArea =
@@ -3925,15 +3922,30 @@ function initializeHealthGraphSelection() {
             );
 
 
+        /*
+         * 左右端では
+         * 日付・数値だけ中央寄りにする
+         */
+
+        const textX =
+            Math.max(
+                padding.left + 50,
+                Math.min(
+                    padding.left + chartWidth - 50,
+                    x
+                )
+            );
+
+
         dateText.setAttribute(
             "x",
-            x
+            textX
         );
 
 
         dateText.setAttribute(
             "y",
-            18
+            28
         );
 
 
@@ -3959,13 +3971,13 @@ function initializeHealthGraphSelection() {
 
         valueText.setAttribute(
             "x",
-            x
+            textX
         );
 
 
         valueText.setAttribute(
             "y",
-            38
+            48
         );
 
 
@@ -4008,12 +4020,6 @@ function initializeHealthGraphSelection() {
         "pointermove",
         event => {
 
-            /*
-             * PCのマウス
-             *
-             * hoverで表示
-             */
-
             if (
                 event.pointerType === "mouse" &&
                 !healthGraphDragging
@@ -4027,10 +4033,6 @@ function initializeHealthGraphSelection() {
 
             }
 
-
-            /*
-             * スマホのドラッグ
-             */
 
             if (
                 healthGraphDragging
@@ -4137,7 +4139,6 @@ function initializeHealthGraphSelection() {
     );
 
 }
-
 
 
 /* =====================================================
