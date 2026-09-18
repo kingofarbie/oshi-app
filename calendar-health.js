@@ -4490,7 +4490,9 @@ function escapeHealthCalendarHTML(
 function initializeHealthCalendarSwipe() {
 
     const calendar =
-        document.getElementById("healthCalendar");
+        document.getElementById(
+            "healthCalendar"
+        );
 
     if (!calendar) return;
 
@@ -4498,6 +4500,10 @@ function initializeHealthCalendarSwipe() {
     let startX = 0;
     let startY = 0;
 
+
+    /*
+     * スワイプ開始
+     */
 
     calendar.addEventListener(
         "touchstart",
@@ -4516,11 +4522,19 @@ function initializeHealthCalendarSwipe() {
     );
 
 
+    /*
+     * スワイプ終了
+     */
+
     calendar.addEventListener(
         "touchend",
         event => {
 
-            if (!event.changedTouches.length) return;
+            if (
+                !event.changedTouches.length
+            ) {
+                return;
+            }
 
 
             const endX =
@@ -4538,8 +4552,7 @@ function initializeHealthCalendarSwipe() {
 
 
             /*
-             * 縦方向の動きが大きい場合は
-             * 月スワイプとして扱わない
+             * 縦方向の操作なら無視
              */
 
             if (
@@ -4551,31 +4564,56 @@ function initializeHealthCalendarSwipe() {
 
 
             /*
-             * 左 → 右
+             * 👈 左 → 右
              * 前の月
              */
 
             if (diffX > 0) {
 
-                changeHealthCalendarMonth(-1);
+                healthCalendarDate.setMonth(
+                    healthCalendarDate.getMonth() - 1
+                );
 
             }
 
 
             /*
-             * 右 → 左
+             * 👉 右 → 左
              * 次の月
              */
 
             else {
 
-                changeHealthCalendarMonth(1);
+                healthCalendarDate.setMonth(
+                    healthCalendarDate.getMonth() + 1
+                );
 
             }
+
+
+            /*
+             * 月を変更したので
+             * 選択日はリセット
+             */
+
+            healthSelectedDate = null;
+
+
+            /*
+             * 年月タイトル更新
+             */
+
+            updateHealthCalendarTitle();
+
+
+            /*
+             * カレンダー再描画
+             */
+
+            renderHealthCalendar();
 
         },
         { passive: true }
     );
 
 }
-
