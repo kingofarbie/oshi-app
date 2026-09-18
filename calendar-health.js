@@ -48,6 +48,14 @@ let healthHolidayLoadedYear = null;
 let healthHolidayLoadingYear = null;
 
 
+/* =====================
+   💊 健康カレンダー月スワイプ専用
+   ※ 他のカレンダーと名前を完全分離
+===================== */
+
+let healthCalendarMonthSwipeStartX = 0;
+let healthCalendarMonthSwipeStartY = 0;
+
 /* =====================================================
    💊 健康カレンダーを開く
 ===================================================== */
@@ -151,7 +159,7 @@ function initializeHealthCalendar() {
 
     renderHealthCalendar();
     
-    initializeHealthCalendarSwipe();
+    initializeHealthCalendarMonthSwipe();
 
 }
 
@@ -4484,136 +4492,197 @@ function escapeHealthCalendarHTML(
 
 
 /* =====================================================
-   💊 健康カレンダー 月スワイプ
+   💊 健康カレンダー月スワイプ
+   ※ 他のカレンダーとは完全分離
 ===================================================== */
 
-function initializeHealthCalendarSwipe() {
+function initializeHealthCalendarMonthSwipe(){
 
     const calendar =
         document.getElementById(
             "healthCalendar"
         );
 
-    if (!calendar) return;
+
+    if(!calendar){
+
+        return;
+
+    }
 
 
-    let startX = 0;
-    let startY = 0;
+    /* =====================
+       スワイプ開始
+    ===================== */
 
+    calendar.ontouchstart =
+        function(event){
 
-    /*
-     * スワイプ開始
-     */
+            if(
+                !event.touches ||
+                event.touches.length !== 1
+            ){
 
-    calendar.addEventListener(
-        "touchstart",
-        event => {
-
-            if (!event.touches.length) return;
-
-            startX =
-                event.touches[0].clientX;
-
-            startY =
-                event.touches[0].clientY;
-
-        },
-        { passive: true }
-    );
-
-
-    /*
-     * スワイプ終了
-     */
-
-    calendar.addEventListener(
-        "touchend",
-        event => {
-
-            if (
-                !event.changedTouches.length
-            ) {
                 return;
+
             }
 
 
-            const endX =
-                event.changedTouches[0].clientX;
+            healthCalendarMonthSwipeStartX =
+                event.touches[0].clientX;
 
-            const endY =
-                event.changedTouches[0].clientY;
+
+            healthCalendarMonthSwipeStartY =
+                event.touches[0].clientY;
+
+        };
+
+
+    /* =====================
+       スワイプ終了
+    ===================== */
+
+    calendar.ontouchend =
+        function(event){
+
+            if(
+                !event.changedTouches ||
+                event.changedTouches.length !== 1
+            ){
+
+                return;
+
+            }
+
+
+            const touch =
+                event.changedTouches[0];
 
 
             const diffX =
-                endX - startX;
+                touch.clientX -
+                healthCalendarMonthSwipeStartX;
+
 
             const diffY =
-                endY - startY;
+                touch.clientY -
+                healthCalendarMonthSwipeStartY;
 
 
-            /*
-             * 縦方向の操作なら無視
-             */
+            /* =====================
+               縦スクロールを除外
+            ===================== */
 
-            if (
-                Math.abs(diffX) < 50 ||
-                Math.abs(diffX) <= Math.abs(diffY)
-            ) {
+            if(
+                Math.abs(diffX) < 60
+            ){
+
                 return;
+
             }
 
 
-            /*
-             * 👈 左 → 右
-             * 前の月
-             */
+            if(
+                Math.abs(diffX) <=
+                Math.abs(diffY)
+            ){
 
-            if (diffX > 0) {
+                return;
 
-                healthCalendarDate.setMonth(
-                    healthCalendarDate.getMonth() - 1
+            }
+
+
+            /* =====================
+               左スワイプ
+               → 次月
+            ===================== */
+
+            if(diffX < 0){
+
+                changeHealthCalendarMonthBySwipe(
+                    1
                 );
 
             }
 
 
-            /*
-             * 👉 右 → 左
-             * 次の月
-             */
+            /* =====================
+               右スワイプ
+               → 前月
+            ===================== */
 
-            else {
+            else{
 
-                healthCalendarDate.setMonth(
-                    healthCalendarDate.getMonth() + 1
+                changeHealthCalendarMonthBySwipe(
+                    -1
                 );
 
             }
 
+        };
 
-            /*
-             * 月を変更したので
-             * 選択日はリセット
-             */
-
-            healthSelectedDate = null;
+}
 
 
-            /*
-             * 年月タイトル更新
-             */
+/* =====================================================
+   💊 健康カレンダー月変更
+   スワイプ専用
+===================================================== */
 
-            updateHealthCalendarTitle();
+function changeHealthCalendarMonthBySwipe(
+    value
+){
+
+    const oldYear =
+        healthCalendarDate.getFullYear();
 
 
-            /*
-             * カレンダー再描画
-             */
-
-            renderHealthCalendar();
-
-        },
-        { passive: true }
+    healthCalendarDate.setMonth(
+        healthCalendarDate.getMonth() +
+        value
     );
+
+
+    const newYear =
+        healthCalendarDate.getFullYear();
+
+
+    /*
+       年をまたいだ場合は
+       祝日データを更新する
+    */
+
+    if(oldYear !== newYear){
+
+        healthCalendarHolidays = {};
+
+        healthHolidayLoadedYear = null;
+
+        healthHolidayLoadingYear = null;
+
+    }
+
+
+    /*
+       月を移動したので
+       カレンダー上の日付選択は解除
+    */
+
+    healthSelectedDate =
+        null;
+
+
+    /*
+       月タイトル更新
+    */
+
+    updateHealthCalendarTitle();
+
+
+    /*
+       カレンダー再描画
+    */
+
+    renderHealthCalendar();
 
 }
