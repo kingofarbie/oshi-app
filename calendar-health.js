@@ -150,6 +150,8 @@ function initializeHealthCalendar() {
     initializeHealthCalendarDatePicker();
 
     renderHealthCalendar();
+    
+    initializeHealthCalendarSwipe();
 
 }
 
@@ -4480,4 +4482,100 @@ function escapeHealthCalendarHTML(
 
 }
 
+
+/* =====================================================
+   💊 健康カレンダー 月スワイプ
+===================================================== */
+
+function initializeHealthCalendarSwipe() {
+
+    const calendar =
+        document.getElementById("healthCalendar");
+
+    if (!calendar) return;
+
+
+    let startX = 0;
+    let startY = 0;
+
+
+    calendar.addEventListener(
+        "touchstart",
+        event => {
+
+            if (!event.touches.length) return;
+
+            startX =
+                event.touches[0].clientX;
+
+            startY =
+                event.touches[0].clientY;
+
+        },
+        { passive: true }
+    );
+
+
+    calendar.addEventListener(
+        "touchend",
+        event => {
+
+            if (!event.changedTouches.length) return;
+
+
+            const endX =
+                event.changedTouches[0].clientX;
+
+            const endY =
+                event.changedTouches[0].clientY;
+
+
+            const diffX =
+                endX - startX;
+
+            const diffY =
+                endY - startY;
+
+
+            /*
+             * 縦方向の動きが大きい場合は
+             * 月スワイプとして扱わない
+             */
+
+            if (
+                Math.abs(diffX) < 50 ||
+                Math.abs(diffX) <= Math.abs(diffY)
+            ) {
+                return;
+            }
+
+
+            /*
+             * 左 → 右
+             * 前の月
+             */
+
+            if (diffX > 0) {
+
+                changeHealthCalendarMonth(-1);
+
+            }
+
+
+            /*
+             * 右 → 左
+             * 次の月
+             */
+
+            else {
+
+                changeHealthCalendarMonth(1);
+
+            }
+
+        },
+        { passive: true }
+    );
+
+}
 
