@@ -1448,6 +1448,10 @@ function updateHealthMedicationButtons(
                 medications?.[type];
 
 
+            /* =================================
+               🌅 服用済み
+            ================================= */
+
             if (medication) {
 
                 button.classList.add(
@@ -1463,10 +1467,29 @@ function updateHealthMedicationButtons(
                         : "";
 
 
+                /*
+                   朝・昼・夜などの表示名を
+                   ボタン側の現在の文字から取得する。
+
+                   例：
+                   🌅 朝
+                   ☀️ 昼
+                   🌙 夜
+                */
+
+                const label =
+                    button.textContent
+                        .replace(
+                            /服用した|✓\s*服用済み.*|服用済.*$/,
+                            ""
+                        )
+                        .trim();
+
+
                 button.textContent =
                     time
-                        ? `✓ 服用済み ${time}`
-                        : "✓ 服用済み";
+                        ? `${label}　服用済　${time}`
+                        : `${label}　服用済`;
 
 
                 if (time) {
@@ -1483,6 +1506,12 @@ function updateHealthMedicationButtons(
                 }
 
             }
+
+
+            /* =================================
+               🌅 未服用
+            ================================= */
+
             else {
 
                 button.classList.remove(
@@ -1490,8 +1519,23 @@ function updateHealthMedicationButtons(
                 );
 
 
+                /*
+                   ここも現在のボタンに
+                   朝・昼・夜の表示があることを
+                   前提にする。
+                */
+
+                const label =
+                    button.textContent
+                        .replace(
+                            /服用した|✓\s*服用済み.*|服用済.*$/,
+                            ""
+                        )
+                        .trim();
+
+
                 button.textContent =
-                    "服用した";
+                    `${label}　服用したら押す`;
 
 
                 button.title =
@@ -1502,8 +1546,6 @@ function updateHealthMedicationButtons(
         });
 
 }
-
-
 
 /* =====================================================
    💊 削除確認を開く

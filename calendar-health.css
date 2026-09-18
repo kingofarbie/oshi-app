@@ -676,11 +676,13 @@
 
 .health-medication-button {
 
-    min-width: 155px;
+    min-width: 0;
 
-    min-height: 58px;
+    width: fit-content;
 
-    padding: 8px 14px;
+    min-height: 64px;
+
+    padding: 10px 18px;
 
     border: 1px solid var(--border);
 
@@ -690,12 +692,17 @@
 
     color: var(--text);
 
-    font-size: 19px;
+    font-size: 28px;
 
-    font-weight: 800;
+    font-weight: 900;
+
+    line-height: 1.3;
+
+    white-space: nowrap;
+
+    box-sizing: border-box;
 
 }
-
 
 
 .health-medication-button.taken {
@@ -1351,16 +1358,25 @@
     }
 
 
-    .health-medication-button {
+.health-medication-button {
 
-        min-width: 140px;
+    min-width: 0;
 
-        min-height: 58px;
+    width: fit-content;
 
-        font-size: 18px;
+    min-height: 64px;
 
-    }
+    padding: 10px 18px;
 
+    font-size: 26px;
+
+    font-weight: 900;
+
+    line-height: 1.3;
+
+    white-space: nowrap;
+
+}
 
     .health-input-row input {
 
@@ -1946,5 +1962,150 @@
         font-size: 30px;
 
     }
+
+}
+
+
+
+
+
+
+
+/* =====================================================
+   👴 健康管理
+   年配の方でも見やすい大きめ表示
+===================================================== */
+
+.health-calendar-screen {
+
+    font-size: 20px;
+}
+
+
+/* -------------------------
+   見出し
+------------------------- */
+
+.health-calendar-screen h1 {
+
+    font-size: 30px;
+    font-weight: 900;
+
+}
+
+.health-calendar-screen h2 {
+
+    font-size: 26px;
+    font-weight: 900;
+
+}
+
+
+/* -------------------------
+   項目名
+------------------------- */
+
+.health-calendar-screen label,
+.health-calendar-screen .health-section-title,
+.health-calendar-screen .health-record-label {
+
+    font-size: 22px;
+    font-weight: 900;
+
+}
+
+
+/* -------------------------
+   入力欄
+------------------------- */
+
+.health-calendar-screen input,
+.health-calendar-screen textarea,
+.health-calendar-screen select {
+
+    font-size: 22px;
+    font-weight: 800;
+
+    min-height: 54px;
+
+}
+
+
+/* -------------------------
+   通常ボタン
+------------------------- */
+
+.health-calendar-screen button {
+
+    font-size: 21px;
+    font-weight: 900;
+
+    min-height: 54px;
+
+}
+
+
+/* -------------------------
+   薬の服用ボタン
+   fit-contentで横幅を抑える
+------------------------- */
+
+.health-calendar-screen
+.health-medication-button {
+
+    width: fit-content;
+    max-width: 100%;
+
+    min-height: 58px;
+
+    padding: 12px 18px;
+
+    font-size: 28px;
+    font-weight: 900;
+
+    white-space: nowrap;
+
+}
+
+
+/* -------------------------
+   説明・補足
+------------------------- */
+
+.health-calendar-screen p,
+.health-calendar-screen .health-description {
+
+    font-size: 19px;
+    font-weight: 700;
+
+    line-height: 1.7;
+
+}
+
+
+/* -------------------------
+   カレンダー日付
+------------------------- */
+
+.health-calendar-screen
+.health-calendar-day {
+
+    font-size: 20px;
+    font-weight: 900;
+
+}
+
+
+/* -------------------------
+   保存ボタン
+------------------------- */
+
+.health-calendar-screen
+.health-save-button {
+
+    min-height: 64px;
+
+    font-size: 24px;
+    font-weight: 900;
 
 }
