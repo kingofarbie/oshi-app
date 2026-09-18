@@ -28,6 +28,16 @@ let healthMedicationDeleteTarget = null;
 
 
 /* =====================================================
+   🔢 健康数値入力ポップアップ
+===================================================== */
+
+let healthNumberInputTarget = null;
+
+let healthNumberInputValue = "";
+
+let healthNumberInputAllowDecimal = false;
+
+/* =====================================================
    📊 健康グラフ
 ===================================================== */
 /*
@@ -160,6 +170,8 @@ function initializeHealthCalendar() {
     renderHealthCalendar();
     
     initializeHealthCalendarMonthSwipe();
+    
+    initializeHealthNumberInput();
 
 }
 
@@ -4684,5 +4696,555 @@ function changeHealthCalendarMonthBySwipe(
     */
 
     renderHealthCalendar();
+
+}
+
+
+
+/* =====================================================
+   🔢 健康数値入力ポップアップ 初期化
+===================================================== */
+
+function initializeHealthNumberInput() {
+
+    const modal =
+        document.getElementById(
+            "healthNumberInputModal"
+        );
+
+    const display =
+        document.getElementById(
+            "healthNumberInputDisplay"
+        );
+
+    if (!modal || !display) {
+
+        return;
+
+    }
+
+
+    /*
+     * 数字ボタン
+     */
+
+    modal
+        .querySelectorAll(
+            "[data-number]"
+        )
+        .forEach(button => {
+
+            button.onclick =
+                function() {
+
+                    const value =
+                        button.dataset.number;
+
+                    appendHealthNumberInput(
+                        value
+                    );
+
+                };
+
+        });
+
+
+    /*
+     * 操作ボタン
+     */
+
+    modal
+        .querySelectorAll(
+            "[data-action]"
+        )
+        .forEach(button => {
+
+            button.onclick =
+                function() {
+
+                    const action =
+                        button.dataset.action;
+
+
+                    if (
+                        action === "backspace"
+                    ) {
+
+                        backspaceHealthNumberInput();
+
+                    }
+                    else if (
+                        action === "delete"
+                    ) {
+
+                        deleteHealthNumberInput();
+
+                    }
+                    else if (
+                        action === "reset"
+                    ) {
+
+                        resetHealthNumberInput();
+
+                    }
+                    else if (
+                        action === "save"
+                    ) {
+
+                        saveHealthNumberInput();
+
+                    }
+
+                };
+
+        });
+
+
+    /*
+     * 既存の数値入力欄を
+     * タップ式入力に変更
+     */
+
+    const inputSettings = [
+
+        {
+            id:
+                "healthTemperatureInput",
+
+            title:
+                "🌡️ 体温",
+
+            decimal:
+                true
+
+        },
+
+        {
+            id:
+                "healthSystolicInput",
+
+            title:
+                "🩺 最高血圧",
+
+            decimal:
+                false
+
+        },
+
+        {
+            id:
+                "healthDiastolicInput",
+
+            title:
+                "🩺 最低血圧",
+
+            decimal:
+                false
+
+        },
+
+        {
+            id:
+                "healthPulseInput",
+
+            title:
+                "❤️ 脈拍",
+
+            decimal:
+                false
+
+        },
+
+        {
+            id:
+                "healthSleepInput",
+
+            title:
+                "😴 睡眠時間",
+
+            decimal:
+                true
+
+        },
+
+        {
+            id:
+                "healthWaterInput",
+
+            title:
+                "💧 水分",
+
+            decimal:
+                false
+
+        },
+
+        {
+            id:
+                "healthWeightInput",
+
+            title:
+                "⚖️ 体重",
+
+            decimal:
+                true
+
+        }
+
+    ];
+
+
+    inputSettings.forEach(
+        setting => {
+
+            const input =
+                document.getElementById(
+                    setting.id
+                );
+
+
+            if (!input) {
+
+                return;
+
+            }
+
+
+            /*
+             * 標準キーボードを出さない
+             */
+
+            input.readOnly = true;
+
+
+            /*
+             * タップ時にポップアップ
+             */
+
+            input.onclick =
+                function() {
+
+                    openHealthNumberInput(
+                        input,
+                        setting.title,
+                        setting.decimal
+                    );
+
+                };
+
+        }
+    );
+
+}
+
+
+
+/* =====================================================
+   🔢 数値入力ポップアップを開く
+===================================================== */
+
+function openHealthNumberInput(
+    input,
+    title,
+    allowDecimal
+) {
+
+    const modal =
+        document.getElementById(
+            "healthNumberInputModal"
+        );
+
+    const titleElement =
+        document.getElementById(
+            "healthNumberInputTitle"
+        );
+
+    const display =
+        document.getElementById(
+            "healthNumberInputDisplay"
+        );
+
+
+    if (
+        !modal ||
+        !titleElement ||
+        !display
+    ) {
+
+        return;
+
+    }
+
+
+    healthNumberInputTarget =
+        input;
+
+
+    healthNumberInputValue =
+        input.value || "";
+
+
+    healthNumberInputAllowDecimal =
+        allowDecimal;
+
+
+    titleElement.textContent =
+        title;
+
+
+    display.textContent =
+        healthNumberInputValue;
+
+
+    /*
+     * 小数点ボタン表示
+     */
+
+    const decimalButton =
+        modal.querySelector(
+            ".decimal-button"
+        );
+
+
+    if (decimalButton) {
+
+        decimalButton.style.display =
+            allowDecimal
+                ? "block"
+                : "none";
+
+    }
+
+
+    modal.style.display =
+        "flex";
+
+}
+
+
+
+/* =====================================================
+   🔢 数字追加
+===================================================== */
+
+function appendHealthNumberInput(
+    value
+) {
+
+    if (!healthNumberInputTarget) {
+
+        return;
+
+    }
+
+
+    /*
+     * 小数点
+     */
+
+    if (value === ".") {
+
+        if (!healthNumberInputAllowDecimal) {
+
+            return;
+
+        }
+
+
+        if (
+            healthNumberInputValue.includes(".")
+        ) {
+
+            return;
+
+        }
+
+
+        /*
+         * 先頭の小数点は
+         * 0. にする
+         */
+
+        if (
+            healthNumberInputValue === ""
+        ) {
+
+            healthNumberInputValue =
+                "0.";
+
+        }
+        else {
+
+            healthNumberInputValue += ".";
+
+        }
+
+    }
+    else {
+
+        healthNumberInputValue +=
+            value;
+
+    }
+
+
+    updateHealthNumberInputDisplay();
+
+}
+
+
+
+/* =====================================================
+   🔢 1文字削除
+===================================================== */
+
+function backspaceHealthNumberInput() {
+
+    if (
+        !healthNumberInputValue
+    ) {
+
+        return;
+
+    }
+
+
+    healthNumberInputValue =
+        healthNumberInputValue.slice(
+            0,
+            -1
+        );
+
+
+    updateHealthNumberInputDisplay();
+
+}
+
+
+
+/* =====================================================
+   🔢 リセット
+===================================================== */
+
+function resetHealthNumberInput() {
+
+    healthNumberInputValue =
+        "";
+
+
+    updateHealthNumberInputDisplay();
+
+}
+
+
+
+/* =====================================================
+   🔢 削除
+   → 入力欄の値そのものを削除して閉じる
+===================================================== */
+
+function deleteHealthNumberInput() {
+
+    if (!healthNumberInputTarget) {
+
+        closeHealthNumberInput();
+
+        return;
+
+    }
+
+
+    healthNumberInputTarget.value =
+        "";
+
+
+    closeHealthNumberInput();
+
+}
+
+
+
+/* =====================================================
+   🔢 保存
+   → 入力欄へ反映
+===================================================== */
+
+function saveHealthNumberInput() {
+
+    if (!healthNumberInputTarget) {
+
+        closeHealthNumberInput();
+
+        return;
+
+    }
+
+
+    healthNumberInputTarget.value =
+        healthNumberInputValue;
+
+
+    closeHealthNumberInput();
+
+}
+
+
+
+/* =====================================================
+   🔢 表示更新
+===================================================== */
+
+function updateHealthNumberInputDisplay() {
+
+    const display =
+        document.getElementById(
+            "healthNumberInputDisplay"
+        );
+
+
+    if (!display) {
+
+        return;
+
+    }
+
+
+    display.textContent =
+        healthNumberInputValue;
+
+}
+
+
+
+/* =====================================================
+   🔢 ポップアップを閉じる
+===================================================== */
+
+function closeHealthNumberInput() {
+
+    const modal =
+        document.getElementById(
+            "healthNumberInputModal"
+        );
+
+
+    if (modal) {
+
+        modal.style.display =
+            "none";
+
+    }
+
+
+    healthNumberInputTarget =
+        null;
+
+
+    healthNumberInputValue =
+        "";
+
+
+    healthNumberInputAllowDecimal =
+        false;
 
 }
