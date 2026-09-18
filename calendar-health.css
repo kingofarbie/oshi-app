@@ -28,14 +28,13 @@
 
     display: flex;
 
-    align-items: center;
+    align-items: flex-end;
 
     gap: 8px;
 
     padding: 8px 10px;
 
 }
-
 
 
 .health-calendar-title {
@@ -1968,54 +1967,3 @@
 
 
 
-
-
-
-/* =====================================================
-   👴 健康管理
-   年配の方でも見やすい追加調整
-===================================================== */
-
-/* -------------------------
-   入力欄
-   ※元の指定がある項目はそちらを使用
-------------------------- */
-
-.health-calendar-screen input,
-.health-calendar-screen textarea,
-.health-calendar-screen select {
-
-    font-size: 22px;
-    font-weight: 800;
-    min-height: 54px;
-
-}
-
-
-/* -------------------------
-   健康記録の項目名
-   ※元の指定がない項目のみ対象
-------------------------- */
-
-.health-calendar-screen label,
-.health-calendar-screen .health-section-title,
-.health-calendar-screen .health-record-label {
-
-    font-size: 22px;
-    font-weight: 900;
-
-}
-
-
-/* -------------------------
-   説明・補足
-------------------------- */
-
-.health-calendar-screen p,
-.health-calendar-screen .health-description {
-
-    font-size: 19px;
-    font-weight: 700;
-    line-height: 1.7;
-
-}
