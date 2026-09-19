@@ -1265,16 +1265,6 @@ for (
     }
 
 
-    if (
-        childrenSelectedDate ===
-        dateString
-    ) {
-
-        cell.classList.add(
-            "selected"
-        );
-    }
-
 
 cell.onclick =
     function() {
@@ -1524,19 +1514,89 @@ function renderChildrenDaily() {
      *
      * 記録機能はこのあと追加する
      */
-    content.innerHTML = `
-        <div class="children-daily-empty">
-            この日の記録はまだありません。
+content.innerHTML = `
+    <div class="children-daily-empty">
+        この日の記録はまだありません。
+    </div>
+
+    <button
+        type="button"
+        class="children-daily-add-button"
+        id="childrenDailyAddButton"
+    >
+        ＋ この日の記録を追加
+    </button>
+
+    <div
+        id="childrenDailyForm"
+        class="children-daily-form"
+        style="display:none;"
+    >
+
+        <div class="children-daily-form-title">
+            📝 記録を追加
         </div>
+
+        <p class="children-daily-form-placeholder">
+            ここに子どもの記録入力項目を追加します。
+        </p>
 
         <button
             type="button"
-            class="children-daily-add-button"
+            id="childrenDailyFormCloseButton"
+            class="children-daily-form-close-button"
         >
-            ＋ この日の記録を追加
+            閉じる
         </button>
-    `;
 
+    </div>
+`;
+
+
+const addButton =
+    document.getElementById(
+        "childrenDailyAddButton"
+    );
+
+const form =
+    document.getElementById(
+        "childrenDailyForm"
+    );
+
+const closeButton =
+    document.getElementById(
+        "childrenDailyFormCloseButton"
+    );
+
+
+if (addButton && form) {
+
+    addButton.onclick =
+        function() {
+
+            form.style.display =
+                "";
+
+            addButton.style.display =
+                "none";
+        };
+}
+
+
+if (closeButton && form) {
+
+    closeButton.onclick =
+        function() {
+
+            form.style.display =
+                "none";
+
+            if (addButton) {
+                addButton.style.display =
+                    "";
+            }
+        };
+}
 
     section.style.display =
         "";
