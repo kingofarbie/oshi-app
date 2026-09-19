@@ -5151,5 +5151,7 @@ function closeHealthNumberInput() {
         "";
 
 
+
     healthNumberInputAllowDecimal =
         false;
+   }
