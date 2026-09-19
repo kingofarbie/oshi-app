@@ -27,6 +27,15 @@ let healthDailyDate = null;
 let healthMedicationDeleteTarget = null;
 
 
+/* =====================================================
+   🔢 健康数値入力ポップアップ
+===================================================== */
+
+let healthNumberInputTarget = null;
+
+let healthNumberInputValue = "";
+
+let healthNumberInputAllowDecimal = false;
 
 /* =====================================================
    📊 健康グラフ
