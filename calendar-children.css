@@ -1,0 +1,463 @@
+/* =====================================================
+👶 こどもカレンダー
+calendar-children.css
+
+・こどもカレンダー専用
+・HTML構造には干渉しない
+・通常カレンダー / 健康管理 / スポーツには影響しない
+===================================================== */
+
+/* =====================================================
+アプリ全体
+===================================================== */
+
+.children-calendar-app {
+width: min(100%, 700px);
+margin: 0 auto;
+padding: 0 10px 30px;
+box-sizing: border-box;
+}
+
+/* =====================================================
+ヘッダー
+===================================================== */
+
+.children-calendar-header {
+display: grid;
+grid-template-columns: minmax(0, 1fr) auto;
+align-items: end;
+gap: 8px;
+padding: 8px 0 12px;
+}
+
+.children-calendar-title {
+min-width: 0;
+margin: 0;
+font-size: 24px;
+font-weight: 800;
+line-height: 1.2;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+}
+
+.children-calendar-back-button {
+flex-shrink: 0;
+min-height: 44px;
+padding: 8px 14px;
+border: 1px solid var(--border, #ddd);
+border-radius: 10px;
+background: var(--surface, #fff);
+color: var(--text, #333);
+font-size: 16px;
+font-weight: 700;
+cursor: pointer;
+}
+
+/* =====================================================
+子ども選択
+===================================================== */
+
+.children-selector-section {
+display: flex;
+align-items: center;
+gap: 10px;
+margin-bottom: 14px;
+}
+
+.children-selector-label {
+flex-shrink: 0;
+font-size: 18px;
+font-weight: 800;
+}
+
+.children-selector {
+flex: 1;
+min-width: 0;
+min-height: 48px;
+padding: 8px 12px;
+border: 1px solid var(--border, #ddd);
+border-radius: 12px;
+background: var(--surface, #fff);
+color: var(--text, #333);
+font-size: 17px;
+font-weight: 700;
+}
+
+/* =====================================================
+プロフィール
+===================================================== */
+
+.children-profile {
+margin-bottom: 16px;
+padding: 16px;
+border: 1px solid var(--border, #ddd);
+border-radius: 16px;
+background: var(--surface, #fff);
+}
+
+.children-profile-empty {
+padding: 12px 4px;
+text-align: center;
+color: var(--muted, #888);
+font-size: 16px;
+line-height: 1.7;
+}
+
+.children-profile-name {
+margin: 0 0 4px;
+font-size: 24px;
+font-weight: 900;
+}
+
+.children-profile-birthday {
+margin: 0;
+color: var(--muted, #777);
+font-size: 15px;
+}
+
+.children-profile-age {
+margin-top: 8px;
+font-size: 17px;
+font-weight: 800;
+}
+
+/* =====================================================
+カレンダー
+===================================================== */
+
+.children-calendar-section {
+margin-top: 10px;
+}
+
+.children-month-navigation {
+display: grid;
+grid-template-columns: 44px minmax(0, 1fr) 44px;
+align-items: center;
+gap: 6px;
+margin-bottom: 10px;
+}
+
+.children-month-button {
+width: 44px;
+height: 44px;
+padding: 0;
+border: 1px solid var(--border, #ddd);
+border-radius: 10px;
+background: var(--surface, #fff);
+color: var(--text, #333);
+font-size: 18px;
+font-weight: 800;
+cursor: pointer;
+}
+
+.children-month-title-button {
+min-height: 44px;
+border: none;
+background: transparent;
+color: var(--text, #333);
+font-size: 21px;
+font-weight: 900;
+}
+
+/* =====================================================
+カレンダー本体
+===================================================== */
+
+.children-calendar {
+display: grid;
+grid-template-columns: repeat(7, minmax(0, 1fr));
+gap: 4px;
+}
+
+.children-calendar-weekday {
+padding: 6px 2px;
+text-align: center;
+font-size: 13px;
+font-weight: 800;
+}
+
+.children-calendar-weekday.sunday {
+color: #d55;
+}
+
+.children-calendar-weekday.saturday {
+color: #4685d7;
+}
+
+.children-calendar-day {
+min-height: 68px;
+padding: 6px;
+border: 1px solid var(--border, #ddd);
+border-radius: 10px;
+background: var(--surface, #fff);
+box-sizing: border-box;
+}
+
+.children-calendar-day.empty {
+border-color: transparent;
+background: transparent;
+}
+
+.children-calendar-day-number {
+font-size: 15px;
+font-weight: 800;
+}
+
+.children-calendar-day.today {
+outline: 2px solid var(--accent, #e58);
+outline-offset: -2px;
+}
+
+.children-calendar-day.selected {
+background: var(--accent-bg, #fff0f7);
+}
+
+/* =====================================================
+モーダル
+===================================================== */
+
+.children-modal {
+position: relative;
+z-index: 1000;
+}
+
+.children-modal-overlay {
+position: fixed;
+inset: 0;
+background: rgba(0, 0, 0, 0.35);
+}
+
+.children-modal-content {
+position: fixed;
+top: 50%;
+left: 50%;
+width: min(92%, 500px);
+max-height: 86vh;
+overflow-y: auto;
+transform: translate(-50%, -50%);
+box-sizing: border-box;
+padding: 20px;
+border-radius: 18px;
+background: var(--surface, #fff);
+color: var(--text, #333);
+box-shadow: 0 8px 30px rgba(0, 0, 0, 0.18);
+}
+
+.children-modal-header {
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 10px;
+margin-bottom: 18px;
+}
+
+.children-modal-header h2 {
+margin: 0;
+font-size: 22px;
+}
+
+.children-modal-close-button {
+width: 44px;
+height: 44px;
+flex-shrink: 0;
+border: none;
+border-radius: 10px;
+background: transparent;
+color: var(--text, #333);
+font-size: 30px;
+line-height: 1;
+cursor: pointer;
+}
+
+/* =====================================================
+子ども一覧
+===================================================== */
+
+.children-list {
+display: flex;
+flex-direction: column;
+gap: 10px;
+margin-bottom: 16px;
+}
+
+.children-list-empty {
+padding: 20px 8px;
+text-align: center;
+color: var(--muted, #888);
+font-size: 16px;
+}
+
+.children-list-item {
+display: flex;
+align-items: center;
+gap: 10px;
+padding: 12px;
+border: 1px solid var(--border, #ddd);
+border-radius: 12px;
+}
+
+.children-list-info {
+flex: 1;
+min-width: 0;
+}
+
+.children-list-name {
+margin: 0;
+font-size: 18px;
+font-weight: 900;
+}
+
+.children-list-birthday {
+margin: 3px 0 0;
+color: var(--muted, #777);
+font-size: 13px;
+}
+
+.children-list-actions {
+display: flex;
+gap: 6px;
+}
+
+.children-list-action-button {
+min-width: 44px;
+min-height: 44px;
+padding: 7px 10px;
+border: 1px solid var(--border, #ddd);
+border-radius: 9px;
+background: var(--surface, #fff);
+color: var(--text, #333);
+font-size: 14px;
+font-weight: 700;
+cursor: pointer;
+}
+
+/* =====================================================
+追加ボタン
+===================================================== */
+
+.children-add-button {
+width: 100%;
+min-height: 50px;
+padding: 10px 14px;
+border: none;
+border-radius: 12px;
+background: var(--accent, #e58);
+color: #fff;
+font-size: 17px;
+font-weight: 900;
+cursor: pointer;
+}
+
+/* =====================================================
+入力フォーム
+===================================================== */
+
+.children-form-field {
+margin-bottom: 16px;
+}
+
+.children-form-field label {
+display: block;
+margin-bottom: 7px;
+font-size: 16px;
+font-weight: 800;
+}
+
+.children-form-field input {
+width: 100%;
+min-height: 48px;
+padding: 9px 12px;
+border: 1px solid var(--border, #ddd);
+border-radius: 10px;
+background: var(--surface, #fff);
+color: var(--text, #333);
+font-size: 17px;
+box-sizing: border-box;
+}
+
+.children-form-actions {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 10px;
+margin-top: 22px;
+}
+
+.children-cancel-button,
+.children-save-button {
+min-height: 48px;
+padding: 9px 12px;
+border-radius: 10px;
+font-size: 16px;
+font-weight: 800;
+cursor: pointer;
+}
+
+.children-cancel-button {
+border: 1px solid var(--border, #ddd);
+background: var(--surface, #fff);
+color: var(--text, #333);
+}
+
+.children-save-button {
+border: none;
+background: var(--accent, #e58);
+color: #fff;
+}
+
+/* =====================================================
+スマホ
+===================================================== */
+
+@media (max-width: 600px) {
+
+.children-calendar-app {
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.children-calendar-title {
+    font-size: 22px;
+}
+
+.children-calendar-back-button {
+    font-size: 15px;
+    padding: 8px 12px;
+}
+
+.children-selector-label {
+    font-size: 17px;
+}
+
+.children-selector {
+    font-size: 16px;
+}
+
+.children-calendar-day {
+    min-height: 62px;
+    padding: 5px;
+}
+
+.children-modal-content {
+    padding: 16px;
+}
+
+}
+
+
+
+
+/* =====================================================
+👶 こどもカレンダー入口
+===================================================== */
+
+.calendar-title-row .calendar-children-button {
+flex-shrink: 0;
+width: auto;
+padding: 8px 14px;
+border: none;
+border-radius: 10px;
+font-size: 14px;
+font-weight: bold;
+cursor: pointer;
+}

@@ -1,0 +1,251 @@
+<!DOCTYPE html><html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>こどもカレンダー</title>
+
+<link rel="stylesheet" href="./calendar-children.css">
+
+</head><body><div id="childrenCalendarApp" class="children-calendar-app"><!-- =========================================
+     ヘッダー
+========================================== -->
+<header class="children-calendar-header">
+
+    <h1 class="children-calendar-title">
+        👶 こどもカレンダー
+    </h1>
+
+    <button
+        type="button"
+        class="children-calendar-back-button"
+        onclick="closeChildrenCalendar()"
+    >
+        ◀ カレンダー
+    </button>
+
+</header>
+
+
+<!-- =========================================
+     子ども選択
+========================================== -->
+<section class="children-selector-section">
+
+    <div class="children-selector-label">
+        子ども
+    </div>
+
+    <select
+        id="childrenSelector"
+        class="children-selector"
+    >
+        <option value="">
+            子どもを選択
+        </option>
+
+        <option value="settings">
+            ⚙️ 子どもの設定
+        </option>
+    </select>
+
+</section>
+
+
+<!-- =========================================
+     子どもプロフィール
+========================================== -->
+<section
+    id="childrenProfile"
+    class="children-profile"
+>
+
+    <div class="children-profile-empty">
+        まず「子どもの設定」から<br>
+        子どもを追加してください。
+    </div>
+
+</section>
+
+
+<!-- =========================================
+     カレンダー
+========================================== -->
+<section
+    id="childrenCalendarSection"
+    class="children-calendar-section"
+    style="display:none;"
+>
+
+    <div class="children-month-navigation">
+
+        <button
+            type="button"
+            id="childrenPreviousMonthButton"
+            class="children-month-button"
+        >
+            ◀
+        </button>
+
+        <button
+            type="button"
+            id="childrenMonthTitleButton"
+            class="children-month-title-button"
+        >
+            2026年9月
+        </button>
+
+        <button
+            type="button"
+            id="childrenNextMonthButton"
+            class="children-month-button"
+        >
+            ▶
+        </button>
+
+    </div>
+
+
+    <div
+        id="childrenCalendar"
+        class="children-calendar"
+    ></div>
+
+</section>
+
+
+<!-- =========================================
+     子どもの設定モーダル
+========================================== -->
+<div
+    id="childrenSettingsModal"
+    class="children-modal"
+    style="display:none;"
+>
+
+    <div class="children-modal-overlay"></div>
+
+    <div class="children-modal-content">
+
+        <div class="children-modal-header">
+
+            <h2>⚙️ 子どもの設定</h2>
+
+            <button
+                type="button"
+                id="childrenSettingsCloseButton"
+                class="children-modal-close-button"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div
+            id="childrenList"
+            class="children-list"
+        ></div>
+
+
+        <button
+            type="button"
+            id="childrenAddButton"
+            class="children-add-button"
+        >
+            ＋ 子どもを追加
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================
+     子ども追加・編集モーダル
+========================================== -->
+<div
+    id="childrenEditModal"
+    class="children-modal"
+    style="display:none;"
+>
+
+    <div class="children-modal-overlay"></div>
+
+    <div class="children-modal-content children-edit-modal-content">
+
+        <div class="children-modal-header">
+
+            <h2 id="childrenEditTitle">
+                👶 子どもを追加
+            </h2>
+
+            <button
+                type="button"
+                id="childrenEditCloseButton"
+                class="children-modal-close-button"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <form id="childrenEditForm">
+
+            <div class="children-form-field">
+
+                <label for="childrenNameInput">
+                    名前
+                </label>
+
+                <input
+                    type="text"
+                    id="childrenNameInput"
+                    autocomplete="off"
+                    maxlength="50"
+                    placeholder="例：はるちゃん"
+                >
+
+            </div>
+
+
+            <div class="children-form-field">
+
+                <label for="childrenBirthdayInput">
+                    誕生日
+                </label>
+
+                <input
+                    type="date"
+                    id="childrenBirthdayInput"
+                >
+
+            </div>
+
+
+            <div class="children-form-actions">
+
+                <button
+                    type="button"
+                    id="childrenEditCancelButton"
+                    class="children-cancel-button"
+                >
+                    キャンセル
+                </button>
+
+                <button
+                    type="submit"
+                    class="children-save-button"
+                >
+                    保存
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+</div><script src="./calendar-children.js"></script></body>
+</html>
