@@ -1276,20 +1276,23 @@ for (
     }
 
 
-    cell.onclick =
-        function() {
+cell.onclick =
+    function() {
 
-            childrenSelectedDate =
-                dateString;
+        childrenSelectedDate =
+            dateString;
 
-            renderChildrenCalendar();
+        /*
+         * 日付の選択色は変更しない
+         */
 
-            /*
-             * 今後ここから
-             * その日の記録画面へ接続する
-             */
-        };
+        renderChildrenCalendar();
 
+        /*
+         * カレンダー下の日別記録を更新
+         */
+        renderChildrenDaily();
+    };
 
     calendar.appendChild(
         cell
@@ -1424,4 +1427,117 @@ try {
     );
 }
 
+}
+
+
+
+/* =====================================================
+👶 選択日の記録表示
+===================================================== */
+
+function renderChildrenDaily() {
+
+    const section =
+        document.getElementById(
+            "childrenDailySection"
+        );
+
+    const title =
+        document.getElementById(
+            "childrenDailyTitle"
+        );
+
+    const content =
+        document.getElementById(
+            "childrenDailyContent"
+        );
+
+    if (
+        !section ||
+        !title ||
+        !content
+    ) {
+        return;
+    }
+
+
+    const child =
+        getSelectedChild();
+
+
+    /*
+     * 子どもが選択されていない場合
+     */
+    if (!child || !childrenSelectedDate) {
+
+        section.style.display =
+            "none";
+
+        content.innerHTML =
+            "";
+
+        return;
+    }
+
+
+    /*
+     * 日付を表示用に変換
+     */
+    const date =
+        parseDateOnly(
+            childrenSelectedDate
+        );
+
+
+    if (!date) {
+        return;
+    }
+
+
+    const year =
+        date.getFullYear();
+
+    const month =
+        date.getMonth() + 1;
+
+    const day =
+        date.getDate();
+
+    const weekday =
+        [
+            "日",
+            "月",
+            "火",
+            "水",
+            "木",
+            "金",
+            "土"
+        ][date.getDay()];
+
+
+    title.textContent =
+        `👶 ${child.name}　${year}年${month}月${day}日（${weekday}）`;
+
+
+    /*
+     * まずは表示確認用の基本画面
+     *
+     * 記録機能はこのあと追加する
+     */
+    content.innerHTML = `
+        <div class="children-daily-empty">
+            この日の記録はまだありません。
+        </div>
+
+        <button
+            type="button"
+            class="children-daily-add-button"
+        >
+            ＋ この日の記録を追加
+        </button>
+    `;
+
+
+    section.style.display =
+        "";
 }
