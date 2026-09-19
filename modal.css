@@ -1,0 +1,252 @@
+/* =====================================================
+   共通モーダル
+   modal.css
+===================================================== */
+
+
+/* =====================================================
+   🔢 数値入力モーダル
+===================================================== */
+
+.number-input-modal {
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 9999;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgba(0, 0, 0, 0.45);
+
+}
+
+
+/* =====================================================
+   ポップアップ本体
+===================================================== */
+
+.number-input-dialog {
+
+    width: min(
+        100%,
+        360px
+    );
+
+    padding: 20px;
+
+    border-radius: 18px;
+
+    background: var(--card-bg, #ffffff);
+
+    box-shadow:
+        0 10px 35px
+        rgba(0, 0, 0, 0.25);
+
+}
+
+
+/* =====================================================
+   タイトル
+===================================================== */
+
+.number-input-title {
+
+    margin-bottom: 12px;
+
+    text-align: center;
+
+    font-size: 20px;
+
+    font-weight: bold;
+
+}
+
+
+/* =====================================================
+   入力値表示
+===================================================== */
+
+.number-input-display {
+
+    min-height: 52px;
+
+    margin-bottom: 14px;
+
+    padding: 8px 14px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: flex-end;
+
+    border-radius: 10px;
+
+    background: rgba(0, 0, 0, 0.06);
+
+    font-size: 28px;
+
+    font-weight: bold;
+
+    overflow: hidden;
+
+    word-break: break-all;
+
+}
+
+
+/* =====================================================
+   数字キー
+===================================================== */
+
+.number-keypad {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 8px;
+
+}
+
+
+/* =====================================================
+   数字ボタン
+===================================================== */
+
+.number-keypad button {
+
+    min-height: 52px;
+
+    margin: 0;
+
+    padding: 0;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: rgba(0, 0, 0, 0.07);
+
+    color: var(--text);
+
+    font-size: 22px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    box-shadow: none;
+
+}
+
+
+/* =====================================================
+   小数点
+===================================================== */
+
+.number-keypad
+.decimal-button {
+
+    font-size: 24px;
+
+}
+
+
+/* =====================================================
+   戻る
+===================================================== */
+
+.number-keypad
+.backspace-button {
+
+    font-size: 24px;
+
+}
+
+
+/* =====================================================
+   下部操作ボタン
+===================================================== */
+
+.number-input-actions {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 8px;
+
+    margin-top: 12px;
+
+}
+
+
+.number-input-actions button {
+
+    min-height: 48px;
+
+    margin: 0;
+
+    padding: 6px 4px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    font-size: 15px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+}
+
+
+/* =====================================================
+   📱 スマホ
+===================================================== */
+
+@media (
+    max-width: 480px
+) {
+
+    .number-input-dialog {
+
+        width: 100%;
+
+        max-width: 360px;
+
+        padding: 18px;
+
+    }
+
+
+    .number-keypad button {
+
+        min-height: 54px;
+
+        font-size: 23px;
+
+    }
+
+
+    .number-input-display {
+
+        min-height: 54px;
+
+        font-size: 30px;
+
+    }
+
+}

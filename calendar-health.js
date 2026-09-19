@@ -27,15 +27,6 @@ let healthDailyDate = null;
 let healthMedicationDeleteTarget = null;
 
 
-/* =====================================================
-   🔢 健康数値入力ポップアップ
-===================================================== */
-
-let healthNumberInputTarget = null;
-
-let healthNumberInputValue = "";
-
-let healthNumberInputAllowDecimal = false;
 
 /* =====================================================
    📊 健康グラフ
@@ -4707,102 +4698,9 @@ function changeHealthCalendarMonthBySwipe(
 
 function initializeHealthNumberInput() {
 
-    const modal =
-        document.getElementById(
-            "healthNumberInputModal"
-        );
-
-    const display =
-        document.getElementById(
-            "healthNumberInputDisplay"
-        );
-
-    if (!modal || !display) {
-
-        return;
-
-    }
-
-
     /*
-     * 数字ボタン
-     */
-
-    modal
-        .querySelectorAll(
-            "[data-number]"
-        )
-        .forEach(button => {
-
-            button.onclick =
-                function() {
-
-                    const value =
-                        button.dataset.number;
-
-                    appendHealthNumberInput(
-                        value
-                    );
-
-                };
-
-        });
-
-
-    /*
-     * 操作ボタン
-     */
-
-    modal
-        .querySelectorAll(
-            "[data-action]"
-        )
-        .forEach(button => {
-
-            button.onclick =
-                function() {
-
-                    const action =
-                        button.dataset.action;
-
-
-                    if (
-                        action === "backspace"
-                    ) {
-
-                        backspaceHealthNumberInput();
-
-                    }
-                    else if (
-                        action === "delete"
-                    ) {
-
-                        deleteHealthNumberInput();
-
-                    }
-                    else if (
-                        action === "reset"
-                    ) {
-
-                        resetHealthNumberInput();
-
-                    }
-                    else if (
-                        action === "save"
-                    ) {
-
-                        saveHealthNumberInput();
-
-                    }
-
-                };
-
-        });
-
-
-    /*
-     * 既存の数値入力欄を
-     * タップ式入力に変更
+     * 健康カレンダーの数値入力欄を
+     * 共通数値入力モーダルへ接続
      */
 
     const inputSettings = [
@@ -4918,13 +4816,14 @@ function initializeHealthNumberInput() {
 
 
             /*
-             * タップ時にポップアップ
+             * タップ時に
+             * 共通数値入力モーダルを開く
              */
 
             input.onclick =
                 function() {
 
-                    openHealthNumberInput(
+                    openNumberInputModal(
                         input,
                         setting.title,
                         setting.decimal
@@ -4936,7 +4835,6 @@ function initializeHealthNumberInput() {
     );
 
 }
-
 
 
 /* =====================================================
@@ -5246,5 +5144,3 @@ function closeHealthNumberInput() {
 
     healthNumberInputAllowDecimal =
         false;
-
-}

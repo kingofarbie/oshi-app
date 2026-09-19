@@ -1,0 +1,137 @@
+<!-- =====================================================
+     共通モーダル
+     modal.html
+===================================================== -->
+
+
+<!-- =====================================================
+     🔢 数値入力モーダル
+===================================================== -->
+
+<div
+    id="numberInputModal"
+    class="number-input-modal"
+    style="display:none;"
+>
+
+    <div class="number-input-dialog">
+
+        <!-- タイトル -->
+        <div
+            id="numberInputTitle"
+            class="number-input-title"
+        >
+            数値を入力
+        </div>
+
+
+        <!-- 入力値表示 -->
+        <div
+            id="numberInputDisplay"
+            class="number-input-display"
+        ></div>
+
+
+        <!-- 数字キー -->
+        <div class="number-keypad">
+
+            <button
+                type="button"
+                data-number="1"
+            >1</button>
+
+            <button
+                type="button"
+                data-number="2"
+            >2</button>
+
+            <button
+                type="button"
+                data-number="3"
+            >3</button>
+
+
+            <button
+                type="button"
+                data-number="4"
+            >4</button>
+
+            <button
+                type="button"
+                data-number="5"
+            >5</button>
+
+            <button
+                type="button"
+                data-number="6"
+            >6</button>
+
+
+            <button
+                type="button"
+                data-number="7"
+            >7</button>
+
+            <button
+                type="button"
+                data-number="8"
+            >8</button>
+
+            <button
+                type="button"
+                data-number="9"
+            >9</button>
+
+
+            <button
+                type="button"
+                class="decimal-button"
+                data-number="."
+            >.</button>
+
+            <button
+                type="button"
+                data-number="0"
+            >0</button>
+
+            <button
+                type="button"
+                class="backspace-button"
+                data-action="backspace"
+            >←</button>
+
+        </div>
+
+
+        <!-- 下部操作 -->
+        <div class="number-input-actions">
+
+            <button
+                type="button"
+                class="number-delete-button"
+                data-action="delete"
+            >
+                削除
+            </button>
+
+            <button
+                type="button"
+                class="number-reset-button"
+                data-action="reset"
+            >
+                リセット
+            </button>
+
+            <button
+                type="button"
+                class="number-save-button"
+                data-action="save"
+            >
+                保存
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
