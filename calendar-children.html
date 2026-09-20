@@ -40,11 +40,6 @@
     </h1>
 
 
-    <!--
-        子ども選択
-        ヘッダー右側に配置
-    -->
-
     <select
         id="childrenSelector"
         class="children-selector"
@@ -74,7 +69,7 @@
 
 
 <!-- =========================================
-     子どもプロフィール
+     子どもプロフィール ＋ 成長・定期記録
 ========================================== -->
 
 <div class="children-profile-row">
@@ -95,10 +90,6 @@
     </section>
 
 
-
-    <!-- =====================================
-         成長・定期記録 入口
-    ====================================== -->
 
     <button
         type="button"
@@ -198,10 +189,6 @@
 >
 
 
-    <!-- =====================================
-         日付タイトル
-    ====================================== -->
-
     <div class="children-daily-header">
 
         <h2 id="childrenDailyTitle">
@@ -211,10 +198,6 @@
     </div>
 
 
-
-    <!-- =====================================
-         1日の記録
-    ====================================== -->
 
     <div class="children-daily-basic-section">
 
@@ -243,10 +226,6 @@
 
 
 
-    <!-- =====================================
-         この日の記録
-    ====================================== -->
-
     <div class="children-daily-records-section">
 
 
@@ -258,14 +237,7 @@
         <div
             id="childrenDailyRecords"
             class="children-daily-records"
-        >
-
-            <!--
-                calendar-children.js
-                から記録を表示
-            -->
-
-        </div>
+        ></div>
 
 
     </div>
@@ -277,9 +249,6 @@
 
 <!-- =========================================
      成長・定期記録画面
-     
-     ※最初は非表示
-     ※日付とは完全に独立
 ========================================== -->
 
 <section
@@ -313,10 +282,6 @@
     <div class="children-growth-category-list">
 
 
-        <!-- =================================
-             身長・体重
-        ================================== -->
-
         <button
             type="button"
             class="children-growth-category"
@@ -327,20 +292,17 @@
                 ⚖️
             </span>
 
-
             <span class="children-growth-category-text">
 
                 <span class="children-growth-category-name">
                     身長・体重
                 </span>
 
-
                 <span class="children-growth-category-description">
                     身長や体重の変化を記録
                 </span>
 
             </span>
-
 
             <span class="children-growth-category-arrow">
                 ›
@@ -349,10 +311,6 @@
         </button>
 
 
-
-        <!-- =================================
-             歯の記録
-        ================================== -->
 
         <button
             type="button"
@@ -364,20 +322,17 @@
                 🦷
             </span>
 
-
             <span class="children-growth-category-text">
 
                 <span class="children-growth-category-name">
                     歯の記録
                 </span>
 
-
                 <span class="children-growth-category-description">
                     歯が生えた日などを記録
                 </span>
 
             </span>
-
 
             <span class="children-growth-category-arrow">
                 ›
@@ -386,10 +341,6 @@
         </button>
 
 
-
-        <!-- =================================
-             予防接種
-        ================================== -->
 
         <button
             type="button"
@@ -401,20 +352,17 @@
                 💉
             </span>
 
-
             <span class="children-growth-category-text">
 
                 <span class="children-growth-category-name">
                     予防接種
                 </span>
 
-
                 <span class="children-growth-category-description">
                     ワクチンや接種回数を記録
                 </span>
 
             </span>
-
 
             <span class="children-growth-category-arrow">
                 ›
@@ -423,10 +371,6 @@
         </button>
 
 
-
-        <!-- =================================
-             健診・病院
-        ================================== -->
 
         <button
             type="button"
@@ -438,20 +382,17 @@
                 🏥
             </span>
 
-
             <span class="children-growth-category-text">
 
                 <span class="children-growth-category-name">
                     健診・病院
                 </span>
 
-
                 <span class="children-growth-category-description">
                     健診や病院での記録
                 </span>
 
             </span>
-
 
             <span class="children-growth-category-arrow">
                 ›
@@ -460,10 +401,6 @@
         </button>
 
 
-
-        <!-- =================================
-             成長・できたこと
-        ================================== -->
 
         <button
             type="button"
@@ -475,20 +412,17 @@
                 🌱
             </span>
 
-
             <span class="children-growth-category-text">
 
                 <span class="children-growth-category-name">
                     成長・できたこと
                 </span>
 
-
                 <span class="children-growth-category-description">
                     新しくできるようになったことを記録
                 </span>
 
             </span>
-
 
             <span class="children-growth-category-arrow">
                 ›
@@ -514,21 +448,17 @@
     style="display:none;"
 >
 
-
     <div class="children-modal-overlay"></div>
-
 
     <div
         class="children-modal-content children-record-type-modal-content"
     >
-
 
         <div class="children-modal-header">
 
             <h2>
                 📝 項目を追加
             </h2>
-
 
             <button
                 type="button"
@@ -540,12 +470,10 @@
 
         </div>
 
-
         <div
             id="childrenRecordTypeList"
             class="children-record-type-list"
         ></div>
-
 
     </div>
 
@@ -563,19 +491,15 @@
     style="display:none;"
 >
 
-
     <div class="children-modal-overlay"></div>
 
-
     <div class="children-modal-content">
-
 
         <div class="children-modal-header">
 
             <h2>
                 ⚙️ 子どもの設定
             </h2>
-
 
             <button
                 type="button"
@@ -587,12 +511,10 @@
 
         </div>
 
-
         <div
             id="childrenList"
             class="children-list"
         ></div>
-
 
         <button
             type="button"
@@ -601,7 +523,6 @@
         >
             ＋ 子どもを追加
         </button>
-
 
     </div>
 
@@ -619,21 +540,17 @@
     style="display:none;"
 >
 
-
     <div class="children-modal-overlay"></div>
-
 
     <div
         class="children-modal-content children-edit-modal-content"
     >
-
 
         <div class="children-modal-header">
 
             <h2 id="childrenEditTitle">
                 👶 子どもを追加
             </h2>
-
 
             <button
                 type="button"
@@ -655,7 +572,6 @@
                     名前
                 </label>
 
-
                 <input
                     type="text"
                     id="childrenNameInput"
@@ -668,12 +584,44 @@
 
 
 
+            <!-- =================================
+                 性別
+            ================================== -->
+
+            <div class="children-form-field">
+
+                <label for="childrenGenderInput">
+                    性別
+                </label>
+
+                <select
+                    id="childrenGenderInput"
+                    class="children-gender-input"
+                >
+
+                    <option value="">
+                        選択してください
+                    </option>
+
+                    <option value="boy">
+                        👦 男の子
+                    </option>
+
+                    <option value="girl">
+                        👧 女の子
+                    </option>
+
+                </select>
+
+            </div>
+
+
+
             <div class="children-form-field">
 
                 <label for="childrenBirthdayInput">
                     誕生日
                 </label>
-
 
                 <input
                     type="date"
@@ -686,7 +634,6 @@
 
             <div class="children-form-actions">
 
-
                 <button
                     type="button"
                     id="childrenEditCancelButton"
@@ -695,14 +642,12 @@
                     キャンセル
                 </button>
 
-
                 <button
                     type="submit"
                     class="children-save-button"
                 >
                     保存
                 </button>
-
 
             </div>
 

@@ -1,23 +1,40 @@
 /* =====================================================
-   👶 こどもカレンダー
-   calendar-children.css
+👶 こどもカレンダー
+calendar-children.css
 
-   ・こどもカレンダー専用
-   ・通常カレンダー / 健康管理 / スポーツに干渉しない
-   ・男の子：淡いブルー
-   ・女の子：淡いピンク
+・こどもカレンダー専用
+・通常カレンダー / 健康管理 / スポーツには影響しない
+・既存機能を維持
 ===================================================== */
 
 
 /* =====================================================
-   全体
+   アプリ全体
 ===================================================== */
 
 .children-calendar-app {
     width: min(100%, 700px);
     margin: 0 auto;
-    padding: 8px 10px 30px;
+    padding: 0 10px 30px;
     box-sizing: border-box;
+
+    background: #eef8fc;
+    border-radius: 20px;
+    min-height: 100%;
+}
+
+
+/* 男の子 */
+
+.children-calendar-app.boy {
+    background: #eef8fc;
+}
+
+
+/* 女の子 */
+
+.children-calendar-app.girl {
+    background: #fff0f5;
 }
 
 
@@ -26,36 +43,42 @@
 ===================================================== */
 
 .children-calendar-header {
-    display: block;
-    padding: 4px 0 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 8px;
+
+    padding: 10px 4px 10px;
 }
 
 .children-calendar-title {
+    min-width: 0;
     margin: 0;
-    font-size: 24px;
-    font-weight: 900;
-    line-height: 1.3;
-}
 
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1.2;
 
-/* =====================================================
-   カレンダーへ戻る
-===================================================== */
-
-.children-back-section {
-    margin-top: 8px;
-    margin-bottom: 18px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .children-calendar-back-button {
-    min-height: 42px;
+    flex-shrink: 0;
+
+    min-height: 44px;
     padding: 8px 14px;
-    border: 1px solid rgba(128,128,128,.25);
+
+    border: 1px solid rgba(120,150,160,.20);
     border-radius: 10px;
-    background: rgba(255,255,255,.8);
-    color: var(--text, #333);
+
+    background: rgba(255,255,255,.82);
+    color: var(--text,#333);
+
     font-size: 14px;
-    font-weight: 800;
+    font-weight: 700;
+
     cursor: pointer;
 }
 
@@ -67,26 +90,32 @@
 .children-selector-section {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
+    gap: 8px;
+
+    margin: 0 4px 12px;
 }
 
 .children-selector-label {
     flex-shrink: 0;
-    font-size: 17px;
-    font-weight: 900;
+
+    font-size: 15px;
+    font-weight: 800;
 }
 
 .children-selector {
     flex: 1;
     min-width: 0;
+
     min-height: 44px;
-    padding: 7px 11px;
-    border: 1px solid rgba(128,128,128,.25);
-    border-radius: 11px;
-    background: rgba(255,255,255,.85);
-    color: var(--text, #333);
-    font-size: 16px;
+    padding: 8px 12px;
+
+    border: 1px solid rgba(120,150,160,.20);
+    border-radius: 12px;
+
+    background: rgba(255,255,255,.84);
+    color: var(--text,#333);
+
+    font-size: 15px;
     font-weight: 700;
 }
 
@@ -96,10 +125,17 @@
 ===================================================== */
 
 .children-profile-row {
+
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 150px;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        150px;
+
     gap: 9px;
-    margin-bottom: 12px;
+
+    margin: 0 4px 14px;
+
     align-items: stretch;
 }
 
@@ -107,98 +143,136 @@
 /* プロフィール */
 
 .children-profile {
-    min-width: 0;
-    min-height: 82px;
-    padding: 10px 12px;
-    border-radius: 14px;
-    background: rgba(255,255,255,.82);
-    box-sizing: border-box;
-}
 
-.children-profile-empty {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 60px;
-    text-align: center;
-    color: #888;
-    font-size: 14px;
-    line-height: 1.6;
-}
-
-.children-profile-name {
-    margin: 0 0 3px;
-    font-size: 19px;
-    font-weight: 900;
-    line-height: 1.25;
-}
-
-.children-profile-birthday {
     margin: 0;
-    color: #777;
-    font-size: 12px;
-}
 
-.children-profile-age {
-    margin-top: 5px;
-    font-size: 14px;
-    font-weight: 800;
+    padding: 12px 14px;
+
+    border: 1px solid rgba(120,150,160,.18);
+    border-radius: 15px;
+
+    background: rgba(255,255,255,.84);
+
+    box-sizing: border-box;
 }
 
 
 /* 成長・定期記録入口 */
 
 .children-growth-entry {
-    position: relative;
-    min-width: 0;
-    min-height: 82px;
-    padding: 9px 22px 9px 8px;
-    border: none;
-    border-radius: 14px;
-    background: rgba(255,255,255,.82);
-    color: var(--text, #333);
+
+    width: 100%;
+    min-height: 100%;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 3px;
+
+    padding: 10px 8px;
+
+    border: 1px solid rgba(120,150,160,.18);
+    border-radius: 15px;
+
+    background: rgba(255,255,255,.84);
+
+    color: var(--text,#333);
+
     text-align: center;
+
     cursor: pointer;
+
+    box-sizing: border-box;
 }
 
 .children-growth-entry:active {
-    opacity: .7;
+    opacity: .65;
 }
 
 .children-growth-entry-icon {
-    display: block;
-    font-size: 23px;
-    line-height: 1.1;
+    font-size: 24px;
+    line-height: 1;
 }
 
 .children-growth-entry-text {
-    display: block;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 2px;
+
 }
 
 .children-growth-entry-title {
-    display: block;
-    margin-top: 3px;
-    font-size: 13px;
+
+    font-size: 14px;
     font-weight: 900;
-    line-height: 1.3;
+
 }
 
 .children-growth-entry-description {
-    display: block;
-    margin-top: 2px;
-    color: #777;
-    font-size: 10px;
+
+    color: var(--muted,#777);
+
+    font-size: 11px;
+
     line-height: 1.3;
+
 }
 
 .children-growth-entry-arrow {
-    position: absolute;
-    right: 7px;
-    top: 50%;
-    transform: translateY(-50%);
+
+    font-size: 22px;
+
     color: #999;
-    font-size: 24px;
+
     line-height: 1;
+
+}
+
+
+/* =====================================================
+   プロフィール内部
+===================================================== */
+
+.children-profile-empty {
+    padding: 10px 4px;
+
+    text-align: center;
+
+    color: var(--muted,#888);
+
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.children-profile-name {
+    margin: 0 0 4px;
+
+    font-size: 21px;
+    font-weight: 900;
+}
+
+.children-profile-birthday {
+    margin: 0;
+
+    color: var(--muted,#777);
+
+    font-size: 13px;
+}
+
+.children-profile-age {
+    margin-top: 6px;
+
+    font-size: 15px;
+    font-weight: 800;
 }
 
 
@@ -207,98 +281,141 @@
 ===================================================== */
 
 .children-calendar-section {
-    margin-top: 0;
-    padding: 10px;
+    margin: 8px 4px 0;
+
     border-radius: 17px;
-    background: rgba(255,255,255,.9);
-    box-sizing: border-box;
+
+    background: #fff;
+
+    overflow: hidden;
 }
 
 .children-month-navigation {
     display: grid;
-    grid-template-columns: 42px minmax(0,1fr) 42px;
+
+    grid-template-columns: 44px minmax(0,1fr) 44px;
+
     align-items: center;
+
     gap: 6px;
-    margin-bottom: 7px;
+
+    margin-bottom: 0;
+    padding: 10px 10px 7px;
 }
 
 .children-month-button {
-    width: 42px;
-    height: 42px;
+    width: 44px;
+    height: 44px;
+
     padding: 0;
+
     border: none;
     border-radius: 10px;
-    background: rgba(128,128,128,.1);
+
+    background: rgba(120,180,200,.10);
     color: var(--text,#333);
-    font-size: 16px;
-    font-weight: 900;
+
+    font-size: 18px;
+    font-weight: 800;
+
     cursor: pointer;
 }
 
 .children-month-title-button {
-    min-height: 42px;
+    min-height: 44px;
+
     border: none;
+    border-radius: 10px;
+
     background: transparent;
     color: var(--text,#333);
-    font-size: 19px;
+
+    font-size: 20px;
     font-weight: 900;
 }
-
-
-/* 曜日 */
 
 .children-calendar {
     display: grid;
+
     grid-template-columns: repeat(7,minmax(0,1fr));
+
     gap: 3px;
+
+    padding: 4px 8px 12px;
 }
 
+
+/* =====================================================
+   曜日
+   ※日曜・土曜の色分けを解除
+===================================================== */
+
 .children-calendar-weekday {
-    padding: 4px 1px 6px;
+    padding: 6px 2px;
+
     text-align: center;
-    color: #666;
-    font-size: 12px;
-    font-weight: 900;
+
+    font-size: 13px;
+    font-weight: 800;
+
+    color: var(--text,#333);
 }
 
 .children-calendar-weekday.sunday {
-    color: #d85b70;
+    color: var(--text,#333);
 }
 
 .children-calendar-weekday.saturday {
-    color: #4f82c5;
+    color: var(--text,#333);
 }
 
 
-/* 日付 */
+/* =====================================================
+   日付
+===================================================== */
 
 .children-calendar-day {
-    position: relative;
-    min-width: 0;
-    min-height: 48px;
-    padding: 4px;
+    min-height: 50px;
+
+    padding: 5px;
+
     border: none;
-    border-radius: 10px;
+    border-radius: 11px;
+
     background: transparent;
     color: var(--text,#333);
+
     box-sizing: border-box;
+
     cursor: pointer;
 }
 
 .children-calendar-day.empty {
-    pointer-events: none;
+    border-color: transparent;
+    background: transparent;
+
+    cursor: default;
 }
 
 .children-calendar-day-number {
+
+    width: 32px;
+    height: 32px;
+
     display: flex;
+
     align-items: center;
     justify-content: center;
-    width: 30px;
-    height: 30px;
+
     margin: 0 auto;
+
     border-radius: 50%;
+
     font-size: 14px;
-    font-weight: 700;
+    font-weight: 800;
+
+    color: var(--text,#333);
+
 }
 
 
@@ -306,22 +423,69 @@
 
 .children-calendar-day.today
 .children-calendar-day-number {
-    outline: 2px solid rgba(100,140,200,.35);
+
+    outline: 2px solid rgba(143,207,227,.65);
     outline-offset: 1px;
+
 }
 
 
-/* 選択日 */
-
-.children-calendar-day.selected {
-    background: rgba(140,200,220,.12);
-}
+/* 選択中の日 */
 
 .children-calendar-day.selected
 .children-calendar-day-number {
-    background: #8fcfe3;
-    color: #fff;
+
+    background: transparent;
+
+    color: var(--text,#333);
+
+    outline: 2px solid #8fcfe3;
+    outline-offset: 1px;
+
     font-weight: 900;
+
+}
+
+
+/* 女の子の選択円 */
+
+.children-calendar-app.girl
+.children-calendar-day.selected
+.children-calendar-day-number {
+
+    background: transparent;
+
+    color: var(--text,#333);
+
+    outline: 2px solid #e99ab7;
+    outline-offset: 1px;
+
+}
+
+
+.children-calendar-day:active {
+    opacity: .65;
+}
+
+
+/* =====================================================
+   こどもカレンダー入口
+===================================================== */
+
+.calendar-title-row .calendar-children-button {
+    flex-shrink: 0;
+
+    width: auto;
+
+    padding: 8px 14px;
+
+    border: none;
+    border-radius: 10px;
+
+    font-size: 14px;
+    font-weight: bold;
+
+    cursor: pointer;
 }
 
 
@@ -331,32 +495,39 @@
 
 .children-daily-section {
     width: 100%;
-    margin-top: 14px;
-    padding: 13px;
-    border-radius: 16px;
-    background: rgba(255,255,255,.9);
-    box-sizing: border-box;
+    margin-top: 16px;
 }
 
 .children-daily-header {
-    margin-bottom: 10px;
+    margin: 0 4px 10px;
 }
 
 .children-daily-header h2 {
     margin: 0;
+
     font-size: 18px;
     font-weight: 900;
 }
 
 .children-daily-basic-section {
     width: 100%;
+    margin-top: 12px;
 }
 
 .children-daily-basic-header {
     display: flex;
+
     align-items: center;
     justify-content: space-between;
+
     gap: 10px;
+
+    margin: 0 4px;
+}
+
+.children-daily-basic-title {
+    font-size: 20px;
+    font-weight: 800;
 }
 
 .children-daily-section-title {
@@ -366,69 +537,85 @@
 
 .children-daily-add-button {
     flex-shrink: 0;
-    min-height: 42px;
-    padding: 7px 12px;
+
+    width: auto;
+    min-height: 44px;
+
+    padding: 8px 14px;
+
     border: none;
     border-radius: 10px;
-    background: var(--accent,#e58);
-    color: #fff;
-    font-size: 13px;
-    font-weight: 800;
+
+    background: rgba(120,180,200,.14);
+    color: var(--text,#333);
+
+    font-size: 14px;
+    font-weight: 700;
+
     cursor: pointer;
 }
 
+
+/* =====================================================
+   この日の記録
+===================================================== */
+
 .children-daily-records-section {
     width: 100%;
-    margin-top: 14px;
+    margin-top: 18px;
 }
 
-.children-daily-records {
-    width: 100%;
-}
+.children-daily-records-title {
+    margin-bottom: 8px;
 
-.children-daily-empty {
-    padding: 18px 8px;
-    text-align: center;
-    color: #888;
-    font-size: 14px;
+    font-size: 20px;
+    font-weight: 800;
 }
 
 .children-daily-table-wrapper {
     width: 100%;
+
     overflow-x: auto;
+
     -webkit-overflow-scrolling: touch;
 }
 
 .children-daily-table {
     width: 100%;
-    min-width: 400px;
+    min-width: 430px;
+
     border-collapse: collapse;
+
     table-layout: fixed;
+
+    background: rgba(255,255,255,.70);
 }
 
 .children-daily-table th,
 .children-daily-table td {
-    padding: 9px 6px;
-    border-bottom: 1px solid rgba(128,128,128,.18);
+    padding: 10px 8px;
+
+    border-bottom: 1px solid rgba(128,128,128,.25);
+
     text-align: left;
     vertical-align: middle;
 }
 
 .children-daily-table th {
-    color: #777;
-    font-size: 12px;
-    font-weight: 900;
+    font-size: 13px;
+    font-weight: 800;
 }
 
 .children-daily-table th:nth-child(1),
 .children-daily-table td:nth-child(1) {
-    width: 62px;
+    width: 70px;
+
     text-align: center;
 }
 
 .children-daily-table th:nth-child(2),
 .children-daily-table td:nth-child(2) {
-    width: 42%;
+    width: 45%;
 }
 
 .children-daily-table-row {
@@ -436,84 +623,116 @@
 }
 
 .children-daily-table-row:active {
-    opacity: .6;
+    opacity: .65;
 }
 
 .children-daily-time {
+    font-weight: 700;
+
     white-space: nowrap;
-    font-weight: 800;
 }
 
 .children-daily-label {
-    font-weight: 700;
+    font-weight: 600;
 }
 
 .children-daily-memo {
     color: #777;
+
     word-break: break-word;
 }
 
-.children-daily-table-hint {
-    margin-top: 6px;
+.children-daily-empty {
+    padding: 18px 10px;
+
+    text-align: center;
+
     color: #888;
-    font-size: 11px;
+}
+
+.children-daily-table-hint {
+    margin-top: 7px;
+
+    padding-right: 4px;
+
+    font-size: 12px;
+    color: #888;
+
     text-align: right;
 }
 
 
 /* =====================================================
-   📈 成長・定期記録画面
+   成長・定期記録
 ===================================================== */
 
 .children-growth-section {
-    margin-top: 0;
-    padding: 13px;
-    border-radius: 16px;
-    background: rgba(255,255,255,.9);
+    width: 100%;
+
+    margin-top: 18px;
+
+    padding: 0 0 4px;
 }
 
 .children-growth-section-header {
-    margin-bottom: 14px;
+    margin: 0 4px 9px;
 }
 
 .children-growth-back-button {
-    min-height: 40px;
-    padding: 7px 12px;
-    border: 1px solid rgba(128,128,128,.22);
+    min-height: 44px;
+
+    margin-bottom: 10px;
+
+    padding: 8px 14px;
+
+    border: 1px solid rgba(120,150,160,.20);
     border-radius: 10px;
-    background: rgba(128,128,128,.08);
+
+    background: rgba(255,255,255,.82);
     color: var(--text,#333);
-    font-size: 13px;
-    font-weight: 800;
+
+    font-size: 14px;
+    font-weight: 700;
+
     cursor: pointer;
 }
 
 .children-growth-section-title {
-    margin-top: 12px;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 900;
 }
 
 .children-growth-category-list {
     display: flex;
+
     flex-direction: column;
+
     gap: 8px;
 }
 
 .children-growth-category {
-    display: grid;
-    grid-template-columns: 42px minmax(0,1fr) 24px;
-    align-items: center;
-    gap: 9px;
     width: 100%;
-    min-height: 62px;
-    padding: 9px 10px;
-    border: 1px solid rgba(128,128,128,.16);
+    min-height: 58px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 9px 11px;
+
+    border: 1px solid rgba(120,150,160,.18);
     border-radius: 13px;
-    background: rgba(128,128,128,.06);
+
+    background: rgba(255,255,255,.84);
     color: var(--text,#333);
+
     text-align: left;
+
     cursor: pointer;
+
+    box-sizing: border-box;
 }
 
 .children-growth-category:active {
@@ -521,89 +740,131 @@
 }
 
 .children-growth-category-icon {
+    flex-shrink: 0;
+
+    width: 36px;
+    height: 36px;
+
     display: flex;
+
     align-items: center;
     justify-content: center;
-    font-size: 25px;
+
+    border-radius: 10px;
+
+    background: rgba(255,255,255,.9);
+
+    font-size: 21px;
 }
 
 .children-growth-category-text {
+    flex: 1;
+
     min-width: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 2px;
 }
 
 .children-growth-category-name {
-    display: block;
     font-size: 15px;
-    font-weight: 900;
+    font-weight: 800;
 }
 
 .children-growth-category-description {
-    display: block;
-    margin-top: 2px;
-    color: #777;
-    font-size: 11px;
+    color: var(--muted,#777);
+
+    font-size: 12px;
+    line-height: 1.35;
 }
 
 .children-growth-category-arrow {
-    color: #999;
+    flex-shrink: 0;
+
     font-size: 25px;
-    text-align: center;
+
+    color: #999;
 }
 
 
 /* =====================================================
-   モーダル共通
+   モーダル
 ===================================================== */
 
 .children-modal {
     position: relative;
-    z-index: 10000;
+
+    z-index: 1000;
 }
 
 .children-modal-overlay {
     position: fixed;
+
     inset: 0;
-    background: rgba(0,0,0,.42);
+
+    background: rgba(0,0,0,.35);
 }
 
 .children-modal-content {
     position: fixed;
+
     top: 50%;
     left: 50%;
-    width: min(calc(100% - 24px), 500px);
-    max-height: calc(100% - 30px);
+
+    width: min(92%,500px);
+    max-height: 86vh;
+
     overflow-y: auto;
+
     transform: translate(-50%,-50%);
-    padding: 18px;
+
+    box-sizing: border-box;
+
+    padding: 20px;
+
     border-radius: 18px;
+
     background: var(--surface,#fff);
     color: var(--text,#333);
-    box-sizing: border-box;
+
+    box-shadow: 0 8px 30px rgba(0,0,0,.18);
 }
 
 .children-modal-header {
     display: flex;
+
     align-items: center;
     justify-content: space-between;
+
     gap: 10px;
-    margin-bottom: 16px;
+
+    margin-bottom: 18px;
 }
 
 .children-modal-header h2 {
     margin: 0;
-    font-size: 20px;
-    font-weight: 900;
+
+    font-size: 22px;
 }
 
 .children-modal-close-button {
-    width: 42px;
-    height: 42px;
+    width: 44px;
+    height: 44px;
+
     flex-shrink: 0;
+
     border: none;
     border-radius: 10px;
+
     background: transparent;
     color: var(--text,#333);
-    font-size: 28px;
+
+    font-size: 30px;
+    line-height: 1;
+
     cursor: pointer;
 }
 
@@ -614,74 +875,105 @@
 
 .children-list {
     display: flex;
+
     flex-direction: column;
-    gap: 8px;
-    margin-bottom: 14px;
+
+    gap: 10px;
+
+    margin-bottom: 16px;
 }
 
 .children-list-empty {
-    padding: 18px 8px;
-    color: #888;
+    padding: 20px 8px;
+
     text-align: center;
+
+    color: var(--muted,#888);
+
+    font-size: 16px;
 }
 
 .children-list-item {
     display: flex;
+
     align-items: center;
-    gap: 9px;
-    padding: 10px;
-    border: 1px solid rgba(128,128,128,.2);
+
+    gap: 10px;
+
+    padding: 12px;
+
+    border: 1px solid var(--border,#ddd);
     border-radius: 12px;
+
+    background: var(--surface,#fff);
 }
 
 .children-list-info {
     flex: 1;
+
     min-width: 0;
 }
 
 .children-list-name {
     margin: 0;
-    font-size: 16px;
+
+    font-size: 18px;
     font-weight: 900;
 }
 
 .children-list-birthday {
     margin: 3px 0 0;
-    color: #777;
-    font-size: 12px;
+
+    color: var(--muted,#777);
+
+    font-size: 13px;
 }
 
 .children-list-actions {
     display: flex;
-    gap: 5px;
+
+    gap: 6px;
 }
 
 .children-list-action-button {
     min-width: 44px;
-    min-height: 40px;
-    padding: 6px 8px;
-    border: 1px solid rgba(128,128,128,.2);
+    min-height: 44px;
+
+    padding: 7px 10px;
+
+    border: 1px solid var(--border,#ddd);
     border-radius: 9px;
-    background: transparent;
+
+    background: var(--surface,#fff);
     color: var(--text,#333);
-    font-size: 12px;
+
+    font-size: 14px;
     font-weight: 700;
+
+    cursor: pointer;
 }
 
 
 /* =====================================================
-   子ども追加
+   追加ボタン
 ===================================================== */
 
 .children-add-button {
     width: 100%;
-    min-height: 48px;
+    min-height: 50px;
+
+    padding: 10px 14px;
+
     border: none;
-    border-radius: 11px;
+    border-radius: 12px;
+
     background: var(--accent,#e58);
     color: #fff;
-    font-size: 16px;
+
+    font-size: 17px;
     font-weight: 900;
+
+    cursor: pointer;
 }
 
 
@@ -690,61 +982,271 @@
 ===================================================== */
 
 .children-form-field {
-    margin-bottom: 15px;
+    margin-bottom: 16px;
 }
 
 .children-form-field label {
     display: block;
-    margin-bottom: 6px;
-    font-size: 14px;
-    font-weight: 900;
+
+    margin-bottom: 7px;
+
+    font-size: 16px;
+    font-weight: 800;
 }
 
-.children-form-field input {
+.children-form-field input,
+.children-gender-input {
     width: 100%;
-    min-height: 46px;
-    padding: 8px 11px;
-    border: 1px solid rgba(128,128,128,.25);
+    min-height: 48px;
+
+    padding: 9px 12px;
+
+    border: 1px solid var(--border,#ddd);
     border-radius: 10px;
+
     background: var(--surface,#fff);
     color: var(--text,#333);
-    font-size: 16px;
+
+    font-size: 17px;
+
     box-sizing: border-box;
 }
 
 .children-form-actions {
     display: grid;
+
     grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-top: 20px;
+
+    gap: 10px;
+
+    margin-top: 22px;
 }
 
 .children-cancel-button,
 .children-save-button {
-    min-height: 46px;
+    min-height: 48px;
+
+    padding: 9px 12px;
+
     border-radius: 10px;
-    font-size: 15px;
+
+    font-size: 16px;
     font-weight: 800;
+
+    cursor: pointer;
 }
 
 .children-cancel-button {
-    border: 1px solid rgba(128,128,128,.25);
-    background: transparent;
+    border: 1px solid var(--border,#ddd);
+
+    background: var(--surface,#fff);
     color: var(--text,#333);
 }
 
 .children-save-button {
     border: none;
+
     background: var(--accent,#e58);
     color: #fff;
 }
 
 
 /* =====================================================
-   📱 スマホ
+   項目選択モーダル
 ===================================================== */
 
-@media (max-width: 600px) {
+.children-record-type-modal,
+.children-record-edit-modal {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 10000;
+}
+
+.children-record-type-overlay,
+.children-record-edit-overlay {
+    position: absolute;
+
+    inset: 0;
+
+    background: rgba(0,0,0,.45);
+}
+
+.children-record-type-dialog,
+.children-record-edit-dialog {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: min(calc(100% - 32px),430px);
+    max-height: calc(100% - 32px);
+
+    overflow-y: auto;
+
+    transform: translate(-50%,-50%);
+
+    border-radius: 18px;
+
+    background: var(--viz-card,#fff);
+    color: var(--viz-text,#222);
+
+    box-sizing: border-box;
+}
+
+.children-record-type-header,
+.children-record-edit-header {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+
+    padding: 14px 16px;
+
+    border-bottom: 1px solid rgba(128,128,128,.2);
+}
+
+.children-record-type-header h2,
+.children-record-edit-header h2 {
+    margin: 0;
+
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.children-record-type-close,
+.children-record-edit-close {
+    width: 44px;
+    height: 44px;
+
+    flex-shrink: 0;
+
+    border: none;
+
+    background: transparent;
+
+    font-size: 28px;
+    line-height: 1;
+
+    cursor: pointer;
+}
+
+.children-record-type-list {
+    display: grid;
+
+    grid-template-columns: 1fr;
+
+    gap: 8px;
+
+    padding: 14px;
+}
+
+.children-record-type-button {
+    width: 100%;
+    min-height: 52px;
+
+    padding: 10px 14px;
+
+    border: 1px solid rgba(128,128,128,.25);
+    border-radius: 12px;
+
+    background: transparent;
+
+    text-align: left;
+
+    font-size: 16px;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+.children-record-type-button:active {
+    opacity: .65;
+}
+
+.children-record-type-button.other {
+    margin-top: 4px;
+}
+
+
+/* =====================================================
+   編集モーダル
+===================================================== */
+
+.children-record-edit-current {
+    padding: 18px 16px 10px;
+
+    text-align: center;
+}
+
+.children-record-edit-time {
+    font-size: 30px;
+    font-weight: 800;
+}
+
+.children-record-edit-label {
+    margin-top: 5px;
+
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.children-record-edit-memo {
+    margin-top: 6px;
+
+    color: #777;
+
+    font-size: 14px;
+
+    word-break: break-word;
+}
+
+.children-record-edit-actions {
+    display: grid;
+
+    gap: 8px;
+
+    padding: 14px 16px 18px;
+}
+
+.children-record-edit-action {
+    width: 100%;
+    min-height: 48px;
+
+    padding: 10px 14px;
+
+    border: none;
+    border-radius: 12px;
+
+    background: rgba(128,128,128,.12);
+
+    font-size: 15px;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+.children-record-edit-action:active {
+    opacity: .65;
+}
+
+.children-record-edit-action.delete {
+    color: #c62828;
+}
+
+.children-record-edit-action.cancel {
+    background: transparent;
+}
+
+
+/* =====================================================
+   スマホ
+===================================================== */
+
+@media (max-width:600px) {
 
     .children-calendar-app {
         padding-left: 8px;
@@ -755,57 +1257,129 @@
         font-size: 22px;
     }
 
-    .children-profile-row {
-        grid-template-columns: minmax(0,1fr) 138px;
+    .children-calendar-back-button {
+        font-size: 15px;
+
+        padding: 8px 12px;
     }
 
-    .children-growth-entry-title {
-        font-size: 12px;
+    .children-selector-label {
+        font-size: 14px;
     }
 
-    .children-growth-entry-description {
-        font-size: 9px;
+    .children-selector {
+        font-size: 15px;
     }
 
     .children-calendar-day {
         min-height: 46px;
+
+        padding: 5px;
     }
 
-    .children-daily-section {
-        padding: 11px;
+    .children-modal-content {
+        padding: 16px;
     }
-}
-
-
-@media (max-width: 380px) {
 
     .children-profile-row {
-        grid-template-columns: minmax(0,1fr) 126px;
-        gap: 6px;
-    }
-
-    .children-profile {
-        padding: 9px;
-    }
-
-    .children-profile-name {
-        font-size: 17px;
-    }
-
-    .children-growth-entry {
-        padding-left: 5px;
-        padding-right: 18px;
-    }
-
-    .children-growth-entry-icon {
-        font-size: 21px;
+        grid-template-columns:
+            minmax(0,1fr)
+            135px;
     }
 
     .children-growth-entry-title {
-        font-size: 11px;
+        font-size: 13px;
     }
 
     .children-growth-entry-description {
-        display: none;
+        font-size: 10px;
     }
+
+}
+
+
+/* =====================================================
+   スマホ用：1日の記録
+===================================================== */
+
+@media (max-width:480px) {
+
+    .children-daily-basic-title {
+        font-size: 18px;
+    }
+
+    .children-daily-add-button {
+        font-size: 13px;
+
+        padding: 8px 12px;
+    }
+
+    .children-daily-table {
+        min-width: 400px;
+    }
+
+    .children-daily-table th,
+    .children-daily-table td {
+        padding: 9px 6px;
+    }
+
+    .children-record-type-dialog,
+    .children-record-edit-dialog {
+        width: calc(100% - 20px);
+
+        border-radius: 16px;
+    }
+
+}
+
+
+/* =====================================================
+   小さいスマホ
+===================================================== */
+
+@media (max-width:380px) {
+
+    .children-calendar-title {
+        font-size: 19px;
+    }
+
+    .children-calendar-back-button {
+        font-size: 12px;
+
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    .children-month-navigation {
+        grid-template-columns: 40px minmax(0,1fr) 40px;
+    }
+
+    .children-month-button {
+        width: 40px;
+        height: 40px;
+    }
+
+    .children-month-title-button {
+        min-height: 40px;
+
+        font-size: 18px;
+    }
+
+    .children-calendar {
+        gap: 2px;
+
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
+    .children-calendar-day {
+        min-height: 43px;
+    }
+
+    .children-profile-row {
+        grid-template-columns:
+            minmax(0,1fr)
+            120px;
+    }
+
 }

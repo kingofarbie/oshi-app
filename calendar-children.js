@@ -12,62 +12,38 @@ calendar-children.js
 ・記録編集
 ・記録削除
 ・時刻順ソート
+・性別による背景切り替え
+・成長・定期記録入口
 
 データは子どもごとのIDで完全に分離する
 ===================================================== */
 
-
-// =====================================================
-// 💾 保存設定
-// =====================================================
-
-const CHILDREN_STORAGE_KEY =
-    "oshi_app_children";
-
-
-// =====================================================
-// 👶 基本データ
-// =====================================================
+const CHILDREN_STORAGE_KEY = "oshi_app_children";
 
 let childrenData = [];
-
 let selectedChildId = null;
-
 let childrenEditingId = null;
-
 let childrenCalendarDate = new Date();
-
 let childrenSelectedDate = null;
 
-
-// =====================================================
-// 📝 基本記録項目
-// =====================================================
 
 const CHILDREN_DAILY_RECORD_TYPES = {
 
     feeding: "🍼 授乳・ミルク",
-
     sleep: "😴 睡眠",
-
     diaper: "🚼 おむつ",
-
     stool: "💩 うんち",
-
     food: "🍚 食事",
-
     water: "💧 水分",
-
     condition: "🌡️ 体調・体温",
-
     medicine: "💊 薬"
 
 };
 
 
-// =====================================================
-// 🚀 初期化
-// =====================================================
+/* =====================================================
+   初期化
+===================================================== */
 
 function initializeChildrenCalendar() {
 
@@ -96,24 +72,21 @@ function initializeChildrenCalendar() {
 }
 
 
-// =====================================================
-// 💾 データ読み込み
-// =====================================================
+/* =====================================================
+   データ読み込み
+===================================================== */
 
 function loadChildrenData() {
 
     try {
 
         const saved =
-            localStorage.getItem(
-                CHILDREN_STORAGE_KEY
-            );
+            localStorage.getItem(CHILDREN_STORAGE_KEY);
 
 
         if (!saved) {
 
             childrenData = [];
-
             selectedChildId = null;
 
             return;
@@ -128,7 +101,6 @@ function loadChildrenData() {
         if (!Array.isArray(parsed)) {
 
             childrenData = [];
-
             selectedChildId = null;
 
             return;
@@ -139,21 +111,34 @@ function loadChildrenData() {
         childrenData = parsed;
 
 
-        childrenData.forEach(
-            function(child) {
+        childrenData.forEach(function(child) {
 
-                if (
-                    !child.records ||
-                    typeof child.records !== "object" ||
-                    Array.isArray(child.records)
-                ) {
+            if (
+                !child.records ||
+                typeof child.records !== "object" ||
+                Array.isArray(child.records)
+            ) {
 
-                    child.records = {};
-
-                }
+                child.records = {};
 
             }
-        );
+
+
+            /*
+             * 性別は既存データには存在しない場合がある。
+             * その場合は空欄のままにする。
+             */
+
+            if (
+                child.gender !== "boy" &&
+                child.gender !== "girl"
+            ) {
+
+                child.gender = "";
+
+            }
+
+        });
 
 
         const savedSelectedChildId =
@@ -165,9 +150,7 @@ function loadChildrenData() {
         if (
             savedSelectedChildId &&
             childrenData.some(
-                child =>
-                    child.id ===
-                    savedSelectedChildId
+                child => child.id === savedSelectedChildId
             )
         ) {
 
@@ -183,8 +166,8 @@ function loadChildrenData() {
 
         }
 
-    }
-    catch (error) {
+
+    } catch(error) {
 
         console.error(
             "子どもデータ読み込みエラー:",
@@ -192,7 +175,6 @@ function loadChildrenData() {
         );
 
         childrenData = [];
-
         selectedChildId = null;
 
     }
@@ -200,9 +182,9 @@ function loadChildrenData() {
 }
 
 
-// =====================================================
-// 💾 データ保存
-// =====================================================
+/* =====================================================
+   保存
+===================================================== */
 
 function saveChildrenData() {
 
@@ -230,9 +212,9 @@ function saveChildrenData() {
 }
 
 
-// =====================================================
-// 🆔 子どもID
-// =====================================================
+/* =====================================================
+   ID
+===================================================== */
 
 function createChildId() {
 
@@ -240,17 +222,11 @@ function createChildId() {
         "child_" +
         Date.now().toString(36) +
         "_" +
-        Math.random()
-            .toString(36)
-            .slice(2, 10)
+        Math.random().toString(36).slice(2,10)
     );
 
 }
 
-
-// =====================================================
-// 🆔 記録ID
-// =====================================================
 
 function createChildrenRecordId() {
 
@@ -258,23 +234,18 @@ function createChildrenRecordId() {
         "record_" +
         Date.now().toString(36) +
         "_" +
-        Math.random()
-            .toString(36)
-            .slice(2, 10)
+        Math.random().toString(36).slice(2,10)
     );
 
 }
 
 
-// =====================================================
-// 🎛️ イベント初期化
-// =====================================================
+/* =====================================================
+   イベント
+===================================================== */
 
 function initializeChildrenEvents() {
 
-    // =================================================
-    // 子ども選択
-    // =================================================
 
     const selector =
         document.getElementById(
@@ -284,54 +255,49 @@ function initializeChildrenEvents() {
 
     if (selector) {
 
-        selector.onchange =
-            function() {
+        selector.onchange = function() {
 
-                const value =
-                    selector.value;
-
-
-                if (value === "settings") {
-
-                    selector.value =
-                        selectedChildId || "";
-
-                    openChildrenSettings();
-
-                    return;
-
-                }
+            const value =
+                selector.value;
 
 
-                if (!value) {
+            if (value === "settings") {
 
-                    selectedChildId = null;
+                selector.value =
+                    selectedChildId || "";
 
-                    childrenSelectedDate = null;
+                openChildrenSettings();
 
-                    saveChildrenData();
+                return;
 
-                    renderSelectedChild();
-
-                    renderChildrenCalendar();
-
-                    renderChildrenDaily();
-
-                    return;
-
-                }
+            }
 
 
-                selectChild(value);
+            if (!value) {
 
-            };
+                selectedChildId = null;
+
+                childrenSelectedDate = null;
+
+                saveChildrenData();
+
+                renderSelectedChild();
+
+                renderChildrenCalendar();
+
+                renderChildrenDaily();
+
+                return;
+
+            }
+
+
+            selectChild(value);
+
+        };
 
     }
 
-
-    // =================================================
-    // 前月
-    // =================================================
 
     const previousButton =
         document.getElementById(
@@ -341,23 +307,18 @@ function initializeChildrenEvents() {
 
     if (previousButton) {
 
-        previousButton.onclick =
-            function() {
+        previousButton.onclick = function() {
 
-                childrenCalendarDate.setMonth(
-                    childrenCalendarDate.getMonth() - 1
-                );
+            childrenCalendarDate.setMonth(
+                childrenCalendarDate.getMonth() - 1
+            );
 
-                renderChildrenCalendar();
+            renderChildrenCalendar();
 
-            };
+        };
 
     }
 
-
-    // =================================================
-    // 次月
-    // =================================================
 
     const nextButton =
         document.getElementById(
@@ -367,23 +328,18 @@ function initializeChildrenEvents() {
 
     if (nextButton) {
 
-        nextButton.onclick =
-            function() {
+        nextButton.onclick = function() {
 
-                childrenCalendarDate.setMonth(
-                    childrenCalendarDate.getMonth() + 1
-                );
+            childrenCalendarDate.setMonth(
+                childrenCalendarDate.getMonth() + 1
+            );
 
-                renderChildrenCalendar();
+            renderChildrenCalendar();
 
-            };
+        };
 
     }
 
-
-    // =================================================
-    // 設定モーダル
-    // =================================================
 
     const settingsClose =
         document.getElementById(
@@ -421,19 +377,14 @@ function initializeChildrenEvents() {
 
     if (addButton) {
 
-        addButton.onclick =
-            function() {
+        addButton.onclick = function() {
 
-                openChildrenEdit();
+            openChildrenEdit();
 
-            };
+        };
 
     }
 
-
-    // =================================================
-    // 子ども編集
-    // =================================================
 
     const editClose =
         document.getElementById(
@@ -497,10 +448,6 @@ function initializeChildrenEvents() {
     }
 
 
-    // =================================================
-    // ＋項目追加
-    // =================================================
-
     const dailyAddButton =
         document.getElementById(
             "childrenDailyAddButton"
@@ -514,19 +461,50 @@ function initializeChildrenEvents() {
 
     }
 
+
+    /* =================================================
+       成長・定期記録
+    ================================================= */
+
+    const growthEntryButton =
+        document.getElementById(
+            "childrenGrowthEntryButton"
+        );
+
+
+    if (growthEntryButton) {
+
+        growthEntryButton.onclick =
+            openChildrenGrowthSection;
+
+    }
+
+
+    const growthBackButton =
+        document.getElementById(
+            "childrenGrowthBackButton"
+        );
+
+
+    if (growthBackButton) {
+
+        growthBackButton.onclick =
+            closeChildrenGrowthSection;
+
+    }
+
 }
 
 
-// =====================================================
-// 👶 子ども選択
-// =====================================================
+/* =====================================================
+   子ども選択
+===================================================== */
 
 function selectChild(childId) {
 
     const child =
         childrenData.find(
-            item =>
-                item.id === childId
+            item => item.id === childId
         );
 
 
@@ -536,9 +514,13 @@ function selectChild(childId) {
     selectedChildId =
         child.id;
 
-    childrenSelectedDate = null;
+
+    childrenSelectedDate =
+        null;
+
 
     saveChildrenData();
+
 
     renderChildrenSelector();
 
@@ -551,32 +533,29 @@ function selectChild(childId) {
 }
 
 
-// =====================================================
-// 👶 選択中の子ども
-// =====================================================
+/* =====================================================
+   選択中の子ども
+===================================================== */
 
 function getSelectedChild() {
 
     if (!selectedChildId) {
-
         return null;
-
     }
 
 
     return (
         childrenData.find(
-            child =>
-                child.id === selectedChildId
+            child => child.id === selectedChildId
         ) || null
     );
 
 }
 
 
-// =====================================================
-// 🔽 子どもセレクター
-// =====================================================
+/* =====================================================
+   セレクター
+===================================================== */
 
 function renderChildrenSelector() {
 
@@ -607,27 +586,25 @@ function renderChildrenSelector() {
     );
 
 
-    childrenData.forEach(
-        function(child) {
+    childrenData.forEach(function(child) {
 
-            const option =
-                document.createElement("option");
-
-
-            option.value =
-                child.id;
+        const option =
+            document.createElement("option");
 
 
-            option.textContent =
-                `👶 ${child.name}`;
+        option.value =
+            child.id;
 
 
-            selector.appendChild(
-                option
-            );
+        option.textContent =
+            `👶 ${child.name}`;
 
-        }
-    );
+
+        selector.appendChild(
+            option
+        );
+
+    });
 
 
     const settingsOption =
@@ -653,9 +630,9 @@ function renderChildrenSelector() {
 }
 
 
-// =====================================================
-// 👶 プロフィール
-// =====================================================
+/* =====================================================
+   プロフィール表示
+===================================================== */
 
 function renderSelectedChild() {
 
@@ -671,12 +648,28 @@ function renderSelectedChild() {
         );
 
 
+    const app =
+        document.getElementById(
+            "childrenCalendarApp"
+        );
+
+
+    const growthEntry =
+        document.getElementById(
+            "childrenGrowthEntryButton"
+        );
+
+
     if (!profile) return;
 
 
     const child =
         getSelectedChild();
 
+
+    /* =============================================
+       子どもなし
+    ============================================= */
 
     if (!child) {
 
@@ -689,39 +682,80 @@ function renderSelectedChild() {
 
         }
 
+
+        if (growthEntry) {
+
+            growthEntry.style.display =
+                "none";
+
+        }
+
+
+        if (app) {
+
+            app.classList.remove(
+                "boy",
+                "girl"
+            );
+
+        }
+
+
         return;
 
     }
 
 
+    /* =============================================
+       性別による背景
+    ============================================= */
+
+    if (app) {
+
+        app.classList.remove(
+            "boy",
+            "girl"
+        );
+
+
+        if (child.gender === "girl") {
+
+            app.classList.add(
+                "girl"
+            );
+
+        } else if (child.gender === "boy") {
+
+            app.classList.add(
+                "boy"
+            );
+
+        }
+
+    }
+
+
+    /* =============================================
+       プロフィール
+    ============================================= */
+
     profile.innerHTML = `
 
         <h2 class="children-profile-name">
-
-            👶 ${escapeChildrenHTML(
-                child.name
-            )}
-
+            👶 ${escapeChildrenHTML(child.name)}
         </h2>
 
         <p class="children-profile-birthday">
-
             🎂 誕生日：
-
             ${
                 child.birthday
-                    ? escapeChildrenHTML(
-                        child.birthday
-                    )
+                    ? escapeChildrenHTML(child.birthday)
                     : "未登録"
             }
-
         </p>
 
         <div class="children-profile-age">
-
             ${calculateChildAgeText(child)}
-
         </div>
 
     `;
@@ -734,12 +768,20 @@ function renderSelectedChild() {
 
     }
 
+
+    if (growthEntry) {
+
+        growthEntry.style.display =
+            "";
+
+    }
+
 }
 
 
-// =====================================================
-// 👶 未選択
-// =====================================================
+/* =====================================================
+   子どもなし表示
+===================================================== */
 
 function renderChildrenEmpty() {
 
@@ -755,6 +797,18 @@ function renderChildrenEmpty() {
         );
 
 
+    const growthEntry =
+        document.getElementById(
+            "childrenGrowthEntryButton"
+        );
+
+
+    const app =
+        document.getElementById(
+            "childrenCalendarApp"
+        );
+
+
     if (profile) {
 
         profile.innerHTML = `
@@ -762,7 +816,6 @@ function renderChildrenEmpty() {
             <div class="children-profile-empty">
 
                 まず「子どもの設定」から<br>
-
                 子どもを追加してください。
 
             </div>
@@ -779,16 +832,36 @@ function renderChildrenEmpty() {
 
     }
 
+
+    if (growthEntry) {
+
+        growthEntry.style.display =
+            "none";
+
+    }
+
+
+    if (app) {
+
+        app.classList.remove(
+            "boy",
+            "girl"
+        );
+
+    }
+
 }
 
 
-// =====================================================
-// 🎂 年齢計算
-// =====================================================
+/* =====================================================
+   年齢
+===================================================== */
 
 function calculateChildAgeText(child) {
 
-    if (!child.birthday) return "";
+    if (!child.birthday) {
+        return "";
+    }
 
 
     const birthday =
@@ -797,7 +870,9 @@ function calculateChildAgeText(child) {
         );
 
 
-    if (!birthday) return "";
+    if (!birthday) {
+        return "";
+    }
 
 
     const today =
@@ -833,7 +908,9 @@ function calculateChildAgeText(child) {
     }
 
 
-    if (years < 0) return "";
+    if (years < 0) {
+        return "";
+    }
 
 
     if (years === 0) {
@@ -848,13 +925,15 @@ function calculateChildAgeText(child) {
 }
 
 
-// =====================================================
-// 📅 日付解析
-// =====================================================
+/* =====================================================
+   日付
+===================================================== */
 
 function parseDateOnly(value) {
 
-    if (!value) return null;
+    if (!value) {
+        return null;
+    }
 
 
     const parts =
@@ -862,9 +941,7 @@ function parseDateOnly(value) {
 
 
     if (parts.length !== 3) {
-
         return null;
-
     }
 
 
@@ -892,9 +969,9 @@ function parseDateOnly(value) {
 }
 
 
-// =====================================================
-// ⚙️ 子ども設定
-// =====================================================
+/* =====================================================
+   子ども設定
+===================================================== */
 
 function openChildrenSettings() {
 
@@ -938,9 +1015,9 @@ function closeChildrenSettings() {
 }
 
 
-// =====================================================
-// 📋 子ども一覧
-// =====================================================
+/* =====================================================
+   子ども一覧
+===================================================== */
 
 function renderChildrenList() {
 
@@ -973,123 +1050,111 @@ function renderChildrenList() {
     }
 
 
-    childrenData.forEach(
-        function(child) {
+    childrenData.forEach(function(child) {
 
-            const item =
-                document.createElement("div");
-
-
-            item.className =
-                "children-list-item";
+        const item =
+            document.createElement("div");
 
 
-            item.innerHTML = `
-
-                <div class="children-list-info">
-
-                    <p class="children-list-name">
-
-                        👶 ${escapeChildrenHTML(
-                            child.name
-                        )}
-
-                    </p>
-
-                    <p class="children-list-birthday">
-
-                        🎂 ${
-                            child.birthday
-                                ? escapeChildrenHTML(
-                                    child.birthday
-                                )
-                                : "誕生日未登録"
-                        }
-
-                    </p>
-
-                </div>
-
-                <div class="children-list-actions">
-
-                    <button
-                        type="button"
-                        class="children-list-action-button"
-                        data-action="edit"
-                    >
-                        編集
-                    </button>
-
-                    <button
-                        type="button"
-                        class="children-list-action-button"
-                        data-action="delete"
-                    >
-                        削除
-                    </button>
-
-                </div>
-
-            `;
+        item.className =
+            "children-list-item";
 
 
-            const editButton =
-                item.querySelector(
-                    '[data-action="edit"]'
-                );
+        item.innerHTML = `
+
+            <div class="children-list-info">
+
+                <p class="children-list-name">
+                    👶 ${escapeChildrenHTML(child.name)}
+                </p>
+
+                <p class="children-list-birthday">
+                    🎂 ${
+                        child.birthday
+                            ? escapeChildrenHTML(child.birthday)
+                            : "誕生日未登録"
+                    }
+                </p>
+
+            </div>
+
+            <div class="children-list-actions">
+
+                <button
+                    type="button"
+                    class="children-list-action-button"
+                    data-action="edit"
+                >
+                    編集
+                </button>
+
+                <button
+                    type="button"
+                    class="children-list-action-button"
+                    data-action="delete"
+                >
+                    削除
+                </button>
+
+            </div>
+
+        `;
 
 
-            if (editButton) {
-
-                editButton.onclick =
-                    function() {
-
-                        openChildrenEdit(
-                            child.id
-                        );
-
-                    };
-
-            }
-
-
-            const deleteButton =
-                item.querySelector(
-                    '[data-action="delete"]'
-                );
-
-
-            if (deleteButton) {
-
-                deleteButton.onclick =
-                    function() {
-
-                        deleteChild(
-                            child.id
-                        );
-
-                    };
-
-            }
-
-
-            list.appendChild(
-                item
+        const editButton =
+            item.querySelector(
+                '[data-action="edit"]'
             );
 
+
+        if (editButton) {
+
+            editButton.onclick =
+                function() {
+
+                    openChildrenEdit(
+                        child.id
+                    );
+
+                };
+
         }
-    );
+
+
+        const deleteButton =
+            item.querySelector(
+                '[data-action="delete"]'
+            );
+
+
+        if (deleteButton) {
+
+            deleteButton.onclick =
+                function() {
+
+                    deleteChild(
+                        child.id
+                    );
+
+                };
+
+        }
+
+
+        list.appendChild(
+            item
+        );
+
+    });
 
 }
 
 
-// =====================================================
-// ✏️ 子ども編集
-// =====================================================
+/* =====================================================
+   子ども追加・編集
+===================================================== */
 
-function openChildrenEdit(
-    childId = null
-) {
+function openChildrenEdit(childId = null) {
 
     childrenEditingId =
         childId;
@@ -1107,6 +1172,12 @@ function openChildrenEdit(
         );
 
 
+    const genderInput =
+        document.getElementById(
+            "childrenGenderInput"
+        );
+
+
     const birthdayInput =
         document.getElementById(
             "childrenBirthdayInput"
@@ -1116,6 +1187,7 @@ function openChildrenEdit(
     if (
         !title ||
         !nameInput ||
+        !genderInput ||
         !birthdayInput
     ) {
 
@@ -1128,8 +1200,7 @@ function openChildrenEdit(
 
         const child =
             childrenData.find(
-                item =>
-                    item.id === childId
+                item => item.id === childId
             );
 
 
@@ -1144,8 +1215,13 @@ function openChildrenEdit(
             child.name || "";
 
 
+        genderInput.value =
+            child.gender || "";
+
+
         birthdayInput.value =
             child.birthday || "";
+
 
     } else {
 
@@ -1154,6 +1230,10 @@ function openChildrenEdit(
 
 
         nameInput.value =
+            "";
+
+
+        genderInput.value =
             "";
 
 
@@ -1211,15 +1291,21 @@ function closeChildrenEdit() {
 }
 
 
-// =====================================================
-// 💾 子ども保存
-// =====================================================
+/* =====================================================
+   子ども保存
+===================================================== */
 
 function saveChildrenEdit() {
 
     const nameInput =
         document.getElementById(
             "childrenNameInput"
+        );
+
+
+    const genderInput =
+        document.getElementById(
+            "childrenGenderInput"
         );
 
 
@@ -1231,6 +1317,7 @@ function saveChildrenEdit() {
 
     if (
         !nameInput ||
+        !genderInput ||
         !birthdayInput
     ) {
 
@@ -1243,6 +1330,10 @@ function saveChildrenEdit() {
         nameInput.value.trim();
 
 
+    const gender =
+        genderInput.value;
+
+
     const birthday =
         birthdayInput.value;
 
@@ -1253,7 +1344,22 @@ function saveChildrenEdit() {
             "子どもの名前を入力してください。"
         );
 
+
         nameInput.focus();
+
+        return;
+
+    }
+
+
+    if (!gender) {
+
+        alert(
+            "性別を選択してください。"
+        );
+
+
+        genderInput.focus();
 
         return;
 
@@ -1277,6 +1383,10 @@ function saveChildrenEdit() {
             name;
 
 
+        child.gender =
+            gender;
+
+
         child.birthday =
             birthday;
 
@@ -1291,6 +1401,7 @@ function saveChildrenEdit() {
 
         }
 
+
     } else {
 
         const newChild = {
@@ -1300,6 +1411,9 @@ function saveChildrenEdit() {
 
             name:
                 name,
+
+            gender:
+                gender,
 
             birthday:
                 birthday,
@@ -1329,6 +1443,7 @@ function saveChildrenEdit() {
 
     saveChildrenData();
 
+
     renderChildrenSelector();
 
     renderSelectedChild();
@@ -1344,16 +1459,15 @@ function saveChildrenEdit() {
 }
 
 
-// =====================================================
-// 🗑️ 子ども削除
-// =====================================================
+/* =====================================================
+   子ども削除
+===================================================== */
 
 function deleteChild(childId) {
 
     const child =
         childrenData.find(
-            item =>
-                item.id === childId
+            item => item.id === childId
         );
 
 
@@ -1362,8 +1476,7 @@ function deleteChild(childId) {
 
     const confirmed =
         window.confirm(
-            `「${child.name}」を削除しますか？\n\n` +
-            "この子どもに保存されている記録も削除対象になります。"
+            `「${child.name}」を削除しますか？\n\nこの子どもに保存されている記録も削除対象になります。`
         );
 
 
@@ -1372,20 +1485,17 @@ function deleteChild(childId) {
 
     childrenData =
         childrenData.filter(
-            item =>
-                item.id !== childId
+            item => item.id !== childId
         );
 
 
-    if (
-        selectedChildId ===
-        childId
-    ) {
+    if (selectedChildId === childId) {
 
         selectedChildId =
             childrenData.length > 0
                 ? childrenData[0].id
                 : null;
+
 
         childrenSelectedDate =
             null;
@@ -1394,6 +1504,7 @@ function deleteChild(childId) {
 
 
     saveChildrenData();
+
 
     renderChildrenSelector();
 
@@ -1408,9 +1519,9 @@ function deleteChild(childId) {
 }
 
 
-// =====================================================
-// 📅 カレンダー表示
-// =====================================================
+/* =====================================================
+   カレンダー
+===================================================== */
 
 function renderChildrenCalendar() {
 
@@ -1442,7 +1553,8 @@ function renderChildrenCalendar() {
 
     if (!child) {
 
-        calendar.innerHTML = "";
+        calendar.innerHTML =
+            "";
 
         return;
 
@@ -1461,7 +1573,8 @@ function renderChildrenCalendar() {
         `${year}年${month + 1}月`;
 
 
-    calendar.innerHTML = "";
+    calendar.innerHTML =
+        "";
 
 
     const weekdays =
@@ -1477,10 +1590,12 @@ function renderChildrenCalendar() {
 
 
     weekdays.forEach(
-        function(day, index) {
+        function(day,index) {
 
             const element =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
 
 
             element.className =
@@ -1540,7 +1655,9 @@ function renderChildrenCalendar() {
     ) {
 
         const empty =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
 
 
         empty.className =
@@ -1565,7 +1682,9 @@ function renderChildrenCalendar() {
     ) {
 
         const cell =
-            document.createElement("button");
+            document.createElement(
+                "button"
+            );
 
 
         cell.type =
@@ -1585,15 +1704,15 @@ function renderChildrenCalendar() {
 
 
         const dateString =
-            formatChildrenDate(date);
+            formatChildrenDate(
+                date
+            );
 
 
         cell.innerHTML = `
 
             <div class="children-calendar-day-number">
-
                 ${day}
-
             </div>
 
         `;
@@ -1633,6 +1752,7 @@ function renderChildrenCalendar() {
                 childrenSelectedDate =
                     dateString;
 
+
                 renderChildrenCalendar();
 
                 renderChildrenDaily();
@@ -1649,9 +1769,9 @@ function renderChildrenCalendar() {
 }
 
 
-// =====================================================
-// 📅 YYYY-MM-DD
-// =====================================================
+/* =====================================================
+   日付フォーマット
+===================================================== */
 
 function formatChildrenDate(date) {
 
@@ -1662,13 +1782,13 @@ function formatChildrenDate(date) {
     const month =
         String(
             date.getMonth() + 1
-        ).padStart(2, "0");
+        ).padStart(2,"0");
 
 
     const day =
         String(
             date.getDate()
-        ).padStart(2, "0");
+        ).padStart(2,"0");
 
 
     return `${year}-${month}-${day}`;
@@ -1676,9 +1796,9 @@ function formatChildrenDate(date) {
 }
 
 
-// =====================================================
-// 📝 その日の記録取得
-// =====================================================
+/* =====================================================
+   1日の記録取得
+===================================================== */
 
 function getChildrenDailyRecords(
     child,
@@ -1710,28 +1830,34 @@ function getChildrenDailyRecords(
     }
 
 
-    return child.records[dateString];
+    return child.records[
+        dateString
+    ];
 
 }
 
 
-// =====================================================
-// ⏰ 時刻順
-// =====================================================
+/* =====================================================
+   時刻順
+===================================================== */
 
 function sortChildrenDailyRecords(
     records
 ) {
 
     records.sort(
-        function(a, b) {
+        function(a,b) {
 
             const timeA =
-                String(a.time || "");
+                String(
+                    a.time || ""
+                );
 
 
             const timeB =
-                String(b.time || "");
+                String(
+                    b.time || ""
+                );
 
 
             const result =
@@ -1748,8 +1874,12 @@ function sortChildrenDailyRecords(
 
 
             return (
-                Number(a.createdAt || 0) -
-                Number(b.createdAt || 0)
+                Number(
+                    a.createdAt || 0
+                ) -
+                Number(
+                    b.createdAt || 0
+                )
             );
 
         }
@@ -1761,9 +1891,9 @@ function sortChildrenDailyRecords(
 }
 
 
-// =====================================================
-// 📝 1日の記録
-// =====================================================
+/* =====================================================
+   1日の記録表示
+===================================================== */
 
 function renderChildrenDaily() {
 
@@ -1877,9 +2007,9 @@ function renderChildrenDaily() {
 }
 
 
-// =====================================================
-// 📋 記録表
-// =====================================================
+/* =====================================================
+   記録表示
+===================================================== */
 
 function renderChildrenDailyRecords(
     child,
@@ -1926,11 +2056,17 @@ function renderChildrenDailyRecords(
 
                     <tr>
 
-                        <th>時間</th>
+                        <th>
+                            時間
+                        </th>
 
-                        <th>項目内容</th>
+                        <th>
+                            項目内容
+                        </th>
 
-                        <th>備考</th>
+                        <th>
+                            備考
+                        </th>
 
                     </tr>
 
@@ -1946,10 +2082,12 @@ function renderChildrenDailyRecords(
 
             const label =
                 record.type === "other"
+
                     ? (
                         record.label ||
                         "その他"
                     )
+
                     : (
                         CHILDREN_DAILY_RECORD_TYPES[
                             record.type
@@ -1963,33 +2101,19 @@ function renderChildrenDailyRecords(
 
                 <tr
                     class="children-daily-table-row"
-                    data-record-id="${escapeChildrenHTML(
-                        record.id
-                    )}"
+                    data-record-id="${escapeChildrenHTML(record.id)}"
                 >
 
                     <td class="children-daily-time">
-
-                        ${escapeChildrenHTML(
-                            record.time || ""
-                        )}
-
+                        ${escapeChildrenHTML(record.time || "")}
                     </td>
 
                     <td class="children-daily-label">
-
-                        ${escapeChildrenHTML(
-                            label
-                        )}
-
+                        ${escapeChildrenHTML(label)}
                     </td>
 
                     <td class="children-daily-memo">
-
-                        ${escapeChildrenHTML(
-                            record.memo || ""
-                        )}
-
+                        ${escapeChildrenHTML(record.memo || "")}
                     </td>
 
                 </tr>
@@ -2009,9 +2133,7 @@ function renderChildrenDailyRecords(
         </div>
 
         <div class="children-daily-table-hint">
-
             記録をタップすると編集できます
-
         </div>
 
     `;
@@ -2043,9 +2165,9 @@ function renderChildrenDailyRecords(
 }
 
 
-// =====================================================
-// 📝 項目選択モーダル
-// =====================================================
+/* =====================================================
+   項目選択
+===================================================== */
 
 function openChildrenRecordTypeModal() {
 
@@ -2063,7 +2185,9 @@ function openChildrenRecordTypeModal() {
 
 
     const modal =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
 
 
     modal.id =
@@ -2095,7 +2219,6 @@ function openChildrenRecordTypeModal() {
                 </button>
 
             </div>
-
 
             <div class="children-record-type-list">
 
@@ -2166,9 +2289,7 @@ function openChildrenRecordTypeModal() {
                         closeChildrenRecordTypeModal();
 
 
-                        if (
-                            type === "other"
-                        ) {
+                        if (type === "other") {
 
                             openChildrenOtherRecord();
 
@@ -2188,10 +2309,6 @@ function openChildrenRecordTypeModal() {
 }
 
 
-// =====================================================
-// 🧱 項目ボタン生成
-// =====================================================
-
 function createChildrenRecordTypeButtons() {
 
     let html = "";
@@ -2199,9 +2316,8 @@ function createChildrenRecordTypeButtons() {
 
     Object.entries(
         CHILDREN_DAILY_RECORD_TYPES
-    )
-    .forEach(
-        function([type, label]) {
+    ).forEach(
+        function([type,label]) {
 
             html += `
 
@@ -2210,11 +2326,7 @@ function createChildrenRecordTypeButtons() {
                     class="children-record-type-button"
                     data-record-type="${type}"
                 >
-
-                    ${escapeChildrenHTML(
-                        label
-                    )}
-
+                    ${escapeChildrenHTML(label)}
                 </button>
 
             `;
@@ -2227,10 +2339,6 @@ function createChildrenRecordTypeButtons() {
 
 }
 
-
-// =====================================================
-// ✖️ 項目モーダルを閉じる
-// =====================================================
 
 function closeChildrenRecordTypeModal() {
 
@@ -2249,9 +2357,9 @@ function closeChildrenRecordTypeModal() {
 }
 
 
-// =====================================================
-// ➕ 基本項目
-// =====================================================
+/* =====================================================
+   通常記録
+===================================================== */
 
 function openChildrenDailyRecord(type) {
 
@@ -2287,9 +2395,9 @@ function openChildrenDailyRecord(type) {
 }
 
 
-// =====================================================
-// ✏️ その他
-// =====================================================
+/* =====================================================
+   その他
+===================================================== */
 
 function openChildrenOtherRecord() {
 
@@ -2300,9 +2408,7 @@ function openChildrenOtherRecord() {
 
 
     if (label === null) {
-
         return;
-
     }
 
 
@@ -2355,9 +2461,9 @@ function openChildrenOtherRecord() {
 }
 
 
-// =====================================================
-// ⏰ 時間入力
-// =====================================================
+/* =====================================================
+   時刻入力
+===================================================== */
 
 function openChildrenTimeInput(
     callback,
@@ -2365,7 +2471,9 @@ function openChildrenTimeInput(
 ) {
 
     const input =
-        document.createElement("input");
+        document.createElement(
+            "input"
+        );
 
 
     input.type =
@@ -2412,9 +2520,9 @@ function openChildrenTimeInput(
 }
 
 
-// =====================================================
-// 📝 備考入力
-// =====================================================
+/* =====================================================
+   備考
+===================================================== */
 
 function openChildrenMemoInput(
     currentMemo,
@@ -2429,9 +2537,7 @@ function openChildrenMemoInput(
 
 
     if (memo === null) {
-
         return;
-
     }
 
 
@@ -2461,9 +2567,9 @@ function openChildrenMemoInput(
 }
 
 
-// =====================================================
-// 💾 記録追加
-// =====================================================
+/* =====================================================
+   記録追加
+===================================================== */
 
 function addChildrenDailyRecord(
     type,
@@ -2528,9 +2634,9 @@ function addChildrenDailyRecord(
 }
 
 
-// =====================================================
-// ✏️ 記録編集モーダル
-// =====================================================
+/* =====================================================
+   記録編集
+===================================================== */
 
 function editChildrenDailyRecord(
     recordId
@@ -2574,9 +2680,9 @@ function editChildrenDailyRecord(
 }
 
 
-// =====================================================
-// 📝 編集モーダル表示
-// =====================================================
+/* =====================================================
+   編集モーダル
+===================================================== */
 
 function openChildrenRecordEditModal(
     record
@@ -2587,10 +2693,12 @@ function openChildrenRecordEditModal(
 
     const label =
         record.type === "other"
+
             ? (
                 record.label ||
                 "その他"
             )
+
             : (
                 CHILDREN_DAILY_RECORD_TYPES[
                     record.type
@@ -2601,7 +2709,9 @@ function openChildrenRecordEditModal(
 
 
     const modal =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
 
 
     modal.id =
@@ -2614,18 +2724,11 @@ function openChildrenRecordEditModal(
 
     modal.innerHTML = `
 
-        <div
-            class="children-record-edit-overlay"
-        ></div>
+        <div class="children-record-edit-overlay"></div>
 
+        <div class="children-record-edit-dialog">
 
-        <div
-            class="children-record-edit-dialog"
-        >
-
-            <div
-                class="children-record-edit-header"
-            >
+            <div class="children-record-edit-header">
 
                 <h2>
                     📝 記録を編集
@@ -2641,49 +2744,27 @@ function openChildrenRecordEditModal(
 
             </div>
 
+            <div class="children-record-edit-current">
 
-            <div
-                class="children-record-edit-current"
-            >
-
-                <div
-                    class="children-record-edit-time"
-                >
-                    ${escapeChildrenHTML(
-                        record.time || ""
-                    )}
+                <div class="children-record-edit-time">
+                    ${escapeChildrenHTML(record.time || "")}
                 </div>
 
-
-                <div
-                    class="children-record-edit-label"
-                >
-                    ${escapeChildrenHTML(
-                        label
-                    )}
+                <div class="children-record-edit-label">
+                    ${escapeChildrenHTML(label)}
                 </div>
 
-
-                <div
-                    class="children-record-edit-memo"
-                >
-
+                <div class="children-record-edit-memo">
                     ${
                         record.memo
-                            ? escapeChildrenHTML(
-                                record.memo
-                            )
+                            ? escapeChildrenHTML(record.memo)
                             : "備考なし"
                     }
-
                 </div>
 
             </div>
 
-
-            <div
-                class="children-record-edit-actions"
-            >
+            <div class="children-record-edit-actions">
 
                 ${
                     record.type === "other"
@@ -2699,7 +2780,6 @@ function openChildrenRecordEditModal(
                         : ""
                 }
 
-
                 <button
                     type="button"
                     id="childrenEditTimeButton"
@@ -2707,7 +2787,6 @@ function openChildrenRecordEditModal(
                 >
                     ⏰ 時刻を変更
                 </button>
-
 
                 <button
                     type="button"
@@ -2717,7 +2796,6 @@ function openChildrenRecordEditModal(
                     📝 備考を変更
                 </button>
 
-
                 <button
                     type="button"
                     id="childrenDeleteRecordButton"
@@ -2725,7 +2803,6 @@ function openChildrenRecordEditModal(
                 >
                     🗑️ 削除
                 </button>
-
 
                 <button
                     type="button"
@@ -2746,10 +2823,6 @@ function openChildrenRecordEditModal(
         modal
     );
 
-
-    // =================================================
-    // 閉じる
-    // =================================================
 
     const overlay =
         modal.querySelector(
@@ -2793,10 +2866,6 @@ function openChildrenRecordEditModal(
     }
 
 
-    // =================================================
-    // 項目名変更
-    // =================================================
-
     const labelButton =
         modal.querySelector(
             "#childrenEditLabelButton"
@@ -2816,9 +2885,7 @@ function openChildrenRecordEditModal(
 
 
                 if (newLabel === null) {
-
                     return;
-
                 }
 
 
@@ -2838,7 +2905,8 @@ function openChildrenRecordEditModal(
 
 
                 if (
-                    trimmedLabel.length > 50
+                    trimmedLabel.length >
+                    50
                 ) {
 
                     alert(
@@ -2856,6 +2924,7 @@ function openChildrenRecordEditModal(
 
                 saveChildrenData();
 
+
                 closeChildrenRecordEditModal();
 
                 renderChildrenDaily();
@@ -2864,10 +2933,6 @@ function openChildrenRecordEditModal(
 
     }
 
-
-    // =================================================
-    // 時刻変更
-    // =================================================
 
     const timeButton =
         modal.querySelector(
@@ -2908,10 +2973,6 @@ function openChildrenRecordEditModal(
     }
 
 
-    // =================================================
-    // 備考変更
-    // =================================================
-
     const memoButton =
         modal.querySelector(
             "#childrenEditMemoButton"
@@ -2931,9 +2992,7 @@ function openChildrenRecordEditModal(
 
 
                 if (memo === null) {
-
                     return;
-
                 }
 
 
@@ -2942,7 +3001,8 @@ function openChildrenRecordEditModal(
 
 
                 if (
-                    trimmedMemo.length > 200
+                    trimmedMemo.length >
+                    200
                 ) {
 
                     alert(
@@ -2969,10 +3029,6 @@ function openChildrenRecordEditModal(
     }
 
 
-    // =================================================
-    // 削除
-    // =================================================
-
     const deleteButton =
         modal.querySelector(
             "#childrenDeleteRecordButton"
@@ -2995,9 +3051,9 @@ function openChildrenRecordEditModal(
 }
 
 
-// =====================================================
-// ✖️ 編集モーダルを閉じる
-// =====================================================
+/* =====================================================
+   編集モーダルを閉じる
+===================================================== */
 
 function closeChildrenRecordEditModal() {
 
@@ -3016,9 +3072,9 @@ function closeChildrenRecordEditModal() {
 }
 
 
-// =====================================================
-// 🗑️ 記録削除
-// =====================================================
+/* =====================================================
+   記録削除
+===================================================== */
 
 function deleteChildrenDailyRecord(
     recordId
@@ -3053,9 +3109,7 @@ function deleteChildrenDailyRecord(
 
 
     if (index === -1) {
-
         return;
-
     }
 
 
@@ -3065,10 +3119,12 @@ function deleteChildrenDailyRecord(
 
     const label =
         record.type === "other"
+
             ? (
                 record.label ||
                 "その他"
             )
+
             : (
                 CHILDREN_DAILY_RECORD_TYPES[
                     record.type
@@ -3084,9 +3140,7 @@ function deleteChildrenDailyRecord(
 
 
     if (!confirmed) {
-
         return;
-
     }
 
 
@@ -3114,33 +3168,152 @@ function deleteChildrenDailyRecord(
 }
 
 
-// =====================================================
-// 🛡️ HTMLエスケープ
-// =====================================================
+/* =====================================================
+   成長・定期記録
+===================================================== */
 
-function escapeChildrenHTML(
-    value
-) {
+function openChildrenGrowthSection() {
+
+    const calendarSection =
+        document.getElementById(
+            "childrenCalendarSection"
+        );
+
+
+    const dailySection =
+        document.getElementById(
+            "childrenDailySection"
+        );
+
+
+    const profileRow =
+        document.querySelector(
+            ".children-profile-row"
+        );
+
+
+    const growthSection =
+        document.getElementById(
+            "childrenGrowthSection"
+        );
+
+
+    if (calendarSection) {
+
+        calendarSection.style.display =
+            "none";
+
+    }
+
+
+    if (dailySection) {
+
+        dailySection.style.display =
+            "none";
+
+    }
+
+
+    if (profileRow) {
+
+        profileRow.style.display =
+            "none";
+
+    }
+
+
+    if (growthSection) {
+
+        growthSection.style.display =
+            "";
+
+    }
+
+}
+
+
+function closeChildrenGrowthSection() {
+
+    const calendarSection =
+        document.getElementById(
+            "childrenCalendarSection"
+        );
+
+
+    const profileRow =
+        document.querySelector(
+            ".children-profile-row"
+        );
+
+
+    const growthSection =
+        document.getElementById(
+            "childrenGrowthSection"
+        );
+
+
+    if (growthSection) {
+
+        growthSection.style.display =
+            "none";
+
+    }
+
+
+    if (profileRow) {
+
+        profileRow.style.display =
+            "";
+
+    }
+
+
+    if (getSelectedChild()) {
+
+        if (calendarSection) {
+
+            calendarSection.style.display =
+                "";
+
+        }
+
+        renderChildrenDaily();
+
+    }
+
+}
+
+
+/* =====================================================
+   HTMLエスケープ
+===================================================== */
+
+function escapeChildrenHTML(value) {
 
     return String(
         value ?? ""
     )
+
         .replaceAll(
             "&",
             "&amp;"
         )
+
         .replaceAll(
             "<",
             "&lt;"
         )
+
         .replaceAll(
             ">",
             "&gt;"
         )
+
         .replaceAll(
             '"',
             "&quot;"
         )
+
         .replaceAll(
             "'",
             "&#039;"
@@ -3149,9 +3322,9 @@ function escapeChildrenHTML(
 }
 
 
-// =====================================================
-// ◀ 通常カレンダー
-// =====================================================
+/* =====================================================
+   こどもカレンダーを閉じる
+===================================================== */
 
 function closeChildrenCalendar() {
 
@@ -3174,20 +3347,21 @@ function closeChildrenCalendar() {
 }
 
 
-// =====================================================
-// 🌐 グローバル公開
-// =====================================================
+/* =====================================================
+   グローバル公開
+===================================================== */
 
 window.initializeChildrenCalendar =
     initializeChildrenCalendar;
+
 
 window.closeChildrenCalendar =
     closeChildrenCalendar;
 
 
-// =====================================================
-// 👶 こどもカレンダーを開く
-// =====================================================
+/* =====================================================
+   こどもカレンダーを開く
+===================================================== */
 
 async function openChildrenCalendar() {
 
@@ -3231,8 +3405,8 @@ async function openChildrenCalendar() {
 
         initializeChildrenCalendar();
 
-    }
-    catch (error) {
+
+    } catch(error) {
 
         console.error(
             "こどもカレンダー読み込みエラー:",
