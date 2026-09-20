@@ -4,11 +4,14 @@ calendar-children.js
 
 ・子ども管理
 ・子ども選択
-・データ保存
 ・カレンダー表示
 ・1日の記録
-・記録の追加 / 編集 / 削除
-・時刻順自動ソート
+・項目選択モーダル
+・時間入力
+・備考
+・記録編集
+・記録削除
+・時刻順ソート
 
 データは子どもごとのIDで完全に分離する
 ===================================================== */
@@ -18,11 +21,12 @@ calendar-children.js
 // 💾 保存設定
 // =====================================================
 
-const CHILDREN_STORAGE_KEY = "oshi_app_children";
+const CHILDREN_STORAGE_KEY =
+    "oshi_app_children";
 
 
 // =====================================================
-// 👶 子どもデータ
+// 👶 基本データ
 // =====================================================
 
 let childrenData = [];
@@ -79,8 +83,7 @@ function initializeChildrenCalendar() {
 
         renderSelectedChild();
 
-    }
-    else {
+    } else {
 
         renderChildrenEmpty();
 
@@ -94,7 +97,7 @@ function initializeChildrenCalendar() {
 
 
 // =====================================================
-// 💾 子どもデータ読み込み
+// 💾 データ読み込み
 // =====================================================
 
 function loadChildrenData() {
@@ -136,23 +139,21 @@ function loadChildrenData() {
         childrenData = parsed;
 
 
-        // ---------------------------------------------
-        // 既存データに records がない場合の補正
-        // ---------------------------------------------
+        childrenData.forEach(
+            function(child) {
 
-        childrenData.forEach(function(child) {
+                if (
+                    !child.records ||
+                    typeof child.records !== "object" ||
+                    Array.isArray(child.records)
+                ) {
 
-            if (
-                !child.records ||
-                typeof child.records !== "object" ||
-                Array.isArray(child.records)
-            ) {
+                    child.records = {};
 
-                child.records = {};
+                }
 
             }
-
-        });
+        );
 
 
         const savedSelectedChildId =
@@ -165,15 +166,15 @@ function loadChildrenData() {
             savedSelectedChildId &&
             childrenData.some(
                 child =>
-                    child.id === savedSelectedChildId
+                    child.id ===
+                    savedSelectedChildId
             )
         ) {
 
             selectedChildId =
                 savedSelectedChildId;
 
-        }
-        else {
+        } else {
 
             selectedChildId =
                 childrenData.length > 0
@@ -200,7 +201,7 @@ function loadChildrenData() {
 
 
 // =====================================================
-// 💾 子どもデータ保存
+// 💾 データ保存
 // =====================================================
 
 function saveChildrenData() {
@@ -218,8 +219,7 @@ function saveChildrenData() {
             selectedChildId
         );
 
-    }
-    else {
+    } else {
 
         localStorage.removeItem(
             `${CHILDREN_STORAGE_KEY}_selected`
@@ -272,9 +272,9 @@ function createChildrenRecordId() {
 
 function initializeChildrenEvents() {
 
-    // ---------------------------------------------
+    // =================================================
     // 子ども選択
-    // ---------------------------------------------
+    // =================================================
 
     const selector =
         document.getElementById(
@@ -329,9 +329,9 @@ function initializeChildrenEvents() {
     }
 
 
-    // ---------------------------------------------
+    // =================================================
     // 前月
-    // ---------------------------------------------
+    // =================================================
 
     const previousButton =
         document.getElementById(
@@ -355,9 +355,9 @@ function initializeChildrenEvents() {
     }
 
 
-    // ---------------------------------------------
+    // =================================================
     // 次月
-    // ---------------------------------------------
+    // =================================================
 
     const nextButton =
         document.getElementById(
@@ -381,9 +381,9 @@ function initializeChildrenEvents() {
     }
 
 
-    // ---------------------------------------------
+    // =================================================
     // 設定モーダル
-    // ---------------------------------------------
+    // =================================================
 
     const settingsClose =
         document.getElementById(
@@ -413,10 +413,6 @@ function initializeChildrenEvents() {
     }
 
 
-    // ---------------------------------------------
-    // 子ども追加
-    // ---------------------------------------------
-
     const addButton =
         document.getElementById(
             "childrenAddButton"
@@ -435,9 +431,9 @@ function initializeChildrenEvents() {
     }
 
 
-    // ---------------------------------------------
-    // 編集モーダル
-    // ---------------------------------------------
+    // =================================================
+    // 子ども編集
+    // =================================================
 
     const editClose =
         document.getElementById(
@@ -501,47 +497,20 @@ function initializeChildrenEvents() {
     }
 
 
-    // ---------------------------------------------
-    // 基本記録ボタン
-    // ---------------------------------------------
+    // =================================================
+    // ＋項目追加
+    // =================================================
 
-    const recordButtons =
-        document.querySelectorAll(
-            ".children-daily-record-button"
-        );
-
-
-    recordButtons.forEach(
-        function(button) {
-
-            button.onclick =
-                function() {
-
-                    const type =
-                        button.dataset.recordType;
-
-                    openChildrenDailyRecord(type);
-
-                };
-
-        }
-    );
-
-
-    // ---------------------------------------------
-    // その他
-    // ---------------------------------------------
-
-    const otherButton =
+    const dailyAddButton =
         document.getElementById(
-            "childrenDailyOtherButton"
+            "childrenDailyAddButton"
         );
 
 
-    if (otherButton) {
+    if (dailyAddButton) {
 
-        otherButton.onclick =
-            openChildrenOtherRecord;
+        dailyAddButton.onclick =
+            openChildrenRecordTypeModal;
 
     }
 
@@ -556,7 +525,8 @@ function selectChild(childId) {
 
     const child =
         childrenData.find(
-            item => item.id === childId
+            item =>
+                item.id === childId
         );
 
 
@@ -566,9 +536,7 @@ function selectChild(childId) {
     selectedChildId =
         child.id;
 
-
     childrenSelectedDate = null;
-
 
     saveChildrenData();
 
@@ -686,7 +654,7 @@ function renderChildrenSelector() {
 
 
 // =====================================================
-// 👶 子どもプロフィール
+// 👶 プロフィール
 // =====================================================
 
 function renderSelectedChild() {
@@ -730,7 +698,9 @@ function renderSelectedChild() {
 
         <h2 class="children-profile-name">
 
-            👶 ${escapeChildrenHTML(child.name)}
+            👶 ${escapeChildrenHTML(
+                child.name
+            )}
 
         </h2>
 
@@ -768,7 +738,7 @@ function renderSelectedChild() {
 
 
 // =====================================================
-// 👶 子ども未選択
+// 👶 未選択
 // =====================================================
 
 function renderChildrenEmpty() {
@@ -879,7 +849,7 @@ function calculateChildAgeText(child) {
 
 
 // =====================================================
-// 📅 日付のみを安全に解析
+// 📅 日付解析
 // =====================================================
 
 function parseDateOnly(value) {
@@ -888,9 +858,7 @@ function parseDateOnly(value) {
 
 
     const parts =
-        value
-            .split("-")
-            .map(Number);
+        value.split("-").map(Number);
 
 
     if (parts.length !== 3) {
@@ -925,7 +893,7 @@ function parseDateOnly(value) {
 
 
 // =====================================================
-// ⚙️ 子ども設定を開く
+// ⚙️ 子ども設定
 // =====================================================
 
 function openChildrenSettings() {
@@ -948,10 +916,6 @@ function openChildrenSettings() {
 
 }
 
-
-// =====================================================
-// ⚙️ 子ども設定を閉じる
-// =====================================================
 
 function closeChildrenSettings() {
 
@@ -1052,7 +1016,6 @@ function renderChildrenList() {
                         type="button"
                         class="children-list-action-button"
                         data-action="edit"
-                        data-child-id="${child.id}"
                     >
                         編集
                     </button>
@@ -1061,7 +1024,6 @@ function renderChildrenList() {
                         type="button"
                         class="children-list-action-button"
                         data-action="delete"
-                        data-child-id="${child.id}"
                     >
                         削除
                     </button>
@@ -1111,7 +1073,9 @@ function renderChildrenList() {
             }
 
 
-            list.appendChild(item);
+            list.appendChild(
+                item
+            );
 
         }
     );
@@ -1164,7 +1128,8 @@ function openChildrenEdit(
 
         const child =
             childrenData.find(
-                item => item.id === childId
+                item =>
+                    item.id === childId
             );
 
 
@@ -1182,8 +1147,7 @@ function openChildrenEdit(
         birthdayInput.value =
             child.birthday || "";
 
-    }
-    else {
+    } else {
 
         title.textContent =
             "👶 子どもを追加";
@@ -1224,10 +1188,6 @@ function openChildrenEdit(
 
 }
 
-
-// =====================================================
-// ✖️ 子ども編集を閉じる
-// =====================================================
 
 function closeChildrenEdit() {
 
@@ -1293,7 +1253,6 @@ function saveChildrenEdit() {
             "子どもの名前を入力してください。"
         );
 
-
         nameInput.focus();
 
         return;
@@ -1332,8 +1291,7 @@ function saveChildrenEdit() {
 
         }
 
-    }
-    else {
+    } else {
 
         const newChild = {
 
@@ -1404,10 +1362,8 @@ function deleteChild(childId) {
 
     const confirmed =
         window.confirm(
-
             `「${child.name}」を削除しますか？\n\n` +
             "この子どもに保存されている記録も削除対象になります。"
-
         );
 
 
@@ -1422,7 +1378,8 @@ function deleteChild(childId) {
 
 
     if (
-        selectedChildId === childId
+        selectedChildId ===
+        childId
     ) {
 
         selectedChildId =
@@ -1504,8 +1461,7 @@ function renderChildrenCalendar() {
         `${year}年${month + 1}月`;
 
 
-    calendar.innerHTML =
-        "";
+    calendar.innerHTML = "";
 
 
     const weekdays =
@@ -1524,9 +1480,7 @@ function renderChildrenCalendar() {
         function(day, index) {
 
             const element =
-                document.createElement(
-                    "div"
-                );
+                document.createElement("div");
 
 
             element.className =
@@ -1586,9 +1540,7 @@ function renderChildrenCalendar() {
     ) {
 
         const empty =
-            document.createElement(
-                "div"
-            );
+            document.createElement("div");
 
 
         empty.className =
@@ -1613,9 +1565,7 @@ function renderChildrenCalendar() {
     ) {
 
         const cell =
-            document.createElement(
-                "button"
-            );
+            document.createElement("button");
 
 
         cell.type =
@@ -1635,9 +1585,7 @@ function renderChildrenCalendar() {
 
 
         const dateString =
-            formatChildrenDate(
-                date
-            );
+            formatChildrenDate(date);
 
 
         cell.innerHTML = `
@@ -1685,7 +1633,6 @@ function renderChildrenCalendar() {
                 childrenSelectedDate =
                     dateString;
 
-
                 renderChildrenCalendar();
 
                 renderChildrenDaily();
@@ -1703,7 +1650,7 @@ function renderChildrenCalendar() {
 
 
 // =====================================================
-// 📅 日付 → YYYY-MM-DD
+// 📅 YYYY-MM-DD
 // =====================================================
 
 function formatChildrenDate(date) {
@@ -1724,15 +1671,13 @@ function formatChildrenDate(date) {
         ).padStart(2, "0");
 
 
-    return (
-        `${year}-${month}-${day}`
-    );
+    return `${year}-${month}-${day}`;
 
 }
 
 
 // =====================================================
-// 📝 子どもの1日記録を取得
+// 📝 その日の記録取得
 // =====================================================
 
 function getChildrenDailyRecords(
@@ -1760,8 +1705,7 @@ function getChildrenDailyRecords(
         )
     ) {
 
-        child.records[dateString] =
-            [];
+        child.records[dateString] = [];
 
     }
 
@@ -1772,7 +1716,7 @@ function getChildrenDailyRecords(
 
 
 // =====================================================
-// ⏰ 記録を時刻順に並べる
+// ⏰ 時刻順
 // =====================================================
 
 function sortChildrenDailyRecords(
@@ -1783,15 +1727,11 @@ function sortChildrenDailyRecords(
         function(a, b) {
 
             const timeA =
-                String(
-                    a.time || ""
-                );
+                String(a.time || "");
 
 
             const timeB =
-                String(
-                    b.time || ""
-                );
+                String(b.time || "");
 
 
             const result =
@@ -1807,14 +1747,9 @@ function sortChildrenDailyRecords(
             }
 
 
-            // 同時刻の場合は登録順を維持
             return (
-                Number(
-                    a.createdAt || 0
-                ) -
-                Number(
-                    b.createdAt || 0
-                )
+                Number(a.createdAt || 0) -
+                Number(b.createdAt || 0)
             );
 
         }
@@ -1827,7 +1762,7 @@ function sortChildrenDailyRecords(
 
 
 // =====================================================
-// 📝 日記録画面
+// 📝 1日の記録
 // =====================================================
 
 function renderChildrenDaily() {
@@ -1844,12 +1779,6 @@ function renderChildrenDaily() {
         );
 
 
-    const basicSection =
-        document.querySelector(
-            ".children-daily-basic-section"
-        );
-
-
     const recordsContainer =
         document.getElementById(
             "childrenDailyRecords"
@@ -1859,7 +1788,6 @@ function renderChildrenDaily() {
     if (
         !section ||
         !title ||
-        !basicSection ||
         !recordsContainer
     ) {
 
@@ -1915,66 +1843,26 @@ function renderChildrenDaily() {
             "木",
             "金",
             "土"
-        ][
-            date.getDay()
-        ];
+        ][date.getDay()];
 
 
     title.textContent =
         `👶 ${child.name}　${year}年${month}月${day}日（${weekday}）`;
 
 
-    // ---------------------------------------------
-    // 基本項目ボタン
-    // ---------------------------------------------
-
-    const buttons =
-        basicSection.querySelectorAll(
-            ".children-daily-record-button"
-        );
-
-
-    buttons.forEach(
-        function(button) {
-
-            button.onclick =
-                function() {
-
-                    const type =
-                        button.dataset.recordType;
-
-
-                    openChildrenDailyRecord(
-                        type
-                    );
-
-                };
-
-        }
-    );
-
-
-    // ---------------------------------------------
-    // その他
-    // ---------------------------------------------
-
-    const otherButton =
+    const addButton =
         document.getElementById(
-            "childrenDailyOtherButton"
+            "childrenDailyAddButton"
         );
 
 
-    if (otherButton) {
+    if (addButton) {
 
-        otherButton.onclick =
-            openChildrenOtherRecord;
+        addButton.onclick =
+            openChildrenRecordTypeModal;
 
     }
 
-
-    // ---------------------------------------------
-    // 記録一覧
-    // ---------------------------------------------
 
     renderChildrenDailyRecords(
         child,
@@ -1990,7 +1878,7 @@ function renderChildrenDaily() {
 
 
 // =====================================================
-// 📋 記録一覧
+// 📋 記録表
 // =====================================================
 
 function renderChildrenDailyRecords(
@@ -2028,25 +1916,33 @@ function renderChildrenDailyRecords(
     }
 
 
-    container.innerHTML = "";
+    let html = `
+
+        <div class="children-daily-table-wrapper">
+
+            <table class="children-daily-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>時間</th>
+
+                        <th>項目内容</th>
+
+                        <th>備考</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+    `;
 
 
     records.forEach(
         function(record) {
-
-            const item =
-                document.createElement(
-                    "button"
-                );
-
-
-            item.type =
-                "button";
-
-
-            item.className =
-                "children-daily-record-item";
-
 
             const label =
                 record.type === "other"
@@ -2063,128 +1959,327 @@ function renderChildrenDailyRecords(
                     );
 
 
-            item.innerHTML = `
+            html += `
 
-                <span class="children-daily-record-time">
+                <tr
+                    class="children-daily-table-row"
+                    data-record-id="${escapeChildrenHTML(
+                        record.id
+                    )}"
+                >
 
-                    ${escapeChildrenHTML(
-                        record.time || ""
-                    )}
+                    <td class="children-daily-time">
 
-                </span>
+                        ${escapeChildrenHTML(
+                            record.time || ""
+                        )}
 
-                <span class="children-daily-record-label">
+                    </td>
+
+                    <td class="children-daily-label">
+
+                        ${escapeChildrenHTML(
+                            label
+                        )}
+
+                    </td>
+
+                    <td class="children-daily-memo">
+
+                        ${escapeChildrenHTML(
+                            record.memo || ""
+                        )}
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+    );
+
+
+    html += `
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <div class="children-daily-table-hint">
+
+            記録をタップすると編集できます
+
+        </div>
+
+    `;
+
+
+    container.innerHTML =
+        html;
+
+
+    container
+        .querySelectorAll(
+            ".children-daily-table-row"
+        )
+        .forEach(
+            function(row) {
+
+                row.onclick =
+                    function() {
+
+                        editChildrenDailyRecord(
+                            row.dataset.recordId
+                        );
+
+                    };
+
+            }
+        );
+
+}
+
+
+// =====================================================
+// 📝 項目選択モーダル
+// =====================================================
+
+function openChildrenRecordTypeModal() {
+
+    if (
+        !getSelectedChild() ||
+        !childrenSelectedDate
+    ) {
+
+        return;
+
+    }
+
+
+    closeChildrenRecordTypeModal();
+
+
+    const modal =
+        document.createElement("div");
+
+
+    modal.id =
+        "childrenRecordTypeModal";
+
+
+    modal.className =
+        "children-record-type-modal";
+
+
+    modal.innerHTML = `
+
+        <div class="children-record-type-overlay"></div>
+
+        <div class="children-record-type-dialog">
+
+            <div class="children-record-type-header">
+
+                <h2>
+                    📝 記録する項目
+                </h2>
+
+                <button
+                    type="button"
+                    id="childrenRecordTypeClose"
+                    class="children-record-type-close"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <div class="children-record-type-list">
+
+                ${createChildrenRecordTypeButtons()}
+
+                <button
+                    type="button"
+                    class="children-record-type-button other"
+                    data-record-type="other"
+                >
+                    ✏️ その他
+                </button>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    document.body.appendChild(
+        modal
+    );
+
+
+    const overlay =
+        modal.querySelector(
+            ".children-record-type-overlay"
+        );
+
+
+    if (overlay) {
+
+        overlay.onclick =
+            closeChildrenRecordTypeModal;
+
+    }
+
+
+    const closeButton =
+        modal.querySelector(
+            "#childrenRecordTypeClose"
+        );
+
+
+    if (closeButton) {
+
+        closeButton.onclick =
+            closeChildrenRecordTypeModal;
+
+    }
+
+
+    modal
+        .querySelectorAll(
+            ".children-record-type-button"
+        )
+        .forEach(
+            function(button) {
+
+                button.onclick =
+                    function() {
+
+                        const type =
+                            button.dataset.recordType;
+
+
+                        closeChildrenRecordTypeModal();
+
+
+                        if (
+                            type === "other"
+                        ) {
+
+                            openChildrenOtherRecord();
+
+                        } else {
+
+                            openChildrenDailyRecord(
+                                type
+                            );
+
+                        }
+
+                    };
+
+            }
+        );
+
+}
+
+
+// =====================================================
+// 🧱 項目ボタン生成
+// =====================================================
+
+function createChildrenRecordTypeButtons() {
+
+    let html = "";
+
+
+    Object.entries(
+        CHILDREN_DAILY_RECORD_TYPES
+    )
+    .forEach(
+        function([type, label]) {
+
+            html += `
+
+                <button
+                    type="button"
+                    class="children-record-type-button"
+                    data-record-type="${type}"
+                >
 
                     ${escapeChildrenHTML(
                         label
                     )}
 
-                </span>
-
-                <span class="children-daily-record-arrow">
-
-                    ›
-                    
-                </span>
+                </button>
 
             `;
 
-
-            item.onclick =
-                function() {
-
-                    editChildrenDailyRecord(
-                        record.id
-                    );
-
-                };
-
-
-            container.appendChild(
-                item
-            );
-
         }
     );
+
+
+    return html;
 
 }
 
 
 // =====================================================
-// ➕ 基本記録追加
+// ✖️ 項目モーダルを閉じる
 // =====================================================
 
-function openChildrenDailyRecord(
-    type
-) {
+function closeChildrenRecordTypeModal() {
 
-    const child =
-        getSelectedChild();
-
-
-    if (
-        !child ||
-        !childrenSelectedDate
-    ) {
-
-        return;
-
-    }
-
-
-    if (
-        !CHILDREN_DAILY_RECORD_TYPES[
-            type
-        ]
-    ) {
-
-        return;
-
-    }
-
-
-    // ---------------------------------------------
-    // 一時的な time input
-    // ---------------------------------------------
-
-    const input =
-        document.createElement(
-            "input"
+    const modal =
+        document.getElementById(
+            "childrenRecordTypeModal"
         );
 
 
-    input.type =
-        "text";
+    if (modal) {
+
+        modal.remove();
+
+    }
+
+}
 
 
-    input.style.display =
-        "none";
+// =====================================================
+// ➕ 基本項目
+// =====================================================
+
+function openChildrenDailyRecord(type) {
+
+    if (
+        !CHILDREN_DAILY_RECORD_TYPES[type]
+    ) {
+
+        return;
+
+    }
 
 
-    document.body.appendChild(
-        input
-    );
-
-
-    openNumberInputModal(
-        input,
-        "⏰ 時刻",
-        false,
-        "time",
+    openChildrenTimeInput(
         function(time) {
 
-            addChildrenDailyRecord(
-                type,
-                time
+            openChildrenMemoInput(
+                "",
+                function(memo) {
+
+                    addChildrenDailyRecord(
+                        type,
+                        time,
+                        "",
+                        memo
+                    );
+
+                }
             );
-
-
-            input.remove();
-
-        },
-        function() {
-
-            input.remove();
 
         }
     );
@@ -2193,28 +2288,14 @@ function openChildrenDailyRecord(
 
 
 // =====================================================
-// ➕ その他記録
+// ✏️ その他
 // =====================================================
 
 function openChildrenOtherRecord() {
 
-    const child =
-        getSelectedChild();
-
-
-    if (
-        !child ||
-        !childrenSelectedDate
-    ) {
-
-        return;
-
-    }
-
-
     const label =
         window.prompt(
-            "記録する項目名を入力してください。\n\n例：お風呂、散歩、検温、病院など"
+            "記録する項目名を入力してください。\n\n例：お風呂、散歩、病院など"
         );
 
 
@@ -2251,14 +2332,48 @@ function openChildrenOtherRecord() {
     }
 
 
+    openChildrenTimeInput(
+        function(time) {
+
+            openChildrenMemoInput(
+                "",
+                function(memo) {
+
+                    addChildrenDailyRecord(
+                        "other",
+                        time,
+                        trimmedLabel,
+                        memo
+                    );
+
+                }
+            );
+
+        }
+    );
+
+}
+
+
+// =====================================================
+// ⏰ 時間入力
+// =====================================================
+
+function openChildrenTimeInput(
+    callback,
+    currentValue = ""
+) {
+
     const input =
-        document.createElement(
-            "input"
-        );
+        document.createElement("input");
 
 
     input.type =
         "text";
+
+
+    input.value =
+        currentValue || "";
 
 
     input.style.display =
@@ -2277,11 +2392,11 @@ function openChildrenOtherRecord() {
         "time",
         function(time) {
 
-            addChildrenDailyRecord(
-                "other",
-                time,
-                trimmedLabel
-            );
+            if (callback) {
+
+                callback(time);
+
+            }
 
 
             input.remove();
@@ -2298,13 +2413,63 @@ function openChildrenOtherRecord() {
 
 
 // =====================================================
+// 📝 備考入力
+// =====================================================
+
+function openChildrenMemoInput(
+    currentMemo,
+    callback
+) {
+
+    const memo =
+        window.prompt(
+            "備考を入力してください。\n\n空欄のままOKでも保存できます。",
+            currentMemo || ""
+        );
+
+
+    if (memo === null) {
+
+        return;
+
+    }
+
+
+    const trimmedMemo =
+        memo.trim();
+
+
+    if (trimmedMemo.length > 200) {
+
+        alert(
+            "備考は200文字以内で入力してください。"
+        );
+
+        return;
+
+    }
+
+
+    if (callback) {
+
+        callback(
+            trimmedMemo
+        );
+
+    }
+
+}
+
+
+// =====================================================
 // 💾 記録追加
 // =====================================================
 
 function addChildrenDailyRecord(
     type,
     time,
-    label = ""
+    label = "",
+    memo = ""
 ) {
 
     const child =
@@ -2342,6 +2507,9 @@ function addChildrenDailyRecord(
         time:
             time,
 
+        memo:
+            memo,
+
         createdAt:
             Date.now()
 
@@ -2361,7 +2529,7 @@ function addChildrenDailyRecord(
 
 
 // =====================================================
-// ✏️ 記録編集
+// ✏️ 記録編集モーダル
 // =====================================================
 
 function editChildrenDailyRecord(
@@ -2399,153 +2567,549 @@ function editChildrenDailyRecord(
     if (!record) return;
 
 
-    // ---------------------------------------------
-    // その他は項目名も編集
-    // ---------------------------------------------
+    openChildrenRecordEditModal(
+        record
+    );
 
-    if (record.type === "other") {
+}
 
-        const newLabel =
-            window.prompt(
-                "項目名を変更してください。",
-                record.label || ""
+
+// =====================================================
+// 📝 編集モーダル表示
+// =====================================================
+
+function openChildrenRecordEditModal(
+    record
+) {
+
+    closeChildrenRecordEditModal();
+
+
+    const label =
+        record.type === "other"
+            ? (
+                record.label ||
+                "その他"
+            )
+            : (
+                CHILDREN_DAILY_RECORD_TYPES[
+                    record.type
+                ] ||
+                record.type ||
+                "記録"
             );
 
 
-        if (newLabel === null) {
-
-            return;
-
-        }
+    const modal =
+        document.createElement("div");
 
 
-        const trimmedLabel =
-            newLabel.trim();
+    modal.id =
+        "childrenRecordEditModal";
 
 
-        if (!trimmedLabel) {
-
-            alert(
-                "項目名を入力してください。"
-            );
-
-            return;
-
-        }
+    modal.className =
+        "children-record-edit-modal";
 
 
-        if (trimmedLabel.length > 50) {
+    modal.innerHTML = `
 
-            alert(
-                "項目名は50文字以内で入力してください。"
-            );
-
-            return;
-
-        }
+        <div
+            class="children-record-edit-overlay"
+        ></div>
 
 
-        record.label =
-            trimmedLabel;
+        <div
+            class="children-record-edit-dialog"
+        >
+
+            <div
+                class="children-record-edit-header"
+            >
+
+                <h2>
+                    📝 記録を編集
+                </h2>
+
+                <button
+                    type="button"
+                    id="childrenRecordEditClose"
+                    class="children-record-edit-close"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <div
+                class="children-record-edit-current"
+            >
+
+                <div
+                    class="children-record-edit-time"
+                >
+                    ${escapeChildrenHTML(
+                        record.time || ""
+                    )}
+                </div>
+
+
+                <div
+                    class="children-record-edit-label"
+                >
+                    ${escapeChildrenHTML(
+                        label
+                    )}
+                </div>
+
+
+                <div
+                    class="children-record-edit-memo"
+                >
+
+                    ${
+                        record.memo
+                            ? escapeChildrenHTML(
+                                record.memo
+                            )
+                            : "備考なし"
+                    }
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="children-record-edit-actions"
+            >
+
+                ${
+                    record.type === "other"
+                        ? `
+                            <button
+                                type="button"
+                                id="childrenEditLabelButton"
+                                class="children-record-edit-action"
+                            >
+                                ✏️ 項目名を変更
+                            </button>
+                        `
+                        : ""
+                }
+
+
+                <button
+                    type="button"
+                    id="childrenEditTimeButton"
+                    class="children-record-edit-action"
+                >
+                    ⏰ 時刻を変更
+                </button>
+
+
+                <button
+                    type="button"
+                    id="childrenEditMemoButton"
+                    class="children-record-edit-action"
+                >
+                    📝 備考を変更
+                </button>
+
+
+                <button
+                    type="button"
+                    id="childrenDeleteRecordButton"
+                    class="children-record-edit-action delete"
+                >
+                    🗑️ 削除
+                </button>
+
+
+                <button
+                    type="button"
+                    id="childrenEditCancelButton"
+                    class="children-record-edit-action cancel"
+                >
+                    キャンセル
+                </button>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    document.body.appendChild(
+        modal
+    );
+
+
+    // =================================================
+    // 閉じる
+    // =================================================
+
+    const overlay =
+        modal.querySelector(
+            ".children-record-edit-overlay"
+        );
+
+
+    if (overlay) {
+
+        overlay.onclick =
+            closeChildrenRecordEditModal;
 
     }
 
 
-    // ---------------------------------------------
-    // 時刻変更
-    // ---------------------------------------------
-
-    const input =
-        document.createElement(
-            "input"
+    const closeButton =
+        modal.querySelector(
+            "#childrenRecordEditClose"
         );
 
 
-    input.type =
-        "text";
+    if (closeButton) {
+
+        closeButton.onclick =
+            closeChildrenRecordEditModal;
+
+    }
 
 
-    input.value =
-        record.time || "";
+    const cancelButton =
+        modal.querySelector(
+            "#childrenEditCancelButton"
+        );
 
 
-    input.style.display =
-        "none";
+    if (cancelButton) {
+
+        cancelButton.onclick =
+            closeChildrenRecordEditModal;
+
+    }
 
 
-    document.body.appendChild(
-        input
-    );
+    // =================================================
+    // 項目名変更
+    // =================================================
+
+    const labelButton =
+        modal.querySelector(
+            "#childrenEditLabelButton"
+        );
 
 
-    openNumberInputModal(
-        input,
-        "⏰ 時刻を変更",
-        false,
-        "time",
-        function(time) {
+    if (labelButton) {
 
-            record.time =
-                time;
+        labelButton.onclick =
+            function() {
+
+                const newLabel =
+                    window.prompt(
+                        "項目名を変更してください。",
+                        record.label || ""
+                    );
 
 
-            sortChildrenDailyRecords(
-                records
+                if (newLabel === null) {
+
+                    return;
+
+                }
+
+
+                const trimmedLabel =
+                    newLabel.trim();
+
+
+                if (!trimmedLabel) {
+
+                    alert(
+                        "項目名を入力してください。"
+                    );
+
+                    return;
+
+                }
+
+
+                if (
+                    trimmedLabel.length > 50
+                ) {
+
+                    alert(
+                        "項目名は50文字以内で入力してください。"
+                    );
+
+                    return;
+
+                }
+
+
+                record.label =
+                    trimmedLabel;
+
+
+                saveChildrenData();
+
+                closeChildrenRecordEditModal();
+
+                renderChildrenDaily();
+
+            };
+
+    }
+
+
+    // =================================================
+    // 時刻変更
+    // =================================================
+
+    const timeButton =
+        modal.querySelector(
+            "#childrenEditTimeButton"
+        );
+
+
+    if (timeButton) {
+
+        timeButton.onclick =
+            function() {
+
+                closeChildrenRecordEditModal();
+
+
+                openChildrenTimeInput(
+                    function(time) {
+
+                        record.time =
+                            time;
+
+
+                        sortChildrenDailyRecords(
+                            records
+                        );
+
+
+                        saveChildrenData();
+
+                        renderChildrenDaily();
+
+                    },
+                    record.time || ""
+                );
+
+            };
+
+    }
+
+
+    // =================================================
+    // 備考変更
+    // =================================================
+
+    const memoButton =
+        modal.querySelector(
+            "#childrenEditMemoButton"
+        );
+
+
+    if (memoButton) {
+
+        memoButton.onclick =
+            function() {
+
+                const memo =
+                    window.prompt(
+                        "備考を変更してください。\n\n空欄にすると備考を削除できます。",
+                        record.memo || ""
+                    );
+
+
+                if (memo === null) {
+
+                    return;
+
+                }
+
+
+                const trimmedMemo =
+                    memo.trim();
+
+
+                if (
+                    trimmedMemo.length > 200
+                ) {
+
+                    alert(
+                        "備考は200文字以内で入力してください。"
+                    );
+
+                    return;
+
+                }
+
+
+                record.memo =
+                    trimmedMemo;
+
+
+                saveChildrenData();
+
+                closeChildrenRecordEditModal();
+
+                renderChildrenDaily();
+
+            };
+
+    }
+
+
+    // =================================================
+    // 削除
+    // =================================================
+
+    const deleteButton =
+        modal.querySelector(
+            "#childrenDeleteRecordButton"
+        );
+
+
+    if (deleteButton) {
+
+        deleteButton.onclick =
+            function() {
+
+                deleteChildrenDailyRecord(
+                    record.id
+                );
+
+            };
+
+    }
+
+}
+
+
+// =====================================================
+// ✖️ 編集モーダルを閉じる
+// =====================================================
+
+function closeChildrenRecordEditModal() {
+
+    const modal =
+        document.getElementById(
+            "childrenRecordEditModal"
+        );
+
+
+    if (modal) {
+
+        modal.remove();
+
+    }
+
+}
+
+
+// =====================================================
+// 🗑️ 記録削除
+// =====================================================
+
+function deleteChildrenDailyRecord(
+    recordId
+) {
+
+    const child =
+        getSelectedChild();
+
+
+    if (
+        !child ||
+        !childrenSelectedDate
+    ) {
+
+        return;
+
+    }
+
+
+    const records =
+        getChildrenDailyRecords(
+            child,
+            childrenSelectedDate
+        );
+
+
+    const index =
+        records.findIndex(
+            item =>
+                item.id === recordId
+        );
+
+
+    if (index === -1) {
+
+        return;
+
+    }
+
+
+    const record =
+        records[index];
+
+
+    const label =
+        record.type === "other"
+            ? (
+                record.label ||
+                "その他"
+            )
+            : (
+                CHILDREN_DAILY_RECORD_TYPES[
+                    record.type
+                ] ||
+                "記録"
             );
 
 
-            saveChildrenData();
-
-            renderChildrenDaily();
-
-
-            input.remove();
-
-        },
-        function() {
-
-            // -------------------------------------
-            // 削除
-            // -------------------------------------
-
-            const index =
-                records.findIndex(
-                    item =>
-                        item.id === recordId
-                );
+    const confirmed =
+        window.confirm(
+            `${record.time || ""} ${label}\n\nこの記録を削除しますか？`
+        );
 
 
-            if (index !== -1) {
+    if (!confirmed) {
 
-                records.splice(
-                    index,
-                    1
-                );
+        return;
 
-            }
+    }
 
 
-            // 空になった日付は削除
-            if (
-                records.length === 0
-            ) {
-
-                delete child.records[
-                    childrenSelectedDate
-                ];
-
-            }
-
-
-            saveChildrenData();
-
-            renderChildrenDaily();
-
-
-            input.remove();
-
-        }
+    records.splice(
+        index,
+        1
     );
+
+
+    if (records.length === 0) {
+
+        delete child.records[
+            childrenSelectedDate
+        ];
+
+    }
+
+
+    saveChildrenData();
+
+    closeChildrenRecordEditModal();
+
+    renderChildrenDaily();
 
 }
 
@@ -2554,7 +3118,9 @@ function editChildrenDailyRecord(
 // 🛡️ HTMLエスケープ
 // =====================================================
 
-function escapeChildrenHTML(value) {
+function escapeChildrenHTML(
+    value
+) {
 
     return String(
         value ?? ""
@@ -2584,7 +3150,7 @@ function escapeChildrenHTML(value) {
 
 
 // =====================================================
-// ◀ 通常カレンダーへ戻る
+// ◀ 通常カレンダー
 // =====================================================
 
 function closeChildrenCalendar() {

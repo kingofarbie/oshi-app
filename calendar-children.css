@@ -461,3 +461,366 @@ font-size: 14px;
 font-weight: bold;
 cursor: pointer;
 }
+
+
+/* =====================================================
+   📝 こどもカレンダー
+   1日の記録
+===================================================== */
+
+.children-daily-basic-section {
+    width: 100%;
+    margin-top: 12px;
+}
+
+
+.children-daily-basic-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+
+.children-daily-basic-title {
+    font-size: 20px;
+    font-weight: 800;
+}
+
+
+.children-daily-add-button {
+    flex-shrink: 0;
+    width: auto;
+    min-height: 44px;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+
+/* =====================================================
+   📋 この日の記録
+===================================================== */
+
+.children-daily-records-section {
+    width: 100%;
+    margin-top: 18px;
+}
+
+
+.children-daily-records-title {
+    margin-bottom: 8px;
+    font-size: 20px;
+    font-weight: 800;
+}
+
+
+.children-daily-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+
+.children-daily-table {
+    width: 100%;
+    min-width: 430px;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+
+.children-daily-table th,
+.children-daily-table td {
+    padding: 10px 8px;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.25);
+    text-align: left;
+    vertical-align: middle;
+}
+
+
+.children-daily-table th {
+    font-size: 13px;
+    font-weight: 800;
+}
+
+
+.children-daily-table th:nth-child(1),
+.children-daily-table td:nth-child(1) {
+    width: 70px;
+    text-align: center;
+}
+
+
+.children-daily-table th:nth-child(2),
+.children-daily-table td:nth-child(2) {
+    width: 45%;
+}
+
+
+.children-daily-table th:nth-child(3),
+.children-daily-table td:nth-child(3) {
+    width: auto;
+}
+
+
+.children-daily-table-row {
+    cursor: pointer;
+}
+
+
+.children-daily-table-row:active {
+    opacity: 0.65;
+}
+
+
+.children-daily-time {
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+
+.children-daily-label {
+    font-weight: 600;
+}
+
+
+.children-daily-memo {
+    color: #777;
+    word-break: break-word;
+}
+
+
+.children-daily-empty {
+    padding: 18px 10px;
+    text-align: center;
+    color: #888;
+}
+
+
+.children-daily-table-hint {
+    margin-top: 7px;
+    font-size: 12px;
+    color: #888;
+    text-align: right;
+}
+
+
+/* =====================================================
+   📝 項目選択モーダル
+===================================================== */
+
+.children-record-type-modal,
+.children-record-edit-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+}
+
+
+.children-record-type-overlay,
+.children-record-edit-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+}
+
+
+.children-record-type-dialog,
+.children-record-edit-dialog {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: min(
+        calc(100% - 32px),
+        430px
+    );
+    max-height: calc(100% - 32px);
+    overflow-y: auto;
+    transform: translate(
+        -50%,
+        -50%
+    );
+    border-radius: 18px;
+    background: var(--viz-card, #fff);
+    color: var(--viz-text, #222);
+    box-sizing: border-box;
+}
+
+
+/* =====================================================
+   項目選択ヘッダー
+===================================================== */
+
+.children-record-type-header,
+.children-record-edit-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+}
+
+
+.children-record-type-header h2,
+.children-record-edit-header h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 800;
+}
+
+
+.children-record-type-close,
+.children-record-edit-close {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    border: none;
+    background: transparent;
+    font-size: 28px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+
+/* =====================================================
+   項目一覧
+===================================================== */
+
+.children-record-type-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 14px;
+}
+
+
+.children-record-type-button {
+    width: 100%;
+    min-height: 52px;
+    padding: 10px 14px;
+    border: 1px solid rgba(128, 128, 128, 0.25);
+    border-radius: 12px;
+    background: transparent;
+    text-align: left;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+
+.children-record-type-button:active {
+    opacity: 0.65;
+}
+
+
+.children-record-type-button.other {
+    margin-top: 4px;
+}
+
+
+/* =====================================================
+   ✏️ 編集モーダル
+===================================================== */
+
+.children-record-edit-current {
+    padding: 18px 16px 10px;
+    text-align: center;
+}
+
+
+.children-record-edit-time {
+    font-size: 30px;
+    font-weight: 800;
+}
+
+
+.children-record-edit-label {
+    margin-top: 5px;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+
+.children-record-edit-memo {
+    margin-top: 6px;
+    color: #777;
+    font-size: 14px;
+    word-break: break-word;
+}
+
+
+.children-record-edit-actions {
+    display: grid;
+    gap: 8px;
+    padding: 14px 16px 18px;
+}
+
+
+.children-record-edit-action {
+    width: 100%;
+    min-height: 48px;
+    padding: 10px 14px;
+    border: none;
+    border-radius: 12px;
+    background: rgba(128, 128, 128, 0.12);
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+
+.children-record-edit-action:active {
+    opacity: 0.65;
+}
+
+
+.children-record-edit-action.delete {
+    color: #c62828;
+}
+
+
+.children-record-edit-action.cancel {
+    background: transparent;
+}
+
+
+/* =====================================================
+   📱 スマホ
+===================================================== */
+
+@media (max-width: 480px) {
+
+    .children-daily-basic-title {
+        font-size: 18px;
+    }
+
+
+    .children-daily-add-button {
+        font-size: 13px;
+        padding: 8px 12px;
+    }
+
+
+    .children-daily-table {
+        min-width: 400px;
+    }
+
+
+    .children-daily-table th,
+    .children-daily-table td {
+        padding: 9px 6px;
+    }
+
+
+    .children-record-type-dialog,
+    .children-record-edit-dialog {
+        width: calc(100% - 20px);
+        border-radius: 16px;
+    }
+
+}
