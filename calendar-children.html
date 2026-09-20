@@ -2,39 +2,150 @@
 <html lang="ja">
 
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
 <title>こどもカレンダー</title>
-<link rel="stylesheet" href="./calendar-children.css">
+
+<link
+    rel="stylesheet"
+    href="./calendar-children.css"
+>
+
 </head>
+
 
 <body>
 
-<div id="childrenCalendarApp" class="children-calendar-app">
+
+<div
+    id="childrenCalendarApp"
+    class="children-calendar-app"
+>
+
+
+<!-- =========================================
+     ヘッダー
+========================================== -->
 
 <header class="children-calendar-header">
-    <h1 class="children-calendar-title">👶 こどもカレンダー</h1>
-    <button type="button" class="children-calendar-back-button" onclick="closeChildrenCalendar()">◀ カレンダー</button>
+
+    <h1 class="children-calendar-title">
+        👶 こどもカレンダー
+    </h1>
+
+
+    <!--
+        子ども選択
+        ヘッダー右側に配置
+    -->
+
+    <select
+        id="childrenSelector"
+        class="children-selector"
+    >
+
+        <option value="">
+            子どもを選択
+        </option>
+
+        <option value="settings">
+            ⚙️ 子どもの設定
+        </option>
+
+    </select>
+
+
+    <button
+        type="button"
+        class="children-calendar-back-button"
+        onclick="closeChildrenCalendar()"
+    >
+        ◀ カレンダー
+    </button>
+
 </header>
 
-<section class="children-selector-section">
-    <div class="children-selector-label">子ども</div>
-    <select id="childrenSelector" class="children-selector">
-        <option value="">子どもを選択</option>
-        <option value="settings">⚙️ 子どもの設定</option>
-    </select>
-</section>
 
-<section id="childrenProfile" class="children-profile">
-    <div class="children-profile-empty">
-        まず「子どもの設定」から<br>
-        子どもを追加してください。
-    </div>
-</section>
 
-<section id="childrenCalendarSection" class="children-calendar-section" style="display:none;">
+<!-- =========================================
+     子どもプロフィール
+========================================== -->
+
+<div class="children-profile-row">
+
+
+    <section
+        id="childrenProfile"
+        class="children-profile"
+    >
+
+        <div class="children-profile-empty">
+
+            まず「子どもの設定」から<br>
+            子どもを追加してください。
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================
+         成長・定期記録 入口
+    ====================================== -->
+
+    <button
+        type="button"
+        id="childrenGrowthEntryButton"
+        class="children-growth-entry"
+    >
+
+        <span class="children-growth-entry-icon">
+            📈
+        </span>
+
+        <span class="children-growth-entry-text">
+
+            <span class="children-growth-entry-title">
+                成長・定期記録
+            </span>
+
+            <span class="children-growth-entry-description">
+                身長・予防接種など
+            </span>
+
+        </span>
+
+        <span class="children-growth-entry-arrow">
+            ›
+        </span>
+
+    </button>
+
+
+</div>
+
+
+
+<!-- =========================================
+     カレンダー
+========================================== -->
+
+<section
+    id="childrenCalendarSection"
+    class="children-calendar-section"
+    style="display:none;"
+>
+
 
     <div class="children-month-navigation">
+
 
         <button
             type="button"
@@ -44,6 +155,7 @@
             ◀
         </button>
 
+
         <button
             type="button"
             id="childrenMonthTitleButton"
@@ -51,6 +163,7 @@
         >
             2026年9月
         </button>
+
 
         <button
             type="button"
@@ -60,25 +173,59 @@
             ▶
         </button>
 
+
     </div>
 
-    <div id="childrenCalendar" class="children-calendar"></div>
+
+    <div
+        id="childrenCalendar"
+        class="children-calendar"
+    ></div>
+
 
 </section>
 
-<section id="childrenDailySection" class="children-daily-section" style="display:none;">
+
+
+<!-- =========================================
+     選択日の1日の記録
+========================================== -->
+
+<section
+    id="childrenDailySection"
+    class="children-daily-section"
+    style="display:none;"
+>
+
+
+    <!-- =====================================
+         日付タイトル
+    ====================================== -->
 
     <div class="children-daily-header">
-        <h2 id="childrenDailyTitle">👶 今日の記録</h2>
+
+        <h2 id="childrenDailyTitle">
+            👶 今日の記録
+        </h2>
+
     </div>
+
+
+
+    <!-- =====================================
+         1日の記録
+    ====================================== -->
 
     <div class="children-daily-basic-section">
 
+
         <div class="children-daily-basic-header">
+
 
             <div class="children-daily-section-title">
                 📝 1日の記録
             </div>
+
 
             <button
                 type="button"
@@ -88,145 +235,300 @@
                 ＋項目追加
             </button>
 
+
         </div>
+
 
     </div>
 
+
+
+    <!-- =====================================
+         この日の記録
+    ====================================== -->
+
     <div class="children-daily-records-section">
+
 
         <div class="children-daily-section-title">
             📋 この日の記録
         </div>
 
+
         <div
             id="childrenDailyRecords"
             class="children-daily-records"
-        ></div>
+        >
 
-    </div>
-
-    <div class="children-growth-section">
-
-        <div class="children-growth-section-header">
-
-            <div class="children-growth-section-title">
-                📈 成長・定期記録
-            </div>
+            <!--
+                calendar-children.js
+                から記録を表示
+            -->
 
         </div>
 
-        <div class="children-growth-category-list">
-
-            <button
-                type="button"
-                class="children-growth-category"
-                data-growth-category="heightWeight"
-            >
-                <span class="children-growth-category-icon">⚖️</span>
-
-                <span class="children-growth-category-text">
-                    <span class="children-growth-category-name">
-                        身長・体重
-                    </span>
-                    <span class="children-growth-category-description">
-                        身長や体重の変化を記録
-                    </span>
-                </span>
-
-                <span class="children-growth-category-arrow">›</span>
-            </button>
-
-            <button
-                type="button"
-                class="children-growth-category"
-                data-growth-category="teeth"
-            >
-                <span class="children-growth-category-icon">🦷</span>
-
-                <span class="children-growth-category-text">
-                    <span class="children-growth-category-name">
-                        歯の記録
-                    </span>
-                    <span class="children-growth-category-description">
-                        歯が生えた日などを記録
-                    </span>
-                </span>
-
-                <span class="children-growth-category-arrow">›</span>
-            </button>
-
-            <button
-                type="button"
-                class="children-growth-category"
-                data-growth-category="vaccination"
-            >
-                <span class="children-growth-category-icon">💉</span>
-
-                <span class="children-growth-category-text">
-                    <span class="children-growth-category-name">
-                        予防接種
-                    </span>
-                    <span class="children-growth-category-description">
-                        ワクチンや接種回数を記録
-                    </span>
-                </span>
-
-                <span class="children-growth-category-arrow">›</span>
-            </button>
-
-            <button
-                type="button"
-                class="children-growth-category"
-                data-growth-category="medical"
-            >
-                <span class="children-growth-category-icon">🏥</span>
-
-                <span class="children-growth-category-text">
-                    <span class="children-growth-category-name">
-                        健診・病院
-                    </span>
-                    <span class="children-growth-category-description">
-                        健診や病院での記録
-                    </span>
-                </span>
-
-                <span class="children-growth-category-arrow">›</span>
-            </button>
-
-            <button
-                type="button"
-                class="children-growth-category"
-                data-growth-category="milestone"
-            >
-                <span class="children-growth-category-icon">🌱</span>
-
-                <span class="children-growth-category-text">
-                    <span class="children-growth-category-name">
-                        成長・できたこと
-                    </span>
-                    <span class="children-growth-category-description">
-                        新しくできるようになったことを記録
-                    </span>
-                </span>
-
-                <span class="children-growth-category-arrow">›</span>
-            </button>
-
-        </div>
 
     </div>
+
 
 </section>
 
-<div id="childrenRecordTypeModal" class="children-modal" style="display:none;">
+
+
+<!-- =========================================
+     成長・定期記録画面
+     
+     ※最初は非表示
+     ※日付とは完全に独立
+========================================== -->
+
+<section
+    id="childrenGrowthSection"
+    class="children-growth-section"
+    style="display:none;"
+>
+
+
+    <div class="children-growth-section-header">
+
+
+        <button
+            type="button"
+            id="childrenGrowthBackButton"
+            class="children-growth-back-button"
+        >
+            ◀ こどもカレンダー
+        </button>
+
+
+        <div class="children-growth-section-title">
+            📈 成長・定期記録
+        </div>
+
+
+    </div>
+
+
+
+    <div class="children-growth-category-list">
+
+
+        <!-- =================================
+             身長・体重
+        ================================== -->
+
+        <button
+            type="button"
+            class="children-growth-category"
+            data-growth-category="heightWeight"
+        >
+
+            <span class="children-growth-category-icon">
+                ⚖️
+            </span>
+
+
+            <span class="children-growth-category-text">
+
+                <span class="children-growth-category-name">
+                    身長・体重
+                </span>
+
+
+                <span class="children-growth-category-description">
+                    身長や体重の変化を記録
+                </span>
+
+            </span>
+
+
+            <span class="children-growth-category-arrow">
+                ›
+            </span>
+
+        </button>
+
+
+
+        <!-- =================================
+             歯の記録
+        ================================== -->
+
+        <button
+            type="button"
+            class="children-growth-category"
+            data-growth-category="teeth"
+        >
+
+            <span class="children-growth-category-icon">
+                🦷
+            </span>
+
+
+            <span class="children-growth-category-text">
+
+                <span class="children-growth-category-name">
+                    歯の記録
+                </span>
+
+
+                <span class="children-growth-category-description">
+                    歯が生えた日などを記録
+                </span>
+
+            </span>
+
+
+            <span class="children-growth-category-arrow">
+                ›
+            </span>
+
+        </button>
+
+
+
+        <!-- =================================
+             予防接種
+        ================================== -->
+
+        <button
+            type="button"
+            class="children-growth-category"
+            data-growth-category="vaccination"
+        >
+
+            <span class="children-growth-category-icon">
+                💉
+            </span>
+
+
+            <span class="children-growth-category-text">
+
+                <span class="children-growth-category-name">
+                    予防接種
+                </span>
+
+
+                <span class="children-growth-category-description">
+                    ワクチンや接種回数を記録
+                </span>
+
+            </span>
+
+
+            <span class="children-growth-category-arrow">
+                ›
+            </span>
+
+        </button>
+
+
+
+        <!-- =================================
+             健診・病院
+        ================================== -->
+
+        <button
+            type="button"
+            class="children-growth-category"
+            data-growth-category="medical"
+        >
+
+            <span class="children-growth-category-icon">
+                🏥
+            </span>
+
+
+            <span class="children-growth-category-text">
+
+                <span class="children-growth-category-name">
+                    健診・病院
+                </span>
+
+
+                <span class="children-growth-category-description">
+                    健診や病院での記録
+                </span>
+
+            </span>
+
+
+            <span class="children-growth-category-arrow">
+                ›
+            </span>
+
+        </button>
+
+
+
+        <!-- =================================
+             成長・できたこと
+        ================================== -->
+
+        <button
+            type="button"
+            class="children-growth-category"
+            data-growth-category="milestone"
+        >
+
+            <span class="children-growth-category-icon">
+                🌱
+            </span>
+
+
+            <span class="children-growth-category-text">
+
+                <span class="children-growth-category-name">
+                    成長・できたこと
+                </span>
+
+
+                <span class="children-growth-category-description">
+                    新しくできるようになったことを記録
+                </span>
+
+            </span>
+
+
+            <span class="children-growth-category-arrow">
+                ›
+            </span>
+
+        </button>
+
+
+    </div>
+
+
+</section>
+
+
+
+<!-- =========================================
+     項目追加モーダル
+========================================== -->
+
+<div
+    id="childrenRecordTypeModal"
+    class="children-modal"
+    style="display:none;"
+>
+
 
     <div class="children-modal-overlay"></div>
 
-    <div class="children-modal-content children-record-type-modal-content">
+
+    <div
+        class="children-modal-content children-record-type-modal-content"
+    >
+
 
         <div class="children-modal-header">
 
-            <h2>📝 項目を追加</h2>
+            <h2>
+                📝 項目を追加
+            </h2>
+
 
             <button
                 type="button"
@@ -238,24 +540,42 @@
 
         </div>
 
+
         <div
             id="childrenRecordTypeList"
             class="children-record-type-list"
         ></div>
 
+
     </div>
 
 </div>
 
-<div id="childrenSettingsModal" class="children-modal" style="display:none;">
+
+
+<!-- =========================================
+     子どもの設定モーダル
+========================================== -->
+
+<div
+    id="childrenSettingsModal"
+    class="children-modal"
+    style="display:none;"
+>
+
 
     <div class="children-modal-overlay"></div>
 
+
     <div class="children-modal-content">
+
 
         <div class="children-modal-header">
 
-            <h2>⚙️ 子どもの設定</h2>
+            <h2>
+                ⚙️ 子どもの設定
+            </h2>
+
 
             <button
                 type="button"
@@ -267,10 +587,12 @@
 
         </div>
 
+
         <div
             id="childrenList"
             class="children-list"
         ></div>
+
 
         <button
             type="button"
@@ -280,19 +602,38 @@
             ＋ 子どもを追加
         </button>
 
+
     </div>
 
 </div>
 
-<div id="childrenEditModal" class="children-modal" style="display:none;">
+
+
+<!-- =========================================
+     子ども追加・編集モーダル
+========================================== -->
+
+<div
+    id="childrenEditModal"
+    class="children-modal"
+    style="display:none;"
+>
+
 
     <div class="children-modal-overlay"></div>
 
-    <div class="children-modal-content children-edit-modal-content">
+
+    <div
+        class="children-modal-content children-edit-modal-content"
+    >
+
 
         <div class="children-modal-header">
 
-            <h2 id="childrenEditTitle">👶 子どもを追加</h2>
+            <h2 id="childrenEditTitle">
+                👶 子どもを追加
+            </h2>
+
 
             <button
                 type="button"
@@ -304,13 +645,16 @@
 
         </div>
 
+
         <form id="childrenEditForm">
+
 
             <div class="children-form-field">
 
                 <label for="childrenNameInput">
                     名前
                 </label>
+
 
                 <input
                     type="text"
@@ -322,11 +666,14 @@
 
             </div>
 
+
+
             <div class="children-form-field">
 
                 <label for="childrenBirthdayInput">
                     誕生日
                 </label>
+
 
                 <input
                     type="date"
@@ -335,7 +682,10 @@
 
             </div>
 
+
+
             <div class="children-form-actions">
+
 
                 <button
                     type="button"
@@ -345,6 +695,7 @@
                     キャンセル
                 </button>
 
+
                 <button
                     type="submit"
                     class="children-save-button"
@@ -352,7 +703,9 @@
                     保存
                 </button>
 
+
             </div>
+
 
         </form>
 
@@ -360,9 +713,13 @@
 
 </div>
 
+
 </div>
+
 
 <script src="./calendar-children.js"></script>
 
+
 </body>
+
 </html>
