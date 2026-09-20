@@ -5,12 +5,19 @@
 
 
 // =====================================================
-// 🔢 数値入力モーダル
+// 🔢 数値 / ⏰ 時刻入力モーダル
 // =====================================================
 
 let numberInputTarget = null;
 let numberInputValue = "";
 let numberInputAllowDecimal = false;
+
+// number / time
+let numberInputMode = "number";
+
+// 保存・削除時のコールバック
+let numberInputSaveCallback = null;
+let numberInputDeleteCallback = null;
 
 
 // =====================================================
@@ -134,13 +141,29 @@ function initializeNumberInputModal() {
 
 
 // =====================================================
-// 数値入力モーダルを開く
+// 数値 / 時刻入力モーダルを開く
+//
+// 既存:
+// openNumberInputModal(input, title, decimal)
+//
+// 時刻:
+// openNumberInputModal(
+//     input,
+//     title,
+//     false,
+//     "time",
+//     saveCallback,
+//     deleteCallback
+// )
 // =====================================================
 
 function openNumberInputModal(
     input,
     title,
-    allowDecimal = false
+    allowDecimal = false,
+    mode = "number",
+    saveCallback = null,
+    deleteCallback = null
 ) {
 
     const modal =
@@ -172,18 +195,80 @@ function openNumberInputModal(
 
     numberInputTarget = input;
 
-    numberInputValue =
-        input.value || "";
+    numberInputMode = mode;
 
     numberInputAllowDecimal =
         allowDecimal;
 
 
+    numberInputSaveCallback =
+        typeof saveCallback === "function"
+            ? saveCallback
+            : null;
+
+    numberInputDeleteCallback =
+        typeof deleteCallback === "function"
+            ? deleteCallback
+            : null;
+
+
+    // =================================================
+    // ⏰ 時刻モード
+    // =================================================
+
+    if (mode === "time") {
+
+        let currentValue =
+            input.value || "";
+
+        // 既存値がなければ現在時刻
+        if (!currentValue) {
+
+            const now = new Date();
+
+            const hours =
+                String(now.getHours())
+                    .padStart(2, "0");
+
+            const minutes =
+                String(now.getMinutes())
+                    .padStart(2, "0");
+
+            currentValue =
+                hours + minutes;
+
+        }
+        else {
+
+            // HH:MM → HHMM
+            currentValue =
+                currentValue
+                    .replace(":", "");
+
+        }
+
+        numberInputValue =
+            currentValue;
+
+    }
+
+    // =================================================
+    // 🔢 数値モード
+    // =================================================
+
+    else {
+
+        numberInputValue =
+            input.value || "";
+
+    }
+
+
     titleElement.textContent =
         title;
 
-    display.textContent =
-        numberInputValue;
+
+    updateNumberInputDisplay();
 
 
     const decimalButton =
@@ -195,9 +280,11 @@ function openNumberInputModal(
     if (decimalButton) {
 
         decimalButton.style.display =
-            allowDecimal
-                ? "block"
-                : "none";
+            mode === "time"
+                ? "none"
+                : allowDecimal
+                    ? "block"
+                    : "none";
 
     }
 
@@ -218,6 +305,35 @@ function appendNumberInput(value) {
         return;
     }
 
+
+    // =================================================
+    // ⏰ 時刻モード
+    // =================================================
+
+    if (numberInputMode === "time") {
+
+        if (!/^\d$/.test(value)) {
+            return;
+        }
+
+
+        // 4桁まで
+        if (numberInputValue.length >= 4) {
+            return;
+        }
+
+
+        numberInputValue += value;
+
+        updateNumberInputDisplay();
+
+        return;
+    }
+
+
+    // =================================================
+    // 🔢 数値モード
+    // =================================================
 
     if (value === ".") {
 
@@ -282,7 +398,24 @@ function backspaceNumberInput() {
 
 function resetNumberInput() {
 
-    numberInputValue = "";
+    // 時刻モードは現在時刻へ戻す
+    if (numberInputMode === "time") {
+
+        const now = new Date();
+
+        numberInputValue =
+            String(now.getHours())
+                .padStart(2, "0") +
+            String(now.getMinutes())
+                .padStart(2, "0");
+
+    }
+    else {
+
+        numberInputValue = "";
+
+    }
+
 
     updateNumberInputDisplay();
 
@@ -304,9 +437,21 @@ function deleteNumberInput() {
     }
 
 
+    const deleteCallback =
+        numberInputDeleteCallback;
+
+
     numberInputTarget.value = "";
 
+
     closeNumberInputModal();
+
+
+    if (deleteCallback) {
+
+        deleteCallback();
+
+    }
 
 }
 
@@ -326,11 +471,106 @@ function saveNumberInput() {
     }
 
 
+    // =================================================
+    // ⏰ 時刻モード
+    // =================================================
+
+    if (numberInputMode === "time") {
+
+        // 4桁未満なら保存しない
+        if (numberInputValue.length !== 4) {
+
+            alert(
+                "時刻を4桁で入力してください。"
+            );
+
+            return;
+
+        }
+
+
+        const hours =
+            Number(
+                numberInputValue.slice(0, 2)
+            );
+
+        const minutes =
+            Number(
+                numberInputValue.slice(2, 4)
+            );
+
+
+        if (
+            !Number.isInteger(hours) ||
+            !Number.isInteger(minutes) ||
+            hours < 0 ||
+            hours > 23 ||
+            minutes < 0 ||
+            minutes > 59
+        ) {
+
+            alert(
+                "正しい時刻を入力してください。"
+            );
+
+            return;
+
+        }
+
+
+        const formattedTime =
+            String(hours).padStart(2, "0") +
+            ":" +
+            String(minutes).padStart(2, "0");
+
+
+        numberInputTarget.value =
+            formattedTime;
+
+
+        const saveCallback =
+            numberInputSaveCallback;
+
+
+        closeNumberInputModal();
+
+
+        if (saveCallback) {
+
+            saveCallback(
+                formattedTime
+            );
+
+        }
+
+
+        return;
+
+    }
+
+
+    // =================================================
+    // 🔢 数値モード
+    // =================================================
+
     numberInputTarget.value =
         numberInputValue;
 
 
+    const saveCallback =
+        numberInputSaveCallback;
+
+
     closeNumberInputModal();
+
+
+    if (saveCallback) {
+
+        saveCallback(
+            numberInputValue
+        );
+
+    }
 
 }
 
@@ -351,6 +591,46 @@ function updateNumberInputDisplay() {
         return;
     }
 
+
+    // =================================================
+    // ⏰ 時刻表示
+    // =================================================
+
+    if (numberInputMode === "time") {
+
+        if (!numberInputValue) {
+
+            display.textContent =
+                "";
+
+            return;
+
+        }
+
+
+        if (numberInputValue.length <= 2) {
+
+            display.textContent =
+                numberInputValue;
+
+            return;
+
+        }
+
+
+        display.textContent =
+            numberInputValue.slice(0, 2) +
+            ":" +
+            numberInputValue.slice(2);
+
+        return;
+
+    }
+
+
+    // =================================================
+    // 🔢 数値表示
+    // =================================================
 
     display.textContent =
         numberInputValue;
@@ -383,6 +663,12 @@ function closeNumberInputModal() {
     numberInputValue = "";
 
     numberInputAllowDecimal = false;
+
+    numberInputMode = "number";
+
+    numberInputSaveCallback = null;
+
+    numberInputDeleteCallback = null;
 
 }
 
