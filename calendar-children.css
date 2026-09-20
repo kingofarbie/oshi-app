@@ -1,34 +1,23 @@
 /* =====================================================
-👶 こどもカレンダー
-calendar-children.css
+   👶 こどもカレンダー
+   calendar-children.css
 
-・こどもカレンダー専用
-・HTML構造には干渉しない
-・通常カレンダー / 健康管理 / スポーツには影響しない
-・既存機能を維持したまま見た目を整理
+   ・こどもカレンダー専用
+   ・通常カレンダー / 健康管理 / スポーツに干渉しない
+   ・男の子：淡いブルー
+   ・女の子：淡いピンク
 ===================================================== */
 
 
 /* =====================================================
-   アプリ全体
+   全体
 ===================================================== */
 
 .children-calendar-app {
     width: min(100%, 700px);
     margin: 0 auto;
-    padding: 0 10px 30px;
+    padding: 8px 10px 30px;
     box-sizing: border-box;
-
-    background: #eef8fc;
-    border-radius: 20px;
-    min-height: 100%;
-}
-
-
-/* 女の子用背景
-   現時点ではJSから .girl を付けた場合に適用 */
-.children-calendar-app.girl {
-    background: #fff0f5;
 }
 
 
@@ -37,42 +26,36 @@ calendar-children.css
 ===================================================== */
 
 .children-calendar-header {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
-    gap: 8px;
-
-    padding: 10px 4px 10px;
+    display: block;
+    padding: 4px 0 0;
 }
 
 .children-calendar-title {
-    min-width: 0;
     margin: 0;
+    font-size: 24px;
+    font-weight: 900;
+    line-height: 1.3;
+}
 
-    font-size: 22px;
-    font-weight: 800;
-    line-height: 1.2;
 
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+/* =====================================================
+   カレンダーへ戻る
+===================================================== */
+
+.children-back-section {
+    margin-top: 8px;
+    margin-bottom: 18px;
 }
 
 .children-calendar-back-button {
-    flex-shrink: 0;
-
-    min-height: 44px;
+    min-height: 42px;
     padding: 8px 14px;
-
-    border: 1px solid rgba(120,150,160,.20);
+    border: 1px solid rgba(128,128,128,.25);
     border-radius: 10px;
-
-    background: rgba(255,255,255,.82);
-    color: var(--text,#333);
-
+    background: rgba(255,255,255,.8);
+    color: var(--text, #333);
     font-size: 14px;
-    font-weight: 700;
-
+    font-weight: 800;
     cursor: pointer;
 }
 
@@ -84,83 +67,138 @@ calendar-children.css
 .children-selector-section {
     display: flex;
     align-items: center;
-    gap: 8px;
-
-    margin: 0 4px 12px;
+    gap: 10px;
+    margin-bottom: 10px;
 }
 
 .children-selector-label {
     flex-shrink: 0;
-
-    font-size: 15px;
-    font-weight: 800;
+    font-size: 17px;
+    font-weight: 900;
 }
 
 .children-selector {
     flex: 1;
     min-width: 0;
-
     min-height: 44px;
-    padding: 8px 12px;
-
-    border: 1px solid rgba(120,150,160,.20);
-    border-radius: 12px;
-
-    background: rgba(255,255,255,.84);
-    color: var(--text,#333);
-
-    font-size: 15px;
+    padding: 7px 11px;
+    border: 1px solid rgba(128,128,128,.25);
+    border-radius: 11px;
+    background: rgba(255,255,255,.85);
+    color: var(--text, #333);
+    font-size: 16px;
     font-weight: 700;
 }
 
 
 /* =====================================================
-   プロフィール
+   プロフィール ＋ 成長・定期記録
 ===================================================== */
 
+.children-profile-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 150px;
+    gap: 9px;
+    margin-bottom: 12px;
+    align-items: stretch;
+}
+
+
+/* プロフィール */
+
 .children-profile {
-    margin: 0 4px 14px;
-    padding: 12px 14px;
-
-    border: 1px solid rgba(120,150,160,.18);
-    border-radius: 15px;
-
-    background: rgba(255,255,255,.84);
-
+    min-width: 0;
+    min-height: 82px;
+    padding: 10px 12px;
+    border-radius: 14px;
+    background: rgba(255,255,255,.82);
     box-sizing: border-box;
 }
 
 .children-profile-empty {
-    padding: 10px 4px;
-
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60px;
     text-align: center;
-
-    color: var(--muted,#888);
-
+    color: #888;
     font-size: 14px;
-    line-height: 1.7;
+    line-height: 1.6;
 }
 
 .children-profile-name {
-    margin: 0 0 4px;
-
-    font-size: 21px;
+    margin: 0 0 3px;
+    font-size: 19px;
     font-weight: 900;
+    line-height: 1.25;
 }
 
 .children-profile-birthday {
     margin: 0;
-
-    color: var(--muted,#777);
-
-    font-size: 13px;
+    color: #777;
+    font-size: 12px;
 }
 
 .children-profile-age {
-    margin-top: 6px;
-
-    font-size: 15px;
+    margin-top: 5px;
+    font-size: 14px;
     font-weight: 800;
+}
+
+
+/* 成長・定期記録入口 */
+
+.children-growth-entry {
+    position: relative;
+    min-width: 0;
+    min-height: 82px;
+    padding: 9px 22px 9px 8px;
+    border: none;
+    border-radius: 14px;
+    background: rgba(255,255,255,.82);
+    color: var(--text, #333);
+    text-align: center;
+    cursor: pointer;
+}
+
+.children-growth-entry:active {
+    opacity: .7;
+}
+
+.children-growth-entry-icon {
+    display: block;
+    font-size: 23px;
+    line-height: 1.1;
+}
+
+.children-growth-entry-text {
+    display: block;
+}
+
+.children-growth-entry-title {
+    display: block;
+    margin-top: 3px;
+    font-size: 13px;
+    font-weight: 900;
+    line-height: 1.3;
+}
+
+.children-growth-entry-description {
+    display: block;
+    margin-top: 2px;
+    color: #777;
+    font-size: 10px;
+    line-height: 1.3;
+}
+
+.children-growth-entry-arrow {
+    position: absolute;
+    right: 7px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+    font-size: 24px;
+    line-height: 1;
 }
 
 
@@ -169,129 +207,114 @@ calendar-children.css
 ===================================================== */
 
 .children-calendar-section {
-    margin: 8px 4px 0;
-
+    margin-top: 0;
+    padding: 10px;
     border-radius: 17px;
-
-    background: rgba(255,255,255,.92);
-
-    overflow: hidden;
+    background: rgba(255,255,255,.9);
+    box-sizing: border-box;
 }
 
 .children-month-navigation {
     display: grid;
-
-    grid-template-columns: 44px minmax(0,1fr) 44px;
-
+    grid-template-columns: 42px minmax(0,1fr) 42px;
     align-items: center;
-
     gap: 6px;
-
-    margin-bottom: 0;
-    padding: 10px 10px 7px;
+    margin-bottom: 7px;
 }
 
 .children-month-button {
-    width: 44px;
-    height: 44px;
-
+    width: 42px;
+    height: 42px;
     padding: 0;
-
     border: none;
     border-radius: 10px;
-
-    background: rgba(120,180,200,.10);
+    background: rgba(128,128,128,.1);
     color: var(--text,#333);
-
-    font-size: 18px;
-    font-weight: 800;
-
+    font-size: 16px;
+    font-weight: 900;
     cursor: pointer;
 }
 
 .children-month-title-button {
-    min-height: 44px;
-
+    min-height: 42px;
     border: none;
-    border-radius: 10px;
-
     background: transparent;
     color: var(--text,#333);
-
-    font-size: 20px;
+    font-size: 19px;
     font-weight: 900;
 }
 
+
+/* 曜日 */
+
 .children-calendar {
     display: grid;
-
     grid-template-columns: repeat(7,minmax(0,1fr));
-
     gap: 3px;
-
-    padding: 4px 8px 12px;
 }
 
 .children-calendar-weekday {
-    padding: 6px 2px;
-
+    padding: 4px 1px 6px;
     text-align: center;
-
-    font-size: 13px;
-    font-weight: 800;
+    color: #666;
+    font-size: 12px;
+    font-weight: 900;
 }
 
 .children-calendar-weekday.sunday {
-    color: #d55;
+    color: #d85b70;
 }
 
 .children-calendar-weekday.saturday {
-    color: #4685d7;
+    color: #4f82c5;
 }
 
+
+/* 日付 */
+
 .children-calendar-day {
-    min-height: 50px;
-
-    padding: 5px;
-
+    position: relative;
+    min-width: 0;
+    min-height: 48px;
+    padding: 4px;
     border: none;
-    border-radius: 11px;
-
+    border-radius: 10px;
     background: transparent;
     color: var(--text,#333);
-
     box-sizing: border-box;
-
     cursor: pointer;
 }
 
 .children-calendar-day.empty {
-    border-color: transparent;
-    background: transparent;
-
-    cursor: default;
+    pointer-events: none;
 }
 
 .children-calendar-day-number {
-    width: 32px;
-    height: 32px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
+    width: 30px;
+    height: 30px;
     margin: 0 auto;
-
     border-radius: 50%;
-
     font-size: 14px;
-    font-weight: 800;
+    font-weight: 700;
 }
+
+
+/* 今日 */
 
 .children-calendar-day.today
 .children-calendar-day-number {
-    outline: 2px solid #8fcfe3;
+    outline: 2px solid rgba(100,140,200,.35);
     outline-offset: 1px;
+}
+
+
+/* 選択日 */
+
+.children-calendar-day.selected {
+    background: rgba(140,200,220,.12);
 }
 
 .children-calendar-day.selected
@@ -301,37 +324,6 @@ calendar-children.css
     font-weight: 900;
 }
 
-.children-calendar-app.girl
-.children-calendar-day.selected
-.children-calendar-day-number {
-    background: #e99ab7;
-}
-
-.children-calendar-day:active {
-    opacity: .65;
-}
-
-
-/* =====================================================
-   こどもカレンダー入口
-===================================================== */
-
-.calendar-title-row .calendar-children-button {
-    flex-shrink: 0;
-
-    width: auto;
-
-    padding: 8px 14px;
-
-    border: none;
-    border-radius: 10px;
-
-    font-size: 14px;
-    font-weight: bold;
-
-    cursor: pointer;
-}
-
 
 /* =====================================================
    1日の記録
@@ -339,39 +331,32 @@ calendar-children.css
 
 .children-daily-section {
     width: 100%;
-    margin-top: 16px;
+    margin-top: 14px;
+    padding: 13px;
+    border-radius: 16px;
+    background: rgba(255,255,255,.9);
+    box-sizing: border-box;
 }
 
 .children-daily-header {
-    margin: 0 4px 10px;
+    margin-bottom: 10px;
 }
 
 .children-daily-header h2 {
     margin: 0;
-
     font-size: 18px;
     font-weight: 900;
 }
 
 .children-daily-basic-section {
     width: 100%;
-    margin-top: 12px;
 }
 
 .children-daily-basic-header {
     display: flex;
-
     align-items: center;
     justify-content: space-between;
-
     gap: 10px;
-
-    margin: 0 4px;
-}
-
-.children-daily-basic-title {
-    font-size: 20px;
-    font-weight: 800;
 }
 
 .children-daily-section-title {
@@ -381,85 +366,69 @@ calendar-children.css
 
 .children-daily-add-button {
     flex-shrink: 0;
-
-    width: auto;
-    min-height: 44px;
-
-    padding: 8px 14px;
-
+    min-height: 42px;
+    padding: 7px 12px;
     border: none;
     border-radius: 10px;
-
-    background: rgba(120,180,200,.14);
-    color: var(--text,#333);
-
-    font-size: 14px;
-    font-weight: 700;
-
+    background: var(--accent,#e58);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 800;
     cursor: pointer;
 }
 
-
-/* =====================================================
-   この日の記録
-===================================================== */
-
 .children-daily-records-section {
     width: 100%;
-    margin-top: 18px;
+    margin-top: 14px;
 }
 
-.children-daily-records-title {
-    margin-bottom: 8px;
+.children-daily-records {
+    width: 100%;
+}
 
-    font-size: 20px;
-    font-weight: 800;
+.children-daily-empty {
+    padding: 18px 8px;
+    text-align: center;
+    color: #888;
+    font-size: 14px;
 }
 
 .children-daily-table-wrapper {
     width: 100%;
-
     overflow-x: auto;
-
     -webkit-overflow-scrolling: touch;
 }
 
 .children-daily-table {
     width: 100%;
-    min-width: 430px;
-
+    min-width: 400px;
     border-collapse: collapse;
-
     table-layout: fixed;
-
-    background: rgba(255,255,255,.70);
 }
 
 .children-daily-table th,
 .children-daily-table td {
-    padding: 10px 8px;
-
-    border-bottom: 1px solid rgba(128,128,128,.25);
-
+    padding: 9px 6px;
+    border-bottom: 1px solid rgba(128,128,128,.18);
     text-align: left;
     vertical-align: middle;
 }
 
 .children-daily-table th {
-    font-size: 13px;
-    font-weight: 800;
+    color: #777;
+    font-size: 12px;
+    font-weight: 900;
 }
 
 .children-daily-table th:nth-child(1),
 .children-daily-table td:nth-child(1) {
-    width: 70px;
-
+    width: 62px;
     text-align: center;
 }
 
 .children-daily-table th:nth-child(2),
 .children-daily-table td:nth-child(2) {
-    width: 45%;
+    width: 42%;
 }
 
 .children-daily-table-row {
@@ -467,98 +436,84 @@ calendar-children.css
 }
 
 .children-daily-table-row:active {
-    opacity: .65;
+    opacity: .6;
 }
 
 .children-daily-time {
-    font-weight: 700;
-
     white-space: nowrap;
+    font-weight: 800;
 }
 
 .children-daily-label {
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .children-daily-memo {
     color: #777;
-
     word-break: break-word;
 }
 
-.children-daily-empty {
-    padding: 18px 10px;
-
-    text-align: center;
-
-    color: #888;
-}
-
 .children-daily-table-hint {
-    margin-top: 7px;
-
-    padding-right: 4px;
-
-    font-size: 12px;
+    margin-top: 6px;
     color: #888;
-
+    font-size: 11px;
     text-align: right;
 }
 
 
 /* =====================================================
-   成長・定期記録
-   ※既存の5カテゴリーを維持
+   📈 成長・定期記録画面
 ===================================================== */
 
 .children-growth-section {
-    width: 100%;
-
-    margin-top: 18px;
-
-    padding: 0 0 4px;
+    margin-top: 0;
+    padding: 13px;
+    border-radius: 16px;
+    background: rgba(255,255,255,.9);
 }
 
 .children-growth-section-header {
-    margin: 0 4px 9px;
+    margin-bottom: 14px;
+}
+
+.children-growth-back-button {
+    min-height: 40px;
+    padding: 7px 12px;
+    border: 1px solid rgba(128,128,128,.22);
+    border-radius: 10px;
+    background: rgba(128,128,128,.08);
+    color: var(--text,#333);
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
 }
 
 .children-growth-section-title {
-    font-size: 18px;
+    margin-top: 12px;
+    font-size: 20px;
     font-weight: 900;
 }
 
 .children-growth-category-list {
     display: flex;
-
     flex-direction: column;
-
     gap: 8px;
 }
 
 .children-growth-category {
-    width: 100%;
-    min-height: 58px;
-
-    display: flex;
-
+    display: grid;
+    grid-template-columns: 42px minmax(0,1fr) 24px;
     align-items: center;
-
-    gap: 10px;
-
-    padding: 9px 11px;
-
-    border: 1px solid rgba(120,150,160,.18);
+    gap: 9px;
+    width: 100%;
+    min-height: 62px;
+    padding: 9px 10px;
+    border: 1px solid rgba(128,128,128,.16);
     border-radius: 13px;
-
-    background: rgba(255,255,255,.84);
+    background: rgba(128,128,128,.06);
     color: var(--text,#333);
-
     text-align: left;
-
     cursor: pointer;
-
-    box-sizing: border-box;
 }
 
 .children-growth-category:active {
@@ -566,131 +521,89 @@ calendar-children.css
 }
 
 .children-growth-category-icon {
-    flex-shrink: 0;
-
-    width: 36px;
-    height: 36px;
-
     display: flex;
-
     align-items: center;
     justify-content: center;
-
-    border-radius: 10px;
-
-    background: rgba(255,255,255,.9);
-
-    font-size: 21px;
+    font-size: 25px;
 }
 
 .children-growth-category-text {
-    flex: 1;
-
     min-width: 0;
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 2px;
 }
 
 .children-growth-category-name {
+    display: block;
     font-size: 15px;
-    font-weight: 800;
+    font-weight: 900;
 }
 
 .children-growth-category-description {
-    color: var(--muted,#777);
-
-    font-size: 12px;
-    line-height: 1.35;
+    display: block;
+    margin-top: 2px;
+    color: #777;
+    font-size: 11px;
 }
 
 .children-growth-category-arrow {
-    flex-shrink: 0;
-
-    font-size: 25px;
-
     color: #999;
+    font-size: 25px;
+    text-align: center;
 }
 
 
 /* =====================================================
-   モーダル
+   モーダル共通
 ===================================================== */
 
 .children-modal {
     position: relative;
-
-    z-index: 1000;
+    z-index: 10000;
 }
 
 .children-modal-overlay {
     position: fixed;
-
     inset: 0;
-
-    background: rgba(0,0,0,.35);
+    background: rgba(0,0,0,.42);
 }
 
 .children-modal-content {
     position: fixed;
-
     top: 50%;
     left: 50%;
-
-    width: min(92%,500px);
-    max-height: 86vh;
-
+    width: min(calc(100% - 24px), 500px);
+    max-height: calc(100% - 30px);
     overflow-y: auto;
-
     transform: translate(-50%,-50%);
-
-    box-sizing: border-box;
-
-    padding: 20px;
-
+    padding: 18px;
     border-radius: 18px;
-
     background: var(--surface,#fff);
     color: var(--text,#333);
-
-    box-shadow: 0 8px 30px rgba(0,0,0,.18);
+    box-sizing: border-box;
 }
 
 .children-modal-header {
     display: flex;
-
     align-items: center;
     justify-content: space-between;
-
     gap: 10px;
-
-    margin-bottom: 18px;
+    margin-bottom: 16px;
 }
 
 .children-modal-header h2 {
     margin: 0;
-
-    font-size: 22px;
+    font-size: 20px;
+    font-weight: 900;
 }
 
 .children-modal-close-button {
-    width: 44px;
-    height: 44px;
-
+    width: 42px;
+    height: 42px;
     flex-shrink: 0;
-
     border: none;
     border-radius: 10px;
-
     background: transparent;
     color: var(--text,#333);
-
-    font-size: 30px;
-    line-height: 1;
-
+    font-size: 28px;
     cursor: pointer;
 }
 
@@ -701,105 +614,74 @@ calendar-children.css
 
 .children-list {
     display: flex;
-
     flex-direction: column;
-
-    gap: 10px;
-
-    margin-bottom: 16px;
+    gap: 8px;
+    margin-bottom: 14px;
 }
 
 .children-list-empty {
-    padding: 20px 8px;
-
+    padding: 18px 8px;
+    color: #888;
     text-align: center;
-
-    color: var(--muted,#888);
-
-    font-size: 16px;
 }
 
 .children-list-item {
     display: flex;
-
     align-items: center;
-
-    gap: 10px;
-
-    padding: 12px;
-
-    border: 1px solid var(--border,#ddd);
+    gap: 9px;
+    padding: 10px;
+    border: 1px solid rgba(128,128,128,.2);
     border-radius: 12px;
-
-    background: var(--surface,#fff);
 }
 
 .children-list-info {
     flex: 1;
-
     min-width: 0;
 }
 
 .children-list-name {
     margin: 0;
-
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 900;
 }
 
 .children-list-birthday {
     margin: 3px 0 0;
-
-    color: var(--muted,#777);
-
-    font-size: 13px;
+    color: #777;
+    font-size: 12px;
 }
 
 .children-list-actions {
     display: flex;
-
-    gap: 6px;
+    gap: 5px;
 }
 
 .children-list-action-button {
     min-width: 44px;
-    min-height: 44px;
-
-    padding: 7px 10px;
-
-    border: 1px solid var(--border,#ddd);
+    min-height: 40px;
+    padding: 6px 8px;
+    border: 1px solid rgba(128,128,128,.2);
     border-radius: 9px;
-
-    background: var(--surface,#fff);
+    background: transparent;
     color: var(--text,#333);
-
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 700;
-
-    cursor: pointer;
 }
 
 
 /* =====================================================
-   追加ボタン
+   子ども追加
 ===================================================== */
 
 .children-add-button {
     width: 100%;
-    min-height: 50px;
-
-    padding: 10px 14px;
-
+    min-height: 48px;
     border: none;
-    border-radius: 12px;
-
+    border-radius: 11px;
     background: var(--accent,#e58);
     color: #fff;
-
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 900;
-
-    cursor: pointer;
 }
 
 
@@ -808,270 +690,61 @@ calendar-children.css
 ===================================================== */
 
 .children-form-field {
-    margin-bottom: 16px;
+    margin-bottom: 15px;
 }
 
 .children-form-field label {
     display: block;
-
-    margin-bottom: 7px;
-
-    font-size: 16px;
-    font-weight: 800;
+    margin-bottom: 6px;
+    font-size: 14px;
+    font-weight: 900;
 }
 
 .children-form-field input {
     width: 100%;
-    min-height: 48px;
-
-    padding: 9px 12px;
-
-    border: 1px solid var(--border,#ddd);
+    min-height: 46px;
+    padding: 8px 11px;
+    border: 1px solid rgba(128,128,128,.25);
     border-radius: 10px;
-
     background: var(--surface,#fff);
     color: var(--text,#333);
-
-    font-size: 17px;
-
+    font-size: 16px;
     box-sizing: border-box;
 }
 
 .children-form-actions {
     display: grid;
-
     grid-template-columns: 1fr 1fr;
-
-    gap: 10px;
-
-    margin-top: 22px;
+    gap: 8px;
+    margin-top: 20px;
 }
 
 .children-cancel-button,
 .children-save-button {
-    min-height: 48px;
-
-    padding: 9px 12px;
-
+    min-height: 46px;
     border-radius: 10px;
-
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 800;
-
-    cursor: pointer;
 }
 
 .children-cancel-button {
-    border: 1px solid var(--border,#ddd);
-
-    background: var(--surface,#fff);
+    border: 1px solid rgba(128,128,128,.25);
+    background: transparent;
     color: var(--text,#333);
 }
 
 .children-save-button {
     border: none;
-
     background: var(--accent,#e58);
     color: #fff;
 }
 
 
 /* =====================================================
-   項目選択モーダル
+   📱 スマホ
 ===================================================== */
 
-.children-record-type-modal,
-.children-record-edit-modal {
-    position: fixed;
-
-    inset: 0;
-
-    z-index: 10000;
-}
-
-.children-record-type-overlay,
-.children-record-edit-overlay {
-    position: absolute;
-
-    inset: 0;
-
-    background: rgba(0,0,0,.45);
-}
-
-.children-record-type-dialog,
-.children-record-edit-dialog {
-    position: absolute;
-
-    left: 50%;
-    top: 50%;
-
-    width: min(calc(100% - 32px),430px);
-    max-height: calc(100% - 32px);
-
-    overflow-y: auto;
-
-    transform: translate(-50%,-50%);
-
-    border-radius: 18px;
-
-    background: var(--viz-card,#fff);
-    color: var(--viz-text,#222);
-
-    box-sizing: border-box;
-}
-
-.children-record-type-header,
-.children-record-edit-header {
-    display: flex;
-
-    align-items: center;
-    justify-content: space-between;
-
-    gap: 10px;
-
-    padding: 14px 16px;
-
-    border-bottom: 1px solid rgba(128,128,128,.2);
-}
-
-.children-record-type-header h2,
-.children-record-edit-header h2 {
-    margin: 0;
-
-    font-size: 20px;
-    font-weight: 800;
-}
-
-.children-record-type-close,
-.children-record-edit-close {
-    width: 44px;
-    height: 44px;
-
-    flex-shrink: 0;
-
-    border: none;
-
-    background: transparent;
-
-    font-size: 28px;
-    line-height: 1;
-
-    cursor: pointer;
-}
-
-.children-record-type-list {
-    display: grid;
-
-    grid-template-columns: 1fr;
-
-    gap: 8px;
-
-    padding: 14px;
-}
-
-.children-record-type-button {
-    width: 100%;
-    min-height: 52px;
-
-    padding: 10px 14px;
-
-    border: 1px solid rgba(128,128,128,.25);
-    border-radius: 12px;
-
-    background: transparent;
-
-    text-align: left;
-
-    font-size: 16px;
-    font-weight: 700;
-
-    cursor: pointer;
-}
-
-.children-record-type-button:active {
-    opacity: .65;
-}
-
-.children-record-type-button.other {
-    margin-top: 4px;
-}
-
-
-/* =====================================================
-   編集モーダル
-===================================================== */
-
-.children-record-edit-current {
-    padding: 18px 16px 10px;
-
-    text-align: center;
-}
-
-.children-record-edit-time {
-    font-size: 30px;
-    font-weight: 800;
-}
-
-.children-record-edit-label {
-    margin-top: 5px;
-
-    font-size: 17px;
-    font-weight: 700;
-}
-
-.children-record-edit-memo {
-    margin-top: 6px;
-
-    color: #777;
-
-    font-size: 14px;
-
-    word-break: break-word;
-}
-
-.children-record-edit-actions {
-    display: grid;
-
-    gap: 8px;
-
-    padding: 14px 16px 18px;
-}
-
-.children-record-edit-action {
-    width: 100%;
-    min-height: 48px;
-
-    padding: 10px 14px;
-
-    border: none;
-    border-radius: 12px;
-
-    background: rgba(128,128,128,.12);
-
-    font-size: 15px;
-    font-weight: 700;
-
-    cursor: pointer;
-}
-
-.children-record-edit-action:active {
-    opacity: .65;
-}
-
-.children-record-edit-action.delete {
-    color: #c62828;
-}
-
-.children-record-edit-action.cancel {
-    background: transparent;
-}
-
-
-/* =====================================================
-   スマホ
-===================================================== */
-
-@media (max-width:600px) {
+@media (max-width: 600px) {
 
     .children-calendar-app {
         padding-left: 8px;
@@ -1082,109 +755,57 @@ calendar-children.css
         font-size: 22px;
     }
 
-    .children-calendar-back-button {
-        font-size: 15px;
-
-        padding: 8px 12px;
+    .children-profile-row {
+        grid-template-columns: minmax(0,1fr) 138px;
     }
 
-    .children-selector-label {
-        font-size: 14px;
+    .children-growth-entry-title {
+        font-size: 12px;
     }
 
-    .children-selector {
-        font-size: 15px;
+    .children-growth-entry-description {
+        font-size: 9px;
     }
 
     .children-calendar-day {
         min-height: 46px;
-
-        padding: 5px;
     }
 
-    .children-modal-content {
-        padding: 16px;
+    .children-daily-section {
+        padding: 11px;
     }
-
 }
 
 
-/* =====================================================
-   スマホ用：1日の記録
-===================================================== */
+@media (max-width: 380px) {
 
-@media (max-width:480px) {
-
-    .children-daily-basic-title {
-        font-size: 18px;
+    .children-profile-row {
+        grid-template-columns: minmax(0,1fr) 126px;
+        gap: 6px;
     }
 
-    .children-daily-add-button {
-        font-size: 13px;
-
-        padding: 8px 12px;
+    .children-profile {
+        padding: 9px;
     }
 
-    .children-daily-table {
-        min-width: 400px;
+    .children-profile-name {
+        font-size: 17px;
     }
 
-    .children-daily-table th,
-    .children-daily-table td {
-        padding: 9px 6px;
-    }
-
-    .children-record-type-dialog,
-    .children-record-edit-dialog {
-        width: calc(100% - 20px);
-
-        border-radius: 16px;
-    }
-
-}
-
-
-/* =====================================================
-   小さいスマホ
-===================================================== */
-
-@media (max-width:380px) {
-
-    .children-calendar-title {
-        font-size: 19px;
-    }
-
-    .children-calendar-back-button {
-        font-size: 12px;
-
-        padding-left: 8px;
-        padding-right: 8px;
-    }
-
-    .children-month-navigation {
-        grid-template-columns: 40px minmax(0,1fr) 40px;
-    }
-
-    .children-month-button {
-        width: 40px;
-        height: 40px;
-    }
-
-    .children-month-title-button {
-        min-height: 40px;
-
-        font-size: 18px;
-    }
-
-    .children-calendar {
-        gap: 2px;
-
+    .children-growth-entry {
         padding-left: 5px;
-        padding-right: 5px;
+        padding-right: 18px;
     }
 
-    .children-calendar-day {
-        min-height: 43px;
+    .children-growth-entry-icon {
+        font-size: 21px;
     }
 
+    .children-growth-entry-title {
+        font-size: 11px;
+    }
+
+    .children-growth-entry-description {
+        display: none;
+    }
 }
