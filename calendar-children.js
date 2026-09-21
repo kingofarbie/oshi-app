@@ -26,6 +26,9 @@ let childrenEditingId = null;
 let childrenCalendarDate = new Date();
 let childrenSelectedDate = null;
 
+let childrenCalendarSwipeStartX = 0;
+let childrenCalendarSwipeStartY = 0;
+
 
 const CHILDREN_DAILY_RECORD_TYPES = {
 
@@ -68,6 +71,7 @@ function initializeChildrenCalendar() {
     renderChildrenCalendar();
 
     renderChildrenDaily();
+    initializeChildrenCalendarSwipe();
 
 }
 
@@ -1802,6 +1806,90 @@ if(monthTitleButton){
 
     calendar.innerHTML =
         html;
+
+}
+
+
+function initializeChildrenCalendarSwipe(){
+
+    const calendar =
+        document.getElementById(
+            "childrenCalendar"
+        );
+
+    if(!calendar){
+        return;
+    }
+
+    calendar.ontouchstart = function(e){
+
+        if(e.touches.length !== 1){
+            return;
+        }
+
+        childrenCalendarSwipeStartX =
+            e.touches[0].clientX;
+
+        childrenCalendarSwipeStartY =
+            e.touches[0].clientY;
+
+    };
+
+    calendar.ontouchend = function(e){
+
+        if(!childrenCalendarSwipeStartX){
+            return;
+        }
+
+        const endX =
+            e.changedTouches[0].clientX;
+
+        const endY =
+            e.changedTouches[0].clientY;
+
+        const diffX =
+            endX - childrenCalendarSwipeStartX;
+
+        const diffY =
+            endY - childrenCalendarSwipeStartY;
+
+        childrenCalendarSwipeStartX = 0;
+        childrenCalendarSwipeStartY = 0;
+
+        // 縦方向の操作なら無視
+        if(Math.abs(diffY) > Math.abs(diffX)){
+            return;
+        }
+
+        // 最低スワイプ距離
+        if(Math.abs(diffX) < 50){
+            return;
+        }
+
+        if(diffX < 0){
+
+            // 左スワイプ → 次月
+            childrenCalendarDate =
+                new Date(
+                    childrenCalendarDate.getFullYear(),
+                    childrenCalendarDate.getMonth() + 1,
+                    1
+                );
+
+        }else{
+
+            // 右スワイプ → 前月
+            childrenCalendarDate =
+                new Date(
+                    childrenCalendarDate.getFullYear(),
+                    childrenCalendarDate.getMonth() - 1,
+                    1
+                );
+
+        }
+
+        renderChildrenCalendar();
+    };
 
 }
 
