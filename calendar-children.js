@@ -1568,6 +1568,18 @@ function renderChildrenCalendar(){
     const month =
         childrenCalendarDate.getMonth();
 
+    const monthTitleButton =
+    document.getElementById(
+        "childrenMonthTitleButton"
+    );
+
+if(monthTitleButton){
+
+    monthTitleButton.textContent =
+        `${year}年${month + 1}月`;
+
+}
+
 
     /* =====================
        月初・月末
