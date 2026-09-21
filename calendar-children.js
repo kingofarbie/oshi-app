@@ -26,6 +26,8 @@ let childrenEditingId = null;
 let childrenCalendarDate = new Date();
 let childrenSelectedDate = null;
 
+let childrenCalendarDatePickerMode = false;
+
 
 const CHILDREN_DAILY_RECORD_TYPES = {
 
@@ -1806,6 +1808,99 @@ if(monthTitleButton){
 }
 
 
+/* =====================================================
+   👶 こどもカレンダー
+   年月選択モーダルを開く
+===================================================== */
+
+function openChildrenCalendarDatePicker(){
+
+    const modal =
+        document.getElementById(
+            "calendarDatePickerModal"
+        );
+
+    const yearSelect =
+        document.getElementById(
+            "calendarYearSelect"
+        );
+
+    const monthSelect =
+        document.getElementById(
+            "calendarMonthSelect"
+        );
+
+    if(
+        !modal ||
+        !yearSelect ||
+        !monthSelect
+    ){
+        return;
+    }
+
+
+    /* =====================
+       子どもカレンダーから開いた
+       ことを記録
+    ===================== */
+
+    childrenCalendarDatePickerMode = true;
+
+
+    /* =====================
+       現在の年月
+    ===================== */
+
+    const currentYear =
+        childrenCalendarDate.getFullYear();
+
+
+    /* =====================
+       年の選択肢を作成
+    ===================== */
+
+    yearSelect.innerHTML = "";
+
+
+    for(
+        let year = currentYear - 10;
+        year <= currentYear + 10;
+        year++
+    ){
+
+        const option =
+            document.createElement("option");
+
+        option.value = year;
+
+        option.textContent =
+            `${year}年`;
+
+        yearSelect.appendChild(option);
+
+    }
+
+
+    /* =====================
+       現在の年月を選択
+    ===================== */
+
+    yearSelect.value =
+        currentYear;
+
+    monthSelect.value =
+        childrenCalendarDate.getMonth();
+
+
+    /* =====================
+       モーダル表示
+    ===================== */
+
+    modal.style.display = "block";
+
+}
+
+
 /* =====================
    👶 子どもカレンダー
    日付選択
@@ -1857,6 +1952,93 @@ function selectChildrenCalendarDate(date){
         calendarSection.style.display = "block";
     }
 }
+
+
+/* =====================================================
+   👶 こどもカレンダー
+   年月選択モーダルを開く
+===================================================== */
+
+function openChildrenCalendarDatePicker(){
+
+    const modal =
+        document.getElementById(
+            "calendarDatePickerModal"
+        );
+
+    const yearSelect =
+        document.getElementById(
+            "calendarYearSelect"
+        );
+
+    const monthSelect =
+        document.getElementById(
+            "calendarMonthSelect"
+        );
+
+    if(
+        !modal ||
+        !yearSelect ||
+        !monthSelect
+    ){
+        return;
+    }
+
+
+    /* =====================
+       現在の子どもカレンダーの年
+    ===================== */
+
+    const currentYear =
+        childrenCalendarDate.getFullYear();
+
+
+    yearSelect.innerHTML = "";
+
+
+    /* =====================
+       前後10年
+    ===================== */
+
+    for(
+        let year = currentYear - 10;
+        year <= currentYear + 10;
+        year++
+    ){
+
+        const option =
+            document.createElement("option");
+
+        option.value = year;
+
+        option.textContent =
+            `${year}年`;
+
+        yearSelect.appendChild(option);
+
+    }
+
+
+    /* =====================
+       現在の年月を選択
+    ===================== */
+
+    yearSelect.value =
+        currentYear;
+
+    monthSelect.value =
+        childrenCalendarDate.getMonth();
+
+
+    /* =====================
+       モーダル表示
+    ===================== */
+
+    modal.style.display = "block";
+
+}
+
+
 
 
 /* =====================================================
@@ -3504,5 +3686,66 @@ async function openChildrenCalendar() {
         );
 
     }
+
+}
+
+
+
+/* =====================================================
+   👶 こどもカレンダー
+   年月選択を反映
+===================================================== */
+
+function applyChildrenCalendarDatePicker(){
+
+    const yearSelect =
+        document.getElementById(
+            "calendarYearSelect"
+        );
+
+    const monthSelect =
+        document.getElementById(
+            "calendarMonthSelect"
+        );
+
+    if(
+        !yearSelect ||
+        !monthSelect
+    ){
+        return;
+    }
+
+
+    const year =
+        Number(yearSelect.value);
+
+    const month =
+        Number(monthSelect.value);
+
+
+    /* =====================
+       こどもカレンダーの年月を変更
+    ===================== */
+
+    childrenCalendarDate =
+        new Date(
+            year,
+            month,
+            1
+        );
+
+
+    /* =====================
+       モーダルを閉じる
+    ===================== */
+
+    closeCalendarDatePicker();
+
+
+    /* =====================
+       カレンダー再描画
+    ===================== */
+
+    renderChildrenCalendar();
 
 }

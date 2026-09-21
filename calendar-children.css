@@ -1656,3 +1656,51 @@ calendar-children.css
     color: #8e6cc7 !important;
     font-weight: 700;
 }
+
+
+/* =====================================================
+   👶 こどもカレンダー
+   年月ボタン
+   通常カレンダーと同じ白背景
+===================================================== */
+
+.children-month-title-button {
+    background: #fff !important;
+    color: #333 !important;
+    border: 1px solid #ddd !important;
+    box-shadow: none !important;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+.children-month-title-button:hover {
+    background: #fff !important;
+}
+
+.children-month-title-button:active {
+    background: #fff !important;
+}
+
+
+
+/* =====================================================
+   👶 こどもカレンダー
+   年月表示
+===================================================== */
+
+.children-month-title-button {
+    background: #fff !important;
+    color: #333 !important;
+    border: 1px solid #ddd !important;
+    box-shadow: none !important;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+.children-month-title-button:hover,
+.children-month-title-button:active,
+.children-month-title-button:focus {
+    background: #fff !important;
+    color: #333 !important;
+    box-shadow: none !important;
+}

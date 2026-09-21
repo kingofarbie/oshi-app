@@ -1678,9 +1678,52 @@ function applyCalendarDatePicker(){
         Number(monthSelect.value);
 
 
-    /* =====================
-       カレンダー年月を変更
-    ===================== */
+    /* =====================================================
+       👶 こどもカレンダーから開いた場合
+    ===================================================== */
+
+    if(
+        typeof childrenCalendarDatePickerMode !== "undefined" &&
+        childrenCalendarDatePickerMode === true
+    ){
+
+        childrenCalendarDate =
+            new Date(
+                year,
+                month,
+                1
+            );
+
+
+        /* =====================
+           モード解除
+        ===================== */
+
+        childrenCalendarDatePickerMode = false;
+
+
+        /* =====================
+           モーダルを閉じる
+        ===================== */
+
+        closeCalendarDatePicker();
+
+
+        /* =====================
+           子どもカレンダー再描画
+        ===================== */
+
+        renderChildrenCalendar();
+
+
+        return;
+    }
+
+
+    /* =====================================================
+       📅 通常カレンダー
+       ここから下は従来通り
+    ===================================================== */
 
     currentCalendarDate =
         new Date(
@@ -1704,8 +1747,6 @@ function applyCalendarDatePicker(){
     renderCalendar();
 
 }
-
-
 
 
 /* =====================
