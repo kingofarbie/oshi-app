@@ -130,7 +130,7 @@ calendar-children.css
 
     grid-template-columns:
         minmax(0, 1fr)
-        150px;
+        132px;
 
     gap: 9px;
 
@@ -1383,3 +1383,5 @@ calendar-children.css
     }
 
 }
+
+
