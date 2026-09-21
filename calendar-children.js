@@ -1523,250 +1523,361 @@ function deleteChild(childId) {
    カレンダー
 ===================================================== */
 
-function renderChildrenCalendar() {
+/* =====================
+   👶 こどもカレンダー生成
+   通常カレンダーと同じ構造
+===================== */
+
+function renderChildrenCalendar(){
 
     const calendar =
         document.getElementById(
             "childrenCalendar"
         );
 
-
-    const monthTitle =
-        document.getElementById(
-            "childrenMonthTitleButton"
-        );
-
-
-    if (
-        !calendar ||
-        !monthTitle
-    ) {
-
+    if(!calendar){
         return;
-
     }
 
+
+    /* =====================
+       子ども確認
+    ===================== */
 
     const child =
-        getSelectedChild();
+        childrenData.find(
+            c => c.id === selectedChildId
+        );
 
+    if(!child){
 
-    if (!child) {
-
-        calendar.innerHTML =
-            "";
+        calendar.innerHTML = "";
 
         return;
 
     }
 
+
+    /* =====================
+       年月
+    ===================== */
 
     const year =
         childrenCalendarDate.getFullYear();
-
 
     const month =
         childrenCalendarDate.getMonth();
 
 
-    monthTitle.textContent =
-        `${year}年${month + 1}月`;
+    /* =====================
+       月初・月末
+    ===================== */
 
-
-    calendar.innerHTML =
-        "";
-
-
-    const weekdays =
-        [
-            "日",
-            "月",
-            "火",
-            "水",
-            "木",
-            "金",
-            "土"
-        ];
-
-
-    weekdays.forEach(
-        function(day,index) {
-
-            const element =
-                document.createElement(
-                    "div"
-                );
-
-
-            element.className =
-                "children-calendar-weekday";
-
-
-            element.textContent =
-                day;
-
-
-            if (index === 0) {
-
-                element.classList.add(
-                    "sunday"
-                );
-
-            }
-
-
-            if (index === 6) {
-
-                element.classList.add(
-                    "saturday"
-                );
-
-            }
-
-
-            calendar.appendChild(
-                element
-            );
-
-        }
-    );
-
-
-    const firstDay =
+    const first =
         new Date(
             year,
             month,
             1
-        ).getDay();
+        );
 
-
-    const lastDate =
+    const last =
         new Date(
             year,
             month + 1,
             0
-        ).getDate();
-
-
-    for (
-        let i = 0;
-        i < firstDay;
-        i++
-    ) {
-
-        const empty =
-            document.createElement(
-                "div"
-            );
-
-
-        empty.className =
-            "children-calendar-day empty";
-
-
-        calendar.appendChild(
-            empty
         );
 
-    }
 
+    /* =====================
+       今日
+    ===================== */
 
     const today =
         new Date();
 
 
-    for (
-        let day = 1;
-        day <= lastDate;
-        day++
-    ) {
+    /* =====================
+       HTML開始
+    ===================== */
 
-        const cell =
-            document.createElement(
-                "button"
-            );
+    let html = `
+
+        <div class="children-calendar-grid">
+
+            <div class="children-calendar-week sunday">
+                日
+            </div>
+
+            <div class="children-calendar-week">
+                月
+            </div>
+
+            <div class="children-calendar-week">
+                火
+            </div>
+
+            <div class="children-calendar-week">
+                水
+            </div>
+
+            <div class="children-calendar-week">
+                木
+            </div>
+
+            <div class="children-calendar-week">
+                金
+            </div>
+
+            <div class="children-calendar-week saturday">
+                土
+            </div>
+
+    `;
 
 
-        cell.type =
-            "button";
+    /* =====================
+       月初までの空白
+       通常カレンダーと同じ
+    ===================== */
 
+    for(
+        let i = 0;
+        i < first.getDay();
+        i++
+    ){
 
-        cell.className =
-            "children-calendar-day";
+        html += `
 
-
-        const date =
-            new Date(
-                year,
-                month,
-                day
-            );
-
-
-        const dateString =
-            formatChildrenDate(
-                date
-            );
-
-
-        cell.innerHTML = `
-
-            <div class="children-calendar-day-number">
-                ${day}
+            <div class="children-calendar-day empty">
             </div>
 
         `;
 
+    }
 
-        if (
-            date.getFullYear() ===
-                today.getFullYear() &&
-            date.getMonth() ===
-                today.getMonth() &&
-            date.getDate() ===
-                today.getDate()
-        ) {
 
-            cell.classList.add(
-                "today"
-            );
+    /* =====================
+       日付生成
+    ===================== */
+
+    for(
+        let d = 1;
+        d <= last.getDate();
+        d++
+    ){
+
+        const date =
+            `${year}-` +
+            `${String(month + 1).padStart(2,"0")}-` +
+            `${String(d).padStart(2,"0")}`;
+
+
+        /* =====================
+           曜日
+        ===================== */
+
+        const dayOfWeek =
+            new Date(
+                year,
+                month,
+                d
+            ).getDay();
+
+
+        let dateClass = "";
+
+
+        if(dayOfWeek === 0){
+
+            dateClass = "sunday";
+
+        }
+        else if(dayOfWeek === 6){
+
+            dateClass = "saturday";
 
         }
 
 
-        if (
-            childrenSelectedDate ===
-            dateString
-        ) {
+        /* =====================
+           今日
+        ===================== */
 
-            cell.classList.add(
-                "selected"
-            );
-
-        }
+        const isToday =
+            today.getFullYear() === year &&
+            today.getMonth() === month &&
+            today.getDate() === d;
 
 
-        cell.onclick =
-            function() {
+        /* =====================
+           選択日
+        ===================== */
 
-                childrenSelectedDate =
-                    dateString;
-
-
-                renderChildrenCalendar();
-
-                renderChildrenDaily();
-
-            };
+        const isSelected =
+            childrenSelectedDate === date;
 
 
-        calendar.appendChild(
-            cell
+        /* =====================
+           その日の記録
+        ===================== */
+
+        const records =
+            Array.isArray(child.records?.[date])
+            ? child.records[date]
+            : [];
+
+
+        const hasRecord =
+            records.length > 0;
+
+
+        /* =====================
+           日付セル
+           通常カレンダーと同じ
+        ===================== */
+
+        html += `
+
+            <div
+                class="
+                    children-calendar-day
+                    ${dateClass}
+                    ${isToday ? "today" : ""}
+                    ${hasRecord ? "has-record" : ""}
+                    ${isSelected ? "selected-day" : ""}
+                "
+                onclick="selectChildrenCalendarDate('${date}')"
+            >
+
+                <div
+                    class="
+                        children-calendar-date
+                        ${dateClass}
+                    "
+                >
+                    ${d}
+                </div>
+
+                ${
+                    hasRecord
+                    ?
+                    `
+                    <div class="children-calendar-record-mark">
+                        ●
+                    </div>
+                    `
+                    :
+                    ""
+                }
+
+            </div>
+
+        `;
+
+    }
+
+
+    /* =====================
+       HTML終了
+    ===================== */
+
+    html += `
+
+        </div>
+
+    `;
+
+
+    calendar.innerHTML =
+        html;
+
+}
+
+
+/* =====================
+   👶 子どもカレンダー
+   日付選択
+===================== */
+
+function selectChildrenCalendarDate(date){
+
+    /* =====================
+       選択日を保存
+    ===================== */
+
+    childrenSelectedDate =
+        date;
+
+
+    /* =====================
+       カレンダー月も
+       選択日に合わせる
+    ===================== */
+
+    const selectedDate =
+        new Date(
+            date + "T00:00:00"
         );
+
+
+    childrenCalendarDate =
+        new Date(
+            selectedDate.getFullYear(),
+            selectedDate.getMonth(),
+            1
+        );
+
+
+    /* =====================
+       カレンダー再描画
+    ===================== */
+
+    renderChildrenCalendar();
+
+
+    /* =====================
+       1日の記録を表示
+    ===================== */
+
+    renderChildrenDaily();
+
+
+    /* =====================
+       1日の記録へ
+    ===================== */
+
+    const dailySection =
+        document.getElementById(
+            "childrenDailySection"
+        );
+
+    if(dailySection){
+
+        dailySection.style.display =
+            "block";
+
+    }
+
+
+    /* =====================
+       カレンダー部分を
+       非表示にする
+    ===================== */
+
+    const calendarSection =
+        document.getElementById(
+            "childrenCalendarSection"
+        );
+
+    if(calendarSection){
+
+        calendarSection.style.display =
+            "none";
 
     }
 
 }
+
 
 
 /* =====================================================
