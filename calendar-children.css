@@ -358,15 +358,15 @@ calendar-children.css
     font-size: 13px;
     font-weight: 800;
 
-    color: var(--text,#333);
+    color: #333 !important;
 }
 
 .children-calendar-weekday.sunday {
-    color: var(--text,#333);
+    color: #333 !important;
 }
 
 .children-calendar-weekday.saturday {
-    color: var(--text,#333);
+    color: #333 !important;
 }
 
 
