@@ -1640,3 +1640,19 @@ calendar-children.css
     }
 
 }
+
+
+/* =====================================================
+   👶 今日の日付
+   カレンダーの外枠線は通常色のまま
+===================================================== */
+
+.children-calendar-day.today {
+    border-top: 1px solid #e5e5e5 !important;
+    border-left: 1px solid #e5e5e5 !important;
+}
+
+.children-calendar-day.today .children-calendar-date {
+    color: #8e6cc7 !important;
+    font-weight: 700;
+}
