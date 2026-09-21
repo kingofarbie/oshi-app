@@ -414,7 +414,7 @@ calendar-children.css
     font-size: 14px;
     font-weight: 800;
 
-    color: var(--text,#333);
+    color: #333;
 
 }
 
@@ -437,7 +437,7 @@ calendar-children.css
 
     background: transparent;
 
-    color: var(--text,#333);
+    color: #333;
 
     outline: 2px solid #8fcfe3;
     outline-offset: 1px;
@@ -455,7 +455,7 @@ calendar-children.css
 
     background: transparent;
 
-    color: var(--text,#333);
+    color: #333;
 
     outline: 2px solid #e99ab7;
     outline-offset: 1px;
