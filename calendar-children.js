@@ -1813,24 +1813,10 @@ if(monthTitleButton){
 
 function selectChildrenCalendarDate(date){
 
-    /* =====================
-       選択日を保存
-    ===================== */
-
-    childrenSelectedDate =
-        date;
-
-
-    /* =====================
-       カレンダー月も
-       選択日に合わせる
-    ===================== */
+    childrenSelectedDate = date;
 
     const selectedDate =
-        new Date(
-            date + "T00:00:00"
-        );
-
+        new Date(date + "T00:00:00");
 
     childrenCalendarDate =
         new Date(
@@ -1839,57 +1825,38 @@ function selectChildrenCalendarDate(date){
             1
         );
 
-
     /* =====================
-       カレンダー再描画
+       カレンダーを再描画
     ===================== */
 
     renderChildrenCalendar();
 
-
     /* =====================
-       1日の記録を表示
+       選択した日の記録を表示
     ===================== */
 
     renderChildrenDaily();
 
-
-    /* =====================
-       1日の記録へ
-    ===================== */
-
     const dailySection =
-        document.getElementById(
-            "childrenDailySection"
-        );
+        document.getElementById("childrenDailySection");
 
     if(dailySection){
-
-        dailySection.style.display =
-            "block";
-
+        dailySection.style.display = "block";
     }
 
-
-    /* =====================
-       カレンダー部分を
-       非表示にする
-    ===================== */
+    /*
+       カレンダーは隠さない
+       → 選択した日付の下に
+          「1日の記録」を表示する
+    */
 
     const calendarSection =
-        document.getElementById(
-            "childrenCalendarSection"
-        );
+        document.getElementById("childrenCalendarSection");
 
     if(calendarSection){
-
-        calendarSection.style.display =
-            "none";
-
+        calendarSection.style.display = "block";
     }
-
 }
-
 
 
 /* =====================================================
