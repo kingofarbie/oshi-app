@@ -2963,6 +2963,26 @@ function openChildrenRecordEditModal(
         "children-record-edit-modal";
 
 
+    // 👶 性別によるカラークラス
+    const child =
+        getSelectedChild();
+
+    if (child) {
+
+        if (child.gender === "boy") {
+
+            modal.classList.add("boy");
+
+        }
+        else if (child.gender === "girl") {
+
+            modal.classList.add("girl");
+
+        }
+
+    }
+
+
     modal.innerHTML = `
 
         <div class="children-record-edit-overlay"></div>
@@ -3304,7 +3324,6 @@ function openChildrenRecordEditModal(
     }
 
 }
-
 
 /* =====================================================
    編集モーダルを閉じる
