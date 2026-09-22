@@ -269,3 +269,18 @@
     border: 1px solid var(--children-girl-border) !important;
     color: #fff !important;
 }
+
+
+.number-input-modal.children-number-boy
+.number-input-actions button {
+    background: var(--children-boy-color) !important;
+    border: 1px solid var(--children-boy-border) !important;
+    color: #fff !important;
+}
+
+.number-input-modal.children-number-girl
+.number-input-actions button {
+    background: var(--children-girl-color) !important;
+    border: 1px solid var(--children-girl-border) !important;
+    color: #fff !important;
+}
