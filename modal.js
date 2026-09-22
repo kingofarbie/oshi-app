@@ -213,6 +213,48 @@ function openNumberInputModal(
 
 
     // =================================================
+    // 👶 子どもカレンダー用カラー判定
+    // =================================================
+
+    modal.classList.remove(
+        "children-number-boy",
+        "children-number-girl"
+    );
+
+    const childrenApp =
+        input.closest(
+            "#childrenCalendarApp"
+        );
+
+    if (childrenApp) {
+
+        if (
+            childrenApp.classList.contains(
+                "boy"
+            )
+        ) {
+
+            modal.classList.add(
+                "children-number-boy"
+            );
+
+        }
+        else if (
+            childrenApp.classList.contains(
+                "girl"
+            )
+        ) {
+
+            modal.classList.add(
+                "children-number-girl"
+            );
+
+        }
+
+    }
+
+
+    // =================================================
     // ⏰ 時刻モード
     // =================================================
 
@@ -293,7 +335,6 @@ function openNumberInputModal(
         "flex";
 
 }
-
 
 // =====================================================
 // 数字を追加
