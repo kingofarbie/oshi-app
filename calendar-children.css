@@ -42,7 +42,7 @@ calendar-children.css
    👶 こどもカレンダー カラー設定
 ===================================================== */
 
-#childrenCalendarApp {
+:root {
     --children-boy-color: #6495ED;
     --children-boy-border: #4169E1;
 
@@ -1917,17 +1917,20 @@ calendar-children.css
 
 
 /* =====================================================
-   👶 項目追加モーダル本体
-   ===================================================== */
+   👶 項目追加モーダル
+   記録項目ボタンだけ性別カラー
+===================================================== */
 
-#childrenRecordTypeModal.boy .children-record-type-dialog {
-    background: #6495ED !important;
-    border: 1px solid #4169E1 !important;
+#childrenRecordTypeModal.boy
+.children-record-type-button {
+    background: var(--children-boy-color) !important;
+    border-color: var(--children-boy-border) !important;
     color: #fff !important;
 }
 
-#childrenRecordTypeModal.girl .children-record-type-dialog {
-    background: #FF69B4 !important;
-    border: 1px solid #FF1493 !important;
+#childrenRecordTypeModal.girl
+.children-record-type-button {
+    background: var(--children-girl-color) !important;
+    border-color: var(--children-girl-border) !important;
     color: #fff !important;
 }
