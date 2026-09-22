@@ -103,6 +103,20 @@ calendar-children.css
 }
 
 
+.children-calendar-app.boy
+.children-calendar-back-button {
+    background: var(--children-boy-color) !important;
+    border-color: var(--children-boy-border) !important;
+    color: #fff !important;
+}
+
+.children-calendar-app.girl
+.children-calendar-back-button {
+    background: var(--children-girl-color) !important;
+    border-color: var(--children-girl-border) !important;
+    color: #fff !important;
+}
+
 /* =====================================================
    子ども選択
 ===================================================== */
@@ -248,6 +262,22 @@ calendar-children.css
     line-height: 1;
 }
 
+
+
+.children-calendar-app.boy
+.children-growth-entry-title,
+.children-calendar-app.boy
+.children-growth-entry-description,
+.children-calendar-app.boy
+.children-growth-entry-arrow,
+.children-calendar-app.girl
+.children-growth-entry-title,
+.children-calendar-app.girl
+.children-growth-entry-description,
+.children-calendar-app.girl
+.children-growth-entry-arrow {
+    color: #fff !important;
+}
 
 /* =====================================================
    プロフィール内部
@@ -922,19 +952,27 @@ calendar-children.css
     cursor: pointer;
 }
 
+
+
 .children-calendar-app.boy
 .children-growth-back-button {
-    background: #6495ED !important;
-    border-color: #4169E1 !important;
+    background: var(--children-boy-color) !important;
+    border-color: var(--children-boy-border) !important;
     color: #fff !important;
 }
 
 .children-calendar-app.girl
 .children-growth-back-button {
-    background: #FF69B4 !important;
-    border-color: #FF1493 !important;
+    background: var(--children-girl-color) !important;
+    border-color: var(--children-girl-border) !important;
     color: #fff !important;
 }
+
+
+
+
+
+
 
 
 .children-growth-section-title {
@@ -1804,6 +1842,22 @@ calendar-children.css
     min-width: 60px;
     white-space: nowrap;
 }
+
+
+.children-calendar-app.boy
+.children-today-button {
+    background: var(--children-boy-color) !important;
+    border-color: var(--children-boy-border) !important;
+    color: #fff !important;
+}
+
+.children-calendar-app.girl
+.children-today-button {
+    background: var(--children-girl-color) !important;
+    border-color: var(--children-girl-border) !important;
+    color: #fff !important;
+}
+
 
 
 /* =============================================
