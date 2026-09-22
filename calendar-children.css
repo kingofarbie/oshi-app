@@ -747,6 +747,17 @@ calendar-children.css
     cursor: pointer;
 }
 
+.children-calendar-app.boy
+.children-daily-add-button {
+    background: #6495ED !important;
+    color: #fff !important;
+}
+
+.children-calendar-app.girl
+.children-daily-add-button {
+    background: #FF69B4 !important;
+    color: #fff !important;
+}
 
 /* =====================================================
    この日の記録
