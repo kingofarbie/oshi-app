@@ -3740,3 +3740,20 @@ function closeChildrenCalendarDatePicker(){
 
 }
 
+
+function goChildrenCalendarToday(){
+
+    const today = new Date();
+
+    childrenCalendarDate =
+        new Date(
+            today.getFullYear(),
+            today.getMonth(),
+            1
+        );
+
+    childrenSelectedDate = null;
+
+    renderChildrenCalendar();
+
+}
