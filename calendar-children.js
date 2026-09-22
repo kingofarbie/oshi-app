@@ -2714,22 +2714,28 @@ function openChildrenTimeInput(
             "input"
         );
 
-
     input.type =
         "text";
-
 
     input.value =
         currentValue || "";
 
-
     input.style.display =
         "none";
-
 
     document.body.appendChild(
         input
     );
+
+
+    // 選択中の子どもの性別を取得
+    const child =
+        getSelectedChild();
+
+    const childrenGender =
+        child
+            ? child.gender || ""
+            : "";
 
 
     openNumberInputModal(
@@ -2740,11 +2746,8 @@ function openChildrenTimeInput(
         function(time) {
 
             if (callback) {
-
                 callback(time);
-
             }
-
 
             input.remove();
 
@@ -2753,11 +2756,10 @@ function openChildrenTimeInput(
 
             input.remove();
 
-        }
+        },
+        childrenGender
     );
-
 }
-
 
 /* =====================================================
    備考

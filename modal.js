@@ -163,7 +163,8 @@ function openNumberInputModal(
     allowDecimal = false,
     mode = "number",
     saveCallback = null,
-    deleteCallback = null
+    deleteCallback = null,
+    childrenGender = ""
 ) {
 
     const modal =
@@ -212,44 +213,28 @@ function openNumberInputModal(
             : null;
 
 
-    // =================================================
-    // 👶 子どもカレンダー用カラー判定
-    // =================================================
+    /* =================================================
+       👶 子どもカレンダー用カラー
+    ================================================= */
 
     modal.classList.remove(
         "children-number-boy",
         "children-number-girl"
     );
 
-    const childrenApp =
-        input.closest(
-            "#childrenCalendarApp"
+
+    if (childrenGender === "boy") {
+
+        modal.classList.add(
+            "children-number-boy"
         );
 
-    if (childrenApp) {
+    }
+    else if (childrenGender === "girl") {
 
-        if (
-            childrenApp.classList.contains(
-                "boy"
-            )
-        ) {
-
-            modal.classList.add(
-                "children-number-boy"
-            );
-
-        }
-        else if (
-            childrenApp.classList.contains(
-                "girl"
-            )
-        ) {
-
-            modal.classList.add(
-                "children-number-girl"
-            );
-
-        }
+        modal.classList.add(
+            "children-number-girl"
+        );
 
     }
 
@@ -263,7 +248,7 @@ function openNumberInputModal(
         let currentValue =
             input.value || "";
 
-        // 既存値がなければ現在時刻
+
         if (!currentValue) {
 
             const now = new Date();
@@ -282,17 +267,18 @@ function openNumberInputModal(
         }
         else {
 
-            // HH:MM → HHMM
             currentValue =
                 currentValue
                     .replace(":", "");
 
         }
 
+
         numberInputValue =
             currentValue;
 
     }
+
 
     // =================================================
     // 🔢 数値モード
