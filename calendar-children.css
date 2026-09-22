@@ -1954,3 +1954,24 @@ calendar-children.css
     border-color: var(--children-girl-border) !important;
     color: #fff !important;
 }
+
+
+
+/* =====================================================
+   👶 子どもカレンダー 数値入力モーダル
+   数字ボタンだけ性別カラー
+===================================================== */
+
+#numberInputModal.children-number-boy
+.number-keypad button {
+    background: var(--children-boy-color) !important;
+    border-color: var(--children-boy-border) !important;
+    color: #fff !important;
+}
+
+#numberInputModal.children-number-girl
+.number-keypad button {
+    background: var(--children-girl-color) !important;
+    border-color: var(--children-girl-border) !important;
+    color: #fff !important;
+}
