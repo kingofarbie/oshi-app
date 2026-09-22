@@ -1726,3 +1726,16 @@ calendar-children.css
     min-width: 60px;
     white-space: nowrap;
 }
+
+
+/* =============================================
+   👶 子どもカレンダー ボタンカラー
+   ============================================= */
+
+#childrenCalendarApp.boy .children-growth-entry {
+    background: rgba(220, 238, 250, .9);
+}
+
+#childrenCalendarApp.girl .children-growth-entry {
+    background: rgba(252, 230, 238, .9);
+}
