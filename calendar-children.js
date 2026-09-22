@@ -303,48 +303,6 @@ function initializeChildrenEvents() {
     }
 
 
-    const previousButton =
-        document.getElementById(
-            "childrenPreviousMonthButton"
-        );
-
-
-    if (previousButton) {
-
-        previousButton.onclick = function() {
-
-            childrenCalendarDate.setMonth(
-                childrenCalendarDate.getMonth() - 1
-            );
-
-            renderChildrenCalendar();
-
-        };
-
-    }
-
-
-    const nextButton =
-        document.getElementById(
-            "childrenNextMonthButton"
-        );
-
-
-    if (nextButton) {
-
-        nextButton.onclick = function() {
-
-            childrenCalendarDate.setMonth(
-                childrenCalendarDate.getMonth() + 1
-            );
-
-            renderChildrenCalendar();
-
-        };
-
-    }
-
-
     const settingsClose =
         document.getElementById(
             "childrenSettingsCloseButton"
