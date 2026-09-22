@@ -3196,8 +3196,22 @@ function openChildrenRecordEditModal(
                             time;
 
 
+                        const currentChild =
+                            getSelectedChild();
+
+
+                        const currentRecords =
+                            currentChild &&
+                            childrenSelectedDate
+                                ? getChildrenDailyRecords(
+                                    currentChild,
+                                    childrenSelectedDate
+                                )
+                                : [];
+
+
                         sortChildrenDailyRecords(
-                            records
+                            currentRecords
                         );
 
 
