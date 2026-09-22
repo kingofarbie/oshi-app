@@ -762,12 +762,14 @@ calendar-children.css
 .children-calendar-app.boy
 .children-daily-add-button {
     background: var(--children-boy-color) !important;
+    border: 1px solid var(--children-boy-border) !important;
     color: #fff !important;
 }
 
 .children-calendar-app.girl
 .children-daily-add-button {
     background: var(--children-girl-color) !important;
+    border: 1px solid var(--children-girl-border) !important;
     color: #fff !important;
 }
 
@@ -1028,6 +1030,43 @@ calendar-children.css
     font-size: 25px;
 
     color: #999;
+}
+
+.children-calendar-app.boy
+.children-growth-category {
+    background: var(--children-boy-color) !important;
+    border-color: var(--children-boy-border) !important;
+    color: #fff !important;
+}
+
+.children-calendar-app.girl
+.children-growth-category {
+    background: var(--children-girl-color) !important;
+    border-color: var(--children-girl-border) !important;
+    color: #fff !important;
+}
+
+.children-calendar-app.boy
+.children-growth-category-name,
+.children-calendar-app.boy
+.children-growth-category-description,
+.children-calendar-app.boy
+.children-growth-category-arrow,
+.children-calendar-app.girl
+.children-growth-category-name,
+.children-calendar-app.girl
+.children-growth-category-description,
+.children-calendar-app.girl
+.children-growth-category-arrow {
+    color: #fff !important;
+}
+
+.children-calendar-app.boy
+.children-growth-category-icon,
+.children-calendar-app.girl
+.children-growth-category-icon {
+    background: rgba(255,255,255,.18) !important;
+    color: #fff !important;
 }
 
 
@@ -1772,11 +1811,54 @@ calendar-children.css
    ============================================= */
 
 #childrenCalendarApp.boy .children-growth-entry {
-    background: #6495ED !important;
-    border-color: #4169E1 !important;
+    background: var(--children-boy-color) !important;
+    border-color: var(--children-boy-border) !important;
+    color: #fff !important;
 }
 
 #childrenCalendarApp.girl .children-growth-entry {
-    background: #FF69B4 !important;
-    border-color: #FF1493 !important;
+    background: var(--children-girl-color) !important;
+    border-color: var(--children-girl-border) !important;
+    color: #fff !important;
+}
+
+
+#childrenCalendarApp.boy .children-growth-category {
+    background: var(--children-boy-color) !important;
+    border-color: var(--children-boy-border) !important;
+    color: #fff !important;
+}
+
+#childrenCalendarApp.girl .children-growth-category {
+    background: var(--children-girl-color) !important;
+    border-color: var(--children-girl-border) !important;
+    color: #fff !important;
+}
+
+#childrenCalendarApp.boy .children-growth-category-name,
+#childrenCalendarApp.boy .children-growth-category-description,
+#childrenCalendarApp.boy .children-growth-category-arrow,
+#childrenCalendarApp.girl .children-growth-category-name,
+#childrenCalendarApp.girl .children-growth-category-description,
+#childrenCalendarApp.girl .children-growth-category-arrow {
+    color: #fff !important;
+}
+
+
+#childrenCalendarApp.boy .children-growth-category {
+    background: var(--children-boy-color) !important;
+    border-color: var(--children-boy-border) !important;
+    color: #fff !important;
+}
+
+#childrenCalendarApp.girl .children-growth-category {
+    background: var(--children-girl-color) !important;
+    border-color: var(--children-girl-border) !important;
+    color: #fff !important;
+}
+
+#childrenCalendarApp .children-growth-category-name,
+#childrenCalendarApp .children-growth-category-description,
+#childrenCalendarApp .children-growth-category-arrow {
+    color: #fff !important;
 }
