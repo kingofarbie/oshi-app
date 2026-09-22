@@ -1917,16 +1917,16 @@ calendar-children.css
 
 
 /* =====================================================
-   👶 子どもカレンダー モーダル本体
+   👶 項目追加モーダル本体
    ===================================================== */
 
-#childrenCalendarApp.boy .children-modal-content {
+#childrenCalendarApp.boy .children-record-type-modal-content {
     background: var(--children-boy-color) !important;
     border: 1px solid var(--children-boy-border) !important;
     color: #fff !important;
 }
 
-#childrenCalendarApp.girl .children-modal-content {
+#childrenCalendarApp.girl .children-record-type-modal-content {
     background: var(--children-girl-color) !important;
     border: 1px solid var(--children-girl-border) !important;
     color: #fff !important;
