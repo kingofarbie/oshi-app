@@ -38,6 +38,18 @@ calendar-children.css
     background: #fff0f5;
 }
 
+/* =====================================================
+   👶 こどもカレンダー カラー設定
+===================================================== */
+
+#childrenCalendarApp {
+    --children-boy-color: #6495ED;
+    --children-boy-border: #4169E1;
+
+    --children-girl-color: #FF69B4;
+    --children-girl-border: #FF1493;
+}
+
 
 /* =====================================================
    ヘッダー
@@ -749,15 +761,16 @@ calendar-children.css
 
 .children-calendar-app.boy
 .children-daily-add-button {
-    background: #6495ED !important;
+    background: var(--children-boy-color) !important;
     color: #fff !important;
 }
 
 .children-calendar-app.girl
 .children-daily-add-button {
-    background: #FF69B4 !important;
+    background: var(--children-girl-color) !important;
     color: #fff !important;
 }
+
 
 /* =====================================================
    この日の記録
@@ -906,6 +919,21 @@ calendar-children.css
 
     cursor: pointer;
 }
+
+.children-calendar-app.boy
+.children-growth-back-button {
+    background: #6495ED !important;
+    border-color: #4169E1 !important;
+    color: #fff !important;
+}
+
+.children-calendar-app.girl
+.children-growth-back-button {
+    background: #FF69B4 !important;
+    border-color: #FF1493 !important;
+    color: #fff !important;
+}
+
 
 .children-growth-section-title {
     font-size: 18px;
