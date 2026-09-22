@@ -1934,3 +1934,23 @@ calendar-children.css
     border-color: var(--children-girl-border) !important;
     color: #fff !important;
 }
+
+
+/* =====================================================
+   👶 記録項目モーダル
+   閉じるボタンの性別カラー
+===================================================== */
+
+#childrenRecordTypeModal.boy
+.children-record-type-close {
+    background: var(--children-boy-color) !important;
+    border-color: var(--children-boy-border) !important;
+    color: #fff !important;
+}
+
+#childrenRecordTypeModal.girl
+.children-record-type-close {
+    background: var(--children-girl-color) !important;
+    border-color: var(--children-girl-border) !important;
+    color: #fff !important;
+}
