@@ -1733,11 +1733,11 @@ calendar-children.css
    ============================================= */
 
 #childrenCalendarApp.boy .children-growth-entry {
-    background: #87CEEB !important;
-    border-color: #5BB8DC !important;
+    background: #B3D7F2 !important;
+    border-color: #8FBFDF !important;
 }
 
 #childrenCalendarApp.girl .children-growth-entry {
-    background: #F4A6C1 !important;
-    border-color: #E582A5 !important;
+    background: #F2B6C8 !important;
+    border-color: #DF91A9 !important;
 }
