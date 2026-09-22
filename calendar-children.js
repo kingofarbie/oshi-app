@@ -2396,13 +2396,15 @@ function openChildrenRecordTypeModal() {
         !getSelectedChild() ||
         !childrenSelectedDate
     ) {
-
         return;
-
     }
 
 
     closeChildrenRecordTypeModal();
+
+
+    const child =
+        getSelectedChild();
 
 
     const modal =
@@ -2417,6 +2419,21 @@ function openChildrenRecordTypeModal() {
 
     modal.className =
         "children-record-type-modal";
+
+
+    /* =====================
+       👦👧 性別クラス
+    ===================== */
+
+    if (child.gender === "boy") {
+
+        modal.classList.add("boy");
+
+    } else if (child.gender === "girl") {
+
+        modal.classList.add("girl");
+
+    }
 
 
     modal.innerHTML = `
@@ -2528,6 +2545,7 @@ function openChildrenRecordTypeModal() {
         );
 
 }
+
 
 
 function createChildrenRecordTypeButtons() {
