@@ -1704,3 +1704,25 @@ calendar-children.css
     color: #333 !important;
     box-shadow: none !important;
 }
+
+
+
+.children-month-navigation {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.children-month-title-button {
+    flex: 0 0 auto !important;
+    width: auto !important;
+}
+
+.children-today-button {
+    position: absolute;
+    right: 0;
+    width: auto !important;
+    min-width: 60px;
+    white-space: nowrap;
+}
