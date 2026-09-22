@@ -1845,20 +1845,3 @@ calendar-children.css
 }
 
 
-#childrenCalendarApp.boy .children-growth-category {
-    background: var(--children-boy-color) !important;
-    border-color: var(--children-boy-border) !important;
-    color: #fff !important;
-}
-
-#childrenCalendarApp.girl .children-growth-category {
-    background: var(--children-girl-color) !important;
-    border-color: var(--children-girl-border) !important;
-    color: #fff !important;
-}
-
-#childrenCalendarApp .children-growth-category-name,
-#childrenCalendarApp .children-growth-category-description,
-#childrenCalendarApp .children-growth-category-arrow {
-    color: #fff !important;
-}
