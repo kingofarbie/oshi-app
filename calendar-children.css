@@ -1956,4 +1956,21 @@ calendar-children.css
 }
 
 
+/* ==================================================
+   👶 こどもカレンダー：記録編集モーダル
+   男の子＝青 / 女の子＝ピンク
+================================================== */
 
+.children-record-edit-modal.boy
+.children-record-edit-action {
+    background: var(--children-boy-color) !important;
+    border-color: var(--children-boy-border) !important;
+    color: #fff !important;
+}
+
+.children-record-edit-modal.girl
+.children-record-edit-action {
+    background: var(--children-girl-color) !important;
+    border-color: var(--children-girl-border) !important;
+    color: #fff !important;
+}
