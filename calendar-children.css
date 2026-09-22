@@ -1920,14 +1920,14 @@ calendar-children.css
    👶 項目追加モーダル本体
    ===================================================== */
 
-#childrenCalendarApp.boy .children-record-type-dialog {
-    background: var(--children-boy-color) !important;
-    border: 1px solid var(--children-boy-border) !important;
+#childrenRecordTypeModal.boy .children-record-type-dialog {
+    background: #6495ED !important;
+    border: 1px solid #4169E1 !important;
     color: #fff !important;
 }
 
-#childrenCalendarApp.girl .children-record-type-dialog {
-    background: var(--children-girl-color) !important;
-    border: 1px solid var(--children-girl-border) !important;
+#childrenRecordTypeModal.girl .children-record-type-dialog {
+    background: #FF69B4 !important;
+    border: 1px solid #FF1493 !important;
     color: #fff !important;
 }
