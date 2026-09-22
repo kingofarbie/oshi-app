@@ -1733,9 +1733,11 @@ calendar-children.css
    ============================================= */
 
 #childrenCalendarApp.boy .children-growth-entry {
-    background: rgba(220, 238, 250, .9);
+    background: #dceefa !important;
+    border-color: #a9cfe5 !important;
 }
 
 #childrenCalendarApp.girl .children-growth-entry {
-    background: rgba(252, 230, 238, .9);
+    background: #fce4ec !important;
+    border-color: #e5b5c5 !important;
 }
