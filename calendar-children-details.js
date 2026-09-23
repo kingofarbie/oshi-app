@@ -2326,8 +2326,8 @@ function drawChildrenHeightWeightGraph(
 
 ctx.fillText(
     unit,
-    8,
-    paddingTop + 18
+    paddingLeft,
+    paddingTop - 8
 );
 
 }
