@@ -322,3 +322,76 @@ button:active {
     opacity: .65;
 
 }
+
+
+/* =====================================================
+   👶 子どもカレンダー
+   成長・定期記録内の操作ボタン
+   ===================================================== */
+
+
+/* =====================================================
+   👦 男の子 → 青
+   ===================================================== */
+
+.children-calendar-app.boy
+.children-growth-detail-back,
+
+.children-calendar-app.boy
+.children-height-weight-add,
+
+.children-calendar-app.boy
+.children-height-weight-graph-open {
+
+    background:
+        var(--children-boy-color,
+        #6495ED) !important;
+
+    border-color:
+        var(--children-boy-border,
+        #4169E1) !important;
+
+    color:
+        #fff !important;
+
+}
+
+
+/* =====================================================
+   👧 女の子 → ピンク
+   ===================================================== */
+
+.children-calendar-app.girl
+.children-growth-detail-back,
+
+.children-calendar-app.girl
+.children-height-weight-add,
+
+.children-calendar-app.girl
+.children-height-weight-graph-open {
+
+    background:
+        var(--children-girl-color,
+        #FF69B4) !important;
+
+    border-color:
+        var(--children-girl-border,
+        #FF1493) !important;
+
+    color:
+        #fff !important;
+
+}
+
+
+/* =====================================================
+   押したとき
+   ===================================================== */
+
+.children-growth-detail-back:active,
+.children-height-weight-add:active,
+.children-height-weight-graph-open:active {
+
+    opacity: .65;
+
+}
