@@ -1,7 +1,7 @@
- /* =====================================================
-    👶 身長・体重
-    📅 記録日の選択エリア
-    ===================================================== */
+/* =====================================================
+   👶 身長・体重
+   📅 記録日の選択エリア
+   ===================================================== */
 
 #childrenHeightWeightDateChooser {
 
@@ -25,7 +25,9 @@
 }
 
 
-/* 記録する日 */
+/* =====================================================
+   📅 記録する日
+   ===================================================== */
 
 #childrenHeightWeightDateChooser > div:first-child {
 
@@ -41,7 +43,9 @@
 }
 
 
-/* 日付入力 */
+/* =====================================================
+   📅 日付入力
+   ===================================================== */
 
 #childrenHeightWeightDateChooser input[type="date"] {
 
@@ -76,7 +80,9 @@
 }
 
 
-/* 日付入力フォーカス */
+/* =====================================================
+   📅 日付入力フォーカス
+   ===================================================== */
 
 #childrenHeightWeightDateChooser
 input[type="date"]:focus {
@@ -93,7 +99,9 @@ input[type="date"]:focus {
 }
 
 
-/* ボタンエリア */
+/* =====================================================
+   🔘 ボタンエリア
+   ===================================================== */
 
 #childrenHeightWeightDateChooser > div:last-child {
 
@@ -106,7 +114,9 @@ input[type="date"]:focus {
 }
 
 
-/* キャンセル・次へ */
+/* =====================================================
+   🔘 キャンセル・次へ 共通
+   ===================================================== */
 
 #childrenHeightWeightDateChooser
 button {
@@ -119,8 +129,7 @@ button {
         8px 14px;
 
     border:
-        1px solid
-        rgba(120,150,160,.20);
+        1px solid;
 
     border-radius: 10px;
 
@@ -132,36 +141,6 @@ button {
 
     box-sizing: border-box;
 
-}
-
-
-/* キャンセル */
-
-#childrenHeightWeightDateChooser
-button:first-child {
-
-    background:
-        rgba(255,255,255,.85);
-
-    color:
-        var(--text,#555);
-
-}
-
-
-/* 次へ */
-
-#childrenHeightWeightDateChooser
-button:last-child {
-
-    background:
-        var(--children-boy-color,
-        #6495ED);
-
-    border-color:
-        var(--children-boy-border,
-        #4169E1);
-
     color: #fff;
 
 }
@@ -169,19 +148,20 @@ button:last-child {
 
 /* =====================================================
    👦 男の子
+   キャンセル・次へ → 青
    ===================================================== */
 
 .children-calendar-app.boy
 #childrenHeightWeightDateChooser
-button:last-child {
+button {
 
     background:
-        var(--children-boy-color)
-        !important;
+        var(--children-boy-color,
+        #6495ED) !important;
 
     border-color:
-        var(--children-boy-border)
-        !important;
+        var(--children-boy-border,
+        #4169E1) !important;
 
     color: #fff !important;
 
@@ -190,26 +170,29 @@ button:last-child {
 
 /* =====================================================
    👧 女の子
+   キャンセル・次へ → ピンク
    ===================================================== */
 
 .children-calendar-app.girl
 #childrenHeightWeightDateChooser
-button:last-child {
+button {
 
     background:
-        var(--children-girl-color)
-        !important;
+        var(--children-girl-color,
+        #FF69B4) !important;
 
     border-color:
-        var(--children-girl-border)
-        !important;
+        var(--children-girl-border,
+        #FF1493) !important;
 
     color: #fff !important;
 
 }
 
 
-/* 押したとき */
+/* =====================================================
+   押したとき
+   ===================================================== */
 
 #childrenHeightWeightDateChooser
 button:active {
