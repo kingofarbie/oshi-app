@@ -274,7 +274,7 @@ function renderChildrenHeightWeight() {
 
     /* =================================================
        最新記録
-
+       
        記録日が新しいものを最新とする。
        同じ記録日の場合だけ recordedAt で比較。
     ================================================= */
@@ -443,7 +443,11 @@ function renderChildrenHeightWeight() {
 
         <!-- =========================================
              身長・体重追加
-             ＋アイコンのみ
+             
+             ＋を押してから
+             → 記録日をカレンダーで選択
+             → 身長
+             → 体重
         ========================================== -->
 
         <div class="children-height-weight-add-area">
@@ -509,6 +513,12 @@ function renderChildrenHeightWeight() {
 
     /* =================================================
        ＋ 身長・体重を記録
+       
+       ① ＋を押す
+       ② カレンダーから記録日を選択
+       ③ 身長を入力
+       ④ 体重を入力
+       ⑤ 保存
     ================================================= */
 
     const addButton =
@@ -522,9 +532,12 @@ function renderChildrenHeightWeight() {
         addButton.onclick =
             function () {
 
-
                 /* =====================================
-                   まず「記録する日」を選択
+                   📅 記録日選択
+                   
+                   数値入力モーダルは使用しない。
+                   input[type=date] の
+                   ネイティブカレンダーを使用する。
                 ===================================== */
 
                 const dateInput =
@@ -542,7 +555,8 @@ function renderChildrenHeightWeight() {
 
 
                 /*
-                   誕生日より前を選べないようにする
+                   誕生日より前の日付を
+                   カレンダー上でも選べないようにする
                 */
 
                 if (child.birthday) {
@@ -553,32 +567,73 @@ function renderChildrenHeightWeight() {
                 }
 
 
-                openNumberInputModal(
+                /*
+                   画面には表示しない
+                */
 
-                    dateInput,
+                dateInput.style.position =
+                    "fixed";
 
-                    "記録する日",
+                dateInput.style.left =
+                    "-9999px";
 
-                    false,
+                dateInput.style.top =
+                    "0";
 
-                    "date",
+                dateInput.style.opacity =
+                    "0";
 
+
+                document.body.appendChild(
+                    dateInput
+                );
+
+
+                /* =====================================
+                   カレンダーを開く
+                ===================================== */
+
+                if (
+                    typeof dateInput.showPicker ===
+                    "function"
+                ) {
+
+                    dateInput.showPicker();
+
+                } else {
+
+                    dateInput.click();
+
+                }
+
+
+                /* =====================================
+                   日付選択後
+                ===================================== */
+
+                dateInput.onchange =
                     function () {
 
                         const selectedDate =
                             dateInput.value;
 
 
-                        /* -----------------------------
-                           日付チェック
-                        ----------------------------- */
+                        /*
+                           日付が選択されていない
+                        */
 
                         if (!selectedDate) {
+
+                            dateInput.remove();
 
                             return;
 
                         }
 
+
+                        /*
+                           誕生日より前は不可
+                        */
 
                         if (
                             child.birthday &&
@@ -590,9 +645,14 @@ function renderChildrenHeightWeight() {
                                 "誕生日より前の日付は記録できません。"
                             );
 
+                            dateInput.remove();
+
                             return;
 
                         }
+
+
+                        dateInput.remove();
 
 
                         /* =================================
@@ -738,9 +798,7 @@ function renderChildrenHeightWeight() {
 
                         );
 
-                    }
-
-                );
+                    };
 
             };
 
@@ -772,6 +830,7 @@ function renderChildrenHeightWeight() {
     renderChildrenHeightWeightHistory();
 
 }
+
 
 
 /* =====================================================
