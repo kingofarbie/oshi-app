@@ -275,13 +275,8 @@ function renderChildrenHeightWeight() {
     /* =================================================
        最新記録
 
-       「記録日」が新しいものを最新とする。
-
-       date は YYYY-MM-DD 形式なので、
-       Date変換せず文字列として比較する。
-
-       同じ記録日の場合だけ
-       recordedAt（実際の入力日時）で比較する。
+       記録日が新しいものを最新とする。
+       同じ記録日の場合だけ recordedAt で比較。
     ================================================= */
 
     const sortedRecords =
@@ -295,11 +290,6 @@ function renderChildrenHeightWeight() {
                     String(b.date || "");
 
 
-                /*
-                   記録日が違う場合
-                   → 記録日が新しいものを上
-                */
-
                 if (aDate !== bDate) {
 
                     return bDate.localeCompare(
@@ -308,11 +298,6 @@ function renderChildrenHeightWeight() {
 
                 }
 
-
-                /*
-                   同じ記録日の場合だけ
-                   → 入力日時が新しいものを上
-                */
 
                 const aRecordedAt =
                     a.recordedAt
@@ -458,50 +443,31 @@ function renderChildrenHeightWeight() {
 
         <!-- =========================================
              身長・体重追加
+             ＋アイコンのみ
         ========================================== -->
 
         <div class="children-height-weight-add-area">
-
-            <div class="children-height-weight-record-date">
-
-                <label
-                    for="childrenHeightWeightRecordDate"
-                >
-                    記録日
-                </label>
-
-                <input
-                    type="date"
-                    id="childrenHeightWeightRecordDate"
-                    value="${today}"
-                >
-
-            </div>
-
 
             <button
                 type="button"
                 class="children-height-weight-add"
                 id="childrenHeightWeightAddButton"
+                aria-label="身長・体重を記録"
+                title="身長・体重を記録"
             >
-                ＋ 身長・体重を記録
+                ＋
             </button>
 
         </div>
 
 
-
         <button
-    type="button"
-    class="children-height-weight-graph-open"
-    id="childrenHeightWeightGraphOpenButton"
->
-    📈 推移グラフを見る
-</button>
-
-
-
-
+            type="button"
+            class="children-height-weight-graph-open"
+            id="childrenHeightWeightGraphOpenButton"
+        >
+            📈 推移グラフを見る
+        </button>
 
 
         <!-- =========================================
@@ -556,113 +522,98 @@ function renderChildrenHeightWeight() {
         addButton.onclick =
             function () {
 
+
+                /* =====================================
+                   まず「記録する日」を選択
+                ===================================== */
+
                 const dateInput =
-                    document.getElementById(
-                        "childrenHeightWeightRecordDate"
-                    );
-
-
-                const selectedDate =
-                    dateInput
-                        ? dateInput.value
-                        : "";
-
-
-                /*
-                   日付未選択
-                */
-
-                if (!selectedDate) {
-
-                    alert(
-                        "記録日を選択してください。"
-                    );
-
-                    return;
-
-                }
-
-
-                /*
-                   誕生日より前の日付は不可
-                */
-
-                if (
-                    child.birthday &&
-                    selectedDate <
-                    child.birthday
-                ) {
-
-                    alert(
-                        "誕生日より前の日付は記録できません。"
-                    );
-
-                    return;
-
-                }
-
-
-                /* ---------------------------------
-                   身長入力
-                --------------------------------- */
-
-                const heightInput =
                     document.createElement(
                         "input"
                     );
 
-                heightInput.type =
-                    "number";
+
+                dateInput.type =
+                    "date";
+
+
+                dateInput.value =
+                    today;
+
+
+                /*
+                   誕生日より前を選べないようにする
+                */
+
+                if (child.birthday) {
+
+                    dateInput.min =
+                        child.birthday;
+
+                }
 
 
                 openNumberInputModal(
 
-                    heightInput,
+                    dateInput,
 
-                    "身長（cm）",
+                    "記録する日",
 
-                    true,
+                    false,
 
-                    "number",
+                    "date",
 
                     function () {
 
-                        const height =
-                            Number(
-                                heightInput.value
-                            );
+                        const selectedDate =
+                            dateInput.value;
 
 
-                        if (
-                            !Number.isFinite(
-                                height
-                            ) ||
-                            height <= 0
-                        ) {
+                        /* -----------------------------
+                           日付チェック
+                        ----------------------------- */
+
+                        if (!selectedDate) {
 
                             return;
 
                         }
 
 
-                        /* ---------------------------------
-                           体重入力
-                        --------------------------------- */
+                        if (
+                            child.birthday &&
+                            selectedDate <
+                            child.birthday
+                        ) {
 
-                        const weightInput =
+                            alert(
+                                "誕生日より前の日付は記録できません。"
+                            );
+
+                            return;
+
+                        }
+
+
+                        /* =================================
+                           身長入力
+                        ================================= */
+
+                        const heightInput =
                             document.createElement(
                                 "input"
                             );
 
-                        weightInput.type =
+
+                        heightInput.type =
                             "number";
 
 
                         openNumberInputModal(
 
-                            weightInput,
+                            heightInput,
 
-                            "体重（kg）",
+                            "身長（cm）",
 
                             true,
 
@@ -670,17 +621,17 @@ function renderChildrenHeightWeight() {
 
                             function () {
 
-                                const weight =
+                                const height =
                                     Number(
-                                        weightInput.value
+                                        heightInput.value
                                     );
 
 
                                 if (
                                     !Number.isFinite(
-                                        weight
+                                        height
                                     ) ||
-                                    weight <= 0
+                                    height <= 0
                                 ) {
 
                                     return;
@@ -688,58 +639,100 @@ function renderChildrenHeightWeight() {
                                 }
 
 
-                                /* ---------------------------------
-                                   入力した実際の日時
-                                --------------------------------- */
+                                /* =================================
+                                   体重入力
+                                ================================= */
 
-                                const recordedAt =
-                                    new Date()
-                                        .toISOString();
-
-
-                                /* ---------------------------------
-                                   成長記録追加
-
-                                   date
-                                   → 選択した記録日
-
-                                   recordedAt
-                                   → 実際に入力した日時
-                                --------------------------------- */
-
-                                child.growth.heightWeight.push({
-
-                                    id:
-                                        "growth-" +
-                                        Date.now(),
-
-                                    date:
-                                        selectedDate,
-
-                                    recordedAt:
-                                        recordedAt,
-
-                                    height:
-                                        height,
-
-                                    weight:
-                                        weight
-
-                                });
+                                const weightInput =
+                                    document.createElement(
+                                        "input"
+                                    );
 
 
-                                /* ---------------------------------
-                                   保存
-                                --------------------------------- */
-
-                                saveChildrenGrowthData();
+                                weightInput.type =
+                                    "number";
 
 
-                                /* ---------------------------------
-                                   再描画
-                                --------------------------------- */
+                                openNumberInputModal(
 
-                                renderChildrenHeightWeight();
+                                    weightInput,
+
+                                    "体重（kg）",
+
+                                    true,
+
+                                    "number",
+
+                                    function () {
+
+                                        const weight =
+                                            Number(
+                                                weightInput.value
+                                            );
+
+
+                                        if (
+                                            !Number.isFinite(
+                                                weight
+                                            ) ||
+                                            weight <= 0
+                                        ) {
+
+                                            return;
+
+                                        }
+
+
+                                        /* =============================
+                                           実際の入力日時
+                                        ============================= */
+
+                                        const recordedAt =
+                                            new Date()
+                                                .toISOString();
+
+
+                                        /* =============================
+                                           成長記録追加
+                                        ============================= */
+
+                                        child.growth.heightWeight.push({
+
+                                            id:
+                                                "growth-" +
+                                                Date.now(),
+
+                                            date:
+                                                selectedDate,
+
+                                            recordedAt:
+                                                recordedAt,
+
+                                            height:
+                                                height,
+
+                                            weight:
+                                                weight
+
+                                        });
+
+
+                                        /* =============================
+                                           保存
+                                        ============================= */
+
+                                        saveChildrenGrowthData();
+
+
+                                        /* =============================
+                                           再描画
+                                        ============================= */
+
+                                        renderChildrenHeightWeight();
+
+                                    }
+
+                                );
 
                             }
 
@@ -754,18 +747,22 @@ function renderChildrenHeightWeight() {
     }
 
 
+    /* =================================================
+       📈 推移グラフ
+    ================================================= */
+
     const graphOpenButton =
-    document.getElementById(
-        "childrenHeightWeightGraphOpenButton"
-    );
+        document.getElementById(
+            "childrenHeightWeightGraphOpenButton"
+        );
 
 
-if (graphOpenButton) {
+    if (graphOpenButton) {
 
-    graphOpenButton.onclick =
-        openChildrenHeightWeightGraph;
+        graphOpenButton.onclick =
+            openChildrenHeightWeightGraph;
 
-}
+    }
 
 
     /* =================================================
@@ -775,7 +772,6 @@ if (graphOpenButton) {
     renderChildrenHeightWeightHistory();
 
 }
-
 
 
 /* =====================================================
