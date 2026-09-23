@@ -838,6 +838,9 @@ function renderChildrenHeightWeightHistory() {
 
     /* =================================================
        履歴を新しい順に並べる
+
+       記録日が最優先。
+       同じ記録日の場合だけ recordedAt を使用。
     ================================================= */
 
     const records =
@@ -845,25 +848,58 @@ function renderChildrenHeightWeightHistory() {
             .sort(
                 (a, b) => {
 
-                    const aTime =
+                    const aDate =
+                        String(
+                            a.date || ""
+                        );
+
+                    const bDate =
+                        String(
+                            b.date || ""
+                        );
+
+
+                    /*
+                       記録日が違う
+                       → 記録日が新しいものを上
+                    */
+
+                    if (
+                        aDate !==
+                        bDate
+                    ) {
+
+                        return bDate.localeCompare(
+                            aDate
+                        );
+
+                    }
+
+
+                    /*
+                       同じ記録日
+                       → 入力日時が新しいものを上
+                    */
+
+                    const aRecordedAt =
                         a.recordedAt
                             ? new Date(
                                 a.recordedAt
                             ).getTime()
-                            : new Date(
-                                `${a.date}T00:00:00`
-                            ).getTime();
+                            : 0;
 
-                    const bTime =
+                    const bRecordedAt =
                         b.recordedAt
                             ? new Date(
                                 b.recordedAt
                             ).getTime()
-                            : new Date(
-                                `${b.date}T00:00:00`
-                            ).getTime();
+                            : 0;
 
-                    return bTime - aTime;
+
+                    return (
+                        bRecordedAt -
+                        aRecordedAt
+                    );
 
                 }
             );
@@ -887,11 +923,33 @@ function renderChildrenHeightWeightHistory() {
 
 
     /* =================================================
+       表示件数
+
+       最初は3件。
+       4件以上の場合だけ
+       「さらに表示」を出す。
+    ================================================= */
+
+    const displayAll =
+        list.dataset.displayAll === "true";
+
+
+    const displayRecords =
+        displayAll
+            ? records
+            : records.slice(
+                0,
+                3
+            );
+
+
+    /* =================================================
        履歴表示
     ================================================= */
 
     list.innerHTML =
-        records
+
+        displayRecords
             .map(
                 record => {
 
@@ -982,17 +1040,22 @@ function renderChildrenHeightWeightHistory() {
                                     class="children-height-weight-edit"
                                     data-growth-action="edit"
                                     data-growth-id="${record.id}"
+                                    aria-label="編集"
+                                    title="編集"
                                 >
-                                    編集
+                                    ✎
                                 </button>
+
 
                                 <button
                                     type="button"
                                     class="children-height-weight-delete"
                                     data-growth-action="delete"
                                     data-growth-id="${record.id}"
+                                    aria-label="削除"
+                                    title="削除"
                                 >
-                                    削除
+                                    ×
                                 </button>
 
                             </div>
@@ -1004,6 +1067,73 @@ function renderChildrenHeightWeightHistory() {
                 }
             )
             .join("");
+
+
+    /* =================================================
+       さらに表示 / 閉じる
+    ================================================= */
+
+    if (
+        records.length >
+        3
+    ) {
+
+        const moreButton =
+            document.createElement(
+                "button"
+            );
+
+
+        moreButton.type =
+            "button";
+
+
+        moreButton.className =
+            "children-height-weight-history-more";
+
+
+        if (displayAll) {
+
+            moreButton.textContent =
+                "閉じる";
+
+        } else {
+
+            moreButton.textContent =
+                "さらに表示";
+
+        }
+
+
+        moreButton.onclick =
+            function () {
+
+                if (
+                    list.dataset.displayAll ===
+                    "true"
+                ) {
+
+                    list.dataset.displayAll =
+                        "false";
+
+                } else {
+
+                    list.dataset.displayAll =
+                        "true";
+
+                }
+
+
+                renderChildrenHeightWeightHistory();
+
+            };
+
+
+        list.appendChild(
+            moreButton
+        );
+
+    }
 
 
     /* =================================================
@@ -1037,7 +1167,8 @@ function renderChildrenHeightWeightHistory() {
 
 
                         if (
-                            recordIndex < 0
+                            recordIndex <
+                            0
                         ) {
 
                             return;
@@ -1083,6 +1214,15 @@ function renderChildrenHeightWeightHistory() {
                             saveChildrenGrowthData();
 
 
+                            /*
+                               削除後は
+                               履歴を通常の3件表示に戻す。
+                            */
+
+                            list.dataset.displayAll =
+                                "false";
+
+
                             renderChildrenHeightWeight();
 
 
@@ -1109,8 +1249,10 @@ function renderChildrenHeightWeightHistory() {
                                     "input"
                                 );
 
+
                             heightInput.type =
                                 "number";
+
 
                             heightInput.value =
                                 record.height;
@@ -1155,8 +1297,10 @@ function renderChildrenHeightWeightHistory() {
                                             "input"
                                         );
 
+
                                     weightInput.type =
                                         "number";
+
 
                                     weightInput.value =
                                         record.weight;
@@ -1204,12 +1348,8 @@ function renderChildrenHeightWeightHistory() {
 
 
                                             /*
-                                               recordedAt は
-                                               編集した時刻に
-                                               変更しない。
-
-                                               元の記録日時を
-                                               維持する。
+                                               recordedAt は変更しない。
+                                               元の記録日時を維持。
                                             */
 
 
@@ -1234,6 +1374,7 @@ function renderChildrenHeightWeightHistory() {
         );
 
 }
+
 
 
 /* =====================================================
