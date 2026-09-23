@@ -484,6 +484,18 @@ function selectChild(childId) {
     saveChildrenData();
 
 
+    // 👶 子どもを切り替えたら
+    // 成長定期記録の表示を閉じる
+    const growthSection =
+        document.getElementById(
+            "childrenGrowthSection"
+        );
+
+    if (growthSection) {
+        growthSection.style.display = "none";
+    }
+
+
     renderChildrenSelector();
 
     renderSelectedChild();
@@ -493,7 +505,6 @@ function selectChild(childId) {
     renderChildrenDaily();
 
 }
-
 
 /* =====================================================
    選択中の子ども
