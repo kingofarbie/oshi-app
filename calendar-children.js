@@ -485,14 +485,33 @@ function selectChild(childId) {
 
 
     // 👶 子どもを切り替えたら
-    // 成長定期記録の表示を閉じる
+    // 成長定期記録画面を閉じる
     const growthSection =
         document.getElementById(
             "childrenGrowthSection"
         );
 
+
     if (growthSection) {
-        growthSection.style.display = "none";
+
+        growthSection.style.display =
+            "none";
+
+    }
+
+
+    // 👶 プロフィール行を通常表示に戻す
+    const profileRow =
+        document.querySelector(
+            ".children-profile-row"
+        );
+
+
+    if (profileRow) {
+
+        profileRow.style.display =
+            "";
+
     }
 
 
