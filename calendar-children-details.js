@@ -9,6 +9,7 @@
 
    ※ 子どもごとに完全分離
    ※ 年齢は保存せず、誕生日＋記録日から自動計算
+   ※ 同日複数記録に対応
 ===================================================== */
 
 
@@ -247,7 +248,6 @@ function openChildrenHeightWeight() {
 
 /* =====================================================
    ⚖️ 身長・体重画面
-   ※ 追加処理もこの関数内で完結
 ===================================================== */
 
 function renderChildrenHeightWeight() {
@@ -274,15 +274,33 @@ function renderChildrenHeightWeight() {
 
     /* -------------------------------------------------
        最新記録
+
+       recordedAt が新しいものを最新とする。
+       古いデータで recordedAt が無い場合は
+       date を代用する。
     ------------------------------------------------- */
 
     const sortedRecords =
         [...records].sort(
-            (a, b) =>
-                String(b.date)
-                    .localeCompare(
-                        String(a.date)
-                    )
+            (a, b) => {
+
+                const aTime =
+                    a.recordedAt
+                        ? new Date(a.recordedAt).getTime()
+                        : new Date(
+                            `${a.date}T00:00:00`
+                        ).getTime();
+
+                const bTime =
+                    b.recordedAt
+                        ? new Date(b.recordedAt).getTime()
+                        : new Date(
+                            `${b.date}T00:00:00`
+                        ).getTime();
+
+                return bTime - aTime;
+
+            }
         );
 
 
@@ -440,7 +458,6 @@ function renderChildrenHeightWeight() {
 
     /* =================================================
        ＋ 身長・体重を記録
-       ※ 別関数にはしない
     ================================================= */
 
     const addButton =
@@ -532,10 +549,15 @@ function renderChildrenHeightWeight() {
                                 }
 
 
-                                /*
-                                   記録日
-                                   現段階では今日
-                                */
+                                /* ---------------------------------
+                                   記録日時
+
+                                   date      → 記録した日
+                                   recordedAt → 実際の記録日時
+
+                                   同じ日でも recordedAt が違うので
+                                   最新の記録を正確に判定できる。
+                                --------------------------------- */
 
                                 const now =
                                     new Date();
@@ -553,8 +575,12 @@ function renderChildrenHeightWeight() {
                                     ).padStart(2, "0");
 
 
+                                const recordedAt =
+                                    now.toISOString();
+
+
                                 /*
-                                   成長記録を保存
+                                   成長記録を追加
                                 */
 
                                 child.growth.heightWeight.push({
@@ -565,6 +591,9 @@ function renderChildrenHeightWeight() {
 
                                     date:
                                         date,
+
+                                    recordedAt:
+                                        recordedAt,
 
                                     height:
                                         height,
@@ -583,7 +612,7 @@ function renderChildrenHeightWeight() {
 
 
                                 /*
-                                   画面を再描画
+                                   再描画
                                 */
 
                                 renderChildrenHeightWeight();
@@ -671,11 +700,29 @@ function renderChildrenHeightWeightHistory() {
     const records =
         [...child.growth.heightWeight]
             .sort(
-                (a, b) =>
-                    String(b.date)
-                        .localeCompare(
-                            String(a.date)
-                        )
+                (a, b) => {
+
+                    const aTime =
+                        a.recordedAt
+                            ? new Date(
+                                a.recordedAt
+                            ).getTime()
+                            : new Date(
+                                `${a.date}T00:00:00`
+                            ).getTime();
+
+                    const bTime =
+                        b.recordedAt
+                            ? new Date(
+                                b.recordedAt
+                            ).getTime()
+                            : new Date(
+                                `${b.date}T00:00:00`
+                            ).getTime();
+
+                    return bTime - aTime;
+
+                }
             );
 
 
@@ -704,6 +751,27 @@ function renderChildrenHeightWeightHistory() {
                         );
 
 
+                    const recordedTime =
+                        record.recordedAt
+                            ? new Date(
+                                record.recordedAt
+                            )
+                            : null;
+
+
+                    const timeText =
+                        recordedTime
+                            ? recordedTime
+                                .toLocaleTimeString(
+                                    "ja-JP",
+                                    {
+                                        hour: "2-digit",
+                                        minute: "2-digit"
+                                    }
+                                )
+                            : "";
+
+
                     return `
 
                         <div
@@ -714,6 +782,11 @@ function renderChildrenHeightWeightHistory() {
                                 class="children-height-weight-history-date"
                             >
                                 ${record.date}
+                                ${
+                                    timeText
+                                        ? ` ${timeText}`
+                                        : ""
+                                }
                             </div>
 
 
