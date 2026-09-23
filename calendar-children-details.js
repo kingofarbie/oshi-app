@@ -275,15 +275,13 @@ function renderChildrenHeightWeight() {
     /* =================================================
        最新記録
 
-       基本は「記録日」が新しいものを最新とする。
+       「記録日」が新しいものを最新とする。
+
+       date は YYYY-MM-DD 形式なので、
+       Date変換せず文字列として比較する。
 
        同じ記録日の場合だけ
-       「recordedAt（入力日時）」が新しいものを
-       最新とする。
-
-       ※ 母子手帳などを見ながら過去の記録を
-          後から入力しても、過去の日付が
-          最新記録になることはない。
+       recordedAt（実際の入力日時）で比較する。
     ================================================= */
 
     const sortedRecords =
@@ -291,14 +289,10 @@ function renderChildrenHeightWeight() {
             (a, b) => {
 
                 const aDate =
-                    new Date(
-                        `${a.date}T00:00:00`
-                    ).getTime();
+                    String(a.date || "");
 
                 const bDate =
-                    new Date(
-                        `${b.date}T00:00:00`
-                    ).getTime();
+                    String(b.date || "");
 
 
                 /*
@@ -308,13 +302,15 @@ function renderChildrenHeightWeight() {
 
                 if (aDate !== bDate) {
 
-                    return bDate - aDate;
+                    return bDate.localeCompare(
+                        aDate
+                    );
 
                 }
 
 
                 /*
-                   同じ記録日の場合
+                   同じ記録日の場合だけ
                    → 入力日時が新しいものを上
                 */
 
@@ -546,10 +542,6 @@ function renderChildrenHeightWeight() {
         addButton.onclick =
             function () {
 
-                /*
-                   選択された記録日
-                */
-
                 const dateInput =
                     document.getElementById(
                         "childrenHeightWeightRecordDate"
@@ -563,7 +555,7 @@ function renderChildrenHeightWeight() {
 
 
                 /*
-                   日付が選択されていない場合
+                   日付未選択
                 */
 
                 if (!selectedDate) {
@@ -596,9 +588,9 @@ function renderChildrenHeightWeight() {
                 }
 
 
-                /*
+                /* ---------------------------------
                    身長入力
-                */
+                --------------------------------- */
 
                 const heightInput =
                     document.createElement(
@@ -639,9 +631,9 @@ function renderChildrenHeightWeight() {
                         }
 
 
-                        /*
+                        /* ---------------------------------
                            体重入力
-                        */
+                        --------------------------------- */
 
                         const weightInput =
                             document.createElement(
@@ -682,25 +674,24 @@ function renderChildrenHeightWeight() {
                                 }
 
 
-                                /*
-                                   recordedAt
-                                   → 実際に入力した日時
-
-                                   date
-                                   → ユーザーが選択した記録日
-                                */
-
-                                const recordTime =
-                                    new Date();
-
+                                /* ---------------------------------
+                                   入力した実際の日時
+                                --------------------------------- */
 
                                 const recordedAt =
-                                    recordTime.toISOString();
+                                    new Date()
+                                        .toISOString();
 
 
-                                /*
-                                   成長記録を追加
-                                */
+                                /* ---------------------------------
+                                   成長記録追加
+
+                                   date
+                                   → 選択した記録日
+
+                                   recordedAt
+                                   → 実際に入力した日時
+                                --------------------------------- */
 
                                 child.growth.heightWeight.push({
 
@@ -723,16 +714,16 @@ function renderChildrenHeightWeight() {
                                 });
 
 
-                                /*
+                                /* ---------------------------------
                                    保存
-                                */
+                                --------------------------------- */
 
                                 saveChildrenGrowthData();
 
 
-                                /*
+                                /* ---------------------------------
                                    再描画
-                                */
+                                --------------------------------- */
 
                                 renderChildrenHeightWeight();
 
@@ -756,6 +747,7 @@ function renderChildrenHeightWeight() {
     renderChildrenHeightWeightHistory();
 
 }
+
 
 
 /* =====================================================
