@@ -3516,11 +3516,127 @@ function deleteChildrenDailyRecord(
 }
 
 
+function resetChildrenGrowthSubPages() {
+
+    /* =================================================
+       ⚖️ 身長・体重ページを閉じる
+    ================================================= */
+
+    const heightWeightSection =
+        document.getElementById(
+            "childrenHeightWeightSection"
+        );
+
+
+    if (heightWeightSection) {
+
+        heightWeightSection.style.display =
+            "none";
+
+    }
+
+
+    /* =================================================
+       📈 身長・体重のグラフページを閉じる
+    ================================================= */
+
+    const graphSection =
+        document.getElementById(
+            "childrenHeightWeightGraphSection"
+        );
+
+
+    if (graphSection) {
+
+        graphSection.style.display =
+            "none";
+
+    }
+
+
+    /* =================================================
+       📅 身長・体重の記録日選択を閉じる
+    ================================================= */
+
+    const dateChooser =
+        document.getElementById(
+            "childrenHeightWeightDateChooser"
+        );
+
+
+    if (dateChooser) {
+
+        dateChooser.remove();
+
+    }
+
+
+    /* =================================================
+       📋 身長・体重履歴の表示状態をリセット
+       
+       「さらに表示」で全件表示していた状態を
+       次回開いたとき3件表示へ戻す。
+    ================================================= */
+
+    const historyList =
+        document.getElementById(
+            "childrenHeightWeightHistoryList"
+        );
+
+
+    if (historyList) {
+
+        historyList.dataset.displayAll =
+            "false";
+
+    }
+
+
+    /* =================================================
+       📂 成長カテゴリー一覧を表示
+       
+       成長・定期記録の入口では
+       必ずカテゴリー一覧から開始する。
+    ================================================= */
+
+    const growthSection =
+        document.getElementById(
+            "childrenGrowthSection"
+        );
+
+
+    if (growthSection) {
+
+        const categoryList =
+            growthSection.querySelector(
+                ".children-growth-category-list"
+            );
+
+
+        if (categoryList) {
+
+            categoryList.style.display =
+                "";
+
+        }
+
+    }
+
+}
+
+
 /* =====================================================
    成長・定期記録
 ===================================================== */
 
 function openChildrenGrowthSection() {
+
+/* =================================================
+       成長・定期記録の下位ページをリセット
+    ================================================= */
+
+    resetChildrenGrowthSubPages();
+
 
     const calendarSection =
         document.getElementById(
