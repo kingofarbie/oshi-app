@@ -490,6 +490,20 @@ function renderChildrenHeightWeight() {
         </div>
 
 
+
+        <button
+    type="button"
+    class="children-height-weight-graph-open"
+    id="childrenHeightWeightGraphOpenButton"
+>
+    📈 推移グラフを見る
+</button>
+
+
+
+
+
+
         <!-- =========================================
              履歴
         ========================================== -->
@@ -738,6 +752,20 @@ function renderChildrenHeightWeight() {
             };
 
     }
+
+
+    const graphOpenButton =
+    document.getElementById(
+        "childrenHeightWeightGraphOpenButton"
+    );
+
+
+if (graphOpenButton) {
+
+    graphOpenButton.onclick =
+        openChildrenHeightWeightGraph;
+
+}
 
 
     /* =================================================
@@ -1245,3 +1273,1062 @@ if (!window.childrenGrowthDetailsInitialized) {
     );
 
 }
+
+
+/* =====================================================
+   📈 身長・体重 推移グラフ
+===================================================== */
+
+
+/* =====================================================
+   📈 グラフ画面を開く
+===================================================== */
+
+function openChildrenHeightWeightGraph() {
+
+    const heightWeightSection =
+        document.getElementById(
+            "childrenHeightWeightSection"
+        );
+
+    if (!heightWeightSection) return;
+
+
+    /*
+       履歴などを隠す
+    */
+
+    const children =
+        heightWeightSection.children;
+
+
+    Array.from(children)
+        .forEach(
+            element => {
+
+                /*
+                   詳細グラフ自身は残す
+                */
+
+                if (
+                    element.id ===
+                    "childrenHeightWeightGraphSection"
+                ) {
+
+                    return;
+
+                }
+
+                element.style.display =
+                    "none";
+
+            }
+        );
+
+
+    let graphSection =
+        document.getElementById(
+            "childrenHeightWeightGraphSection"
+        );
+
+
+    /*
+       初回だけ作成
+    */
+
+    if (!graphSection) {
+
+        graphSection =
+            document.createElement("div");
+
+        graphSection.id =
+            "childrenHeightWeightGraphSection";
+
+        graphSection.className =
+            "children-height-weight-graph-section";
+
+        heightWeightSection.appendChild(
+            graphSection
+        );
+
+    }
+
+
+    graphSection.style.display =
+        "";
+
+
+    renderChildrenHeightWeightGraph();
+
+}
+
+
+/* =====================================================
+   📈 グラフ画面を閉じる
+===================================================== */
+
+function closeChildrenHeightWeightGraph() {
+
+    const graphSection =
+        document.getElementById(
+            "childrenHeightWeightGraphSection"
+        );
+
+    const heightWeightSection =
+        document.getElementById(
+            "childrenHeightWeightSection"
+        );
+
+
+    if (graphSection) {
+
+        graphSection.style.display =
+            "none";
+
+    }
+
+
+    if (heightWeightSection) {
+
+        Array.from(
+            heightWeightSection.children
+        )
+        .forEach(
+            element => {
+
+                if (
+                    element.id ===
+                    "childrenHeightWeightGraphSection"
+                ) {
+
+                    return;
+
+                }
+
+                element.style.display =
+                    "";
+
+            }
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   📈 グラフ描画
+===================================================== */
+
+function renderChildrenHeightWeightGraph(
+    graphType = "height"
+) {
+
+    const graphSection =
+        document.getElementById(
+            "childrenHeightWeightGraphSection"
+        );
+
+    const child =
+        typeof getSelectedChild === "function"
+            ? getSelectedChild()
+            : null;
+
+
+    if (!graphSection || !child) return;
+
+
+    initializeChildrenGrowthData(child);
+
+
+    const records =
+        [...child.growth.heightWeight]
+            .filter(
+                record =>
+                    record &&
+                    record.date
+            )
+            .sort(
+                (a, b) => {
+
+                    /*
+                       YYYY-MM-DDなので
+                       文字列比較で正確に日付順になる。
+                    */
+
+                    const dateCompare =
+                        String(a.date)
+                            .localeCompare(
+                                String(b.date)
+                            );
+
+
+                    if (
+                        dateCompare !== 0
+                    ) {
+
+                        return dateCompare;
+
+                    }
+
+
+                    /*
+                       同じ日の場合は
+                       入力日時順
+                    */
+
+                    const aTime =
+                        a.recordedAt
+                            ? new Date(
+                                a.recordedAt
+                            ).getTime()
+                            : 0;
+
+                    const bTime =
+                        b.recordedAt
+                            ? new Date(
+                                b.recordedAt
+                            ).getTime()
+                            : 0;
+
+
+                    return aTime - bTime;
+
+                }
+            );
+
+
+    /* =================================================
+       データなし
+    ================================================= */
+
+    if (!records.length) {
+
+        graphSection.innerHTML = `
+
+            <div
+                class="children-growth-detail-header"
+            >
+
+                <button
+                    type="button"
+                    class="children-growth-detail-back"
+                    id="childrenHeightWeightGraphBackButton"
+                >
+                    ◀ 身長・体重
+                </button>
+
+                <div
+                    class="children-growth-detail-title"
+                >
+                    📈 推移グラフ
+                </div>
+
+            </div>
+
+
+            <div
+                class="children-growth-empty"
+            >
+                まだ記録がありません。
+            </div>
+
+        `;
+
+
+        const backButton =
+            document.getElementById(
+                "childrenHeightWeightGraphBackButton"
+            );
+
+
+        if (backButton) {
+
+            backButton.onclick =
+                closeChildrenHeightWeightGraph;
+
+        }
+
+
+        return;
+
+    }
+
+
+    /* =================================================
+       表示対象
+    ================================================= */
+
+    const valueKey =
+        graphType === "weight"
+            ? "weight"
+            : "height";
+
+
+    const graphTitle =
+        graphType === "weight"
+            ? "体重の推移"
+            : "身長の推移";
+
+
+    const unit =
+        graphType === "weight"
+            ? "kg"
+            : "cm";
+
+
+    /* =================================================
+       有効な値だけ取得
+    ================================================= */
+
+    const graphRecords =
+        records.filter(
+            record =>
+                Number.isFinite(
+                    Number(
+                        record[valueKey]
+                    )
+                ) &&
+                Number(
+                    record[valueKey]
+                ) > 0
+        );
+
+
+    /* =================================================
+       HTML
+    ================================================= */
+
+    graphSection.innerHTML = `
+
+        <div
+            class="children-growth-detail-header"
+        >
+
+            <button
+                type="button"
+                class="children-growth-detail-back"
+                id="childrenHeightWeightGraphBackButton"
+            >
+                ◀ 身長・体重
+            </button>
+
+            <div
+                class="children-growth-detail-title"
+            >
+                📈 推移グラフ
+            </div>
+
+        </div>
+
+
+        <div
+            class="children-height-weight-graph-switch"
+        >
+
+            <button
+                type="button"
+                class="children-height-weight-graph-tab
+                ${
+                    graphType === "height"
+                        ? "active"
+                        : ""
+                }"
+                data-graph-type="height"
+            >
+                身長
+            </button>
+
+
+            <button
+                type="button"
+                class="children-height-weight-graph-tab
+                ${
+                    graphType === "weight"
+                        ? "active"
+                        : ""
+                }"
+                data-graph-type="weight"
+            >
+                体重
+            </button>
+
+        </div>
+
+
+        <div
+            class="children-height-weight-graph-title"
+        >
+            ${graphTitle}
+        </div>
+
+
+        <div
+            class="children-height-weight-graph-wrapper"
+        >
+
+            ${
+                graphRecords.length
+                    ? `
+                        <canvas
+                            id="childrenHeightWeightGraphCanvas"
+                        ></canvas>
+                    `
+                    : `
+                        <div
+                            class="children-growth-empty"
+                        >
+                            ${graphTitle}の記録がありません。
+                        </div>
+                    `
+            }
+
+        </div>
+
+
+        <div
+            class="children-height-weight-graph-history"
+        >
+
+            ${
+                graphRecords
+                    .map(
+                        record => {
+
+                            const age =
+                                calculateChildrenAgeAtDate(
+                                    child.birthday,
+                                    record.date
+                                );
+
+
+                            return `
+
+                                <div
+                                    class="children-height-weight-graph-record"
+                                >
+
+                                    <span>
+                                        ${record.date}
+                                    </span>
+
+                                    <span>
+                                        ${age}
+                                    </span>
+
+                                    <strong>
+                                        ${record[valueKey]}
+                                        ${unit}
+                                    </strong>
+
+                                </div>
+
+                            `;
+
+                        }
+                    )
+                    .join("")
+            }
+
+        </div>
+
+    `;
+
+
+    /* =================================================
+       戻る
+    ================================================= */
+
+    const backButton =
+        document.getElementById(
+            "childrenHeightWeightGraphBackButton"
+        );
+
+
+    if (backButton) {
+
+        backButton.onclick =
+            closeChildrenHeightWeightGraph;
+
+    }
+
+
+    /* =================================================
+       身長 / 体重切り替え
+    ================================================= */
+
+    graphSection
+        .querySelectorAll(
+            "[data-graph-type]"
+        )
+        .forEach(
+            button => {
+
+                button.onclick =
+                    function () {
+
+                        renderChildrenHeightWeightGraph(
+                            this.dataset.graphType
+                        );
+
+                    };
+
+            }
+        );
+
+
+    /* =================================================
+       Canvas描画
+    ================================================= */
+
+    if (!graphRecords.length) {
+
+        return;
+
+    }
+
+
+    const canvas =
+        document.getElementById(
+            "childrenHeightWeightGraphCanvas"
+        );
+
+
+    if (!canvas) return;
+
+
+    drawChildrenHeightWeightGraph(
+        canvas,
+        graphRecords,
+        valueKey,
+        unit
+    );
+
+}
+
+
+/* =====================================================
+   📈 Canvasグラフ本体
+===================================================== */
+
+function drawChildrenHeightWeightGraph(
+    canvas,
+    records,
+    valueKey,
+    unit
+) {
+
+    const wrapper =
+        canvas.parentElement;
+
+
+    if (!wrapper) return;
+
+
+    const rect =
+        wrapper.getBoundingClientRect();
+
+
+    const width =
+        Math.max(
+            300,
+            Math.floor(
+                rect.width
+            )
+        );
+
+
+    const height =
+        300;
+
+
+    const dpr =
+        window.devicePixelRatio || 1;
+
+
+    canvas.width =
+        width * dpr;
+
+    canvas.height =
+        height * dpr;
+
+
+    canvas.style.width =
+        width + "px";
+
+    canvas.style.height =
+        height + "px";
+
+
+    const ctx =
+        canvas.getContext("2d");
+
+
+    if (!ctx) return;
+
+
+    ctx.scale(
+        dpr,
+        dpr
+    );
+
+
+    /*
+       余白
+    */
+
+    const paddingLeft =
+        48;
+
+    const paddingRight =
+        20;
+
+    const paddingTop =
+        25;
+
+    const paddingBottom =
+        48;
+
+
+    const graphWidth =
+        width -
+        paddingLeft -
+        paddingRight;
+
+
+    const graphHeight =
+        height -
+        paddingTop -
+        paddingBottom;
+
+
+    /* =================================================
+       値
+    ================================================= */
+
+    const values =
+        records.map(
+            record =>
+                Number(
+                    record[valueKey]
+                )
+        );
+
+
+    let minValue =
+        Math.min(
+            ...values
+        );
+
+    let maxValue =
+        Math.max(
+            ...values
+        );
+
+
+    /*
+       1件しかない場合も
+       グラフとして見えるようにする。
+    */
+
+    if (
+        minValue ===
+        maxValue
+    ) {
+
+        minValue -= 1;
+        maxValue += 1;
+
+    }
+
+
+    /*
+       少し余白を作る
+    */
+
+    const range =
+        maxValue -
+        minValue;
+
+
+    minValue -=
+        range * 0.1;
+
+    maxValue +=
+        range * 0.1;
+
+
+    /* =================================================
+       背景
+    ================================================= */
+
+    ctx.clearRect(
+        0,
+        0,
+        width,
+        height
+    );
+
+
+    /* =================================================
+       横軸・縦軸
+    ================================================= */
+
+    ctx.strokeStyle =
+        "#cccccc";
+
+    ctx.lineWidth =
+        1;
+
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        paddingLeft,
+        paddingTop
+    );
+
+    ctx.lineTo(
+        paddingLeft,
+        paddingTop +
+        graphHeight
+    );
+
+    ctx.lineTo(
+        paddingLeft +
+        graphWidth,
+        paddingTop +
+        graphHeight
+    );
+
+    ctx.stroke();
+
+
+    /* =================================================
+       横線
+    ================================================= */
+
+    const gridCount =
+        5;
+
+
+    ctx.fillStyle =
+        "#777777";
+
+    ctx.font =
+        "12px sans-serif";
+
+    ctx.textAlign =
+        "right";
+
+
+    for (
+        let i = 0;
+        i <= gridCount;
+        i++
+    ) {
+
+        const ratio =
+            i /
+            gridCount;
+
+
+        const y =
+            paddingTop +
+            graphHeight -
+            graphHeight *
+            ratio;
+
+
+        const value =
+            minValue +
+            (
+                maxValue -
+                minValue
+            ) *
+            ratio;
+
+
+        ctx.strokeStyle =
+            "#eeeeee";
+
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            paddingLeft,
+            y
+        );
+
+        ctx.lineTo(
+            paddingLeft +
+            graphWidth,
+            y
+        );
+
+        ctx.stroke();
+
+
+        ctx.fillStyle =
+            "#777777";
+
+
+        ctx.fillText(
+            value.toFixed(
+                valueKey === "weight"
+                    ? 1
+                    : 1
+            ),
+            paddingLeft - 8,
+            y + 4
+        );
+
+    }
+
+
+    /* =================================================
+       データ座標
+    ================================================= */
+
+    const points =
+        records.map(
+            (record, index) => {
+
+                const value =
+                    Number(
+                        record[valueKey]
+                    );
+
+
+                const x =
+                    records.length === 1
+                        ? paddingLeft +
+                          graphWidth / 2
+                        : paddingLeft +
+                          (
+                              graphWidth *
+                              index /
+                              (
+                                  records.length -
+                                  1
+                              )
+                          );
+
+
+                const ratio =
+                    (
+                        value -
+                        minValue
+                    ) /
+                    (
+                        maxValue -
+                        minValue
+                    );
+
+
+                const y =
+                    paddingTop +
+                    graphHeight -
+                    graphHeight *
+                    ratio;
+
+
+                return {
+                    x,
+                    y,
+                    value,
+                    date:
+                        record.date
+                };
+
+            }
+        );
+
+
+    /* =================================================
+       線
+    ================================================= */
+
+    if (
+        points.length > 1
+    ) {
+
+        ctx.strokeStyle =
+            "#8b5cf6";
+
+        ctx.lineWidth =
+            3;
+
+        ctx.lineJoin =
+            "round";
+
+        ctx.lineCap =
+            "round";
+
+
+        ctx.beginPath();
+
+
+        points.forEach(
+            (point, index) => {
+
+                if (
+                    index === 0
+                ) {
+
+                    ctx.moveTo(
+                        point.x,
+                        point.y
+                    );
+
+                } else {
+
+                    ctx.lineTo(
+                        point.x,
+                        point.y
+                    );
+
+                }
+
+            }
+        );
+
+
+        ctx.stroke();
+
+    }
+
+
+    /* =================================================
+       点
+    ================================================= */
+
+    points.forEach(
+        point => {
+
+            ctx.fillStyle =
+                "#ffffff";
+
+
+            ctx.strokeStyle =
+                "#8b5cf6";
+
+            ctx.lineWidth =
+                3;
+
+
+            ctx.beginPath();
+
+            ctx.arc(
+                point.x,
+                point.y,
+                5,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fill();
+
+            ctx.stroke();
+
+        }
+    );
+
+
+    /* =================================================
+       X軸の日付
+    ================================================= */
+
+    ctx.fillStyle =
+        "#777777";
+
+    ctx.font =
+        "11px sans-serif";
+
+    ctx.textAlign =
+        "center";
+
+
+    /*
+       全件表示すると多すぎる場合は
+       適度に間引いて表示。
+       データ自体は削らない。
+    */
+
+    const maxLabels =
+        6;
+
+
+    const labelStep =
+        Math.max(
+            1,
+            Math.ceil(
+                records.length /
+                maxLabels
+            )
+        );
+
+
+    records.forEach(
+        (record, index) => {
+
+            if (
+                index % labelStep !== 0 &&
+                index !==
+                    records.length - 1
+            ) {
+
+                return;
+
+            }
+
+
+            const point =
+                points[index];
+
+
+            if (!point) return;
+
+
+            const date =
+                String(
+                    record.date
+                );
+
+
+            const label =
+                date.substring(
+                    5
+                );
+
+
+            ctx.fillText(
+                label,
+                point.x,
+                paddingTop +
+                graphHeight +
+                24
+            );
+
+        }
+    );
+
+
+    /* =================================================
+       単位
+    ================================================= */
+
+    ctx.textAlign =
+        "left";
+
+    ctx.fillStyle =
+        "#777777";
+
+    ctx.fillText(
+        unit,
+        8,
+        paddingTop
+    );
+
+}
+
