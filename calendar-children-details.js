@@ -2324,11 +2324,14 @@ function drawChildrenHeightWeightGraph(
     ctx.fillStyle =
         "#777777";
 
+ctx.textAlign = "center";
+
 ctx.fillText(
     unit,
-    paddingLeft,
+    paddingLeft - 18,
     paddingTop - 8
 );
 
+ctx.textAlign = "right";
 }
 
