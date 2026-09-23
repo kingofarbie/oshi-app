@@ -409,7 +409,7 @@ button:active {
    ===================================================== */
 
 .children-calendar-app.boy
-.children-height-weight-graph-tabs
+.children-height-weight-graph-switch
 button {
 
     background:
@@ -425,13 +425,12 @@ button {
 
 }
 
-
 /* =====================================================
    👧 女の子 → ピンク
    ===================================================== */
 
 .children-calendar-app.girl
-.children-height-weight-graph-tabs
+.children-height-weight-graph-switch
 button {
 
     background:
@@ -447,12 +446,11 @@ button {
 
 }
 
-
 /* =====================================================
    押したとき
    ===================================================== */
 
-.children-height-weight-graph-tabs
+.children-height-weight-graph-switch
 button:active {
 
     opacity: .65;
