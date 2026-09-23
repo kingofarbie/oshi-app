@@ -469,13 +469,11 @@ function selectChild(childId) {
             item => item.id === childId
         );
 
-
     if (!child) return;
 
 
     selectedChildId =
         child.id;
-
 
     childrenSelectedDate =
         null;
@@ -484,13 +482,14 @@ function selectChild(childId) {
     saveChildrenData();
 
 
-    // 👶 子どもを切り替えたら
-    // 成長定期記録画面を閉じる
+    /* =================================================
+       成長・定期記録を完全に初期状態へ戻す
+    ================================================= */
+
     const growthSection =
         document.getElementById(
             "childrenGrowthSection"
         );
-
 
     if (growthSection) {
 
@@ -500,12 +499,51 @@ function selectChild(childId) {
     }
 
 
-    // 👶 プロフィール行を通常表示に戻す
+    /*
+       身長・体重画面
+       → 非表示
+    */
+
+    const heightWeightSection =
+        document.getElementById(
+            "childrenHeightWeightSection"
+        );
+
+    if (heightWeightSection) {
+
+        heightWeightSection.style.display =
+            "none";
+
+    }
+
+
+    /*
+       成長カテゴリー一覧
+       → 次に成長・定期記録を開いたとき
+          最初から表示できる状態に戻す
+    */
+
+    const growthCategoryList =
+        document.querySelector(
+            "#childrenGrowthSection .children-growth-category-list"
+        );
+
+    if (growthCategoryList) {
+
+        growthCategoryList.style.display =
+            "";
+
+    }
+
+
+    /* =================================================
+       プロフィールを表示
+    ================================================= */
+
     const profileRow =
         document.querySelector(
             ".children-profile-row"
         );
-
 
     if (profileRow) {
 
@@ -514,6 +552,10 @@ function selectChild(childId) {
 
     }
 
+
+    /* =================================================
+       子ども情報を再描画
+    ================================================= */
 
     renderChildrenSelector();
 
@@ -524,6 +566,8 @@ function selectChild(childId) {
     renderChildrenDaily();
 
 }
+
+
 
 /* =====================================================
    選択中の子ども
