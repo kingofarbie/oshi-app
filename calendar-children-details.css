@@ -395,3 +395,66 @@ button:active {
     opacity: .65;
 
 }
+
+
+
+/* =====================================================
+   👶 子どもカレンダー
+   📈 身長・体重グラフ 切り替えボタン
+   ===================================================== */
+
+
+/* =====================================================
+   👦 男の子 → 青
+   ===================================================== */
+
+.children-calendar-app.boy
+.children-height-weight-graph-tabs
+button {
+
+    background:
+        var(--children-boy-color,
+        #6495ED) !important;
+
+    border-color:
+        var(--children-boy-border,
+        #4169E1) !important;
+
+    color:
+        #fff !important;
+
+}
+
+
+/* =====================================================
+   👧 女の子 → ピンク
+   ===================================================== */
+
+.children-calendar-app.girl
+.children-height-weight-graph-tabs
+button {
+
+    background:
+        var(--children-girl-color,
+        #FF69B4) !important;
+
+    border-color:
+        var(--children-girl-border,
+        #FF1493) !important;
+
+    color:
+        #fff !important;
+
+}
+
+
+/* =====================================================
+   押したとき
+   ===================================================== */
+
+.children-height-weight-graph-tabs
+button:active {
+
+    opacity: .65;
+
+}
