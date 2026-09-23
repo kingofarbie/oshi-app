@@ -505,22 +505,6 @@ function renderChildrenHeightWeight() {
 
     /* =================================================
        ＋ 身長・体重を記録
-       
-       ＋
-       ↓
-       「記録する日」
-       ↓
-       ユーザーが日付欄をタップ
-       ↓
-       スマホのカレンダー
-       ↓
-       次へ
-       ↓
-       身長
-       ↓
-       体重
-       ↓
-       保存
     ================================================= */
 
     const addButton =
@@ -535,7 +519,7 @@ function renderChildrenHeightWeight() {
             function () {
 
                 /* =====================================
-                   既に表示されていたら何もしない
+                   記録日の選択エリア
                 ===================================== */
 
                 if (
@@ -549,10 +533,6 @@ function renderChildrenHeightWeight() {
                 }
 
 
-                /* =====================================
-                   日付選択エリア
-                ===================================== */
-
                 const chooser =
                     document.createElement(
                         "div"
@@ -562,26 +542,6 @@ function renderChildrenHeightWeight() {
                 chooser.id =
                     "childrenHeightWeightDateChooser";
 
-
-                chooser.style.margin =
-                    "12px 0";
-
-                chooser.style.padding =
-                    "16px";
-
-                chooser.style.borderRadius =
-                    "14px";
-
-                chooser.style.background =
-                    "rgba(255,255,255,.92)";
-
-                chooser.style.boxSizing =
-                    "border-box";
-
-
-                /* =====================================
-                   タイトル
-                ===================================== */
 
                 const title =
                     document.createElement(
@@ -593,16 +553,6 @@ function renderChildrenHeightWeight() {
                     "記録する日";
 
 
-                title.style.fontSize =
-                    "16px";
-
-                title.style.fontWeight =
-                    "700";
-
-                title.style.marginBottom =
-                    "10px";
-
-
                 chooser.appendChild(
                     title
                 );
@@ -610,9 +560,6 @@ function renderChildrenHeightWeight() {
 
                 /* =====================================
                    日付入力
-                   
-                   ★ ここは実際に画面へ表示する
-                   ★ ユーザーがタップして開く
                 ===================================== */
 
                 const dateInput =
@@ -637,32 +584,13 @@ function renderChildrenHeightWeight() {
                 }
 
 
-                dateInput.style.display =
-                    "block";
-
-                dateInput.style.width =
-                    "100%";
-
-                dateInput.style.minHeight =
-                    "48px";
-
-                dateInput.style.padding =
-                    "8px 12px";
-
-                dateInput.style.boxSizing =
-                    "border-box";
-
-                dateInput.style.fontSize =
-                    "16px";
-
-
                 chooser.appendChild(
                     dateInput
                 );
 
 
                 /* =====================================
-                   ボタンエリア
+                   ボタン
                 ===================================== */
 
                 const actions =
@@ -670,20 +598,6 @@ function renderChildrenHeightWeight() {
                         "div"
                     );
 
-
-                actions.style.display =
-                    "flex";
-
-                actions.style.gap =
-                    "8px";
-
-                actions.style.marginTop =
-                    "12px";
-
-
-                /* =====================================
-                   キャンセル
-                ===================================== */
 
                 const cancelButton =
                     document.createElement(
@@ -698,17 +612,6 @@ function renderChildrenHeightWeight() {
                     "キャンセル";
 
 
-                cancelButton.style.flex =
-                    "1";
-
-                cancelButton.style.minHeight =
-                    "44px";
-
-
-                /* =====================================
-                   次へ
-                ===================================== */
-
                 const nextButton =
                     document.createElement(
                         "button"
@@ -720,13 +623,6 @@ function renderChildrenHeightWeight() {
 
                 nextButton.textContent =
                     "次へ";
-
-
-                nextButton.style.flex =
-                    "1";
-
-                nextButton.style.minHeight =
-                    "44px";
 
 
                 actions.appendChild(
@@ -744,7 +640,7 @@ function renderChildrenHeightWeight() {
 
 
                 /* =====================================
-                   ＋エリアの直後に表示
+                   表示
                 ===================================== */
 
                 const addArea =
@@ -791,10 +687,6 @@ function renderChildrenHeightWeight() {
                             dateInput.value;
 
 
-                        /* -----------------------------
-                           日付未選択
-                        ----------------------------- */
-
                         if (!selectedDate) {
 
                             alert(
@@ -805,10 +697,6 @@ function renderChildrenHeightWeight() {
 
                         }
 
-
-                        /* -----------------------------
-                           誕生日より前
-                        ----------------------------- */
 
                         if (
                             child.birthday &&
@@ -825,15 +713,11 @@ function renderChildrenHeightWeight() {
                         }
 
 
-                        /*
-                           日付選択エリアを閉じる
-                        */
-
                         chooser.remove();
 
 
                         /* =================================
-                           身長入力
+                           身長
                         ================================= */
 
                         const heightInput =
@@ -877,7 +761,7 @@ function renderChildrenHeightWeight() {
 
 
                                 /* =============================
-                                   体重入力
+                                   体重
                                 ============================= */
 
                                 const weightInput =
@@ -921,16 +805,7 @@ function renderChildrenHeightWeight() {
 
 
                                         /* =============================
-                                           実際の入力日時
-                                        ============================= */
-
-                                        const recordedAt =
-                                            new Date()
-                                                .toISOString();
-
-
-                                        /* =============================
-                                           成長記録追加
+                                           保存
                                         ============================= */
 
                                         child.growth.heightWeight.push({
@@ -943,7 +818,8 @@ function renderChildrenHeightWeight() {
                                                 selectedDate,
 
                                             recordedAt:
-                                                recordedAt,
+                                                new Date()
+                                                    .toISOString(),
 
                                             height:
                                                 height,
@@ -954,24 +830,23 @@ function renderChildrenHeightWeight() {
                                         });
 
 
-                                        /* =============================
-                                           保存
-                                        ============================= */
-
                                         saveChildrenGrowthData();
-
-
-                                        /* =============================
-                                           再描画
-                                        ============================= */
 
                                         renderChildrenHeightWeight();
 
-                                    }
+                                    },
+
+                                    null,
+
+                                    child.gender
 
                                 );
 
-                            }
+                            },
+
+                            null,
+
+                            child.gender
 
                         );
 
@@ -1001,13 +876,12 @@ function renderChildrenHeightWeight() {
 
 
     /* =================================================
-       履歴表示
+       履歴
     ================================================= */
 
     renderChildrenHeightWeightHistory();
 
 }
-
 
 
 /* =====================================================

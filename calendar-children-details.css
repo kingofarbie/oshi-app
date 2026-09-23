@@ -200,3 +200,125 @@ button:active {
     opacity: .65;
 
 }
+
+/* =====================================================
+   👶 子どもカレンダー
+   身長・体重 数値入力モーダル
+   ===================================================== */
+
+
+/* =====================================================
+   👦 男の子 → 青
+   ===================================================== */
+
+#numberInputModal.children-number-boy
+.number-input-dialog
+.number-input-actions
+.number-delete-button,
+
+#numberInputModal.children-number-boy
+.number-input-dialog
+.number-input-actions
+.number-reset-button,
+
+#numberInputModal.children-number-boy
+.number-input-dialog
+.number-input-actions
+.number-save-button {
+
+    background:
+        var(--children-boy-color)
+        !important;
+
+    border-color:
+        var(--children-boy-border)
+        !important;
+
+    color:
+        #fff
+        !important;
+
+}
+
+
+/* =====================================================
+   👧 女の子 → ピンク
+   ===================================================== */
+
+#numberInputModal.children-number-girl
+.number-input-dialog
+.number-input-actions
+.number-delete-button,
+
+#numberInputModal.children-number-girl
+.number-input-dialog
+.number-input-actions
+.number-reset-button,
+
+#numberInputModal.children-number-girl
+.number-input-dialog
+.number-input-actions
+.number-save-button {
+
+    background:
+        var(--children-girl-color)
+        !important;
+
+    border-color:
+        var(--children-girl-border)
+        !important;
+
+    color:
+        #fff
+        !important;
+
+}
+
+
+/* =====================================================
+   👦 男の子
+   数字キー・小数点・戻る
+   ===================================================== */
+
+#numberInputModal.children-number-boy
+.number-keypad
+button {
+
+    border-color:
+        var(--children-boy-border)
+        !important;
+
+}
+
+
+/* =====================================================
+   👧 女の子
+   数字キー・小数点・戻る
+   ===================================================== */
+
+#numberInputModal.children-number-girl
+.number-keypad
+button {
+
+    border-color:
+        var(--children-girl-border)
+        !important;
+
+}
+
+
+/* =====================================================
+   押したとき
+   ===================================================== */
+
+#numberInputModal.children-number-boy
+.number-input-actions
+button:active,
+
+#numberInputModal.children-number-girl
+.number-input-actions
+button:active {
+
+    opacity: .65;
+
+}
