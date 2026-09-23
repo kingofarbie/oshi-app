@@ -274,9 +274,6 @@ function renderChildrenHeightWeight() {
 
     /* =================================================
        最新記録
-       
-       記録日が新しいものを最新とする。
-       同じ記録日の場合だけ recordedAt で比較。
     ================================================= */
 
     const sortedRecords =
@@ -443,11 +440,6 @@ function renderChildrenHeightWeight() {
 
         <!-- =========================================
              身長・体重追加
-             
-             ＋を押してから
-             → 記録日をカレンダーで選択
-             → 身長
-             → 体重
         ========================================== -->
 
         <div class="children-height-weight-add-area">
@@ -514,11 +506,15 @@ function renderChildrenHeightWeight() {
     /* =================================================
        ＋ 身長・体重を記録
        
-       ① ＋を押す
-       ② カレンダーから記録日を選択
-       ③ 身長を入力
-       ④ 体重を入力
-       ⑤ 保存
+       ＋
+       ↓
+       📅 カレンダーで記録日選択
+       ↓
+       身長
+       ↓
+       体重
+       ↓
+       保存
     ================================================= */
 
     const addButton =
@@ -533,11 +529,7 @@ function renderChildrenHeightWeight() {
             function () {
 
                 /* =====================================
-                   📅 記録日選択
-                   
-                   数値入力モーダルは使用しない。
-                   input[type=date] の
-                   ネイティブカレンダーを使用する。
+                   📅 日付入力を作成
                 ===================================== */
 
                 const dateInput =
@@ -555,8 +547,7 @@ function renderChildrenHeightWeight() {
 
 
                 /*
-                   誕生日より前の日付を
-                   カレンダー上でも選べないようにする
+                   誕生日より前を選択不可
                 */
 
                 if (child.birthday) {
@@ -590,36 +581,22 @@ function renderChildrenHeightWeight() {
 
 
                 /* =====================================
-                   カレンダーを開く
+                   日付選択後の処理
+                   
+                   ★ カレンダーを開く前に
+                     changeイベントを登録する
                 ===================================== */
 
-                if (
-                    typeof dateInput.showPicker ===
-                    "function"
-                ) {
-
-                    dateInput.showPicker();
-
-                } else {
-
-                    dateInput.click();
-
-                }
-
-
-                /* =====================================
-                   日付選択後
-                ===================================== */
-
-                dateInput.onchange =
-                    function () {
+                dateInput.addEventListener(
+                    "change",
+                    function handleDateChange() {
 
                         const selectedDate =
                             dateInput.value;
 
 
                         /*
-                           日付が選択されていない
+                           日付が選択されなかった
                         */
 
                         if (!selectedDate) {
@@ -651,6 +628,10 @@ function renderChildrenHeightWeight() {
 
                         }
 
+
+                        /*
+                           日付入力を削除
+                        */
 
                         dateInput.remove();
 
@@ -687,6 +668,10 @@ function renderChildrenHeightWeight() {
                                     );
 
 
+                                /*
+                                   身長チェック
+                                */
+
                                 if (
                                     !Number.isFinite(
                                         height
@@ -699,9 +684,9 @@ function renderChildrenHeightWeight() {
                                 }
 
 
-                                /* =================================
+                                /* =============================
                                    体重入力
-                                ================================= */
+                                ============================= */
 
                                 const weightInput =
                                     document.createElement(
@@ -730,6 +715,10 @@ function renderChildrenHeightWeight() {
                                                 weightInput.value
                                             );
 
+
+                                        /*
+                                           体重チェック
+                                        */
 
                                         if (
                                             !Number.isFinite(
@@ -798,7 +787,36 @@ function renderChildrenHeightWeight() {
 
                         );
 
-                    };
+                    }
+                );
+
+
+                /* =====================================
+                   📅 カレンダーを開く
+                   
+                   change登録後に実行する
+                ===================================== */
+
+                if (
+                    typeof dateInput.showPicker ===
+                    "function"
+                ) {
+
+                    try {
+
+                        dateInput.showPicker();
+
+                    } catch (error) {
+
+                        dateInput.click();
+
+                    }
+
+                } else {
+
+                    dateInput.click();
+
+                }
 
             };
 
@@ -830,8 +848,6 @@ function renderChildrenHeightWeight() {
     renderChildrenHeightWeightHistory();
 
 }
-
-
 
 /* =====================================================
    ⚖️ 身長・体重画面を閉じる
