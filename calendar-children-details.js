@@ -272,13 +272,9 @@ function renderChildrenHeightWeight() {
         child.growth.heightWeight || [];
 
 
-    /* -------------------------------------------------
+    /* =================================================
        最新記録
-
-       recordedAt が新しいものを最新とする。
-       古いデータで recordedAt が無い場合は
-       date を代用する。
-    ------------------------------------------------- */
+    ================================================= */
 
     const sortedRecords =
         [...records].sort(
@@ -286,14 +282,18 @@ function renderChildrenHeightWeight() {
 
                 const aTime =
                     a.recordedAt
-                        ? new Date(a.recordedAt).getTime()
+                        ? new Date(
+                            a.recordedAt
+                        ).getTime()
                         : new Date(
                             `${a.date}T00:00:00`
                         ).getTime();
 
                 const bTime =
                     b.recordedAt
-                        ? new Date(b.recordedAt).getTime()
+                        ? new Date(
+                            b.recordedAt
+                        ).getTime()
                         : new Date(
                             `${b.date}T00:00:00`
                         ).getTime();
@@ -322,9 +322,28 @@ function renderChildrenHeightWeight() {
             : "--";
 
 
-    /* -------------------------------------------------
+    /* =================================================
+       今日の日付
+    ================================================= */
+
+    const now =
+        new Date();
+
+    const today =
+        now.getFullYear() +
+        "-" +
+        String(
+            now.getMonth() + 1
+        ).padStart(2, "0") +
+        "-" +
+        String(
+            now.getDate()
+        ).padStart(2, "0");
+
+
+    /* =================================================
        画面HTML
-    ------------------------------------------------- */
+    ================================================= */
 
     section.innerHTML = `
 
@@ -410,13 +429,34 @@ function renderChildrenHeightWeight() {
              身長・体重追加
         ========================================== -->
 
-        <button
-            type="button"
-            class="children-height-weight-add"
-            id="childrenHeightWeightAddButton"
-        >
-            ＋ 身長・体重を記録
-        </button>
+        <div class="children-height-weight-add-area">
+
+            <div class="children-height-weight-record-date">
+
+                <label
+                    for="childrenHeightWeightRecordDate"
+                >
+                    記録日
+                </label>
+
+                <input
+                    type="date"
+                    id="childrenHeightWeightRecordDate"
+                    value="${today}"
+                >
+
+            </div>
+
+
+            <button
+                type="button"
+                class="children-height-weight-add"
+                id="childrenHeightWeightAddButton"
+            >
+                ＋ 身長・体重を記録
+            </button>
+
+        </div>
 
 
         <!-- =========================================
@@ -472,11 +512,63 @@ function renderChildrenHeightWeight() {
             function () {
 
                 /*
+                   選択された記録日
+                */
+
+                const dateInput =
+                    document.getElementById(
+                        "childrenHeightWeightRecordDate"
+                    );
+
+
+                const selectedDate =
+                    dateInput
+                        ? dateInput.value
+                        : "";
+
+
+                /*
+                   日付が選択されていない場合
+                */
+
+                if (!selectedDate) {
+
+                    alert(
+                        "記録日を選択してください。"
+                    );
+
+                    return;
+
+                }
+
+
+                /*
+                   誕生日より前の日付は不可
+                */
+
+                if (
+                    child.birthday &&
+                    selectedDate <
+                    child.birthday
+                ) {
+
+                    alert(
+                        "誕生日より前の日付は記録できません。"
+                    );
+
+                    return;
+
+                }
+
+
+                /*
                    身長入力
                 */
 
                 const heightInput =
-                    document.createElement("input");
+                    document.createElement(
+                        "input"
+                    );
 
                 heightInput.type =
                     "number";
@@ -501,7 +593,9 @@ function renderChildrenHeightWeight() {
 
 
                         if (
-                            !Number.isFinite(height) ||
+                            !Number.isFinite(
+                                height
+                            ) ||
                             height <= 0
                         ) {
 
@@ -515,7 +609,9 @@ function renderChildrenHeightWeight() {
                         */
 
                         const weightInput =
-                            document.createElement("input");
+                            document.createElement(
+                                "input"
+                            );
 
                         weightInput.type =
                             "number";
@@ -540,7 +636,9 @@ function renderChildrenHeightWeight() {
 
 
                                 if (
-                                    !Number.isFinite(weight) ||
+                                    !Number.isFinite(
+                                        weight
+                                    ) ||
                                     weight <= 0
                                 ) {
 
@@ -550,38 +648,27 @@ function renderChildrenHeightWeight() {
 
 
                                 /* ---------------------------------
-                                   記録日時
+                                   実際の記録日時
 
-                                   date      → 記録した日
-                                   recordedAt → 実際の記録日時
+                                   recordedAt は「入力した瞬間」
+                                   date は「記録した日」
 
-                                   同じ日でも recordedAt が違うので
-                                   最新の記録を正確に判定できる。
+                                   過去の日付を選んでも、
+                                   recordedAt は現在時刻なので
+                                   同日記録の順番も維持できる。
                                 --------------------------------- */
 
-                                const now =
+                                const recordTime =
                                     new Date();
 
 
-                                const date =
-                                    now.getFullYear() +
-                                    "-" +
-                                    String(
-                                        now.getMonth() + 1
-                                    ).padStart(2, "0") +
-                                    "-" +
-                                    String(
-                                        now.getDate()
-                                    ).padStart(2, "0");
-
-
                                 const recordedAt =
-                                    now.toISOString();
+                                    recordTime.toISOString();
 
 
-                                /*
-                                   成長記録を追加
-                                */
+                                /* ---------------------------------
+                                   保存
+                                --------------------------------- */
 
                                 child.growth.heightWeight.push({
 
@@ -590,7 +677,7 @@ function renderChildrenHeightWeight() {
                                         Date.now(),
 
                                     date:
-                                        date,
+                                        selectedDate,
 
                                     recordedAt:
                                         recordedAt,
