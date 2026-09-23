@@ -1992,3 +1992,176 @@ calendar-children.css
     border-color: var(--children-girl-border) !important;
     color: #fff !important;
 }
+
+
+/* =====================================================
+   👶 成長記録
+   ＋ ✎ × は「ボタン」に見せず
+   アイコン操作として表示
+===================================================== */
+
+.children-height-weight-history-actions {
+    display: flex;
+
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 8px;
+
+    margin-left: auto;
+}
+
+
+/* ＋ ✎ × 共通 */
+
+.children-height-weight-history-actions
+.children-height-weight-edit,
+.children-height-weight-history-actions
+.children-height-weight-delete {
+
+    width: 32px;
+    height: 32px;
+
+    min-width: 32px;
+    min-height: 32px;
+
+    padding: 0;
+
+    border: none !important;
+    border-radius: 0;
+
+    background: transparent !important;
+
+    color: #777;
+
+    font-size: 22px;
+    font-weight: 700;
+
+    line-height: 1;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+
+    box-shadow: none !important;
+
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+
+/* 編集 */
+
+.children-height-weight-history-actions
+.children-height-weight-edit {
+
+    font-size: 20px;
+
+    color: #777;
+}
+
+
+/* 削除 */
+
+.children-height-weight-history-actions
+.children-height-weight-delete {
+
+    font-size: 25px;
+
+    color: #999;
+}
+
+
+/* タップ時 */
+
+.children-height-weight-history-actions
+.children-height-weight-edit:active,
+.children-height-weight-history-actions
+.children-height-weight-delete:active {
+
+    opacity: .45;
+
+    background: transparent !important;
+}
+
+
+/* フォーカス時も四角いボタン感を出さない */
+
+.children-height-weight-history-actions
+.children-height-weight-edit:focus,
+.children-height-weight-history-actions
+.children-height-weight-delete:focus {
+
+    outline: none;
+
+    background: transparent !important;
+
+    box-shadow: none !important;
+}
+
+
+/* =====================================================
+   👶 さらに表示 / 閉じる
+   こちらは普通のボタンとして表示
+===================================================== */
+
+.children-height-weight-history-more {
+
+    display: block;
+
+    width: 100%;
+
+    min-height: 44px;
+
+    margin-top: 8px;
+
+    padding: 8px 14px;
+
+    border:
+        1px solid
+        rgba(120,150,160,.20);
+
+    border-radius: 10px;
+
+    background: rgba(255,255,255,.82);
+
+    color: var(--text,#333);
+
+    font-size: 14px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    box-sizing: border-box;
+}
+
+
+.children-height-weight-history-more:active {
+
+    opacity: .65;
+}
+
+
+.children-calendar-app.boy
+.children-height-weight-history-more {
+
+    background: var(--children-boy-color) !important;
+
+    border-color: var(--children-boy-border) !important;
+
+    color: #fff !important;
+}
+
+
+.children-calendar-app.girl
+.children-height-weight-history-more {
+
+    background: var(--children-girl-color) !important;
+
+    border-color: var(--children-girl-border) !important;
+
+    color: #fff !important;
+}
