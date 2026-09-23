@@ -49,11 +49,12 @@ function initializeChildrenGrowthData(child) {
         child.growth.milestone = [];
 
     }
+
 }
 
 
 /* =====================================================
-   👶 選択中の子どもの成長データを取得
+   👶 選択中の子どもの成長データ
 ===================================================== */
 
 function getChildrenGrowthData() {
@@ -77,8 +78,7 @@ function getChildrenGrowthData() {
 
 
 /* =====================================================
-   👶 年齢表示
-   誕生日＋記録日から毎回計算
+   👶 記録時点の年齢
 ===================================================== */
 
 function calculateChildrenAgeAtDate(
@@ -118,7 +118,7 @@ function calculateChildrenAgeAtDate(
         record.getMonth() -
         birth.getMonth();
 
-    let days =
+    const days =
         record.getDate() -
         birth.getDate();
 
@@ -147,7 +147,7 @@ function calculateChildrenAgeAtDate(
 
 
 /* =====================================================
-   👶 成長記録の保存
+   👶 成長データ保存
 ===================================================== */
 
 function saveChildrenGrowthData() {
@@ -186,19 +186,7 @@ const CHILDREN_GROWTH_CATEGORY_NAMES = {
 
 
 /* =====================================================
-   👶 成長記録 詳細機能
-   今後ここへ追加
-===================================================== */
-
-// 身長・体重
-// 予防接種
-// 健診・病院
-// 成長・できたこと
-// グラフ
-// 子ども比較
-
-/* =====================================================
-   ⚖️ 身長・体重画面
+   ⚖️ 身長・体重画面を開く
 ===================================================== */
 
 function openChildrenHeightWeight() {
@@ -210,9 +198,6 @@ function openChildrenHeightWeight() {
 
     if (!growthSection) return;
 
-    /*
-       今ある成長カテゴリー一覧を隠す
-    */
 
     const categoryList =
         growthSection.querySelector(
@@ -226,14 +211,12 @@ function openChildrenHeightWeight() {
 
     }
 
-    /*
-       身長・体重画面がまだ無ければ作成
-    */
 
     let heightWeightSection =
         document.getElementById(
             "childrenHeightWeightSection"
         );
+
 
     if (!heightWeightSection) {
 
@@ -252,8 +235,10 @@ function openChildrenHeightWeight() {
 
     }
 
+
     heightWeightSection.style.display =
         "";
+
 
     renderChildrenHeightWeight();
 
@@ -262,6 +247,7 @@ function openChildrenHeightWeight() {
 
 /* =====================================================
    ⚖️ 身長・体重画面
+   ※ 追加処理もこの関数内で完結
 ===================================================== */
 
 function renderChildrenHeightWeight() {
@@ -278,12 +264,52 @@ function renderChildrenHeightWeight() {
 
     if (!section || !child) return;
 
+
     initializeChildrenGrowthData(child);
+
 
     const records =
         child.growth.heightWeight || [];
 
+
+    /* -------------------------------------------------
+       最新記録
+    ------------------------------------------------- */
+
+    const sortedRecords =
+        [...records].sort(
+            (a, b) =>
+                String(b.date)
+                    .localeCompare(
+                        String(a.date)
+                    )
+        );
+
+
+    const latestRecord =
+        sortedRecords[0] || null;
+
+
+    const latestHeight =
+        latestRecord &&
+        latestRecord.height != null
+            ? latestRecord.height
+            : "--";
+
+
+    const latestWeight =
+        latestRecord &&
+        latestRecord.weight != null
+            ? latestRecord.weight
+            : "--";
+
+
+    /* -------------------------------------------------
+       画面HTML
+    ------------------------------------------------- */
+
     section.innerHTML = `
+
         <div class="children-growth-detail-header">
 
             <button
@@ -300,6 +326,11 @@ function renderChildrenHeightWeight() {
 
         </div>
 
+
+        <!-- =========================================
+             最新の記録
+        ========================================== -->
+
         <div class="children-height-weight-latest">
 
             <div class="children-height-weight-latest-title">
@@ -309,20 +340,57 @@ function renderChildrenHeightWeight() {
             <div class="children-height-weight-latest-values">
 
                 <div class="children-height-weight-value">
-                    <span>身長</span>
-                    <strong>--</strong>
-                    <small>cm</small>
+
+                    <span>
+                        身長
+                    </span>
+
+                    <strong>
+                        ${latestHeight}
+                    </strong>
+
+                    <small>
+                        cm
+                    </small>
+
                 </div>
 
+
                 <div class="children-height-weight-value">
-                    <span>体重</span>
-                    <strong>--</strong>
-                    <small>kg</small>
+
+                    <span>
+                        体重
+                    </span>
+
+                    <strong>
+                        ${latestWeight}
+                    </strong>
+
+                    <small>
+                        kg
+                    </small>
+
                 </div>
 
             </div>
 
+
+            ${
+                latestRecord
+                    ? `
+                        <div class="children-height-weight-latest-date">
+                            ${latestRecord.date}
+                        </div>
+                    `
+                    : ""
+            }
+
         </div>
+
+
+        <!-- =========================================
+             身長・体重追加
+        ========================================== -->
 
         <button
             type="button"
@@ -331,6 +399,11 @@ function renderChildrenHeightWeight() {
         >
             ＋ 身長・体重を記録
         </button>
+
+
+        <!-- =========================================
+             履歴
+        ========================================== -->
 
         <div class="children-height-weight-history">
 
@@ -343,14 +416,19 @@ function renderChildrenHeightWeight() {
             ></div>
 
         </div>
+
     `;
 
-    renderChildrenHeightWeightHistory();
+
+    /* =================================================
+       ◀ 成長・定期記録へ戻る
+    ================================================= */
 
     const backButton =
         document.getElementById(
             "childrenHeightWeightBackButton"
         );
+
 
     if (backButton) {
 
@@ -358,6 +436,176 @@ function renderChildrenHeightWeight() {
             closeChildrenHeightWeight;
 
     }
+
+
+    /* =================================================
+       ＋ 身長・体重を記録
+       ※ 別関数にはしない
+    ================================================= */
+
+    const addButton =
+        document.getElementById(
+            "childrenHeightWeightAddButton"
+        );
+
+
+    if (addButton) {
+
+        addButton.onclick =
+            function () {
+
+                /*
+                   身長入力
+                */
+
+                const heightInput =
+                    document.createElement("input");
+
+                heightInput.type =
+                    "number";
+
+
+                openNumberInputModal(
+
+                    heightInput,
+
+                    "身長（cm）",
+
+                    true,
+
+                    "number",
+
+                    function () {
+
+                        const height =
+                            Number(
+                                heightInput.value
+                            );
+
+
+                        if (
+                            !Number.isFinite(height) ||
+                            height <= 0
+                        ) {
+
+                            return;
+
+                        }
+
+
+                        /*
+                           体重入力
+                        */
+
+                        const weightInput =
+                            document.createElement("input");
+
+                        weightInput.type =
+                            "number";
+
+
+                        openNumberInputModal(
+
+                            weightInput,
+
+                            "体重（kg）",
+
+                            true,
+
+                            "number",
+
+                            function () {
+
+                                const weight =
+                                    Number(
+                                        weightInput.value
+                                    );
+
+
+                                if (
+                                    !Number.isFinite(weight) ||
+                                    weight <= 0
+                                ) {
+
+                                    return;
+
+                                }
+
+
+                                /*
+                                   記録日
+                                   現段階では今日
+                                */
+
+                                const now =
+                                    new Date();
+
+
+                                const date =
+                                    now.getFullYear() +
+                                    "-" +
+                                    String(
+                                        now.getMonth() + 1
+                                    ).padStart(2, "0") +
+                                    "-" +
+                                    String(
+                                        now.getDate()
+                                    ).padStart(2, "0");
+
+
+                                /*
+                                   成長記録を保存
+                                */
+
+                                child.growth.heightWeight.push({
+
+                                    id:
+                                        "growth-" +
+                                        Date.now(),
+
+                                    date:
+                                        date,
+
+                                    height:
+                                        height,
+
+                                    weight:
+                                        weight
+
+                                });
+
+
+                                /*
+                                   保存
+                                */
+
+                                saveChildrenGrowthData();
+
+
+                                /*
+                                   画面を再描画
+                                */
+
+                                renderChildrenHeightWeight();
+
+                            }
+
+                        );
+
+                    }
+
+                );
+
+            };
+
+    }
+
+
+    /* =================================================
+       履歴表示
+    ================================================= */
+
+    renderChildrenHeightWeightHistory();
 
 }
 
@@ -378,12 +626,14 @@ function closeChildrenHeightWeight() {
             "#childrenGrowthSection .children-growth-category-list"
         );
 
+
     if (section) {
 
         section.style.display =
             "none";
 
     }
+
 
     if (categoryList) {
 
@@ -411,9 +661,12 @@ function renderChildrenHeightWeightHistory() {
             ? getSelectedChild()
             : null;
 
+
     if (!list || !child) return;
 
+
     initializeChildrenGrowthData(child);
+
 
     const records =
         [...child.growth.heightWeight]
@@ -424,6 +677,7 @@ function renderChildrenHeightWeightHistory() {
                             String(a.date)
                         )
             );
+
 
     if (!records.length) {
 
@@ -437,55 +691,71 @@ function renderChildrenHeightWeightHistory() {
 
     }
 
+
     list.innerHTML =
-        records.map(record => {
+        records
+            .map(
+                record => {
 
-            const age =
-                calculateChildrenAgeAtDate(
-                    child.birthday,
-                    record.date
-                );
+                    const age =
+                        calculateChildrenAgeAtDate(
+                            child.birthday,
+                            record.date
+                        );
 
-            return `
-                <div
-                    class="children-height-weight-history-item"
-                >
 
-                    <div class="children-height-weight-history-date">
-                        ${record.date}
-                    </div>
+                    return `
 
-                    <div class="children-height-weight-history-age">
-                        ${age}
-                    </div>
+                        <div
+                            class="children-height-weight-history-item"
+                        >
 
-                    <div class="children-height-weight-history-values">
+                            <div
+                                class="children-height-weight-history-date"
+                            >
+                                ${record.date}
+                            </div>
 
-                        <span>
-                            身長
-                            <strong>
-                                ${record.height ?? "--"}
-                            </strong>
-                            cm
-                        </span>
 
-                        <span>
-                            体重
-                            <strong>
-                                ${record.weight ?? "--"}
-                            </strong>
-                            kg
-                        </span>
+                            <div
+                                class="children-height-weight-history-age"
+                            >
+                                ${age}
+                            </div>
 
-                    </div>
 
-                </div>
-            `;
+                            <div
+                                class="children-height-weight-history-values"
+                            >
 
-        }).join("");
+                                <span>
+                                    身長
+                                    <strong>
+                                        ${record.height ?? "--"}
+                                    </strong>
+                                    cm
+                                </span>
+
+
+                                <span>
+                                    体重
+                                    <strong>
+                                        ${record.weight ?? "--"}
+                                    </strong>
+                                    kg
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    `;
+
+                }
+            )
+            .join("");
 
 }
-
 
 
 /* =====================================================
@@ -494,7 +764,9 @@ function renderChildrenHeightWeightHistory() {
 
 if (!window.childrenGrowthDetailsInitialized) {
 
-    window.childrenGrowthDetailsInitialized = true;
+    window.childrenGrowthDetailsInitialized =
+        true;
+
 
     document.addEventListener(
         "click",
@@ -505,10 +777,13 @@ if (!window.childrenGrowthDetailsInitialized) {
                     ".children-growth-category"
                 );
 
+
             if (!button) return;
+
 
             const category =
                 button.dataset.growthCategory;
+
 
             if (category === "heightWeight") {
 
@@ -520,5 +795,3 @@ if (!window.childrenGrowthDetailsInitialized) {
     );
 
 }
-
-
