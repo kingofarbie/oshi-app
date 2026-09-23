@@ -2324,11 +2324,11 @@ function drawChildrenHeightWeightGraph(
     ctx.fillStyle =
         "#777777";
 
-    ctx.fillText(
-        unit,
-        8,
-        paddingTop
-    );
+ctx.fillText(
+    unit,
+    8,
+    paddingTop + 18
+);
 
 }
 
