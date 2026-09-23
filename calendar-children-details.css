@@ -1,0 +1,219 @@
+ /* =====================================================
+    👶 身長・体重
+    📅 記録日の選択エリア
+    ===================================================== */
+
+#childrenHeightWeightDateChooser {
+
+    width: 100%;
+
+    margin: 12px 0;
+
+    padding: 16px;
+
+    border:
+        1px solid
+        rgba(120,150,160,.20);
+
+    border-radius: 14px;
+
+    background:
+        rgba(255,255,255,.92);
+
+    box-sizing: border-box;
+
+}
+
+
+/* 記録する日 */
+
+#childrenHeightWeightDateChooser > div:first-child {
+
+    margin-bottom: 10px;
+
+    color:
+        var(--text,#333);
+
+    font-size: 16px;
+
+    font-weight: 700;
+
+}
+
+
+/* 日付入力 */
+
+#childrenHeightWeightDateChooser input[type="date"] {
+
+    display: block;
+
+    width: 100%;
+
+    min-height: 48px;
+
+    padding:
+        8px 12px;
+
+    border:
+        1px solid
+        rgba(120,150,160,.25);
+
+    border-radius: 10px;
+
+    background:
+        rgba(255,255,255,.95);
+
+    color:
+        var(--text,#333);
+
+    font-size: 16px;
+
+    box-sizing: border-box;
+
+    appearance: none;
+    -webkit-appearance: none;
+
+}
+
+
+/* 日付入力フォーカス */
+
+#childrenHeightWeightDateChooser
+input[type="date"]:focus {
+
+    outline: none;
+
+    border-color:
+        rgba(120,150,160,.55);
+
+    box-shadow:
+        0 0 0 2px
+        rgba(120,150,160,.10);
+
+}
+
+
+/* ボタンエリア */
+
+#childrenHeightWeightDateChooser > div:last-child {
+
+    display: flex;
+
+    gap: 8px;
+
+    margin-top: 12px;
+
+}
+
+
+/* キャンセル・次へ */
+
+#childrenHeightWeightDateChooser
+button {
+
+    flex: 1;
+
+    min-height: 44px;
+
+    padding:
+        8px 14px;
+
+    border:
+        1px solid
+        rgba(120,150,160,.20);
+
+    border-radius: 10px;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    box-sizing: border-box;
+
+}
+
+
+/* キャンセル */
+
+#childrenHeightWeightDateChooser
+button:first-child {
+
+    background:
+        rgba(255,255,255,.85);
+
+    color:
+        var(--text,#555);
+
+}
+
+
+/* 次へ */
+
+#childrenHeightWeightDateChooser
+button:last-child {
+
+    background:
+        var(--children-boy-color,
+        #6495ED);
+
+    border-color:
+        var(--children-boy-border,
+        #4169E1);
+
+    color: #fff;
+
+}
+
+
+/* =====================================================
+   👦 男の子
+   ===================================================== */
+
+.children-calendar-app.boy
+#childrenHeightWeightDateChooser
+button:last-child {
+
+    background:
+        var(--children-boy-color)
+        !important;
+
+    border-color:
+        var(--children-boy-border)
+        !important;
+
+    color: #fff !important;
+
+}
+
+
+/* =====================================================
+   👧 女の子
+   ===================================================== */
+
+.children-calendar-app.girl
+#childrenHeightWeightDateChooser
+button:last-child {
+
+    background:
+        var(--children-girl-color)
+        !important;
+
+    border-color:
+        var(--children-girl-border)
+        !important;
+
+    color: #fff !important;
+
+}
+
+
+/* 押したとき */
+
+#childrenHeightWeightDateChooser
+button:active {
+
+    opacity: .65;
+
+}
