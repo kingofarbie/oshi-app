@@ -884,6 +884,8 @@ function renderChildrenHeightWeight() {
 }
 
 
+
+
 /* =====================================================
    ⚖️ 身長・体重画面を閉じる
 ===================================================== */
@@ -1464,11 +1466,19 @@ function renderChildrenHeightWeightHistory() {
 
                                             renderChildrenHeightWeight();
 
-                                        }
+                                        },
+
+                                        null,
+
+                                        child.gender
 
                                     );
 
-                                }
+                                },
+
+                                null,
+
+                                child.gender
 
                             );
 
@@ -1480,7 +1490,6 @@ function renderChildrenHeightWeightHistory() {
         );
 
 }
-
 
 
 /* =====================================================
