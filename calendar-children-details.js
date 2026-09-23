@@ -697,6 +697,10 @@ function renderChildrenHeightWeightHistory() {
     initializeChildrenGrowthData(child);
 
 
+    /* =================================================
+       履歴を新しい順に並べる
+    ================================================= */
+
     const records =
         [...child.growth.heightWeight]
             .sort(
@@ -726,6 +730,10 @@ function renderChildrenHeightWeightHistory() {
             );
 
 
+    /* =================================================
+       記録なし
+    ================================================= */
+
     if (!records.length) {
 
         list.innerHTML = `
@@ -738,6 +746,10 @@ function renderChildrenHeightWeightHistory() {
 
     }
 
+
+    /* =================================================
+       履歴表示
+    ================================================= */
 
     list.innerHTML =
         records
@@ -776,6 +788,7 @@ function renderChildrenHeightWeightHistory() {
 
                         <div
                             class="children-height-weight-history-item"
+                            data-growth-id="${record.id}"
                         >
 
                             <div
@@ -820,6 +833,31 @@ function renderChildrenHeightWeightHistory() {
 
                             </div>
 
+
+                            <div
+                                class="children-height-weight-history-actions"
+                            >
+
+                                <button
+                                    type="button"
+                                    class="children-height-weight-edit"
+                                    data-growth-action="edit"
+                                    data-growth-id="${record.id}"
+                                >
+                                    編集
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="children-height-weight-delete"
+                                    data-growth-action="delete"
+                                    data-growth-id="${record.id}"
+                                >
+                                    削除
+                                </button>
+
+                            </div>
+
                         </div>
 
                     `;
@@ -828,8 +866,235 @@ function renderChildrenHeightWeightHistory() {
             )
             .join("");
 
-}
 
+    /* =================================================
+       編集・削除ボタン
+    ================================================= */
+
+    list
+        .querySelectorAll(
+            "[data-growth-action]"
+        )
+        .forEach(
+            button => {
+
+                button.onclick =
+                    function () {
+
+                        const action =
+                            this.dataset.growthAction;
+
+                        const growthId =
+                            this.dataset.growthId;
+
+
+                        const recordIndex =
+                            child.growth.heightWeight
+                                .findIndex(
+                                    item =>
+                                        item.id ===
+                                        growthId
+                                );
+
+
+                        if (
+                            recordIndex < 0
+                        ) {
+
+                            return;
+
+                        }
+
+
+                        const record =
+                            child.growth.heightWeight[
+                                recordIndex
+                            ];
+
+
+                        /* =================================
+                           削除
+                        ================================= */
+
+                        if (
+                            action ===
+                            "delete"
+                        ) {
+
+                            const confirmed =
+                                window.confirm(
+                                    "この身長・体重の記録を削除しますか？"
+                                );
+
+
+                            if (!confirmed) {
+
+                                return;
+
+                            }
+
+
+                            child.growth.heightWeight
+                                .splice(
+                                    recordIndex,
+                                    1
+                                );
+
+
+                            saveChildrenGrowthData();
+
+
+                            renderChildrenHeightWeight();
+
+
+                            return;
+
+                        }
+
+
+                        /* =================================
+                           編集
+                        ================================= */
+
+                        if (
+                            action ===
+                            "edit"
+                        ) {
+
+                            /*
+                               身長
+                            */
+
+                            const heightInput =
+                                document.createElement(
+                                    "input"
+                                );
+
+                            heightInput.type =
+                                "number";
+
+                            heightInput.value =
+                                record.height;
+
+
+                            openNumberInputModal(
+
+                                heightInput,
+
+                                "身長（cm）を編集",
+
+                                true,
+
+                                "number",
+
+                                function () {
+
+                                    const height =
+                                        Number(
+                                            heightInput.value
+                                        );
+
+
+                                    if (
+                                        !Number.isFinite(
+                                            height
+                                        ) ||
+                                        height <= 0
+                                    ) {
+
+                                        return;
+
+                                    }
+
+
+                                    /*
+                                       体重
+                                    */
+
+                                    const weightInput =
+                                        document.createElement(
+                                            "input"
+                                        );
+
+                                    weightInput.type =
+                                        "number";
+
+                                    weightInput.value =
+                                        record.weight;
+
+
+                                    openNumberInputModal(
+
+                                        weightInput,
+
+                                        "体重（kg）を編集",
+
+                                        true,
+
+                                        "number",
+
+                                        function () {
+
+                                            const weight =
+                                                Number(
+                                                    weightInput.value
+                                                );
+
+
+                                            if (
+                                                !Number.isFinite(
+                                                    weight
+                                                ) ||
+                                                weight <= 0
+                                            ) {
+
+                                                return;
+
+                                            }
+
+
+                                            /*
+                                               記録内容を更新
+                                            */
+
+                                            record.height =
+                                                height;
+
+                                            record.weight =
+                                                weight;
+
+
+                                            /*
+                                               recordedAt は
+                                               編集した時刻に
+                                               変更しない。
+
+                                               元の記録日時を
+                                               維持する。
+                                            */
+
+
+                                            saveChildrenGrowthData();
+
+
+                                            renderChildrenHeightWeight();
+
+                                        }
+
+                                    );
+
+                                }
+
+                            );
+
+                        }
+
+                    };
+
+            }
+        );
+
+}
 
 /* =====================================================
    👶 成長カテゴリークリック
