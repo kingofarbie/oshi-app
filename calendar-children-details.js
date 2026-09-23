@@ -274,31 +274,66 @@ function renderChildrenHeightWeight() {
 
     /* =================================================
        最新記録
+
+       基本は「記録日」が新しいものを最新とする。
+
+       同じ記録日の場合だけ
+       「recordedAt（入力日時）」が新しいものを
+       最新とする。
+
+       ※ 母子手帳などを見ながら過去の記録を
+          後から入力しても、過去の日付が
+          最新記録になることはない。
     ================================================= */
 
     const sortedRecords =
         [...records].sort(
             (a, b) => {
 
-                const aTime =
+                const aDate =
+                    new Date(
+                        `${a.date}T00:00:00`
+                    ).getTime();
+
+                const bDate =
+                    new Date(
+                        `${b.date}T00:00:00`
+                    ).getTime();
+
+
+                /*
+                   記録日が違う場合
+                   → 記録日が新しいものを上
+                */
+
+                if (aDate !== bDate) {
+
+                    return bDate - aDate;
+
+                }
+
+
+                /*
+                   同じ記録日の場合
+                   → 入力日時が新しいものを上
+                */
+
+                const aRecordedAt =
                     a.recordedAt
                         ? new Date(
                             a.recordedAt
                         ).getTime()
-                        : new Date(
-                            `${a.date}T00:00:00`
-                        ).getTime();
+                        : 0;
 
-                const bTime =
+                const bRecordedAt =
                     b.recordedAt
                         ? new Date(
                             b.recordedAt
                         ).getTime()
-                        : new Date(
-                            `${b.date}T00:00:00`
-                        ).getTime();
+                        : 0;
 
-                return bTime - aTime;
+
+                return bRecordedAt - aRecordedAt;
 
             }
         );
@@ -647,16 +682,13 @@ function renderChildrenHeightWeight() {
                                 }
 
 
-                                /* ---------------------------------
-                                   実際の記録日時
+                                /*
+                                   recordedAt
+                                   → 実際に入力した日時
 
-                                   recordedAt は「入力した瞬間」
-                                   date は「記録した日」
-
-                                   過去の日付を選んでも、
-                                   recordedAt は現在時刻なので
-                                   同日記録の順番も維持できる。
-                                --------------------------------- */
+                                   date
+                                   → ユーザーが選択した記録日
+                                */
 
                                 const recordTime =
                                     new Date();
@@ -666,9 +698,9 @@ function renderChildrenHeightWeight() {
                                     recordTime.toISOString();
 
 
-                                /* ---------------------------------
-                                   保存
-                                --------------------------------- */
+                                /*
+                                   成長記録を追加
+                                */
 
                                 child.growth.heightWeight.push({
 
