@@ -361,6 +361,10 @@ function renderChildrenHeightWeight() {
     section.innerHTML = `
 
         <div class="children-growth-detail-header">
+    
+            <div class="children-growth-detail-title">
+                ⚖️ 身長・体重
+            </div>
 
             <button
                 type="button"
@@ -370,9 +374,6 @@ function renderChildrenHeightWeight() {
                 ◀ 成長・定期記録
             </button>
 
-            <div class="children-growth-detail-title">
-                ⚖️ 身長・体重
-            </div>
 
         </div>
 
@@ -3098,6 +3099,10 @@ function renderChildrenVaccination() {
 
         <div class="children-vaccination-header">
 
+            <div class="children-vaccination-title">
+                💉 予防接種
+            </div>
+            
             <button
                 type="button"
                 class="children-vaccination-back"
@@ -3105,10 +3110,6 @@ function renderChildrenVaccination() {
             >
                 ◀ 成長・定期記録
             </button>
-
-            <div class="children-vaccination-title">
-                💉 予防接種
-            </div>
 
         </div>
 
