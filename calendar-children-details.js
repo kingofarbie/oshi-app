@@ -4382,10 +4382,10 @@ function deleteChildrenVaccinationRecord(
 ===================================================== */
 
 if (
-    !window.childrenGrowthDetailsInitialized
+    !
+    window.childrenVaccinationDetailsInitialized
 ) {
-
-    window.childrenGrowthDetailsInitialized =
+    window.childrenVaccinationDetailsInitialized =
         true;
 
 
