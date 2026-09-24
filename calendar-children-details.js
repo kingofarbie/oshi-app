@@ -200,6 +200,23 @@ function openChildrenHeightWeight() {
     if (!growthSection) return;
 
 
+    /* =================================================
+       上部「◀ カレンダー」を非表示
+    ================================================= */
+
+    const calendarBackButton =
+        document.querySelector(
+            ".children-calendar-back-button"
+        );
+
+    if (calendarBackButton) {
+
+        calendarBackButton.style.display =
+            "none";
+
+    }
+
+
     const categoryList =
         growthSection.querySelector(
             ".children-growth-category-list"
@@ -244,6 +261,7 @@ function openChildrenHeightWeight() {
     renderChildrenHeightWeight();
 
 }
+
 
 
 /* =====================================================
@@ -2919,6 +2937,23 @@ function getChildrenVaccinationMaster(
 ===================================================== */
 
 function openChildrenVaccination() {
+
+        /* =================================================
+       上部ボタンを「◀ こどもカレンダー」に変更
+    ================================================= */
+
+    const calendarBackButton =
+        document.querySelector(
+            ".children-calendar-back-button"
+        );
+
+    if (calendarBackButton) {
+
+        calendarBackButton.textContent =
+            "◀ こどもカレンダー";
+
+    }
+    
 
     const child =
         getSelectedChild();
