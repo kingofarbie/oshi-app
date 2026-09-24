@@ -2978,23 +2978,6 @@ function getChildrenVaccinationMaster(
 
 function openChildrenVaccination() {
 
-        /* =================================================
-       上部ボタンを「◀ こどもカレンダー」に変更
-    ================================================= */
-
-    const calendarBackButton =
-        document.querySelector(
-            ".children-calendar-back-button"
-        );
-
-    if (calendarBackButton) {
-
-        calendarBackButton.textContent =
-            "◀ こどもカレンダー";
-
-    }
-
-
     const child =
         getSelectedChild();
 
