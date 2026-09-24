@@ -3115,8 +3115,7 @@ function renderChildrenVaccination() {
 
         <div class="children-vaccination-child-name">
 
-            👶 ${escapeHtml(child.name || "")}
-
+            👶 ${child.name || ""}
         </div>
 
 
