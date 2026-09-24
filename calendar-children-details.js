@@ -911,6 +911,22 @@ function renderChildrenHeightWeight() {
 
 function closeChildrenHeightWeight() {
 
+        /* =================================================
+       上部「◀ カレンダー」を再表示
+    ================================================= */
+
+    const calendarBackButton =
+        document.querySelector(
+            ".children-calendar-back-button"
+        );
+
+    if (calendarBackButton) {
+
+        calendarBackButton.style.display =
+            "";
+
+    }
+
     const section =
         document.getElementById(
             "childrenHeightWeightSection"
@@ -2953,7 +2969,7 @@ function openChildrenVaccination() {
             "◀ こどもカレンダー";
 
     }
-    
+
 
     const child =
         getSelectedChild();
@@ -3037,6 +3053,22 @@ function openChildrenVaccination() {
 ===================================================== */
 
 function closeChildrenVaccination() {
+
+        /* =================================================
+       上部ボタンを元の「◀ カレンダー」に戻す
+    ================================================= */
+
+    const calendarBackButton =
+        document.querySelector(
+            ".children-calendar-back-button"
+        );
+
+    if (calendarBackButton) {
+
+        calendarBackButton.textContent =
+            "◀ カレンダー";
+
+    }
 
     const section =
         document.getElementById(
