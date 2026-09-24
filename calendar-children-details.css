@@ -504,13 +504,13 @@ button:active {
 
 
 .children-vaccination-title {
-    flex:1;
-    min-width:0;
-    font-size:20px;
-    font-weight:900;
-    white-space:nowrap;
+    flex: 1;
+    min-width: 0;
+    font-size: 20px;
+    font-weight: 900;
+    writing-mode: horizontal-tb;
+    overflow: hidden;
 }
-
 
 .children-vaccination-child-name {
     margin-bottom:8px;
