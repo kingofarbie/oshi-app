@@ -456,3 +456,456 @@ button:active {
     opacity: .65;
 
 }
+
+
+
+
+
+
+
+
+
+
+
+/* =====================================================
+   💉 子どもカレンダー
+   予防接種
+===================================================== */
+
+.children-vaccination-section {
+    margin-top: 12px;
+    padding: 14px;
+    border: 1px solid var(--child-border);
+    border-radius: 16px;
+    background: var(--surface,#fff);
+    color: var(--text,#333);
+}
+
+
+.children-vaccination-header {
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:10px;
+}
+
+
+.children-vaccination-back {
+    min-height:42px;
+    padding:7px 12px;
+    border-radius:10px;
+    border:1px solid var(--child-border);
+    background:var(--child-accent);
+    color:#fff;
+    font-size:14px;
+    font-weight:800;
+    cursor:pointer;
+}
+
+
+.children-vaccination-title {
+    flex:1;
+    min-width:0;
+    font-size:20px;
+    font-weight:900;
+}
+
+
+.children-vaccination-child-name {
+    margin-bottom:8px;
+    font-size:14px;
+    font-weight:800;
+    color:var(--muted,#777);
+}
+
+
+.children-vaccination-note {
+    margin-bottom:12px;
+    padding:10px 12px;
+    border-radius:10px;
+    background:var(--child-bg);
+    color:var(--muted,#666);
+    font-size:12px;
+    line-height:1.6;
+}
+
+
+.children-vaccination-actions {
+    margin-bottom:10px;
+}
+
+
+.children-vaccination-add {
+    width:100%;
+    min-height:46px;
+    padding:9px 14px;
+    border:none;
+    border-radius:11px;
+    background:var(--child-accent);
+    color:#fff;
+    font-size:15px;
+    font-weight:900;
+    cursor:pointer;
+}
+
+
+.children-vaccination-view-switch {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:7px;
+    margin-bottom:14px;
+}
+
+
+.children-vaccination-view-button {
+    min-height:42px;
+    border:1px solid var(--child-border);
+    border-radius:10px;
+    background:var(--surface,#fff);
+    color:var(--text,#333);
+    font-size:14px;
+    font-weight:800;
+    cursor:pointer;
+}
+
+
+.children-vaccination-view-button.active {
+    background:var(--child-accent);
+    border-color:var(--child-accent);
+    color:#fff;
+}
+
+
+/* =====================================================
+   種類別
+===================================================== */
+
+.children-vaccination-master-title {
+    margin:14px 0 8px;
+    font-size:16px;
+    font-weight:900;
+}
+
+
+.children-vaccination-master-title.custom {
+    margin-top:20px;
+}
+
+
+.children-vaccination-master-list {
+    display:flex;
+    flex-direction:column;
+    gap:9px;
+}
+
+
+.children-vaccination-type-card {
+    border:1px solid var(--child-border);
+    border-radius:13px;
+    background:var(--surface,#fff);
+    overflow:hidden;
+}
+
+
+.children-vaccination-type-header {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:11px 12px;
+    background:var(--child-bg);
+}
+
+
+.children-vaccination-type-name {
+    font-size:15px;
+    font-weight:900;
+}
+
+
+.children-vaccination-type-target,
+.children-vaccination-type-dose {
+    margin-top:3px;
+    color:var(--muted,#777);
+    font-size:11px;
+    line-height:1.4;
+}
+
+
+.children-vaccination-small-add {
+    width:40px;
+    height:40px;
+    min-width:40px;
+    padding:0;
+    border:1px solid var(--child-accent);
+    border-radius:10px;
+    background:var(--child-accent);
+    color:#fff;
+    font-size:22px;
+    font-weight:900;
+    cursor:pointer;
+}
+
+
+.children-vaccination-unrecorded {
+    padding:11px 12px;
+    color:#888;
+    font-size:12px;
+}
+
+
+.children-vaccination-empty {
+    padding:18px 10px;
+    text-align:center;
+    color:#888;
+    font-size:13px;
+}
+
+
+/* =====================================================
+   接種記録
+===================================================== */
+
+.children-vaccination-record {
+    display:flex;
+    align-items:stretch;
+    gap:8px;
+    padding:10px 11px;
+    border-top:1px solid rgba(128,128,128,.16);
+}
+
+
+.children-vaccination-record-main {
+    flex:1;
+    min-width:0;
+    cursor:pointer;
+}
+
+
+.children-vaccination-record-date {
+    font-size:13px;
+    font-weight:900;
+}
+
+
+.children-vaccination-record-name {
+    margin-top:3px;
+    font-size:14px;
+    font-weight:800;
+    word-break:break-word;
+}
+
+
+.children-vaccination-record-age,
+.children-vaccination-record-dose,
+.children-vaccination-record-hospital,
+.children-vaccination-record-memo {
+    margin-top:3px;
+    color:var(--muted,#777);
+    font-size:12px;
+    line-height:1.45;
+    word-break:break-word;
+}
+
+
+.children-vaccination-record-actions {
+    display:flex;
+    align-items:center;
+    gap:4px;
+}
+
+
+.children-vaccination-edit,
+.children-vaccination-delete {
+    width:32px;
+    height:32px;
+    min-width:32px;
+    min-height:32px;
+    padding:0;
+    border:none!important;
+    background:transparent!important;
+    color:#777;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+}
+
+
+.children-vaccination-edit {
+    font-size:20px;
+}
+
+
+.children-vaccination-delete {
+    font-size:24px;
+    color:#999;
+}
+
+
+/* =====================================================
+   入力モーダル
+===================================================== */
+
+.children-vaccination-record-modal {
+    width:min(92%,500px);
+}
+
+
+.children-vaccination-form {
+    display:flex;
+    flex-direction:column;
+    gap:13px;
+}
+
+
+.children-vaccination-form label {
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    font-size:14px;
+    font-weight:800;
+}
+
+
+.children-vaccination-form input,
+.children-vaccination-form select,
+.children-vaccination-form textarea {
+    width:100%;
+    min-height:46px;
+    padding:9px 11px;
+    border:1px solid var(--child-border);
+    border-radius:10px;
+    background:var(--surface,#fff);
+    color:var(--text,#333);
+    font-size:16px;
+    box-sizing:border-box;
+}
+
+
+.children-vaccination-form textarea {
+    resize:vertical;
+    min-height:100px;
+}
+
+
+.children-vaccination-age-display {
+    padding:10px 12px;
+    border-radius:10px;
+    background:var(--child-bg);
+    color:var(--child-accent);
+    font-size:15px;
+    font-weight:900;
+    text-align:center;
+}
+
+
+.children-vaccination-form-actions {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:9px;
+    margin-top:5px;
+}
+
+
+.children-vaccination-cancel,
+.children-vaccination-save {
+    min-height:48px;
+    padding:9px 12px;
+    border-radius:10px;
+    font-size:15px;
+    font-weight:900;
+    cursor:pointer;
+}
+
+
+.children-vaccination-cancel {
+    border:1px solid var(--border,#ddd);
+    background:var(--surface,#fff);
+    color:var(--text,#333);
+}
+
+
+.children-vaccination-save {
+    border:1px solid var(--child-accent);
+    background:var(--child-accent);
+    color:#fff;
+}
+
+
+/* =====================================================
+   👦 男の子
+===================================================== */
+
+.children-calendar-app.boy
+.children-vaccination-back,
+
+.children-calendar-app.boy
+.children-vaccination-add,
+
+.children-calendar-app.boy
+.children-vaccination-small-add,
+
+.children-calendar-app.boy
+.children-vaccination-view-button.active,
+
+.children-calendar-app.boy
+.children-vaccination-save {
+    background:var(--children-boy-color,#6495ED)!important;
+    border-color:var(--children-boy-border,#4169E1)!important;
+    color:#fff!important;
+}
+
+
+/* =====================================================
+   👧 女の子
+===================================================== */
+
+.children-calendar-app.girl
+.children-vaccination-back,
+
+.children-calendar-app.girl
+.children-vaccination-add,
+
+.children-calendar-app.girl
+.children-vaccination-small-add,
+
+.children-calendar-app.girl
+.children-vaccination-view-button.active,
+
+.children-calendar-app.girl
+.children-vaccination-save {
+    background:var(--children-girl-color,#FF69B4)!important;
+    border-color:var(--children-girl-border,#FF1493)!important;
+    color:#fff!important;
+}
+
+
+/* =====================================================
+   タップ時
+===================================================== */
+
+.children-vaccination-back:active,
+.children-vaccination-add:active,
+.children-vaccination-small-add:active,
+.children-vaccination-view-button:active,
+.children-vaccination-save:active {
+    opacity:.65;
+}
+
+
+@media(max-width:600px) {
+
+    .children-vaccination-section {
+        padding:12px;
+    }
+
+    .children-vaccination-title {
+        font-size:18px;
+    }
+
+    .children-vaccination-type-name {
+        font-size:14px;
+    }
+
+}
