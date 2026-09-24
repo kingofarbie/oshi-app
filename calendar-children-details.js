@@ -2674,101 +2674,212 @@ ctx.textAlign = "right";
 
    ※「予定された接種記録」ではない。
    ※ 実際に接種した記録は child.growth.vaccination に保存する。
+   ※ 2026年度の日本の定期接種情報を基準。
 ===================================================== */
 
 const CHILDREN_VACCINATION_MASTER = [
+
+    /* =================================================
+       🦠 ロタウイルス
+    ================================================= */
 
     {
         id: "rotavirus",
         name: "ロタウイルス",
         icon: "🦠",
-        target: "生後2か月ごろ",
-        doses: "2回または3回",
-        gender: "all"
+
+        target:
+            "生後6週から接種可能。標準は生後2か月から開始",
+
+        doses:
+            "1価：2回 ／ 5価：3回",
+
+        gender:
+            "all"
     },
+
+
+    /* =================================================
+       💉 B型肝炎
+    ================================================= */
 
     {
         id: "hepb",
         name: "B型肝炎",
         icon: "💉",
-        target: "生後2か月ごろ～1歳未満",
-        doses: "3回",
-        gender: "all"
+
+        target:
+            "1歳未満（標準：生後2～9か月）",
+
+        doses:
+            "3回",
+
+        gender:
+            "all"
     },
+
+
+    /* =================================================
+       💉 5種混合
+    ================================================= */
 
     {
         id: "five_combined",
         name: "5種混合",
         icon: "💉",
-        target: "生後2～7か月ごろ開始",
-        doses: "初回3回＋追加1回",
-        gender: "all"
+
+        target:
+            "生後2～7か月に開始",
+
+        doses:
+            "第1期初回3回＋追加1回",
+
+        gender:
+            "all"
     },
+
+
+    /* =================================================
+       🫁 小児肺炎球菌
+    ================================================= */
 
     {
         id: "pneumococcus",
         name: "小児肺炎球菌",
         icon: "💉",
-        target: "生後2か月ごろ～",
-        doses: "接種開始年齢により異なる",
-        gender: "all"
+
+        target:
+            "生後2か月から5歳未満",
+
+        doses:
+            "開始年齢により異なる（標準開始：初回3回＋追加1回）",
+
+        gender:
+            "all"
     },
+
+
+    /* =================================================
+       🧫 BCG
+    ================================================= */
 
     {
         id: "bcg",
-        name: "BCG",
+        name: "BCG（結核）",
         icon: "💉",
-        target: "1歳未満",
-        doses: "1回",
-        gender: "all"
+
+        target:
+            "1歳未満（標準：生後5～8か月）",
+
+        doses:
+            "1回",
+
+        gender:
+            "all"
     },
+
+
+    /* =================================================
+       💉 MR
+    ================================================= */
 
     {
         id: "mr",
         name: "MR（麻しん・風しん）",
         icon: "💉",
-        target: "1歳ごろ・就学前",
-        doses: "2回",
-        gender: "all"
+
+        target:
+            "第1期：1歳～2歳未満 ／ 第2期：就学前1年間",
+
+        doses:
+            "2回（第1期1回＋第2期1回）",
+
+        gender:
+            "all"
     },
+
+
+    /* =================================================
+       💧 水痘
+    ================================================= */
 
     {
         id: "varicella",
-        name: "水痘",
+        name: "水痘（水ぼうそう）",
         icon: "💉",
-        target: "1～3歳未満",
-        doses: "2回",
-        gender: "all"
+
+        target:
+            "1歳～3歳未満",
+
+        doses:
+            "2回（1回目：1歳～1歳3か月／2回目：6～12か月後）",
+
+        gender:
+            "all"
     },
+
+
+    /* =================================================
+       🧠 日本脳炎
+    ================================================= */
 
     {
         id: "japanese_encephalitis",
         name: "日本脳炎",
         icon: "💉",
-        target: "3～4歳ごろ・9～10歳ごろ",
-        doses: "1期3回＋2期1回",
-        gender: "all"
+
+        target:
+            "第1期：生後6か月～7歳6か月未満（標準：3～4歳）／第2期：9～13歳未満",
+
+        doses:
+            "第1期初回2回＋第1期追加1回＋第2期1回",
+
+        gender:
+            "all"
     },
+
+
+    /* =================================================
+       💉 DT
+    ================================================= */
 
     {
         id: "dt",
         name: "DT（ジフテリア・破傷風）",
         icon: "💉",
-        target: "11～12歳ごろ",
-        doses: "1回",
-        gender: "all"
+
+        target:
+            "11～13歳未満（標準：11～12歳）",
+
+        doses:
+            "第2期1回",
+
+        gender:
+            "all"
     },
+
+
+    /* =================================================
+       ♀ HPV
+    ================================================= */
 
     {
         id: "hpv",
         name: "HPV（子宮頸がん予防）",
         icon: "💉",
-        target: "小学6年～高校1年相当の女子",
-        doses: "2回または3回",
-        gender: "girl"
+
+        target:
+            "小学6年～高校1年相当の女子",
+
+        doses:
+            "2回または3回（接種開始年齢・ワクチンにより異なる）",
+
+        gender:
+            "girl"
     }
 
 ];
+
 
 
 /* =====================================================
@@ -2796,6 +2907,28 @@ function initializeChildrenVaccinationData(child) {
     ) {
 
         child.growth.vaccination = [];
+
+    }
+
+
+    /* =================================================
+       💉 接種完了状態
+
+       ※ 接種記録とは別管理
+       ※ 子どもごとに完全分離
+       ※ true になったワクチンだけ
+          使用者が「接種完了」と確定した状態
+    ================================================= */
+
+    if (
+        !child.growth.vaccinationCompleted ||
+        typeof child.growth.vaccinationCompleted !== "object" ||
+        Array.isArray(
+            child.growth.vaccinationCompleted
+        )
+    ) {
+
+        child.growth.vaccinationCompleted = {};
 
     }
 
@@ -3355,6 +3488,40 @@ function renderChildrenVaccinationByType(
         getChildrenVaccinationData();
 
 
+    initializeChildrenVaccinationData(
+        child
+    );
+
+
+    /* =================================================
+       💉 接種完了状態 切り替え
+    ================================================= */
+
+    window.toggleChildrenVaccinationCompleted =
+        function(vaccineId) {
+
+            initializeChildrenVaccinationData(
+                child
+            );
+
+
+            const completed =
+                child.growth
+                    .vaccinationCompleted;
+
+
+            completed[vaccineId] =
+                !completed[vaccineId];
+
+
+            saveChildrenVaccinationData();
+
+
+            renderChildrenVaccination();
+
+        };
+
+
     let html = `
 
         <div class="children-vaccination-master-title">
@@ -3393,6 +3560,13 @@ function renderChildrenVaccinationByType(
                                 a.date || ""
                             )
                     );
+
+
+            const isCompleted =
+                !!child.growth
+                    .vaccinationCompleted[
+                        vaccine.id
+                    ];
 
 
             html += `
@@ -3435,6 +3609,28 @@ function renderChildrenVaccinationByType(
                             onclick="openChildrenVaccinationRecordModal('${vaccine.id}')"
                         >
                             ＋
+                        </button>
+
+                    </div>
+
+                    <div
+                        class="children-vaccination-complete-area"
+                    >
+
+                        <button
+                            type="button"
+                            class="children-vaccination-complete-button ${
+                                isCompleted
+                                    ? "completed"
+                                    : ""
+                            }"
+                            onclick="toggleChildrenVaccinationCompleted('${vaccine.id}')"
+                        >
+                            ${
+                                isCompleted
+                                    ? "↩ 完了を解除"
+                                    : "✓ 完了にする"
+                            }
                         </button>
 
                     </div>
@@ -3543,6 +3739,7 @@ function renderChildrenVaccinationByType(
         html;
 
 }
+
 
 
 /* =====================================================
