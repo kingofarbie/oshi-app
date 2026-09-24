@@ -229,6 +229,18 @@ function openChildrenHeightWeight() {
 
     }
 
+        const growthHeader =
+        growthSection.querySelector(
+            ".children-growth-section-header"
+        );
+
+    if (growthHeader) {
+
+        growthHeader.style.display =
+            "none";
+
+    }
+
 
     let heightWeightSection =
         document.getElementById(
@@ -949,6 +961,18 @@ function closeChildrenHeightWeight() {
     if (categoryList) {
 
         categoryList.style.display =
+            "";
+
+    }
+
+        const growthHeader =
+        document.querySelector(
+            "#childrenGrowthSection .children-growth-section-header"
+        );
+
+    if (growthHeader) {
+
+        growthHeader.style.display =
             "";
 
     }
