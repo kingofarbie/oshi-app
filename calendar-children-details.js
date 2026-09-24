@@ -2995,6 +2995,18 @@ function openChildrenVaccination() {
 
     resetChildrenGrowthSubPages();
 
+    const calendarBackButton =
+    document.querySelector(
+        ".children-calendar-back-button"
+    );
+
+if (calendarBackButton) {
+
+    calendarBackButton.style.display =
+        "none";
+
+}
+
 
     const growthSection =
         document.getElementById(
