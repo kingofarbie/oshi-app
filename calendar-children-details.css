@@ -861,7 +861,7 @@ button:active {
 }
 
 /* =====================================================
-   接種記録
+   💉 接種の記録
 ===================================================== */
 
 .children-vaccination-record-table-wrapper {
@@ -900,7 +900,7 @@ button:active {
 .children-vaccination-record-table th {
 
     padding:
-        10px 7px;
+        10px 6px;
 
     border-bottom:
         1px solid
@@ -918,33 +918,42 @@ button:active {
 
     text-align: center;
 
-    white-space: nowrap;
+    white-space: normal;
+
+    line-height: 1.35;
 
 }
 
 
 /* =====================================================
-   列幅
+   4列
 ===================================================== */
 
 .children-vaccination-record-table th:nth-child(1) {
-    width: 18%;
+
+    width: 35%;
+
 }
+
 
 .children-vaccination-record-table th:nth-child(2) {
-    width: 28%;
+
+    width: 22%;
+
 }
+
 
 .children-vaccination-record-table th:nth-child(3) {
+
     width: 20%;
+
 }
+
 
 .children-vaccination-record-table th:nth-child(4) {
-    width: 18%;
-}
 
-.children-vaccination-record-table th:nth-child(5) {
-    width: 16%;
+    width: 23%;
+
 }
 
 
@@ -955,12 +964,13 @@ button:active {
 .children-vaccination-record-main-row td {
 
     padding:
-        10px 7px;
+        10px 6px 6px;
 
     border-bottom:
         none;
 
-    vertical-align: middle;
+    background:
+        var(--surface,#fff);
 
     color:
         var(--text,#333);
@@ -969,13 +979,7 @@ button:active {
 
     line-height: 1.4;
 
-}
-
-
-.children-vaccination-record-main-row {
-
-    background:
-        var(--surface,#fff);
+    vertical-align: middle;
 
 }
 
@@ -988,26 +992,9 @@ button:active {
 
     font-weight: 800;
 
-    text-align: center;
+    text-align: left;
 
     white-space: nowrap;
-
-}
-
-
-/* =====================================================
-   ワクチン名
-===================================================== */
-
-.children-vaccination-record-table-name {
-
-    font-weight: 800;
-
-    line-height: 1.45;
-
-    word-break: break-word;
-
-    overflow-wrap: anywhere;
 
 }
 
@@ -1017,6 +1004,8 @@ button:active {
 ===================================================== */
 
 .children-vaccination-record-table-age {
+
+    font-size: 11px;
 
     text-align: center;
 
@@ -1031,9 +1020,9 @@ button:active {
 
 .children-vaccination-record-table-dose {
 
-    text-align: center;
-
     font-weight: 800;
+
+    text-align: center;
 
     white-space: nowrap;
 
@@ -1047,6 +1036,8 @@ button:active {
 .children-vaccination-record-table-actions {
 
     text-align: center;
+
+    vertical-align: middle;
 
     white-space: nowrap;
 
@@ -1111,7 +1102,7 @@ button:active {
 .children-vaccination-record-detail-row td {
 
     padding:
-        0 10px 10px;
+        4px 6px 10px;
 
     border-bottom:
         1px solid
@@ -1120,23 +1111,49 @@ button:active {
     background:
         var(--surface,#fff);
 
-}
-
-
-/* =====================================================
-   病院名
-===================================================== */
-
-.children-vaccination-record-hospital {
-
-    margin-top: 1px;
-
     color:
         var(--muted,#777);
 
     font-size: 11px;
 
     line-height: 1.45;
+
+    vertical-align: top;
+
+}
+
+
+/* =====================================================
+   ワクチン名
+===================================================== */
+
+.children-vaccination-record-table-name {
+
+    font-weight: 800;
+
+    color:
+        var(--text,#333);
+
+    word-break: break-word;
+
+    overflow-wrap: anywhere;
+
+}
+
+
+/* =====================================================
+   病院
+===================================================== */
+
+.children-vaccination-record-table-hospital {
+
+    min-width: 0;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
 
     word-break: break-word;
 
@@ -1147,6 +1164,14 @@ button:active {
    メモ
 ===================================================== */
 
+.children-vaccination-record-table-memo {
+
+    min-width: 0;
+
+}
+
+
+.children-vaccination-record-table-memo
 .children-vaccination-record-memo {
 
     display: flex;
@@ -1155,7 +1180,9 @@ button:active {
 
     gap: 3px;
 
-    margin-top: 3px;
+    min-width: 0;
+
+    margin: 0;
 
     color:
         var(--muted,#777);
@@ -1166,13 +1193,10 @@ button:active {
 
     cursor: pointer;
 
-    min-width: 0;
-
 }
 
 
-/* メモ本文 */
-
+.children-vaccination-record-table-memo
 .children-vaccination-record-memo span {
 
     display: block;
@@ -1192,6 +1216,7 @@ button:active {
    メモ全文表示
 ===================================================== */
 
+.children-vaccination-record-table-memo
 .children-vaccination-record-memo.expanded {
 
     align-items: flex-start;
@@ -1199,6 +1224,7 @@ button:active {
 }
 
 
+.children-vaccination-record-table-memo
 .children-vaccination-record-memo.expanded span {
 
     white-space: normal;
@@ -1210,34 +1236,6 @@ button:active {
     word-break: break-word;
 
     overflow-wrap: anywhere;
-
-}
-
-
-/* =====================================================
-   詳細情報なし
-===================================================== */
-
-.children-vaccination-record-detail-empty {
-
-    padding-top: 2px;
-
-    color:
-        #aaa;
-
-    font-size: 11px;
-
-}
-
-
-/* =====================================================
-   最後の行
-===================================================== */
-
-.children-vaccination-record-table tr:last-child
-.children-vaccination-record-detail-row td {
-
-    border-bottom: none;
 
 }
 
@@ -1261,7 +1259,7 @@ button:active {
     .children-vaccination-record-main-row td {
 
         padding:
-            9px 5px;
+            9px 5px 5px;
 
         font-size: 11px;
 
@@ -1271,36 +1269,52 @@ button:active {
     .children-vaccination-record-detail-row td {
 
         padding:
-            0 7px 9px;
+            4px 5px 9px;
+
+        font-size: 10px;
 
     }
 
 
     .children-vaccination-record-table th:nth-child(1) {
-        width: 19%;
+
+        width: 36%;
+
     }
+
 
     .children-vaccination-record-table th:nth-child(2) {
-        width: 27%;
+
+        width: 22%;
+
     }
+
 
     .children-vaccination-record-table th:nth-child(3) {
+
         width: 20%;
+
     }
+
 
     .children-vaccination-record-table th:nth-child(4) {
-        width: 18%;
+
+        width: 22%;
+
     }
 
-    .children-vaccination-record-table th:nth-child(5) {
-        width: 16%;
+
+    .children-vaccination-record-table-age {
+
+        font-size: 10px;
+
     }
 
 
-    .children-vaccination-record-hospital,
+    .children-vaccination-record-table-memo
     .children-vaccination-record-memo {
 
-        font-size: 11px;
+        font-size: 10px;
 
     }
 
@@ -1320,6 +1334,8 @@ button:active {
     }
 
 }
+
+
 
 /* =====================================================
    入力モーダル

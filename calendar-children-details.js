@@ -3785,11 +3785,7 @@ function renderChildrenVaccinationTimeline(
                     <tr>
 
                         <th>
-                            接種日
-                        </th>
-
-                        <th>
-                            ワクチン
+                            接種日・ワクチン名
                         </th>
 
                         <th>
@@ -3855,15 +3851,6 @@ function renderChildrenVaccinationTimeline(
 
 
                     <td
-                        class="children-vaccination-record-table-name"
-                    >
-                        ${escapeHtml(
-                            vaccineName
-                        )}
-                    </td>
-
-
-                    <td
                         class="children-vaccination-record-table-age"
                     >
                         ${escapeHtml(
@@ -3887,6 +3874,7 @@ function renderChildrenVaccinationTimeline(
 
                     <td
                         class="children-vaccination-record-table-actions"
+                        rowspan="2"
                     >
 
                         <button
@@ -3916,24 +3904,33 @@ function renderChildrenVaccinationTimeline(
                 >
 
                     <td
-                        colspan="5"
+                        class="children-vaccination-record-table-name"
                     >
+                        ${escapeHtml(
+                            vaccineName
+                        )}
+                    </td>
 
+
+                    <td
+                        class="children-vaccination-record-table-hospital"
+                    >
                         ${
                             record.hospital
                                 ? `
-                                    <div
-                                        class="children-vaccination-record-hospital"
-                                    >
-                                        🏥
-                                        ${escapeHtml(
-                                            record.hospital
-                                        )}
-                                    </div>
+                                    🏥
+                                    ${escapeHtml(
+                                        record.hospital
+                                    )}
                                 `
-                                : ""
+                                : "―"
                         }
+                    </td>
 
+
+                    <td
+                        class="children-vaccination-record-table-memo"
+                    >
 
                         ${
                             record.memo
@@ -3954,21 +3951,7 @@ function renderChildrenVaccinationTimeline(
                                         </span>
                                     </div>
                                 `
-                                : ""
-                        }
-
-
-                        ${
-                            !record.hospital &&
-                            !record.memo
-                                ? `
-                                    <div
-                                        class="children-vaccination-record-detail-empty"
-                                    >
-                                        詳細情報なし
-                                    </div>
-                                `
-                                : ""
+                                : "―"
                         }
 
                     </td>
@@ -3996,7 +3979,6 @@ function renderChildrenVaccinationTimeline(
         html;
 
 }
-
 
 
 /* =====================================================
