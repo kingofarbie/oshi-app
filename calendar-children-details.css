@@ -703,18 +703,6 @@ button:active {
 
 }
 
-.children-vaccination-complete-button.completed {
-
-    background:
-        var(--child-accent);
-
-    border-color:
-        var(--child-accent);
-
-    color:
-        #fff;
-
-}
 
 
 /* =====================================================
