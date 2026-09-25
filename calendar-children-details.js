@@ -3724,6 +3724,25 @@ function renderChildrenVaccinationTimeline(
             );
 
 
+    window.toggleChildrenVaccinationMemo =
+        function(recordId) {
+
+            const memo =
+                document.getElementById(
+                    "childrenVaccinationMemo_" +
+                    recordId
+                );
+
+            if (!memo) return;
+
+
+            memo.classList.toggle(
+                "expanded"
+            );
+
+        };
+
+
     let html = `
 
         <div class="children-vaccination-master-title">
@@ -3822,7 +3841,9 @@ function renderChildrenVaccinationTimeline(
 
             html += `
 
-                <tr>
+                <tr
+                    class="children-vaccination-record-main-row"
+                >
 
                     <td
                         class="children-vaccination-record-table-date"
@@ -3889,6 +3910,71 @@ function renderChildrenVaccinationTimeline(
 
                 </tr>
 
+
+                <tr
+                    class="children-vaccination-record-detail-row"
+                >
+
+                    <td
+                        colspan="5"
+                    >
+
+                        ${
+                            record.hospital
+                                ? `
+                                    <div
+                                        class="children-vaccination-record-hospital"
+                                    >
+                                        🏥
+                                        ${escapeHtml(
+                                            record.hospital
+                                        )}
+                                    </div>
+                                `
+                                : ""
+                        }
+
+
+                        ${
+                            record.memo
+                                ? `
+                                    <div
+                                        id="childrenVaccinationMemo_${escapeHtml(record.id)}"
+                                        class="children-vaccination-record-memo"
+                                        onclick="toggleChildrenVaccinationMemo('${escapeHtml(record.id)}')"
+                                        role="button"
+                                        tabindex="0"
+                                        title="タップすると全文表示"
+                                    >
+                                        📝
+                                        <span>
+                                            ${escapeHtml(
+                                                record.memo
+                                            )}
+                                        </span>
+                                    </div>
+                                `
+                                : ""
+                        }
+
+
+                        ${
+                            !record.hospital &&
+                            !record.memo
+                                ? `
+                                    <div
+                                        class="children-vaccination-record-detail-empty"
+                                    >
+                                        詳細情報なし
+                                    </div>
+                                `
+                                : ""
+                        }
+
+                    </td>
+
+                </tr>
+
             `;
 
         }
@@ -3910,7 +3996,6 @@ function renderChildrenVaccinationTimeline(
         html;
 
 }
-
 
 
 
