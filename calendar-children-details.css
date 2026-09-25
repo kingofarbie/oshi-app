@@ -508,20 +508,6 @@ button:active {
 }
 
 
-.children-vaccination-add {
-    width:100%;
-    min-height:46px;
-    padding:9px 14px;
-    border:none;
-    border-radius:11px;
-    background:var(--child-accent);
-    color:#fff;
-    font-size:15px;
-    font-weight:900;
-    cursor:pointer;
-}
-
-
 .children-vaccination-view-switch {
     display:grid;
     grid-template-columns:1fr 1fr;
