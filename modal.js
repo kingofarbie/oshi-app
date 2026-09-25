@@ -51,6 +51,7 @@ async function loadCommonModalHTML() {
             await response.text();
 
         initializeNumberInputModal();
+        initializeCommonConfirmModal();
 
     }
     catch (error) {
@@ -137,6 +138,51 @@ function initializeNumberInputModal() {
 
         });
 
+}
+
+
+// =====================================================
+// ✅ 共通確認モーダル 初期化
+// =====================================================
+
+let commonConfirmResolve = null;
+
+function initializeCommonConfirmModal() {
+
+    const modal =
+        document.getElementById("commonConfirmModal");
+
+    const cancelButton =
+        document.getElementById("commonConfirmCancelButton");
+
+    const okButton =
+        document.getElementById("commonConfirmOkButton");
+
+    if (!modal || !cancelButton || !okButton) {
+        return;
+    }
+
+    cancelButton.onclick = function() {
+
+        modal.style.display = "none";
+
+        if (typeof commonConfirmResolve === "function") {
+            const resolve = commonConfirmResolve;
+            commonConfirmResolve = null;
+            resolve(false);
+        }
+    };
+
+    okButton.onclick = function() {
+
+        modal.style.display = "none";
+
+        if (typeof commonConfirmResolve === "function") {
+            const resolve = commonConfirmResolve;
+            commonConfirmResolve = null;
+            resolve(true);
+        }
+    };
 }
 
 
@@ -698,6 +744,60 @@ function closeNumberInputModal() {
     numberInputDeleteCallback = null;
 
 }
+
+
+
+// =====================================================
+// ✅ 共通確認モーダルを開く
+// =====================================================
+
+function openCommonConfirmModal(
+    message,
+    okText = "確認",
+    cancelText = "キャンセル"
+) {
+
+    const modal =
+        document.getElementById("commonConfirmModal");
+
+    const messageElement =
+        document.getElementById("commonConfirmMessage");
+
+    const cancelButton =
+        document.getElementById("commonConfirmCancelButton");
+
+    const okButton =
+        document.getElementById("commonConfirmOkButton");
+
+    if (
+        !modal ||
+        !messageElement ||
+        !cancelButton ||
+        !okButton
+    ) {
+        return Promise.resolve(false);
+    }
+
+    messageElement.textContent = message;
+
+    okButton.textContent = okText;
+    cancelButton.textContent = cancelText;
+
+    modal.style.display = "flex";
+
+    return new Promise(resolve => {
+
+        commonConfirmResolve = resolve;
+
+    });
+}
+
+
+
+
+
+
+
 
 
 // =====================================================

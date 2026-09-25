@@ -3504,68 +3504,83 @@ function renderChildrenVaccinationByType(
        💉 接種完了状態 切り替え
     ================================================= */
 
-window.toggleChildrenVaccinationCompleted = function(vaccineId) {
+window.toggleChildrenVaccinationCompleted =
+    async function(vaccineId) {
 
-    initializeChildrenVaccinationData(child);
-
-    const completed =
-        child.growth.vaccinationCompleted;
-
-    const vaccine =
-        CHILDREN_VACCINATION_MASTER.find(
-            item => item.id === vaccineId
+        initializeChildrenVaccinationData(
+            child
         );
 
-    if (!vaccine) return;
+        const completed =
+            child.growth
+                .vaccinationCompleted;
 
-    const vaccineName =
-        vaccine.name || "この予防接種";
-
-    const isCompleted =
-        !!completed[vaccineId];
-
-    /* =========================
-       すでに完了 → 未完了に解除
-    ========================= */
-    if (isCompleted) {
-
-        const message =
-            `「${vaccineName}」の予防接種はまだ完了していませんか？`;
-
-        const result =
-            window.confirm(
-                message + "\n\n「完了」＝キャンセル\n「未完了」＝解除"
+        const master =
+            getChildrenVaccinationMaster(
+                vaccineId
             );
 
-        if (!result) return;
+        const vaccineName =
+            master
+                ? master.name
+                : "このワクチン";
 
-        completed[vaccineId] = false;
-
-    }
-
-    /* =========================
-       未完了 → 完了に変更
-    ========================= */
-    else {
-
-        const message =
-            `「${vaccineName}」の予防接種は完了していますか？`;
-
-        const result =
-            window.confirm(
-                message + "\n\n「完了」＝OK\n「未完了」＝キャンセル"
-            );
-
-        if (!result) return;
-
-        completed[vaccineId] = true;
-    }
-
-    saveChildrenVaccinationData();
-    renderChildrenVaccination();
-};
+        const isCompleted =
+            !!completed[vaccineId];
 
 
+        /* =================================================
+           未 → 完
+        ================================================= */
+
+        if (!isCompleted) {
+
+            const result =
+                await openCommonConfirmModal(
+                    vaccineName +
+                    "の予防接種は完了していますか？",
+                    "完了",
+                    "未完了(キャンセル)"
+                );
+
+            if (!result) {
+                return;
+            }
+
+            completed[vaccineId] = true;
+
+        }
+
+
+        /* =================================================
+           完 → 未
+        ================================================= */
+
+        else {
+
+            const result =
+                await openCommonConfirmModal(
+                    vaccineName +
+                    "の予防接種はまだ完了していませんか？",
+                    "完了(キャンセル)",
+                    "未完了"
+                );
+
+            if (!result) {
+                return;
+            }
+
+            completed[vaccineId] = false;
+
+        }
+
+
+        saveChildrenVaccinationData();
+
+        renderChildrenVaccination();
+
+    };
+    
 
     let html = `
 

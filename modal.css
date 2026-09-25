@@ -284,3 +284,151 @@
     border: 1px solid var(--children-girl-border) !important;
     color: #fff !important;
 }
+
+
+
+/* =====================================================
+   ✅ 共通確認モーダル
+===================================================== */
+
+.common-confirm-modal {
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 10000;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgba(0, 0, 0, 0.45);
+
+}
+
+
+.common-confirm-dialog {
+
+    width: min(
+        100%,
+        360px
+    );
+
+    padding: 20px;
+
+    border-radius: 18px;
+
+    background: var(--card-bg, #ffffff);
+
+    box-shadow:
+        0 10px 35px
+        rgba(0, 0, 0, 0.25);
+
+}
+
+
+.common-confirm-message {
+
+    margin-bottom: 20px;
+
+    text-align: center;
+
+    font-size: 17px;
+
+    font-weight: 700;
+
+    line-height: 1.6;
+
+    color: var(--text, #333);
+
+    white-space: pre-wrap;
+
+    word-break: break-word;
+
+}
+
+
+.common-confirm-actions {
+
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 9px;
+
+}
+
+
+.common-confirm-actions button {
+
+    min-height: 48px;
+
+    margin: 0;
+
+    padding: 8px 10px;
+
+    border-radius: 10px;
+
+    font-size: 14px;
+
+    font-weight: 800;
+
+    cursor: pointer;
+
+}
+
+
+.common-confirm-cancel {
+
+    border: 1px solid var(--child-border, #ccc);
+
+    background: var(--card-bg, #fff);
+
+    color: var(--text, #333);
+
+}
+
+
+.common-confirm-ok {
+
+    border: 1px solid var(--child-accent, #6495ED);
+
+    background: var(--child-accent, #6495ED);
+
+    color: #fff;
+
+}
+
+
+/* =====================================================
+   📱 スマホ
+===================================================== */
+
+@media (
+    max-width: 480px
+) {
+
+    .common-confirm-dialog {
+
+        width: 100%;
+
+        max-width: 360px;
+
+        padding: 18px;
+
+    }
+
+
+    .common-confirm-message {
+
+        font-size: 16px;
+
+    }
+
+}
