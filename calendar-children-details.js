@@ -3491,13 +3491,13 @@ function renderChildrenVaccinationByType(
     if (!child) return;
 
 
-    const records =
-        getChildrenVaccinationData();
-
-
     initializeChildrenVaccinationData(
         child
     );
+
+
+    const records =
+        getChildrenVaccinationData();
 
 
     /* =================================================
@@ -3531,11 +3531,17 @@ function renderChildrenVaccinationByType(
 
     let html = `
 
-        <div class="children-vaccination-master-title">
-            📋 定期接種
+        <div
+            class="children-vaccination-master-title"
+        >
+            📋 ワクチン種類
         </div>
 
-        <div class="children-vaccination-master-list">
+
+        <div
+            class="children-vaccination-master-list"
+        >
+
     `;
 
 
@@ -3553,20 +3559,15 @@ function renderChildrenVaccinationByType(
 
 
             const vaccineRecords =
-                records
-                    .filter(
-                        record =>
-                            record.vaccineId ===
-                            vaccine.id
-                    )
-                    .sort(
-                        (a, b) =>
-                            (
-                                b.date || ""
-                            ).localeCompare(
-                                a.date || ""
-                            )
-                    );
+                records.filter(
+                    record =>
+                        record.vaccineId ===
+                        vaccine.id
+                );
+
+
+            const recordCount =
+                vaccineRecords.length;
 
 
             const isCompleted =
@@ -3583,38 +3584,25 @@ function renderChildrenVaccinationByType(
                 >
 
                     <div
-                        class="children-vaccination-type-header"
+                        class="children-vaccination-type-name"
                     >
-
-                        <div>
-
-                            <div
-                                class="children-vaccination-type-name"
-                            >
-                                ${vaccine.icon}
-                                ${escapeHtml(vaccine.name)}
-                            </div>
-
-                            <div
-                                class="children-vaccination-type-target"
-                            >
-                                標準時期：
-                                ${escapeHtml(vaccine.target)}
-                            </div>
-
-                            <div
-                                class="children-vaccination-type-dose"
-                            >
-                                ${escapeHtml(vaccine.doses)}
-                            </div>
-
-                        </div>
-
+                        ${vaccine.icon}
+                        ${escapeHtml(
+                            vaccine.name
+                        )}
                     </div>
 
+
                     <div
-                        class="children-vaccination-complete-area"
+                        class="children-vaccination-type-status"
                     >
+
+                        <span
+                            class="children-vaccination-count"
+                        >
+                            ${recordCount}回済
+                        </span>
+
 
                         <button
                             type="button"
@@ -3627,118 +3615,32 @@ function renderChildrenVaccinationByType(
                         >
                             ${
                                 isCompleted
-                                    ? "↩ 完了を解除"
-                                    : "✓ 完了にする"
+                                    ? "完"
+                                    : "未"
                             }
                         </button>
 
                     </div>
 
+                </div>
+
             `;
-
-
-            if (!vaccineRecords.length) {
-
-                html += `
-
-                    <div
-                        class="children-vaccination-unrecorded"
-                    >
-                        まだ接種記録がありません
-                    </div>
-
-                `;
-
-            }
-            else {
-
-                vaccineRecords.forEach(
-                    record => {
-
-                        html +=
-                            renderChildrenVaccinationRecordHtml(
-                                record,
-                                child
-                            );
-
-                    }
-                );
-
-            }
-
-
-            html += `</div>`;
 
         }
     );
 
 
-    html += `</div>`;
-
-
-    /* ---------------------------------------------
-       任意ワクチン
-    --------------------------------------------- */
-
-    const customRecords =
-        records.filter(
-            record =>
-                record.custom === true
-        );
-
-
     html += `
 
-        <div class="children-vaccination-master-title custom">
-            ➕ 任意・その他のワクチン
         </div>
 
     `;
-
-
-    if (!customRecords.length) {
-
-        html += `
-
-            <div class="children-vaccination-empty">
-                任意・その他の接種記録はありません
-            </div>
-
-        `;
-
-    }
-    else {
-
-        customRecords
-            .slice()
-            .sort(
-                (a, b) =>
-                    (
-                        b.date || ""
-                    ).localeCompare(
-                        a.date || ""
-                    )
-            )
-            .forEach(
-                record => {
-
-                    html +=
-                        renderChildrenVaccinationRecordHtml(
-                            record,
-                            child
-                        );
-
-                }
-            );
-
-    }
 
 
     container.innerHTML =
         html;
 
 }
-
 
 
 /* =====================================================
