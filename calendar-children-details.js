@@ -3504,29 +3504,67 @@ function renderChildrenVaccinationByType(
        💉 接種完了状態 切り替え
     ================================================= */
 
-    window.toggleChildrenVaccinationCompleted =
-        function(vaccineId) {
+window.toggleChildrenVaccinationCompleted = function(vaccineId) {
 
-            initializeChildrenVaccinationData(
-                child
+    initializeChildrenVaccinationData(child);
+
+    const completed =
+        child.growth.vaccinationCompleted;
+
+    const vaccine =
+        CHILDREN_VACCINATION_MASTER.find(
+            item => item.id === vaccineId
+        );
+
+    if (!vaccine) return;
+
+    const vaccineName =
+        vaccine.name || "この予防接種";
+
+    const isCompleted =
+        !!completed[vaccineId];
+
+    /* =========================
+       すでに完了 → 未完了に解除
+    ========================= */
+    if (isCompleted) {
+
+        const message =
+            `「${vaccineName}」の予防接種はまだ完了していませんか？`;
+
+        const result =
+            window.confirm(
+                message + "\n\n「完了」＝キャンセル\n「未完了」＝解除"
             );
 
+        if (!result) return;
 
-            const completed =
-                child.growth
-                    .vaccinationCompleted;
+        completed[vaccineId] = false;
 
+    }
 
-            completed[vaccineId] =
-                !completed[vaccineId];
+    /* =========================
+       未完了 → 完了に変更
+    ========================= */
+    else {
 
+        const message =
+            `「${vaccineName}」の予防接種は完了していますか？`;
 
-            saveChildrenVaccinationData();
+        const result =
+            window.confirm(
+                message + "\n\n「完了」＝OK\n「未完了」＝キャンセル"
+            );
 
+        if (!result) return;
 
-            renderChildrenVaccination();
+        completed[vaccineId] = true;
+    }
 
-        };
+    saveChildrenVaccinationData();
+    renderChildrenVaccination();
+};
+
 
 
     let html = `
