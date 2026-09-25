@@ -652,7 +652,7 @@ button:active {
     color:
         var(--text,#333);
 
-    font-size: 12px;
+    font-size: 14px;
 
     font-weight: 900;
 
@@ -707,6 +707,8 @@ button:active {
 .children-vaccination-table-name {
 
     font-weight: 800;
+    
+    font-size: 14px;
 
     line-height: 1.45;
 
@@ -750,18 +752,18 @@ button:active {
 
 .children-vaccination-complete-button {
 
-    min-width: 42px;
+    min-width: 34px;
 
-    min-height: 36px;
+    min-height: 30px;
 
     padding:
-        6px 9px;
+        4px 6px;
 
     border:
         1px solid
         var(--child-border);
 
-    border-radius: 9px;
+    border-radius: 8px;
 
     background:
         var(--surface,#fff);
@@ -769,14 +771,13 @@ button:active {
     color:
         var(--text,#333);
 
-    font-size: 13px;
+    font-size: 15px;
 
     font-weight: 900;
 
     cursor: pointer;
 
 }
-
 
 .children-vaccination-complete-button.completed {
 
