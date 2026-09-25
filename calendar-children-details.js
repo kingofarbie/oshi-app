@@ -3621,14 +3621,6 @@ function renderChildrenVaccinationByType(
 
                         </div>
 
-                        <button
-                            type="button"
-                            class="children-vaccination-small-add"
-                            onclick="openChildrenVaccinationRecordModal('${vaccine.id}')"
-                        >
-                            ＋
-                        </button>
-
                     </div>
 
                     <div
