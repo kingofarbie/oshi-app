@@ -864,82 +864,332 @@ button:active {
    接種記録
 ===================================================== */
 
-.children-vaccination-record {
-    display:flex;
-    align-items:stretch;
-    gap:8px;
-    padding:10px 11px;
-    border-top:1px solid rgba(128,128,128,.16);
+.children-vaccination-record-table-wrapper {
+
+    width: 100%;
+
+    overflow-x: auto;
+
+    border:
+        1px solid
+        var(--child-border);
+
+    border-radius: 13px;
+
+    background:
+        var(--surface,#fff);
+
 }
 
 
-.children-vaccination-record-main {
-    flex:1;
-    min-width:0;
-    cursor:pointer;
+.children-vaccination-record-table {
+
+    width: 100%;
+
+    border-collapse: collapse;
+
+    table-layout: fixed;
+
 }
 
 
-.children-vaccination-record-date {
-    font-size:13px;
-    font-weight:900;
+/* =====================================================
+   表ヘッダー
+===================================================== */
+
+.children-vaccination-record-table th {
+
+    padding:
+        10px 7px;
+
+    border-bottom:
+        1px solid
+        rgba(128,128,128,.18);
+
+    background:
+        var(--child-bg);
+
+    color:
+        var(--text,#333);
+
+    font-size: 11px;
+
+    font-weight: 900;
+
+    text-align: center;
+
+    white-space: nowrap;
+
 }
 
 
-.children-vaccination-record-name {
-    margin-top:3px;
-    font-size:14px;
-    font-weight:800;
-    word-break:break-word;
+/* =====================================================
+   列幅
+===================================================== */
+
+.children-vaccination-record-table th:nth-child(1) {
+
+    width: 18%;
+
 }
 
 
-.children-vaccination-record-age,
-.children-vaccination-record-dose,
-.children-vaccination-record-hospital,
-.children-vaccination-record-memo {
-    margin-top:3px;
-    color:var(--muted,#777);
-    font-size:12px;
-    line-height:1.45;
-    word-break:break-word;
+.children-vaccination-record-table th:nth-child(2) {
+
+    width: 28%;
+
 }
 
 
-.children-vaccination-record-actions {
-    display:flex;
-    align-items:center;
-    gap:4px;
+.children-vaccination-record-table th:nth-child(3) {
+
+    width: 20%;
+
 }
 
 
+.children-vaccination-record-table th:nth-child(4) {
+
+    width: 18%;
+
+}
+
+
+.children-vaccination-record-table th:nth-child(5) {
+
+    width: 16%;
+
+}
+
+
+/* =====================================================
+   表セル
+===================================================== */
+
+.children-vaccination-record-table td {
+
+    padding:
+        10px 7px;
+
+    border-bottom:
+        1px solid
+        rgba(128,128,128,.14);
+
+    vertical-align: middle;
+
+    color:
+        var(--text,#333);
+
+    font-size: 12px;
+
+    line-height: 1.4;
+
+}
+
+
+.children-vaccination-record-table tr:last-child td {
+
+    border-bottom: none;
+
+}
+
+
+/* =====================================================
+   接種日
+===================================================== */
+
+.children-vaccination-record-table-date {
+
+    font-weight: 800;
+
+    text-align: center;
+
+    white-space: nowrap;
+
+}
+
+
+/* =====================================================
+   ワクチン
+===================================================== */
+
+.children-vaccination-record-table-name {
+
+    font-weight: 800;
+
+    word-break: break-word;
+
+}
+
+
+/* =====================================================
+   接種時年齢
+===================================================== */
+
+.children-vaccination-record-table-age {
+
+    text-align: center;
+
+    white-space: nowrap;
+
+}
+
+
+/* =====================================================
+   接種回数
+===================================================== */
+
+.children-vaccination-record-table-dose {
+
+    text-align: center;
+
+    font-weight: 800;
+
+    white-space: nowrap;
+
+}
+
+
+/* =====================================================
+   操作
+===================================================== */
+
+.children-vaccination-record-table-actions {
+
+    text-align: center;
+
+    white-space: nowrap;
+
+}
+
+
+.children-vaccination-record-table-actions
 .children-vaccination-edit,
+
+.children-vaccination-record-table-actions
 .children-vaccination-delete {
-    width:32px;
-    height:32px;
-    min-width:32px;
-    min-height:32px;
-    padding:0;
-    border:none!important;
-    background:transparent!important;
-    color:#777;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    cursor:pointer;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 30px;
+
+    height: 30px;
+
+    min-width: 30px;
+
+    min-height: 30px;
+
+    padding: 0;
+
+    border: none !important;
+
+    background: transparent !important;
+
+    cursor: pointer;
+
 }
 
 
+.children-vaccination-record-table-actions
 .children-vaccination-edit {
-    font-size:20px;
+
+    font-size: 18px;
+
+    color: #777;
+
 }
 
 
+.children-vaccination-record-table-actions
 .children-vaccination-delete {
-    font-size:24px;
-    color:#999;
+
+    font-size: 22px;
+
+    color: #999;
+
 }
 
+
+/* =====================================================
+   スマホ
+===================================================== */
+
+@media(max-width:600px) {
+
+    .children-vaccination-record-table th {
+
+        padding:
+            9px 5px;
+
+        font-size: 10px;
+
+    }
+
+
+    .children-vaccination-record-table td {
+
+        padding:
+            9px 5px;
+
+        font-size: 11px;
+
+    }
+
+
+    .children-vaccination-record-table th:nth-child(1) {
+
+        width: 19%;
+
+    }
+
+
+    .children-vaccination-record-table th:nth-child(2) {
+
+        width: 27%;
+
+    }
+
+
+    .children-vaccination-record-table th:nth-child(3) {
+
+        width: 20%;
+
+    }
+
+
+    .children-vaccination-record-table th:nth-child(4) {
+
+        width: 18%;
+
+    }
+
+
+    .children-vaccination-record-table th:nth-child(5) {
+
+        width: 16%;
+
+    }
+
+
+    .children-vaccination-record-table-actions
+    .children-vaccination-edit,
+
+    .children-vaccination-record-table-actions
+    .children-vaccination-delete {
+
+        width: 27px;
+
+        height: 30px;
+
+        min-width: 27px;
+
+    }
+
+}
 
 /* =====================================================
    入力モーダル
