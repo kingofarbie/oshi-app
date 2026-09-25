@@ -3539,8 +3539,35 @@ function renderChildrenVaccinationByType(
 
 
         <div
-            class="children-vaccination-master-list"
+            class="children-vaccination-table-wrapper"
         >
+
+            <table
+                class="children-vaccination-table"
+            >
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            ワクチン
+                        </th>
+
+                        <th>
+                            接種回数
+                        </th>
+
+                        <th>
+                            状態
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
 
     `;
 
@@ -3579,30 +3606,32 @@ function renderChildrenVaccinationByType(
 
             html += `
 
-                <div
-                    class="children-vaccination-type-card"
-                >
+                <tr>
 
-                    <div
-                        class="children-vaccination-type-name"
+                    <td
+                        class="children-vaccination-table-name"
                     >
+
                         ${vaccine.icon}
                         ${escapeHtml(
                             vaccine.name
                         )}
-                    </div>
+
+                    </td>
 
 
-                    <div
-                        class="children-vaccination-type-status"
+                    <td
+                        class="children-vaccination-table-count"
                     >
 
-                        <span
-                            class="children-vaccination-count"
-                        >
-                            ${recordCount}回済
-                        </span>
+                        ${recordCount}回済
 
+                    </td>
+
+
+                    <td
+                        class="children-vaccination-table-status"
+                    >
 
                         <button
                             type="button"
@@ -3613,16 +3642,18 @@ function renderChildrenVaccinationByType(
                             }"
                             onclick="toggleChildrenVaccinationCompleted('${vaccine.id}')"
                         >
+
                             ${
                                 isCompleted
                                     ? "完"
                                     : "未"
                             }
+
                         </button>
 
-                    </div>
+                    </td>
 
-                </div>
+                </tr>
 
             `;
 
@@ -3631,6 +3662,10 @@ function renderChildrenVaccinationByType(
 
 
     html += `
+
+                </tbody>
+
+            </table>
 
         </div>
 

@@ -590,86 +590,275 @@ button:active {
 ===================================================== */
 
 .children-vaccination-master-title {
-    margin:14px 0 8px;
-    font-size:16px;
-    font-weight:900;
+    margin: 14px 0 8px;
+    font-size: 16px;
+    font-weight: 900;
 }
 
 
-.children-vaccination-master-title.custom {
-    margin-top:20px;
+/* =====================================================
+   💉 ワクチン一覧 表
+===================================================== */
+
+.children-vaccination-table-wrapper {
+
+    width: 100%;
+
+    overflow-x: auto;
+
+    border:
+        1px solid
+        var(--child-border);
+
+    border-radius: 13px;
+
+    background:
+        var(--surface,#fff);
+
 }
 
 
-.children-vaccination-master-list {
-    display:flex;
-    flex-direction:column;
-    gap:9px;
+.children-vaccination-table {
+
+    width: 100%;
+
+    border-collapse: collapse;
+
+    table-layout: fixed;
+
 }
 
 
-.children-vaccination-type-card {
-    border:1px solid var(--child-border);
-    border-radius:13px;
-    background:var(--surface,#fff);
-    overflow:hidden;
+.children-vaccination-table th,
+.children-vaccination-table td {
+
+    padding:
+        11px 10px;
+
+    border-bottom:
+        1px solid
+        rgba(128,128,128,.16);
+
+    vertical-align: middle;
+
 }
 
 
-.children-vaccination-type-header {
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-    padding:11px 12px;
-    background:var(--child-bg);
+.children-vaccination-table th {
+
+    background:
+        var(--child-bg);
+
+    color:
+        var(--text,#333);
+
+    font-size: 12px;
+
+    font-weight: 900;
+
+    text-align: center;
+
+    white-space: nowrap;
+
 }
 
 
-.children-vaccination-type-name {
-    font-size:15px;
-    font-weight:900;
+.children-vaccination-table th:nth-child(1) {
+
+    width: 55%;
+
+    text-align: left;
+
 }
 
 
-.children-vaccination-type-target,
-.children-vaccination-type-dose {
-    margin-top:3px;
-    color:var(--muted,#777);
-    font-size:11px;
-    line-height:1.4;
+.children-vaccination-table th:nth-child(2) {
+
+    width: 25%;
+
 }
 
 
-.children-vaccination-small-add {
-    width:40px;
-    height:40px;
-    min-width:40px;
-    padding:0;
-    border:1px solid var(--child-accent);
-    border-radius:10px;
-    background:var(--child-accent);
-    color:#fff;
-    font-size:22px;
-    font-weight:900;
-    cursor:pointer;
+.children-vaccination-table th:nth-child(3) {
+
+    width: 20%;
+
 }
 
 
-.children-vaccination-unrecorded {
-    padding:11px 12px;
-    color:#888;
-    font-size:12px;
+.children-vaccination-table td {
+
+    font-size: 13px;
+
 }
 
+
+.children-vaccination-table tr:last-child td {
+
+    border-bottom: none;
+
+}
+
+
+/* =====================================================
+   ワクチン名
+===================================================== */
+
+.children-vaccination-table-name {
+
+    font-weight: 800;
+
+    line-height: 1.45;
+
+    word-break: break-word;
+
+    text-align: left;
+
+}
+
+
+/* =====================================================
+   接種回数
+===================================================== */
+
+.children-vaccination-table-count {
+
+    color:
+        var(--muted,#777);
+
+    font-size: 12px !important;
+
+    font-weight: 800;
+
+    text-align: center;
+
+    white-space: nowrap;
+
+}
+
+
+/* =====================================================
+   完了状態
+===================================================== */
+
+.children-vaccination-table-status {
+
+    text-align: center;
+
+}
+
+
+.children-vaccination-complete-button {
+
+    min-width: 42px;
+
+    min-height: 36px;
+
+    padding:
+        6px 9px;
+
+    border:
+        1px solid
+        var(--child-border);
+
+    border-radius: 9px;
+
+    background:
+        var(--surface,#fff);
+
+    color:
+        var(--text,#333);
+
+    font-size: 13px;
+
+    font-weight: 900;
+
+    cursor: pointer;
+
+}
+
+
+.children-vaccination-complete-button.completed {
+
+    background:
+        var(--child-accent);
+
+    border-color:
+        var(--child-accent);
+
+    color:
+        #fff;
+
+}
+
+
+/* =====================================================
+   空表示
+===================================================== */
 
 .children-vaccination-empty {
-    padding:18px 10px;
-    text-align:center;
-    color:#888;
-    font-size:13px;
+
+    padding:
+        18px 10px;
+
+    text-align:
+        center;
+
+    color:
+        #888;
+
+    font-size:
+        13px;
+
 }
 
+
+@media(max-width:600px) {
+
+    .children-vaccination-table th,
+    .children-vaccination-table td {
+
+        padding:
+            10px 7px;
+
+    }
+
+
+    .children-vaccination-table th:nth-child(1) {
+
+        width: 53%;
+
+    }
+
+
+    .children-vaccination-table th:nth-child(2) {
+
+        width: 27%;
+
+    }
+
+
+    .children-vaccination-table th:nth-child(3) {
+
+        width: 20%;
+
+    }
+
+
+    .children-vaccination-table-name {
+
+        font-size: 12px;
+
+    }
+
+
+    .children-vaccination-table-count {
+
+        font-size: 11px !important;
+
+    }
+
+}
 
 /* =====================================================
    接種記録
