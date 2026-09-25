@@ -508,12 +508,6 @@ button:active {
 }
 
 
-.children-vaccination-view-switch {
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:7px;
-    margin-bottom:14px;
-}
 
 
 .children-vaccination-view-button {
