@@ -1560,8 +1560,7 @@ button:active {
    タイトル左・戻るボタン右
 ===================================================== */
 
-.children-vaccination-header {
-
+.children-subpage-header {
 
     display: grid;
 
@@ -1578,9 +1577,11 @@ button:active {
 }
 
 
-.children-vaccination-title {
+.children-subpage-header h2 {
 
     min-width: 0;
+
+    margin: 0;
 
     font-size: 20px !important;
 
@@ -1591,5 +1592,26 @@ button:active {
     writing-mode: horizontal-tb !important;
 
     text-align: left;
+
+}
+
+
+.children-subpage-back-button {
+
+    min-height: 42px;
+
+    padding: 7px 12px;
+
+    border-radius: 10px;
+
+    border: 1px solid;
+
+    font-size: 14px;
+
+    font-weight: 800;
+
+    cursor: pointer;
+
+    white-space: nowrap;
 
 }
