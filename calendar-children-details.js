@@ -3530,7 +3530,7 @@ window.toggleChildrenVaccinationCompleted =
 
 
         /* =================================================
-           未 → 完
+           未 → 確認
         ================================================= */
 
         if (!isCompleted) {
@@ -3543,17 +3543,22 @@ window.toggleChildrenVaccinationCompleted =
                     "未完了(キャンセル)"
                 );
 
-            if (!result) {
-                return;
-            }
+            if (result === "completed") {
 
-            completed[vaccineId] = true;
+                completed[vaccineId] = true;
+
+            }
+            else {
+
+                return;
+
+            }
 
         }
 
 
         /* =================================================
-           完 → 未
+           完 → 確認
         ================================================= */
 
         else {
@@ -3566,11 +3571,16 @@ window.toggleChildrenVaccinationCompleted =
                     "未完了"
                 );
 
-            if (!result) {
-                return;
-            }
+            if (result === "incomplete") {
 
-            completed[vaccineId] = false;
+                completed[vaccineId] = false;
+
+            }
+            else {
+
+                return;
+
+            }
 
         }
 
@@ -3580,7 +3590,8 @@ window.toggleChildrenVaccinationCompleted =
         renderChildrenVaccination();
 
     };
-    
+
+
 
     let html = `
 

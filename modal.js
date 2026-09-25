@@ -142,15 +142,100 @@ function initializeNumberInputModal() {
 
 
 // =====================================================
-// ✅ 共通確認モーダル 初期化
+// ✅ 共通確認モーダル
 // =====================================================
 
 let commonConfirmResolve = null;
+
+
+// =====================================================
+// ✅ 共通確認モーダル 初期化
+// =====================================================
 
 function initializeCommonConfirmModal() {
 
     const modal =
         document.getElementById("commonConfirmModal");
+
+    const completeButton =
+        document.getElementById("commonConfirmCancelButton");
+
+    const incompleteButton =
+        document.getElementById("commonConfirmOkButton");
+
+    if (
+        !modal ||
+        !completeButton ||
+        !incompleteButton
+    ) {
+        return;
+    }
+
+
+    /* =================================================
+       左ボタン
+       → 結果：完了
+    ================================================= */
+
+    completeButton.onclick = function() {
+
+        modal.style.display = "none";
+
+        if (typeof commonConfirmResolve === "function") {
+
+            const resolve =
+                commonConfirmResolve;
+
+            commonConfirmResolve = null;
+
+            resolve("completed");
+
+        }
+
+    };
+
+
+    /* =================================================
+       右ボタン
+       → 結果：未完了
+    ================================================= */
+
+    incompleteButton.onclick = function() {
+
+        modal.style.display = "none";
+
+        if (typeof commonConfirmResolve === "function") {
+
+            const resolve =
+                commonConfirmResolve;
+
+            commonConfirmResolve = null;
+
+            resolve("incomplete");
+
+        }
+
+    };
+
+}
+
+
+
+// =====================================================
+// ✅ 共通確認モーダルを開く
+// =====================================================
+
+function openCommonConfirmModal(
+    message,
+    okText = "確認",
+    cancelText = "キャンセル"
+) {
+
+    const modal =
+        document.getElementById("commonConfirmModal");
+
+    const messageElement =
+        document.getElementById("commonConfirmMessage");
 
     const cancelButton =
         document.getElementById("commonConfirmCancelButton");
@@ -158,33 +243,49 @@ function initializeCommonConfirmModal() {
     const okButton =
         document.getElementById("commonConfirmOkButton");
 
-    if (!modal || !cancelButton || !okButton) {
-        return;
+    if (
+        !modal ||
+        !messageElement ||
+        !cancelButton ||
+        !okButton
+    ) {
+        return Promise.resolve(false);
     }
 
-    cancelButton.onclick = function() {
 
-        modal.style.display = "none";
+    messageElement.textContent =
+        message;
 
-        if (typeof commonConfirmResolve === "function") {
-            const resolve = commonConfirmResolve;
-            commonConfirmResolve = null;
-            resolve(false);
-        }
-    };
+    /*
+     * 重要：
+     *
+     * okText / cancelText は
+     * 「OK=true / キャンセル=false」という意味ではなく、
+     * 呼び出し側が自由に設定できる表示文字。
+     *
+     * 戻り値 true / false は
+     * あくまで押されたボタンを識別するために使用する。
+     */
 
-    okButton.onclick = function() {
+    okButton.textContent =
+        okText;
 
-        modal.style.display = "none";
+    cancelButton.textContent =
+        cancelText;
 
-        if (typeof commonConfirmResolve === "function") {
-            const resolve = commonConfirmResolve;
-            commonConfirmResolve = null;
-            resolve(true);
-        }
-    };
+
+    modal.style.display =
+        "flex";
+
+
+    return new Promise(resolve => {
+
+        commonConfirmResolve =
+            resolve;
+
+    });
+
 }
-
 
 // =====================================================
 // 数値 / 時刻入力モーダルを開く
@@ -751,10 +852,14 @@ function closeNumberInputModal() {
 // ✅ 共通確認モーダルを開く
 // =====================================================
 
+// =====================================================
+// ✅ 共通確認モーダルを開く
+// =====================================================
+
 function openCommonConfirmModal(
     message,
-    okText = "確認",
-    cancelText = "キャンセル"
+    completeText = "完了",
+    incompleteText = "未完了"
 ) {
 
     const modal =
@@ -763,36 +868,54 @@ function openCommonConfirmModal(
     const messageElement =
         document.getElementById("commonConfirmMessage");
 
-    const cancelButton =
+    const completeButton =
         document.getElementById("commonConfirmCancelButton");
 
-    const okButton =
+    const incompleteButton =
         document.getElementById("commonConfirmOkButton");
 
     if (
         !modal ||
         !messageElement ||
-        !cancelButton ||
-        !okButton
+        !completeButton ||
+        !incompleteButton
     ) {
-        return Promise.resolve(false);
+        return Promise.resolve(null);
     }
 
-    messageElement.textContent = message;
 
-    okButton.textContent = okText;
-    cancelButton.textContent = cancelText;
+    messageElement.textContent =
+        message;
 
-    modal.style.display = "flex";
+
+    /* =================================================
+       左 → 完了
+    ================================================= */
+
+    completeButton.textContent =
+        completeText;
+
+
+    /* =================================================
+       右 → 未完了
+    ================================================= */
+
+    incompleteButton.textContent =
+        incompleteText;
+
+
+    modal.style.display =
+        "flex";
+
 
     return new Promise(resolve => {
 
-        commonConfirmResolve = resolve;
+        commonConfirmResolve =
+            resolve;
 
     });
+
 }
-
-
 
 
 
