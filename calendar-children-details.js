@@ -3727,7 +3727,7 @@ function renderChildrenVaccinationTimeline(
     let html = `
 
         <div class="children-vaccination-master-title">
-            🗓️ 接種記録の時系列
+            🗓️ 接種の記録
         </div>
 
     `;
@@ -3751,23 +3751,167 @@ function renderChildrenVaccinationTimeline(
     }
 
 
+    html += `
+
+        <div
+            class="children-vaccination-record-table-wrapper"
+        >
+
+            <table
+                class="children-vaccination-record-table"
+            >
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            接種日
+                        </th>
+
+                        <th>
+                            ワクチン
+                        </th>
+
+                        <th>
+                            接種時年齢
+                        </th>
+
+                        <th>
+                            接種回数
+                        </th>
+
+                        <th>
+                            操作
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+    `;
+
+
     records.forEach(
         record => {
 
-            html +=
-                renderChildrenVaccinationRecordHtml(
-                    record,
-                    child
+            const master =
+                getChildrenVaccinationMaster(
+                    record.vaccineId
                 );
+
+
+            const vaccineName =
+                record.vaccineName ||
+                (
+                    master
+                        ? master.name
+                        : "その他のワクチン"
+                );
+
+
+            const age =
+                calculateChildrenVaccinationAge(
+                    child.birthday,
+                    record.date
+                );
+
+
+            html += `
+
+                <tr>
+
+                    <td
+                        class="children-vaccination-record-table-date"
+                    >
+                        ${formatChildrenVaccinationDate(
+                            record.date
+                        )}
+                    </td>
+
+
+                    <td
+                        class="children-vaccination-record-table-name"
+                    >
+                        ${escapeHtml(
+                            vaccineName
+                        )}
+                    </td>
+
+
+                    <td
+                        class="children-vaccination-record-table-age"
+                    >
+                        ${escapeHtml(
+                            age || "―"
+                        )}
+                    </td>
+
+
+                    <td
+                        class="children-vaccination-record-table-dose"
+                    >
+                        ${
+                            record.dose
+                                ? escapeHtml(
+                                    record.dose
+                                )
+                                : "―"
+                        }
+                    </td>
+
+
+                    <td
+                        class="children-vaccination-record-table-actions"
+                    >
+
+                        <button
+                            type="button"
+                            class="children-vaccination-edit"
+                            onclick="editChildrenVaccinationRecord('${record.id}')"
+                        >
+                            ✎
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="children-vaccination-delete"
+                            onclick="deleteChildrenVaccinationRecord('${record.id}')"
+                        >
+                            ×
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            `;
 
         }
     );
+
+
+    html += `
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    `;
 
 
     container.innerHTML =
         html;
 
 }
+
+
 
 
 /* =====================================================
