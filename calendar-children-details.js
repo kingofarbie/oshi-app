@@ -4207,21 +4207,45 @@ function openChildrenVaccinationRecordModal(
                 </label>
 
 
-                <label>
-                    接種回数
+<label>
+    接種回数
 
-                    <input
-                        type="text"
-                        id="childrenVaccinationDoseInput"
-                        maxlength="30"
-                        value="${escapeHtml(
-                            record?.dose || ""
-                        )}"
-                        placeholder="例：1回目"
+    <select
+        id="childrenVaccinationDoseInput"
+    >
+
+        <option value="">
+            選択してください
+        </option>
+
+        ${Array.from(
+            { length: 20 },
+            (_, index) => {
+
+                const dose =
+                    (index + 1) + "回目";
+
+                return `
+
+                    <option
+                        value="${dose}"
+                        ${
+                            record?.dose === dose
+                                ? "selected"
+                                : ""
+                        }
                     >
+                        ${dose}
+                    </option>
 
-                </label>
+                `;
 
+            }
+        ).join("")}
+
+    </select>
+
+</label>
 
                 <label>
                     医療機関名
