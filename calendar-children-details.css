@@ -509,26 +509,6 @@ button:active {
 
 
 
-
-.children-vaccination-view-button {
-    min-height:42px;
-    border:1px solid var(--child-border);
-    border-radius:10px;
-    background:var(--surface,#fff);
-    color:var(--text,#333);
-    font-size:14px;
-    font-weight:800;
-    cursor:pointer;
-}
-
-
-.children-vaccination-view-button.active {
-    background:var(--child-accent);
-    border-color:var(--child-accent);
-    color:#fff;
-}
-
-
 /* =====================================================
    種類別
 ===================================================== */
