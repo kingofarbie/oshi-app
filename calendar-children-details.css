@@ -491,15 +491,24 @@ button:active {
 }
 
 .children-vaccination-back {
-    min-height:42px;
-    padding:7px 12px;
-    border-radius:10px;
-    border:1px solid var(--child-border);
-    background:var(--child-accent);
-    color:#fff;
-    font-size:14px;
-    font-weight:800;
-    cursor:pointer;
+
+    min-height: 42px;
+
+    padding:
+        7px 12px;
+
+    border-radius: 10px;
+
+    border: 1px solid;
+
+    font-size: 14px;
+
+    font-weight: 800;
+
+    cursor: pointer;
+
+    white-space: nowrap;
+
 }
 
 
