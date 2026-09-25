@@ -482,43 +482,7 @@ button:active {
 }
 
 
-.children-vaccination-header {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
-}
 
-.children-vaccination-back {
-
-    min-height: 42px;
-
-    padding:
-        7px 12px;
-
-    border-radius: 10px;
-
-    border: 1px solid;
-
-    font-size: 14px;
-
-    font-weight: 800;
-
-    cursor: pointer;
-
-    white-space: nowrap;
-
-}
-
-
-.children-vaccination-title {
-    flex: 1;
-    min-width: 0;
-    font-size: 20px;
-    font-weight: 900;
-    writing-mode: horizontal-tb;
-}
 
 .children-vaccination-child-name {
     margin-bottom:8px;
@@ -1428,27 +1392,43 @@ button:active {
 }
 
 
+
+
+
+/* =====================================================
+   💉 予防接種
+   男の子・女の子カラー
+===================================================== */
+
+
 /* =====================================================
    👦 男の子
 ===================================================== */
 
 .children-calendar-app.boy
-.children-vaccination-back,
+.children-subpage-back-button,
 
 .children-calendar-app.boy
-.children-vaccination-add,
+.children-vaccination-add-button,
 
 .children-calendar-app.boy
-.children-vaccination-small-add,
-
-.children-calendar-app.boy
-.children-vaccination-view-button.active,
+.children-vaccination-complete-button.completed,
 
 .children-calendar-app.boy
 .children-vaccination-save {
-    background:var(--children-boy-color,#6495ED)!important;
-    border-color:var(--children-boy-border,#4169E1)!important;
-    color:#fff!important;
+
+    background:
+        var(--children-boy-color,#6495ED)
+        !important;
+
+    border-color:
+        var(--children-boy-border,#4169E1)
+        !important;
+
+    color:
+        #fff
+        !important;
+
 }
 
 
@@ -1457,22 +1437,77 @@ button:active {
 ===================================================== */
 
 .children-calendar-app.girl
-.children-vaccination-back,
+.children-subpage-back-button,
 
 .children-calendar-app.girl
-.children-vaccination-add,
+.children-vaccination-add-button,
 
 .children-calendar-app.girl
-.children-vaccination-small-add,
-
-.children-calendar-app.girl
-.children-vaccination-view-button.active,
+.children-vaccination-complete-button.completed,
 
 .children-calendar-app.girl
 .children-vaccination-save {
-    background:var(--children-girl-color,#FF69B4)!important;
-    border-color:var(--children-girl-border,#FF1493)!important;
-    color:#fff!important;
+
+    background:
+        var(--children-girl-color,#FF69B4)
+        !important;
+
+    border-color:
+        var(--children-girl-border,#FF1493)
+        !important;
+
+    color:
+        #fff
+        !important;
+
+}
+
+
+/* =====================================================
+   💉 接種状態
+   未 → 白背景
+===================================================== */
+
+.children-vaccination-complete-button {
+
+    background:
+        var(--surface,#fff)
+        !important;
+
+    border-color:
+        var(--child-border)
+        !important;
+
+    color:
+        var(--text,#333)
+        !important;
+
+}
+
+
+/* =====================================================
+   💉 接種状態
+   完 → 子どものカラー
+===================================================== */
+
+.children-calendar-app.boy
+.children-vaccination-complete-button.completed,
+
+.children-calendar-app.girl
+.children-vaccination-complete-button.completed {
+
+    color:
+        #fff
+        !important;
+
+    font-size:
+        15px
+        !important;
+
+    font-weight:
+        900
+        !important;
+
 }
 
 
@@ -1480,13 +1515,19 @@ button:active {
    タップ時
 ===================================================== */
 
-.children-vaccination-back:active,
-.children-vaccination-add:active,
-.children-vaccination-small-add:active,
-.children-vaccination-view-button:active,
+.children-subpage-back-button:active,
+
+.children-vaccination-add-button:active,
+
+.children-vaccination-complete-button:active,
+
 .children-vaccination-save:active {
-    opacity:.65;
+
+    opacity:
+        .65;
+
 }
+
 
 
 @media(max-width:600px) {
@@ -1572,6 +1613,7 @@ button:active {
 ===================================================== */
 
 .children-vaccination-header {
+
 
     display: grid;
 
