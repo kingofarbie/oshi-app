@@ -3312,37 +3312,22 @@ function renderChildrenVaccination() {
             "childrenVaccinationSection"
         );
 
-
     if (!section) return;
-
-
-    const records =
-        child.growth.vaccination;
-
-
-    const app =
-        document.getElementById(
-            "childrenCalendarApp"
-        );
-
-
-    const gender =
-        child.gender === "girl"
-            ? "girl"
-            : "boy";
 
 
     section.innerHTML = `
 
-        <div class="children-vaccination-header">
+        <div
+            class="children-subpage-header"
+        >
 
-            <div class="children-vaccination-title">
+            <h2>
                 💉 予防接種
-            </div>
-            
+            </h2>
+
             <button
                 type="button"
-                class="children-vaccination-back"
+                class="children-subpage-back-button"
                 onclick="closeChildrenVaccination()"
             >
                 ◀ 成長・定期記録
@@ -3351,25 +3336,30 @@ function renderChildrenVaccination() {
         </div>
 
 
-        <div class="children-vaccination-child-name">
-
-            👶 ${child.name || ""}
+        <div
+            class="children-vaccination-child-name"
+        >
+            👶 ${escapeHtml(
+                child.name || ""
+            )}
         </div>
 
 
-        <div class="children-vaccination-note">
-
-            定期接種の標準的な接種時期を確認しながら、
-            実際に接種した記録を登録できます。
-
+        <div
+            class="children-vaccination-note"
+        >
+            予防接種の種類ごとの接種状況と、
+            実際に接種した記録を確認できます。
         </div>
 
 
-        <div class="children-vaccination-actions">
+        <div
+            class="children-vaccination-add-area"
+        >
 
             <button
                 type="button"
-                class="children-vaccination-add"
+                class="children-vaccination-add-button"
                 onclick="openChildrenVaccinationRecordModal()"
             >
                 ＋ 接種記録を追加
@@ -3378,51 +3368,50 @@ function renderChildrenVaccination() {
         </div>
 
 
-        <div class="children-vaccination-view-switch">
+        <div
+            class="children-vaccination-content"
+        >
 
-            <button
-                type="button"
-                class="children-vaccination-view-button ${childrenVaccinationViewMode === "type" ? "active" : ""}"
-                onclick="switchChildrenVaccinationView('type')"
-            >
-                種類別
-            </button>
+            <div
+                class="children-vaccination-master-area"
+            ></div>
 
-            <button
-                type="button"
-                class="children-vaccination-view-button ${childrenVaccinationViewMode === "timeline" ? "active" : ""}"
-                onclick="switchChildrenVaccinationView('timeline')"
-            >
-                時系列
-            </button>
+
+            <div
+                class="children-vaccination-record-area"
+            ></div>
 
         </div>
-
-
-        <div
-            id="childrenVaccinationContent"
-            class="children-vaccination-content"
-        ></div>
 
     `;
 
 
-    if (app) {
-
-        app.classList.toggle(
-            "boy",
-            gender === "boy"
+    const masterArea =
+        section.querySelector(
+            ".children-vaccination-master-area"
         );
 
-        app.classList.toggle(
-            "girl",
-            gender === "girl"
+
+    const recordArea =
+        section.querySelector(
+            ".children-vaccination-record-area"
+        );
+
+
+    if (
+        masterArea &&
+        recordArea
+    ) {
+
+        renderChildrenVaccinationByType(
+            masterArea
+        );
+
+        renderChildrenVaccinationTimeline(
+            recordArea
         );
 
     }
-
-
-    renderChildrenVaccinationContent();
 
 }
 
