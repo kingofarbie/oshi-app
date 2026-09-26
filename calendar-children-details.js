@@ -3353,20 +3353,28 @@ function renderChildrenVaccination() {
         </div>
 
 
-        <div
-            class="children-vaccination-add-area"
-        >
+<div
+    class="children-vaccination-add-area"
+>
 
-            <button
-                type="button"
-                class="children-vaccination-add-button"
-                onclick="openChildrenVaccinationRecordModal()"
-            >
-                ＋ 接種記録を追加
-            </button>
+    <button
+        type="button"
+        class="children-vaccination-add-button"
+        onclick="openChildrenVaccinationRecordModal()"
+    >
+        ＋ 接種記録を追加
+    </button>
 
-        </div>
 
+    <button
+        type="button"
+        class="children-vaccination-next-button"
+        onclick="openChildrenVaccinationNextScheduleModal()"
+    >
+        ＋ 次回接種予定を追加
+    </button>
+
+</div>
 
         <div
             class="children-vaccination-content"
@@ -4801,6 +4809,548 @@ function openChildrenVaccinationRecordModal(
 
 }
 
+
+function openChildrenVaccinationNextScheduleModal() {
+
+    const child =
+        getSelectedChild();
+
+    if (!child) return;
+
+
+    const modalId =
+        "childrenVaccinationNextScheduleModal";
+
+
+    let modal =
+        document.getElementById(
+            modalId
+        );
+
+
+    if (modal) {
+
+        modal.remove();
+
+    }
+
+
+    modal =
+        document.createElement(
+            "div"
+        );
+
+
+    modal.id =
+        modalId;
+
+    modal.className =
+        "children-modal";
+
+
+    const now =
+        new Date();
+
+
+    const defaultStart =
+        new Date(
+            now.getTime()
+        );
+
+
+    defaultStart.setMinutes(
+        0,
+        0,
+        0
+    );
+
+
+    defaultStart.setHours(
+        defaultStart.getHours() + 1
+    );
+
+
+    const defaultEnd =
+        new Date(
+            defaultStart.getTime()
+        );
+
+
+    defaultEnd.setHours(
+        defaultEnd.getHours() + 1
+    );
+
+
+    function formatDateTimeLocal(
+        date
+    ) {
+
+        const year =
+            date.getFullYear();
+
+
+        const month =
+            String(
+                date.getMonth() + 1
+            ).padStart(2, "0");
+
+
+        const day =
+            String(
+                date.getDate()
+            ).padStart(2, "0");
+
+
+        const hours =
+            String(
+                date.getHours()
+            ).padStart(2, "0");
+
+
+        const minutes =
+            String(
+                date.getMinutes()
+            ).padStart(2, "0");
+
+
+        return (
+            year +
+            "-" +
+            month +
+            "-" +
+            day +
+            "T" +
+            hours +
+            ":" +
+            minutes
+        );
+
+    }
+
+
+    modal.innerHTML = `
+
+        <div
+            class="children-modal-overlay"
+        ></div>
+
+
+        <div
+            class="children-modal-content children-vaccination-next-schedule-modal"
+        >
+
+            <div
+                class="children-modal-header"
+            >
+
+                <h2>
+                    💉 次回接種予定を追加
+                </h2>
+
+
+                <button
+                    type="button"
+                    class="children-modal-close-button"
+                    id="childrenVaccinationNextScheduleClose"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <div
+                class="children-vaccination-form"
+            >
+
+                <div
+                    class="children-vaccination-next-category"
+                >
+                    🏥 病院
+                </div>
+
+
+                <label>
+                    ワクチン名
+
+                    <select
+                        id="childrenVaccinationNextVaccineInput"
+                    >
+
+                        <option value="">
+                            選択してください
+                        </option>
+
+                        ${CHILDREN_VACCINATION_MASTER.map(
+                            item => {
+
+                                if (
+                                    item.gender === "girl" &&
+                                    child.gender !== "girl"
+                                ) {
+
+                                    return "";
+
+                                }
+
+
+                                return `
+
+                                    <option
+                                        value="${item.id}"
+                                    >
+                                        ${item.icon}
+                                        ${escapeHtml(
+                                            item.name
+                                        )}
+                                    </option>
+
+                                `;
+
+                            }
+                        ).join("")}
+
+                    </select>
+
+                </label>
+
+
+                <label>
+                    開始日時
+
+                    <input
+                        type="datetime-local"
+                        id="childrenVaccinationNextStartInput"
+                        value="${formatDateTimeLocal(
+                            defaultStart
+                        )}"
+                    >
+
+                </label>
+
+
+                <label>
+                    終了日時
+
+                    <input
+                        type="datetime-local"
+                        id="childrenVaccinationNextEndInput"
+                        value="${formatDateTimeLocal(
+                            defaultEnd
+                        )}"
+                    >
+
+                </label>
+
+
+                <label>
+                    場所
+
+                    <input
+                        type="text"
+                        id="childrenVaccinationNextPlaceInput"
+                        maxlength="200"
+                        placeholder="病院名"
+                    >
+
+                </label>
+
+
+                <div
+                    class="children-vaccination-form-actions"
+                >
+
+                    <button
+                        type="button"
+                        id="childrenVaccinationNextCancelButton"
+                        class="children-vaccination-cancel"
+                    >
+                        キャンセル
+                    </button>
+
+
+                    <button
+                        type="button"
+                        id="childrenVaccinationNextSaveButton"
+                        class="children-vaccination-save"
+                    >
+                        保存
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    document.body.appendChild(
+        modal
+    );
+
+
+    const startInput =
+        document.getElementById(
+            "childrenVaccinationNextStartInput"
+        );
+
+
+    const endInput =
+        document.getElementById(
+            "childrenVaccinationNextEndInput"
+        );
+
+
+    startInput.addEventListener(
+        "change",
+        function () {
+
+            if (!this.value) return;
+
+
+            const start =
+                new Date(
+                    this.value
+                );
+
+
+            if (
+                Number.isNaN(
+                    start.getTime()
+                )
+            ) return;
+
+
+            const end =
+                new Date(
+                    start.getTime() +
+                    60 * 60 * 1000
+                );
+
+
+            endInput.value =
+                formatDateTimeLocal(
+                    end
+                );
+
+        }
+    );
+
+
+    document
+        .getElementById(
+            "childrenVaccinationNextScheduleClose"
+        )
+        .addEventListener(
+            "click",
+            () => modal.remove()
+        );
+
+
+    document
+        .getElementById(
+            "childrenVaccinationNextCancelButton"
+        )
+        .addEventListener(
+            "click",
+            () => modal.remove()
+        );
+
+
+    document
+        .getElementById(
+            "childrenVaccinationNextSaveButton"
+        )
+        .addEventListener(
+            "click",
+            function () {
+
+                const vaccineId =
+                    document
+                        .getElementById(
+                            "childrenVaccinationNextVaccineInput"
+                        )
+                        .value;
+
+
+                const start =
+                    document
+                        .getElementById(
+                            "childrenVaccinationNextStartInput"
+                        )
+                        .value;
+
+
+                const end =
+                    document
+                        .getElementById(
+                            "childrenVaccinationNextEndInput"
+                        )
+                        .value;
+
+
+                const place =
+                    document
+                        .getElementById(
+                            "childrenVaccinationNextPlaceInput"
+                        )
+                        .value
+                        .trim();
+
+
+                if (!vaccineId) {
+
+                    alert(
+                        "ワクチン名を選択してください。"
+                    );
+
+                    return;
+
+                }
+
+
+                if (!start) {
+
+                    alert(
+                        "開始日時を入力してください。"
+                    );
+
+                    return;
+
+                }
+
+
+                if (!end) {
+
+                    alert(
+                        "終了日時を入力してください。"
+                    );
+
+                    return;
+
+                }
+
+
+                if (!place) {
+
+                    alert(
+                        "病院名を入力してください。"
+                    );
+
+                    return;
+
+                }
+
+
+                const vaccine =
+                    getChildrenVaccinationMaster(
+                        vaccineId
+                    );
+
+
+                if (!vaccine) {
+
+                    alert(
+                        "ワクチンを選択してください。"
+                    );
+
+                    return;
+
+                }
+
+
+                const event = {
+
+                    category:
+                        "🏥 病院",
+
+                    title:
+                        vaccine.icon +
+                        " " +
+                        vaccine.name,
+
+                    start:
+                        start,
+
+                    end:
+                        end,
+
+                    place:
+                        place,
+
+                    meeting:
+                        "",
+
+                    companion:
+                        "",
+
+                    map:
+                        "",
+
+                    ticket:
+                        "",
+
+                    checklist:
+                        []
+
+                };
+
+
+                if (
+                    !db.addEvent(
+                        event
+                    )
+                ) {
+
+                    return;
+
+                }
+
+
+                modal.remove();
+
+
+                displayEventList();
+                displaySelectedDateEvents();
+                displayHomeSchedule();
+                displayUpcomingEvents();
+                displayFavoritePhotoCard();
+                displayCountdown();
+
+
+                const calendarPage =
+                    document.getElementById(
+                        "calendarPage"
+                    );
+
+
+                if (
+                    calendarPage &&
+                    calendarPage.classList.contains(
+                        "active"
+                    )
+                ) {
+
+                    renderCalendar();
+
+                }
+
+
+                if (
+                    typeof renderChildrenVaccination ===
+                    "function"
+                ) {
+
+                    renderChildrenVaccination();
+
+                }
+
+            }
+        );
+
+}
 
 /* =====================================================
    💉 編集
