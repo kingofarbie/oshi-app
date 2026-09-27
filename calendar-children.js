@@ -483,7 +483,27 @@ function selectChild(childId) {
 
 
     /* =================================================
-       成長・定期記録を完全に初期状態へ戻す
+       成長・定期記録の下位ページを完全にリセット
+
+       ・身長・体重
+       ・身長・体重グラフ
+       ・記録日選択
+       ・履歴の表示状態
+       ・健診・病院
+       ・成長カテゴリー一覧
+
+       子どもを切り替えたら、
+       必ず成長・定期記録の入口から開始する。
+    ================================================= */
+
+    resetChildrenGrowthSubPages();
+
+
+    /* =================================================
+       成長・定期記録そのものを閉じる
+
+       子ども切り替え後は
+       カレンダー側から再スタートする。
     ================================================= */
 
     const growthSection =
@@ -495,44 +515,6 @@ function selectChild(childId) {
 
         growthSection.style.display =
             "none";
-
-    }
-
-
-    /*
-       身長・体重画面
-       → 非表示
-    */
-
-    const heightWeightSection =
-        document.getElementById(
-            "childrenHeightWeightSection"
-        );
-
-    if (heightWeightSection) {
-
-        heightWeightSection.style.display =
-            "none";
-
-    }
-
-
-    /*
-       成長カテゴリー一覧
-       → 次に成長・定期記録を開いたとき
-          最初から表示できる状態に戻す
-    */
-
-    const growthCategoryList =
-        document.querySelector(
-            "#childrenGrowthSection .children-growth-category-list"
-        );
-
-
-    if (growthCategoryList) {
-
-        growthCategoryList.style.display =
-            "";
 
     }
 
@@ -567,7 +549,6 @@ function selectChild(childId) {
     renderChildrenDaily();
 
 }
-
 
 
 /* =====================================================
@@ -3574,7 +3555,7 @@ function resetChildrenGrowthSubPages() {
 
     /* =================================================
        📋 身長・体重履歴の表示状態をリセット
-       
+
        「さらに表示」で全件表示していた状態を
        次回開いたとき3件表示へ戻す。
     ================================================= */
@@ -3594,8 +3575,26 @@ function resetChildrenGrowthSubPages() {
 
 
     /* =================================================
-       📂 成長カテゴリー一覧を表示
-       
+       🏥 健診・病院ページを閉じる
+    ================================================= */
+
+    const medicalSection =
+        document.getElementById(
+            "childrenMedicalSection"
+        );
+
+
+    if (medicalSection) {
+
+        medicalSection.style.display =
+            "none";
+
+    }
+
+
+    /* =================================================
+       📋 成長カテゴリー一覧を表示
+
        成長・定期記録の入口では
        必ずカテゴリー一覧から開始する。
     ================================================= */
@@ -3624,6 +3623,8 @@ function resetChildrenGrowthSubPages() {
     }
 
 }
+
+
 
 
 /* =====================================================
