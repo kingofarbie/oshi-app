@@ -91,6 +91,10 @@ function openChildrenMedical() {
    🏥 健診・病院画面
 ===================================================== */
 
+/* =====================================================
+   🏥 健診・病院画面
+===================================================== */
+
 function renderChildrenMedical() {
 
     const section =
@@ -105,11 +109,9 @@ function renderChildrenMedical() {
 
     if (!section || !child) return;
 
-
     initializeChildrenGrowthData(
         child
     );
-
 
     section.innerHTML = `
 
@@ -128,6 +130,33 @@ function renderChildrenMedical() {
             </button>
 
         </div>
+
+
+        <!-- =========================================
+             ＋ 記録を追加
+        ========================================== -->
+
+        <div class="children-medical-add-area">
+
+            <button
+                type="button"
+                class="children-medical-add-button"
+                id="childrenMedicalAddButton"
+            >
+                ＋ 記録を追加
+            </button>
+
+        </div>
+
+
+        <!-- =========================================
+             🏥 健診・病院の記録一覧
+        ========================================== -->
+
+        <div
+            class="children-medical-record-list"
+            id="childrenMedicalRecordList"
+        ></div>
 
     `;
 
@@ -148,8 +177,139 @@ function renderChildrenMedical() {
 
     }
 
-}
 
+    /* =================================================
+       ＋ 記録を追加
+    ================================================= */
+
+    const addButton =
+        document.getElementById(
+            "childrenMedicalAddButton"
+        );
+
+    if (addButton) {
+
+        addButton.onclick =
+            function () {
+
+                /*
+                 * 次の段階で
+                 * 「記録の種類を選ぶ画面」
+                 * をここから開く
+                 */
+
+                alert(
+                    "ここから健診・病院の記録を追加します。"
+                );
+
+            };
+
+    }
+
+
+    /* =================================================
+       記録一覧
+    ================================================= */
+
+    const recordList =
+        document.getElementById(
+            "childrenMedicalRecordList"
+        );
+
+    if (!recordList) return;
+
+
+    const records =
+        Array.isArray(child.growth.medical)
+            ? child.growth.medical
+            : [];
+
+
+    if (!records.length) {
+
+        recordList.innerHTML = `
+
+            <div class="children-medical-empty">
+
+                まだ健診・病院の記録がありません。
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    /* =================================================
+       日付順
+    ================================================= */
+
+    const sortedRecords =
+        records
+            .slice()
+            .sort(function (a, b) {
+
+                const dateA =
+                    a.date || "";
+
+                const dateB =
+                    b.date || "";
+
+                return dateB.localeCompare(
+                    dateA
+                );
+
+            });
+
+
+    /* =================================================
+       記録表示
+    ================================================= */
+
+    recordList.innerHTML =
+        sortedRecords
+            .map(function (record) {
+
+                return `
+
+                    <div
+                        class="children-medical-record"
+                    >
+
+                        <div
+                            class="children-medical-record-date"
+                        >
+                            ${escapeHtml(
+                                record.date || ""
+                            )}
+                        </div>
+
+                        <div
+                            class="children-medical-record-title"
+                        >
+                            ${escapeHtml(
+                                record.title || "健診・病院"
+                            )}
+                        </div>
+
+                        <div
+                            class="children-medical-record-detail"
+                        >
+                            ${escapeHtml(
+                                record.memo || ""
+                            )}
+                        </div>
+
+                    </div>
+
+                `;
+
+            })
+            .join("");
+
+}
 
 
 /* =====================================================
