@@ -1615,7 +1615,7 @@ if (!window.childrenGrowthDetailsInitialized) {
 
 /* =====================================================
    📈 グラフ画面を開く
-===================================================== */
+=============================================== */
 
 function openChildrenHeightWeightGraph() {
 
@@ -5474,28 +5474,21 @@ if (
                 button.dataset.growthCategory;
 
 
-            if (
-                category ===
-                "heightWeight"
-            ) {
+if (category === "heightWeight") {
+    openChildrenHeightWeight();
+    return;
+}
 
-                openChildrenHeightWeight();
+if (category === "vaccination") {
+    openChildrenVaccination();
+    return;
+}
 
-                return;
+if (category === "medical") {
+    openChildrenMedical();
+    return;
+}
 
-            }
-
-
-            if (
-                category ===
-                "vaccination"
-            ) {
-
-                openChildrenVaccination();
-
-                return;
-
-            }
 
         }
     );
@@ -5504,243 +5497,3 @@ if (
 
 
 
-/* =====================================================
-   🏥 健診・病院画面を開く
-===================================================== */
-
-function openChildrenMedical() {
-
-    const growthSection =
-        document.getElementById(
-            "childrenGrowthSection"
-        );
-
-    if (!growthSection) return;
-
-
-    /* =================================================
-       上部「◀ カレンダー」を非表示
-    ================================================= */
-
-    const calendarBackButton =
-        document.querySelector(
-            ".children-calendar-back-button"
-        );
-
-    if (calendarBackButton) {
-
-        calendarBackButton.style.display =
-            "none";
-
-    }
-
-
-    /* =================================================
-       成長カテゴリー一覧を非表示
-    ================================================= */
-
-    const categoryList =
-        growthSection.querySelector(
-            ".children-growth-category-list"
-        );
-
-    if (categoryList) {
-
-        categoryList.style.display =
-            "none";
-
-    }
-
-
-    /* =================================================
-       「成長・定期記録」見出しを非表示
-    ================================================= */
-
-    const growthHeader =
-        growthSection.querySelector(
-            ".children-growth-section-header"
-        );
-
-    if (growthHeader) {
-
-        growthHeader.style.display =
-            "none";
-
-    }
-
-
-    /* =================================================
-       健診・病院画面
-    ================================================= */
-
-    let medicalSection =
-        document.getElementById(
-            "childrenMedicalSection"
-        );
-
-
-    if (!medicalSection) {
-
-        medicalSection =
-            document.createElement("div");
-
-        medicalSection.id =
-            "childrenMedicalSection";
-
-        medicalSection.className =
-            "children-medical-section";
-
-        growthSection.appendChild(
-            medicalSection
-        );
-
-    }
-
-
-    medicalSection.style.display =
-        "";
-
-
-    renderChildrenMedical();
-
-}
-
-
-
-/* =====================================================
-   🏥 健診・病院画面
-===================================================== */
-
-function renderChildrenMedical() {
-
-    const section =
-        document.getElementById(
-            "childrenMedicalSection"
-        );
-
-    const child =
-        typeof getSelectedChild === "function"
-            ? getSelectedChild()
-            : null;
-
-
-    if (!section || !child) return;
-
-
-    initializeChildrenGrowthData(
-        child
-    );
-
-
-    section.innerHTML = `
-
-        <div class="children-growth-detail-header">
-
-            <div class="children-growth-detail-title">
-                🏥 健診・病院
-            </div>
-
-
-            <button
-                type="button"
-                class="children-growth-detail-back"
-                id="childrenMedicalBackButton"
-            >
-                ◀ 成長・定期記録
-            </button>
-
-        </div>
-
-
-        <div class="children-medical-content">
-
-            <div class="children-medical-empty">
-
-                まだ健診・病院の記録がありません。
-
-            </div>
-
-        </div>
-
-    `;
-
-
-    /* =================================================
-       ◀ 成長・定期記録へ戻る
-    ================================================= */
-
-    const backButton =
-        document.getElementById(
-            "childrenMedicalBackButton"
-        );
-
-
-    if (backButton) {
-
-        backButton.onclick =
-            closeChildrenMedical;
-
-    }
-
-}
-
-
-
-/* =====================================================
-   🏥 健診・病院画面を閉じる
-===================================================== */
-
-function closeChildrenMedical() {
-
-    const medicalSection =
-        document.getElementById(
-            "childrenMedicalSection"
-        );
-
-
-    if (medicalSection) {
-
-        medicalSection.style.display =
-            "none";
-
-    }
-
-
-    const growthSection =
-        document.getElementById(
-            "childrenGrowthSection"
-        );
-
-
-    if (growthSection) {
-
-        const categoryList =
-            growthSection.querySelector(
-                ".children-growth-category-list"
-            );
-
-
-        if (categoryList) {
-
-            categoryList.style.display =
-                "";
-
-        }
-
-
-        const growthHeader =
-            growthSection.querySelector(
-                ".children-growth-section-header"
-            );
-
-
-        if (growthHeader) {
-
-            growthHeader.style.display =
-                "";
-
-        }
-
-    }
-
-}

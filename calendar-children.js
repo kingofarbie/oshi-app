@@ -528,6 +528,7 @@ function selectChild(childId) {
             "#childrenGrowthSection .children-growth-category-list"
         );
 
+
     if (growthCategoryList) {
 
         growthCategoryList.style.display =
