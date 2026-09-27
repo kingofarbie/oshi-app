@@ -253,7 +253,7 @@ function renderChildrenMedical() {
 
 
     /* =================================================
-       記録なし
+       記録一覧
     ================================================= */
 
     const recordList =
@@ -263,6 +263,10 @@ function renderChildrenMedical() {
 
     if (!recordList) return;
 
+
+    /* =================================================
+       記録なし
+    ================================================= */
 
     if (!records.length) {
 
@@ -282,6 +286,7 @@ function renderChildrenMedical() {
         `;
 
         return;
+
     }
 
 
@@ -319,7 +324,7 @@ function renderChildrenMedical() {
 
 
     /* =================================================
-       タイムライン
+       🏥 3段表示
     ================================================= */
 
     recordList.innerHTML =
@@ -338,6 +343,15 @@ function renderChildrenMedical() {
 
 /* =====================================================
    🏥 医療記録1件
+
+   1段目
+   日付・年齢                         編集・削除
+
+   2段目
+   種類・内容                         病院・施設
+
+   3段目
+   メモ
 ===================================================== */
 
 function renderChildrenMedicalRecord(
@@ -353,6 +367,11 @@ function renderChildrenMedicalRecord(
         getChildrenMedicalRecordType(
             type
         );
+
+
+    /* =================================================
+       年齢
+    ================================================= */
 
     let ageText = "";
 
@@ -384,86 +403,190 @@ function renderChildrenMedicalRecord(
     }
 
 
-    let detailHtml = "";
+    /* =================================================
+       1段目：日付＋年齢
+    ================================================= */
 
+    let dateAgeHtml = `
 
-    /* ---------------------------------------------
-       妊娠週数
-    --------------------------------------------- */
+        <span class="children-medical-record-date">
+
+            ${escapeHtml(
+                formatChildrenMedicalDate(
+                    record.date
+                )
+            )}
+
+        </span>
+
+    `;
+
 
     if (
+        type === "pregnancy" &&
         record.pregnancyWeek
     ) {
 
-        detailHtml += `
+        dateAgeHtml += `
 
-            <div class="children-medical-record-info">
+            <span class="children-medical-record-age">
 
                 🤰 妊娠${escapeHtml(
                     record.pregnancyWeek
                 )}週
 
-            </div>
+            </span>
+
+        `;
+
+    } else if (
+        ageText
+    ) {
+
+        dateAgeHtml += `
+
+            <span class="children-medical-record-age">
+
+                👶 ${escapeHtml(
+                    ageText
+                )}
+
+            </span>
 
         `;
 
     }
 
 
-    /* ---------------------------------------------
+    /* =================================================
+       2段目：種類・内容
+    ================================================= */
+
+    let contentHtml = `
+
+        <div
+            class="children-medical-record-main children-medical-expandable"
+            onclick="toggleChildrenMedicalText(this)"
+            role="button"
+            tabindex="0"
+            title="タップで全文表示"
+        >
+
+            <span class="children-medical-record-type">
+
+                ${typeInfo.icon}
+
+                ${escapeHtml(
+                    typeInfo.name
+                )}
+
+            </span>
+
+            <span class="children-medical-record-title">
+
+                ${escapeHtml(
+                    record.title ||
+                    typeInfo.name
+                )}
+
+            </span>
+
+        </div>
+
+    `;
+
+
+    /* =================================================
        出産情報
-    --------------------------------------------- */
+    ================================================= */
 
     if (
         type === "birth"
     ) {
 
+        const birthParts = [];
+
+
         if (
             record.deliveryMethod
         ) {
 
-            detailHtml += `
-
-                <div class="children-medical-record-info">
-
-                    👶 ${escapeHtml(
-                        record.deliveryMethod
-                    )}
-
-                </div>
-
-            `;
+            birthParts.push(
+                `👶 ${escapeHtml(
+                    record.deliveryMethod
+                )}`
+            );
 
         }
 
+
         if (
-            record.birthWeight ||
-            record.birthHeight ||
-            record.birthHead ||
+            record.birthWeight
+        ) {
+
+            birthParts.push(
+                `体重 ${escapeHtml(
+                    record.birthWeight
+                )}g`
+            );
+
+        }
+
+
+        if (
+            record.birthHeight
+        ) {
+
+            birthParts.push(
+                `身長 ${escapeHtml(
+                    record.birthHeight
+                )}cm`
+            );
+
+        }
+
+
+        if (
+            record.birthHead
+        ) {
+
+            birthParts.push(
+                `頭囲 ${escapeHtml(
+                    record.birthHead
+                )}cm`
+            );
+
+        }
+
+
+        if (
             record.birthChest
         ) {
 
-            detailHtml += `
+            birthParts.push(
+                `胸囲 ${escapeHtml(
+                    record.birthChest
+                )}cm`
+            );
 
-                <div class="children-medical-record-info">
+        }
 
-                    📏
 
-                    ${record.birthWeight
-                        ? `体重 ${escapeHtml(record.birthWeight)}g`
-                        : ""}
+        if (
+            birthParts.length
+        ) {
 
-                    ${record.birthHeight
-                        ? `　身長 ${escapeHtml(record.birthHeight)}cm`
-                        : ""}
+            contentHtml += `
 
-                    ${record.birthHead
-                        ? `　頭囲 ${escapeHtml(record.birthHead)}cm`
-                        : ""}
+                <div
+                    class="children-medical-record-subinfo children-medical-expandable"
+                    onclick="toggleChildrenMedicalText(this)"
+                    role="button"
+                    tabindex="0"
+                    title="タップで全文表示"
+                >
 
-                    ${record.birthChest
-                        ? `　胸囲 ${escapeHtml(record.birthChest)}cm`
-                        : ""}
+                    ${birthParts.join("　")}
 
                 </div>
 
@@ -474,63 +597,72 @@ function renderChildrenMedicalRecord(
     }
 
 
-    /* ---------------------------------------------
-       年齢
-    --------------------------------------------- */
+    /* =================================================
+       病院・施設
+    ================================================= */
 
-    if (ageText) {
-
-        detailHtml += `
-
-            <div class="children-medical-record-info">
-
-                👶 ${escapeHtml(ageText)}
-
-            </div>
-
-        `;
-
-    }
-
-
-    /* ---------------------------------------------
-       病院
-    --------------------------------------------- */
+    let hospitalHtml = "";
 
     if (
         record.hospital
     ) {
 
-        detailHtml += `
+        hospitalHtml = `
 
-            <div class="children-medical-record-info">
+            <span
+                class="children-medical-record-hospital children-medical-expandable"
+                onclick="toggleChildrenMedicalText(this)"
+                role="button"
+                tabindex="0"
+                title="タップで全文表示"
+            >
 
-                🏥 ${escapeHtml(
-                    record.hospital
-                )}
+                🏥
 
-            </div>
+                <span class="children-medical-expandable-text">
+
+                    ${escapeHtml(
+                        record.hospital
+                    )}
+
+                </span>
+
+            </span>
 
         `;
 
     }
 
 
-    /* ---------------------------------------------
-       メモ
-    --------------------------------------------- */
+    /* =================================================
+       3段目：メモ
+    ================================================= */
+
+    let memoHtml = "";
 
     if (
         record.memo
     ) {
 
-        detailHtml += `
+        memoHtml = `
 
-            <div class="children-medical-record-memo">
+            <div
+                class="children-medical-record-memo children-medical-expandable"
+                onclick="toggleChildrenMedicalText(this)"
+                role="button"
+                tabindex="0"
+                title="タップで全文表示"
+            >
 
-                📝 ${escapeHtml(
-                    record.memo
-                )}
+                📝
+
+                <span class="children-medical-expandable-text">
+
+                    ${escapeHtml(
+                        record.memo
+                    )}
+
+                </span>
 
             </div>
 
@@ -538,6 +670,10 @@ function renderChildrenMedicalRecord(
 
     }
 
+
+    /* =================================================
+       1記録
+    ================================================= */
 
     return `
 
@@ -546,70 +682,144 @@ function renderChildrenMedicalRecord(
             data-record-id="${escapeHtml(record.id)}"
         >
 
-            <div class="children-medical-record-date">
+            <!-- =====================================
+                 1段目
+            ====================================== -->
 
-                ${escapeHtml(
-                    formatChildrenMedicalDate(
-                        record.date
-                    )
-                )}
+            <div class="children-medical-record-row1">
+
+                <div class="children-medical-record-date-area">
+
+                    ${dateAgeHtml}
+
+                </div>
+
+
+                <div class="children-medical-record-actions">
+
+                    <button
+                        type="button"
+                        class="children-medical-edit-button"
+                        onclick="editChildrenMedicalRecord('${escapeHtml(record.id)}')"
+                        aria-label="編集"
+                        title="編集"
+                    >
+                        ✎
+                    </button>
+
+                    <button
+                        type="button"
+                        class="children-medical-delete-button"
+                        onclick="deleteChildrenMedicalRecord('${escapeHtml(record.id)}')"
+                        aria-label="削除"
+                        title="削除"
+                    >
+                        ×
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================================
+                 2段目
+            ====================================== -->
+
+            <div class="children-medical-record-row2">
+
+                <div class="children-medical-record-content">
+
+                    ${contentHtml}
+
+                </div>
+
+
+                ${
+                    hospitalHtml
+                        ? `
+                            <div class="children-medical-record-hospital-area">
+
+                                ${hospitalHtml}
+
+                            </div>
+                        `
+                        : ""
+                }
 
             </div>
 
 
-            <div class="children-medical-record-type">
+            <!-- =====================================
+                 3段目
+            ====================================== -->
 
-                ${typeInfo.icon}
+            ${
+                memoHtml
+                    ? `
+                        <div class="children-medical-record-row3">
 
-                ${escapeHtml(
-                    typeInfo.name
-                )}
+                            ${memoHtml}
 
-            </div>
-
-
-            <div class="children-medical-record-title">
-
-                ${escapeHtml(
-                    record.title ||
-                    typeInfo.name
-                )}
-
-            </div>
-
-
-            <div class="children-medical-record-details">
-
-                ${detailHtml}
-
-            </div>
-
-
-            <div class="children-medical-record-actions">
-
-                <button
-                    type="button"
-                    class="children-medical-edit-button"
-                    onclick="editChildrenMedicalRecord('${escapeHtml(record.id)}')"
-                >
-                    ✎ 編集
-                </button>
-
-                <button
-                    type="button"
-                    class="children-medical-delete-button"
-                    onclick="deleteChildrenMedicalRecord('${escapeHtml(record.id)}')"
-                >
-                    × 削除
-                </button>
-
-            </div>
+                        </div>
+                    `
+                    : ""
+            }
 
         </div>
 
     `;
+
 }
 
+
+/* =====================================================
+   🏥 健診・病院
+   長い文字の展開 / 折りたたみ
+
+   通常
+       ○○○○○○○○○…
+
+   タップ
+       ○○○○○○○○○○○○○○○○
+
+   再タップ
+       ○○○○○○○○○…
+===================================================== */
+
+function toggleChildrenMedicalText(
+    element
+) {
+
+    if (!element) return;
+
+
+    element.classList.toggle(
+        "is-expanded"
+    );
+
+
+    if (
+        element.classList.contains(
+            "is-expanded"
+        )
+    ) {
+
+        element.setAttribute(
+            "title",
+            "タップで閉じる"
+        );
+
+    } else {
+
+        element.setAttribute(
+            "title",
+            "タップで全文表示"
+        );
+
+    }
+
+}
 
 /* =====================================================
    🏥 記録種類
