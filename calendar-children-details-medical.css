@@ -1,6 +1,6 @@
 /* =====================================================
    🏥 健診・病院
-   3段コンパクト表示
+   3段表示・読みやすさ優先
 ===================================================== */
 
 
@@ -16,7 +16,7 @@
 
     flex-direction: column;
 
-    gap: 8px;
+    gap: 10px;
 
 }
 
@@ -31,21 +31,20 @@
 
     box-sizing: border-box;
 
-    padding: 10px 12px;
+    padding: 12px 14px;
 
     border-radius: 12px;
 
     background: var(--card-bg, #ffffff);
 
     border: 1px solid
-        var(--border-color, #e5e5e5);
+        var(--border-color, #e2e2e2);
 
 }
 
 
 /* =====================================================
    1段目
-   日付・年齢 ＋ 編集・削除
 ===================================================== */
 
 .children-medical-record-row1 {
@@ -58,7 +57,7 @@
 
     justify-content: space-between;
 
-    gap: 8px;
+    gap: 10px;
 
     min-width: 0;
 
@@ -75,27 +74,37 @@
 
     align-items: center;
 
+    flex-wrap: wrap;
+
     gap: 8px;
 
 }
 
 
+/* 日付 */
+
 .children-medical-record-date {
 
-    font-size: 14px;
+    font-size: 16px;
 
-    font-weight: 600;
+    font-weight: 700;
+
+    line-height: 1.4;
 
     white-space: nowrap;
 
 }
 
 
+/* 年齢 */
+
 .children-medical-record-age {
 
-    font-size: 12px;
+    font-size: 15px;
 
-    color: #777;
+    font-weight: 600;
+
+    color: #666;
 
     white-space: nowrap;
 
@@ -114,7 +123,7 @@
 
     align-items: center;
 
-    gap: 10px;
+    gap: 8px;
 
 }
 
@@ -128,9 +137,13 @@
 
     justify-content: center;
 
-    width: 34px;
+    width: 40px;
 
-    height: 34px;
+    height: 40px;
+
+    font-size: 23px;
+
+    line-height: 1;
 
     cursor: pointer;
 
@@ -138,113 +151,92 @@
 
     -webkit-tap-highlight-color: transparent;
 
-    font-size: 20px;
-
-    line-height: 1;
-
 }
 
-
-/* 編集 */
 
 .children-medical-edit-icon {
 
-    color: #777;
+    color: #666;
 
 }
 
-
-/* 削除 */
 
 .children-medical-delete-icon {
 
-    color: #e05a5a;
+    color: #e05252;
 
 }
 
-
-/* タップ時 */
 
 .children-medical-edit-icon:active,
 .children-medical-delete-icon:active {
 
     transform: scale(0.88);
 
-    opacity: 0.65;
+    opacity: 0.6;
 
 }
 
 
 /* =====================================================
    2段目
-   種類・内容 ＋ 病院
+
+   種類・内容　病院・施設
 ===================================================== */
 
 .children-medical-record-row2 {
 
     width: 100%;
 
-    margin-top: 5px;
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 8px;
-
     min-width: 0;
 
-}
-
-
-.children-medical-record-content {
-
-    min-width: 0;
-
-    flex: 1;
-
-}
-
-
-.children-medical-record-main {
-
-    min-width: 0;
+    margin-top: 7px;
 
     display: flex;
 
     align-items: baseline;
 
-    gap: 5px;
+    gap: 7px;
 
-    cursor: pointer;
+    font-size: 16px;
+
+    font-weight: 600;
+
+    line-height: 1.5;
+
+    white-space: nowrap;
 
     overflow: hidden;
 
+    text-overflow: ellipsis;
+
+    cursor: pointer;
+
 }
 
+
+/* 種類 */
 
 .children-medical-record-type {
 
     flex-shrink: 0;
 
-    font-size: 13px;
+    font-size: 16px;
 
-    font-weight: 600;
-
-    white-space: nowrap;
+    font-weight: 700;
 
 }
 
+
+/* 内容 */
 
 .children-medical-record-title {
 
     min-width: 0;
 
-    font-size: 14px;
+    font-size: 16px;
 
     font-weight: 600;
-
-    white-space: nowrap;
 
     overflow: hidden;
 
@@ -253,26 +245,65 @@
 }
 
 
-/* =====================================================
-   病院・施設
-===================================================== */
+/* 病院 */
 
-.children-medical-record-hospital-area {
+.children-medical-record-hospital {
 
     min-width: 0;
 
-    flex: 0 1 42%;
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    font-size: 16px;
+
+    font-weight: 600;
 
 }
 
 
-.children-medical-record-hospital {
+/* 出産情報 */
 
-    display: block;
+.children-medical-record-birth-info {
 
     min-width: 0;
 
-    font-size: 13px;
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    font-size: 15px;
+
+    font-weight: 500;
+
+}
+
+
+/* =====================================================
+   3段目
+   メモ
+===================================================== */
+
+.children-medical-record-row3 {
+
+    width: 100%;
+
+    margin-top: 6px;
+
+}
+
+
+.children-medical-record-memo {
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+    font-size: 15px;
+
+    font-weight: 400;
+
+    line-height: 1.5;
 
     color: #666;
 
@@ -288,69 +319,7 @@
 
 
 /* =====================================================
-   出産・妊娠週数・年齢などの補足
-===================================================== */
-
-.children-medical-record-subinfo {
-
-    margin-top: 2px;
-
-    font-size: 12px;
-
-    color: #777;
-
-    white-space: nowrap;
-
-    overflow: hidden;
-
-    text-overflow: ellipsis;
-
-    cursor: pointer;
-
-}
-
-
-/* =====================================================
-   3段目
-   メモ
-===================================================== */
-
-.children-medical-record-row3 {
-
-    width: 100%;
-
-    margin-top: 5px;
-
-}
-
-
-.children-medical-record-memo {
-
-    width: 100%;
-
-    box-sizing: border-box;
-
-    font-size: 12px;
-
-    line-height: 1.5;
-
-    color: #777;
-
-    cursor: pointer;
-
-    overflow: hidden;
-
-    white-space: nowrap;
-
-    text-overflow: ellipsis;
-
-}
-
-
-/* =====================================================
-   展開状態
-
-   「…」を解除して全文表示
+   展開時
 ===================================================== */
 
 .children-medical-expandable.is-expanded {
@@ -367,14 +336,18 @@
 
 
 /* =====================================================
-   空の病院名など
+   記録なし
 ===================================================== */
 
-.children-medical-record-empty-text {
+.children-medical-empty {
 
-    color: #aaa;
+    padding: 20px 14px;
 
-    font-size: 13px;
+    text-align: center;
+
+    font-size: 16px;
+
+    line-height: 1.7;
 
 }
 
@@ -387,56 +360,63 @@
 
     .children-medical-record {
 
-        padding: 9px 10px;
+        padding: 12px;
 
     }
 
 
     .children-medical-record-date {
 
-        font-size: 13px;
+        font-size: 15px;
 
     }
 
 
     .children-medical-record-age {
 
-        font-size: 11px;
+        font-size: 14px;
 
     }
 
 
     .children-medical-record-row2 {
 
-        gap: 6px;
+        font-size: 15px;
 
     }
 
 
     .children-medical-record-type {
 
-        font-size: 12px;
+        font-size: 15px;
 
     }
 
 
     .children-medical-record-title {
 
-        font-size: 13px;
+        font-size: 15px;
 
     }
 
 
     .children-medical-record-hospital {
 
-        font-size: 12px;
+        font-size: 15px;
+
+    }
+
+
+    .children-medical-record-birth-info {
+
+        font-size: 14px;
 
     }
 
 
     .children-medical-record-memo {
 
-        font-size: 11px;
+        font-size: 14px;
 
     }
 
@@ -444,11 +424,11 @@
     .children-medical-edit-icon,
     .children-medical-delete-icon {
 
-        width: 32px;
+        width: 40px;
 
-        height: 32px;
+        height: 40px;
 
-        font-size: 19px;
+        font-size: 22px;
 
     }
 
