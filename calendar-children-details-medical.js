@@ -149,3 +149,68 @@ function renderChildrenMedical() {
     }
 
 }
+
+
+
+/* =====================================================
+   🏥 健診・病院画面を閉じる
+===================================================== */
+
+function closeChildrenMedical() {
+
+    const section =
+        document.getElementById(
+            "childrenMedicalSection"
+        );
+
+    if (section) {
+
+        section.style.display =
+            "none";
+
+    }
+
+
+    const growthSection =
+        document.getElementById(
+            "childrenGrowthSection"
+        );
+
+    if (growthSection) {
+
+        growthSection.style.display =
+            "";
+
+    }
+
+
+    const categoryList =
+        growthSection
+            ? growthSection.querySelector(
+                ".children-growth-category-list"
+            )
+            : null;
+
+    if (categoryList) {
+
+        categoryList.style.display =
+            "";
+
+    }
+
+
+    const growthHeader =
+        growthSection
+            ? growthSection.querySelector(
+                ".children-growth-section-header"
+            )
+            : null;
+
+    if (growthHeader) {
+
+        growthHeader.style.display =
+            "";
+
+    }
+
+}
