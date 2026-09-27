@@ -82,6 +82,70 @@ function openChildrenMedical() {
     section.style.display =
         "";
 
+    renderChildrenMedical();
+
 }
 
 
+/* =====================================================
+   🏥 健診・病院画面
+===================================================== */
+
+function renderChildrenMedical() {
+
+    const section =
+        document.getElementById(
+            "childrenMedicalSection"
+        );
+
+    const child =
+        typeof getSelectedChild === "function"
+            ? getSelectedChild()
+            : null;
+
+    if (!section || !child) return;
+
+
+    initializeChildrenGrowthData(
+        child
+    );
+
+
+    section.innerHTML = `
+
+        <div class="children-growth-detail-header">
+
+            <div class="children-growth-detail-title">
+                🏥 健診・病院
+            </div>
+
+            <button
+                type="button"
+                class="children-growth-detail-back"
+                id="childrenMedicalBackButton"
+            >
+                ◀ 成長・定期記録
+            </button>
+
+        </div>
+
+    `;
+
+
+    /* =================================================
+       ◀ 成長・定期記録へ戻る
+    ================================================= */
+
+    const backButton =
+        document.getElementById(
+            "childrenMedicalBackButton"
+        );
+
+    if (backButton) {
+
+        backButton.onclick =
+            closeChildrenMedical;
+
+    }
+
+}
