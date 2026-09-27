@@ -3560,37 +3560,41 @@ function resetChildrenGrowthSubPages() {
        次回開いたとき3件表示へ戻す。
     ================================================= */
 
-    const historyList =
-        document.getElementById(
-            "childrenHeightWeightHistoryList"
-        );
+const historyList =
+    document.getElementById(
+        "childrenHeightWeightHistoryList"
+    );
+if (historyList) {
+    historyList.dataset.displayAll = "false";
+}
 
 
-    if (historyList) {
+/* =================================================
+   💉 予防接種ページを閉じる
+================================================= */
 
-        historyList.dataset.displayAll =
-            "false";
+const vaccinationSection =
+    document.getElementById(
+        "childrenVaccinationSection"
+    );
 
-    }
-
-
-    /* =================================================
-       🏥 健診・病院ページを閉じる
-    ================================================= */
-
-    const medicalSection =
-        document.getElementById(
-            "childrenMedicalSection"
-        );
+if (vaccinationSection) {
+    vaccinationSection.style.display = "none";
+}
 
 
-    if (medicalSection) {
+/* =================================================
+   🏥 健診・病院ページを閉じる
+================================================= */
 
-        medicalSection.style.display =
-            "none";
+const medicalSection =
+    document.getElementById(
+        "childrenMedicalSection"
+    );
 
-    }
-
+if (medicalSection) {
+    medicalSection.style.display = "none";
+}
 
     /* =================================================
        📋 成長カテゴリー一覧を表示
