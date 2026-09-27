@@ -695,30 +695,31 @@ function renderChildrenMedicalRecord(
                 </div>
 
 
-                <div class="children-medical-record-actions">
+<div class="children-medical-record-actions">
 
-                    <button
-                        type="button"
-                        class="children-medical-edit-button"
-                        onclick="editChildrenMedicalRecord('${escapeHtml(record.id)}')"
-                        aria-label="編集"
-                        title="編集"
-                    >
-                        ✎
-                    </button>
+    <span
+        class="children-medical-edit-icon"
+        onclick="editChildrenMedicalRecord('${escapeHtml(record.id)}')"
+        role="button"
+        tabindex="0"
+        aria-label="編集"
+        title="編集"
+    >
+        ✎
+    </span>
 
-                    <button
-                        type="button"
-                        class="children-medical-delete-button"
-                        onclick="deleteChildrenMedicalRecord('${escapeHtml(record.id)}')"
-                        aria-label="削除"
-                        title="削除"
-                    >
-                        ×
-                    </button>
+    <span
+        class="children-medical-delete-icon"
+        onclick="deleteChildrenMedicalRecord('${escapeHtml(record.id)}')"
+        role="button"
+        tabindex="0"
+        aria-label="削除"
+        title="削除"
+    >
+        ×
+    </span>
 
-                </div>
-
+</div>
             </div>
 
 
