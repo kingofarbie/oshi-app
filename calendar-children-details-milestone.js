@@ -1151,6 +1151,33 @@ function openChildrenMilestoneForm(
     }
 
 
+    /* =================================================
+       👶 子どもカレンダー用カラー
+       身長・体重と同じ性別判定
+    ================================================= */
+
+    modal.classList.remove(
+        "children-milestone-boy",
+        "children-milestone-girl"
+    );
+
+
+    if (child.gender === "boy") {
+
+        modal.classList.add(
+            "children-milestone-boy"
+        );
+
+    }
+    else if (child.gender === "girl") {
+
+        modal.classList.add(
+            "children-milestone-girl"
+        );
+
+    }
+
+
     const today =
         new Date()
             .toISOString()
@@ -1374,6 +1401,7 @@ function openChildrenMilestoneForm(
         "flex";
 
 }
+
 
 
 /* =====================================================
