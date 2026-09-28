@@ -1,0 +1,365 @@
+/* =====================================================
+   🌱 成長・できたこと
+===================================================== */
+
+.children-milestone-section {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+
+/* =====================
+   ヘッダー
+===================== */
+
+.children-milestone-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.children-milestone-title {
+    min-width: 0;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+.children-milestone-back-button {
+    flex-shrink: 0;
+    border: 0;
+    background: none;
+    padding: 8px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #666;
+    cursor: pointer;
+}
+
+
+/* =====================
+   追加ボタン
+===================== */
+
+.children-milestone-add-area {
+    width: 100%;
+    margin-bottom: 16px;
+}
+
+.children-milestone-add-button {
+    width: 100%;
+    min-height: 50px;
+    border: 0;
+    border-radius: 12px;
+    background: var(--accent-color, #ff7aa8);
+    color: #fff;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+
+/* =====================
+   一覧
+===================== */
+
+.children-milestone-record-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.children-milestone-record {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: var(--card-bg, #fff);
+    border: 1px solid var(--border-color, #e2e2e2);
+}
+
+
+/* =====================
+   1行目
+===================== */
+
+.children-milestone-record-row1 {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.children-milestone-date-area {
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.children-milestone-date {
+    font-size: 16px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.children-milestone-age {
+    font-size: 15px;
+    font-weight: 600;
+    color: #666;
+    white-space: nowrap;
+}
+
+
+/* =====================
+   編集・削除
+===================== */
+
+.children-milestone-actions {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.children-milestone-edit-icon,
+.children-milestone-delete-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    font-size: 23px;
+    line-height: 1;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.children-milestone-edit-icon {
+    color: #666;
+}
+
+.children-milestone-delete-icon {
+    color: #e05252;
+}
+
+.children-milestone-edit-icon:active,
+.children-milestone-delete-icon:active {
+    transform: scale(.88);
+    opacity: .6;
+}
+
+
+/* =====================
+   2行目
+===================== */
+
+.children-milestone-record-row2 {
+    width: 100%;
+    min-width: 0;
+    margin-top: 7px;
+    display: flex;
+    align-items: baseline;
+    gap: 7px;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.5;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+}
+
+.children-milestone-record-icon {
+    flex-shrink: 0;
+}
+
+.children-milestone-record-content {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+/* =====================
+   3行目 メモ
+===================== */
+
+.children-milestone-record-row3 {
+    width: 100%;
+    margin-top: 6px;
+}
+
+.children-milestone-memo {
+    width: 100%;
+    box-sizing: border-box;
+    color: #666;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.5;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+}
+
+
+/* =====================
+   長文展開
+===================== */
+
+.children-milestone-expandable.is-expanded {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    overflow-wrap: anywhere;
+}
+
+
+/* =====================
+   空状態
+===================== */
+
+.children-milestone-empty {
+    padding: 20px 14px;
+    text-align: center;
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+
+/* =====================================================
+   🌱 入力フォーム
+===================================================== */
+
+.children-milestone-form-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    box-sizing: border-box;
+}
+
+.children-milestone-form-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, .45);
+}
+
+.children-milestone-form {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 520px);
+    max-height: 90vh;
+    overflow-y: auto;
+    box-sizing: border-box;
+    padding: 20px;
+    border-radius: 16px;
+    background: var(--card-bg, #fff);
+}
+
+.children-milestone-form-title {
+    margin-bottom: 18px;
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.children-milestone-form-label {
+    display: block;
+    margin-bottom: 14px;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.children-milestone-form-label input,
+.children-milestone-form-label textarea {
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 7px;
+    padding: 11px 12px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background: #fff;
+    color: #222;
+    font-size: 16px;
+    font-family: inherit;
+}
+
+.children-milestone-form-label textarea {
+    resize: vertical;
+    line-height: 1.5;
+}
+
+.children-milestone-form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.children-milestone-form-actions button {
+    flex: 1;
+    min-height: 48px;
+    border: 0;
+    border-radius: 11px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.children-milestone-form-cancel {
+    background: #eee;
+    color: #555;
+}
+
+.children-milestone-form-save {
+    background: var(--accent-color, #ff7aa8);
+    color: #fff;
+}
+
+
+/* =====================
+   スマホ
+===================== */
+
+@media (max-width: 480px) {
+
+    .children-milestone-title {
+        font-size: 18px;
+    }
+
+    .children-milestone-back-button {
+        font-size: 13px;
+    }
+
+    .children-milestone-record {
+        padding: 12px;
+    }
+
+    .children-milestone-date {
+        font-size: 15px;
+    }
+
+    .children-milestone-age {
+        font-size: 14px;
+    }
+
+    .children-milestone-record-row2 {
+        font-size: 15px;
+    }
+
+    .children-milestone-memo {
+        font-size: 14px;
+    }
+
+}
