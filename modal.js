@@ -222,72 +222,6 @@ function initializeCommonConfirmModal() {
 
 
 // =====================================================
-// ✅ 共通確認モーダルを開く
-// =====================================================
-
-function openCommonConfirmModal(
-    message,
-    okText = "確認",
-    cancelText = "キャンセル"
-) {
-
-    const modal =
-        document.getElementById("commonConfirmModal");
-
-    const messageElement =
-        document.getElementById("commonConfirmMessage");
-
-    const cancelButton =
-        document.getElementById("commonConfirmCancelButton");
-
-    const okButton =
-        document.getElementById("commonConfirmOkButton");
-
-    if (
-        !modal ||
-        !messageElement ||
-        !cancelButton ||
-        !okButton
-    ) {
-        return Promise.resolve(false);
-    }
-
-
-    messageElement.textContent =
-        message;
-
-    /*
-     * 重要：
-     *
-     * okText / cancelText は
-     * 「OK=true / キャンセル=false」という意味ではなく、
-     * 呼び出し側が自由に設定できる表示文字。
-     *
-     * 戻り値 true / false は
-     * あくまで押されたボタンを識別するために使用する。
-     */
-
-    okButton.textContent =
-        okText;
-
-    cancelButton.textContent =
-        cancelText;
-
-
-    modal.style.display =
-        "flex";
-
-
-    return new Promise(resolve => {
-
-        commonConfirmResolve =
-            resolve;
-
-    });
-
-}
-
-// =====================================================
 // 数値 / 時刻入力モーダルを開く
 //
 // 既存:
@@ -848,9 +782,6 @@ function closeNumberInputModal() {
 
 
 
-// =====================================================
-// ✅ 共通確認モーダルを開く
-// =====================================================
 
 // =====================================================
 // ✅ 共通確認モーダルを開く
@@ -859,7 +790,8 @@ function closeNumberInputModal() {
 function openCommonConfirmModal(
     message,
     completeText = "完了",
-    incompleteText = "未完了"
+    incompleteText = "未完了",
+    childrenGender = ""
 ) {
 
     const modal =
@@ -869,10 +801,14 @@ function openCommonConfirmModal(
         document.getElementById("commonConfirmMessage");
 
     const completeButton =
-        document.getElementById("commonConfirmCancelButton");
+        document.getElementById(
+            "commonConfirmCancelButton"
+        );
 
     const incompleteButton =
-        document.getElementById("commonConfirmOkButton");
+        document.getElementById(
+            "commonConfirmOkButton"
+        );
 
     if (
         !modal ||
@@ -881,6 +817,32 @@ function openCommonConfirmModal(
         !incompleteButton
     ) {
         return Promise.resolve(null);
+    }
+
+
+    /* =================================================
+       👶 予防接種用 性別カラーをリセット
+    ================================================= */
+
+    modal.classList.remove(
+        "children-vaccination-boy",
+        "children-vaccination-girl"
+    );
+
+
+    if (childrenGender === "boy") {
+
+        modal.classList.add(
+            "children-vaccination-boy"
+        );
+
+    }
+    else if (childrenGender === "girl") {
+
+        modal.classList.add(
+            "children-vaccination-girl"
+        );
+
     }
 
 
@@ -916,8 +878,6 @@ function openCommonConfirmModal(
     });
 
 }
-
-
 
 
 

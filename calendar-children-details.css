@@ -1680,3 +1680,38 @@ button:active {
     border-color: var(--children-girl-border) !important;
     color: #fff !important;
 }
+
+
+/* =====================================================
+   💉 予防接種 完了・未完了確認モーダル：性別カラー
+===================================================== */
+
+
+/* 👦 男の子 */
+.common-confirm-modal.children-vaccination-boy
+.common-confirm-cancel,
+.common-confirm-modal.children-vaccination-boy
+.common-confirm-ok {
+
+    background: var(--children-boy-color) !important;
+
+    border-color: var(--children-boy-border) !important;
+
+    color: #fff !important;
+
+}
+
+
+/* 👧 女の子 */
+.common-confirm-modal.children-vaccination-girl
+.common-confirm-cancel,
+.common-confirm-modal.children-vaccination-girl
+.common-confirm-ok {
+
+    background: var(--children-girl-color) !important;
+
+    border-color: var(--children-girl-border) !important;
+
+    color: #fff !important;
+
+}

@@ -3543,93 +3543,94 @@ function renderChildrenVaccinationByType(
        💉 接種完了状態 切り替え
     ================================================= */
 
-window.toggleChildrenVaccinationCompleted =
-    async function(vaccineId) {
+    window.toggleChildrenVaccinationCompleted =
+        async function(vaccineId) {
 
-        initializeChildrenVaccinationData(
-            child
-        );
-
-        const completed =
-            child.growth
-                .vaccinationCompleted;
-
-        const master =
-            getChildrenVaccinationMaster(
-                vaccineId
+            initializeChildrenVaccinationData(
+                child
             );
 
-        const vaccineName =
-            master
-                ? master.name
-                : "このワクチン";
+            const completed =
+                child.growth
+                    .vaccinationCompleted;
 
-        const isCompleted =
-            !!completed[vaccineId];
-
-
-        /* =================================================
-           未 → 確認
-        ================================================= */
-
-        if (!isCompleted) {
-
-            const result =
-                await openCommonConfirmModal(
-                    vaccineName +
-                    "の予防接種は完了していますか？",
-                    "完了",
-                    "未完了(キャンセル)"
+            const master =
+                getChildrenVaccinationMaster(
+                    vaccineId
                 );
 
-            if (result === "completed") {
+            const vaccineName =
+                master
+                    ? master.name
+                    : "このワクチン";
 
-                completed[vaccineId] = true;
+            const isCompleted =
+                !!completed[vaccineId];
+
+
+            /* =================================================
+               未 → 確認
+            ================================================= */
+
+            if (!isCompleted) {
+
+                const result =
+                    await openCommonConfirmModal(
+                        vaccineName +
+                        "の予防接種は完了していますか？",
+                        "完了",
+                        "未完了(キャンセル)",
+                        child.gender
+                    );
+
+                if (result === "completed") {
+
+                    completed[vaccineId] = true;
+
+                }
+                else {
+
+                    return;
+
+                }
 
             }
+
+
+            /* =================================================
+               完 → 確認
+            ================================================= */
+
             else {
 
-                return;
+                const result =
+                    await openCommonConfirmModal(
+                        vaccineName +
+                        "の予防接種はまだ完了していませんか？",
+                        "完了(キャンセル)",
+                        "未完了",
+                        child.gender
+                    );
+
+                if (result === "incomplete") {
+
+                    completed[vaccineId] = false;
+
+                }
+                else {
+
+                    return;
+
+                }
 
             }
 
-        }
 
+            saveChildrenVaccinationData();
 
-        /* =================================================
-           完 → 確認
-        ================================================= */
+            renderChildrenVaccination();
 
-        else {
-
-            const result =
-                await openCommonConfirmModal(
-                    vaccineName +
-                    "の予防接種はまだ完了していませんか？",
-                    "完了(キャンセル)",
-                    "未完了"
-                );
-
-            if (result === "incomplete") {
-
-                completed[vaccineId] = false;
-
-            }
-            else {
-
-                return;
-
-            }
-
-        }
-
-
-        saveChildrenVaccinationData();
-
-        renderChildrenVaccination();
-
-    };
-
+        };
 
 
     let html = `
@@ -3779,6 +3780,7 @@ window.toggleChildrenVaccinationCompleted =
         html;
 
 }
+
 
 
 /* =====================================================
