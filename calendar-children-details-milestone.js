@@ -4,17 +4,17 @@
 
    calendar-children-details-milestone.js
 
+   ・既存の成長・定期記録下位ページと同じ構造
    ・子どもごとに保存
    ・複数同日記録対応
    ・年齢は誕生日＋記録日から自動計算
-   ・記録追加 / 編集 / 削除
-   ・長文省略 → タップで全文 → 再タップで省略
-   ・既存の身長体重 / 予防接種 / 健診病院に干渉しない
+   ・追加 / 編集 / 削除
+   ・長文は省略表示 → タップで全文
 ===================================================== */
 
 
 /* =====================================================
-   🌱 成長記録データ初期化
+   🌱 データ初期化
 ===================================================== */
 
 function initializeChildrenMilestoneData(child) {
@@ -25,9 +25,7 @@ function initializeChildrenMilestoneData(child) {
         !child.growth ||
         typeof child.growth !== "object"
     ) {
-
         child.growth = {};
-
     }
 
     if (
@@ -35,10 +33,39 @@ function initializeChildrenMilestoneData(child) {
             child.growth.milestone
         )
     ) {
-
         child.growth.milestone = [];
-
     }
+
+}
+
+
+/* =====================================================
+   🌱 現在の子ども
+===================================================== */
+
+function getCurrentChildrenMilestoneChild() {
+
+    if (
+        typeof childrenData ===
+        "undefined"
+    ) {
+        return null;
+    }
+
+    if (
+        typeof selectedChildId ===
+        "undefined"
+    ) {
+        return null;
+    }
+
+    return (
+        childrenData.find(
+            child =>
+                child.id ===
+                selectedChildId
+        ) || null
+    );
 
 }
 
@@ -58,6 +85,18 @@ function openChildrenMilestone() {
 
 
     /* ---------------------------------------------
+       他の下位ページと同じ初期化
+    --------------------------------------------- */
+
+    if (
+        typeof resetChildrenGrowthSubPages ===
+        "function"
+    ) {
+        resetChildrenGrowthSubPages();
+    }
+
+
+    /* ---------------------------------------------
        成長カテゴリー一覧を隠す
     --------------------------------------------- */
 
@@ -67,16 +106,13 @@ function openChildrenMilestone() {
         );
 
     if (categoryList) {
-
         categoryList.style.display =
             "none";
-
     }
 
 
     /* ---------------------------------------------
-       成長・定期記録のヘッダーを隠す
-       ※下位ページ専用ヘッダーを表示する
+       成長・定期記録の共通ヘッダーを隠す
     --------------------------------------------- */
 
     const growthHeader =
@@ -85,10 +121,8 @@ function openChildrenMilestone() {
         );
 
     if (growthHeader) {
-
         growthHeader.style.display =
             "none";
-
     }
 
 
@@ -102,26 +136,19 @@ function openChildrenMilestone() {
         );
 
     if (calendarBackButton) {
-
         calendarBackButton.style.display =
             "none";
-
     }
 
 
     /* ---------------------------------------------
-       既存のセクションがあれば再利用
+       🌱 下位ページ
     --------------------------------------------- */
 
     let section =
         document.getElementById(
             "childrenMilestoneSection"
         );
-
-
-    /* ---------------------------------------------
-       初回だけ作成
-    --------------------------------------------- */
 
     if (!section) {
 
@@ -161,12 +188,14 @@ function closeChildrenMilestone() {
         );
 
     if (section) {
-
         section.style.display =
             "none";
-
     }
 
+
+    /* ---------------------------------------------
+       成長・定期記録一覧へ戻す
+    --------------------------------------------- */
 
     const growthSection =
         document.getElementById(
@@ -182,10 +211,8 @@ function closeChildrenMilestone() {
         );
 
     if (categoryList) {
-
         categoryList.style.display =
             "";
-
     }
 
 
@@ -195,44 +222,51 @@ function closeChildrenMilestone() {
         );
 
     if (growthHeader) {
-
         growthHeader.style.display =
             "";
-
     }
 
 }
 
 
 /* =====================================================
-   🌱 現在の子どもを取得
+   🌱 日付表示
 ===================================================== */
 
-function getCurrentChildrenMilestoneChild() {
+function formatChildrenMilestoneDate(date) {
+
+    if (!date) return "";
+
 
     if (
-        typeof childrenData ===
-        "undefined"
+        typeof formatChildrenMedicalDate ===
+        "function"
     ) {
-
-        return null;
-
+        return formatChildrenMedicalDate(
+            date
+        );
     }
+
+
+    const parts =
+        String(date).split("-");
+
 
     if (
-        typeof selectedChildId ===
-        "undefined"
+        parts.length !== 3
     ) {
-
-        return null;
-
+        return String(date);
     }
 
-    return childrenData.find(
-        child =>
-            child.id ===
-            selectedChildId
-    ) || null;
+
+    return (
+        Number(parts[0]) +
+        "年" +
+        Number(parts[1]) +
+        "月" +
+        Number(parts[2]) +
+        "日"
+    );
 
 }
 
@@ -251,9 +285,7 @@ function getChildrenMilestoneAgeText(
         !child.birthday ||
         !date
     ) {
-
         return "";
-
     }
 
 
@@ -271,50 +303,6 @@ function getChildrenMilestoneAgeText(
 
 
     return "";
-
-}
-
-
-/* =====================================================
-   🌱 日付表示
-===================================================== */
-
-function formatChildrenMilestoneDate(
-    date
-) {
-
-    if (!date) return "";
-
-
-    if (
-        typeof formatChildrenMedicalDate ===
-        "function"
-    ) {
-
-        return formatChildrenMedicalDate(
-            date
-        );
-
-    }
-
-
-    const parts =
-        String(date).split("-");
-
-    if (parts.length !== 3) {
-
-        return String(date);
-
-    }
-
-    return (
-        Number(parts[0]) +
-        "年" +
-        Number(parts[1]) +
-        "月" +
-        Number(parts[2]) +
-        "日"
-    );
 
 }
 
@@ -349,6 +337,7 @@ function renderChildrenMilestone() {
             "childrenMilestoneSection"
         );
 
+
     if (!section) {
 
         section =
@@ -368,16 +357,8 @@ function renderChildrenMilestone() {
 
 
     const records =
-        Array.isArray(
-            child.growth.milestone
-        )
-            ? [...child.growth.milestone]
-            : [];
+        [...child.growth.milestone];
 
-
-    /* ---------------------------------------------
-       新しい日付順
-    --------------------------------------------- */
 
     records.sort(
         (a, b) => {
@@ -388,31 +369,27 @@ function renderChildrenMilestone() {
             const dateB =
                 String(b.date || "");
 
-            if (dateA === dateB) {
 
-                return (
-                    String(
-                        b.createdAt || ""
-                    ).localeCompare(
-                        String(
-                            a.createdAt || ""
-                        )
-                    )
+            if (
+                dateA !== dateB
+            ) {
+                return dateB.localeCompare(
+                    dateA
                 );
-
             }
 
-            return dateB.localeCompare(
-                dateA
+
+            return String(
+                b.createdAt || ""
+            ).localeCompare(
+                String(
+                    a.createdAt || ""
+                )
             );
 
         }
     );
 
-
-    /* ---------------------------------------------
-       一覧HTML
-    --------------------------------------------- */
 
     let recordsHtml = "";
 
@@ -447,14 +424,18 @@ function renderChildrenMilestone() {
     }
 
 
+    /* =================================================
+       ★ 既存3ページと完全に同じ共通ヘッダー
+    ================================================= */
+
     section.innerHTML = `
 
         <div class="
-            children-milestone-header
+            children-growth-detail-header
         ">
 
             <div class="
-                children-milestone-title
+                children-growth-detail-title
             ">
 
                 🌱 成長・できたこと
@@ -465,7 +446,7 @@ function renderChildrenMilestone() {
             <button
                 type="button"
                 class="
-                    children-milestone-back-button
+                    children-growth-detail-back
                 "
                 onclick="
                     closeChildrenMilestone()
@@ -487,7 +468,7 @@ function renderChildrenMilestone() {
                 type="button"
                 class="
                     children-milestone-add-button
-                "
+            "
                 onclick="
                     openChildrenMilestoneForm()
                 "
@@ -514,7 +495,7 @@ function renderChildrenMilestone() {
 
 
 /* =====================================================
-   🌱 1件分の記録
+   🌱 1件の記録
 ===================================================== */
 
 function renderChildrenMilestoneRecord(
@@ -535,6 +516,12 @@ function renderChildrenMilestoneRecord(
         );
 
 
+    const content =
+        record.title ||
+        record.content ||
+        "";
+
+
     return `
 
         <div
@@ -547,7 +534,7 @@ function renderChildrenMilestoneRecord(
         >
 
 
-            <!-- 1行目：日付・年齢・操作 -->
+            <!-- 1行目 -->
 
             <div class="
                 children-milestone-record-row1
@@ -605,9 +592,7 @@ function renderChildrenMilestoneRecord(
                         aria-label="編集"
                         title="編集"
                     >
-
                         ✎
-
                     </span>
 
 
@@ -625,9 +610,7 @@ function renderChildrenMilestoneRecord(
                         aria-label="削除"
                         title="削除"
                     >
-
                         ×
-
                     </span>
 
                 </div>
@@ -635,7 +618,7 @@ function renderChildrenMilestoneRecord(
             </div>
 
 
-            <!-- 2行目：できたこと -->
+            <!-- 2行目 -->
 
             <div
                 class="
@@ -664,9 +647,7 @@ function renderChildrenMilestoneRecord(
                 ">
 
                     ${escapeHtml(
-                        record.title ||
-                        record.content ||
-                        ""
+                        content
                     )}
 
                 </span>
@@ -674,7 +655,7 @@ function renderChildrenMilestoneRecord(
             </div>
 
 
-            <!-- 3行目：メモ -->
+            <!-- 3行目 -->
 
             ${
                 record.memo
@@ -723,7 +704,7 @@ function renderChildrenMilestoneRecord(
 
 
 /* =====================================================
-   🌱 省略 / 全文切り替え
+   🌱 長文展開
 ===================================================== */
 
 function toggleChildrenMilestoneText(
@@ -738,31 +719,20 @@ function toggleChildrenMilestoneText(
     );
 
 
-    if (
+    element.setAttribute(
+        "title",
         element.classList.contains(
             "is-expanded"
         )
-    ) {
-
-        element.setAttribute(
-            "title",
-            "タップで閉じる"
-        );
-
-    } else {
-
-        element.setAttribute(
-            "title",
-            "タップで全文表示"
-        );
-
-    }
+            ? "タップで閉じる"
+            : "タップで全文表示"
+    );
 
 }
 
 
 /* =====================================================
-   🌱 記録追加フォーム
+   🌱 記録フォーム
 ===================================================== */
 
 function openChildrenMilestoneForm(
@@ -820,17 +790,14 @@ function openChildrenMilestoneForm(
 
 
     const today =
-        new Date();
-
-    const defaultDate =
-        today
+        new Date()
             .toISOString()
             .slice(0, 10);
 
 
     const date =
         record?.date ||
-        defaultDate;
+        today;
 
 
     const content =
@@ -846,9 +813,10 @@ function openChildrenMilestoneForm(
 
     modal.innerHTML = `
 
-        <div class="
-            children-milestone-form-overlay
-        "
+        <div
+            class="
+                children-milestone-form-overlay
+            "
             onclick="
                 closeChildrenMilestoneForm()
             "
@@ -880,7 +848,9 @@ function openChildrenMilestoneForm(
 
                 <input
                     type="date"
-                    id="childrenMilestoneFormDate"
+                    id="
+                        childrenMilestoneFormDate
+                    "
                     value="${escapeHtml(date)}"
                 >
 
@@ -953,7 +923,9 @@ function openChildrenMilestoneForm(
                     "
                     onclick="
                         saveChildrenMilestoneRecord(
-                            ${recordId ? `'${escapeHtml(recordId)}'` : "null"}
+                            ${recordId
+                                ? `'${escapeHtml(recordId)}'`
+                                : "null"}
                         )
                     "
                 >
@@ -971,25 +943,6 @@ function openChildrenMilestoneForm(
 
     modal.style.display =
         "flex";
-
-
-    setTimeout(
-        () => {
-
-            const input =
-                document.getElementById(
-                    "childrenMilestoneFormContent"
-                );
-
-            if (input) {
-
-                input.focus();
-
-            }
-
-        },
-        50
-    );
 
 }
 
@@ -1084,10 +1037,6 @@ function saveChildrenMilestoneRecord(
     }
 
 
-    /* ---------------------------------------------
-       編集
-    --------------------------------------------- */
-
     if (recordId) {
 
         const index =
@@ -1117,28 +1066,19 @@ function saveChildrenMilestoneRecord(
                 title:
                     content,
 
-                content:
-                    content,
+                content,
 
-                memo
+                memo,
+
+                updatedAt:
+                    new Date()
+                        .toISOString()
 
             };
 
         }
 
-    }
-
-
-    /* ---------------------------------------------
-       新規
-    --------------------------------------------- */
-
-    else {
-
-        const now =
-            new Date()
-                .toISOString();
-
+    } else {
 
         child.growth.milestone.push({
 
@@ -1155,25 +1095,22 @@ function saveChildrenMilestoneRecord(
             title:
                 content,
 
-            content:
-                content,
+            content,
 
             memo,
 
             createdAt:
-                now,
+                new Date()
+                    .toISOString(),
 
             updatedAt:
-                now
+                new Date()
+                    .toISOString()
 
         });
 
     }
 
-
-    /* ---------------------------------------------
-       保存
-    --------------------------------------------- */
 
     if (
         typeof saveChildrenGrowthData ===
@@ -1193,7 +1130,6 @@ function saveChildrenMilestoneRecord(
 
 
     closeChildrenMilestoneForm();
-
 
     renderChildrenMilestone();
 
@@ -1225,13 +1161,13 @@ function deleteChildrenMilestone(
     if (!record) return;
 
 
-    const ok =
-        confirm(
+    if (
+        !confirm(
             "この成長記録を削除しますか？"
-        );
-
-
-    if (!ok) return;
+        )
+    ) {
+        return;
+    }
 
 
     child.growth.milestone =
@@ -1285,7 +1221,7 @@ function closeChildrenMilestoneForm() {
 
 
 /* =====================================================
-   🌱 カテゴリーからのクリック
+   🌱 カテゴリークリック
 ===================================================== */
 
 if (
