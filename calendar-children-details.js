@@ -3293,6 +3293,10 @@ let childrenVaccinationViewMode =
    💉 予防接種画面描画
 ===================================================== */
 
+/* =====================================================
+   💉 予防接種画面描画
+===================================================== */
+
 function renderChildrenVaccination() {
 
     const child =
@@ -3312,6 +3316,26 @@ function renderChildrenVaccination() {
         );
 
     if (!section) return;
+
+
+    /* =================================================
+       👶 性別カラー
+    ================================================= */
+
+    let genderClass = "";
+
+    if (child.gender === "boy") {
+
+        genderClass =
+            "children-vaccination-boy";
+
+    }
+    else if (child.gender === "girl") {
+
+        genderClass =
+            "children-vaccination-girl";
+
+    }
 
 
     section.innerHTML = `
@@ -3352,28 +3376,35 @@ function renderChildrenVaccination() {
         </div>
 
 
-<div
-    class="children-vaccination-add-area"
->
+        <div
+            class="children-vaccination-add-area"
+        >
 
-    <button
-        type="button"
-        class="children-vaccination-add-button"
-        onclick="openChildrenVaccinationRecordModal()"
-    >
-        ＋ 接種記録を追加
-    </button>
+            <button
+                type="button"
+                class="
+                    children-vaccination-add-button
+                    ${genderClass}
+                "
+                onclick="openChildrenVaccinationRecordModal()"
+            >
+                ＋ 接種記録を追加
+            </button>
 
 
-    <button
-        type="button"
-        class="children-vaccination-next-button"
-        onclick="openChildrenVaccinationNextScheduleModal()"
-    >
-        ＋ 次回接種予定を追加
-    </button>
+            <button
+                type="button"
+                class="
+                    children-vaccination-next-button
+                    ${genderClass}
+                "
+                onclick="openChildrenVaccinationNextScheduleModal()"
+            >
+                ＋ 次回接種予定を追加
+            </button>
 
-</div>
+        </div>
+
 
         <div
             class="children-vaccination-content"
@@ -3421,6 +3452,7 @@ function renderChildrenVaccination() {
     }
 
 }
+
 
 
 /* =====================================================
@@ -4186,6 +4218,10 @@ function renderChildrenVaccinationRecordHtml(
    💉 記録追加 / 編集モーダル
 ===================================================== */
 
+/* =====================================================
+   💉 記録追加 / 編集モーダル
+===================================================== */
+
 function openChildrenVaccinationRecordModal(
     vaccineId = "",
     editId = ""
@@ -4245,6 +4281,26 @@ function openChildrenVaccinationRecordModal(
 
     modal.className =
         "children-modal";
+
+
+    /* =================================================
+       👶 性別カラー
+    ================================================= */
+
+    if (child.gender === "boy") {
+
+        modal.classList.add(
+            "children-vaccination-boy"
+        );
+
+    }
+    else if (child.gender === "girl") {
+
+        modal.classList.add(
+            "children-vaccination-girl"
+        );
+
+    }
 
 
     const master =
@@ -4415,45 +4471,47 @@ function openChildrenVaccinationRecordModal(
                 </label>
 
 
-<label>
-    接種回数
+                <label>
+                    接種回数
 
-    <select
-        id="childrenVaccinationDoseInput"
-    >
-
-        <option value="">
-            選択してください
-        </option>
-
-        ${Array.from(
-            { length: 20 },
-            (_, index) => {
-
-                const dose =
-                    (index + 1) + "回目";
-
-                return `
-
-                    <option
-                        value="${dose}"
-                        ${
-                            record?.dose === dose
-                                ? "selected"
-                                : ""
-                        }
+                    <select
+                        id="childrenVaccinationDoseInput"
                     >
-                        ${dose}
-                    </option>
 
-                `;
+                        <option value="">
+                            選択してください
+                        </option>
 
-            }
-        ).join("")}
+                        ${Array.from(
+                            { length: 20 },
+                            (_, index) => {
 
-    </select>
+                                const dose =
+                                    (index + 1) +
+                                    "回目";
 
-</label>
+                                return `
+
+                                    <option
+                                        value="${dose}"
+                                        ${
+                                            record?.dose === dose
+                                                ? "selected"
+                                                : ""
+                                        }
+                                    >
+                                        ${dose}
+                                    </option>
+
+                                `;
+
+                            }
+                        ).join("")}
+
+                    </select>
+
+                </label>
+
 
                 <label>
                     医療機関名
@@ -4809,6 +4867,11 @@ function openChildrenVaccinationRecordModal(
 }
 
 
+
+/* =====================================================
+   💉 次回接種予定追加モーダル
+===================================================== */
+
 function openChildrenVaccinationNextScheduleModal() {
 
     const child =
@@ -4845,6 +4908,26 @@ function openChildrenVaccinationNextScheduleModal() {
 
     modal.className =
         "children-modal";
+
+
+    /* =================================================
+       👶 性別カラー
+    ================================================= */
+
+    if (child.gender === "boy") {
+
+        modal.classList.add(
+            "children-vaccination-boy"
+        );
+
+    }
+    else if (child.gender === "girl") {
+
+        modal.classList.add(
+            "children-vaccination-girl"
+        );
+
+    }
 
 
     const now =
@@ -5350,6 +5433,7 @@ function openChildrenVaccinationNextScheduleModal() {
         );
 
 }
+
 
 /* =====================================================
    💉 編集

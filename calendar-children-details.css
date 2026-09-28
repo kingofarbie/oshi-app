@@ -1615,3 +1615,62 @@ button:active {
     white-space: nowrap;
 
 }
+
+
+/* =========================================
+   💉 予防接種：性別カラー
+========================================= */
+
+/* 男の子 */
+.children-vaccination-add-button.children-vaccination-boy,
+.children-vaccination-next-button.children-vaccination-boy {
+    background: var(--children-boy-color) !important;
+    border-color: var(--children-boy-border) !important;
+    color: #fff !important;
+}
+
+/* 女の子 */
+.children-vaccination-add-button.children-vaccination-girl,
+.children-vaccination-next-button.children-vaccination-girl {
+    background: var(--children-girl-color) !important;
+    border-color: var(--children-girl-border) !important;
+    color: #fff !important;
+}
+
+
+/* =========================================
+   💉 予防接種モーダル
+========================================= */
+
+/* 男の子 */
+.children-modal.children-vaccination-boy .children-vaccination-save {
+    background: var(--children-boy-color) !important;
+    border-color: var(--children-boy-border) !important;
+    color: #fff !important;
+}
+
+.children-modal.children-vaccination-boy .children-vaccination-cancel {
+    color: var(--children-boy-color) !important;
+    border-color: var(--children-boy-border) !important;
+}
+
+.children-modal.children-vaccination-boy .children-modal-close-button {
+    color: var(--children-boy-color) !important;
+}
+
+
+/* 女の子 */
+.children-modal.children-vaccination-girl .children-vaccination-save {
+    background: var(--children-girl-color) !important;
+    border-color: var(--children-girl-border) !important;
+    color: #fff !important;
+}
+
+.children-modal.children-vaccination-girl .children-vaccination-cancel {
+    color: var(--children-girl-color) !important;
+    border-color: var(--children-girl-border) !important;
+}
+
+.children-modal.children-vaccination-girl .children-modal-close-button {
+    color: var(--children-girl-color) !important;
+}
