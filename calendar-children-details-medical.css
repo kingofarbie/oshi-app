@@ -433,3 +433,138 @@
     }
 
 }
+
+
+
+
+/* =====================================================
+   👶 🏥 健診・病院
+   性別カラー
+===================================================== */
+
+
+/* =====================================================
+   ＋ 記録を追加
+===================================================== */
+
+.children-medical-add-button.children-medical-boy {
+
+    background:
+        var(--children-boy-color) !important;
+
+    border-color:
+        var(--children-boy-border) !important;
+
+    color: #fff !important;
+
+}
+
+
+.children-medical-add-button.children-medical-girl {
+
+    background:
+        var(--children-girl-color) !important;
+
+    border-color:
+        var(--children-girl-border) !important;
+
+    color: #fff !important;
+
+}
+
+
+/* =====================================================
+   モーダル：保存
+===================================================== */
+
+.children-modal.children-medical-boy
+.children-medical-save {
+
+    background:
+        var(--children-boy-color) !important;
+
+    border-color:
+        var(--children-boy-border) !important;
+
+    color: #fff !important;
+
+}
+
+
+.children-modal.children-medical-girl
+.children-medical-save {
+
+    background:
+        var(--children-girl-color) !important;
+
+    border-color:
+        var(--children-girl-border) !important;
+
+    color: #fff !important;
+
+}
+
+
+/* =====================================================
+   モーダル：キャンセル
+===================================================== */
+
+.children-modal.children-medical-boy
+.children-medical-cancel {
+
+    background:
+        var(--children-boy-color) !important;
+
+    border-color:
+        var(--children-boy-border) !important;
+
+    color: #fff !important;
+
+}
+
+
+.children-modal.children-medical-girl
+.children-medical-cancel {
+
+    background:
+        var(--children-girl-color) !important;
+
+    border-color:
+        var(--children-girl-border) !important;
+
+    color: #fff !important;
+
+}
+
+
+/* =====================================================
+   モーダル：閉じる ×
+===================================================== */
+
+.children-modal.children-medical-boy
+.children-modal-close-button {
+
+    background:
+        var(--children-boy-color) !important;
+
+    border-color:
+        var(--children-boy-border) !important;
+
+    color: #fff !important;
+
+}
+
+
+.children-modal.children-medical-girl
+.children-modal-close-button {
+
+    background:
+        var(--children-girl-color) !important;
+
+    border-color:
+        var(--children-girl-border) !important;
+
+    color: #fff !important;
+
+}
+

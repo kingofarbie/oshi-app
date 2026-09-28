@@ -136,6 +136,10 @@ function closeChildrenMedical() {
    🏥 健診・病院画面
 ===================================================== */
 
+/* =====================================================
+   🏥 健診・病院画面
+===================================================== */
+
 function renderChildrenMedical() {
 
     const section =
@@ -158,6 +162,26 @@ function renderChildrenMedical() {
         Array.isArray(child.growth.medical)
             ? child.growth.medical
             : [];
+
+
+    /* =================================================
+       👶 性別カラー
+    ================================================= */
+
+    let genderClass = "";
+
+    if (child.gender === "boy") {
+
+        genderClass =
+            "children-medical-boy";
+
+    }
+    else if (child.gender === "girl") {
+
+        genderClass =
+            "children-medical-girl";
+
+    }
 
 
     section.innerHTML = `
@@ -197,7 +221,10 @@ function renderChildrenMedical() {
 
             <button
                 type="button"
-                class="children-medical-add-button"
+                class="
+                    children-medical-add-button
+                    ${genderClass}
+                "
                 id="childrenMedicalAddButton"
             >
                 ＋ 記録を追加
@@ -338,7 +365,10 @@ function renderChildrenMedical() {
 
             })
             .join("");
+
 }
+
+
 
 
 /* =====================================================
@@ -878,6 +908,10 @@ function getChildrenMedicalRecordType(
    🏥 記録追加・編集モーダル
 ===================================================== */
 
+/* =====================================================
+   🏥 記録追加・編集モーダル
+===================================================== */
+
 function openChildrenMedicalRecordModal(
     editId = ""
 ) {
@@ -942,6 +976,26 @@ function openChildrenMedicalRecordModal(
 
     modal.className =
         "children-modal";
+
+
+    /* =================================================
+       👶 性別カラー
+    ================================================= */
+
+    if (child.gender === "boy") {
+
+        modal.classList.add(
+            "children-medical-boy"
+        );
+
+    }
+    else if (child.gender === "girl") {
+
+        modal.classList.add(
+            "children-medical-girl"
+        );
+
+    }
 
 
     modal.innerHTML = `
@@ -1679,6 +1733,7 @@ function openChildrenMedicalRecordModal(
     }
 
 }
+
 
 
 /* =====================================================
