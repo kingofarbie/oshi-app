@@ -10,7 +10,105 @@
    ・年齢は誕生日＋記録日から自動計算
    ・追加 / 編集 / 削除
    ・長文は省略表示 → タップで全文
+   ・9分類に対応
+   ・分類ごとの絞り込みに対応
 ===================================================== */
+
+
+/* =====================================================
+   🌱 成長・できたこと 分類
+===================================================== */
+
+const CHILDREN_MILESTONE_CATEGORIES = [
+
+    {
+        id: "movement",
+        label: "🚶 動作・運動"
+    },
+
+    {
+        id: "language",
+        label: "🗣️ 言葉"
+    },
+
+    {
+        id: "teeth",
+        label: "🦷 歯・口"
+    },
+
+    {
+        id: "food",
+        label: "🍚 食事"
+    },
+
+    {
+        id: "life",
+        label: "🚽 生活"
+    },
+
+    {
+        id: "learning",
+        label: "🧠 理解・学習"
+    },
+
+    {
+        id: "social",
+        label: "❤️ 心・社会性"
+    },
+
+    {
+        id: "interest",
+        label: "🎨 好き・興味"
+    },
+
+    {
+        id: "first",
+        label: "✨ 初めて・思い出"
+    }
+
+];
+
+
+/* =====================================================
+   🌱 現在選択しているフィルター
+
+   all
+   movement
+   language
+   teeth
+   food
+   life
+   learning
+   social
+   interest
+   first
+===================================================== */
+
+let childrenMilestoneFilter =
+    "all";
+
+
+/* =====================================================
+   🌱 分類名取得
+===================================================== */
+
+function getChildrenMilestoneCategoryLabel(
+    categoryId
+) {
+
+    const category =
+        CHILDREN_MILESTONE_CATEGORIES.find(
+            item =>
+                item.id ===
+                categoryId
+        );
+
+
+    return category
+        ? category.label
+        : "";
+
+}
 
 
 /* =====================================================
@@ -21,19 +119,25 @@ function initializeChildrenMilestoneData(child) {
 
     if (!child) return;
 
+
     if (
         !child.growth ||
         typeof child.growth !== "object"
     ) {
+
         child.growth = {};
+
     }
+
 
     if (
         !Array.isArray(
             child.growth.milestone
         )
     ) {
+
         child.growth.milestone = [];
+
     }
 
 }
@@ -52,12 +156,14 @@ function getCurrentChildrenMilestoneChild() {
         return null;
     }
 
+
     if (
         typeof selectedChildId ===
         "undefined"
     ) {
         return null;
     }
+
 
     return (
         childrenData.find(
@@ -81,19 +187,26 @@ function openChildrenMilestone() {
             "childrenGrowthSection"
         );
 
+
     if (!growthSection) return;
 
-
-    /* ---------------------------------------------
-       他の下位ページと同じ初期化
-    --------------------------------------------- */
 
     if (
         typeof resetChildrenGrowthSubPages ===
         "function"
     ) {
+
         resetChildrenGrowthSubPages();
+
     }
+
+
+    /* ---------------------------------------------
+       フィルターを「全て」に戻す
+    --------------------------------------------- */
+
+    childrenMilestoneFilter =
+        "all";
 
 
     /* ---------------------------------------------
@@ -105,9 +218,12 @@ function openChildrenMilestone() {
             ".children-growth-category-list"
         );
 
+
     if (categoryList) {
+
         categoryList.style.display =
             "none";
+
     }
 
 
@@ -120,9 +236,12 @@ function openChildrenMilestone() {
             ".children-growth-section-header"
         );
 
+
     if (growthHeader) {
+
         growthHeader.style.display =
             "none";
+
     }
 
 
@@ -135,9 +254,12 @@ function openChildrenMilestone() {
             ".children-calendar-back-button"
         );
 
+
     if (calendarBackButton) {
+
         calendarBackButton.style.display =
             "none";
+
     }
 
 
@@ -149,6 +271,7 @@ function openChildrenMilestone() {
         document.getElementById(
             "childrenMilestoneSection"
         );
+
 
     if (!section) {
 
@@ -168,7 +291,8 @@ function openChildrenMilestone() {
     }
 
 
-    section.style.display = "";
+    section.style.display =
+        "";
 
 
     renderChildrenMilestone();
@@ -187,20 +311,20 @@ function closeChildrenMilestone() {
             "childrenMilestoneSection"
         );
 
+
     if (section) {
+
         section.style.display =
             "none";
+
     }
 
-
-    /* ---------------------------------------------
-       成長・定期記録一覧へ戻す
-    --------------------------------------------- */
 
     const growthSection =
         document.getElementById(
             "childrenGrowthSection"
         );
+
 
     if (!growthSection) return;
 
@@ -210,9 +334,12 @@ function closeChildrenMilestone() {
             ".children-growth-category-list"
         );
 
+
     if (categoryList) {
+
         categoryList.style.display =
             "";
+
     }
 
 
@@ -221,9 +348,12 @@ function closeChildrenMilestone() {
             ".children-growth-section-header"
         );
 
+
     if (growthHeader) {
+
         growthHeader.style.display =
             "";
+
     }
 
 }
@@ -242,9 +372,11 @@ function formatChildrenMilestoneDate(date) {
         typeof formatChildrenMedicalDate ===
         "function"
     ) {
+
         return formatChildrenMedicalDate(
             date
         );
+
     }
 
 
@@ -255,7 +387,9 @@ function formatChildrenMilestoneDate(date) {
     if (
         parts.length !== 3
     ) {
+
         return String(date);
+
     }
 
 
@@ -285,7 +419,9 @@ function getChildrenMilestoneAgeText(
         !child.birthday ||
         !date
     ) {
+
         return "";
+
     }
 
 
@@ -308,6 +444,153 @@ function getChildrenMilestoneAgeText(
 
 
 /* =====================================================
+   🌱 フィルター変更
+===================================================== */
+
+function setChildrenMilestoneFilter(
+    categoryId
+) {
+
+    childrenMilestoneFilter =
+        categoryId || "all";
+
+
+    renderChildrenMilestone();
+
+}
+
+
+/* =====================================================
+   🌱 フィルター描画
+===================================================== */
+
+function renderChildrenMilestoneFilters() {
+
+    let html = "";
+
+
+    /* ---------------------------------------------
+       全て
+    --------------------------------------------- */
+
+    html += `
+
+        <label
+            class="
+                children-milestone-filter-item
+            "
+        >
+
+            <input
+                type="radio"
+                name="childrenMilestoneFilter"
+                value="all"
+                ${
+                    childrenMilestoneFilter ===
+                    "all"
+                        ? "checked"
+                        : ""
+                }
+                onchange="
+                    setChildrenMilestoneFilter(
+                        'all'
+                    )
+                "
+            >
+
+            <span>
+                全て
+            </span>
+
+        </label>
+
+    `;
+
+
+    /* ---------------------------------------------
+       9分類
+    --------------------------------------------- */
+
+    CHILDREN_MILESTONE_CATEGORIES.forEach(
+        category => {
+
+            html += `
+
+                <label
+                    class="
+                        children-milestone-filter-item
+                    "
+                >
+
+                    <input
+                        type="radio"
+                        name="childrenMilestoneFilter"
+                        value="${escapeHtml(
+                            category.id
+                        )}"
+                        ${
+                            childrenMilestoneFilter ===
+                            category.id
+                                ? "checked"
+                                : ""
+                        }
+                        onchange="
+                            setChildrenMilestoneFilter(
+                                '${escapeHtml(
+                                    category.id
+                                )}'
+                            )
+                        "
+                    >
+
+                    <span>
+                        ${escapeHtml(
+                            category.label
+                        )}
+                    </span>
+
+                </label>
+
+            `;
+
+        }
+    );
+
+
+    return `
+
+        <div
+            class="
+                children-milestone-filter
+            "
+        >
+
+            <div
+                class="
+                    children-milestone-filter-title
+                "
+            >
+                絞り込み
+            </div>
+
+            <div
+                class="
+                    children-milestone-filter-list
+                "
+            >
+
+                ${html}
+
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+/* =====================================================
    🌱 一覧描画
 ===================================================== */
 
@@ -315,6 +598,7 @@ function renderChildrenMilestone() {
 
     const child =
         getCurrentChildrenMilestoneChild();
+
 
     if (!child) return;
 
@@ -328,6 +612,7 @@ function renderChildrenMilestone() {
         document.getElementById(
             "childrenGrowthSection"
         );
+
 
     if (!growthSection) return;
 
@@ -356,15 +641,43 @@ function renderChildrenMilestone() {
     }
 
 
-    const records =
+    /* ---------------------------------------------
+       全記録
+    --------------------------------------------- */
+
+    let records =
         [...child.growth.milestone];
 
+
+    /* ---------------------------------------------
+       分類フィルター
+    --------------------------------------------- */
+
+    if (
+        childrenMilestoneFilter !==
+        "all"
+    ) {
+
+        records =
+            records.filter(
+                record =>
+                    record.category ===
+                    childrenMilestoneFilter
+            );
+
+    }
+
+
+    /* ---------------------------------------------
+       日付順
+    --------------------------------------------- */
 
     records.sort(
         (a, b) => {
 
             const dateA =
                 String(a.date || "");
+
 
             const dateB =
                 String(b.date || "");
@@ -373,9 +686,11 @@ function renderChildrenMilestone() {
             if (
                 dateA !== dateB
             ) {
+
                 return dateB.localeCompare(
                     dateA
                 );
+
             }
 
 
@@ -396,17 +711,38 @@ function renderChildrenMilestone() {
 
     if (!records.length) {
 
-        recordsHtml = `
+        if (
+            childrenMilestoneFilter ===
+            "all"
+        ) {
 
-            <div class="
-                children-milestone-empty
-            ">
+            recordsHtml = `
 
-                まだ記録がありません。
+                <div class="
+                    children-milestone-empty
+                ">
 
-            </div>
+                    まだ記録がありません。
 
-        `;
+                </div>
+
+            `;
+
+        } else {
+
+            recordsHtml = `
+
+                <div class="
+                    children-milestone-empty
+                ">
+
+                    この分類の記録はありません。
+
+                </div>
+
+            `;
+
+        }
 
     } else {
 
@@ -425,7 +761,7 @@ function renderChildrenMilestone() {
 
 
     /* =================================================
-       ★ 既存3ページと完全に同じ共通ヘッダー
+       ★ 共通ヘッダー
     ================================================= */
 
     section.innerHTML = `
@@ -460,6 +796,9 @@ function renderChildrenMilestone() {
         </div>
 
 
+        ${renderChildrenMilestoneFilters()}
+
+
         <div class="
             children-milestone-add-area
         ">
@@ -468,7 +807,7 @@ function renderChildrenMilestone() {
                 type="button"
                 class="
                     children-milestone-add-button
-            "
+                "
                 onclick="
                     openChildrenMilestoneForm()
                 "
@@ -522,19 +861,22 @@ function renderChildrenMilestoneRecord(
         "";
 
 
+    const categoryLabel =
+        getChildrenMilestoneCategoryLabel(
+            record.category
+        );
+
+
     return `
 
         <div
             class="
                 children-milestone-record
             "
-            data-record-id="
-                ${escapeHtml(record.id)}
-            "
+            data-record-id="${escapeHtml(
+                record.id
+            )}"
         >
-
-
-            <!-- 1行目 -->
 
             <div class="
                 children-milestone-record-row1
@@ -584,7 +926,9 @@ function renderChildrenMilestoneRecord(
                         "
                         onclick="
                             editChildrenMilestone(
-                                '${escapeHtml(record.id)}'
+                                '${escapeHtml(
+                                    record.id
+                                )}'
                             )
                         "
                         role="button"
@@ -602,7 +946,9 @@ function renderChildrenMilestoneRecord(
                         "
                         onclick="
                             deleteChildrenMilestone(
-                                '${escapeHtml(record.id)}'
+                                '${escapeHtml(
+                                    record.id
+                                )}'
                             )
                         "
                         role="button"
@@ -617,8 +963,6 @@ function renderChildrenMilestoneRecord(
 
             </div>
 
-
-            <!-- 2行目 -->
 
             <div
                 class="
@@ -655,7 +999,24 @@ function renderChildrenMilestoneRecord(
             </div>
 
 
-            <!-- 3行目 -->
+            ${
+                categoryLabel
+                    ? `
+                        <div
+                            class="
+                                children-milestone-category-label
+                            "
+                        >
+
+                            ${escapeHtml(
+                                categoryLabel
+                            )}
+
+                        </div>
+                      `
+                    : ""
+            }
+
 
             ${
                 record.memo
@@ -742,6 +1103,7 @@ function openChildrenMilestoneForm(
     const child =
         getCurrentChildrenMilestoneChild();
 
+
     if (!child) return;
 
 
@@ -811,6 +1173,11 @@ function openChildrenMilestoneForm(
         "";
 
 
+    const selectedCategory =
+        record?.category ||
+        "";
+
+
     modal.innerHTML = `
 
         <div
@@ -849,7 +1216,9 @@ function openChildrenMilestoneForm(
                 <input
                     type="date"
                     id="childrenMilestoneFormDate"
-                    value="${escapeHtml(date)}"
+                    value="${escapeHtml(
+                        date
+                    )}"
                 >
 
             </label>
@@ -866,7 +1235,9 @@ function openChildrenMilestoneForm(
                     rows="4"
                     maxlength="1000"
                     placeholder="例：ひとりで靴を履けるようになった"
-                >${escapeHtml(content)}</textarea>
+                >${escapeHtml(
+                    content
+                )}</textarea>
 
             </label>
 
@@ -882,9 +1253,73 @@ function openChildrenMilestoneForm(
                     rows="3"
                     maxlength="2000"
                     placeholder="気づいたことなど"
-                >${escapeHtml(memo)}</textarea>
+                >${escapeHtml(
+                    memo
+                )}</textarea>
 
             </label>
+
+
+            <!-- =====================================
+                 🌱 分類
+            ====================================== -->
+
+            <div class="
+                children-milestone-form-category
+            ">
+
+                <div class="
+                    children-milestone-form-category-title
+                ">
+
+                    分類
+
+                </div>
+
+
+                <div class="
+                    children-milestone-form-category-list
+                ">
+
+                    ${
+                        CHILDREN_MILESTONE_CATEGORIES
+                            .map(
+                                category => `
+                                    <label
+                                        class="
+                                            children-milestone-form-category-item
+                                        "
+                                    >
+
+                                        <input
+                                            type="radio"
+                                            name="childrenMilestoneFormCategory"
+                                            value="${escapeHtml(
+                                                category.id
+                                            )}"
+                                            ${
+                                                selectedCategory ===
+                                                category.id
+                                                    ? "checked"
+                                                    : ""
+                                            }
+                                        >
+
+                                        <span>
+                                            ${escapeHtml(
+                                                category.label
+                                            )}
+                                        </span>
+
+                                    </label>
+                                `
+                            )
+                            .join("")
+                    }
+
+                </div>
+
+            </div>
 
 
             <div class="
@@ -913,9 +1348,13 @@ function openChildrenMilestoneForm(
                     "
                     onclick="
                         saveChildrenMilestoneRecord(
-                            ${recordId
-                                ? `'${escapeHtml(recordId)}'`
-                                : "null"}
+                            ${
+                                recordId
+                                    ? `'${escapeHtml(
+                                        recordId
+                                    )}'`
+                                    : "null"
+                            }
                         )
                     "
                 >
@@ -963,6 +1402,7 @@ function saveChildrenMilestoneRecord(
     const child =
         getCurrentChildrenMilestoneChild();
 
+
     if (!child) return;
 
 
@@ -976,14 +1416,22 @@ function saveChildrenMilestoneRecord(
             "childrenMilestoneFormDate"
         );
 
+
     const contentInput =
         document.getElementById(
             "childrenMilestoneFormContent"
         );
 
+
     const memoInput =
         document.getElementById(
             "childrenMilestoneFormMemo"
+        );
+
+
+    const categoryInput =
+        document.querySelector(
+            'input[name="childrenMilestoneFormCategory"]:checked'
         );
 
 
@@ -1005,6 +1453,12 @@ function saveChildrenMilestoneRecord(
             : "";
 
 
+    const category =
+        categoryInput
+            ? categoryInput.value
+            : "";
+
+
     if (!date) {
 
         alert(
@@ -1020,6 +1474,17 @@ function saveChildrenMilestoneRecord(
 
         alert(
             "できたこと・成長を入力してください。"
+        );
+
+        return;
+
+    }
+
+
+    if (!category) {
+
+        alert(
+            "分類を選択してください。"
         );
 
         return;
@@ -1060,6 +1525,8 @@ function saveChildrenMilestoneRecord(
 
                 memo,
 
+                category,
+
                 updatedAt:
                     new Date()
                         .toISOString()
@@ -1088,6 +1555,8 @@ function saveChildrenMilestoneRecord(
             content,
 
             memo,
+
+            category,
 
             createdAt:
                 new Date()
@@ -1121,6 +1590,7 @@ function saveChildrenMilestoneRecord(
 
     closeChildrenMilestoneForm();
 
+
     renderChildrenMilestone();
 
 }
@@ -1136,6 +1606,7 @@ function deleteChildrenMilestone(
 
     const child =
         getCurrentChildrenMilestoneChild();
+
 
     if (!child) return;
 
@@ -1156,7 +1627,9 @@ function deleteChildrenMilestone(
             "この成長記録を削除しますか？"
         )
     ) {
+
         return;
+
     }
 
 
@@ -1200,6 +1673,7 @@ function closeChildrenMilestoneForm() {
         document.getElementById(
             "childrenMilestoneFormModal"
         );
+
 
     if (!modal) return;
 

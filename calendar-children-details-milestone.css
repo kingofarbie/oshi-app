@@ -363,3 +363,107 @@
     }
 
 }
+
+
+
+
+/* =====================================================
+   🌱 成長・できたこと
+   分類フィルター
+===================================================== */
+
+.children-milestone-filter {
+    width: 100%;
+    margin-bottom: 14px;
+    box-sizing: border-box;
+}
+
+.children-milestone-filter-title {
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.children-milestone-filter-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px 10px;
+    width: 100%;
+}
+
+.children-milestone-filter-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 34px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+}
+
+.children-milestone-filter-item input {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    flex-shrink: 0;
+}
+
+
+/* =====================================================
+   🌱 記録フォーム
+   分類選択
+===================================================== */
+
+.children-milestone-form-category {
+    width: 100%;
+    margin-top: 4px;
+}
+
+.children-milestone-form-category-title {
+    margin-bottom: 9px;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.children-milestone-form-category-list {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.children-milestone-form-category-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 38px;
+    padding: 5px 8px;
+    border-radius: 9px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+}
+
+.children-milestone-form-category-item input {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    flex-shrink: 0;
+}
+
+
+/* =====================================================
+   🌱 一覧の分類表示
+===================================================== */
+
+.children-milestone-category-label {
+    display: inline-block;
+    margin-top: 6px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: var(--child-accent-soft, #fff0f5);
+    color: var(--child-accent, #ff7aa8);
+    font-size: 12px;
+    font-weight: 700;
+}
