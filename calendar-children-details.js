@@ -934,7 +934,6 @@ function renderChildrenHeightWeight() {
 
 
 
-
 /* =====================================================
    ⚖️ 身長・体重画面を閉じる
 ===================================================== */
@@ -5481,6 +5480,11 @@ if (category === "heightWeight") {
 
 if (category === "vaccination") {
     openChildrenVaccination();
+    return;
+}
+
+if (category === "milestone") {
+    openChildrenMilestone();
     return;
 }
 
