@@ -1650,12 +1650,15 @@ button:active {
 }
 
 .children-modal.children-vaccination-boy .children-vaccination-cancel {
-    color: var(--children-boy-color) !important;
+    background: var(--children-boy-color) !important;
     border-color: var(--children-boy-border) !important;
+    color: #fff !important;
 }
 
 .children-modal.children-vaccination-boy .children-modal-close-button {
-    color: var(--children-boy-color) !important;
+    background: var(--children-boy-color) !important;
+    border-color: var(--children-boy-border) !important;
+    color: #fff !important;
 }
 
 
@@ -1667,10 +1670,13 @@ button:active {
 }
 
 .children-modal.children-vaccination-girl .children-vaccination-cancel {
-    color: var(--children-girl-color) !important;
+    background: var(--children-girl-color) !important;
     border-color: var(--children-girl-border) !important;
+    color: #fff !important;
 }
 
 .children-modal.children-vaccination-girl .children-modal-close-button {
-    color: var(--children-girl-color) !important;
+    background: var(--children-girl-color) !important;
+    border-color: var(--children-girl-border) !important;
+    color: #fff !important;
 }
