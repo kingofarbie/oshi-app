@@ -761,6 +761,27 @@ function renderChildrenMilestone() {
 
 
     /* =================================================
+       👶 性別カラー
+    ================================================= */
+
+    let genderClass = "";
+
+
+    if (child.gender === "boy") {
+
+        genderClass =
+            "children-milestone-boy";
+
+    }
+    else if (child.gender === "girl") {
+
+        genderClass =
+            "children-milestone-girl";
+
+    }
+
+
+    /* =================================================
        ★ 共通ヘッダー
     ================================================= */
 
@@ -807,6 +828,7 @@ function renderChildrenMilestone() {
                 type="button"
                 class="
                     children-milestone-add-button
+                    ${genderClass}
                 "
                 onclick="
                     openChildrenMilestoneForm()
@@ -831,7 +853,6 @@ function renderChildrenMilestone() {
     `;
 
 }
-
 
 /* =====================================================
    🌱 1件の記録

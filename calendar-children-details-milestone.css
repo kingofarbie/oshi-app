@@ -496,3 +496,59 @@
     color: #fff !important;
 
 }
+
+
+.children-milestone-form-modal.children-milestone-boy
+.children-milestone-form-cancel {
+
+    background: var(--children-boy-color) !important;
+
+    border-color: var(--children-boy-border) !important;
+
+    color: #fff !important;
+
+}
+
+
+.children-milestone-form-modal.children-milestone-girl
+.children-milestone-form-cancel {
+
+    background: var(--children-girl-color) !important;
+
+    border-color: var(--children-girl-border) !important;
+
+    color: #fff !important;
+
+}
+
+
+/* =====================================================
+   👶 🌱 成長・できたこと
+   ＋ 記録を追加
+   性別カラー
+===================================================== */
+
+.children-milestone-add-button.children-milestone-boy {
+
+    background:
+        var(--children-boy-color) !important;
+
+    border-color:
+        var(--children-boy-border) !important;
+
+    color: #fff !important;
+
+}
+
+
+.children-milestone-add-button.children-milestone-girl {
+
+    background:
+        var(--children-girl-color) !important;
+
+    border-color:
+        var(--children-girl-border) !important;
+
+    color: #fff !important;
+
+}
