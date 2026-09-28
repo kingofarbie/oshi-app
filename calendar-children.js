@@ -3560,41 +3560,78 @@ function resetChildrenGrowthSubPages() {
        次回開いたとき3件表示へ戻す。
     ================================================= */
 
-const historyList =
-    document.getElementById(
-        "childrenHeightWeightHistoryList"
-    );
-if (historyList) {
-    historyList.dataset.displayAll = "false";
-}
+    const historyList =
+        document.getElementById(
+            "childrenHeightWeightHistoryList"
+        );
 
 
-/* =================================================
-   💉 予防接種ページを閉じる
-================================================= */
+    if (historyList) {
 
-const vaccinationSection =
-    document.getElementById(
-        "childrenVaccinationSection"
-    );
+        historyList.dataset.displayAll =
+            "false";
 
-if (vaccinationSection) {
-    vaccinationSection.style.display = "none";
-}
+    }
 
 
-/* =================================================
-   🏥 健診・病院ページを閉じる
-================================================= */
+    /* =================================================
+       💉 予防接種ページを閉じる
+    ================================================= */
 
-const medicalSection =
-    document.getElementById(
-        "childrenMedicalSection"
-    );
+    const vaccinationSection =
+        document.getElementById(
+            "childrenVaccinationSection"
+        );
 
-if (medicalSection) {
-    medicalSection.style.display = "none";
-}
+
+    if (vaccinationSection) {
+
+        vaccinationSection.style.display =
+            "none";
+
+    }
+
+
+    /* =================================================
+       🏥 健診・病院ページを閉じる
+    ================================================= */
+
+    const medicalSection =
+        document.getElementById(
+            "childrenMedicalSection"
+        );
+
+
+    if (medicalSection) {
+
+        medicalSection.style.display =
+            "none";
+
+    }
+
+
+    /* =================================================
+       🌱 成長・できたことページを閉じる
+
+       子どもを切り替えたとき、
+       前の子どもの記録表示を残さない。
+       
+       ※記録データ自体は削除しない。
+    ================================================= */
+
+    const milestoneSection =
+        document.getElementById(
+            "childrenMilestoneSection"
+        );
+
+
+    if (milestoneSection) {
+
+        milestoneSection.style.display =
+            "none";
+
+    }
+
 
     /* =================================================
        📋 成長カテゴリー一覧を表示
@@ -3627,8 +3664,6 @@ if (medicalSection) {
     }
 
 }
-
-
 
 
 /* =====================================================
