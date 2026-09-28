@@ -848,9 +848,7 @@ function openChildrenMilestoneForm(
 
                 <input
                     type="date"
-                    id="
-                        childrenMilestoneFormDate
-                    "
+                    id="childrenMilestoneFormDate"
                     value="${escapeHtml(date)}"
                 >
 
@@ -864,14 +862,10 @@ function openChildrenMilestoneForm(
                 できたこと・成長
 
                 <textarea
-                    id="
-                        childrenMilestoneFormContent
-                    "
+                    id="childrenMilestoneFormContent"
                     rows="4"
                     maxlength="1000"
-                    placeholder="
-                        例：ひとりで靴を履けるようになった
-                    "
+                    placeholder="例：ひとりで靴を履けるようになった"
                 >${escapeHtml(content)}</textarea>
 
             </label>
@@ -884,14 +878,10 @@ function openChildrenMilestoneForm(
                 メモ
 
                 <textarea
-                    id="
-                        childrenMilestoneFormMemo
-                    "
+                    id="childrenMilestoneFormMemo"
                     rows="3"
                     maxlength="2000"
-                    placeholder="
-                        気づいたことなど
-                    "
+                    placeholder="気づいたことなど"
                 >${escapeHtml(memo)}</textarea>
 
             </label>
