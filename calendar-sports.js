@@ -25,6 +25,10 @@ let sportsSelectedDate = null;
 let sportsCalendarSwipeStartX = 0;
 let sportsCalendarSwipeStartY = 0;
 
+let sportsCalendarPinchActive = false;
+let sportsCalendarSwipeLocked = false;
+let sportsCalendarSwipeStartTouches = 0;
+
 /* =====================================================
    🏟️ 応援スポーツ設定
 ===================================================== */
@@ -1303,24 +1307,105 @@ scoreHTML = `
         html;
 
 
-        /* =====================
+/* =====================
    スポーツカレンダー月スワイプ
 ===================== */
 
 area.ontouchstart =
     function(event){
 
+        sportsCalendarSwipeStartTouches =
+            event.touches.length;
+
+
+        /*
+           2本指以上
+           → ピンチ操作開始
+           → 月スワイプ完全ロック
+        */
+
         if(
-            event.touches.length !== 1
+            event.touches.length >= 2
         ){
+
+            sportsCalendarPinchActive = true;
+            sportsCalendarSwipeLocked = true;
+
             return;
+
         }
 
-        sportsCalendarSwipeStartX =
-            event.touches[0].clientX;
 
-        sportsCalendarSwipeStartY =
-            event.touches[0].clientY;
+        /*
+           すでにピンチ中なら
+           1本指に戻ってもロック継続
+        */
+
+        if(
+            sportsCalendarPinchActive
+        ){
+
+            sportsCalendarSwipeLocked = true;
+
+            return;
+
+        }
+
+
+        /*
+           1本指のみ
+           → 月スワイプ開始
+        */
+
+        if(
+            event.touches.length === 1
+        ){
+
+            sportsCalendarSwipeStartX =
+                event.touches[0].clientX;
+
+            sportsCalendarSwipeStartY =
+                event.touches[0].clientY;
+
+        }
+
+    };
+
+
+area.ontouchmove =
+    function(event){
+
+        /*
+           2本指以上になったら
+           即ピンチ扱い
+        */
+
+        if(
+            event.touches.length >= 2
+        ){
+
+            sportsCalendarPinchActive = true;
+            sportsCalendarSwipeLocked = true;
+
+            return;
+
+        }
+
+
+        /*
+           一度でもピンチになったら
+           全指を離すまでロック
+        */
+
+        if(
+            sportsCalendarPinchActive
+        ){
+
+            sportsCalendarSwipeLocked = true;
+
+            return;
+
+        }
 
     };
 
@@ -1328,11 +1413,92 @@ area.ontouchstart =
 area.ontouchend =
     function(event){
 
+        /*
+           ピンチ中
+        */
+
+        if(
+            sportsCalendarPinchActive
+        ){
+
+            /*
+               全部の指を離したら
+               ピンチ状態を解除
+            */
+
+            if(
+                event.touches.length === 0
+            ){
+
+                sportsCalendarPinchActive = false;
+                sportsCalendarSwipeLocked = false;
+                sportsCalendarSwipeStartTouches = 0;
+
+            }
+
+            return;
+
+        }
+
+
+        /*
+           スワイプロック中
+        */
+
+        if(
+            sportsCalendarSwipeLocked
+        ){
+
+            if(
+                event.touches.length === 0
+            ){
+
+                sportsCalendarSwipeLocked = false;
+                sportsCalendarSwipeStartTouches = 0;
+
+            }
+
+            return;
+
+        }
+
+
+        /*
+           最初から1本指で
+           始まった操作だけ有効
+        */
+
+        if(
+            sportsCalendarSwipeStartTouches !== 1
+        ){
+
+            return;
+
+        }
+
+
+        /*
+           最後の1本の指が離れた
+           ときだけ判定
+        */
+
         if(
             event.changedTouches.length !== 1
         ){
+
             return;
+
         }
+
+
+        if(
+            event.touches.length !== 0
+        ){
+
+            return;
+
+        }
+
 
         const touch =
             event.changedTouches[0];
@@ -1348,29 +1514,47 @@ area.ontouchend =
 
 
         /*
-           縦スクロールを
-           月スワイプとして扱わない
+           スワイプ判定距離
+           60 → 80
+        */
+
+        const SWIPE_DISTANCE = 80;
+
+
+        if(
+            Math.abs(diffX) <
+            SWIPE_DISTANCE
+        ){
+
+            sportsCalendarSwipeStartTouches = 0;
+
+            return;
+
+        }
+
+
+        /*
+           横方向の移動が
+           縦方向より明確に大きい場合だけ
+           月スワイプ
         */
 
         if(
-            Math.abs(diffX) < 60
-        ){
-            return;
-        }
-
-
-        if(
             Math.abs(diffX) <=
-            Math.abs(diffY)
+            Math.abs(diffY) * 1.2
         ){
+
+            sportsCalendarSwipeStartTouches = 0;
+
             return;
+
         }
 
 
-        /* =====================
+        /*
            左スワイプ
            → 次月
-        ===================== */
+        */
 
         if(diffX < 0){
 
@@ -1379,10 +1563,10 @@ area.ontouchend =
         }
 
 
-        /* =====================
+        /*
            右スワイプ
            → 前月
-        ===================== */
+        */
 
         else{
 
@@ -1390,9 +1574,24 @@ area.ontouchend =
 
         }
 
+
+        sportsCalendarSwipeStartTouches = 0;
+
     };
 
 
+area.ontouchcancel =
+    function(){
+
+        sportsCalendarSwipeStartX = 0;
+        sportsCalendarSwipeStartY = 0;
+
+        sportsCalendarSwipeStartTouches = 0;
+
+        sportsCalendarPinchActive = false;
+        sportsCalendarSwipeLocked = false;
+
+    };
 
 
 
