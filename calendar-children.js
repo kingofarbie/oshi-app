@@ -26,8 +26,19 @@ let childrenEditingId = null;
 let childrenCalendarDate = new Date();
 let childrenSelectedDate = null;
 
+/* =====================
+   👶 子どもカレンダー月スワイプ専用
+===================== */
+
 let childrenCalendarSwipeStartX = 0;
 let childrenCalendarSwipeStartY = 0;
+
+let childrenCalendarPinchActive = false;
+let childrenCalendarSwipeLocked = false;
+let childrenCalendarSwipeStartTouches = 0;
+
+
+
 
 
 const CHILDREN_DAILY_RECORD_TYPES = {
@@ -1835,78 +1846,346 @@ function initializeChildrenCalendarSwipe(){
         return;
     }
 
-    calendar.ontouchstart = function(e){
 
-        if(e.touches.length !== 1){
-            return;
-        }
+    /* =====================
+       スワイプ開始
+    ===================== */
 
-        childrenCalendarSwipeStartX =
-            e.touches[0].clientX;
+    calendar.ontouchstart =
+        function(event){
 
-        childrenCalendarSwipeStartY =
-            e.touches[0].clientY;
+            const touchCount =
+                event.touches.length;
 
-    };
 
-    calendar.ontouchend = function(e){
+            /*
+             * 2本以上になった瞬間
+             * ピンチ操作としてロック
+             */
 
-        if(!childrenCalendarSwipeStartX){
-            return;
-        }
+            if(
+                touchCount >= 2
+            ){
 
-        const endX =
-            e.changedTouches[0].clientX;
+                childrenCalendarPinchActive =
+                    true;
 
-        const endY =
-            e.changedTouches[0].clientY;
+                childrenCalendarSwipeLocked =
+                    true;
 
-        const diffX =
-            endX - childrenCalendarSwipeStartX;
+                return;
 
-        const diffY =
-            endY - childrenCalendarSwipeStartY;
+            }
 
-        childrenCalendarSwipeStartX = 0;
-        childrenCalendarSwipeStartY = 0;
 
-        // 縦方向の操作なら無視
-        if(Math.abs(diffY) > Math.abs(diffX)){
-            return;
-        }
+            /*
+             * すでにピンチ中なら
+             * その操作が終わるまでロック
+             */
 
-        // 最低スワイプ距離
-        if(Math.abs(diffX) < 50){
-            return;
-        }
+            if(
+                childrenCalendarPinchActive
+            ){
 
-        if(diffX < 0){
+                childrenCalendarSwipeLocked =
+                    true;
 
-            // 左スワイプ → 次月
-            childrenCalendarDate =
-                new Date(
-                    childrenCalendarDate.getFullYear(),
-                    childrenCalendarDate.getMonth() + 1,
-                    1
-                );
+                return;
 
-        }else{
+            }
 
-            // 右スワイプ → 前月
-            childrenCalendarDate =
-                new Date(
-                    childrenCalendarDate.getFullYear(),
-                    childrenCalendarDate.getMonth() - 1,
-                    1
-                );
 
-        }
+            /*
+             * 1本指だけ
+             * 月スワイプ開始位置を記録
+             */
 
-        renderChildrenCalendar();
-    };
+            if(
+                touchCount === 1
+            ){
+
+                childrenCalendarSwipeStartTouches =
+                    1;
+
+                childrenCalendarSwipeStartX =
+                    event.touches[0].clientX;
+
+                childrenCalendarSwipeStartY =
+                    event.touches[0].clientY;
+
+            }
+
+        };
+
+
+    /* =====================
+       スワイプ中
+    ===================== */
+
+    calendar.ontouchmove =
+        function(event){
+
+            /*
+             * 2本以上なら
+             * ピンチ操作として完全ロック
+             */
+
+            if(
+                event.touches.length >= 2
+            ){
+
+                childrenCalendarPinchActive =
+                    true;
+
+                childrenCalendarSwipeLocked =
+                    true;
+
+                return;
+
+            }
+
+
+            /*
+             * 一度でもピンチになったら
+             * 指が1本になっても
+             * この操作が終わるまでロック
+             */
+
+            if(
+                childrenCalendarPinchActive
+            ){
+
+                childrenCalendarSwipeLocked =
+                    true;
+
+                return;
+
+            }
+
+        };
+
+
+    /* =====================
+       スワイプ終了
+    ===================== */
+
+    calendar.ontouchend =
+        function(event){
+
+            /*
+             * ピンチ操作中
+             */
+
+            if(
+                childrenCalendarPinchActive
+            ){
+
+                /*
+                 * 全ての指が離れたら
+                 * ロック解除
+                 */
+
+                if(
+                    event.touches.length === 0
+                ){
+
+                    childrenCalendarPinchActive =
+                        false;
+
+                    childrenCalendarSwipeLocked =
+                        false;
+
+                    childrenCalendarSwipeStartTouches =
+                        0;
+
+                }
+
+                return;
+
+            }
+
+
+            /*
+             * ロック中
+             */
+
+            if(
+                childrenCalendarSwipeLocked
+            ){
+
+                if(
+                    event.touches.length === 0
+                ){
+
+                    childrenCalendarSwipeLocked =
+                        false;
+
+                    childrenCalendarSwipeStartTouches =
+                        0;
+
+                }
+
+                return;
+
+            }
+
+
+            /*
+             * 最初から1本指で
+             * 開始した操作だけ許可
+             */
+
+            if(
+                childrenCalendarSwipeStartTouches !== 1
+            ){
+
+                return;
+
+            }
+
+
+            /*
+             * 最後の1本が離れた時だけ判定
+             */
+
+            if(
+                event.changedTouches.length !== 1
+            ){
+
+                return;
+
+            }
+
+            if(
+                event.touches.length !== 0
+            ){
+
+                return;
+
+            }
+
+
+            const touch =
+                event.changedTouches[0];
+
+
+            const diffX =
+                touch.clientX -
+                childrenCalendarSwipeStartX;
+
+            const diffY =
+                touch.clientY -
+                childrenCalendarSwipeStartY;
+
+
+            /*
+             * スワイプ距離
+             */
+
+            const SWIPE_DISTANCE = 80;
+
+
+            if(
+                Math.abs(diffX) <
+                SWIPE_DISTANCE
+            ){
+
+                childrenCalendarSwipeStartTouches =
+                    0;
+
+                return;
+
+            }
+
+
+            /*
+             * 横方向が十分強い場合だけ
+             * 月スワイプとして扱う
+             */
+
+            if(
+                Math.abs(diffX) <=
+                Math.abs(diffY) * 1.2
+            ){
+
+                childrenCalendarSwipeStartTouches =
+                    0;
+
+                return;
+
+            }
+
+
+            /*
+             * 左スワイプ
+             * → 次月
+             */
+
+            if(
+                diffX < 0
+            ){
+
+                childrenCalendarDate =
+                    new Date(
+                        childrenCalendarDate.getFullYear(),
+                        childrenCalendarDate.getMonth() + 1,
+                        1
+                    );
+
+            }
+
+
+            /*
+             * 右スワイプ
+             * → 前月
+             */
+
+            else{
+
+                childrenCalendarDate =
+                    new Date(
+                        childrenCalendarDate.getFullYear(),
+                        childrenCalendarDate.getMonth() - 1,
+                        1
+                    );
+
+            }
+
+
+            renderChildrenCalendar();
+
+
+            childrenCalendarSwipeStartTouches =
+                0;
+
+        };
+
+
+    /* =====================
+       タッチキャンセル
+    ===================== */
+
+    calendar.ontouchcancel =
+        function(){
+
+            childrenCalendarSwipeStartX =
+                0;
+
+            childrenCalendarSwipeStartY =
+                0;
+
+            childrenCalendarSwipeStartTouches =
+                0;
+
+            childrenCalendarPinchActive =
+                false;
+
+            childrenCalendarSwipeLocked =
+                false;
+
+        };
 
 }
-
 
 /* =====================
    👶 子どもカレンダー
