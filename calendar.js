@@ -171,9 +171,31 @@ let editingEventId = null;
    カレンダー月スワイプ
 ===================== */
 
+/*
+   月スワイプ開始位置
+*/
 let calendarSwipeStartX = 0;
 let calendarSwipeStartY = 0;
 
+
+/*
+   現在のタッチが
+   ピンチ操作中かどうか
+*/
+let calendarPinchActive = false;
+
+
+/*
+   現在のタッチ操作で
+   月スワイプを無効にするか
+*/
+let calendarSwipeLocked = false;
+
+
+/*
+   スワイプ開始時の指の本数
+*/
+let calendarSwipeStartTouches = 0;
 
 
 let pressTimer;
@@ -505,20 +527,114 @@ area.innerHTML = html;
    カレンダー月スワイプ
 ===================== */
 
+/* =====================
+   カレンダー月スワイプ
+===================== */
+
 area.ontouchstart =
     function(event){
 
+        /*
+           まず現在の指の本数を確認
+        */
+
+        calendarSwipeStartTouches =
+            event.touches.length;
+
+
+        /*
+           2本以上なら
+           ピンチ操作の可能性があるため
+           月スワイプをロック
+        */
+
         if(
-            event.touches.length !== 1
+            event.touches.length >= 2
         ){
+
+            calendarPinchActive = true;
+            calendarSwipeLocked = true;
+
             return;
+
         }
 
-        calendarSwipeStartX =
-            event.touches[0].clientX;
 
-        calendarSwipeStartY =
-            event.touches[0].clientY;
+        /*
+           すでにピンチ操作中なら
+           月スワイプ開始位置を作らない
+        */
+
+        if(calendarPinchActive){
+
+            calendarSwipeLocked = true;
+
+            return;
+
+        }
+
+
+        /*
+           1本指の場合だけ
+           月スワイプ開始位置を記録
+        */
+
+        if(
+            event.touches.length === 1
+        ){
+
+            calendarSwipeStartX =
+                event.touches[0].clientX;
+
+            calendarSwipeStartY =
+                event.touches[0].clientY;
+
+        }
+
+    };
+
+
+area.ontouchmove =
+    function(event){
+
+        /*
+           2本以上の指を検知したら
+           このタッチ操作では
+           月スワイプを完全に無効化
+        */
+
+        if(
+            event.touches.length >= 2
+        ){
+
+            calendarPinchActive = true;
+            calendarSwipeLocked = true;
+
+            /*
+               ここでは preventDefault() しない。
+
+               ブラウザ標準の
+               ピンチズーム等を邪魔しないため。
+            */
+
+            return;
+
+        }
+
+
+        /*
+           ピンチ操作後に
+           片方の指が離れて1本になっても
+           まだ月スワイプは復帰させない
+        */
+
+        if(calendarPinchActive){
+
+            calendarSwipeLocked = true;
+
+            return;
+
+        }
 
     };
 
@@ -526,11 +642,97 @@ area.ontouchstart =
 area.ontouchend =
     function(event){
 
+        /*
+           ピンチ操作中なら
+           月移動は絶対に行わない
+        */
+
+        if(calendarPinchActive){
+
+            /*
+               すべての指が離れたら
+               次のタッチ操作に備えて解除
+            */
+
+            if(
+                event.touches.length === 0
+            ){
+
+                calendarPinchActive = false;
+                calendarSwipeLocked = false;
+                calendarSwipeStartTouches = 0;
+
+            }
+
+            return;
+
+        }
+
+
+        /*
+           何らかの理由で
+           月スワイプがロックされている場合
+        */
+
+        if(calendarSwipeLocked){
+
+            if(
+                event.touches.length === 0
+            ){
+
+                calendarSwipeLocked = false;
+                calendarSwipeStartTouches = 0;
+
+            }
+
+            return;
+
+        }
+
+
+        /*
+           開始時点で1本指でなかった場合は
+           月移動しない
+        */
+
+        if(
+            calendarSwipeStartTouches !== 1
+        ){
+
+            return;
+
+        }
+
+
+        /*
+           終了時の指が取得できない場合
+        */
+
         if(
             event.changedTouches.length !== 1
         ){
+
             return;
+
         }
+
+
+        /*
+           現在のタッチがまだ残っている場合
+           月移動しない
+
+           例：
+           2本指 → 1本指になった瞬間
+        */
+
+        if(
+            event.touches.length !== 0
+        ){
+
+            return;
+
+        }
+
 
         const touch =
             event.changedTouches[0];
@@ -540,56 +742,122 @@ area.ontouchend =
             touch.clientX -
             calendarSwipeStartX;
 
+
         const diffY =
             touch.clientY -
             calendarSwipeStartY;
 
 
         /*
-           縦スクロールを
-           月スワイプとして扱わない
+           =====================
+           スワイプ距離
+           =====================
+
+           以前の60pxより少し余裕を持たせる。
+
+           指の微妙な動きでは
+           月が変わらないようにする。
+        */
+
+        const SWIPE_DISTANCE = 80;
+
+
+        /*
+           横移動が小さい場合
+           → 月移動しない
         */
 
         if(
-            Math.abs(diffX) < 60
+            Math.abs(diffX) < SWIPE_DISTANCE
         ){
+
+            calendarSwipeStartTouches = 0;
+
             return;
+
         }
 
+
+        /*
+           =====================
+           横方向の操作か確認
+           =====================
+
+           縦方向の移動が大きい場合は
+           月スワイプにしない。
+        */
 
         if(
             Math.abs(diffX) <=
-            Math.abs(diffY)
+            Math.abs(diffY) * 1.2
         ){
+
+            calendarSwipeStartTouches = 0;
+
             return;
+
         }
 
 
-        /* =====================
-           左スワイプ
-           → 次月
-        ===================== */
+        /*
+           =====================
+           月変更
+        =====================
+        */
 
         if(diffX < 0){
+
+            /*
+               左スワイプ
+               → 次月
+            */
 
             changeMonth(1);
 
         }
-
-
-        /* =====================
-           右スワイプ
-           → 前月
-        ===================== */
-
         else{
+
+            /*
+               右スワイプ
+               → 前月
+            */
 
             changeMonth(-1);
 
         }
 
+
+        /*
+           スワイプ終了
+        */
+
+        calendarSwipeStartTouches = 0;
+
     };
 
+
+/*
+   =====================
+   タッチキャンセル
+   =====================
+
+   OSやブラウザ側で
+   タッチ操作がキャンセルされた場合も
+   状態を確実にリセットする。
+*/
+
+area.ontouchcancel =
+    function(){
+
+        calendarSwipeStartX = 0;
+        calendarSwipeStartY = 0;
+
+        calendarSwipeStartTouches = 0;
+
+        calendarPinchActive = false;
+        calendarSwipeLocked = false;
+
+    };
 
 updateSelectedDateArea();
 
@@ -4994,4 +5262,5 @@ renderSportsCalendar();
     }
 
 }
+
 
