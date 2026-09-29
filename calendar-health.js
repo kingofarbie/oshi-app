@@ -4504,6 +4504,11 @@ function escapeHealthCalendarHTML(
    ※ ピンチ操作中は月スワイプを完全ロック
 ===================================================== */
 
+/* =====================================================
+   💊 健康カレンダー月スワイプ
+   ※ ピンチ操作中は月スワイプしない
+===================================================== */
+
 function initializeHealthCalendarMonthSwipe(){
 
     const calendar =
@@ -4511,11 +4516,8 @@ function initializeHealthCalendarMonthSwipe(){
             "healthCalendar"
         );
 
-
     if(!calendar){
-
         return;
-
     }
 
 
@@ -4531,8 +4533,39 @@ function initializeHealthCalendarMonthSwipe(){
 
 
             /*
-             * 2本以上になった瞬間
-             * ピンチ操作としてロック
+             * 新しい1本指操作
+             *
+             * 前回の操作状態が残っていても
+             * ここで完全に初期化する
+             */
+
+            if(
+                touchCount === 1
+            ){
+
+                healthCalendarPinchActive =
+                    false;
+
+                healthCalendarSwipeLocked =
+                    false;
+
+                healthCalendarSwipeStartTouches =
+                    1;
+
+                healthCalendarMonthSwipeStartX =
+                    event.touches[0].clientX;
+
+                healthCalendarMonthSwipeStartY =
+                    event.touches[0].clientY;
+
+                return;
+
+            }
+
+
+            /*
+             * 2本以上で開始した場合
+             * → ピンチ・複数指操作として無効
              */
 
             if(
@@ -4545,45 +4578,8 @@ function initializeHealthCalendarMonthSwipe(){
                 healthCalendarSwipeLocked =
                     true;
 
-                return;
-
-            }
-
-
-            /*
-             * すでにピンチ中なら
-             * その操作が終わるまでロック
-             */
-
-            if(
-                healthCalendarPinchActive
-            ){
-
-                healthCalendarSwipeLocked =
-                    true;
-
-                return;
-
-            }
-
-
-            /*
-             * 1本指だけ
-             * 月スワイプ開始位置を記録
-             */
-
-            if(
-                touchCount === 1
-            ){
-
                 healthCalendarSwipeStartTouches =
-                    1;
-
-                healthCalendarSwipeStartX =
-                    event.touches[0].clientX;
-
-                healthCalendarSwipeStartY =
-                    event.touches[0].clientY;
+                    0;
 
             }
 
@@ -4598,8 +4594,8 @@ function initializeHealthCalendarMonthSwipe(){
         function(event){
 
             /*
-             * 2本以上なら
-             * ピンチ操作として完全ロック
+             * 2本以上になったら
+             * その操作を完全にロック
              */
 
             if(
@@ -4618,17 +4614,14 @@ function initializeHealthCalendarMonthSwipe(){
 
 
             /*
-             * 一度でもピンチになったら
-             * 指が1本になっても
-             * この操作が終わるまでロック
+             * 一度ピンチになった操作は
+             * 指が1本に戻っても無効
              */
 
             if(
-                healthCalendarPinchActive
+                healthCalendarPinchActive ||
+                healthCalendarSwipeLocked
             ){
-
-                healthCalendarSwipeLocked =
-                    true;
 
                 return;
 
@@ -4645,16 +4638,18 @@ function initializeHealthCalendarMonthSwipe(){
         function(event){
 
             /*
-             * ピンチ操作中
+             * ピンチ・複数指操作だった場合
+             * 月変更は絶対にしない
              */
 
             if(
-                healthCalendarPinchActive
+                healthCalendarPinchActive ||
+                healthCalendarSwipeLocked
             ){
 
                 /*
                  * 全ての指が離れたら
-                 * ロック解除
+                 * 次の操作へ備えて完全リセット
                  */
 
                 if(
@@ -4670,29 +4665,10 @@ function initializeHealthCalendarMonthSwipe(){
                     healthCalendarSwipeStartTouches =
                         0;
 
-                }
+                    healthCalendarMonthSwipeStartX =
+                        0;
 
-                return;
-
-            }
-
-
-            /*
-             * ロック中
-             */
-
-            if(
-                healthCalendarSwipeLocked
-            ){
-
-                if(
-                    event.touches.length === 0
-                ){
-
-                    healthCalendarSwipeLocked =
-                        false;
-
-                    healthCalendarSwipeStartTouches =
+                    healthCalendarMonthSwipeStartY =
                         0;
 
                 }
@@ -4703,8 +4679,7 @@ function initializeHealthCalendarMonthSwipe(){
 
 
             /*
-             * 最初から1本指で
-             * 開始した操作だけ許可
+             * 最初から1本指でない場合は無視
              */
 
             if(
@@ -4721,7 +4696,7 @@ function initializeHealthCalendarMonthSwipe(){
              */
 
             if(
-                event.changedTouches.length !== 1
+                event.touches.length !== 0
             ){
 
                 return;
@@ -4730,7 +4705,7 @@ function initializeHealthCalendarMonthSwipe(){
 
 
             if(
-                event.touches.length !== 0
+                event.changedTouches.length !== 1
             ){
 
                 return;
@@ -4746,7 +4721,6 @@ function initializeHealthCalendarMonthSwipe(){
                 touch.clientX -
                 healthCalendarMonthSwipeStartX;
 
-
             const diffY =
                 touch.clientY -
                 healthCalendarMonthSwipeStartY;
@@ -4754,24 +4728,21 @@ function initializeHealthCalendarMonthSwipe(){
 
             /*
              * スワイプ距離
-             *
-             * 以前：60px
-             * 現在：80px
-             *
-             * 少し大きくして
-             * 誤操作を減らす
              */
 
             const SWIPE_DISTANCE = 80;
 
+
+            /*
+             * 短すぎる操作は無視
+             */
 
             if(
                 Math.abs(diffX) <
                 SWIPE_DISTANCE
             ){
 
-                healthCalendarSwipeStartTouches =
-                    0;
+                resetHealthCalendarSwipeState();
 
                 return;
 
@@ -4779,8 +4750,7 @@ function initializeHealthCalendarMonthSwipe(){
 
 
             /*
-             * 横方向が十分強い場合だけ
-             * 月スワイプとして扱う
+             * 縦方向が強い場合は無視
              */
 
             if(
@@ -4788,8 +4758,7 @@ function initializeHealthCalendarMonthSwipe(){
                 Math.abs(diffY) * 1.2
             ){
 
-                healthCalendarSwipeStartTouches =
-                    0;
+                resetHealthCalendarSwipeState();
 
                 return;
 
@@ -4826,8 +4795,7 @@ function initializeHealthCalendarMonthSwipe(){
             }
 
 
-            healthCalendarSwipeStartTouches =
-                0;
+            resetHealthCalendarSwipeState();
 
         };
 
@@ -4839,26 +4807,36 @@ function initializeHealthCalendarMonthSwipe(){
     calendar.ontouchcancel =
         function(){
 
-            healthCalendarMonthSwipeStartX =
-                0;
-
-            healthCalendarMonthSwipeStartY =
-                0;
-
-            healthCalendarSwipeStartTouches =
-                0;
-
-            healthCalendarPinchActive =
-                false;
-
-            healthCalendarSwipeLocked =
-                false;
+            resetHealthCalendarSwipeState();
 
         };
 
 }
 
 
+/* =====================================================
+   💊 健康カレンダー
+   スワイプ状態リセット
+===================================================== */
+
+function resetHealthCalendarSwipeState(){
+
+    healthCalendarMonthSwipeStartX =
+        0;
+
+    healthCalendarMonthSwipeStartY =
+        0;
+
+    healthCalendarSwipeStartTouches =
+        0;
+
+    healthCalendarPinchActive =
+        false;
+
+    healthCalendarSwipeLocked =
+        false;
+
+}
 /* =====================================================
    💊 健康カレンダー月変更
    スワイプ専用
