@@ -49,24 +49,46 @@
 
     <!-- メイン写真 -->
 
-    <div class="oshi-main-photo">
+<!-- =====================
+     メイン写真
+====================== -->
 
-        <button
-            type="button"
-            class="oshi-main-photo-placeholder">
+<div class="oshi-main-photo">
 
-            <span>
-                ＋
-            </span>
+    <!-- 写真なし -->
+    <button
+        type="button"
+        class="oshi-main-photo-placeholder"
+        id="oshiMainPhotoPlaceholder"
+        onclick="openOshiPhotoAddModal()">
 
-            <small>
-                写真を追加
-            </small>
+        <span>
+            ＋
+        </span>
 
-        </button>
+        <small>
+            写真を追加
+        </small>
 
-    </div>
+    </button>
 
+
+    <!-- 写真あり -->
+    <button
+        type="button"
+        class="oshi-main-photo-image-button"
+        id="oshiMainPhotoImageButton"
+        onclick="openOshiPhotoAddModal()"
+        style="display:none;">
+
+        <img
+            id="oshiMainPhotoImage"
+            class="oshi-main-photo-image"
+            alt="推しの写真">
+
+    </button>
+
+</div>
 
     <!-- 写真右側情報 -->
 
@@ -479,5 +501,77 @@
     </div>
 
 </div>
+
+
+
+
+
+
+
+<!-- =====================
+     推し写真追加モーダル
+====================== -->
+
+<div
+    id="oshiPhotoAddModal"
+    class="modal"
+    style="display:none;">
+
+    <div class="modal-content oshi-photo-add-modal">
+
+        <h2>
+            📸 写真を追加
+        </h2>
+
+        <button
+            type="button"
+            class="oshi-photo-add-camera-button"
+            onclick="openOshiCamera()">
+
+            📷 カメラで撮る
+
+        </button>
+
+
+        <button
+            type="button"
+            class="oshi-photo-add-album-button"
+            onclick="openOshiAlbum()">
+
+            🖼️ アルバムから選ぶ
+
+        </button>
+
+
+        <button
+            type="button"
+            onclick="closeOshiPhotoAddModal()">
+
+            キャンセル
+
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =====================
+     写真選択用 input
+====================== -->
+
+<input
+    type="file"
+    id="oshiCameraInput"
+    accept="image/*"
+    capture="environment"
+    style="display:none;">
+
+<input
+    type="file"
+    id="oshiAlbumInput"
+    accept="image/*"
+    style="display:none;">
+
 
 </section>
