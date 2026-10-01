@@ -1033,3 +1033,651 @@
     color: inherit;
 
 }
+
+
+/* =========================================================
+   📸 推し写真アルバム
+========================================================= */
+
+.oshi-photo-album{
+
+    display:block;
+
+    width:100%;
+
+    margin:0 0 16px;
+
+    padding:16px;
+
+    box-sizing:border-box;
+
+    background:var(--card);
+
+    border:1px solid var(--border);
+
+    border-radius:18px;
+
+    box-shadow:
+        0 3px 12px rgba(0,0,0,.05);
+
+}
+
+
+/* =========================
+   アルバムヘッダー
+========================= */
+
+.oshi-photo-album-header{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:10px;
+
+    margin-bottom:12px;
+
+}
+
+
+.oshi-photo-album-header h3{
+
+    margin:0;
+
+    font-size:18px;
+
+    color:var(--text);
+
+}
+
+
+.oshi-photo-add-button{
+
+    width:auto;
+
+    min-height:36px;
+
+    margin:0;
+
+    padding:6px 10px;
+
+    box-sizing:border-box;
+
+    border:1px solid var(--border);
+
+    border-radius:10px;
+
+    background:var(--surface);
+
+    color:var(--accent);
+
+    font-size:13px;
+
+    font-weight:bold;
+
+}
+
+
+/* =========================================================
+   📸 写真3列グリッド
+========================================================= */
+
+.oshi-photo-grid{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,minmax(0,1fr));
+
+    gap:8px;
+
+    width:100%;
+
+}
+
+
+.oshi-photo-thumbnail{
+
+    position:relative;
+
+    width:100%;
+
+    min-width:0;
+
+    aspect-ratio:1 / 1;
+
+    overflow:hidden;
+
+    border-radius:12px;
+
+    background:var(--surface);
+
+    border:1px solid var(--border);
+
+}
+
+
+/* =========================
+   サムネイル本体
+========================= */
+
+.oshi-photo-thumbnail-button{
+
+    display:block;
+
+    width:100%;
+
+    height:100%;
+
+    min-width:0;
+
+    min-height:0;
+
+    margin:0;
+
+    padding:0;
+
+    border:none;
+
+    background:transparent;
+
+    overflow:hidden;
+
+}
+
+
+.oshi-photo-thumbnail-image{
+
+    display:block;
+
+    width:100%;
+
+    height:100%;
+
+    max-width:100%;
+
+    max-height:100%;
+
+    object-fit:cover;
+
+    object-position:center;
+
+}
+
+
+/* =========================================================
+   ⭐ ❤️ ステータス
+   常に右上に表示
+========================================================= */
+
+.oshi-photo-status{
+
+    position:absolute;
+
+    top:5px;
+
+    right:5px;
+
+    z-index:5;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:flex-end;
+
+    gap:3px;
+
+    min-height:24px;
+
+    pointer-events:none;
+
+}
+
+
+.oshi-photo-status-favorite,
+.oshi-photo-status-top{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    width:24px;
+
+    height:24px;
+
+    box-sizing:border-box;
+
+    border-radius:50%;
+
+    background:rgba(0,0,0,.48);
+
+    color:#fff;
+
+    font-size:14px;
+
+    line-height:1;
+
+    text-shadow:
+        0 1px 2px rgba(0,0,0,.7);
+
+}
+
+
+/* =========================
+   ⭐ お気に入りボタン
+   ❤️は表示のみ
+========================= */
+
+.oshi-photo-favorite-button{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    width:24px;
+
+    height:24px;
+
+    min-width:24px;
+
+    margin:0;
+
+    padding:0;
+
+    box-sizing:border-box;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:rgba(0,0,0,.48);
+
+    color:#fff;
+
+    font-size:14px;
+
+    line-height:1;
+
+    pointer-events:auto;
+
+    cursor:pointer;
+
+    text-shadow:
+        0 1px 2px rgba(0,0,0,.7);
+
+}
+
+
+/*
+   ⭐ OFFのときも場所を確保するため、
+   空ボタン自体は表示
+*/
+
+.oshi-photo-favorite-button:empty{
+
+    opacity:.45;
+
+}
+
+
+.oshi-photo-favorite-button:active{
+
+    transform:scale(.9);
+
+}
+
+
+/* =========================================================
+   📱 写真ビューア
+========================================================= */
+
+.oshi-photo-viewer{
+
+    position:fixed;
+
+    inset:0;
+
+    z-index:10000;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    overflow:hidden;
+
+    box-sizing:border-box;
+
+    background:rgba(0,0,0,.96);
+
+    touch-action:none;
+
+}
+
+
+/* =========================
+   ビューア操作エリア
+========================= */
+
+.oshi-photo-viewer-actions{
+
+    position:absolute;
+
+    top:0;
+
+    right:0;
+
+    left:0;
+
+    z-index:20;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:flex-end;
+
+    gap:6px;
+
+    padding:
+        max(10px, env(safe-area-inset-top))
+        10px
+        10px
+        10px;
+
+    box-sizing:border-box;
+
+    pointer-events:none;
+
+}
+
+
+.oshi-photo-viewer-button{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    width:42px;
+
+    height:42px;
+
+    min-width:42px;
+
+    margin:0;
+
+    padding:0;
+
+    box-sizing:border-box;
+
+    border:1px solid rgba(255,255,255,.25);
+
+    border-radius:50%;
+
+    background:rgba(0,0,0,.55);
+
+    color:#fff;
+
+    font-size:18px;
+
+    line-height:1;
+
+    pointer-events:auto;
+
+    box-shadow:none;
+
+}
+
+
+.oshi-photo-viewer-button:active{
+
+    transform:scale(.92);
+
+}
+
+
+/* =========================
+   ❤️トップ画ボタン
+========================= */
+
+#oshiPhotoViewerTopButton.active{
+
+    color:#ff6b81;
+
+}
+
+
+/* =========================================================
+   🔍 ビューア画像エリア
+========================================================= */
+
+.oshi-photo-viewer-image-area{
+
+    width:100%;
+
+    height:100%;
+
+    min-width:0;
+
+    min-height:0;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    overflow:hidden;
+
+    box-sizing:border-box;
+
+    touch-action:none;
+
+}
+
+
+.oshi-photo-viewer-image{
+
+    display:block;
+
+    width:auto;
+
+    height:auto;
+
+    max-width:100%;
+
+    max-height:100%;
+
+    object-fit:contain;
+
+    transform:
+        translate(0,0)
+        scale(1);
+
+    transform-origin:center center;
+
+    user-select:none;
+
+    -webkit-user-select:none;
+
+    -webkit-user-drag:none;
+
+    touch-action:none;
+
+    will-change:transform;
+
+}
+
+
+/* =========================================================
+   📱 スマホ
+========================================================= */
+
+@media(max-width:600px){
+
+    /* =========================
+       写真アルバム
+    ========================= */
+
+    .oshi-photo-album{
+
+        padding:12px;
+
+        margin-bottom:12px;
+
+        border-radius:15px;
+
+    }
+
+
+    .oshi-photo-album-header{
+
+        margin-bottom:10px;
+
+    }
+
+
+    .oshi-photo-album-header h3{
+
+        font-size:16px;
+
+    }
+
+
+    .oshi-photo-add-button{
+
+        min-height:36px;
+
+        padding:6px 9px;
+
+        font-size:12px;
+
+    }
+
+
+    /* =========================
+       3列固定
+    ========================= */
+
+    .oshi-photo-grid{
+
+        grid-template-columns:
+            repeat(3,minmax(0,1fr));
+
+        gap:6px;
+
+    }
+
+
+    .oshi-photo-thumbnail{
+
+        border-radius:9px;
+
+    }
+
+
+    .oshi-photo-status{
+
+        top:4px;
+
+        right:4px;
+
+        gap:2px;
+
+    }
+
+
+    .oshi-photo-status-favorite,
+    .oshi-photo-status-top,
+    .oshi-photo-favorite-button{
+
+        width:22px;
+
+        height:22px;
+
+        min-width:22px;
+
+        font-size:13px;
+
+    }
+
+
+    /* =========================
+       ビューア
+    ========================= */
+
+    .oshi-photo-viewer-actions{
+
+        gap:4px;
+
+        padding:
+            max(8px, env(safe-area-inset-top))
+            8px
+            8px
+            8px;
+
+    }
+
+
+    .oshi-photo-viewer-button{
+
+        width:40px;
+
+        height:40px;
+
+        min-width:40px;
+
+        font-size:17px;
+
+    }
+
+}
+
+
+/* =========================================================
+   📱 極端に狭い画面でも3列維持
+========================================================= */
+
+@media(max-width:360px){
+
+    .oshi-photo-grid{
+
+        gap:4px;
+
+    }
+
+
+    .oshi-photo-status{
+
+        top:3px;
+
+        right:3px;
+
+    }
+
+
+    .oshi-photo-status-favorite,
+    .oshi-photo-status-top,
+    .oshi-photo-favorite-button{
+
+        width:20px;
+
+        height:20px;
+
+        min-width:20px;
+
+        font-size:12px;
+
+    }
+
+}

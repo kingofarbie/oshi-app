@@ -1,7 +1,12 @@
 <!-- =========================
      推し詳細ページ
      oshi-details.html
-========================= --><section id="oshiDetailPage" class="page"><!-- =====================
+========================= -->
+
+<section id="oshiDetailPage" class="page">
+
+
+<!-- =====================
      ヘッダー
 ====================== -->
 
@@ -47,50 +52,74 @@
 <div class="oshi-profile-card">
 
 
-    <!-- メイン写真 -->
+    <!-- =====================
+         メイン写真
+    ====================== -->
 
-<!-- =====================
-     メイン写真
-====================== -->
+    <div class="oshi-main-photo">
 
-<div class="oshi-main-photo">
+        <!-- 写真なし -->
+        <button
+            type="button"
+            class="oshi-main-photo-placeholder"
+            id="oshiMainPhotoPlaceholder"
+            onclick="openOshiPhotoAddModal()">
 
-    <!-- 写真なし -->
-    <button
-        type="button"
-        class="oshi-main-photo-placeholder"
-        id="oshiMainPhotoPlaceholder"
-        onclick="openOshiPhotoAddModal()">
+            <span>
+                ＋
+            </span>
 
-        <span>
-            ＋
-        </span>
+            <small>
+                写真を追加
+            </small>
 
-        <small>
-            写真を追加
-        </small>
-
-    </button>
+        </button>
 
 
-    <!-- 写真あり -->
-    <button
-        type="button"
-        class="oshi-main-photo-image-button"
-        id="oshiMainPhotoImageButton"
-        onclick="openOshiPhotoAddModal()"
-        style="display:none;">
+        <!-- 写真あり -->
+        <button
+            type="button"
+            class="oshi-main-photo-image-button"
+            id="oshiMainPhotoImageButton"
+            onclick="
+                (function(){
+                    const oshiId =
+                        document.getElementById('oshiContainer')?.dataset.oshiId || '';
 
-        <img
-            id="oshiMainPhotoImage"
-            class="oshi-main-photo-image"
-            alt="推しの写真">
+                    const photos =
+                        typeof getOshiPhotos === 'function'
+                            ? getOshiPhotos(oshiId)
+                            : [];
 
-    </button>
+                    const image =
+                        document.getElementById('oshiMainPhotoImage');
 
-</div>
+                    const photoId =
+                        image?.dataset.photoId || '';
 
-    <!-- 写真右側情報 -->
+                    if(photos.length >= 2){
+                        openOshiPhotoAlbum();
+                    }
+                    else if(photoId){
+                        openOshiPhotoViewer(photoId);
+                    }
+                })();
+            "
+            style="display:none;">
+
+            <img
+                id="oshiMainPhotoImage"
+                class="oshi-main-photo-image"
+                alt="推しの写真">
+
+        </button>
+
+    </div>
+
+
+    <!-- =====================
+         写真右側情報
+    ====================== -->
 
     <div class="oshi-profile-info">
 
@@ -373,7 +402,6 @@
 </div>
 
 
-
 <!-- =====================
      推し活記録
 ====================== -->
@@ -386,16 +414,17 @@
             💖 推し活記録
         </h3>
 
-<button
-    type="button"
-    class="text-btn"
-    onclick="openOshiRecord(
-        document.getElementById('oshiContainer').dataset.oshiId
-    )">
+        <button
+            type="button"
+            class="text-btn"
+            onclick="openOshiRecord(
+                document.getElementById('oshiContainer').dataset.oshiId
+            )">
 
-    もっと見る
+            もっと見る
 
-</button>
+        </button>
+
     </div>
 
 
@@ -468,7 +497,6 @@
 </div>
 
 
-
 <!-- =====================
      メモ
 ====================== -->
@@ -503,11 +531,6 @@
 </div>
 
 
-
-
-
-
-
 <!-- =====================
      推し写真追加モーダル
 ====================== -->
@@ -522,6 +545,7 @@
         <h2>
             📸 写真を追加
         </h2>
+
 
         <button
             type="button"
@@ -571,7 +595,110 @@
     type="file"
     id="oshiAlbumInput"
     accept="image/*"
+    multiple
     style="display:none;">
+
+
+<!-- =====================
+     推し写真ビューア
+====================== -->
+
+<div
+    id="oshiPhotoViewer"
+    class="oshi-photo-viewer"
+    style="display:none;">
+
+    <!-- =====================
+         ビューア上部操作
+    ====================== -->
+
+    <div class="oshi-photo-viewer-actions">
+
+
+        <!-- 写真追加 -->
+
+        <button
+            type="button"
+            id="oshiPhotoViewerAddButton"
+            class="oshi-photo-viewer-button"
+            title="写真を追加">
+
+            ＋
+
+        </button>
+
+
+        <!-- トップ画 -->
+
+        <button
+            type="button"
+            id="oshiPhotoViewerTopButton"
+            class="oshi-photo-viewer-button"
+            title="トップ画にする">
+
+            ♡
+
+        </button>
+
+
+        <!-- 削除 -->
+
+        <button
+            type="button"
+            id="oshiPhotoViewerDeleteButton"
+            class="oshi-photo-viewer-button"
+            title="写真を削除">
+
+            🗑️
+
+        </button>
+
+
+        <!-- 共有 -->
+
+        <button
+            type="button"
+            id="oshiPhotoViewerShareButton"
+            class="oshi-photo-viewer-button"
+            title="写真を共有">
+
+            📤
+
+        </button>
+
+
+        <!-- 閉じる -->
+
+        <button
+            type="button"
+            id="oshiPhotoViewerCloseButton"
+            class="oshi-photo-viewer-button"
+            title="閉じる">
+
+            ✕
+
+        </button>
+
+
+    </div>
+
+
+    <!-- =====================
+         拡大写真
+    ====================== -->
+
+    <div
+        class="oshi-photo-viewer-image-area">
+
+        <img
+            id="oshiPhotoViewerImage"
+            class="oshi-photo-viewer-image"
+            alt="推しの写真"
+            draggable="false">
+
+    </div>
+
+</div>
 
 
 </section>
