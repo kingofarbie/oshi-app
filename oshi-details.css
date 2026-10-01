@@ -1681,3 +1681,337 @@
     }
 
 }
+
+
+
+/* =========================================================
+   📸 写真一覧ビューア
+========================================================= */
+
+.oshi-photo-album-viewer{
+
+    position:fixed;
+
+    inset:0;
+
+    z-index:10000;
+
+    display:flex;
+
+    flex-direction:column;
+
+    overflow:hidden;
+
+    box-sizing:border-box;
+
+    background:rgba(0,0,0,.96);
+
+    padding:
+        env(safe-area-inset-top)
+        10px
+        env(safe-area-inset-bottom)
+        10px;
+
+}
+
+
+/* =========================
+   ヘッダー
+========================= */
+
+.oshi-photo-album-viewer-header{
+
+    flex-shrink:0;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:10px;
+
+    min-height:54px;
+
+    padding:6px 0;
+
+    box-sizing:border-box;
+
+}
+
+
+.oshi-photo-album-viewer-header h2{
+
+    margin:0;
+
+    color:#fff;
+
+    font-size:19px;
+
+    font-weight:bold;
+
+}
+
+
+.oshi-photo-album-viewer-actions{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:6px;
+
+}
+
+
+.oshi-photo-album-viewer-button{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    width:42px;
+
+    height:42px;
+
+    min-width:42px;
+
+    margin:0;
+
+    padding:0;
+
+    box-sizing:border-box;
+
+    border:1px solid rgba(255,255,255,.25);
+
+    border-radius:50%;
+
+    background:rgba(0,0,0,.55);
+
+    color:#fff;
+
+    font-size:18px;
+
+    line-height:1;
+
+}
+
+
+.oshi-photo-album-viewer-button:active{
+
+    transform:scale(.92);
+
+}
+
+
+/* =========================
+   写真一覧
+========================= */
+
+.oshi-photo-album-viewer-grid{
+
+    flex:1;
+
+    min-height:0;
+
+    width:100%;
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,minmax(0,1fr));
+
+    align-content:start;
+
+    gap:8px;
+
+    overflow-y:auto;
+
+    overflow-x:hidden;
+
+    padding:8px 0;
+
+    box-sizing:border-box;
+
+    -webkit-overflow-scrolling:touch;
+
+}
+
+
+.oshi-photo-album-viewer-item{
+
+    position:relative;
+
+    width:100%;
+
+    aspect-ratio:1 / 1;
+
+    min-width:0;
+
+    overflow:hidden;
+
+    padding:0;
+
+    margin:0;
+
+    border:1px solid rgba(255,255,255,.18);
+
+    border-radius:12px;
+
+    background:#111;
+
+}
+
+
+.oshi-photo-album-viewer-item img{
+
+    display:block;
+
+    width:100%;
+
+    height:100%;
+
+    max-width:100%;
+
+    max-height:100%;
+
+    object-fit:cover;
+
+}
+
+
+/* =========================
+   ⭐ ❤️
+========================= */
+
+.oshi-photo-album-viewer-status{
+
+    position:absolute;
+
+    top:5px;
+
+    right:5px;
+
+    z-index:2;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:3px;
+
+    pointer-events:none;
+
+}
+
+
+.oshi-photo-album-viewer-status span{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    width:24px;
+
+    height:24px;
+
+    border-radius:50%;
+
+    background:rgba(0,0,0,.55);
+
+    color:#fff;
+
+    font-size:14px;
+
+    line-height:1;
+
+    text-shadow:
+        0 1px 2px rgba(0,0,0,.8);
+
+}
+
+
+/* =========================
+   スマホ
+========================= */
+
+@media(max-width:600px){
+
+    .oshi-photo-album-viewer{
+
+        padding:
+            env(safe-area-inset-top)
+            8px
+            env(safe-area-inset-bottom)
+            8px;
+
+    }
+
+
+    .oshi-photo-album-viewer-header{
+
+        min-height:50px;
+
+    }
+
+
+    .oshi-photo-album-viewer-header h2{
+
+        font-size:17px;
+
+    }
+
+
+    .oshi-photo-album-viewer-button{
+
+        width:40px;
+
+        height:40px;
+
+        min-width:40px;
+
+        font-size:17px;
+
+    }
+
+
+    .oshi-photo-album-viewer-grid{
+
+        gap:6px;
+
+        padding-top:6px;
+
+    }
+
+
+    .oshi-photo-album-viewer-item{
+
+        border-radius:9px;
+
+    }
+
+
+    .oshi-photo-album-viewer-status{
+
+        top:4px;
+
+        right:4px;
+
+    }
+
+
+    .oshi-photo-album-viewer-status span{
+
+        width:22px;
+
+        height:22px;
+
+        font-size:13px;
+
+    }
+
+}

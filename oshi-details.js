@@ -1771,37 +1771,158 @@ function refreshExistingFavoritesPage(){
 
 function openOshiPhotoAlbum(){
 
-    const oshiId =
-        getCurrentOshiDetailsId();
+    const oshiContainer =
+        document.getElementById("oshiContainer");
 
+    const oshiId =
+        oshiContainer?.dataset.oshiId;
 
     if(!oshiId){
         return;
     }
 
 
-    renderOshiPhotoAlbum(
-        oshiId
-    );
-
-
-    const album =
+    const viewer =
         document.getElementById(
-            "oshiPhotoAlbum"
+            "oshiPhotoAlbumViewer"
         );
 
+    const grid =
+        document.getElementById(
+            "oshiPhotoAlbumViewerGrid"
+        );
 
-    if(album){
+    if(!viewer || !grid){
+        return;
+    }
 
-        album.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-        });
+
+    const photos =
+        getOshiPhotos(oshiId);
+
+
+    grid.innerHTML = "";
+
+
+    if(photos.length === 0){
+
+        viewer.style.display = "flex";
+
+        return;
 
     }
 
+    photos
+    .sort((a,b) =>
+        (a.order ?? 0) -
+        (b.order ?? 0)
+    )
+
+        .forEach(photo => {
+
+            const button =
+                document.createElement("button");
+
+            button.type = "button";
+
+            button.className =
+                "oshi-photo-album-viewer-item";
+
+
+            button.innerHTML = `
+
+                <img
+                    src="${photo.src}"
+                    alt="推しの写真"
+                    draggable="false"
+                >
+
+                <div
+                    class="oshi-photo-album-viewer-status"
+                >
+
+                    <span>
+                        ${photo.favorite ? "⭐" : ""}
+                    </span>
+
+                    <span>
+                        ${photo.isTop ? "❤️" : ""}
+                    </span>
+
+                </div>
+
+            `;
+
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    closeOshiPhotoAlbum();
+
+                    openOshiPhotoViewer(
+                        photo.photoId
+                    );
+
+                }
+            );
+
+
+            grid.appendChild(button);
+
+        });
+
+
+    viewer.style.display = "flex";
+
 }
 
+function closeOshiPhotoAlbum(){
+
+    const viewer =
+        document.getElementById(
+            "oshiPhotoAlbumViewer"
+        );
+
+    if(!viewer){
+        return;
+    }
+
+    viewer.style.display = "none";
+
+}
+
+function closeOshiPhotoViewer(){
+
+    const viewer =
+        document.getElementById(
+            "oshiPhotoViewer"
+        );
+
+    if(!viewer){
+        return;
+    }
+
+
+    viewer.style.display = "none";
+
+
+    const image =
+        document.getElementById(
+            "oshiPhotoViewerImage"
+        );
+
+    if(image){
+
+        image.style.transform =
+            "translate(0,0) scale(1)";
+
+    }
+
+
+    closeOshiPhotoAlbum();
+
+}
 
 /* =========================================================
    ⭐ 推し写真ビューア初期化
@@ -3158,114 +3279,161 @@ function closeOshiPhotoViewer(){
 
 function initOshiPhotoViewerButtons(){
 
-    const topButton =
-        document.getElementById(
-            "oshiPhotoViewerTopButton"
-        );
-
-
     const addButton =
         document.getElementById(
             "oshiPhotoViewerAddButton"
         );
 
+    const topButton =
+        document.getElementById(
+            "oshiPhotoViewerTopButton"
+        );
 
     const deleteButton =
         document.getElementById(
             "oshiPhotoViewerDeleteButton"
         );
 
-
     const shareButton =
         document.getElementById(
             "oshiPhotoViewerShareButton"
         );
-
 
     const closeButton =
         document.getElementById(
             "oshiPhotoViewerCloseButton"
         );
 
+    const albumAddButton =
+        document.getElementById(
+            "oshiPhotoAlbumAddButton"
+        );
 
-    if(topButton){
+    const albumCloseButton =
+        document.getElementById(
+            "oshiPhotoAlbumCloseButton"
+        );
 
-        topButton.onclick =
-            function(event){
 
-                event.preventDefault();
-
-                event.stopPropagation();
-
-                confirmOshiTopPhoto();
-
-            };
-
-    }
-
+    /* =========================
+       ＋ 写真追加
+    ========================= */
 
     if(addButton){
 
-        addButton.onclick =
-            function(event){
+        addButton.onclick = () => {
 
-                event.preventDefault();
+            closeOshiPhotoViewer();
 
-                event.stopPropagation();
+            openOshiPhotoAddModal();
 
-                closeOshiPhotoViewer();
-
-                openOshiPhotoAddModal();
-
-            };
+        };
 
     }
 
+
+    /* =========================
+       ❤️ トップ画
+    ========================= */
+
+    if(topButton){
+
+        topButton.onclick = () => {
+
+            if(!oshiCurrentPhotoId){
+                return;
+            }
+
+            setOshiPhotoAsTop(
+                oshiCurrentPhotoId
+            );
+
+        };
+
+    }
+
+
+    /* =========================
+       🗑️ 削除
+    ========================= */
 
     if(deleteButton){
 
-        deleteButton.onclick =
-            function(event){
+        deleteButton.onclick = () => {
 
-                event.preventDefault();
+            if(!oshiCurrentPhotoId){
+                return;
+            }
 
-                event.stopPropagation();
+            deleteOshiCurrentPhoto();
 
-                deleteOshiCurrentPhoto();
-
-            };
+        };
 
     }
 
+
+    /* =========================
+       📤 共有
+    ========================= */
 
     if(shareButton){
 
-        shareButton.onclick =
-            function(event){
+        shareButton.onclick = () => {
 
-                event.preventDefault();
+            if(!oshiCurrentPhotoId){
+                return;
+            }
 
-                event.stopPropagation();
+            shareOshiCurrentPhoto();
 
-                shareOshiCurrentPhoto();
-
-            };
+        };
 
     }
 
 
+    /* =========================
+       ✕ 拡大ビューア
+    ========================= */
+
     if(closeButton){
 
-        closeButton.onclick =
-            function(event){
+        closeButton.onclick = () => {
 
-                event.preventDefault();
+            closeOshiPhotoViewer();
 
-                event.stopPropagation();
+            openOshiPhotoAlbum();
 
-                closeOshiPhotoViewer();
+        };
 
-            };
+    }
+
+
+    /* =========================
+       ＋ 一覧から追加
+    ========================= */
+
+    if(albumAddButton){
+
+        albumAddButton.onclick = () => {
+
+            openOshiPhotoAddModal();
+
+        };
+
+    }
+
+
+    /* =========================
+       ✕ 一覧を閉じる
+    ========================= */
+
+    if(albumCloseButton){
+
+        albumCloseButton.onclick = () => {
+
+            closeOshiPhotoAlbum();
+
+        };
 
     }
 
