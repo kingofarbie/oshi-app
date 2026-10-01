@@ -3334,30 +3334,58 @@ function closeOshiPhotoViewer(){
 
 function initOshiPhotoViewerButtons(){
 
-    const addButton =
-        document.getElementById(
-            "oshiPhotoViewerAddButton"
-        );
+if(addButton){
+    addButton.onclick = () => {
+        openOshiPhotoAddModal();
+    };
+}
 
-    const topButton =
-        document.getElementById(
-            "oshiPhotoViewerTopButton"
-        );
+if(topButton){
+    topButton.onclick = () => {
 
-    const deleteButton =
-        document.getElementById(
-            "oshiPhotoViewerDeleteButton"
-        );
+        if(!oshiPhotoViewerCurrentId){
+            return;
+        }
 
-    const shareButton =
-        document.getElementById(
-            "oshiPhotoViewerShareButton"
-        );
+        confirmOshiTopPhoto();
 
-    const closeButton =
-        document.getElementById(
-            "oshiPhotoViewerCloseButton"
-        );
+    };
+}
+
+if(deleteButton){
+    deleteButton.onclick = () => {
+
+        if(!oshiPhotoViewerCurrentId){
+            return;
+        }
+
+        deleteOshiCurrentPhoto();
+
+    };
+}
+
+if(shareButton){
+    shareButton.onclick = () => {
+
+        if(!oshiPhotoViewerCurrentId){
+            return;
+        }
+
+        shareOshiCurrentPhoto();
+
+    };
+}
+
+if(closeButton){
+    closeButton.onclick = () => {
+
+        closeOshiPhotoViewer();
+
+        openOshiPhotoAlbum();
+
+    };
+}
+
 
     const albumAddButton =
         document.getElementById(
