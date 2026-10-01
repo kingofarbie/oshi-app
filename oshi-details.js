@@ -1946,6 +1946,7 @@ function closeOshiPhotoAlbum(){
 
 }
 
+
 function closeOshiPhotoViewer(){
 
     const viewer =
@@ -3390,60 +3391,43 @@ function initOshiPhotoViewerButtons(){
        ❤️ トップ画
     ========================= */
 
-    if(topButton){
+if(topButton){
+    topButton.onclick = () => {
+        if(!oshiPhotoViewerCurrentId){
+            return;
+        }
 
-        topButton.onclick = () => {
-
-            if(!oshiCurrentPhotoId){
-                return;
-            }
-
-            setOshiPhotoAsTop(
-                oshiCurrentPhotoId
-            );
-
-        };
-
-    }
-
+        confirmOshiTopPhoto();
+    };
+}
 
     /* =========================
        🗑️ 削除
     ========================= */
 
-    if(deleteButton){
+if(deleteButton){
+    deleteButton.onclick = () => {
+        if(!oshiPhotoViewerCurrentId){
+            return;
+        }
 
-        deleteButton.onclick = () => {
-
-            if(!oshiCurrentPhotoId){
-                return;
-            }
-
-            deleteOshiCurrentPhoto();
-
-        };
-
-    }
-
+        deleteOshiCurrentPhoto();
+    };
+}
 
     /* =========================
        📤 共有
     ========================= */
 
-    if(shareButton){
+if(shareButton){
+    shareButton.onclick = () => {
+        if(!oshiPhotoViewerCurrentId){
+            return;
+        }
 
-        shareButton.onclick = () => {
-
-            if(!oshiCurrentPhotoId){
-                return;
-            }
-
-            shareOshiCurrentPhoto();
-
-        };
-
-    }
-
+        shareOshiCurrentPhoto();
+    };
+}
 
     /* =========================
        ✕ 拡大ビューア
