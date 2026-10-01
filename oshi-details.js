@@ -1797,85 +1797,139 @@ function openOshiPhotoAlbum(){
     }
 
 
-    const photos =
-        getOshiPhotos(oshiId);
+    /* =====================================================
+       写真取得
+    ===================================================== */
 
+    const photos =
+        getOshiPhotos(oshiId)
+            .slice()
+            .sort(
+                (a,b) =>
+                    (a.order ?? 0) -
+                    (b.order ?? 0)
+            );
+
+
+    /* =====================================================
+       一覧を作り直す
+    ===================================================== */
 
     grid.innerHTML = "";
 
 
-    if(photos.length === 0){
+    photos.forEach(photo => {
 
-        viewer.style.display = "flex";
+        const button =
+            document.createElement("button");
 
-        return;
+        button.type = "button";
+
+        button.className =
+            "oshi-photo-album-viewer-item";
+
+
+        button.innerHTML = `
+
+            <img
+                src="${photo.src}"
+                alt="推しの写真"
+                draggable="false"
+            >
+
+            <div
+                class="oshi-photo-album-viewer-status"
+            >
+
+                <span>
+                    ${photo.favorite ? "⭐" : ""}
+                </span>
+
+                <span>
+                    ${photo.isTop ? "❤️" : ""}
+                </span>
+
+            </div>
+
+        `;
+
+
+        /* =================================================
+           写真タップ
+        ================================================= */
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                closeOshiPhotoAlbum();
+
+                openOshiPhotoViewer(
+                    photo.photoId
+                );
+
+            }
+        );
+
+
+        grid.appendChild(button);
+
+    });
+
+
+    /* =====================================================
+       ＋ 写真追加
+    ===================================================== */
+
+    const addButton =
+        document.getElementById(
+            "oshiPhotoAlbumAddButton"
+        );
+
+    if(addButton){
+
+        addButton.onclick = null;
+
+        addButton.onclick = function(){
+
+            openOshiPhotoAddModal();
+
+        };
 
     }
 
-    photos
-    .sort((a,b) =>
-        (a.order ?? 0) -
-        (b.order ?? 0)
-    )
 
-        .forEach(photo => {
+    /* =====================================================
+       ✕ 一覧を閉じる
+    ===================================================== */
 
-            const button =
-                document.createElement("button");
+    const closeButton =
+        document.getElementById(
+            "oshiPhotoAlbumCloseButton"
+        );
 
-            button.type = "button";
+    if(closeButton){
 
-            button.className =
-                "oshi-photo-album-viewer-item";
+        closeButton.onclick = null;
 
+        closeButton.onclick = function(){
 
-            button.innerHTML = `
+            closeOshiPhotoAlbum();
 
-                <img
-                    src="${photo.src}"
-                    alt="推しの写真"
-                    draggable="false"
-                >
+        };
 
-                <div
-                    class="oshi-photo-album-viewer-status"
-                >
-
-                    <span>
-                        ${photo.favorite ? "⭐" : ""}
-                    </span>
-
-                    <span>
-                        ${photo.isTop ? "❤️" : ""}
-                    </span>
-
-                </div>
-
-            `;
+    }
 
 
-            button.addEventListener(
-                "click",
-                () => {
-
-                    closeOshiPhotoAlbum();
-
-                    openOshiPhotoViewer(
-                        photo.photoId
-                    );
-
-                }
-            );
-
-
-            grid.appendChild(button);
-
-        });
-
+    /* =====================================================
+       表示
+    ===================================================== */
 
     viewer.style.display = "flex";
 
 }
+
+
 
 function closeOshiPhotoAlbum(){
 
