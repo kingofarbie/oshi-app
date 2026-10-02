@@ -2627,49 +2627,53 @@ function oshiPhotoViewerTouchMove(
             );
 
 
-        if(
-            oshiPhotoViewerLastDistance >
-            0 &&
-            distance > 0
-        ){
+if(
+    oshiPhotoViewerLastDistance >
+    0 &&
+    distance > 0
+){
 
-oshiPhotoViewerScale *=
-    1 +
-    (
+    const distanceDifference =
         distance -
-        oshiPhotoViewerLastDistance
-    ) /
-    oshiPhotoViewerLastDistance *
-    0.5;
-
-    
-
-            if(
-                oshiPhotoViewerScale <
-                1
-            ){
-
-                oshiPhotoViewerScale =
-                    1;
-
-            }
+        oshiPhotoViewerLastDistance;
 
 
-            if(
-                oshiPhotoViewerScale >
-                4
-            ){
-
-                oshiPhotoViewerScale =
-                    4;
-
-            }
+    oshiPhotoViewerScale +=
+        distanceDifference *
+        0.01;
 
 
-            applyOshiPhotoViewerTransform();
+    if(
+        oshiPhotoViewerScale <
+        1
+    ){
 
-        }
+        oshiPhotoViewerScale =
+            1;
 
+        oshiPhotoViewerTranslateX =
+            0;
+
+        oshiPhotoViewerTranslateY =
+            0;
+
+    }
+
+
+    if(
+        oshiPhotoViewerScale >
+        4
+    ){
+
+        oshiPhotoViewerScale =
+            4;
+
+    }
+
+
+    applyOshiPhotoViewerTransform();
+
+}
 
         oshiPhotoViewerLastDistance =
             distance;
