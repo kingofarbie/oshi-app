@@ -2633,10 +2633,16 @@ function oshiPhotoViewerTouchMove(
             distance > 0
         ){
 
-            oshiPhotoViewerScale *=
-            oshiPhotoViewerLastDistance /
-            distance;
+oshiPhotoViewerScale *=
+    1 +
+    (
+        distance -
+        oshiPhotoViewerLastDistance
+    ) /
+    oshiPhotoViewerLastDistance *
+    0.5;
 
+    
 
             if(
                 oshiPhotoViewerScale <
