@@ -2175,6 +2175,11 @@ function openOshiPhotoViewer(
 
     updateOshiPhotoViewer();
 
+updateOshiPhotoViewerTopButton();
+
+updateOshiPhotoViewerFavoriteButton();
+
+
 
     viewer.style.display =
         "flex";
@@ -2308,6 +2313,46 @@ function updateOshiPhotoViewerTopButton(
 
     }
 
+}
+
+
+function updateOshiPhotoViewerFavoriteButton(){
+
+    const button =
+        document.getElementById(
+            "oshiPhotoViewerFavoriteButton"
+        );
+
+    if(!button){
+        return;
+    }
+
+    const oshiId =
+        getCurrentOshiDetailsId();
+
+    const photoId =
+        oshiPhotoViewerCurrentId;
+
+    if(!oshiId || !photoId){
+        button.textContent = "☆";
+        return;
+    }
+
+    const data = db.load();
+
+    const favorites =
+        Array.isArray(data.favorites?.photos)
+            ? data.favorites.photos
+            : [];
+
+    const isFavorite =
+        favorites.some(photo =>
+            photo &&
+            photo.id === photoId
+        );
+
+    button.textContent =
+        isFavorite ? "⭐" : "☆";
 }
 
 
