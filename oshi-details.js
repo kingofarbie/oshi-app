@@ -413,6 +413,7 @@ function initOshiDetailsPage(
     ========================= */
 
     initOshiPhotoViewer();
+    initOshiPhotoViewerButtons();
 
 
     console.log(
@@ -1947,37 +1948,6 @@ function closeOshiPhotoAlbum(){
 }
 
 
-function closeOshiPhotoViewer(){
-
-    const viewer =
-        document.getElementById(
-            "oshiPhotoViewer"
-        );
-
-    if(!viewer){
-        return;
-    }
-
-
-    viewer.style.display = "none";
-
-
-    const image =
-        document.getElementById(
-            "oshiPhotoViewerImage"
-        );
-
-    if(image){
-
-        image.style.transform =
-            "translate(0,0) scale(1)";
-
-    }
-
-
-    closeOshiPhotoAlbum();
-
-}
 
 /* =========================================================
    ⭐ 推し写真ビューア初期化
@@ -3334,59 +3304,30 @@ function closeOshiPhotoViewer(){
 
 function initOshiPhotoViewerButtons(){
 
-if(addButton){
-    addButton.onclick = () => {
-        openOshiPhotoAddModal();
-    };
-}
+    const addButton =
+        document.getElementById(
+            "oshiPhotoViewerAddButton"
+        );
 
-if(topButton){
-    topButton.onclick = () => {
+    const topButton =
+        document.getElementById(
+            "oshiPhotoViewerTopButton"
+        );
 
-        if(!oshiPhotoViewerCurrentId){
-            return;
-        }
+    const deleteButton =
+        document.getElementById(
+            "oshiPhotoViewerDeleteButton"
+        );
 
-        confirmOshiTopPhoto();
+    const shareButton =
+        document.getElementById(
+            "oshiPhotoViewerShareButton"
+        );
 
-    };
-}
-
-if(deleteButton){
-    deleteButton.onclick = () => {
-
-        if(!oshiPhotoViewerCurrentId){
-            return;
-        }
-
-        deleteOshiCurrentPhoto();
-
-    };
-}
-
-if(shareButton){
-    shareButton.onclick = () => {
-
-        if(!oshiPhotoViewerCurrentId){
-            return;
-        }
-
-        shareOshiCurrentPhoto();
-
-    };
-}
-
-if(closeButton){
-    closeButton.onclick = () => {
-
-        closeOshiPhotoViewer();
-
-        openOshiPhotoAlbum();
-
-    };
-}
-
-
+    const closeButton =
+        document.getElementById(
+            "oshiPhotoViewerCloseButton"
+        );
 
     const albumAddButton =
         document.getElementById(
