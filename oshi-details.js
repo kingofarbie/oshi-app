@@ -2327,32 +2327,69 @@ function updateOshiPhotoViewerFavoriteButton(){
         return;
     }
 
+
     const oshiId =
         getCurrentOshiDetailsId();
 
     const photoId =
         oshiPhotoViewerCurrentId;
 
-    if(!oshiId || !photoId){
-        button.textContent = "☆";
+
+    if(
+        !oshiId ||
+        !photoId
+    ){
+
+        button.textContent =
+            "☆";
+
         return;
+
     }
 
-    const data = db.load();
 
-    const favorites =
-        Array.isArray(data.favorites?.photos)
-            ? data.favorites.photos
-            : [];
+    const data =
+        db.load();
 
-    const isFavorite =
-        favorites.some(photo =>
-            photo &&
-            photo.id === photoId
+
+    const photos =
+        data.oshiDetails
+            ?. [oshiId]
+            ?.photos;
+
+
+    if(!Array.isArray(photos)){
+
+        button.textContent =
+            "☆";
+
+        return;
+
+    }
+
+
+    const photo =
+        photos.find(
+            item =>
+                String(item.photoId) ===
+                String(photoId)
         );
 
+
+    if(!photo){
+
+        button.textContent =
+            "☆";
+
+        return;
+
+    }
+
+
     button.textContent =
-        isFavorite ? "⭐" : "☆";
+        photo.favorite === true
+            ? "⭐"
+            : "☆";
 }
 
 
