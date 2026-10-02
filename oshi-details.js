@@ -2737,6 +2737,47 @@ function oshiPhotoViewerTouchEnd(
 
 
     /*
+       ピンチ操作終了後
+       → 1倍まで戻ったら位置も完全に中央へ戻す
+    */
+
+    if(
+        oshiPhotoViewerScale <= 1
+    ){
+
+        oshiPhotoViewerScale =
+            1;
+
+        oshiPhotoViewerTranslateX =
+            0;
+
+        oshiPhotoViewerTranslateY =
+            0;
+
+        applyOshiPhotoViewerTransform();
+
+    }
+
+
+    /*
+       2本指操作の終了時は
+       スワイプ・ダブルタップ判定をしない
+    */
+
+    if(
+        event.changedTouches &&
+        event.changedTouches.length !== 1
+    ){
+
+        oshiPhotoViewerLastDistance =
+            0;
+
+        return;
+
+    }
+
+
+    /*
        スワイプ
     */
 
@@ -2760,13 +2801,16 @@ function oshiPhotoViewerTouchEnd(
             60
         ){
 
-            if(difference < 0){
+            if(
+                difference < 0
+            ){
 
                 showOshiPhotoViewerPhoto(
                     oshiPhotoViewerIndex + 1
                 );
 
-            }else{
+            }
+            else{
 
                 showOshiPhotoViewerPhoto(
                     oshiPhotoViewerIndex - 1
@@ -2805,7 +2849,8 @@ function oshiPhotoViewerTouchEnd(
                 oshiPhotoViewerScale =
                     2;
 
-            }else{
+            }
+            else{
 
                 oshiPhotoViewerScale =
                     1;
@@ -2834,7 +2879,6 @@ function oshiPhotoViewerTouchEnd(
         0;
 
 }
-
 
 /* =========================================================
    ❤️ トップ画設定確認
