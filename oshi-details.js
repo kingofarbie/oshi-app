@@ -2634,8 +2634,8 @@ function oshiPhotoViewerTouchMove(
         ){
 
             oshiPhotoViewerScale *=
-                distance /
-                oshiPhotoViewerLastDistance;
+            oshiPhotoViewerLastDistance /
+            distance;
 
 
             if(
