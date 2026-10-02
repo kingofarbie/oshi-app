@@ -2257,10 +2257,12 @@ function updateOshiPhotoViewer(){
     /*
        ❤️トップ画ボタン表示
     */
-
     updateOshiPhotoViewerTopButton(
         photo
     );
+
+    updateOshiPhotoViewerFavoriteButton();
+
 
 }
 
