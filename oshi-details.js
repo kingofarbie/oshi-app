@@ -3309,15 +3309,20 @@ function initOshiPhotoViewerButtons(){
             "oshiPhotoViewerAddButton"
         );
 
-    const topButton =
-        document.getElementById(
-            "oshiPhotoViewerTopButton"
-        );
+const topButton =
+    document.getElementById(
+        "oshiPhotoViewerTopButton"
+    );
 
-    const deleteButton =
-        document.getElementById(
-            "oshiPhotoViewerDeleteButton"
-        );
+const favoriteButton =
+    document.getElementById(
+        "oshiPhotoViewerFavoriteButton"
+    );
+
+const deleteButton =
+    document.getElementById(
+        "oshiPhotoViewerDeleteButton"
+    );
 
     const shareButton =
         document.getElementById(
@@ -3369,6 +3374,19 @@ if(topButton){
 
         confirmOshiTopPhoto();
     };
+
+    if(favoriteButton){
+    favoriteButton.onclick = () => {
+        if(!oshiPhotoViewerCurrentId){ return; }
+
+        toggleOshiPhotoFavorite(
+            oshiPhotoViewerCurrentId
+        );
+
+        updateOshiPhotoViewerFavoriteButton();
+    };
+}
+
 }
 
     /* =========================
