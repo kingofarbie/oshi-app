@@ -48,6 +48,9 @@ let oshiPhotoViewerTranslateY = 0;
 
 let oshiPhotoViewerLastDistance = 0;
 let oshiPhotoViewerPinching = false;
+let oshiPhotoViewerPinchCenterX = 0;
+let oshiPhotoViewerPinchCenterY = 0;
+
 let oshiPhotoViewerTouchStartX = 0;
 
 
@@ -2518,9 +2521,20 @@ if(
             event.touches
         );
 
+    oshiPhotoViewerPinchCenterX =
+        (
+            event.touches[0].clientX +
+            event.touches[1].clientX
+        ) / 2;
+
+    oshiPhotoViewerPinchCenterY =
+        (
+            event.touches[0].clientY +
+            event.touches[1].clientY
+        ) / 2;
+
     return;
 }
-
 
 
     if(
@@ -2646,6 +2660,10 @@ if(
         oshiPhotoViewerLastDistance;
 
 
+    const oldScale =
+        oshiPhotoViewerScale;
+
+
     oshiPhotoViewerScale +=
         distanceDifference *
         0.01;
@@ -2658,12 +2676,6 @@ if(
 
         oshiPhotoViewerScale =
             1;
-
-        oshiPhotoViewerTranslateX =
-            0;
-
-        oshiPhotoViewerTranslateY =
-            0;
 
     }
 
@@ -2679,9 +2691,59 @@ if(
     }
 
 
+    /*
+       ピンチの中心を基準にするため、
+       拡大率の変化分だけ画像位置を補正
+    */
+
+    if(
+        oshiPhotoViewerScale !==
+        oldScale
+    ){
+
+        const centerX =
+            (
+                event.touches[0].clientX +
+                event.touches[1].clientX
+            ) / 2;
+
+        const centerY =
+            (
+                event.touches[0].clientY +
+                event.touches[1].clientY
+            ) / 2;
+
+
+        const scaleRatio =
+            oshiPhotoViewerScale /
+            oldScale;
+
+
+        oshiPhotoViewerTranslateX =
+            centerX -
+            (
+                centerX -
+                oshiPhotoViewerTranslateX
+            ) *
+            scaleRatio;
+
+
+        oshiPhotoViewerTranslateY =
+            centerY -
+            (
+                centerY -
+                oshiPhotoViewerTranslateY
+            ) *
+            scaleRatio;
+
+    }
+
+
     applyOshiPhotoViewerTransform();
 
 }
+
+
 
         oshiPhotoViewerLastDistance =
             distance;
