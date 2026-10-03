@@ -2798,11 +2798,6 @@ function oshiPhotoViewerTouchEnd(
             0;
 
 
-        /*
-           まだ1本指が残っている場合も
-           スワイプ・ダブルタップには移行しない
-        */
-
         if(
             event.touches &&
             event.touches.length === 0
@@ -2819,23 +2814,7 @@ function oshiPhotoViewerTouchEnd(
 
 
     /* =====================
-       拡大中はスワイプしない
-    ===================== */
-
-    if(
-        oshiPhotoViewerScale > 1
-    ){
-
-        oshiPhotoViewerLastDistance =
-            0;
-
-        return;
-
-    }
-
-
-    /* =====================
-       通常サイズ時のスワイプ
+       1本指タッチ終了確認
     ===================== */
 
     if(
@@ -2861,7 +2840,88 @@ function oshiPhotoViewerTouchEnd(
 
 
     /* =====================
-       左右スワイプ
+       拡大中
+       → スワイプはしない
+       → ダブルタップは有効
+    ===================== */
+
+    if(
+        oshiPhotoViewerScale > 1
+    ){
+
+        /*
+           指を大きく動かした場合は
+           ダブルタップ判定をしない
+        */
+
+        if(
+            Math.abs(diffX) >= 60
+        ){
+
+            oshiPhotoViewerLastTapTime =
+                0;
+
+            oshiPhotoViewerLastDistance =
+                0;
+
+            return;
+
+        }
+
+
+        const now =
+            Date.now();
+
+
+        if(
+            now -
+            oshiPhotoViewerLastTapTime <
+            300
+        ){
+
+            /*
+               2回目のタップ
+               → 1倍に戻す
+            */
+
+            oshiPhotoViewerScale =
+                1;
+
+            oshiPhotoViewerTranslateX =
+                0;
+
+            oshiPhotoViewerTranslateY =
+                0;
+
+
+            applyOshiPhotoViewerTransform();
+
+
+            oshiPhotoViewerLastTapTime =
+                0;
+
+        }else{
+
+            /*
+               1回目のタップ
+            */
+
+            oshiPhotoViewerLastTapTime =
+                now;
+
+        }
+
+
+        oshiPhotoViewerLastDistance =
+            0;
+
+        return;
+
+    }
+
+
+    /* =====================
+       通常サイズ時のスワイプ
     ===================== */
 
     if(
@@ -2905,7 +2965,7 @@ function oshiPhotoViewerTouchEnd(
 
 
     /* =====================
-       ダブルタップ
+       通常サイズ時のダブルタップ
     ===================== */
 
     const now =
@@ -2918,25 +2978,12 @@ function oshiPhotoViewerTouchEnd(
         300
     ){
 
-        if(
-            oshiPhotoViewerScale === 1
-        ){
+        /*
+           1倍 → 2倍
+        */
 
-            oshiPhotoViewerScale =
-                2;
-
-        }else{
-
-            oshiPhotoViewerScale =
-                1;
-
-            oshiPhotoViewerTranslateX =
-                0;
-
-            oshiPhotoViewerTranslateY =
-                0;
-
-        }
+        oshiPhotoViewerScale =
+            2;
 
 
         applyOshiPhotoViewerTransform();
@@ -2957,6 +3004,7 @@ function oshiPhotoViewerTouchEnd(
         0;
 
 }
+
 
 /* =========================================================
    ❤️ トップ画設定確認
