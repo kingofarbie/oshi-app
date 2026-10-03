@@ -2660,8 +2660,6 @@ if(
         oshiPhotoViewerLastDistance;
 
 
-    const oldScale =
-        oshiPhotoViewerScale;
 
 
     oshiPhotoViewerScale +=
@@ -2696,47 +2694,6 @@ if(
        拡大率の変化分だけ画像位置を補正
     */
 
-    if(
-        oshiPhotoViewerScale !==
-        oldScale
-    ){
-
-        const centerX =
-            (
-                event.touches[0].clientX +
-                event.touches[1].clientX
-            ) / 2;
-
-        const centerY =
-            (
-                event.touches[0].clientY +
-                event.touches[1].clientY
-            ) / 2;
-
-
-        const scaleRatio =
-            oshiPhotoViewerScale /
-            oldScale;
-
-
-        oshiPhotoViewerTranslateX =
-            centerX -
-            (
-                centerX -
-                oshiPhotoViewerTranslateX
-            ) *
-            scaleRatio;
-
-
-        oshiPhotoViewerTranslateY =
-            centerY -
-            (
-                centerY -
-                oshiPhotoViewerTranslateY
-            ) *
-            scaleRatio;
-
-    }
 
 
     applyOshiPhotoViewerTransform();
