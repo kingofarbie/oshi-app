@@ -2536,6 +2536,15 @@ if(
     return;
 }
 
+if(
+    event.touches.length ===
+    1
+){
+
+    oshiPhotoViewerPinching =
+        false;
+}
+
 
     if(
         event.touches.length !==
