@@ -2805,19 +2805,6 @@ if(
     return;
 }
 
-    /* =====================
-       拡大中はスワイプしない
-    ===================== */
-
-    if(
-        oshiPhotoViewerScale > 1
-    ){
-
-        oshiPhotoViewerLastDistance =
-            0;
-
-        return;
-    }
 
 
     /* =====================
