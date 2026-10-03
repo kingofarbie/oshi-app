@@ -2755,29 +2755,36 @@ function oshiPhotoViewerTouchEnd(
        2本指ピンチ終了処理
     ===================== */
 
+if(
+    oshiPhotoViewerPinching
+){
+
+    /*
+       ピンチ中に計算された
+       現在の拡大率を指を離した後も維持
+    */
+    applyOshiPhotoViewerTransform();
+
+
+    oshiPhotoViewerLastDistance =
+        0;
+
+
+    /*
+       2本とも離れたら
+       ピンチ操作終了
+    */
     if(
-        oshiPhotoViewerPinching
+        event.touches &&
+        event.touches.length === 0
     ){
 
-        oshiPhotoViewerLastDistance =
-            0;
-
-        /*
-           まだ指が1本残っている場合は
-           ピンチ操作の途中として扱う
-        */
-        if(
-            event.touches &&
-            event.touches.length === 0
-        ){
-
-            oshiPhotoViewerPinching =
-                false;
-        }
-
-        return;
+        oshiPhotoViewerPinching =
+            false;
     }
 
+    return;
+}
 
     /* =====================
        拡大中はスワイプしない
