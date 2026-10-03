@@ -47,8 +47,10 @@ let oshiPhotoViewerTranslateX = 0;
 let oshiPhotoViewerTranslateY = 0;
 
 let oshiPhotoViewerLastDistance = 0;
-
+let oshiPhotoViewerPinching = false;
 let oshiPhotoViewerTouchStartX = 0;
+
+
 
 let oshiPhotoViewerDragStartX = 0;
 let oshiPhotoViewerDragStartY = 0;
@@ -2500,19 +2502,25 @@ function oshiPhotoViewerTouchStart(
     }
 
 
-    if(
-        event.touches.length ===
-        2
-    ){
+if(
+    event.touches.length ===
+    2
+){
 
-        oshiPhotoViewerLastDistance =
-            getOshiPhotoViewerDistance(
-                event.touches
-            );
+    oshiPhotoViewerPinching =
+        true;
 
-        return;
+    oshiPhotoViewerLastTapTime =
+        0;
 
-    }
+    oshiPhotoViewerLastDistance =
+        getOshiPhotoViewerDistance(
+            event.touches
+        );
+
+    return;
+}
+
 
 
     if(
