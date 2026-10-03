@@ -2769,6 +2769,10 @@ if(
    ⭐ ビューアタッチ終了
 ========================================================= */
 
+/* =========================================================
+   ⭐ ビューアタッチ終了
+========================================================= */
+
 function oshiPhotoViewerTouchEnd(
     event
 ){
@@ -2776,44 +2780,58 @@ function oshiPhotoViewerTouchEnd(
     if(
         !oshiPhotoViewerOpen
     ){
+
         return;
+
     }
+
 
     /* =====================
        2本指ピンチ終了処理
     ===================== */
 
-if(
-    oshiPhotoViewerPinching
-){
-
-    /*
-       ピンチ中に計算された
-       現在の拡大率を指を離した後も維持
-    */
-    applyOshiPhotoViewerTransform();
-
-
-    oshiPhotoViewerLastDistance =
-        0;
-
-
-    /*
-       2本とも離れたら
-       ピンチ操作終了
-    */
     if(
-        event.touches &&
-        event.touches.length === 0
+        oshiPhotoViewerPinching
     ){
 
-        oshiPhotoViewerPinching =
-            false;
+        oshiPhotoViewerLastDistance =
+            0;
+
+
+        /*
+           まだ1本指が残っている場合も
+           スワイプ・ダブルタップには移行しない
+        */
+
+        if(
+            event.touches &&
+            event.touches.length === 0
+        ){
+
+            oshiPhotoViewerPinching =
+                false;
+
+        }
+
+        return;
+
     }
 
-    return;
-}
 
+    /* =====================
+       拡大中はスワイプしない
+    ===================== */
+
+    if(
+        oshiPhotoViewerScale > 1
+    ){
+
+        oshiPhotoViewerLastDistance =
+            0;
+
+        return;
+
+    }
 
 
     /* =====================
@@ -2821,7 +2839,7 @@ if(
     ===================== */
 
     if(
-        event.changedTouches &&
+        !event.changedTouches ||
         event.changedTouches.length !== 1
     ){
 
@@ -2829,95 +2847,116 @@ if(
             0;
 
         return;
+
     }
 
 
+    const endX =
+        event.changedTouches[0].clientX;
+
+
+    const diffX =
+        endX -
+        oshiPhotoViewerTouchStartX;
+
+
+    /* =====================
+       左右スワイプ
+    ===================== */
+
     if(
-        event.changedTouches &&
-        event.changedTouches.length === 1
+        Math.abs(diffX) >= 60
     ){
 
-        const endX =
-            event.changedTouches[0].clientX;
-
-        const diffX =
-            endX -
-            oshiPhotoViewerTouchStartX;
-
         if(
-            Math.abs(diffX) >= 60
+            diffX < 0
         ){
 
-            if(
-                diffX < 0
-            ){
+            /*
+               次の写真
+            */
 
-                showNextOshiPhoto();
-
-            }else{
-
-                showPreviousOshiPhoto();
-            }
-
-            oshiPhotoViewerLastTapTime =
-                0;
-
-            oshiPhotoViewerLastDistance =
-                0;
-
-            return;
-        }
-
-
-        /* =====================
-           ダブルタップ
-        ===================== */
-
-        const now =
-            Date.now();
-
-        if(
-            now -
-            oshiPhotoViewerLastTapTime <
-            300
-        ){
-
-            if(
-                oshiPhotoViewerScale === 1
-            ){
-
-                oshiPhotoViewerScale =
-                    2;
-
-            }else{
-
-                oshiPhotoViewerScale =
-                    1;
-
-                oshiPhotoViewerTranslateX =
-                    0;
-
-                oshiPhotoViewerTranslateY =
-                    0;
-            }
-
-            applyOshiPhotoViewerTransform();
-
-            oshiPhotoViewerLastTapTime =
-                0;
+            showOshiPhotoViewerPhoto(
+                oshiPhotoViewerIndex + 1
+            );
 
         }else{
 
-            oshiPhotoViewerLastTapTime =
-                now;
+            /*
+               前の写真
+            */
+
+            showOshiPhotoViewerPhoto(
+                oshiPhotoViewerIndex - 1
+            );
+
         }
+
+
+        oshiPhotoViewerLastTapTime =
+            0;
+
+        oshiPhotoViewerLastDistance =
+            0;
+
+        return;
+
+    }
+
+
+    /* =====================
+       ダブルタップ
+    ===================== */
+
+    const now =
+        Date.now();
+
+
+    if(
+        now -
+        oshiPhotoViewerLastTapTime <
+        300
+    ){
+
+        if(
+            oshiPhotoViewerScale === 1
+        ){
+
+            oshiPhotoViewerScale =
+                2;
+
+        }else{
+
+            oshiPhotoViewerScale =
+                1;
+
+            oshiPhotoViewerTranslateX =
+                0;
+
+            oshiPhotoViewerTranslateY =
+                0;
+
+        }
+
+
+        applyOshiPhotoViewerTransform();
+
+
+        oshiPhotoViewerLastTapTime =
+            0;
+
+    }else{
+
+        oshiPhotoViewerLastTapTime =
+            now;
+
     }
 
 
     oshiPhotoViewerLastDistance =
         0;
-}
 
+}
 
 /* =========================================================
    ❤️ トップ画設定確認
