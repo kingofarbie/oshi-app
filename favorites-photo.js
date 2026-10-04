@@ -1218,6 +1218,62 @@ function favoritePhotoConfirmDelete(){
 
 
     /* =====================================================
+   ⭐ 推し写真のお気に入り状態も解除
+   ※ 1日手帳のお気に入りには影響しない
+===================================================== */
+
+directTargets.forEach(
+    favorite => {
+
+        if(
+            favorite.oshiId == null ||
+            favorite.sourceOshiPhotoId == null
+        ){
+
+            return;
+
+        }
+
+        const oshi =
+            data.oshiDetails?.[
+                favorite.oshiId
+            ];
+
+        if(
+            !oshi ||
+            !Array.isArray(oshi.photos)
+        ){
+
+            return;
+
+        }
+
+        const oshiPhoto =
+            oshi.photos.find(
+                photo =>
+                    String(
+                        photo.photoId
+                    ) ===
+                    String(
+                        favorite.sourceOshiPhotoId
+                    )
+            );
+
+        if(oshiPhoto){
+
+            oshiPhoto.favorite =
+                false;
+
+        }
+
+    }
+);
+
+
+
+
+
+    /* =====================================================
        ⭐ お気に入り登録データから削除
 
        1日手帳由来の場合も、
