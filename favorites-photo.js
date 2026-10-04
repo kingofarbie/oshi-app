@@ -2967,6 +2967,54 @@ function favoritePhotoDeleteCurrent(){
         }
 
 
+
+
+        const oshiId =
+    target.oshiId;
+
+const photoId =
+    target.sourceOshiPhotoId;
+
+if(
+    oshiId != null &&
+    photoId != null
+){
+
+    const oshi =
+        data.oshiDetails?.[oshiId];
+
+    if(
+        oshi &&
+        Array.isArray(
+            oshi.photos
+        )
+    ){
+
+        const oshiPhoto =
+            oshi.photos.find(
+                photo =>
+                    String(
+                        photo.photoId
+                    ) ===
+                    String(
+                        photoId
+                    )
+            );
+
+        if(
+            oshiPhoto
+        ){
+
+            oshiPhoto.favorite =
+                false;
+
+        }
+
+    }
+
+}
+
+
         if(
             data.favorites &&
             Array.isArray(
@@ -3074,6 +3122,8 @@ function favoritePhotoDeleteCurrent(){
     favoritePhotoRender();
 
 }
+
+
 
 /* =========================================================
    ⭐ ビューア現在写真共有
