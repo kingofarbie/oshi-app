@@ -1223,6 +1223,10 @@ function favoritePhotoConfirmDelete(){
 
 directTargets.forEach(
     favorite => {
+        console.log(
+    "★ 推し写真削除対象:",
+    favorite
+);
 
         const oshiId =
             favorite.oshiId;
