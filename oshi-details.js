@@ -1126,6 +1126,20 @@ function saveOshiPhotos(
         oshiId
     );
 
+    const albumViewer =
+    document.getElementById(
+        "oshiPhotoAlbumViewer"
+    );
+
+if(
+    albumViewer &&
+    albumViewer.style.display === "flex"
+){
+
+    openOshiPhotoAlbum();
+
+}
+
 
     /*
        inputをリセット
