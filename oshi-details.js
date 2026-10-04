@@ -1454,15 +1454,18 @@ function toggleOshiPhotoFavorite(
     */
 
     if(newFavorite){
-
         addOshiPhotoToFavorites(
-            photo
+            photo,
+            data
         );
+
 
     }else{
 
         removeOshiPhotoFromFavorites(
-            photo
+            photo,
+            data
+
         );
 
     }
@@ -1504,62 +1507,41 @@ function toggleOshiPhotoFavorite(
 ========================================================= */
 
 function addOshiPhotoToFavorites(
-    photo
+    photo,
+    data
 ){
 
-    if(!photo){
+    if(
+        !photo ||
+        !data
+    ){
         return;
     }
 
-
-    const data =
-        db.load();
-
-
     if(!data.favorites){
-
         data.favorites = {
-
             events: [],
-
             photos: [],
-
             eventOrder: [],
-
             photoOrder: []
-
         };
-
     }
-
 
     if(
         !Array.isArray(
             data.favorites.photos
         )
     ){
-
-        data.favorites.photos =
-            [];
-
+        data.favorites.photos = [];
     }
-
 
     if(
         !Array.isArray(
             data.favorites.photoOrder
         )
     ){
-
-        data.favorites.photoOrder =
-            [];
-
+        data.favorites.photoOrder = [];
     }
-
-
-    /*
-       同じ写真が既にあれば追加しない
-    */
 
     const exists =
         data.favorites.photos.some(
@@ -1580,13 +1562,9 @@ function addOshiPhotoToFavorites(
                     )
         );
 
-
     if(exists){
-
         return;
-
     }
-
 
     const id =
         "oshi_favorite_" +
@@ -1594,63 +1572,39 @@ function addOshiPhotoToFavorites(
         "_" +
         photo.photoId;
 
-
     const favoritePhoto = {
-
-        id:
-            id,
-
-        source:
-            "favorite",
-
-        src:
-            photo.src,
-
-        oshiId:
-            photo.oshiId,
-
-        sourceOshiPhotoId:
-            photo.photoId,
-
-        favoriteAt:
-            Date.now()
-
+        id: id,
+        source: "favorite",
+        src: photo.src,
+        oshiId: photo.oshiId,
+        sourceOshiPhotoId: photo.photoId,
+        favoriteAt: Date.now()
     };
-
 
     data.favorites.photos.push(
         favoritePhoto
     );
 
-
     data.favorites.photoOrder.push(
         id
     );
-
-
-    db.save(
-        data
-    );
-
 }
-
 
 /* =========================================================
    ⭐ 推し写真を既存お気に入りから削除
 ========================================================= */
 
 function removeOshiPhotoFromFavorites(
-    photo
+    photo,
+    data
 ){
 
-    if(!photo){
+    if(
+        !photo ||
+        !data
+    ){
         return;
     }
-
-
-    const data =
-        db.load();
-
 
     if(
         !data.favorites ||
@@ -1658,11 +1612,8 @@ function removeOshiPhotoFromFavorites(
             data.favorites.photos
         )
     ){
-
         return;
-
     }
-
 
     const targetIds =
         data.favorites.photos
@@ -1690,15 +1641,11 @@ function removeOshiPhotoFromFavorites(
                     )
             );
 
-
     if(
         targetIds.length === 0
     ){
-
         return;
-
     }
-
 
     data.favorites.photos =
         data.favorites.photos.filter(
@@ -1710,13 +1657,11 @@ function removeOshiPhotoFromFavorites(
                 )
         );
 
-
     if(
         Array.isArray(
             data.favorites.photoOrder
         )
     ){
-
         data.favorites.photoOrder =
             data.favorites.photoOrder.filter(
                 id =>
@@ -1724,14 +1669,7 @@ function removeOshiPhotoFromFavorites(
                         String(id)
                     )
             );
-
     }
-
-
-    db.save(
-        data
-    );
-
 }
 
 
