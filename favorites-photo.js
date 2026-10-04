@@ -1217,7 +1217,7 @@ function favoritePhotoConfirmDelete(){
     );
 
 
-    /* =====================================================
+/* =====================================================
    ⭐ 推し写真のお気に入り状態も解除
    ※ 1日手帳のお気に入りには影響しない
 ===================================================== */
@@ -1226,7 +1226,6 @@ directTargets.forEach(
     favorite => {
 
         if(
-            favorite.oshiId == null ||
             favorite.sourceOshiPhotoId == null
         ){
 
@@ -1234,41 +1233,100 @@ directTargets.forEach(
 
         }
 
-        const oshi =
-            data.oshiDetails?.[
-                favorite.oshiId
-            ];
+
+        /* =================================================
+           推しIDが保存されている場合
+        ================================================= */
 
         if(
-            !oshi ||
-            !Array.isArray(oshi.photos)
+            favorite.oshiId != null
         ){
+
+            const oshi =
+                data.oshiDetails?.[
+                    favorite.oshiId
+                ];
+
+            if(
+                oshi &&
+                Array.isArray(oshi.photos)
+            ){
+
+                const oshiPhoto =
+                    oshi.photos.find(
+                        photo =>
+                            String(
+                                photo.photoId
+                            ) ===
+                            String(
+                                favorite.sourceOshiPhotoId
+                            )
+                    );
+
+                if(oshiPhoto){
+
+                    oshiPhoto.favorite =
+                        false;
+
+                }
+
+            }
 
             return;
 
         }
 
-        const oshiPhoto =
-            oshi.photos.find(
-                photo =>
-                    String(
-                        photo.photoId
-                    ) ===
-                    String(
-                        favorite.sourceOshiPhotoId
+
+        /* =================================================
+           推しIDが保存されていない場合
+           → 全推しから写真IDを探して解除
+        ================================================= */
+
+        const oshiDetails =
+            data.oshiDetails || {};
+
+
+        Object.values(
+            oshiDetails
+        ).forEach(
+            oshi => {
+
+                if(
+                    !oshi ||
+                    !Array.isArray(
+                        oshi.photos
                     )
-            );
+                ){
 
-        if(oshiPhoto){
+                    return;
 
-            oshiPhoto.favorite =
-                false;
+                }
 
-        }
+
+                const oshiPhoto =
+                    oshi.photos.find(
+                        photo =>
+                            String(
+                                photo.photoId
+                            ) ===
+                            String(
+                                favorite.sourceOshiPhotoId
+                            )
+                    );
+
+
+                if(oshiPhoto){
+
+                    oshiPhoto.favorite =
+                        false;
+
+                }
+
+            }
+        );
 
     }
 );
-
 
 
 
