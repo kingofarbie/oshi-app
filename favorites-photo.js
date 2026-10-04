@@ -1100,6 +1100,12 @@ function favoritePhotoConfirmDelete(){
                 "favorite"
         );
 
+        console.log(
+    "★ Homeお気に入り削除:",
+    targets,
+    directTargets
+);
+
 
     let message = "";
 
