@@ -1218,15 +1218,22 @@ function favoritePhotoConfirmDelete(){
 
 
 /* =====================================================
-   ⭐ 推し写真のお気に入り状態も解除
-   ※ 1日手帳のお気に入りには影響しない
+   ⭐ 推し写真のお気に入り状態を解除
 ===================================================== */
 
 directTargets.forEach(
     favorite => {
 
+        const oshiId =
+            favorite.oshiId;
+
+        const photoId =
+            favorite.sourceOshiPhotoId;
+
+
         if(
-            favorite.sourceOshiPhotoId == null
+            oshiId == null ||
+            photoId == null
         ){
 
             return;
@@ -1234,101 +1241,45 @@ directTargets.forEach(
         }
 
 
-        /* =================================================
-           推しIDが保存されている場合
-        ================================================= */
+        const oshi =
+            data.oshiDetails?.[oshiId];
+
 
         if(
-            favorite.oshiId != null
+            !oshi ||
+            !Array.isArray(
+                oshi.photos
+            )
         ){
-
-            const oshi =
-                data.oshiDetails?.[
-                    favorite.oshiId
-                ];
-
-            if(
-                oshi &&
-                Array.isArray(oshi.photos)
-            ){
-
-                const oshiPhoto =
-                    oshi.photos.find(
-                        photo =>
-                            String(
-                                photo.photoId
-                            ) ===
-                            String(
-                                favorite.sourceOshiPhotoId
-                            )
-                    );
-
-                if(oshiPhoto){
-
-                    oshiPhoto.favorite =
-                        false;
-
-                }
-
-            }
 
             return;
 
         }
 
 
-        /* =================================================
-           推しIDが保存されていない場合
-           → 全推しから写真IDを探して解除
-        ================================================= */
-
-        const oshiDetails =
-            data.oshiDetails || {};
-
-
-        Object.values(
-            oshiDetails
-        ).forEach(
-            oshi => {
-
-                if(
-                    !oshi ||
-                    !Array.isArray(
-                        oshi.photos
+        const oshiPhoto =
+            oshi.photos.find(
+                photo =>
+                    String(
+                        photo.photoId
+                    ) ===
+                    String(
+                        photoId
                     )
-                ){
-
-                    return;
-
-                }
+            );
 
 
-                const oshiPhoto =
-                    oshi.photos.find(
-                        photo =>
-                            String(
-                                photo.photoId
-                            ) ===
-                            String(
-                                favorite.sourceOshiPhotoId
-                            )
-                    );
+        if(
+            oshiPhoto
+        ){
 
+            oshiPhoto.favorite =
+                false;
 
-                if(oshiPhoto){
-
-                    oshiPhoto.favorite =
-                        false;
-
-                }
-
-            }
-        );
+        }
 
     }
 );
-
-
 
 
     /* =====================================================
