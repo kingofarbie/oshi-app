@@ -1041,6 +1041,10 @@ function favoritePhotoCancelShare(){
 
 function favoritePhotoConfirmDelete(){
 
+    console.log(
+    "★ favoritePhotoConfirmDelete 実行"
+);
+
     if(
         selectedFavoritePhotoIds.length === 0
     ){
