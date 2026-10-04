@@ -62,6 +62,8 @@ let oshiPhotoViewerLastTapTime = 0;
 
 let oshiPhotoViewerOpen = false;
 
+let oshiPhotoAlbumSelectionMode = false;
+let oshiPhotoAlbumSelectedIds = [];
 
 /* =========================================================
    ⭐ 現在の推しID取得
@@ -1730,7 +1732,9 @@ function refreshExistingFavoritesPage(){
 function openOshiPhotoAlbum(){
 
     const oshiContainer =
-        document.getElementById("oshiContainer");
+        document.getElementById(
+            "oshiContainer"
+        );
 
     const oshiId =
         oshiContainer?.dataset.oshiId;
@@ -1755,89 +1759,147 @@ function openOshiPhotoAlbum(){
     }
 
 
-    /* =====================================================
-       写真取得
-    ===================================================== */
-
     const photos =
-        getOshiPhotos(oshiId)
-            .slice()
-            .sort(
-                (a,b) =>
-                    (a.order ?? 0) -
-                    (b.order ?? 0)
-            );
+        getOshiPhotos(
+            oshiId
+        ).slice().sort(
+            (a,b) =>
+                (a.order ?? 0) -
+                (b.order ?? 0)
+        );
 
-
-    /* =====================================================
-       一覧を作り直す
-    ===================================================== */
 
     grid.innerHTML = "";
 
 
-    photos.forEach(photo => {
+    photos.forEach(
+        photo => {
 
-        const button =
-            document.createElement("button");
+            const button =
+                document.createElement(
+                    "button"
+                );
 
-        button.type = "button";
+            button.type =
+                "button";
 
-        button.className =
-            "oshi-photo-album-viewer-item";
-
-
-        button.innerHTML = `
-
-            <img
-                src="${photo.src}"
-                alt="推しの写真"
-                draggable="false"
-            >
-
-            <div
-                class="oshi-photo-album-viewer-status"
-            >
-
-                <span>
-                    ${photo.favorite ? "⭐" : ""}
-                </span>
-
-                <span>
-                    ${photo.isTop ? "❤️" : ""}
-                </span>
-
-            </div>
-
-        `;
+            button.className =
+                "oshi-photo-album-viewer-item";
 
 
-        /* =================================================
-           写真タップ
-        ================================================= */
+            if(
+                oshiPhotoAlbumSelectedIds
+                    .includes(
+                        String(
+                            photo.photoId
+                        )
+                    )
+            ){
 
-        button.addEventListener(
-            "click",
-            () => {
-
-                closeOshiPhotoAlbum();
-
-                openOshiPhotoViewer(
-                    photo.photoId
+                button.classList.add(
+                    "selected"
                 );
 
             }
-        );
 
 
-        grid.appendChild(button);
+            button.innerHTML = `
 
-    });
+                <img
+                    src="${photo.src}"
+                    alt="推しの写真"
+                    draggable="false">
+
+                <div
+                    class="oshi-photo-album-viewer-status">
+
+                    <span>
+                        ${photo.favorite ? "⭐" : ""}
+                    </span>
+
+                    <span>
+                        ${photo.isTop ? "❤️" : ""}
+                    </span>
+
+                </div>
+
+            `;
 
 
-    /* =====================================================
-       ＋ 写真追加
-    ===================================================== */
+            button.addEventListener(
+                "click",
+                () => {
+
+                    const photoId =
+                        String(
+                            photo.photoId
+                        );
+
+
+                    /* =====================
+                       選択モード
+                    ===================== */
+
+                    if(
+                        oshiPhotoAlbumSelectionMode
+                    ){
+
+                        const index =
+                            oshiPhotoAlbumSelectedIds
+                                .indexOf(
+                                    photoId
+                                );
+
+
+                        if(index >= 0){
+
+                            oshiPhotoAlbumSelectedIds
+                                .splice(
+                                    index,
+                                    1
+                                );
+
+                        }
+                        else{
+
+                            oshiPhotoAlbumSelectedIds
+                                .push(
+                                    photoId
+                                );
+
+                        }
+
+
+                        updateOshiPhotoAlbumSelection();
+                        
+                        openOshiPhotoAlbum();
+
+                        return;
+
+                    }
+
+
+                    /* =====================
+                       通常モード
+                    ===================== */
+
+                    closeOshiPhotoAlbum();
+
+                    openOshiPhotoViewer(
+                        photo.photoId
+                    );
+
+                }
+            );
+
+
+            grid.appendChild(
+                button
+            );
+
+        }
+    );
+
 
     const addButton =
         document.getElementById(
@@ -1848,18 +1910,75 @@ function openOshiPhotoAlbum(){
 
         addButton.onclick = null;
 
-        addButton.onclick = function(){
+        addButton.onclick =
+            function(){
 
-            openOshiPhotoAddModal();
+                openOshiPhotoAddModal();
 
-        };
+            };
 
     }
 
 
-    /* =====================================================
-       ✕ 一覧を閉じる
-    ===================================================== */
+    const deleteButton =
+        document.getElementById(
+            "oshiPhotoAlbumDeleteButton"
+        );
+
+    if(deleteButton){
+
+        deleteButton.onclick = null;
+
+        deleteButton.onclick =
+            function(){
+
+                if(
+                    !oshiPhotoAlbumSelectionMode
+                ){
+
+                    enterOshiPhotoAlbumSelectionMode();
+
+                }
+                else{
+
+                    deleteSelectedOshiPhotos();
+
+                }
+
+            };
+
+    }
+
+
+    const shareButton =
+        document.getElementById(
+            "oshiPhotoAlbumShareButton"
+        );
+
+    if(shareButton){
+
+        shareButton.onclick = null;
+
+        shareButton.onclick =
+            function(){
+
+                if(
+                    !oshiPhotoAlbumSelectionMode
+                ){
+
+                    enterOshiPhotoAlbumSelectionMode();
+
+                }
+                else{
+
+                    shareSelectedOshiPhotos();
+
+                }
+
+            };
+
+    }
+
 
     const closeButton =
         document.getElementById(
@@ -1870,23 +1989,34 @@ function openOshiPhotoAlbum(){
 
         closeButton.onclick = null;
 
-        closeButton.onclick = function(){
+        closeButton.onclick =
+            function(){
 
-            closeOshiPhotoAlbum();
+                if(
+                    oshiPhotoAlbumSelectionMode
+                ){
 
-        };
+                    exitOshiPhotoAlbumSelectionMode();
+
+                }
+                else{
+
+                    closeOshiPhotoAlbum();
+
+                }
+
+            };
 
     }
 
 
-    /* =====================================================
-       表示
-    ===================================================== */
+    updateOshiPhotoAlbumSelection();
 
-    viewer.style.display = "flex";
+
+    viewer.style.display =
+        "flex";
 
 }
-
 
 
 function closeOshiPhotoAlbum(){
@@ -1904,6 +2034,126 @@ function closeOshiPhotoAlbum(){
 
 }
 
+
+function enterOshiPhotoAlbumSelectionMode(){
+
+    oshiPhotoAlbumSelectionMode =
+        true;
+
+    oshiPhotoAlbumSelectedIds =
+        [];
+
+    const viewer =
+        document.getElementById(
+            "oshiPhotoAlbumViewer"
+        );
+
+    if(viewer){
+
+        viewer.classList.add(
+            "selection-mode"
+        );
+
+    }
+
+    updateOshiPhotoAlbumSelection();
+
+}
+
+
+function exitOshiPhotoAlbumSelectionMode(){
+
+    oshiPhotoAlbumSelectionMode =
+        false;
+
+    oshiPhotoAlbumSelectedIds =
+        [];
+
+    const viewer =
+        document.getElementById(
+            "oshiPhotoAlbumViewer"
+        );
+
+    if(viewer){
+
+        viewer.classList.remove(
+            "selection-mode"
+        );
+
+    }
+
+    updateOshiPhotoAlbumSelection();
+
+    openOshiPhotoAlbum();
+
+}
+
+
+function updateOshiPhotoAlbumSelection(){
+
+    const count =
+        oshiPhotoAlbumSelectedIds.length;
+
+
+    const countElement =
+        document.getElementById(
+            "oshiPhotoAlbumSelectedCount"
+        );
+
+    if(countElement){
+
+        countElement.textContent =
+            count +
+            "枚選択中";
+
+    }
+
+
+    const viewer =
+        document.getElementById(
+            "oshiPhotoAlbumViewer"
+        );
+
+    if(viewer){
+
+        if(
+            oshiPhotoAlbumSelectionMode
+        ){
+
+            viewer.classList.add(
+                "selection-mode"
+            );
+
+        }
+        else{
+
+            viewer.classList.remove(
+                "selection-mode"
+            );
+
+        }
+
+    }
+
+
+    document
+        .querySelectorAll(
+            "#oshiPhotoAlbumViewerGrid .oshi-photo-album-viewer-item"
+        )
+        .forEach(
+            item => {
+
+                /*
+                 * 写真IDは画像の親ボタンから
+                 * 直接取得できないため、
+                 * openOshiPhotoAlbum() 側で
+                 * class を更新する。
+                 */
+
+            }
+        );
+
+}
 
 
 /* =========================================================

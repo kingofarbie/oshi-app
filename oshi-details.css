@@ -1763,6 +1763,113 @@
 
 }
 
+/* =========================
+   選択枚数
+========================= */
+
+.oshi-photo-album-selected-count{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    min-height:42px;
+
+    padding:0 8px;
+
+    color:#fff;
+
+    font-size:13px;
+
+    font-weight:bold;
+
+    white-space:nowrap;
+
+}
+
+
+/* =========================
+   選択中の写真
+========================= */
+
+.oshi-photo-album-viewer-item.selected{
+
+    border:3px solid #ff6b9d;
+
+    box-shadow:
+        0 0 0 2px rgba(255,107,157,.35);
+
+}
+
+
+/* 選択チェック */
+
+.oshi-photo-album-viewer-item.selected::after{
+
+    content:"✓";
+
+    position:absolute;
+
+    top:6px;
+
+    left:6px;
+
+    z-index:5;
+
+    width:26px;
+
+    height:26px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border-radius:50%;
+
+    background:#ff6b9d;
+
+    color:#fff;
+
+    font-size:16px;
+
+    font-weight:bold;
+
+}
+
+
+/* 選択モード中 */
+
+.oshi-photo-album-viewer.selection-mode
+.oshi-photo-album-viewer-item{
+
+    cursor:pointer;
+
+}
+
+
+/* =========================
+   スマホ
+========================= */
+
+@media(max-width:600px){
+
+    .oshi-photo-album-selected-count{
+
+        min-height:40px;
+
+        padding:0 5px;
+
+        font-size:12px;
+
+    }
+
+}
+
+
 
 .oshi-photo-album-viewer-button{
 
