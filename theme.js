@@ -86,12 +86,12 @@ let theme =
 
 /* =========================
    初期テーマ
-   → Basic（白）
+   → ゆめかわ星空
 ========================= */
 
 if(!theme){
 
-    theme = "basic";
+    theme = "dreamy-star";
 
     localStorage.setItem(
         'theme',
@@ -99,7 +99,6 @@ if(!theme){
     );
 
 }
-
 
 /* =========================
    既存テーマを削除
