@@ -2157,6 +2157,481 @@ function updateOshiPhotoAlbumSelection(){
 
 
 /* =========================================================
+   📸 推し写真アルバム
+   選択写真を一括削除
+========================================================= */
+
+async function deleteSelectedOshiPhotos(){
+
+    const selectedIds =
+        [...oshiPhotoAlbumSelectedIds];
+
+    if(selectedIds.length === 0){
+
+        alert(
+            "削除する写真を選択してください。"
+        );
+
+        return;
+
+    }
+
+
+    const ok =
+        confirm(
+            "選択した" +
+            selectedIds.length +
+            "枚の写真を削除しますか？"
+        );
+
+    if(!ok){
+
+        return;
+
+    }
+
+
+    const oshiId =
+        getCurrentOshiDetailsId();
+
+    if(!oshiId){
+
+        return;
+
+    }
+
+
+    const data =
+        db.load();
+
+
+    const details =
+        data.oshiDetails?.[oshiId];
+
+
+    if(
+        !details ||
+        !Array.isArray(details.photos)
+    ){
+
+        return;
+
+    }
+
+
+    const selectedSet =
+        new Set(selectedIds);
+
+
+    /* =========================
+       削除対象
+    ========================= */
+
+    const deletedPhotos =
+        details.photos.filter(
+            photo =>
+                selectedSet.has(
+                    photo.photoId
+                )
+        );
+
+
+    /* =========================
+       お気に入り同期
+    ========================= */
+
+    deletedPhotos.forEach(
+        photo => {
+
+            if(
+                photo.favorite &&
+                typeof removeOshiPhotoFromFavorites ===
+                    "function"
+            ){
+
+                removeOshiPhotoFromFavorites(
+                    oshiId,
+                    photo.photoId
+                );
+
+            }
+
+        }
+    );
+
+
+    /* =========================
+       トップ画削除判定
+    ========================= */
+
+    const deletedTopPhoto =
+        deletedPhotos.some(
+            photo =>
+                photo.isTop === true
+        );
+
+
+    /* =========================
+       写真削除
+    ========================= */
+
+    details.photos =
+        details.photos.filter(
+            photo =>
+                !selectedSet.has(
+                    photo.photoId
+                )
+        );
+
+
+    /* =========================
+       並び順を再整理
+    ========================= */
+
+    details.photos.forEach(
+        (photo,index) => {
+
+            photo.order = index;
+
+        }
+    );
+
+
+    /* =========================
+       トップ画を再設定
+    ========================= */
+
+    if(deletedTopPhoto){
+
+        details.photos.forEach(
+            photo => {
+
+                photo.isTop = false;
+
+            }
+        );
+
+
+        if(details.photos.length > 0){
+
+            details.photos[0].isTop = true;
+
+        }
+
+    }
+    else{
+
+        /*
+           トップ画が残っている場合は
+           そのまま維持
+        */
+
+        const topPhoto =
+            details.photos.find(
+                photo =>
+                    photo.isTop === true
+            );
+
+
+        if(
+            !topPhoto &&
+            details.photos.length > 0
+        ){
+
+            details.photos[0].isTop = true;
+
+        }
+
+    }
+
+
+    /* =========================
+       保存
+    ========================= */
+
+    db.save(data);
+
+
+    /* =========================
+       選択解除
+    ========================= */
+
+    oshiPhotoAlbumSelectionMode =
+        false;
+
+    oshiPhotoAlbumSelectedIds =
+        [];
+
+
+    /* =========================
+       表示更新
+    ========================= */
+
+    renderOshiMainPhoto(
+        oshiId
+    );
+
+
+    renderOshiPhotoAlbum(
+        oshiId
+    );
+
+
+    if(
+        typeof refreshExistingFavoritesPage ===
+            "function"
+    ){
+
+        refreshExistingFavoritesPage();
+
+    }
+
+
+    /* =========================
+       アルバム更新
+    ========================= */
+
+    const remainingPhotos =
+        getOshiPhotos(
+            oshiId
+        );
+
+
+    if(remainingPhotos.length > 0){
+
+        openOshiPhotoAlbum();
+
+    }
+    else{
+
+        closeOshiPhotoAlbum();
+
+    }
+
+}
+
+
+/* =========================================================
+   📸 推し写真アルバム
+   選択写真を一括共有
+========================================================= */
+
+async function shareSelectedOshiPhotos(){
+
+    const selectedIds =
+        [...oshiPhotoAlbumSelectedIds];
+
+
+    if(selectedIds.length === 0){
+
+        alert(
+            "共有する写真を選択してください。"
+        );
+
+        return;
+
+    }
+
+
+    if(
+        typeof navigator.share !==
+            "function"
+    ){
+
+        alert(
+            "このブラウザでは写真の共有に対応していません。"
+        );
+
+        return;
+
+    }
+
+
+    const oshiId =
+        getCurrentOshiDetailsId();
+
+
+    if(!oshiId){
+
+        return;
+
+    }
+
+
+    const photos =
+        getOshiPhotos(
+            oshiId
+        );
+
+
+    const selectedPhotos =
+        photos.filter(
+            photo =>
+                selectedIds.includes(
+                    photo.photoId
+                )
+        );
+
+
+    if(selectedPhotos.length === 0){
+
+        return;
+
+    }
+
+
+    try{
+
+        const files = [];
+
+
+        for(
+            let i = 0;
+            i < selectedPhotos.length;
+            i++
+        ){
+
+            const photo =
+                selectedPhotos[i];
+
+
+            const response =
+                await fetch(
+                    photo.src
+                );
+
+
+            if(!response.ok){
+
+                throw new Error(
+                    "写真の読み込みに失敗しました。"
+                );
+
+            }
+
+
+            const blob =
+                await response.blob();
+
+
+            const extension =
+                blob.type === "image/png"
+                    ? "png"
+                    : "jpg";
+
+
+            const file =
+                new File(
+                    [
+                        blob
+                    ],
+                    "oshi-photo-" +
+                        (i + 1) +
+                        "." +
+                        extension,
+                    {
+                        type:
+                            blob.type ||
+                            "image/jpeg"
+                    }
+                );
+
+
+            files.push(file);
+
+        }
+
+
+        /* =========================
+           複数ファイル共有対応確認
+        ========================= */
+
+        if(
+            typeof navigator.canShare ===
+                "function"
+        ){
+
+            const canShare =
+                navigator.canShare({
+                    files: files
+                });
+
+
+            if(!canShare){
+
+                alert(
+                    "この端末・ブラウザでは、複数写真の共有に対応していません。"
+                );
+
+                return;
+
+            }
+
+        }
+
+
+        await navigator.share({
+
+            files: files,
+
+            title:
+                "推し活手帳",
+
+            text:
+                "推しの写真"
+
+        });
+
+
+        /* =========================
+           共有完了
+        ========================= */
+
+        oshiPhotoAlbumSelectionMode =
+            false;
+
+        oshiPhotoAlbumSelectedIds =
+            [];
+
+
+        openOshiPhotoAlbum();
+
+    }
+    catch(error){
+
+        /*
+           Android等で共有画面を
+           キャンセルした場合は
+           エラー表示しない
+        */
+
+        if(
+            error &&
+            error.name ===
+                "AbortError"
+        ){
+
+            return;
+
+        }
+
+
+        console.error(
+            "推し写真の共有に失敗しました:",
+            error
+        );
+
+
+        alert(
+            "写真の共有に失敗しました。"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
    ⭐ 推し写真ビューア初期化
 ========================================================= */
 
