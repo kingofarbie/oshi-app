@@ -1727,6 +1727,117 @@ function refreshExistingFavoritesPage(){
 }
 
 
+
+/* =========================================================
+   🌌 推し写真アルバム 星空生成
+   ・アルバムを開くたびに星の位置をランダム変更
+========================================================= */
+
+function createOshiPhotoAlbumStars(viewer){
+
+    if(!viewer){
+        return;
+    }
+
+
+    /* =========================
+       星レイヤー取得・作成
+    ========================= */
+
+    let starsLayer =
+        viewer.querySelector(
+            ".oshi-photo-album-stars"
+        );
+
+
+    if(!starsLayer){
+
+        starsLayer =
+            document.createElement(
+                "div"
+            );
+
+        starsLayer.className =
+            "oshi-photo-album-stars";
+
+        viewer.prepend(
+            starsLayer
+        );
+
+    }
+
+
+    /* =========================
+       既存の星を削除
+    ========================= */
+
+    starsLayer.innerHTML = "";
+
+
+    /* =========================
+       星を生成
+    ========================= */
+
+    const starCount = 80;
+
+
+    for(
+        let i = 0;
+        i < starCount;
+        i++
+    ){
+
+        const star =
+            document.createElement(
+                "span"
+            );
+
+
+        star.className =
+            "oshi-photo-album-star";
+
+
+        /* ランダム位置 */
+
+        star.style.left =
+            (Math.random() * 100) +
+            "%";
+
+        star.style.top =
+            (Math.random() * 100) +
+            "%";
+
+
+        /* ランダムサイズ */
+
+        const size =
+            1 +
+            Math.random() * 2;
+
+
+        star.style.width =
+            size + "px";
+
+        star.style.height =
+            size + "px";
+
+
+        /* ランダム透明度 */
+
+        star.style.opacity =
+            0.35 +
+            Math.random() * 0.65;
+
+
+        starsLayer.appendChild(
+            star
+        );
+
+    }
+
+}
+
+
 /* =========================================================
    ⭐ 推しアルバムを開く
 ========================================================= */
@@ -1759,6 +1870,12 @@ function openOshiPhotoAlbum(){
     if(!viewer || !grid){
         return;
     }
+
+    /* 🌌 星空を毎回ランダム生成 */
+
+createOshiPhotoAlbumStars(
+    viewer
+);
 
 
     const photos =

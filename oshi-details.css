@@ -1691,7 +1691,6 @@
 /* =========================================================
    📸 写真一覧ビューア
 ========================================================= */
-
 .oshi-photo-album-viewer{
 
     position:fixed;
@@ -1708,7 +1707,15 @@
 
     box-sizing:border-box;
 
-    background:rgba(0,0,0,.96);
+    /* 🌌 ゆめかわ星空 */
+    background:
+        linear-gradient(
+            135deg,
+            #17102d 0%,
+            #34205a 40%,
+            #60428a 70%,
+            #211735 100%
+        );
 
     padding:
         env(safe-area-inset-top)
@@ -1717,7 +1724,6 @@
         10px;
 
 }
-
 
 /* =========================
    ヘッダー
@@ -2129,4 +2135,39 @@
 
 #oshiPhotoAddModal{
     z-index:10010 !important;
+}
+
+
+
+
+
+/* =========================================================
+   🌌 推し写真アルバム 星空
+========================================================= */
+
+.oshi-photo-album-stars{
+
+    position:absolute;
+
+    inset:0;
+
+    z-index:0;
+
+    overflow:hidden;
+
+    pointer-events:none;
+
+}
+
+
+.oshi-photo-album-star{
+
+    position:absolute;
+
+    display:block;
+
+    border-radius:50%;
+
+    background:#fff;
+
 }
