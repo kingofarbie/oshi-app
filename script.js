@@ -2710,6 +2710,48 @@ function closeSettingsFromMenu(){
 
     }
 
+
+
+    /* =====================
+   推し詳細ページを復元
+===================== */
+
+if(
+    previousPageBeforeSettings === "oshiPage"
+){
+
+    const oshiContainer =
+        document.getElementById(
+            "oshiContainer"
+        );
+
+    const oshiDetailPage =
+        document.getElementById(
+            "oshiDetailPage"
+        );
+
+    if(
+        oshiContainer &&
+        oshiContainer.dataset.oshiId &&
+        oshiDetailPage
+    ){
+
+        oshiDetailPage.classList.add(
+            "active"
+        );
+
+    }
+
+}
+
+
+
+
+
+
+
+
+
     /* ✕ → ☰ */
     setHomeMenuButton("open");
 
