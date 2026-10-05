@@ -1356,7 +1356,11 @@
 
     box-sizing:border-box;
 
-    background:rgba(0,0,0,.96);
+    background:color-mix(
+    in srgb,
+    var(--accent) 18%,
+    var(--bg) 82%
+);
 
     touch-action:none;
 
