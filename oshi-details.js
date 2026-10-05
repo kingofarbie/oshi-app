@@ -64,6 +64,7 @@ let oshiPhotoViewerOpen = false;
 
 let oshiPhotoAlbumSelectionMode = false;
 let oshiPhotoAlbumSelectedIds = [];
+let oshiPhotoAlbumSelectionType = "";
 
 /* =========================================================
    ⭐ 現在の推しID取得
@@ -1936,8 +1937,7 @@ function openOshiPhotoAlbum(){
                     !oshiPhotoAlbumSelectionMode
                 ){
 
-                    enterOshiPhotoAlbumSelectionMode();
-
+                    enterOshiPhotoAlbumSelectionMode("delete");
                 }
                 else{
 
@@ -1966,7 +1966,7 @@ function openOshiPhotoAlbum(){
                     !oshiPhotoAlbumSelectionMode
                 ){
 
-                    enterOshiPhotoAlbumSelectionMode();
+                    enterOshiPhotoAlbumSelectionMode("share");
 
                 }
                 else{
@@ -2019,6 +2019,7 @@ function openOshiPhotoAlbum(){
 }
 
 
+
 function closeOshiPhotoAlbum(){
 
     const viewer =
@@ -2035,13 +2036,15 @@ function closeOshiPhotoAlbum(){
 }
 
 
-function enterOshiPhotoAlbumSelectionMode(){
+function enterOshiPhotoAlbumSelectionMode(
+    type = ""
+){
 
-    oshiPhotoAlbumSelectionMode =
-        true;
+    oshiPhotoAlbumSelectionMode = true;
 
-    oshiPhotoAlbumSelectedIds =
-        [];
+    oshiPhotoAlbumSelectedIds = [];
+
+    oshiPhotoAlbumSelectionType = type;
 
     const viewer =
         document.getElementById(
@@ -2102,9 +2105,18 @@ function updateOshiPhotoAlbumSelection(){
 
     if(countElement){
 
-        countElement.textContent =
-            count +
-            "枚選択中";
+const modeText =
+    oshiPhotoAlbumSelectionType === "delete"
+        ? "削除モード"
+        : oshiPhotoAlbumSelectionType === "share"
+            ? "共有モード"
+            : "";
+
+countElement.textContent =
+    modeText
+        ? modeText + " " + count + "枚選択中"
+        : count + "枚選択中";
+
 
     }
 
