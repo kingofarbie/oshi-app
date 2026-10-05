@@ -1191,6 +1191,7 @@ if(
 function renderOshiPhotoAlbum(
     oshiId
 ){
+        return;
 
     const profileCard =
         document.querySelector(
