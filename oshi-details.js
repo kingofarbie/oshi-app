@@ -2136,10 +2136,20 @@ const modeText =
             ? "共有モード"
             : "";
 
-countElement.textContent =
-    modeText
-        ? modeText + " " + count + "枚選択中"
-        : count + "枚選択中";
+if(modeText){
+
+    countElement.textContent =
+        modeText +
+        " " +
+        count +
+        "枚選択中";
+
+}
+else{
+
+    countElement.textContent = "";
+
+}
 
 
     }
