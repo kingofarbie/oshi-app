@@ -2170,4 +2170,50 @@
 
     background:#fff;
 
+    /* ✨ キラキラ明滅 */
+    animation:
+        oshiAlbumStarTwinkle
+        2.5s
+        ease-in-out
+        infinite;
+
+    box-shadow:
+        0 0 3px rgba(255,255,255,.8),
+        0 0 6px rgba(220,210,255,.5);
+
+}
+
+
+/* =========================================================
+   ✨ 星の明滅
+========================================================= */
+
+@keyframes oshiAlbumStarTwinkle{
+
+    0%,
+    100%{
+
+        opacity:.35;
+
+        transform:scale(.8);
+
+        box-shadow:
+            0 0 2px rgba(255,255,255,.5),
+            0 0 4px rgba(220,210,255,.3);
+
+    }
+
+    50%{
+
+        opacity:1;
+
+        transform:scale(1.35);
+
+        box-shadow:
+            0 0 4px rgba(255,255,255,.95),
+            0 0 9px rgba(220,210,255,.8),
+            0 0 14px rgba(240,220,255,.45);
+
+    }
+
 }
