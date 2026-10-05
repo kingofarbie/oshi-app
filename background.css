@@ -437,19 +437,44 @@ body.theme-dreamy-star .header {
     align-items:center;
 }
 
-/* 🌌 ゆめかわ星空 設定メニュー */
-body.theme-dreamy-star .setting-content button {
-    ...
-}
 
-body.theme-dreamy-star .setting-content button:hover {
-    ...
-}
 
-body.theme-dreamy-star .setting-item > button {
-    ...
-}
+/* ==================================================
+   📸 推し写真 全画面ビューア
+   テーマ連動背景
+================================================== */
 
-body.theme-dreamy-star .setting-item > button:hover {
-    ...
+body.theme-dreamy-star .oshi-photo-viewer,
+body.theme-dreamy-star .oshi-photo-album-viewer{
+
+    background:
+        radial-gradient(
+            circle at 20% 20%,
+            rgba(255,255,255,.9) 0 1px,
+            transparent 2px
+        ),
+        radial-gradient(
+            circle at 75% 25%,
+            rgba(235,215,255,.9) 0 1.5px,
+            transparent 3px
+        ),
+        radial-gradient(
+            circle at 40% 70%,
+            rgba(210,205,255,.8) 0 1px,
+            transparent 2px
+        ),
+        linear-gradient(
+            135deg,
+            #17102d 0%,
+            #34205a 40%,
+            #60428a 70%,
+            #211735 100%
+        );
+
+    background-size:
+        220px 220px,
+        300px 300px,
+        180px 180px,
+        100% 100%;
+
 }
