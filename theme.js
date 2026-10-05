@@ -134,12 +134,13 @@ function refreshCurrentTheme(){
 
 const theme =
     localStorage.getItem('theme')
-    || "basic";
+    || "dreamy-star";
 
 
 updateThemeText(theme);
 
 }
+
 
 /* =========================
 起動
