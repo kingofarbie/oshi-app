@@ -1933,18 +1933,30 @@ function openOshiPhotoAlbum(){
         deleteButton.onclick =
             function(){
 
-                if(
-                    !oshiPhotoAlbumSelectionMode
-                ){
+if(
+    !oshiPhotoAlbumSelectionMode
+){
 
-                    enterOshiPhotoAlbumSelectionMode("delete");
-                }
-                else{
+    enterOshiPhotoAlbumSelectionMode(
+        "delete"
+    );
 
-                    deleteSelectedOshiPhotos();
+}
+else if(
+    oshiPhotoAlbumSelectionType ===
+        "delete"
+){
 
-                }
+    deleteSelectedOshiPhotos();
 
+}
+else{
+
+    enterOshiPhotoAlbumSelectionMode(
+        "delete"
+    );
+
+}
             };
 
     }
@@ -1962,19 +1974,30 @@ function openOshiPhotoAlbum(){
         shareButton.onclick =
             function(){
 
-                if(
-                    !oshiPhotoAlbumSelectionMode
-                ){
+if(
+    !oshiPhotoAlbumSelectionMode
+){
 
-                    enterOshiPhotoAlbumSelectionMode("share");
+    enterOshiPhotoAlbumSelectionMode(
+        "share"
+    );
 
-                }
-                else{
+}
+else if(
+    oshiPhotoAlbumSelectionType ===
+        "share"
+){
 
-                    shareSelectedOshiPhotos();
+    shareSelectedOshiPhotos();
 
-                }
+}
+else{
 
+    enterOshiPhotoAlbumSelectionMode(
+        "share"
+    );
+
+}
             };
 
     }
@@ -2066,11 +2089,11 @@ function enterOshiPhotoAlbumSelectionMode(
 
 function exitOshiPhotoAlbumSelectionMode(){
 
-    oshiPhotoAlbumSelectionMode =
-        false;
+    oshiPhotoAlbumSelectionMode = false;
 
-    oshiPhotoAlbumSelectedIds =
-        [];
+    oshiPhotoAlbumSelectedIds = [];
+
+    oshiPhotoAlbumSelectionType = "";
 
     const viewer =
         document.getElementById(
@@ -2090,6 +2113,7 @@ function exitOshiPhotoAlbumSelectionMode(){
     openOshiPhotoAlbum();
 
 }
+
 
 
 function updateOshiPhotoAlbumSelection(){
