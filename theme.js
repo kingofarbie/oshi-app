@@ -156,30 +156,3 @@ loadTheme
 
 
 
-/* =========================
-   設定画面の後読み込みを監視
-========================= */
-
-const themeObserver =
-    new MutationObserver(() => {
-
-        const area =
-            document.getElementById(
-                "currentTheme"
-            );
-
-        if(!area){
-            return;
-        }
-
-        refreshCurrentTheme();
-
-    });
-
-themeObserver.observe(
-    document.body,
-    {
-        childList: true,
-        subtree: true
-    }
-);
