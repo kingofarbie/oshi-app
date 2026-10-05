@@ -1520,6 +1520,7 @@ async function(){
     );
 
     initFavoritePhotoSettings();
+    refreshCurrentTheme();
 
 
     await loadHtml(
