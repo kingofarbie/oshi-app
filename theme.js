@@ -132,16 +132,15 @@ updateThemeText(theme);
 
 function refreshCurrentTheme(){
 
-    const theme =
-        localStorage.getItem('theme');
+const theme =
+    localStorage.getItem('theme')
+    || "dreamy-star";
 
-    if(!theme){
-        return;
-    }
 
-    updateThemeText(theme);
+updateThemeText(theme);
 
 }
+
 
 
 
@@ -153,6 +152,3 @@ document.addEventListener(
 'DOMContentLoaded',
 loadTheme
 );
-
-
-
