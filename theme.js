@@ -132,14 +132,17 @@ updateThemeText(theme);
 
 function refreshCurrentTheme(){
 
-const theme =
-    localStorage.getItem('theme')
-    || "dreamy-star";
+    const theme =
+        localStorage.getItem('theme');
 
+    if(!theme){
+        return;
+    }
 
-updateThemeText(theme);
+    updateThemeText(theme);
 
 }
+
 
 
 /* =========================
@@ -149,4 +152,34 @@ updateThemeText(theme);
 document.addEventListener(
 'DOMContentLoaded',
 loadTheme
+);
+
+
+
+/* =========================
+   設定画面の後読み込みを監視
+========================= */
+
+const themeObserver =
+    new MutationObserver(() => {
+
+        const area =
+            document.getElementById(
+                "currentTheme"
+            );
+
+        if(!area){
+            return;
+        }
+
+        refreshCurrentTheme();
+
+    });
+
+themeObserver.observe(
+    document.body,
+    {
+        childList: true,
+        subtree: true
+    }
 );
