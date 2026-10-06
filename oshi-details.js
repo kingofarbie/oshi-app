@@ -1715,30 +1715,40 @@ function addOshiPhotoToFavorites(
         return;
     }
 
+
     if(!data.favorites){
+
         data.favorites = {
             events: [],
             photos: [],
             eventOrder: [],
             photoOrder: []
         };
+
     }
+
 
     if(
         !Array.isArray(
             data.favorites.photos
         )
     ){
+
         data.favorites.photos = [];
+
     }
+
 
     if(
         !Array.isArray(
             data.favorites.photoOrder
         )
     ){
+
         data.favorites.photoOrder = [];
+
     }
+
 
     const exists =
         data.favorites.photos.some(
@@ -1759,9 +1769,13 @@ function addOshiPhotoToFavorites(
                     )
         );
 
+
     if(exists){
+
         return;
+
     }
+
 
     const id =
         "oshi_favorite_" +
@@ -1769,22 +1783,36 @@ function addOshiPhotoToFavorites(
         "_" +
         photo.photoId;
 
+
     const favoritePhoto = {
-        id: id,
-        source: "favorite",
-        src: photo.src,
-        oshiId: photo.oshiId,
-        sourceOshiPhotoId: photo.photoId,
-        favoriteAt: Date.now()
+
+        id:
+            id,
+
+        source:
+            "favorite",
+
+        oshiId:
+            photo.oshiId,
+
+        sourceOshiPhotoId:
+            photo.photoId,
+
+        favoriteAt:
+            Date.now()
+
     };
+
 
     data.favorites.photos.push(
         favoritePhoto
     );
 
+
     data.favorites.photoOrder.push(
         id
     );
+
 }
 
 /* =========================================================
