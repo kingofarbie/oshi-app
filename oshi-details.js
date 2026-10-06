@@ -1134,15 +1134,26 @@ alert(
     );
 
 
-    db.save(
-        data
-    );
+alert(
+    "db.save開始：" +
+    currentPhotos.length +
+    "枚"
+);
+
+db.save(
+    data
+);
+
+alert(
+    "db.save完了：" +
+    data.oshiDetails[oshiId].photos.length +
+    "枚"
+);
 
 
-    renderOshiMainPhoto(
-        oshiId
-    );
-
+renderOshiMainPhoto(
+    oshiId
+);
 
     renderOshiPhotoAlbum(
         oshiId
