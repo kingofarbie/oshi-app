@@ -3117,7 +3117,7 @@ function initOshiPhotoViewer(){
    ⭐ 推し写真ビューアを開く
 ========================================================= */
 
-function openOshiPhotoViewer(
+async function openOshiPhotoViewer(
     photoId
 ){
 
@@ -3136,7 +3136,7 @@ function openOshiPhotoViewer(
 
 
     const photos =
-        getOshiPhotos(
+        await getOshiPhotos(
             oshiId
         );
 
@@ -3154,7 +3154,9 @@ function openOshiPhotoViewer(
 
 
     if(index < 0){
+
         return;
+
     }
 
 
@@ -3223,12 +3225,16 @@ function openOshiPhotoViewer(
     }
 
 
-    updateOshiPhotoViewer();
+    /*
+       写真表示
+    */
 
-updateOshiPhotoViewerTopButton();
+    await updateOshiPhotoViewer();
 
-updateOshiPhotoViewerFavoriteButton();
 
+    updateOshiPhotoViewerTopButton();
+
+    updateOshiPhotoViewerFavoriteButton();
 
 
     viewer.style.display =
