@@ -92,7 +92,7 @@ function getCurrentOshiDetailsId(){
    ⭐ 推し写真取得
 ========================================================= */
 
-function getOshiPhotos(
+async function getOshiPhotos(
     oshiId
 ){
 
@@ -100,30 +100,94 @@ function getOshiPhotos(
         return [];
     }
 
+
     const data =
         db.load();
+
 
     const detail =
         data.oshiDetails?.[oshiId];
 
+
     const photos =
         detail?.photos;
+
 
     if(!Array.isArray(photos)){
         return [];
     }
 
-    return photos
-        .filter(
-            photo =>
-                photo &&
-                photo.src
-        )
-        .sort(
-            (a,b) =>
-                Number(a.order || 0) -
-                Number(b.order || 0)
-        );
+
+    const result = [];
+
+
+    for(
+        const photo of photos
+    ){
+
+        if(
+            !photo ||
+            !photo.photoId
+        ){
+            continue;
+        }
+
+
+        try{
+
+            const media =
+                await getMediaFile(
+                    photo.photoId
+                );
+
+
+            if(
+                !media ||
+                !media.file
+            ){
+                continue;
+            }
+
+
+            const src =
+                createMediaURL(
+                    media
+                );
+
+
+            if(!src){
+                continue;
+            }
+
+
+            result.push({
+
+                ...photo,
+
+                src:
+                    src
+
+            });
+
+
+        }catch(error){
+
+            console.error(
+                "推し写真のIndexedDB取得に失敗:",
+                photo.photoId,
+                error
+            );
+
+        }
+
+    }
+
+
+    return result.sort(
+        (a,b) =>
+            Number(a.order || 0) -
+            Number(b.order || 0)
+    );
 
 }
 
@@ -460,7 +524,7 @@ function getOshiTopPhoto(
    ⭐ メイン写真表示
 ========================================================= */
 
-function renderOshiMainPhoto(
+async function renderOshiMainPhoto(
     id
 ){
 
@@ -492,7 +556,7 @@ function renderOshiMainPhoto(
 
 
     const photos =
-        getOshiPhotos(
+        await getOshiPhotos(
             id
         );
 
@@ -1978,7 +2042,7 @@ starsLayer.appendChild(
    ⭐ 推しアルバムを開く
 ========================================================= */
 
-function openOshiPhotoAlbum(){
+async function openOshiPhotoAlbum(){
 
     const oshiContainer =
         document.getElementById(
@@ -2007,16 +2071,19 @@ function openOshiPhotoAlbum(){
         return;
     }
 
+
     /* 🌌 星空を毎回ランダム生成 */
 
-createOshiPhotoAlbumStars(
-    viewer
-);
+    createOshiPhotoAlbumStars(
+        viewer
+    );
 
 
     const photos =
-        getOshiPhotos(
-            oshiId
+        (
+            await getOshiPhotos(
+                oshiId
+            )
         ).slice().sort(
             (a,b) =>
                 (a.order ?? 0) -
@@ -2126,7 +2193,7 @@ createOshiPhotoAlbumStars(
 
 
                         updateOshiPhotoAlbumSelection();
-                        
+
                         openOshiPhotoAlbum();
 
                         return;
@@ -2187,30 +2254,31 @@ createOshiPhotoAlbumStars(
         deleteButton.onclick =
             function(){
 
-if(
-    !oshiPhotoAlbumSelectionMode
-){
+                if(
+                    !oshiPhotoAlbumSelectionMode
+                ){
 
-    enterOshiPhotoAlbumSelectionMode(
-        "delete"
-    );
+                    enterOshiPhotoAlbumSelectionMode(
+                        "delete"
+                    );
 
-}
-else if(
-    oshiPhotoAlbumSelectionType ===
-        "delete"
-){
+                }
+                else if(
+                    oshiPhotoAlbumSelectionType ===
+                        "delete"
+                ){
 
-    deleteSelectedOshiPhotos();
+                    deleteSelectedOshiPhotos();
 
-}
-else{
+                }
+                else{
 
-    enterOshiPhotoAlbumSelectionMode(
-        "delete"
-    );
+                    enterOshiPhotoAlbumSelectionMode(
+                        "delete"
+                    );
 
-}
+                }
+
             };
 
     }
@@ -2228,30 +2296,31 @@ else{
         shareButton.onclick =
             function(){
 
-if(
-    !oshiPhotoAlbumSelectionMode
-){
+                if(
+                    !oshiPhotoAlbumSelectionMode
+                ){
 
-    enterOshiPhotoAlbumSelectionMode(
-        "share"
-    );
+                    enterOshiPhotoAlbumSelectionMode(
+                        "share"
+                    );
 
-}
-else if(
-    oshiPhotoAlbumSelectionType ===
-        "share"
-){
+                }
+                else if(
+                    oshiPhotoAlbumSelectionType ===
+                        "share"
+                ){
 
-    shareSelectedOshiPhotos();
+                    shareSelectedOshiPhotos();
 
-}
-else{
+                }
+                else{
 
-    enterOshiPhotoAlbumSelectionMode(
-        "share"
-    );
+                    enterOshiPhotoAlbumSelectionMode(
+                        "share"
+                    );
 
-}
+                }
+
             };
 
     }
@@ -2294,7 +2363,6 @@ else{
         "flex";
 
 }
-
 
 
 function closeOshiPhotoAlbum(){
