@@ -4058,7 +4058,7 @@ function oshiPhotoViewerTouchEnd(
    ❤️ トップ画設定確認
 ========================================================= */
 
-function confirmOshiTopPhoto(){
+async function confirmOshiTopPhoto(){
 
     const oshiId =
         getCurrentOshiDetailsId();
@@ -4171,7 +4171,7 @@ function confirmOshiTopPhoto(){
     );
 
 
-    updateOshiPhotoViewer();
+    await updateOshiPhotoViewer();
 
 
     console.log(
