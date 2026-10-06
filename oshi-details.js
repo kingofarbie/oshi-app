@@ -802,197 +802,206 @@ function readOshiPhotoFiles(
     }
 
 
-    let completed =
-        0;
+    /*
+       写真を1枚ずつ順番に処理する
+
+       ・スマホで大量の画像を同時処理しない
+       ・画像処理そのものは今までと同じ
+       ・最後の保存は1回だけ
+    */
+
+    const results = [];
 
 
-    const results =
-        [];
+    function processNext(index){
+
+        if(
+            index >=
+            validFiles.length
+        ){
+
+            saveOshiPhotos(
+                oshiId,
+                results
+            );
+
+            return;
+
+        }
 
 
-    validFiles.forEach(
-        file => {
-
-            const reader =
-                new FileReader();
+        const file =
+            validFiles[index];
 
 
-            reader.onload =
-                function(
-                    readerEvent
-                ){
-
-                    const image =
-                        new Image();
+        const reader =
+            new FileReader();
 
 
-                    image.onload =
-                        function(){
+        reader.onload =
+            function(
+                readerEvent
+            ){
 
-                            const maxSize =
-                                1000;
+                const image =
+                    new Image();
 
 
-                            let width =
-                                image.width;
+                image.onload =
+                    function(){
 
-                            let height =
-                                image.height;
+                        const maxSize =
+                            1000;
 
+
+                        let width =
+                            image.width;
+
+                        let height =
+                            image.height;
+
+
+                        if(
+                            width > height
+                        ){
 
                             if(
-                                width > height
+                                width >
+                                maxSize
                             ){
 
-                                if(
-                                    width >
-                                    maxSize
-                                ){
+                                height *=
+                                    maxSize /
+                                    width;
 
-                                    height *=
-                                        maxSize /
-                                        width;
-
-                                    width =
-                                        maxSize;
-
-                                }
-
-                            }else{
-
-                                if(
-                                    height >
-                                    maxSize
-                                ){
-
-                                    width *=
-                                        maxSize /
-                                        height;
-
-                                    height =
-                                        maxSize;
-
-                                }
+                                width =
+                                    maxSize;
 
                             }
 
+                        }else{
 
-                            const canvas =
-                                document.createElement(
-                                    "canvas"
-                                );
+                            if(
+                                height >
+                                maxSize
+                            ){
 
+                                width *=
+                                    maxSize /
+                                    height;
 
-                            canvas.width =
-                                Math.round(
-                                    width
-                                );
+                                height =
+                                    maxSize;
 
-                            canvas.height =
-                                Math.round(
-                                    height
-                                );
+                            }
 
-
-                            const context =
-                                canvas.getContext(
-                                    "2d"
-                                );
+                        }
 
 
-                            context.drawImage(
-                                image,
-                                0,
-                                0,
-                                canvas.width,
-                                canvas.height
+                        const canvas =
+                            document.createElement(
+                                "canvas"
                             );
 
 
-                            const src =
-                                canvas.toDataURL(
-                                    "image/jpeg",
-                                    0.8
-                                );
+                        canvas.width =
+                            Math.round(
+                                width
+                            );
+
+                        canvas.height =
+                            Math.round(
+                                height
+                            );
 
 
-                            results.push({
-                                src: src
-                            });
+                        const context =
+                            canvas.getContext(
+                                "2d"
+                            );
 
 
-                            completed++;
-
-
-                            if(
-                                completed >=
-                                validFiles.length
-                            ){
-
-                                saveOshiPhotos(
-                                    oshiId,
-                                    results
-                                );
-
-                            }
-
-                        };
-
-
-                    image.onerror =
-                        function(){
-
-                            completed++;
-
-
-                            if(
-                                completed >=
-                                validFiles.length
-                            ){
-
-                                saveOshiPhotos(
-                                    oshiId,
-                                    results
-                                );
-
-                            }
-
-                        };
-
-
-                    image.src =
-                        readerEvent.target.result;
-
-                };
-
-
-            reader.onerror =
-                function(){
-
-                    completed++;
-
-
-                    if(
-                        completed >=
-                        validFiles.length
-                    ){
-
-                        saveOshiPhotos(
-                            oshiId,
-                            results
+                        context.drawImage(
+                            image,
+                            0,
+                            0,
+                            canvas.width,
+                            canvas.height
                         );
 
-                    }
 
-                };
+                        const src =
+                            canvas.toDataURL(
+                                "image/jpeg",
+                                0.8
+                            );
 
 
-            reader.readAsDataURL(
-                file
-            );
+                        results.push({
+                            src: src
+                        });
 
-        }
-    );
+
+                        /*
+                           今の画像を処理し終わってから
+                           次の画像へ進む
+                        */
+
+                        processNext(
+                            index + 1
+                        );
+
+                    };
+
+
+                image.onerror =
+                    function(){
+
+                        /*
+                           1枚失敗しても
+                           残りの写真は続けて処理する
+                        */
+
+                        processNext(
+                            index + 1
+                        );
+
+                    };
+
+
+                image.src =
+                    readerEvent.target.result;
+
+            };
+
+
+        reader.onerror =
+            function(){
+
+                /*
+                   1枚失敗しても
+                   残りの写真は続けて処理する
+                */
+
+                processNext(
+                    index + 1
+                );
+
+            };
+
+
+        reader.readAsDataURL(
+            file
+        );
+
+    }
+
+
+    /*
+       1枚目から開始
+    */
+
+    processNext(0);
 
 }
 
