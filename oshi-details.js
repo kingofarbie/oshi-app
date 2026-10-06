@@ -938,6 +938,7 @@ function readOshiPhotoFiles(
                                 0.8
                             );
 
+                            alert("画像処理できました：" + (index + 1) + "枚目");
 
                         results.push({
                             src: src
@@ -1016,6 +1017,13 @@ function saveOshiPhotos(
     oshiId,
     photos
 ){
+
+alert(
+    "saveOshiPhotos到達：" +
+    photos.length +
+    "枚"
+);
+
 
     if(
         !oshiId ||
