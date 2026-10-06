@@ -86,14 +86,31 @@ load(){
 
 },
 
-    save(data){
 
-        localStorage.setItem(
-            DB_KEY,
-            JSON.stringify(data)
-        );
+save(data){
 
-    },
+    alert("JSON化開始");
+
+    const json =
+        JSON.stringify(data);
+
+    alert(
+        "JSON化完了：" +
+        (json.length / 1024 / 1024).toFixed(2) +
+        "MB"
+    );
+
+    alert("localStorage保存開始");
+
+    localStorage.setItem(
+        DB_KEY,
+        json
+    );
+
+    alert("localStorage保存完了");
+
+},
+
 
     addEvent(event){
 
