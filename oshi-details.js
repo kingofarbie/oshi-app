@@ -500,12 +500,12 @@ function initOshiDetailsPage(
    ❤️ 推しトップ画取得
 ========================================================= */
 
-function getOshiTopPhoto(
+async function getOshiTopPhoto(
     oshiId
 ){
 
     const photos =
-        getOshiPhotos(
+        await getOshiPhotos(
             oshiId
         );
 
