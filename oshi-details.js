@@ -2896,7 +2896,7 @@ async function shareSelectedOshiPhotos(){
 
 
     const photos =
-        getOshiPhotos(
+        await getOshiPhotos(
             oshiId
         );
 
