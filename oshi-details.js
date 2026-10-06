@@ -3255,8 +3255,8 @@ async function openOshiPhotoViewer(
    ⭐ ビューア写真更新
 ========================================================= */
 
-function updateOshiPhotoViewer(){
-
+async function updateOshiPhotoViewer(){
+    
     if(
         oshiPhotoViewerPhotoIds.length ===
         0
@@ -3271,10 +3271,7 @@ function updateOshiPhotoViewer(){
         getCurrentOshiDetailsId();
 
 
-    const photos =
-        getOshiPhotos(
-            oshiId
-        );
+const photos = await getOshiPhotos(oshiId);
 
 
     const photo =
