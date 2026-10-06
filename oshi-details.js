@@ -747,6 +747,8 @@ function handleOshiPhotoFiles(
         return;
     }
 
+    alert("選択された枚数：" + files.length);
+
 
     const oshiId =
         getCurrentOshiDetailsId();
