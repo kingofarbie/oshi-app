@@ -231,7 +231,7 @@ async function deleteMediaFile(id){
 
 
         store.delete(
-            Number(id)
+            id
         );
 
 

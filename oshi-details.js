@@ -4186,8 +4186,8 @@ async function confirmOshiTopPhoto(){
    ⭐ 現在写真削除
 ========================================================= */
 
-function deleteOshiCurrentPhoto(){
-
+async function deleteOshiCurrentPhoto(){
+    
     const oshiId =
         getCurrentOshiDetailsId();
 
@@ -4253,6 +4253,32 @@ function deleteOshiCurrentPhoto(){
     }
 
 
+    /*
+       IndexedDBの写真本体を削除
+    */
+
+    try{
+
+        await deleteMediaFile(
+            photoId
+        );
+
+    }catch(error){
+
+        console.error(
+            "IndexedDB写真削除エラー:",
+            error
+        );
+
+        alert(
+            "写真の削除に失敗しました。"
+        );
+
+        return;
+
+    }
+
+
     const wasTop =
         target.isTop === true;
 
@@ -4274,7 +4300,7 @@ function deleteOshiCurrentPhoto(){
 
 
     /*
-       写真本体削除
+       写真メタデータ削除
     */
 
     photos.splice(
@@ -4334,7 +4360,7 @@ function deleteOshiCurrentPhoto(){
     */
 
     const remaining =
-        getOshiPhotos(
+        await getOshiPhotos(
             oshiId
         );
 
@@ -4395,7 +4421,7 @@ function deleteOshiCurrentPhoto(){
         remaining[nextIndex].photoId;
 
 
-    updateOshiPhotoViewer();
+    await updateOshiPhotoViewer();
 
 
     renderOshiMainPhoto(
@@ -4443,10 +4469,10 @@ async function shareOshiCurrentPhoto(){
     }
 
 
-    const photos =
-        getOshiPhotos(
-            oshiId
-        );
+const photos =
+    await getOshiPhotos(
+        oshiId
+    );
 
 
     const photo =
