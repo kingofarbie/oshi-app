@@ -106,7 +106,7 @@ async function saveMediaFile(
         store.put({
 
             id:
-                Number(id),
+                id,
 
             type:
                 type,

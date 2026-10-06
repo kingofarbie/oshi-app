@@ -1013,16 +1013,16 @@ function readOshiPhotoFiles(
    ⭐ 写真保存
 ========================================================= */
 
-function saveOshiPhotos(
+async function saveOshiPhotos(
     oshiId,
     photos
 ){
 
-alert(
-    "saveOshiPhotos到達：" +
-    photos.length +
-    "枚"
-);
+    alert(
+        "saveOshiPhotos到達：" +
+        photos.length +
+        "枚"
+    );
 
 
     if(
@@ -1030,9 +1030,7 @@ alert(
         !Array.isArray(photos) ||
         photos.length === 0
     ){
-
         return;
-
     }
 
 
@@ -1041,18 +1039,12 @@ alert(
 
 
     if(!data.oshiDetails){
-
-        data.oshiDetails =
-            {};
-
+        data.oshiDetails = {};
     }
 
 
     if(!data.oshiDetails[oshiId]){
-
-        data.oshiDetails[oshiId] =
-            {};
-
+        data.oshiDetails[oshiId] = {};
     }
 
 
@@ -1061,10 +1053,7 @@ alert(
             data.oshiDetails[oshiId].photos
         )
     ){
-
-        data.oshiDetails[oshiId].photos =
-            [];
-
+        data.oshiDetails[oshiId].photos = [];
     }
 
 
@@ -1076,11 +1065,6 @@ alert(
         currentPhotos.length;
 
 
-    /*
-       まだトップ画が存在しない場合、
-       最初に追加する写真を❤️トップ画にする
-    */
-
     const hasTop =
         currentPhotos.some(
             photo =>
@@ -1088,100 +1072,201 @@ alert(
         );
 
 
-    photos.forEach(
-        (item,index) => {
+    /*
+       =====================================================
+       写真本体をIndexedDBへ保存
+       =====================================================
+    */
 
-            const photoId =
-                "oshi_photo_" +
-                Date.now() +
-                "_" +
-                Math.random()
-                    .toString(36)
-                    .slice(2) +
-                "_" +
-                index;
+    for(
+        let index = 0;
+        index < photos.length;
+        index++
+    ){
 
-
-            const photo = {
-
-                photoId:
-                    photoId,
-
-                oshiId:
-                    oshiId,
-
-                src:
-                    item.src,
-
-                favorite:
-                    false,
-
-                isTop:
-                    !hasTop &&
-                    index === 0,
-
-                order:
-                    maxOrder++
-
-            };
+        const item =
+            photos[index];
 
 
-            currentPhotos.push(
-                photo
+        if(
+            !item ||
+            !item.src
+        ){
+            continue;
+        }
+
+
+        const photoId =
+            "oshi_photo_" +
+            Date.now() +
+            "_" +
+            Math.random()
+                .toString(36)
+                .slice(2) +
+            "_" +
+            index;
+
+
+        /*
+           DataURL
+           ↓
+           Blob
+        */
+
+        let imageBlob;
+
+        try{
+
+            const response =
+                await fetch(
+                    item.src
+                );
+
+            imageBlob =
+                await response.blob();
+
+        }catch(error){
+
+            console.error(
+                "推し写真のBlob変換に失敗:",
+                error
             );
 
+            continue;
         }
+
+
+        /*
+           IndexedDBへ画像本体を保存
+        */
+
+        try{
+
+            await saveMediaFile(
+                photoId,
+                imageBlob,
+                "photo"
+            );
+
+        }catch(error){
+
+            console.error(
+                "推し写真のIndexedDB保存に失敗:",
+                error
+            );
+
+            alert(
+                "写真の保存に失敗しました。"
+            );
+
+            return;
+        }
+
+
+        /*
+           localStorageには
+           画像本体(src)を保存しない
+        */
+
+        const photo = {
+
+            photoId:
+                photoId,
+
+            oshiId:
+                oshiId,
+
+            favorite:
+                false,
+
+            isTop:
+                !hasTop &&
+                index === 0,
+
+            order:
+                maxOrder++
+
+        };
+
+
+        currentPhotos.push(
+            photo
+        );
+
+
+        alert(
+            "IndexedDB保存：" +
+            (index + 1) +
+            "/" +
+            photos.length +
+            "枚"
+        );
+
+    }
+
+
+    /*
+       =====================================================
+       画像本体のないメタデータだけをlocalStorageへ保存
+       =====================================================
+    */
+
+    alert(
+        "db.save開始：" +
+        currentPhotos.length +
+        "枚"
     );
 
 
-alert(
-    "db.save開始：" +
-    currentPhotos.length +
-    "枚"
-);
-
-db.save(
-    data
-);
-
-alert(
-    "db.save完了：" +
-    data.oshiDetails[oshiId].photos.length +
-    "枚"
-);
+    db.save(
+        data
+    );
 
 
-renderOshiMainPhoto(
-    oshiId
-);
+    alert(
+        "db.save完了：" +
+        data.oshiDetails[oshiId].photos.length +
+        "枚"
+    );
+
+
+    /*
+       =====================================================
+       既存表示更新
+       =====================================================
+    */
+
+    renderOshiMainPhoto(
+        oshiId
+    );
+
 
     renderOshiPhotoAlbum(
         oshiId
     );
 
+
     const albumViewer =
-    document.getElementById(
-        "oshiPhotoAlbumViewer"
-    );
-
-if(
-    albumViewer &&
-    albumViewer.style.display === "flex"
-){
-
-    openOshiPhotoAlbum();
-
-}
+        document.getElementById(
+            "oshiPhotoAlbumViewer"
+        );
 
 
-    /*
-       inputをリセット
-    */
+    if(
+        albumViewer &&
+        albumViewer.style.display === "flex"
+    ){
+
+        openOshiPhotoAlbum();
+
+    }
+
 
     const cameraInput =
         document.getElementById(
             "oshiCameraInput"
         );
+
 
     const albumInput =
         document.getElementById(
@@ -1206,7 +1291,7 @@ if(
 
 
     console.log(
-        "★ 推し写真を保存:",
+        "★ 推し写真をIndexedDBへ保存:",
         photos.length,
         "枚"
     );
