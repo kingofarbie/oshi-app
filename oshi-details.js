@@ -2588,7 +2588,11 @@ async function deleteSelectedOshiPhotos(){
 
 
     const selectedSet =
-        new Set(selectedIds);
+        new Set(
+            selectedIds.map(
+                id => String(id)
+            )
+        );
 
 
     /* =========================
@@ -2599,9 +2603,57 @@ async function deleteSelectedOshiPhotos(){
         details.photos.filter(
             photo =>
                 selectedSet.has(
-                    photo.photoId
+                    String(
+                        photo.photoId
+                    )
                 )
         );
+
+
+    if(deletedPhotos.length === 0){
+
+        return;
+
+    }
+
+
+    /* =========================
+       IndexedDBの写真本体を削除
+    ========================= */
+
+    try{
+
+        for(
+            const photo of deletedPhotos
+        ){
+
+            if(!photo?.photoId){
+
+                continue;
+
+            }
+
+
+            await deleteMediaFile(
+                photo.photoId
+            );
+
+        }
+
+    }catch(error){
+
+        console.error(
+            "IndexedDB複数写真削除エラー:",
+            error
+        );
+
+        alert(
+            "写真の削除に失敗しました。"
+        );
+
+        return;
+
+    }
 
 
     /* =========================
@@ -2647,7 +2699,9 @@ async function deleteSelectedOshiPhotos(){
         details.photos.filter(
             photo =>
                 !selectedSet.has(
-                    photo.photoId
+                    String(
+                        photo.photoId
+                    )
                 )
         );
 
@@ -2659,7 +2713,8 @@ async function deleteSelectedOshiPhotos(){
     details.photos.forEach(
         (photo,index) => {
 
-            photo.order = index;
+            photo.order =
+                index;
 
         }
     );
@@ -2674,15 +2729,19 @@ async function deleteSelectedOshiPhotos(){
         details.photos.forEach(
             photo => {
 
-                photo.isTop = false;
+                photo.isTop =
+                    false;
 
             }
         );
 
 
-        if(details.photos.length > 0){
+        if(
+            details.photos.length > 0
+        ){
 
-            details.photos[0].isTop = true;
+            details.photos[0].isTop =
+                true;
 
         }
 
@@ -2706,7 +2765,8 @@ async function deleteSelectedOshiPhotos(){
             details.photos.length > 0
         ){
 
-            details.photos[0].isTop = true;
+            details.photos[0].isTop =
+                true;
 
         }
 
@@ -2717,7 +2777,9 @@ async function deleteSelectedOshiPhotos(){
        保存
     ========================= */
 
-    db.save(data);
+    db.save(
+        data
+    );
 
 
     /* =========================
@@ -2729,6 +2791,16 @@ async function deleteSelectedOshiPhotos(){
 
     oshiPhotoAlbumSelectedIds =
         [];
+
+
+    /* =========================
+       残り写真取得
+    ========================= */
+
+    const remainingPhotos =
+        await getOshiPhotos(
+            oshiId
+        );
 
 
     /* =========================
@@ -2759,15 +2831,11 @@ async function deleteSelectedOshiPhotos(){
        アルバム更新
     ========================= */
 
-    const remainingPhotos =
-        getOshiPhotos(
-            oshiId
-        );
+    if(
+        remainingPhotos.length > 0
+    ){
 
-
-    if(remainingPhotos.length > 0){
-
-        openOshiPhotoAlbum();
+        await openOshiPhotoAlbum();
 
     }
     else{
@@ -2777,6 +2845,7 @@ async function deleteSelectedOshiPhotos(){
     }
 
 }
+
 
 
 /* =========================================================
