@@ -102,14 +102,37 @@ save(data){
 
     alert("localStorage保存開始");
 
-    localStorage.setItem(
-        DB_KEY,
-        json
-    );
+    try{
 
-    alert("localStorage保存完了");
+        localStorage.setItem(
+            DB_KEY,
+            json
+        );
+
+        alert("localStorage保存完了");
+
+    }catch(error){
+
+        alert(
+            "localStorage保存エラー\n\n" +
+            "名前：" +
+            error.name +
+            "\n\n" +
+            "内容：" +
+            error.message
+        );
+
+        console.error(
+            "localStorage保存エラー:",
+            error
+        );
+
+    }
 
 },
+
+
+
 
 
     addEvent(event){
