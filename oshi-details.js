@@ -3475,7 +3475,7 @@ function applyOshiPhotoViewerTransform(){
    ⭐ ビューア次の写真
 ========================================================= */
 
-function showOshiPhotoViewerPhoto(
+async function showOshiPhotoViewerPhoto(
     index
 ){
 
@@ -3531,7 +3531,7 @@ function showOshiPhotoViewerPhoto(
         0;
 
 
-    updateOshiPhotoViewer();
+    await updateOshiPhotoViewer();
 
 }
 
