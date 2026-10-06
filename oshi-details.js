@@ -1822,16 +1822,37 @@ function createOshiPhotoAlbumStars(viewer){
             size + "px";
 
 
-        /* ランダム透明度 */
+/* ランダム透明度 */
+star.style.opacity =
+    0.35 +
+    Math.random() * 0.35;
 
-        star.style.opacity =
-            0.35 +
-            Math.random() * 0.65;
 
+/* =========================
+   ✨ 星ごとに明滅をランダム化
+   ========================= */
 
-        starsLayer.appendChild(
-            star
-        );
+/* 明滅する速さ */
+star.style.setProperty(
+    "--star-duration",
+    (2.8 + Math.random() * 4.5) + "s"
+);
+
+/* 明滅の開始位置 */
+star.style.setProperty(
+    "--star-delay",
+    (-Math.random() * 6) + "s"
+);
+
+/* 星ごとの輝き */
+star.style.setProperty(
+    "--star-glow",
+    (0.35 + Math.random() * 0.65).toFixed(2)
+);
+
+starsLayer.appendChild(
+    star
+);
 
     }
 
