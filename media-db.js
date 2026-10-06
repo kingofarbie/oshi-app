@@ -173,7 +173,7 @@ async function getMediaFile(id){
 
         const request =
             store.get(
-                Number(id)
+                id
             );
 
 
