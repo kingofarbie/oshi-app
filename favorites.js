@@ -560,13 +560,15 @@ function favoritesGetOrderedPhotos(){
    ⭐ お気に入りページ表示
 ========================================================= */
 
-function favoritesDisplay(){
+async function favoritesDisplay(){
 
     favoritesRenderEvents();
 
-    favoritesRenderPhotos();
+    await favoritesRenderPhotos();
 
 }
+
+
 
 
 /* =========================================================
