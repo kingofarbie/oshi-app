@@ -376,9 +376,16 @@ async function favoritesGetPhotoDataAsync(
             }
 
 
+            if(!media.file){
+
+                return null;
+
+            }
+
+
             const src =
-                createMediaURL(
-                    media
+                URL.createObjectURL(
+                    media.file
                 );
 
 
@@ -411,6 +418,7 @@ async function favoritesGetPhotoDataAsync(
     return null;
 
 }
+
 
 /* =========================================================
    ⭐ イベント表示順取得
