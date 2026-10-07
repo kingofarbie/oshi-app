@@ -370,24 +370,48 @@
     margin: 0;
 }
 
-.calendar-title-row .calendar-sports-button {
+
+/* =====================
+   📅 特別カレンダーアイコン
+===================== */
+
+.calendar-special-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     flex-shrink: 0;
-    width: auto;
-    padding: 8px 14px;
-    border: none;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: bold;
-    cursor: pointer;
 }
 
-.calendar-title-row .calendar-health-button {
+
+/* 👶 💊 ⚾ 共通 */
+
+.calendar-title-row .calendar-children-button,
+.calendar-title-row .calendar-health-button,
+.calendar-title-row .calendar-sports-button {
+
     flex-shrink: 0;
-    width: auto;
-    padding: 8px 14px;
+
+    width: 46px;
+    height: 46px;
+
+    padding: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
     border: none;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: bold;
+    border-radius: 12px;
+
+    font-size: 25px;
+    line-height: 1;
+
     cursor: pointer;
+
+    background: var(--surface);
+
+    box-shadow:
+        0 2px 5px rgba(0,0,0,.12);
+
+    box-sizing: border-box;
 }
