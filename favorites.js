@@ -306,6 +306,112 @@ function favoritesGetPhotoData(
 }
 
 
+async function favoritesGetPhotoDataAsync(
+    favorite
+){
+
+    if(!favorite){
+
+        return null;
+
+    }
+
+
+    /* =========================
+       1日手帳由来
+    ========================= */
+
+    if(
+        favorite.source ===
+        "dayPlanner"
+    ){
+
+        const result =
+            favoritesGetSourcePhoto(
+                favorite
+            );
+
+        return result
+            ? result.photo
+            : null;
+
+    }
+
+
+    /* =========================
+       推し写真由来
+    ========================= */
+
+    if(
+        favorite.source ===
+        "favorite"
+    ){
+
+        if(
+            !favorite.sourceOshiPhotoId
+        ){
+
+            /*
+               旧データなど、
+               sourceOshiPhotoIdがない場合
+            */
+
+            return favorite;
+
+        }
+
+
+        try{
+
+            const media =
+                await getMediaFile(
+                    favorite.sourceOshiPhotoId
+                );
+
+
+            if(!media){
+
+                return null;
+
+            }
+
+
+            const src =
+                createMediaURL(
+                    media
+                );
+
+
+            if(!src){
+
+                return null;
+
+            }
+
+
+            return {
+                ...favorite,
+                src: src
+            };
+
+        }catch(error){
+
+            console.error(
+                "お気に入り推し写真取得エラー:",
+                error
+            );
+
+            return null;
+
+        }
+
+    }
+
+
+    return null;
+
+}
+
 /* =========================================================
    ⭐ イベント表示順取得
 ========================================================= */
@@ -674,8 +780,8 @@ function favoritesRenderEvents(){
    ⭐ 写真表示
 ========================================================= */
 
-function favoritesRenderPhotos(){
-
+async function favoritesRenderPhotos(){
+    
     const box =
         document.getElementById(
             "favorites-photo-list"
@@ -825,71 +931,72 @@ function favoritesRenderPhotos(){
        写真本体
     ========================= */
 
-    photos.forEach(
-        favorite => {
+    for(
+        const favorite of photos
+    ){
 
-            const photo =
-                favoritesGetPhotoData(
-                    favorite
-                );
+        const photo =
+            await favoritesGetPhotoDataAsync(
+                favorite
+            );
 
-            if(!photo){
-                return;
-            }
+        if(!photo){
+            continue;
+        }
 
-            const id =
-                String(favorite.id);
+        const id =
+            String(favorite.id);
 
-            const selected =
-                favoritesSelectedPhotoIds
-                    .includes(id);
+        const selected =
+            favoritesSelectedPhotoIds
+                .includes(id);
 
-            let className =
-                "favorites-photo-item";
+        let className =
+            "favorites-photo-item";
 
-            if(
-                (
-                    favoritesPhotoDeleteSelecting ||
-                    favoritesPhotoShareSelecting
-                ) &&
-                selected
-            ){
-
-                className +=
-                    " favorites-item-selected";
-
-            }
-
-            if(
-                favoritesPhotoSortSelecting
-            ){
-
-                className +=
-                    " favorites-photo-sort-item";
-
-            }
-
-            let clickAction = "";
-
-            if(
-                favoritesPhotoDeleteSelecting
-            ){
-
-                clickAction =
-                    `onclick="favoritesTogglePhotoDelete('${id}')"`;
-
-
-            }else if(
+        if(
+            (
+                favoritesPhotoDeleteSelecting ||
                 favoritesPhotoShareSelecting
-            ){
+            ) &&
+            selected
+        ){
 
-                clickAction =
-                    `onclick="favoritesTogglePhotoShare('${id}')"`;
+            className +=
+                " favorites-item-selected";
+
+        }
+
+        if(
+            favoritesPhotoSortSelecting
+        ){
+
+            className +=
+                " favorites-photo-sort-item";
+
+        }
+
+        let clickAction = "";
+
+        if(
+            favoritesPhotoDeleteSelecting
+        ){
+
+            clickAction =
+                `onclick="favoritesTogglePhotoDelete('${id}')"`;
 
 
-            }
+        }else if(
+            favoritesPhotoShareSelecting
+        ){
 
-            html += `
+            clickAction =
+                `onclick="favoritesTogglePhotoShare('${id}')"`;
+
+
+        }
+
+        html += `
 
 <div
     class="${className}"
@@ -935,8 +1042,7 @@ function favoritesRenderPhotos(){
 
 `;
 
-        }
-    );
+    }
 
 
     if(
@@ -959,6 +1065,7 @@ function favoritesRenderPhotos(){
 
     box.innerHTML = html;
 }
+
 
 
 /* =========================================================
@@ -2111,7 +2218,7 @@ async function favoritesShareSelectedPhotos(){
         ){
 
             const photo =
-                favoritesGetPhotoData(
+                await favoritesGetPhotoDataAsync(
                     targets[index]
                 );
 
@@ -2352,7 +2459,7 @@ async function favoritesShareSelectedEvents(){
    ⭐ お気に入り専用ビューアを開く
 ========================================================= */
 
-function favoritesOpenPhotoViewer(
+async function favoritesOpenPhotoViewer(
     favoriteId
 ){
 
@@ -2374,7 +2481,7 @@ function favoritesOpenPhotoViewer(
         photos[index];
 
     const photo =
-        favoritesGetPhotoData(
+        await favoritesGetPhotoDataAsync(
             favorite
         );
 
@@ -2447,7 +2554,6 @@ function favoritesOpenPhotoViewer(
         "hidden";
 }
 
-
 /* =========================================================
    ⭐ ビューア変形
 ========================================================= */
@@ -2472,7 +2578,7 @@ function favoritesApplyViewerTransform(){
    ⭐ ビューア写真表示
 ========================================================= */
 
-function favoritesShowPhoto(
+async function favoritesShowPhoto(
     index
 ){
 
@@ -2521,7 +2627,7 @@ function favoritesShowPhoto(
     }
 
     const photo =
-        favoritesGetPhotoData(
+        await favoritesGetPhotoDataAsync(
             favorite
         );
 
@@ -3105,7 +3211,7 @@ async function favoritesShareCurrentPhoto(){
     }
 
     const photo =
-        favoritesGetPhotoData(
+        await favoritesGetPhotoDataAsync(
             favorite
         );
 
