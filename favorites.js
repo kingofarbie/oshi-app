@@ -369,14 +369,10 @@ async function favoritesGetPhotoDataAsync(
                 );
 
 
-            if(!media){
-
-                return null;
-
-            }
-
-
-            if(!media.file){
+            if(
+                !media ||
+                !media.file
+            ){
 
                 return null;
 
@@ -384,8 +380,8 @@ async function favoritesGetPhotoDataAsync(
 
 
             const src =
-                URL.createObjectURL(
-                    media.file
+                createMediaURL(
+                    media
                 );
 
 
@@ -397,14 +393,20 @@ async function favoritesGetPhotoDataAsync(
 
 
             return {
+
                 ...favorite,
-                src: src
+
+                src:
+                    src
+
             };
+
 
         }catch(error){
 
             console.error(
                 "お気に入り推し写真取得エラー:",
+                favorite.sourceOshiPhotoId,
                 error
             );
 
