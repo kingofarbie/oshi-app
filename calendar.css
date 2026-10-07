@@ -415,3 +415,7 @@
 
     box-sizing: border-box;
 }
+
+.calendar-title-row .calendar-children-button{
+    font-size:30px;
+}
