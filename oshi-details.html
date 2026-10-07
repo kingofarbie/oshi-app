@@ -77,42 +77,48 @@
 
 
         <!-- 写真あり -->
-        <button
-            type="button"
-            class="oshi-main-photo-image-button"
-            id="oshiMainPhotoImageButton"
-            onclick="
-                (function(){
-                    const oshiId =
-                        document.getElementById('oshiContainer')?.dataset.oshiId || '';
+<button
+    type="button"
+    class="oshi-main-photo-image-button"
+    id="oshiMainPhotoImageButton"
+    onclick="
+        (async function(){
 
-                    const photos =
-                        typeof getOshiPhotos === 'function'
-                            ? getOshiPhotos(oshiId)
-                            : [];
+            const oshiId =
+                document.getElementById('oshiContainer')?.dataset.oshiId || '';
 
-                    const image =
-                        document.getElementById('oshiMainPhotoImage');
+            const photos =
+                typeof getOshiPhotos === 'function'
+                    ? await getOshiPhotos(oshiId)
+                    : [];
 
-                    const photoId =
-                        image?.dataset.photoId || '';
+            const image =
+                document.getElementById('oshiMainPhotoImage');
 
-                    if(photos.length >= 2){
-                        openOshiPhotoAlbum();
-                    }
-                    else if(photoId){
-                        openOshiPhotoViewer(photoId);
-                    }
-                })();
-            "
-            style="display:none;">
+            const photoId =
+                image?.dataset.photoId || '';
 
-            <img
-                id="oshiMainPhotoImage"
-                class="oshi-main-photo-image"
-                alt="推しの写真">
+            if(photos.length >= 2){
 
-        </button>
+                openOshiPhotoAlbum();
+
+            }
+            else if(photoId){
+
+                openOshiPhotoViewer(photoId);
+
+            }
+
+        })();
+    "
+    style="display:none;">
+
+    <img
+        id="oshiMainPhotoImage"
+        class="oshi-main-photo-image"
+        alt="推しの写真">
+
+</button>
 
     </div>
 
