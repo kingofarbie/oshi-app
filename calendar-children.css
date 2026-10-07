@@ -116,19 +116,6 @@ calendar-children.css
 }
 
 
-.children-calendar-app.boy
-.children-calendar-back-button {
-    background: var(--children-boy-color) !important;
-    border-color: var(--children-boy-border) !important;
-    color: #fff !important;
-}
-
-.children-calendar-app.girl
-.children-calendar-back-button {
-    background: var(--children-girl-color) !important;
-    border-color: var(--children-girl-border) !important;
-    color: #fff !important;
-}
 
 /* =====================================================
    子ども選択
@@ -1788,30 +1775,6 @@ calendar-children.css
 .children-calendar-day.today .children-calendar-date {
     color: #8e6cc7 !important;
     font-weight: 700;
-}
-
-
-/* =====================================================
-   👶 こどもカレンダー
-   年月ボタン
-   通常カレンダーと同じ白背景
-===================================================== */
-
-.children-month-title-button {
-    background: #fff !important;
-    color: #333 !important;
-    border: 1px solid #ddd !important;
-    box-shadow: none !important;
-    border-radius: 6px;
-    font-weight: 600;
-}
-
-.children-month-title-button:hover {
-    background: #fff !important;
-}
-
-.children-month-title-button:active {
-    background: #fff !important;
 }
 
 
