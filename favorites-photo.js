@@ -396,7 +396,7 @@ function favoritePhotoGetOrdered(){
    ⭐ 写真一覧表示
 ========================================================= */
 
-async function favoritePhotoRender(){
+function favoritePhotoRender(){
 
     const box =
         document.getElementById(
@@ -543,77 +543,45 @@ async function favoritePhotoRender(){
        写真本体
     ===================================================== */
 
-    for(
-        const favorite of photos
-    ){
+    photos.forEach(
+        favorite => {
 
-        let photo = null;
-
-
-        /*
-           推し写真
-           → IndexedDBから取得
-        */
-
-        if(
-            favorite.source ===
-            "favorite"
-        ){
-
-            photo =
-                await favoritesGetPhotoDataAsync(
-                    favorite
-                );
-
-        }else{
-
-            /*
-               1日手帳由来など
-               → 従来方式
-            */
-
-            photo =
+            const photo =
                 favoritePhotoGetData(
                     favorite
                 );
 
-        }
+            if(
+                favorite.source ===
+                "dayPlanner" &&
+                !photo
+            ){
+
+                return;
+
+            }
+
+            if(!photo){
+                return;
+            }
 
 
-        if(
-            favorite.source ===
-            "dayPlanner" &&
-            !photo
-        ){
-
-            continue;
-
-        }
+            const id =
+                String(favorite.id);
 
 
-        if(!photo){
-
-            continue;
-
-        }
-
-
-        const id =
-            String(favorite.id);
+            const selected =
+                selectedFavoritePhotoIds.includes(
+                    id
+                );
 
 
-        const selected =
-            selectedFavoritePhotoIds.includes(
-                id
-            );
+            const selectable =
+                favoritePhotoDeleteSelecting ||
+                favoritePhotoShareSelecting;
 
 
-        const selectable =
-            favoritePhotoDeleteSelecting ||
-            favoritePhotoShareSelecting;
-
-
-        html += `
+            html += `
 
                 <div
                     class="
@@ -682,7 +650,8 @@ async function favoritePhotoRender(){
 
             `;
 
-    }
+        }
+    );
 
 
     box.innerHTML =
@@ -696,6 +665,7 @@ async function favoritePhotoRender(){
         `;
 
 }
+
 
 /* =========================================================
    ⭐ 写真追加
