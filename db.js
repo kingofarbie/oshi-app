@@ -89,18 +89,11 @@ load(){
 
 save(data){
 
-    alert("JSON化開始");
 
     const json =
         JSON.stringify(data);
 
-    alert(
-        "JSON化完了：" +
-        (json.length / 1024 / 1024).toFixed(2) +
-        "MB"
-    );
 
-    alert("localStorage保存開始");
 
     try{
 
@@ -109,7 +102,6 @@ save(data){
             json
         );
 
-        alert("localStorage保存完了");
 
     }catch(error){
 
