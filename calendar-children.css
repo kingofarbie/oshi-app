@@ -802,19 +802,6 @@ calendar-children.css
     cursor: pointer;
 }
 
-.children-calendar-app.boy
-.children-daily-add-button {
-    background: var(--children-boy-color) !important;
-    border: 1px solid var(--children-boy-border) !important;
-    color: #fff !important;
-}
-
-.children-calendar-app.girl
-.children-daily-add-button {
-    background: var(--children-girl-color) !important;
-    border: 1px solid var(--children-girl-border) !important;
-    color: #fff !important;
-}
 
 
 /* =====================================================
