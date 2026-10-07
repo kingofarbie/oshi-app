@@ -82,32 +82,40 @@
 ===================================================== */
 
 .sports-back-button {
-
     flex: 0 0 auto;
 
-    width: auto;
-    max-width: 150px;
+    width: 46px;
+    height: 46px;
+    max-width: 46px;
 
     margin-left: auto;
+
+    padding: 0;
 
     display: inline-flex;
 
     align-items: center;
     justify-content: center;
 
-    padding: 8px 12px;
+    border: none;
+    border-radius: 12px;
 
-    border-radius: 8px;
+    background: var(--surface);
+    color: var(--text);
 
-    white-space: nowrap;
-    writing-mode: horizontal-tb;
+    font-size: 25px;
+    font-weight: 400;
+    line-height: 1;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 2px 5px rgba(0,0,0,.12);
 
     box-sizing: border-box;
 
-    font-size: 13px;
-    font-weight: bold;
+    white-space: nowrap;
 }
-
 
 /* =====================================================
    🏟️ スポーツ設定
@@ -1029,22 +1037,21 @@
     }
 
 
-    .sports-calendar-title {
+.sports-calendar-title {
+    font-size: 19px;
+}
 
-        font-size: 19px;
-    }
+.sports-back-button {
+    width: 46px;
+    height: 46px;
+    max-width: 46px;
 
+    padding: 0;
 
-    .sports-back-button {
+    border-radius: 12px;
 
-        max-width: 125px;
-
-        padding: 6px 8px;
-
-        border-radius: 6px;
-
-        font-size: 12px;
-    }
+    font-size: 25px;
+}
 
 
     /* =====================
