@@ -323,9 +323,13 @@ function eventStartDate(e){
 ホームお気に入り写真
 ===================== */
 
+/* =====================
+ホームお気に入り写真
+===================== */
+
 let favoritePhotoHomeSlideTimer = null;
 
-function displayFavoritePhotoCard(){
+async function displayFavoritePhotoCard(){
 
     const box =
         document.getElementById(
@@ -394,30 +398,52 @@ function displayFavoritePhotoCard(){
     const photos = [];
 
 
-    favorites.forEach(
-        favorite => {
+    /*
+       推し写真はIndexedDBから取得
+       1日手帳写真は従来方式を維持
+    */
 
-            const photo =
+    for(
+        const favorite of favorites
+    ){
+
+        let photo = null;
+
+
+        if(
+            favorite?.source ===
+            "favorite"
+        ){
+
+            photo =
+                await favoritesGetPhotoDataAsync(
+                    favorite
+                );
+
+        }else{
+
+            photo =
                 favoritePhotoGetData(
                     favorite
                 );
 
+        }
 
-            if(photo){
 
-                photos.push({
+        if(photo){
 
-                    ...photo,
+            photos.push({
 
-                    favoriteId:
-                        favorite.id
+                ...photo,
 
-                });
+                favoriteId:
+                    favorite.id
 
-            }
+            });
 
         }
-    );
+
+    }
 
 
     /* =====================
@@ -612,7 +638,6 @@ function displayFavoritePhotoCard(){
         );
 
 }
-
 
 function displayCountdown() {
 
