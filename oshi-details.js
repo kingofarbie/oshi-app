@@ -4433,16 +4433,16 @@ async function deleteOshiCurrentPhoto(){
        Homeのお気に入りからも削除
     */
 
-    if(
-        target.favorite === true
-    ){
+if(
+    target.favorite === true
+){
 
-        removeOshiPhotoFromFavorites(
-            target
-        );
+    removeOshiPhotoFromFavorites(
+        target,
+        data
+    );
 
-    }
-
+}
 
     /*
        写真メタデータ削除
