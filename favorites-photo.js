@@ -1774,7 +1774,7 @@ function favoritePhotoViewerTouchStart(
    ⭐ ビューアを開く
 ========================================================= */
 
-function favoritePhotoOpenViewer(
+async function favoritePhotoOpenViewer(
     favoriteId
 ){
 
@@ -1799,10 +1799,37 @@ function favoritePhotoOpenViewer(
         favorites[index];
 
 
-    const photo =
-        favoritePhotoGetData(
-            favorite
-        );
+    let photo = null;
+
+
+    /*
+       推し写真
+       → IndexedDBから取得
+    */
+
+    if(
+        favorite.source ===
+        "favorite"
+    ){
+
+        photo =
+            await favoritePhotoGetOshiData(
+                favorite
+            );
+
+    }else{
+
+        /*
+           1日手帳写真
+           → 従来方式
+        */
+
+        photo =
+            favoritePhotoGetData(
+                favorite
+            );
+
+    }
 
 
     if(!photo){
@@ -1983,6 +2010,7 @@ function favoritePhotoOpenViewer(
         "hidden";
 
 }
+
 
 /* =========================================================
    ⭐ ビューア画像変形
