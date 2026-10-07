@@ -2038,7 +2038,7 @@ function favoritePhotoApplyTransform(){
    ⭐ ビューア写真切り替え
 ========================================================= */
 
-function favoritePhotoShow(
+async function favoritePhotoShow(
     index
 ){
 
@@ -2107,10 +2107,39 @@ function favoritePhotoShow(
     }
 
 
-    const photo =
-        favoritePhotoGetData(
-            favorite
-        );
+    /*
+     * =====================================================
+     * 写真取得
+     *
+     * 推し写真
+     * → IndexedDBから取得
+     *
+     * 1日手帳写真
+     * → 従来方式
+     * =====================================================
+     */
+
+    let photo = null;
+
+
+    if(
+        favorite.source ===
+        "favorite"
+    ){
+
+        photo =
+            await favoritePhotoGetOshiData(
+                favorite
+            );
+
+    }else{
+
+        photo =
+            favoritePhotoGetData(
+                favorite
+            );
+
+    }
 
 
     if(!photo){
@@ -2220,7 +2249,7 @@ function favoritePhotoShow(
 
 
     /*
-     * 直接追加
+     * 直接追加・推し写真
      */
     else{
 
@@ -2242,6 +2271,8 @@ function favoritePhotoShow(
     }
 
 }
+
+
 
 /* =========================================================
    ⭐ 前へ
