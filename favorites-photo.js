@@ -391,12 +391,95 @@ function favoritePhotoGetOrdered(){
 }
 
 
+async function favoritePhotoGetOshiData(
+    favorite
+){
+
+    if(
+        !favorite ||
+        favorite.source !==
+            "favorite"
+    ){
+
+        return null;
+
+    }
+
+
+    if(
+        !favorite.oshiId ||
+        !favorite.sourceOshiPhotoId
+    ){
+
+        return null;
+
+    }
+
+
+    try{
+
+        /*
+           推し詳細で正常動作している
+           getOshiPhotos() をそのまま利用する
+        */
+
+        const photos =
+            await getOshiPhotos(
+                favorite.oshiId
+            );
+
+
+        if(
+            !Array.isArray(photos)
+        ){
+
+            return null;
+
+        }
+
+
+        const photo =
+            photos.find(
+                item =>
+                    String(
+                        item.photoId
+                    ) ===
+                    String(
+                        favorite.sourceOshiPhotoId
+                    )
+            );
+
+
+        if(!photo){
+
+            return null;
+
+        }
+
+
+        return photo;
+
+
+    }catch(error){
+
+        console.error(
+            "お気に入り推し写真取得エラー:",
+            favorite.sourceOshiPhotoId,
+            error
+        );
+
+        return null;
+
+    }
+
+}
+
 
 /* =========================================================
    ⭐ 写真一覧表示
 ========================================================= */
 
-function favoritePhotoRender(){
+async function favoritePhotoRender(){
 
     const box =
         document.getElementById(
@@ -543,45 +626,77 @@ function favoritePhotoRender(){
        写真本体
     ===================================================== */
 
-    photos.forEach(
-        favorite => {
+    for(
+        const favorite of photos
+    ){
 
-            const photo =
+        let photo = null;
+
+
+        /*
+           推し写真
+           → IndexedDBから取得
+        */
+
+        if(
+            favorite.source ===
+            "favorite"
+        ){
+
+            photo =
+                await favoritePhotoGetOshiData(
+                    favorite
+                );
+
+        }else{
+
+            /*
+               1日手帳写真
+               → 今まで通り
+            */
+
+            photo =
                 favoritePhotoGetData(
                     favorite
                 );
 
-            if(
-                favorite.source ===
-                "dayPlanner" &&
-                !photo
-            ){
-
-                return;
-
-            }
-
-            if(!photo){
-                return;
-            }
+        }
 
 
-            const id =
-                String(favorite.id);
+        if(
+            favorite.source ===
+            "dayPlanner" &&
+            !photo
+        ){
+
+            continue;
+
+        }
 
 
-            const selected =
-                selectedFavoritePhotoIds.includes(
-                    id
-                );
+        if(!photo){
+
+            continue;
+
+        }
 
 
-            const selectable =
-                favoritePhotoDeleteSelecting ||
-                favoritePhotoShareSelecting;
+        const id =
+            String(favorite.id);
 
 
-            html += `
+        const selected =
+            selectedFavoritePhotoIds.includes(
+                id
+            );
+
+
+        const selectable =
+            favoritePhotoDeleteSelecting ||
+            favoritePhotoShareSelecting;
+
+
+        html += `
 
                 <div
                     class="
@@ -650,8 +765,7 @@ function favoritePhotoRender(){
 
             `;
 
-        }
-    );
+    }
 
 
     box.innerHTML =
