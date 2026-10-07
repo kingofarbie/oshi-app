@@ -83,7 +83,7 @@ calendar-children.css
     text-overflow: ellipsis;
 }
 
-.children-calendar-back-button {
+.children-calendar-header .children-calendar-back-button {
     flex-shrink: 0;
 
     width: 46px;
@@ -100,8 +100,8 @@ calendar-children.css
     border: none;
     border-radius: 12px;
 
-    background: var(--surface);
-    color: var(--text);
+    background: var(--surface) !important;
+    color: var(--text) !important;
 
     font-size: 25px;
     font-weight: 400;
@@ -114,7 +114,6 @@ calendar-children.css
 
     box-sizing: border-box;
 }
-
 
 
 /* =====================================================
