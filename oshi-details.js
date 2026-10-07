@@ -1750,39 +1750,135 @@ function addOshiPhotoToFavorites(
     }
 
 
-    const exists =
-        data.favorites.photos.some(
-            favorite =>
-                favorite.source ===
-                    "favorite" &&
-                String(
-                    favorite.oshiId
-                ) ===
-                    String(
-                        photo.oshiId
-                    ) &&
-                String(
-                    favorite.sourceOshiPhotoId
-                ) ===
-                    String(
-                        photo.photoId
-                    )
-        );
-
-
-    if(exists){
-
-        return;
-
-    }
-
-
     const id =
         "oshi_favorite_" +
         photo.oshiId +
         "_" +
         photo.photoId;
 
+
+    /*
+       既存のお気に入りを確認
+
+       ・現在形式
+       ・移行前の古い形式
+
+       どちらも同じお気に入りとして扱う
+    */
+
+    const existingIndex =
+        data.favorites.photos.findIndex(
+            favorite => {
+
+                if(
+                    !favorite ||
+                    favorite.source !==
+                        "favorite"
+                ){
+
+                    return false;
+
+                }
+
+
+                if(
+                    String(
+                        favorite.id
+                    ) ===
+                    String(id)
+                ){
+
+                    return true;
+
+                }
+
+
+                return (
+                    String(
+                        favorite.oshiId
+                    ) ===
+                    String(
+                        photo.oshiId
+                    ) &&
+                    String(
+                        favorite.sourceOshiPhotoId || ""
+                    ) ===
+                    String(
+                        photo.photoId
+                    )
+                );
+
+            }
+        );
+
+
+    /*
+       既存のお気に入りがある場合
+       → IndexedDB参照用情報を最新形式へ更新
+    */
+
+    if(
+        existingIndex >= 0
+    ){
+
+        const existing =
+            data.favorites.photos[
+                existingIndex
+            ];
+
+
+        existing.id =
+            id;
+
+        existing.source =
+            "favorite";
+
+        existing.oshiId =
+            photo.oshiId;
+
+        existing.sourceOshiPhotoId =
+            photo.photoId;
+
+
+        if(
+            !existing.favoriteAt
+        ){
+
+            existing.favoriteAt =
+                Date.now();
+
+        }
+
+
+        /*
+           photoOrderにIDがなければ追加
+        */
+
+        const orderExists =
+            data.favorites.photoOrder.some(
+                orderId =>
+                    String(orderId) ===
+                    String(id)
+            );
+
+
+        if(!orderExists){
+
+            data.favorites.photoOrder.push(
+                id
+            );
+
+        }
+
+
+        return;
+
+    }
+
+
+    /*
+       新規お気に入り
+    */
 
     const favoritePhoto = {
 
@@ -1814,6 +1910,7 @@ function addOshiPhotoToFavorites(
     );
 
 }
+
 
 /* =========================================================
    ⭐ 推し写真を既存お気に入りから削除
