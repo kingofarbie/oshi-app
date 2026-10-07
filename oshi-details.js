@@ -239,10 +239,6 @@ function initOshiDetailsPage(
     id
 ){
 
-    console.log(
-        "★ 推し詳細ページ初期化:",
-        id
-    );
 
 
     const data =
@@ -487,11 +483,6 @@ function initOshiDetailsPage(
     initOshiPhotoViewer();
     initOshiPhotoViewerButtons();
 
-
-    console.log(
-        "★ 推し詳細表示:",
-        oshi.name
-    );
 
 }
 
@@ -811,8 +802,6 @@ function handleOshiPhotoFiles(
         return;
     }
 
-    alert("選択された枚数：" + files.length);
-
 
     const oshiId =
         getCurrentOshiDetailsId();
@@ -1002,7 +991,6 @@ function readOshiPhotoFiles(
                                 0.8
                             );
 
-                            alert("画像処理できました：" + (index + 1) + "枚目");
 
                         results.push({
                             src: src
@@ -1081,12 +1069,6 @@ async function saveOshiPhotos(
     oshiId,
     photos
 ){
-
-    alert(
-        "saveOshiPhotos到達：" +
-        photos.length +
-        "枚"
-    );
 
 
     if(
@@ -1258,14 +1240,6 @@ async function saveOshiPhotos(
         );
 
 
-        alert(
-            "IndexedDB保存：" +
-            (index + 1) +
-            "/" +
-            photos.length +
-            "枚"
-        );
-
     }
 
 
@@ -1275,23 +1249,11 @@ async function saveOshiPhotos(
        =====================================================
     */
 
-    alert(
-        "db.save開始：" +
-        currentPhotos.length +
-        "枚"
-    );
-
 
     db.save(
         data
     );
 
-
-    alert(
-        "db.save完了：" +
-        data.oshiDetails[oshiId].photos.length +
-        "枚"
-    );
 
 
     /*
@@ -1353,12 +1315,6 @@ async function saveOshiPhotos(
 
     }
 
-
-    console.log(
-        "★ 推し写真をIndexedDBへ保存:",
-        photos.length,
-        "枚"
-    );
 
 }
 
@@ -1690,11 +1646,6 @@ function toggleOshiPhotoFavorite(
     refreshExistingFavoritesPage();
 
 
-    console.log(
-        "★ 推し写真お気に入り:",
-        photoId,
-        newFavorite
-    );
 
 }
 
@@ -2794,10 +2745,10 @@ async function deleteSelectedOshiPhotos(){
                     "function"
             ){
 
-                removeOshiPhotoFromFavorites(
-                    oshiId,
-                    photo.photoId
-                );
+removeOshiPhotoFromFavorites(
+    photo,
+    data
+);
 
             }
 
@@ -4630,11 +4581,6 @@ async function deleteOshiCurrentPhoto(){
 
     refreshExistingFavoritesPage();
 
-
-    console.log(
-        "★ 推し写真削除:",
-        photoId
-    );
 
 }
 
