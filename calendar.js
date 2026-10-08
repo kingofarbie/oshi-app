@@ -2454,6 +2454,7 @@ function renderEventShareList(){
 
                 <label
                     class="event-share-event-item"
+                    onclick="toggleEventShareDateDisplay(event, ${event.id})"
                 >
 
                     <input
@@ -2462,6 +2463,7 @@ function renderEventShareList(){
                         value="${event.id}"
                         ${checked}
                         onchange="toggleEventShareSelection(${event.id})"
+                        onclick="event.stopPropagation()"
                     >
 
                     <div
@@ -2481,23 +2483,8 @@ function renderEventShareList(){
                         <div
                             class="event-share-event-date"
                         >
-                            📅 ${date}
+                            📅 ${escapeEventShareHTML(date)}
                         </div>
-
-                        ${
-                            event.place
-                            ? `
-                            <div
-                                class="event-share-event-place"
-                            >
-                                📍
-                                ${escapeEventShareHTML(
-                                    event.place
-                                )}
-                            </div>
-                            `
-                            : ""
-                        }
 
                     </div>
 
@@ -2515,6 +2502,41 @@ function renderEventShareList(){
     updateEventShareSelectedCount();
 
 }
+
+
+function toggleEventShareDateDisplay(event, id){
+
+    if(
+        event.target.closest(
+            ".event-share-event-checkbox"
+        )
+    ){
+        return;
+    }
+
+
+    const item =
+        event.currentTarget;
+
+
+    const date =
+        item.querySelector(
+            ".event-share-event-date"
+        );
+
+
+    if(!date){
+        return;
+    }
+
+
+    date.classList.toggle(
+        "event-share-date-expanded"
+    );
+
+}
+
+
 
 /* =====================================================
    ☑️ 個別選択

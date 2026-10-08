@@ -472,3 +472,47 @@
 
     cursor: pointer;
 }
+
+
+
+.event-share-event-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+.event-share-event-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.event-share-event-title {
+    flex: 0 1 auto;
+    min-width: 0;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.event-share-event-date {
+    flex: 0 1 auto;
+    min-width: 0;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.event-share-event-date.event-share-date-expanded {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+}
