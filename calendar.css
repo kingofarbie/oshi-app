@@ -432,6 +432,21 @@
 }
 
 
+
+.event-share-header {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.event-share-header h2 {
+    margin: 0;
+    flex: 1;
+    min-width: 0;
+}
+
+
 .event-share-close-btn {
     flex-shrink: 0;
 
