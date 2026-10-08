@@ -2044,6 +2044,10 @@ let eventShareSelectedIds = [];
    📤 予定共有画面を開く
 ===================================================== */
 
+/* =====================================================
+   📤 予定共有画面を開く
+===================================================== */
+
 function openEventShareScreen(){
 
     const screen =
@@ -2058,10 +2062,29 @@ function openEventShareScreen(){
 
 
     /* =====================
-       共有画面を表示
+       📥 取込画面を閉じる
+       ※共有と取込を同時表示しない
     ===================== */
 
-    screen.style.display = "block";
+    const importScreen =
+        document.getElementById(
+            "eventImportScreen"
+        );
+
+    if(importScreen){
+
+        importScreen.style.display =
+            "none";
+
+    }
+
+
+    /* =====================
+       📤 共有画面を表示
+    ===================== */
+
+    screen.style.display =
+        "block";
 
 
     /* =====================
@@ -2072,7 +2095,10 @@ function openEventShareScreen(){
         document.getElementById("calendar");
 
     if(calendar){
-        calendar.style.display = "none";
+
+        calendar.style.display =
+            "none";
+
     }
 
 
@@ -2096,7 +2122,10 @@ function openEventShareScreen(){
         );
 
     if(selectAll){
-        selectAll.checked = false;
+
+        selectAll.checked =
+            false;
+
     }
 
 
@@ -2132,6 +2161,7 @@ function openEventShareScreen(){
 
 }
 
+
 /* =====================================================
    📤 予定共有画面を閉じる
 ===================================================== */
@@ -2145,7 +2175,8 @@ function closeEventShareScreen(){
 
     if(screen){
 
-        screen.style.display = "none";
+        screen.style.display =
+            "none";
 
     }
 
@@ -2155,11 +2186,13 @@ function closeEventShareScreen(){
 
     if(calendar){
 
-        calendar.style.display = "";
+        calendar.style.display =
+            "";
 
     }
 
 }
+
 
 /* =====================================================
    🕒 共有日時
@@ -3838,6 +3871,7 @@ let eventImportSelectedIds = [];
 /* =====================================================
    📥 取り込み画面を開く
 ===================================================== */
+
 function openEventImportScreen(){
 
     const screen =
@@ -3847,6 +3881,24 @@ function openEventImportScreen(){
 
     if(!screen){
         return;
+    }
+
+
+    /* =====================
+       📤 共有画面を閉じる
+       ※共有と取込を同時表示しない
+    ===================== */
+
+    const shareScreen =
+        document.getElementById(
+            "eventShareScreen"
+        );
+
+    if(shareScreen){
+
+        shareScreen.style.display =
+            "none";
+
     }
 
 
@@ -3904,7 +3956,8 @@ function openEventImportScreen(){
 
     if(info){
 
-        info.style.display = "none";
+        info.style.display =
+            "none";
 
     }
 
@@ -3965,7 +4018,8 @@ function openEventImportScreen(){
                 プレミアム以上のプランで利用できます。
             `;
 
-            notice.style.display = "block";
+            notice.style.display =
+                "block";
 
         }else{
 
@@ -3973,7 +4027,8 @@ function openEventImportScreen(){
                 📥 <strong>${plan.name}</strong>で予定を取り込めます。
             `;
 
-            notice.style.display = "block";
+            notice.style.display =
+                "block";
 
         }
 
@@ -3994,14 +4049,16 @@ function openEventImportScreen(){
 
         if(isFree){
 
-            fileLabel.style.opacity = "0.5";
+            fileLabel.style.opacity =
+                "0.5";
 
             fileLabel.style.pointerEvents =
                 "none";
 
         }else{
 
-            fileLabel.style.opacity = "";
+            fileLabel.style.opacity =
+                "";
 
             fileLabel.style.pointerEvents =
                 "";
@@ -4024,10 +4081,11 @@ function openEventImportScreen(){
 
 
     /* =====================
-       画面表示
+       📥 画面表示
     ===================== */
 
-    screen.style.display = "block";
+    screen.style.display =
+        "block";
 
 
     /* =====================
@@ -4041,7 +4099,8 @@ function openEventImportScreen(){
 
     if(calendar){
 
-        calendar.style.display = "none";
+        calendar.style.display =
+            "none";
 
     }
 
@@ -4057,9 +4116,11 @@ function openEventImportScreen(){
 
 }
 
+
 /* =====================================================
    📥 取り込み画面を閉じる
 ===================================================== */
+
 function closeEventImportScreen(){
 
     const screen =
@@ -4069,7 +4130,8 @@ function closeEventImportScreen(){
 
     if(screen){
 
-        screen.style.display = "none";
+        screen.style.display =
+            "none";
 
     }
 
@@ -4081,11 +4143,13 @@ function closeEventImportScreen(){
 
     if(calendar){
 
-        calendar.style.display = "";
+        calendar.style.display =
+            "";
 
     }
 
 }
+
 
 /* =====================================================
    📂 JSONファイル読み込み
