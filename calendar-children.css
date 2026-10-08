@@ -1595,7 +1595,7 @@ calendar-children.css
     }
 
    .children-calendar-title {
-        font-size: 19px;
+        font-size: 22px;
     }
 
     .children-calendar-back-button {
@@ -1711,7 +1711,7 @@ calendar-children.css
 @media (max-width:380px) {
 
     .children-calendar-title {
-        font-size: 19px;
+        font-size: 22px;
     }
 
     .children-calendar-back-button {

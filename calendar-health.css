@@ -43,7 +43,7 @@ padding: 8px 10px;
     grid-column: 1;
     grid-row: 1;
 
-    align-self: end;
+    align-self: start;
 
     min-width: 0;
     margin: 0;
@@ -69,7 +69,7 @@ padding: 8px 10px;
     grid-column: 2;
     grid-row: 1;
 
-    align-self: end;
+    align-self: start;
 
     flex-shrink: 0;
 
@@ -1097,7 +1097,7 @@ font-weight: 800;
 @media (max-width: 600px) {
 
 .health-calendar-title {
-    font-size: 19px;
+    font-size: 22px;
 }
 
 .health-back-button {
