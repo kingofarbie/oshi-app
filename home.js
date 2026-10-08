@@ -446,6 +446,11 @@ async function displayFavoritePhotoCard(){
     }
 
 
+    console.log(
+    "ホームお気に入り写真:",
+    photos
+);
+
     /* =====================
        表示枚数
     ===================== */
