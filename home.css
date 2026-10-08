@@ -67,8 +67,9 @@
 
 /* 「○月○日 ○○:○○まで」 */
 .countdown-date{
-    font-size:13px;
-    opacity:0.8;
+    font-size:17px;
+    font-weight:600;
+    opacity:0.9;
 }
 
 /* イベント名 */
