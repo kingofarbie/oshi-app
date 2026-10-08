@@ -815,26 +815,20 @@ box.innerHTML = `
 <div
     class="countdown-inner ${cardClass}"
     onclick="openEventDetail(${next.id})"
-><div class="countdown-top">
-
-    <div class="countdown-number">
-        ${countdownText}
-    </div>
-
-    <div class="countdown-date">
-        ${dateText}
-    </div>
-
-</div>
-
+>
 
 <div class="countdown-event">
-
     ${icon}
     ${next.title}
-
 </div>
 
+<div class="countdown-date">
+    ${dateText}
+</div>
+
+<div class="countdown-number">
+    ${countdownText}
+</div>
 
 ${
     next.place
