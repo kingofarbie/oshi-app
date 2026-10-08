@@ -306,6 +306,10 @@ function openChildrenMilestone() {
 
 function closeChildrenMilestone() {
 
+    /* =================================================
+       🌱 成長・定期記録へ戻る
+    ================================================= */
+
     const section =
         document.getElementById(
             "childrenMilestoneSection"
@@ -329,6 +333,28 @@ function closeChildrenMilestone() {
     if (!growthSection) return;
 
 
+    /* =================================================
+       🗓 カレンダー戻るボタンを再表示
+    ================================================= */
+
+    const calendarBackButton =
+        document.querySelector(
+            ".children-calendar-back-button"
+        );
+
+
+    if (calendarBackButton) {
+
+        calendarBackButton.style.display =
+            "";
+
+    }
+
+
+    /* =================================================
+       成長カテゴリー一覧を再表示
+    ================================================= */
+
     const categoryList =
         growthSection.querySelector(
             ".children-growth-category-list"
@@ -342,6 +368,10 @@ function closeChildrenMilestone() {
 
     }
 
+
+    /* =================================================
+       成長・定期記録ヘッダーを再表示
+    ================================================= */
 
     const growthHeader =
         growthSection.querySelector(
@@ -357,7 +387,6 @@ function closeChildrenMilestone() {
     }
 
 }
-
 
 /* =====================================================
    🌱 日付表示

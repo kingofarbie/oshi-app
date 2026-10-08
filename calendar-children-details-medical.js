@@ -96,6 +96,7 @@ function closeChildrenMedical() {
             "none";
     }
 
+
     const growthSection =
         document.getElementById(
             "childrenGrowthSection"
@@ -105,6 +106,22 @@ function closeChildrenMedical() {
         growthSection.style.display =
             "";
     }
+
+
+    /* =================================================
+       🗓 カレンダー戻るボタンを再表示
+    ================================================= */
+
+    const calendarBackButton =
+        document.querySelector(
+            ".children-calendar-back-button"
+        );
+
+    if (calendarBackButton) {
+        calendarBackButton.style.display =
+            "";
+    }
+
 
     const categoryList =
         growthSection
@@ -118,6 +135,7 @@ function closeChildrenMedical() {
             "";
     }
 
+
     const growthHeader =
         growthSection
             ? growthSection.querySelector(
@@ -129,6 +147,7 @@ function closeChildrenMedical() {
         growthHeader.style.display =
             "";
     }
+
 }
 
 

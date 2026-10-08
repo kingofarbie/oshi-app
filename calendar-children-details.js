@@ -3223,8 +3223,8 @@ if (calendarBackButton) {
 
 function closeChildrenVaccination() {
 
-        /* =================================================
-       上部ボタンを元の「◀ カレンダー」に戻す
+    /* =================================================
+       上部ボタンを元の「🗓 カレンダー」に戻す
     ================================================= */
 
     const calendarBackButton =
@@ -3235,9 +3235,13 @@ function closeChildrenVaccination() {
     if (calendarBackButton) {
 
         calendarBackButton.textContent =
-            "◀ カレンダー";
+            "🗓";
+
+        calendarBackButton.style.display =
+            "";
 
     }
+
 
     const section =
         document.getElementById(
@@ -3279,7 +3283,6 @@ function closeChildrenVaccination() {
     }
 
 }
-
 
 /* =====================================================
    💉 表示モード
