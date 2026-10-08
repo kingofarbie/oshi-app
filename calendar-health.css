@@ -27,13 +27,14 @@ overflow-x: hidden;
 ===================================================== */
 
 .health-calendar-header {
-display: grid;
-grid-template-columns: minmax(0, 1fr) auto;
-grid-template-rows: auto auto;
-column-gap: 8px;
-row-gap: 6px;
-padding: 8px 10px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    grid-template-rows: auto;
+    align-items: start;
+    column-gap: 8px;
+    padding: 8px 10px;
 }
+
 
 /* =====================================================
 💊 健康カレンダー タイトル
@@ -65,19 +66,14 @@ padding: 8px 10px;
 ◀ 通常カレンダー ＋ 📊 グラフ
 ===================================================== */
 
+.health-calendar-header .health-graph-button,
 .health-calendar-header .health-back-button {
-    grid-column: 2;
-    grid-row: 1;
-
-    align-self: start;
-    justify-self: end;
-
-
     flex-shrink: 0;
 
     width: 46px;
     height: 46px;
     max-width: 46px;
+    min-height: 46px;
 
     padding: 0;
 
@@ -103,16 +99,17 @@ padding: 8px 10px;
     box-sizing: border-box;
 }
 
-
 .health-calendar-header .health-graph-button {
-grid-column: 2;
-grid-row: 2;
-
-flex-shrink: 0;
-width: 150px;
-max-width: 150px;
-
+    grid-column: 2;
+    grid-row: 1;
 }
+
+.health-calendar-header .health-back-button {
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: end;
+}
+
 
 /* =====================================================
 月・今日
