@@ -78,17 +78,35 @@
 
 
 /* =====================================================
-   通常カレンダーへ戻る
+   ⚙️ 設定 ＋ 🗓 通常カレンダーへ戻る
 ===================================================== */
 
-.sports-calendar-header .sports-back-button {
+.sports-calendar-header-buttons {
+
     flex: 0 0 auto;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    margin-left: auto;
+}
+
+
+/* 共通：⚙️・🗓 */
+
+.sports-calendar-header .sports-settings-button,
+.sports-calendar-header .sports-back-button {
+
+    flex: 0 0 46px;
 
     width: 46px;
     height: 46px;
     max-width: 46px;
 
-    margin-left: auto;
+    margin: 0;
 
     padding: 0;
 
@@ -116,6 +134,7 @@
 
     white-space: nowrap;
 }
+
 
 
 /* =====================================================

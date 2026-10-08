@@ -54,17 +54,32 @@
         </h1>
 
 
-        <!-- 右：通常カレンダーへ戻る -->
 
-<button
-    type="button"
-    class="sports-back-button"
-    onclick="loadCalendarHTML()"
-    title="カレンダーに戻る"
-    aria-label="カレンダーに戻る"
->
-    🗓
-</button>        
+        <!-- 右：設定・通常カレンダーへ戻る -->
+
+        <div class="sports-calendar-header-buttons">
+
+            <button
+                type="button"
+                class="sports-settings-button"
+                onclick="openFavoriteSportsSettings()"
+                title="応援スポーツ設定"
+                aria-label="応援スポーツ設定"
+            >
+                ⚙️
+            </button>
+
+            <button
+                type="button"
+                class="sports-back-button"
+                onclick="loadCalendarHTML()"
+                title="カレンダーに戻る"
+                aria-label="カレンダーに戻る"
+            >
+                🗓
+            </button>
+
+        </div>
 
     </header>
 
@@ -92,13 +107,6 @@
         <span class="sports-current-team-name"></span>
     </div>
 
-    <button
-        type="button"
-        class="sports-open-settings-button"
-        onclick="openFavoriteSportsSettings()"
-    >
-        ⚙ 設定
-    </button>
 
 </section>
 
