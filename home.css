@@ -207,3 +207,9 @@
     padding:20px;
     text-align:center;
 }
+
+
+.countdown-number-large{
+    font-size:42px;
+    font-weight:bold;
+}

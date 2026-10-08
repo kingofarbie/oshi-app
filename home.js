@@ -744,23 +744,16 @@ const mins =
 */
 let countdownText = "";
 
-
-if(days >= 5){
-
-    countdownText =
-        "あと " + days + "日";
-
-}
-else if(days >= 1){
+if(days >= 1){
 
     countdownText =
-        "あと " + days + "日";
+        `あと <span class="countdown-number-large">${days}</span>日`;
 
 }
 else if(diff > 0){
 
     countdownText =
-        `あと ${hours}時間 ${mins}分`;
+        `あと <span class="countdown-number-large">${hours}</span>時間 <span class="countdown-number-large">${mins}</span>分`;
 
 }
 else{
@@ -769,6 +762,7 @@ else{
         "🎉 開催中";
 
 }
+
 
 
 /*
