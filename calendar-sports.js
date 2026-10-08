@@ -761,7 +761,7 @@ function updateSportsCalendarTitle(){
 
 
 title.innerHTML =
-    "🏟️ スポーツカレンダー";
+    "🏟️ スポーツ";
     }
 
 
