@@ -356,9 +356,14 @@
 
     height: 36px;
 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
     font-size: 18px !important;
     font-weight: 600;
 }
+
 
 /* =====================
    📅 カレンダータイトル行
