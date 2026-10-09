@@ -485,13 +485,20 @@ box-shadow:
 1日手帳・写真
 ========================= */
 
+/* =========================
+1日手帳・写真
+========================= */
+
 .memory-photo-box{
 
-background:var(--surface);
+background:transparent;
 
-border:1px solid var(--border);
+border:none;
+
+box-shadow:none;
 
 }
+
 
 .memory-list{
 
