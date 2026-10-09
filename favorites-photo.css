@@ -839,3 +839,10 @@ box-sizing:border-box;
     transform:scale(.9);
 
 }
+
+
+#favorite-photo-list .favorite-photo-item {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
