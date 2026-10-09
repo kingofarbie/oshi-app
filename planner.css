@@ -767,15 +767,18 @@
 }
 
 
+
 /* キャンセルボタン */
 
 .planner-cancel-btn{
 
-    flex:1;
+    flex:1 1 0;
 
     min-width:0;
 
-    padding:8px 2px !important;
+    box-sizing:border-box;
+
+    padding:8px 10px !important;
 
     margin:0 !important;
 
@@ -787,13 +790,14 @@
 
     color:#fff !important;
 
-    font-size:12px !important;
+    font-size:13px !important;
 
     font-weight:bold;
 
     white-space:nowrap;
 
 }
+
 
 
 /* 実時間サイズになった付箋 */
