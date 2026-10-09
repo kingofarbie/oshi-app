@@ -1288,11 +1288,6 @@ function plannerEventMouseLeave(){
 
 /* =====================
    タップ
-   通常 ⇄ 内容が収まる高さ
-===================== */
-
-/* =====================
-   タップ
    内容が隠れている場合に展開
    再タップで元に戻す
 ===================== */
@@ -1357,6 +1352,9 @@ function plannerEventTap(event, id){
             "planner-event-compact"
         );
 
+        eventBox.style.zIndex =
+            eventBox.dataset.originalZIndex || "";
+
         return;
 
     }
@@ -1373,6 +1371,38 @@ function plannerEventTap(event, id){
         return;
 
     }
+
+    /* =====================
+       展開前の重なり順を保存
+    ===================== */
+
+    if(!eventBox.dataset.originalZIndex){
+
+        eventBox.dataset.originalZIndex =
+            eventBox.style.zIndex || "";
+
+    }
+
+    /* =====================
+       タップした予定を最前面へ
+    ===================== */
+
+    const board =
+        eventBox.closest(".planner-board");
+
+    if(board){
+
+        board.querySelectorAll(".planner-event").forEach(box => {
+
+            box.style.zIndex =
+                box.dataset.originalZIndex || "";
+
+        });
+
+    }
+
+    eventBox.style.zIndex =
+        "9999";
 
     /* =====================
        全内容が見える高さを計算
@@ -1431,7 +1461,6 @@ function plannerEventTap(event, id){
     );
 
 }
-
 
 /* =====================
    長押し
