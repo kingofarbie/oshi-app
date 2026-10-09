@@ -1674,16 +1674,15 @@ if(lastPage){
         }
 
 
-        /* 推し */
-        if(lastPage === "oshiPage"){
+/* 推し */
+/* oshi.html は起動時に読み込み済み */
+if(lastPage === "oshiPage"){
 
-            if(
-                typeof loadOshiPage === "function"
-            ){
+    renderOshiList();
 
-                loadOshiPage();
+}
 
-            }
+
 
         }
 
