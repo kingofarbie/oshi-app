@@ -1,0 +1,1339 @@
+
+/* =====================================================
+   👨‍👩‍👧 家族スケジュール
+   planner-family.js
+
+   ・家族メンバー最大4人
+   ・プレミアム / VIP 限定
+   ・単発予定、繰り返し予定、日別例外を分離保存
+   ・繰り返し予定の変更は指定日以降に適用
+   ・個人予定の編集処理には干渉しない
+===================================================== */
+
+const PLANNER_FAMILY_MAX_MEMBERS = 4;
+const PLANNER_FAMILY_DESKTOP_LANE = 54;
+const PLANNER_FAMILY_MOBILE_LANE = 46;
+const PLANNER_FAMILY_MINUTES_PER_HOUR = 60;
+const PLANNER_FAMILY_PIXELS_PER_30_MINUTES = 40;
+const PLANNER_FAMILY_TOP_OFFSET = 15;
+
+/* =====================================================
+   共通処理
+===================================================== */
+
+function plannerFamilyIsAllowed() {
+    const data = db.load();
+    const plan = data.settings?.plan || "free";
+    return plan === "premium" || plan === "vip";
+}
+
+function plannerFamilyEnsureData(data) {
+    if (!data.familySchedule || typeof data.familySchedule !== "object") {
+        data.familySchedule = {};
+    }
+
+    const family = data.familySchedule;
+
+    if (!Array.isArray(family.members)) family.members = [];
+    if (!Array.isArray(family.events)) family.events = [];
+    if (!Array.isArray(family.rules)) family.rules = [];
+    if (!Array.isArray(family.exceptions)) family.exceptions = [];
+
+    return family;
+}
+
+function plannerFamilyNewId() {
+    return "family-" +
+        Date.now().toString(36) + "-" +
+        Math.random().toString(36).slice(2, 9);
+}
+
+function plannerFamilyDateIsValid(value) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(value || "")) {
+        return false;
+    }
+
+    const [year, month, day] = value.split("-").map(Number);
+    const date = new Date(Date.UTC(year, month - 1, day));
+
+    return date.getUTCFullYear() === year &&
+        date.getUTCMonth() === month - 1 &&
+        date.getUTCDate() === day;
+}
+
+function plannerFamilyTimeIsValid(value) {
+    return /^([01]\d|2[0-3]):[0-5]\d$/.test(value || "");
+}
+
+function plannerFamilyAddDays(dateString, amount) {
+    const [year, month, day] = dateString.split("-").map(Number);
+    const date = new Date(Date.UTC(year, month - 1, day));
+
+    date.setUTCDate(date.getUTCDate() + amount);
+
+    return [
+        date.getUTCFullYear(),
+        String(date.getUTCMonth() + 1).padStart(2, "0"),
+        String(date.getUTCDate()).padStart(2, "0")
+    ].join("-");
+}
+
+function plannerFamilyWeekday(dateString) {
+    const [year, month, day] = dateString.split("-").map(Number);
+
+    return new Date(Date.UTC(year, month - 1, day)).getUTCDay();
+}
+
+function plannerFamilyToday() {
+    const now = new Date();
+
+    return [
+        now.getFullYear(),
+        String(now.getMonth() + 1).padStart(2, "0"),
+        String(now.getDate()).padStart(2, "0")
+    ].join("-");
+}
+
+function plannerFamilyAskDate(message, defaultValue) {
+    const value = prompt(message, defaultValue || "");
+
+    if (value === null) return null;
+
+    const result = value.trim();
+
+    if (!plannerFamilyDateIsValid(result)) {
+        alert("日付は YYYY-MM-DD 形式で正しく入力してください。");
+        return undefined;
+    }
+
+    return result;
+}
+
+function plannerFamilyAskTime(message, defaultValue) {
+    const value = prompt(message, defaultValue || "09:00");
+
+    if (value === null) return null;
+
+    const result = value.trim();
+
+    if (!plannerFamilyTimeIsValid(result)) {
+        alert("時刻は HH:MM 形式で入力してください。");
+        return undefined;
+    }
+
+    return result;
+}
+
+function plannerFamilyAskTitle(message, defaultValue, maxLength = 5) {
+    const value = prompt(message, defaultValue || "");
+
+    if (value === null) return null;
+
+    const result = value.trim();
+
+    if (!result || [...result].length > maxLength) {
+        alert(`名前は1〜${maxLength}文字で入力してください。`);
+        return undefined;
+    }
+
+    return result;
+}
+
+function plannerFamilyGetSelectedDate() {
+    if (
+        typeof selectedCalendarDate !== "undefined" &&
+        plannerFamilyDateIsValid(selectedCalendarDate)
+    ) {
+        return selectedCalendarDate;
+    }
+
+    const stored = localStorage.getItem("oshi_last_planner_date");
+
+    if (plannerFamilyDateIsValid(stored)) return stored;
+
+    return plannerFamilyToday();
+}
+
+function plannerFamilyGetMember(memberId) {
+    const data = db.load();
+    const family = plannerFamilyEnsureData(data);
+
+    return family.members.find(member => member.id === memberId) || null;
+}
+
+function plannerFamilySave(data) {
+    db.save(data);
+}
+
+/* =====================================================
+   画面共通
+===================================================== */
+
+function plannerFamilyCreateScreen(id, zIndex) {
+    let screen = document.getElementById(id);
+
+    if (screen) return screen;
+
+    screen = document.createElement("section");
+    screen.id = id;
+    screen.className = "planner-family-screen";
+    screen.style.zIndex = String(zIndex);
+    screen.setAttribute("role", "dialog");
+    screen.setAttribute("aria-modal", "true");
+
+    document.body.appendChild(screen);
+
+    return screen;
+}
+
+function plannerFamilyMakeButton(label, handler, className = "") {
+    const button = document.createElement("button");
+
+    button.type = "button";
+    button.textContent = label;
+
+    if (className) button.className = className;
+
+    button.addEventListener("click", handler);
+
+    return button;
+}
+
+function plannerFamilyMakeHeader(backLabel, backHandler, title) {
+    const header = document.createElement("div");
+    header.className = "planner-family-header";
+
+    header.appendChild(
+        plannerFamilyMakeButton(backLabel, backHandler)
+    );
+
+    const heading = document.createElement("h2");
+    heading.textContent = title;
+
+    header.appendChild(heading);
+
+    return header;
+}
+
+/* =====================================================
+   家族管理画面
+===================================================== */
+
+function openPlannerFamily() {
+    if (!plannerFamilyIsAllowed()) {
+        alert("家族スケジュールはプレミアム以上で利用できます。");
+        return;
+    }
+
+    const screen = plannerFamilyCreateScreen(
+        "plannerFamilyScreen",
+        10000
+    );
+
+    screen.replaceChildren();
+
+    screen.appendChild(
+        plannerFamilyMakeHeader(
+            "← 戻る",
+            closePlannerFamily,
+            "👨‍👩‍👧 家族管理"
+        )
+    );
+
+    const description = document.createElement("p");
+    description.textContent =
+        "家族を登録して、それぞれの予定を管理できます。最大4人まで登録できます。";
+
+    screen.appendChild(description);
+
+    const list = document.createElement("div");
+    list.id = "plannerFamilyMemberList";
+
+    screen.appendChild(list);
+
+    screen.appendChild(
+        plannerFamilyMakeButton(
+            "＋ 家族を追加",
+            plannerFamilyAddMember
+        )
+    );
+
+    screen.style.display = "block";
+
+    plannerFamilyRenderMembers();
+}
+
+function closePlannerFamily() {
+    const screen = document.getElementById("plannerFamilyScreen");
+
+    if (screen) screen.style.display = "none";
+}
+
+function plannerFamilyRenderMembers() {
+    const screen = document.getElementById("plannerFamilyScreen");
+    const list = document.getElementById("plannerFamilyMemberList");
+
+    if (!screen || !list) return;
+
+    const data = db.load();
+    const family = plannerFamilyEnsureData(data);
+
+    list.replaceChildren();
+
+    if (family.members.length === 0) {
+        const empty = document.createElement("p");
+        empty.textContent = "家族メンバーはまだ登録されていません。";
+        list.appendChild(empty);
+    }
+
+    family.members.forEach(member => {
+        const row = document.createElement("div");
+        row.className = "planner-family-member";
+
+        const icon = document.createElement("span");
+        icon.className = "planner-family-member-icon";
+        icon.textContent = member.icon || "🧒";
+
+        const name = document.createElement("strong");
+        name.className = "planner-family-member-name";
+        name.textContent = member.name || "";
+
+        const status = document.createElement("span");
+        status.className = "planner-family-member-status";
+        status.textContent = member.enabled ? "表示中" : "非表示";
+
+        const toggle = plannerFamilyMakeButton(
+            member.enabled ? "OFF" : "ON",
+            () => plannerFamilyToggleMember(member.id)
+        );
+
+        const schedule = plannerFamilyMakeButton(
+            "予定",
+            () => plannerFamilyOpenMember(member.id)
+        );
+
+        const edit = plannerFamilyMakeButton(
+            "編集",
+            () => plannerFamilyEditMember(member.id)
+        );
+
+        const remove = plannerFamilyMakeButton(
+            "削除",
+            () => plannerFamilyDeleteMember(member.id)
+        );
+
+        row.append(icon, name, status, toggle, schedule, edit, remove);
+        list.appendChild(row);
+    });
+
+    const addButton = screen.querySelector(
+        'button[data-family-add]'
+    );
+
+    if (addButton) {
+        addButton.disabled =
+            family.members.length >= PLANNER_FAMILY_MAX_MEMBERS;
+    }
+}
+
+function plannerFamilyAddMember() {
+    if (!plannerFamilyIsAllowed()) {
+        alert("家族スケジュールはプレミアム以上で利用できます。");
+        return;
+    }
+
+    const data = db.load();
+    const family = plannerFamilyEnsureData(data);
+
+    if (family.members.length >= PLANNER_FAMILY_MAX_MEMBERS) {
+        alert("家族メンバーは4人まで登録できます（自分を除く）。");
+        return;
+    }
+
+    const name = prompt("家族の名前を1〜3文字で入力してください。");
+
+    if (name === null) return;
+
+    const trimmedName = name.trim();
+
+    if (!trimmedName || [...trimmedName].length > 3) {
+        alert("名前は1〜3文字で入力してください。");
+        return;
+    }
+
+    const icon = prompt(
+        "アイコンを入力してください。",
+        "🧒"
+    );
+
+    if (icon === null) return;
+
+    const trimmedIcon = icon.trim();
+
+    if (!trimmedIcon) {
+        alert("アイコンを入力してください。");
+        return;
+    }
+
+    family.members.push({
+        id: plannerFamilyNewId(),
+        name: trimmedName,
+        icon: trimmedIcon,
+        enabled: true
+    });
+
+    plannerFamilySave(data);
+    plannerFamilyRenderMembers();
+    plannerFamilyRenderLanes();
+}
+
+function plannerFamilyToggleMember(memberId) {
+    const data = db.load();
+    const family = plannerFamilyEnsureData(data);
+    const member = family.members.find(item => item.id === memberId);
+
+    if (!member) return;
+
+    member.enabled = !member.enabled;
+
+    plannerFamilySave(data);
+    plannerFamilyRenderMembers();
+    plannerFamilyRenderLanes();
+}
+
+function plannerFamilyEditMember(memberId) {
+    const data = db.load();
+    const family = plannerFamilyEnsureData(data);
+    const member = family.members.find(item => item.id === memberId);
+
+    if (!member) return;
+
+    const name = prompt("名前（1〜3文字）", member.name);
+
+    if (name === null) return;
+
+    const trimmedName = name.trim();
+
+    if (!trimmedName || [...trimmedName].length > 3) {
+        alert("名前は1〜3文字で入力してください。");
+        return;
+    }
+
+    const icon = prompt("アイコン", member.icon || "🧒");
+
+    if (icon === null) return;
+
+    if (!icon.trim()) {
+        alert("アイコンを入力してください。");
+        return;
+    }
+
+    member.name = trimmedName;
+    member.icon = icon.trim();
+
+    plannerFamilySave(data);
+    plannerFamilyRenderMembers();
+    plannerFamilyRenderLanes();
+}
+
+function plannerFamilyDeleteMember(memberId) {
+    if (!confirm(
+        "この家族メンバーを削除しますか？\nこのメンバーの予定・繰り返し設定・例外も削除されます。"
+    )) {
+        return;
+    }
+
+    const data = db.load();
+    const family = plannerFamilyEnsureData(data);
+
+    family.members = family.members.filter(
+        member => member.id !== memberId
+    );
+
+    family.events = family.events.filter(
+        event => event.memberId !== memberId
+    );
+
+    family.rules = family.rules.filter(
+        rule => rule.memberId !== memberId
+    );
+
+    family.exceptions = family.exceptions.filter(
+        exception => exception.memberId !== memberId
+    );
+
+    plannerFamilySave(data);
+    plannerFamilyRenderMembers();
+    plannerFamilyRenderLanes();
+
+    const screen = document.getElementById("plannerFamilyMemberScreen");
+
+    if (screen && screen.dataset.memberId === memberId) {
+        screen.style.display = "none";
+    }
+}
+
+/* =====================================================
+   家族メンバー別の予定管理画面
+===================================================== */
+
+function plannerFamilyOpenMember(memberId) {
+    if (!plannerFamilyIsAllowed()) {
+        alert("家族スケジュールはプレミアム以上で利用できます。");
+        return;
+    }
+
+    const member = plannerFamilyGetMember(memberId);
+
+    if (!member) return;
+
+    const screen = plannerFamilyCreateScreen(
+        "plannerFamilyMemberScreen",
+        10001
+    );
+
+    screen.dataset.memberId = memberId;
+    screen.replaceChildren();
+
+    screen.appendChild(
+        plannerFamilyMakeHeader(
+            "← 家族一覧",
+            plannerFamilyCloseMember,
+            `${member.icon || "🧒"} ${member.name}の予定`
+        )
+    );
+
+    const description = document.createElement("p");
+    description.textContent =
+        "単発予定と繰り返し予定を登録できます。";
+
+    screen.appendChild(description);
+
+    const list = document.createElement("div");
+    list.id = "plannerFamilyMemberEvents";
+
+    screen.appendChild(list);
+
+    screen.appendChild(
+        plannerFamilyMakeButton(
+            "＋ 単発予定",
+            () => plannerFamilyAddEvent(memberId)
+        )
+    );
+
+    screen.appendChild(
+        plannerFamilyMakeButton(
+            "🔁 繰り返し予定",
+            () => plannerFamilyAddRule(memberId)
+        )
+    );
+
+    screen.style.display = "block";
+
+    plannerFamilyRenderEvents(memberId);
+}
+
+function plannerFamilyCloseMember() {
+    const screen = document.getElementById("plannerFamilyMemberScreen");
+
+    if (screen) screen.style.display = "none";
+}
+
+function plannerFamilyRenderEvents(memberId) {
+    const screen = document.getElementById("plannerFamilyMemberScreen");
+    const list = document.getElementById("plannerFamilyMemberEvents");
+
+    if (!screen || !list) return;
+
+    const data = db.load();
+    const family = plannerFamilyEnsureData(data);
+
+    const events = family.events
+        .filter(event => event.memberId === memberId)
+        .map(event => ({
+            date: event.date,
+            title: event.title,
+            startTime: event.startTime,
+            endTime: event.endTime,
+            kind: "単発",
+            eventId: event.id
+        }));
+
+    const rules = family.rules
+        .filter(rule => rule.memberId === memberId)
+        .map(rule => ({
+            date: `${rule.startDate} ～ ${rule.endDate}`,
+            title: rule.title,
+            startTime: rule.startTime,
+            endTime: rule.endTime,
+            kind: "繰り返し",
+            ruleId: rule.id,
+            weekdays: rule.weekdays
+        }));
+
+    const all = [...events, ...rules].sort((a, b) =>
+        String(a.date).localeCompare(String(b.date))
+    );
+
+    list.replaceChildren();
+
+    if (all.length === 0) {
+        const empty = document.createElement("p");
+        empty.textContent = "登録された予定はありません。";
+        list.appendChild(empty);
+        return;
+    }
+
+    all.forEach(event => {
+        const row = document.createElement("div");
+        row.className = "planner-family-member";
+
+        const details = document.createElement("div");
+        details.className = "planner-family-event-details";
+
+        const title = document.createElement("strong");
+        title.textContent = event.title;
+
+        const time = document.createElement("div");
+        time.textContent =
+            `${event.date}　${event.startTime}〜${event.endTime}`;
+
+        const kind = document.createElement("small");
+        kind.textContent = event.kind;
+
+        details.append(title, time, kind);
+
+        const edit = plannerFamilyMakeButton(
+            "編集",
+            () => {
+                if (event.kind === "単発") {
+                    plannerFamilyEditEvent(event.eventId);
+                } else {
+                    plannerFamilyEditRule(event.ruleId);
+                }
+            }
+        );
+
+        row.append(details, edit);
+        list.appendChild(row);
+    });
+}
+
+/* =====================================================
+   単発予定
+===================================================== */
+
+function plannerFamilyAddEvent(memberId) {
+    if (!plannerFamilyIsAllowed()) return;
+
+    const data = db.load();
+    const family = plannerFamilyEnsureData(data);
+
+    const member = family.members.find(item => item.id === memberId);
+
+    if (!member) return;
+
+    const date = plannerFamilyAskDate(
+        "予定の日付（YYYY-MM-DD）",
+        plannerFamilyGetSelectedDate()
+    );
+
+    if (date === null || date === undefined) return;
+
+    const title = plannerFamilyAskTitle(
+        "予定名（1〜5文字）",
+        "",
+        5
+    );
+
+    if (title === null || title === undefined) return;
+
+    const startTime = plannerFamilyAskTime(
+        "開始時刻（HH:MM）",
+        "17:00"
+    );
+
+    if (startTime === null || startTime === undefined) return;
+
+    const endTime = plannerFamilyAskTime(
+        "終了時刻（HH:MM）",
+        "18:00"
+    );
+
+    if (endTime === null || endTime === undefined) return;
+
+    if (endTime <= startTime) {
+        alert("終了時刻は開始時刻より後にしてください。");
+        return;
+    }
+
+    family.events.push({
+        id: plannerFamilyNewId(),
+        memberId,
+        date,
+        title,
+        startTime,
+        endTime
+    });
+
+    plannerFamilySave(data);
+    plannerFamilyRenderEvents(memberId);
+    plannerFamilyRenderLanes();
+}
+
+function plannerFamilyEditEvent(eventId) {
+    const data = db.load();
+    const family = plannerFamilyEnsureData(data);
+    const event = family.events.find(item => item.id === eventId);
+
+    if (!event) return;
+
+    const date = plannerFamilyAskDate(
+        "日付（YYYY-MM-DD）",
+        event.date
+    );
+
+    if (date === null || date === undefined) return;
+
+    const title = plannerFamilyAskTitle(
+        "予定名（1〜5文字）",
+        event.title,
+        5
+    );
+
+    if (title === null || title === undefined) return;
+
+    const startTime = plannerFamilyAskTime(
+        "開始時刻（HH:MM）",
+        event.startTime
+    );
+
+    if (startTime === null || startTime === undefined) return;
+
+    const endTime = plannerFamilyAskTime(
+        "終了時刻（HH:MM）",
+        event.endTime
+    );
+
+    if (endTime === null || endTime === undefined) return;
+
+    if (endTime <= startTime) {
+        alert("終了時刻は開始時刻より後にしてください。");
+        return;
+    }
+
+    event.date = date;
+    event.title = title;
+    event.startTime = startTime;
+    event.endTime = endTime;
+
+    plannerFamilySave(data);
+    plannerFamilyRenderEvents(event.memberId);
+    plannerFamilyRenderLanes();
+}
+
+function plannerFamilyDeleteEvent(eventId) {
+    const data = db.load();
+    const family = plannerFamilyEnsureData(data);
+    const event = family.events.find(item => item.id === eventId);
+
+    if (!event) return;
+
+    if (!confirm(`「${event.title}」を削除しますか？`)) return;
+
+    family.events = family.events.filter(item => item.id !== eventId);
+
+    plannerFamilySave(data);
+    plannerFamilyRenderEvents(event.memberId);
+    plannerFamilyRenderLanes();
+}
+
+/* =====================================================
+   繰り返し予定
+   曜日：0=日、1=月、2=火、3=水、4=木、5=金、6=土
+===================================================== */
+
+function plannerFamilyAskWeekdays(defaultValue) {
+    const value = prompt(
+        "曜日を数字で入力してください。\n日=0 月=1 火=2 水=3 木=4 金=5 土=6\n複数指定はカンマ区切り（例：1,5）",
+        defaultValue || "1,5"
+    );
+
+    if (value === null) return null;
+
+    const weekdays = [...new Set(
+        value.split(",")
+            .map(item => item.trim())
+            .filter(Boolean)
+            .map(Number)
+    )].sort((a, b) => a - b);
+
+    if (
+        weekdays.length === 0 ||
+        weekdays.some(day => !Number.isInteger(day) || day < 0 || day > 6)
+    ) {
+        alert("曜日は0〜6の数字で入力してください。例：1,5");
+        return undefined;
+    }
+
+    return weekdays;
+}
+
+function plannerFamilyAddRule(memberId) {
+    if (!plannerFamilyIsAllowed()) return;
+
+    const data = db.load();
+    const family = plannerFamilyEnsureData(data);
+
+    const member = family.members.find(item => item.id === memberId);
+
+    if (!member) return;
+
+    const startDate = plannerFamilyAskDate(
+        "繰り返し開始日（YYYY-MM-DD）",
+        plannerFamilyGetSelectedDate()
+    );
+
+    if (startDate === null || startDate === undefined) return;
+
+    const endDate = plannerFamilyAskDate(
+        "繰り返し終了日（YYYY-MM-DD）",
+        startDate.slice(0, 4) + "-12-31"
+    );
+
+    if (endDate === null || endDate === undefined) return;
+
+    if (endDate < startDate) {
+        alert("終了日は開始日以降にしてください。");
+        return;
+    }
+
+    const weekdays = plannerFamilyAskWeekdays("1,5");
+
+    if (weekdays === null || weekdays === undefined) return;
+
+    const title = plannerFamilyAskTitle(
+        "予定名（1〜5文字）",
+        "",
+        5
+    );
+
+    if (title === null || title === undefined) return;
+
+    const startTime = plannerFamilyAskTime(
+        "開始時刻（HH:MM）",
+        "17:00"
+    );
+
+    if (startTime === null || startTime === undefined) return;
+
+    const endTime = plannerFamilyAskTime(
+        "終了時刻（HH:MM）",
+        "18:30"
+    );
+
+    if (endTime === null || endTime === undefined) return;
+
+    if (endTime <= startTime) {
+        alert("終了時刻は開始時刻より後にしてください。");
+        return;
+    }
+
+    family.rules.push({
+        id: plannerFamilyNewId(),
+        memberId,
+        title,
+        weekdays,
+        startDate,
+        endDate,
+        startTime,
+        endTime,
+        createdAt: plannerFamilyToday()
+    });
+
+    plannerFamilySave(data);
+    plannerFamilyRenderEvents(memberId);
+    plannerFamilyRenderLanes();
+}
+
+function plannerFamilyEditRule(ruleId) {
+    const data = db.load();
+    const family = plannerFamilyEnsureData(data);
+    const rule = family.rules.find(item => item.id === ruleId);
+
+    if (!rule) return;
+
+    const effectiveFrom = plannerFamilyAskDate(
+        "変更を適用する日付（この日より前の予定は保持されます）",
+        plannerFamilyToday()
+    );
+
+    if (effectiveFrom === null || effectiveFrom === undefined) return;
+
+    const title = plannerFamilyAskTitle(
+        "新しい予定名（1〜5文字）",
+        rule.title,
+        5
+    );
+
+    if (title === null || title === undefined) return;
+
+    const weekdays = plannerFamilyAskWeekdays(
+        rule.weekdays.join(",")
+    );
+
+    if (weekdays === null || weekdays === undefined) return;
+
+    const startTime = plannerFamilyAskTime(
+        "新しい開始時刻（HH:MM）",
+        rule.startTime
+    );
+
+    if (startTime === null || startTime === undefined) return;
+
+    const endTime = plannerFamilyAskTime(
+        "新しい終了時刻（HH:MM）",
+        rule.endTime
+    );
+
+    if (endTime === null || endTime === undefined) return;
+
+    if (endTime <= startTime) {
+        alert("終了時刻は開始時刻より後にしてください。");
+        return;
+    }
+
+    const endDate = plannerFamilyAskDate(
+        "新しい繰り返し終了日（YYYY-MM-DD）",
+        rule.endDate
+    );
+
+    if (endDate === null || endDate === undefined) return;
+
+    if (endDate < effectiveFrom) {
+        alert("終了日は変更適用日以降にしてください。");
+        return;
+    }
+
+    /*
+     * 元ルールは変更適用日の前日まで残す。
+     * 変更適用日以降は新ルールで表示する。
+     */
+    if (effectiveFrom <= rule.startDate) {
+        family.rules = family.rules.filter(item => item.id !== rule.id);
+    } else {
+        const previousDate = plannerFamilyAddDays(effectiveFrom, -1);
+
+        if (previousDate < rule.endDate) {
+            rule.endDate = previousDate;
+        }
+    }
+
+    family.rules.push({
+        id: plannerFamilyNewId(),
+        memberId: rule.memberId,
+        title,
+        weekdays,
+        startDate: effectiveFrom,
+        endDate,
+        startTime,
+        endTime,
+        createdAt: plannerFamilyToday()
+    });
+
+    plannerFamilySave(data);
+    plannerFamilyRenderEvents(rule.memberId);
+    plannerFamilyRenderLanes();
+}
+
+function plannerFamilyDeleteRule(ruleId) {
+    const data = db.load();
+    const family = plannerFamilyEnsureData(data);
+    const rule = family.rules.find(item => item.id === ruleId);
+
+    if (!rule) return;
+
+    const effectiveFrom = plannerFamilyAskDate(
+        "繰り返しを終了する日付を入力してください。\nこの日より前の予定は保持されます。",
+        plannerFamilyToday()
+    );
+
+    if (effectiveFrom === null || effectiveFrom === undefined) return;
+
+    if (!confirm(
+        `「${rule.title}」の繰り返しを ${effectiveFrom} から終了しますか？`
+    )) {
+        return;
+    }
+
+    if (effectiveFrom <= rule.startDate) {
+        family.rules = family.rules.filter(item => item.id !== rule.id);
+    } else {
+        rule.endDate = plannerFamilyAddDays(effectiveFrom, -1);
+    }
+
+    plannerFamilySave(data);
+    plannerFamilyRenderEvents(rule.memberId);
+    plannerFamilyRenderLanes();
+}
+
+/* =====================================================
+   特定日だけの例外
+===================================================== */
+
+function plannerFamilySkipOccurrence(ruleId, date) {
+    const data = db.load();
+    const family = plannerFamilyEnsureData(data);
+    const rule = family.rules.find(item => item.id === ruleId);
+
+    if (!rule) return;
+
+    const exists = family.exceptions.some(exception =>
+        exception.ruleId === ruleId &&
+        exception.date === date &&
+        exception.action === "skip"
+    );
+
+    if (!exists) {
+        family.exceptions.push({
+            id: plannerFamilyNewId(),
+            ruleId,
+            memberId: rule.memberId,
+            date,
+            action: "skip"
+        });
+    }
+
+    plannerFamilySave(data);
+    plannerFamilyRenderEvents(rule.memberId);
+    plannerFamilyRenderLanes();
+}
+
+/* =====================================================
+   指定日の家族予定を取得
+===================================================== */
+
+function plannerFamilyGetEventsForDate(memberId, date) {
+    const data = db.load();
+    const family = plannerFamilyEnsureData(data);
+
+    const oneTime = family.events
+        .filter(event =>
+            event.memberId === memberId &&
+            event.date === date
+        )
+        .map(event => ({
+            id: event.id,
+            memberId,
+            date,
+            title: event.title,
+            startTime: event.startTime,
+            endTime: event.endTime,
+            sourceType: "event",
+            eventId: event.id
+        }));
+
+    const recurring = [];
+
+    family.rules.forEach(rule => {
+        if (rule.memberId !== memberId) return;
+        if (date < rule.startDate || date > rule.endDate) return;
+        if (!rule.weekdays.includes(plannerFamilyWeekday(date))) return;
+
+        const skipped = family.exceptions.some(exception =>
+            exception.ruleId === rule.id &&
+            exception.date === date &&
+            exception.action === "skip"
+        );
+
+        if (skipped) return;
+
+        recurring.push({
+            id: `${rule.id}-${date}`,
+            memberId,
+            date,
+            title: rule.title,
+            startTime: rule.startTime,
+            endTime: rule.endTime,
+            sourceType: "rule",
+            ruleId: rule.id
+        });
+    });
+
+    return [...oneTime, ...recurring];
+}
+
+/* =====================================================
+   家族レーン描画
+   showPlanner() の plannerFamilyRenderLanes() から呼び出す
+===================================================== */
+
+function plannerFamilyRenderLanes() {
+    const timeline = document.getElementById("plannerTimeline");
+
+    if (!timeline) return;
+
+    const layout = timeline.querySelector(".planner-layout");
+    const board = layout?.querySelector(".planner-board");
+    const times = layout?.querySelector(".planner-times");
+
+    if (!layout || !board || !times) return;
+
+    /* 前回の家族レーンを削除 */
+    layout.querySelector(".planner-family-lanes")?.remove();
+    timeline.querySelector(".planner-family-header-row")?.remove();
+
+    /* 無料プランでは表示しない。データは削除しない */
+    if (!plannerFamilyIsAllowed()) return;
+
+    const data = db.load();
+    const family = plannerFamilyEnsureData(data);
+    const members = family.members.filter(member => member.enabled);
+
+    if (members.length === 0) return;
+
+    const date = plannerFamilyGetSelectedDate();
+
+    /* 個人の予定ボードを縮め、家族レーンの幅を確保 */
+    board.style.minWidth = "0";
+    board.style.flex = "1 1 0";
+
+    /* アイコン・名前の行 */
+    const headerRow = document.createElement("div");
+    headerRow.className = "planner-family-header-row";
+
+    const spacer = document.createElement("div");
+    spacer.className = "planner-family-header-spacer";
+    spacer.style.flexBasis = `${times.getBoundingClientRect().width}px`;
+
+    const headerLanes = document.createElement("div");
+    headerLanes.className = "planner-family-header-lanes";
+
+    /* 時間軸の高さと同じ高さにする */
+    const laneHeight = board.offsetHeight;
+
+    const lanes = document.createElement("div");
+    lanes.className = "planner-family-lanes";
+    lanes.setAttribute("aria-label", "家族スケジュール");
+    lanes.style.height = `${laneHeight}px`;
+
+    members.forEach(member => {
+        const header = document.createElement("div");
+        header.className = "planner-family-lane-header";
+
+        const nameButton = document.createElement("button");
+        nameButton.type = "button";
+        nameButton.className = "planner-family-lane-name-button";
+        nameButton.setAttribute(
+            "aria-label",
+            `${member.name}の予定を管理`
+        );
+
+        const icon = document.createElement("span");
+        icon.className = "planner-family-lane-icon";
+        icon.textContent = member.icon || "🧒";
+
+        const name = document.createElement("span");
+        name.className = "planner-family-lane-name";
+        name.textContent = member.name || "";
+
+        nameButton.append(icon, name);
+        nameButton.addEventListener("click", () => {
+            plannerFamilyOpenMember(member.id);
+        });
+
+        header.appendChild(nameButton);
+        headerLanes.appendChild(header);
+
+        const lane = document.createElement("div");
+        lane.className = "planner-family-lane";
+        lane.dataset.memberId = member.id;
+        lane.style.height = `${laneHeight}px`;
+
+        const events = plannerFamilyGetEventsForDate(member.id, date);
+
+        events.forEach(event => {
+            plannerFamilyDrawEvent(lane, event);
+        });
+
+        lanes.appendChild(lane);
+    });
+
+    headerRow.append(spacer, headerLanes);
+
+    /* ヘッダー行は時間軸全体の上に置く */
+    layout.insertAdjacentElement("beforebegin", headerRow);
+
+    /* 家族レーンは個人ボードの右隣に置く */
+    board.insertAdjacentElement("afterend", lanes);
+}
+
+function plannerFamilyDrawEvent(lane, event) {
+    const startParts = event.startTime.split(":").map(Number);
+    const endParts = event.endTime.split(":").map(Number);
+
+    const startMinutes = startParts[0] * 60 + startParts[1];
+    const endMinutes = endParts[0] * 60 + endParts[1];
+
+    if (endMinutes <= startMinutes) return;
+
+    const startOffset = PLANNER_FAMILY_TOP_OFFSET +
+        startMinutes *
+        PLANNER_FAMILY_PIXELS_PER_30_MINUTES / 30;
+
+    const height = Math.max(
+        4,
+        (endMinutes - startMinutes) *
+        PLANNER_FAMILY_PIXELS_PER_30_MINUTES / 30
+    );
+
+    const bar = document.createElement("button");
+    bar.type = "button";
+    bar.className = "planner-family-event";
+    bar.style.top = `${startOffset}px`;
+    bar.style.height = `${height}px`;
+    bar.title =
+        `${event.title} ${event.startTime}〜${event.endTime}`;
+
+    bar.setAttribute(
+        "aria-label",
+        `${event.title}、${event.startTime}から${event.endTime}`
+    );
+
+    const title = document.createElement("span");
+    title.className = "planner-family-event-title";
+
+    const fontSize = window.matchMedia("(max-width: 480px)").matches
+        ? 11
+        : 12;
+
+    const requiredHeight = [...event.title].length * fontSize * 1.2;
+
+    /* タイトルが収まらない場合は縦の三点リーダーを表示 */
+    title.textContent = height < requiredHeight ? "⋮" : event.title;
+
+    bar.appendChild(title);
+
+    bar.addEventListener("click", eventObject => {
+        eventObject.preventDefault();
+        eventObject.stopPropagation();
+
+        plannerFamilyShowEventDetail(event);
+    });
+
+    lane.appendChild(bar);
+}
+
+/* =====================================================
+   家族予定の詳細
+===================================================== */
+
+function plannerFamilyShowEventDetail(event) {
+    const member = plannerFamilyGetMember(event.memberId);
+
+    if (!member) return;
+
+    const screen = plannerFamilyCreateScreen(
+        "plannerFamilyDetailScreen",
+        10002
+    );
+
+    screen.replaceChildren();
+
+    screen.appendChild(
+        plannerFamilyMakeHeader(
+            "← 閉じる",
+            () => {
+                screen.style.display = "none";
+            },
+            "家族の予定"
+        )
+    );
+
+    const detail = document.createElement("div");
+    detail.className = "planner-family-detail";
+
+    const title = document.createElement("h3");
+    title.textContent = event.title;
+
+    const memberName = document.createElement("p");
+    memberName.textContent =
+        `${member.icon || "🧒"} ${member.name}`;
+
+    const date = document.createElement("p");
+    date.textContent = event.date;
+
+    const time = document.createElement("p");
+    time.textContent =
+        `${event.startTime}〜${event.endTime}`;
+
+    const type = document.createElement("p");
+    type.textContent =
+        event.sourceType === "rule" ? "繰り返し予定" : "単発予定";
+
+    detail.append(title, memberName, date, time, type);
+    screen.appendChild(detail);
+
+    if (event.sourceType === "event") {
+        screen.appendChild(
+            plannerFamilyMakeButton(
+                "編集",
+                () => {
+                    screen.style.display = "none";
+                    plannerFamilyEditEvent(event.eventId);
+                }
+            )
+        );
+
+        screen.appendChild(
+            plannerFamilyMakeButton(
+                "削除",
+                () => {
+                    screen.style.display = "none";
+                    plannerFamilyDeleteEvent(event.eventId);
+                }
+            )
+        );
+    } else {
+        screen.appendChild(
+            plannerFamilyMakeButton(
+                "繰り返し設定を変更",
+                () => {
+                    screen.style.display = "none";
+                    plannerFamilyEditRule(event.ruleId);
+                }
+            )
+        );
+
+        screen.appendChild(
+            plannerFamilyMakeButton(
+                "この日だけ取り消す",
+                () => {
+                    if (!confirm(
+                        `${event.date} の「${event.title}」だけを取り消しますか？`
+                    )) {
+                        return;
+                    }
+
+                    screen.style.display = "none";
+                    plannerFamilySkipOccurrence(
+                        event.ruleId,
+                        event.date
+                    );
+                }
+            )
+        );
+
+        screen.appendChild(
+            plannerFamilyMakeButton(
+                "この日以降の繰り返しを終了",
+                () => {
+                    screen.style.display = "none";
+                    plannerFamilyDeleteRule(event.ruleId);
+                }
+            )
+        );
+    }
+
+    screen.style.display = "block";
+}

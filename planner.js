@@ -997,6 +997,9 @@ function showPlanner(date, fromCalendar = false){
     timeline.innerHTML =
         html;
 
+
+        plannerFamilyRenderLanes();
+        
     /* =====================
        付箋以外をタップ
        → 編集モード解除
