@@ -253,10 +253,7 @@ function showPlanner(date, fromCalendar = false){
 
     /* =====================
        時間軸の設定
-
        30分 = 40px
-       1分 = 40 / 30 px
-
        00:00～25:00
     ===================== */
 
@@ -330,14 +327,8 @@ function showPlanner(date, fromCalendar = false){
 
     /* =====================
        予定を取得
-
-       表示日の時間範囲と重なる予定を取得する。
-
-       例：
-       10/10 23:00 ～ 10/12 12:00
-
-       10/10、10/11、10/12に表示。
-       保存データは変更しない。
+       表示日の時間範囲と重なる予定を取得
+       元の保存データは変更しない
     ===================== */
 
     const allEvents =
@@ -391,9 +382,8 @@ function showPlanner(date, fromCalendar = false){
 
     /* =====================
        表示区間を計算
-
-       日をまたぐ予定は当日の範囲に切り分ける。
-       元の開始日時・終了日時は変更しない。
+       日をまたぐ予定は当日の範囲に切り分ける
+       元の開始・終了日時は変更しない
     ===================== */
 
     const displayEvents =
@@ -464,61 +454,150 @@ function showPlanner(date, fromCalendar = false){
                 segmentDuration,
                 top,
                 actualHeight,
-                displayHeight
+                displayHeight,
+                overlapLane: 0,
+                verticalOffset: 0,
+                offsetRight: false
             };
 
         });
 
     /* =====================
-       重複する予定を判定
+       重複する予定を判定・配置
 
-       時間が重なる予定のうち、
-       短い予定を右へ約7mmずらす。
+       1列目：左端
+       2列目：約7mm右
+       3列目：約14mm右
 
-       1mm = 約3.78 CSS px
-       7mm = 約26.5 CSS px
+       4件目以降：
+       3列目の位置を使い、重なりを避けて下へ配置
+
+       元の予定日時・保存データは変更しない
     ===================== */
 
     const overlapOffsetPx =
         26.5;
 
+    const maxOverlapLane =
+        2;
+
+    const overlapGapPx =
+        4;
+
+    displayEvents.sort((a, b) => {
+
+        return (
+            a.segmentStart.getTime() -
+            b.segmentStart.getTime() ||
+            a.segmentEnd.getTime() -
+            b.segmentEnd.getTime()
+        );
+
+    });
+
+    const laneEndTimes = [];
+
+    const thirdLaneItems = [];
+
     displayEvents.forEach(item => {
 
-        item.offsetRight = false;
+        const start =
+            item.segmentStart.getTime();
 
-        for(const other of displayEvents){
+        const end =
+            item.segmentEnd.getTime();
 
-            if(item === other){
+        let lane = 0;
 
-                continue;
+        while(
+            lane < 3 &&
+            laneEndTimes[lane] > start
+        ){
+
+            lane++;
+
+        }
+
+        if(lane > maxOverlapLane){
+
+            lane = maxOverlapLane;
+
+        }
+        else{
+
+            laneEndTimes[lane] = end;
+
+        }
+
+        item.overlapLane =
+            lane;
+
+        item.offsetRight =
+            lane > 0;
+
+        /*
+           3列目に表示する予定同士が
+           時間・縦位置の両方で重なる場合は、
+           表示位置だけ下へ移動する。
+        */
+
+        if(lane === maxOverlapLane){
+
+            let verticalOffset = 0;
+
+            let hasCollision = true;
+
+            while(hasCollision){
+
+                hasCollision = false;
+
+                const candidateTop =
+                    item.top + verticalOffset;
+
+                const candidateBottom =
+                    candidateTop + item.displayHeight;
+
+                for(const other of thirdLaneItems){
+
+                    const timeOverlaps =
+                        item.segmentStart < other.segmentEnd &&
+                        item.segmentEnd > other.segmentStart;
+
+                    if(!timeOverlaps){
+
+                        continue;
+
+                    }
+
+                    const otherTop =
+                        other.top + other.verticalOffset;
+
+                    const otherBottom =
+                        otherTop + other.displayHeight;
+
+                    const verticalOverlaps =
+                        candidateTop < otherBottom + overlapGapPx &&
+                        candidateBottom + overlapGapPx > otherTop;
+
+                    if(verticalOverlaps){
+
+                        verticalOffset =
+                            otherBottom + overlapGapPx - item.top;
+
+                        hasCollision = true;
+
+                        break;
+
+                    }
+
+                }
 
             }
 
-            const overlaps =
-                item.segmentStart < other.segmentEnd &&
-                item.segmentEnd > other.segmentStart;
+            item.verticalOffset =
+                verticalOffset;
 
-            if(!overlaps){
-
-                continue;
-
-            }
-
-            const itemDuration =
-                item.segmentEnd.getTime() -
-                item.segmentStart.getTime();
-
-            const otherDuration =
-                other.segmentEnd.getTime() -
-                other.segmentStart.getTime();
-
-            if(itemDuration < otherDuration){
-
-                item.offsetRight = true;
-
-                break;
-
-            }
+            thirdLaneItems.push(item);
 
         }
 
@@ -562,9 +641,8 @@ function showPlanner(date, fromCalendar = false){
 
     /* =====================
        時間線
-
-       30分ごとに40px間隔。
-       25:00の線まで描画。
+       30分ごとに40px間隔
+       25:00の線まで描画
     ===================== */
 
     for(
@@ -624,9 +702,11 @@ function showPlanner(date, fromCalendar = false){
             actualHeight,
             displayHeight,
             segmentStart,
-            segmentEnd,
-            offsetRight
+            segmentEnd
         } = item;
+
+        const displayTop =
+            top + item.verticalOffset;
 
         const finished =
             eventEnd < now;
@@ -642,12 +722,6 @@ function showPlanner(date, fromCalendar = false){
 
         /* =====================
            展開方向
-
-           当日開始の予定：
-           上方向へ展開
-
-           前日から続く予定：
-           下方向へ展開
         ===================== */
 
         const expandDirection =
@@ -792,27 +866,14 @@ function showPlanner(date, fromCalendar = false){
 
         /* =====================
            重複予定の位置
-
-           通常：
-           左右いっぱいに表示
-
-           短い重複予定：
-           右へ約7mmずらす
         ===================== */
 
-        const overlapStyle =
-            offsetRight
-                ? `
-                    left:${overlapOffsetPx}px;
-                    right:0;
-                    width:auto;
-                    z-index:3;
-                  `
-                : `
-                    left:0;
-                    right:0;
-                    width:auto;
-                  `;
+        const overlapStyle = `
+            left:${item.overlapLane * overlapOffsetPx}px;
+            right:0;
+            width:auto;
+            z-index:${item.overlapLane + 1};
+        `;
 
         /* =====================
            付箋
@@ -824,16 +885,17 @@ function showPlanner(date, fromCalendar = false){
                 data-event-id="${e.id}"
                 data-actual-height="${actualHeight}"
                 data-display-height="${displayHeight}"
-                data-original-top="${top}"
+                data-original-top="${displayTop}"
                 data-expand-direction="${expandDirection}"
                 data-segment-start="${segmentStart.getTime()}"
                 data-segment-end="${segmentEnd.getTime()}"
                 data-event-start="${eventStart.getTime()}"
                 data-event-end="${eventEnd.getTime()}"
-                data-overlap-short="${offsetRight ? "true" : "false"}"
+                data-overlap-short="${item.offsetRight ? "true" : "false"}"
+                data-overlap-lane="${item.overlapLane}"
 
                 style="
-                    top:${top}px;
+                    top:${displayTop}px;
                     height:${displayHeight}px;
                     background:${lightColor};
                     border-left-color:${categoryColor};
@@ -976,6 +1038,8 @@ function showPlanner(date, fromCalendar = false){
     setupPlannerSwipe();
 
 }
+
+
 
 /* =====================
    共有日時を表示用に変換
