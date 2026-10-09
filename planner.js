@@ -331,7 +331,7 @@ if(calendar){
 
     for(
         let minute = 0;
-        minute < 1440;
+        minute < 1470;
         minute += 30
     ){
 
@@ -366,7 +366,7 @@ if(calendar){
 
     for(
         let i = 0;
-        i < 96;
+        i < 99;
         i++
     ){
 
