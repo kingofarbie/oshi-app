@@ -949,25 +949,35 @@ function showPlanner(date, fromCalendar = false){
 
                 ${shareInfoHtml}
 
-                <div class="planner-event-actions">
 
-                    <button
-                        type="button"
-                        class="planner-edit-btn"
-                        onclick="plannerEditEvent(event, ${e.id})"
-                    >
-                        ✏️ 編集
-                    </button>
+<div class="planner-event-actions">
 
-                    <button
-                        type="button"
-                        class="planner-delete-btn"
-                        onclick="plannerDeleteEvent(event, ${e.id})"
-                    >
-                        🗑️ 削除
-                    </button>
+    <button
+        type="button"
+        class="planner-edit-btn"
+        onclick="plannerEditEvent(event, ${e.id})"
+    >
+        ✏️ 編集
+    </button>
 
-                </div>
+    <button
+        type="button"
+        class="planner-delete-btn"
+        onclick="plannerDeleteEvent(event, ${e.id})"
+    >
+        🗑️ 削除
+    </button>
+
+    <button
+        type="button"
+        class="planner-cancel-btn"
+        onclick="event.stopPropagation(); plannerCancelEditMode();"
+    >
+        ✖️ キャンセル
+    </button>
+
+</div>
+
 
             </div>
         `;
