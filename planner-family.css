@@ -700,50 +700,84 @@
 
 
 
-/* =========================================
-   家族ヘッダー：固定表示の調整
-   日付 → 記念日 → 家族ヘッダー → 予定
-========================================= */
+function plannerFamilyRenderLanes() {
+    const timeline = document.getElementById("plannerTimeline");
+    if (!timeline) return;
 
-.planner-family-header-row {
-    position: sticky;
-    top: 0;
-    z-index: 20;
-    flex-shrink: 0;
-    overflow: visible;
-    background: var(--card, #fff);
-}
+    const layout = timeline.querySelector(".planner-layout");
+    const board = layout?.querySelector(".planner-board");
+    const times = layout?.querySelector(".planner-times");
 
-.planner-family-header-spacer {
-    background: transparent;
-    border-right: 0;
-}
+    if (!layout || !board || !times) return;
 
-.planner-family-header-lanes {
-    position: relative;
-    z-index: 21;
-    background: var(--card, #fff);
-}
+    layout.querySelector(".planner-family-lanes")?.remove();
+    timeline.querySelector(".planner-family-header-row")?.remove();
 
-.planner-family-lane-header {
-    background: var(--card, #fff);
-}
+    if (!plannerFamilyIsAllowed()) return;
 
-.planner-family-lane-name-button {
-    min-height: 66px !important;
-    padding: 6px 2px !important;
-    color: var(--text, #222) !important;
-}
+    const data = db.load();
+    const family = plannerFamilyEnsureData(data);
+    const members = family.members.filter(member => member.enabled);
 
-.planner-family-lane-icon,
-.planner-family-lane-name {
-    position: relative;
-    z-index: 22;
-}
+    if (!members.length) return;
 
-@media (max-width: 480px) {
-    .planner-family-lane-name-button {
-        min-height: 62px !important;
-        padding: 5px 1px !important;
-    }
+    const date = plannerFamilyGetSelectedDate();
+
+    board.style.minWidth = "0";
+    board.style.flex = "1 1 0";
+
+    const headerRow = document.createElement("div");
+    headerRow.className = "planner-family-header-row";
+
+    const spacer = document.createElement("div");
+    spacer.className = "planner-family-header-spacer";
+    spacer.style.flexBasis = `${times.getBoundingClientRect().width}px`;
+
+    const headerLanes = document.createElement("div");
+    headerLanes.className = "planner-family-header-lanes";
+
+    const lanes = document.createElement("div");
+    lanes.className = "planner-family-lanes";
+    lanes.style.height = `${board.offsetHeight}px`;
+
+    members.forEach(member => {
+        const header = document.createElement("div");
+        header.className = "planner-family-lane-header";
+
+        const nameButton = document.createElement("button");
+        nameButton.type = "button";
+        nameButton.className = "planner-family-lane-name-button";
+
+        const icon = document.createElement("span");
+        icon.className = "planner-family-lane-icon";
+        icon.textContent = member.icon || "🧒";
+
+        const name = document.createElement("span");
+        name.className = "planner-family-lane-name";
+        name.textContent = member.name || "";
+
+        nameButton.append(icon, name);
+        nameButton.addEventListener("click", () => {
+            plannerFamilyOpenMember(member.id);
+        });
+
+        header.appendChild(nameButton);
+        headerLanes.appendChild(header);
+
+        const lane = document.createElement("div");
+        lane.className = "planner-family-lane";
+        lane.dataset.memberId = member.id;
+        lane.style.height = `${board.offsetHeight}px`;
+
+        plannerFamilyGetEventsForDate(member.id, date).forEach(event => {
+            plannerFamilyDrawEvent(lane, event);
+        });
+
+        lanes.appendChild(lane);
+    });
+
+    headerRow.append(spacer, headerLanes);
+
+    layout.insertAdjacentElement("beforebegin", headerRow);
+    board.insertAdjacentElement("afterend", lanes);
 }
