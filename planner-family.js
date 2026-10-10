@@ -1102,10 +1102,22 @@ function plannerFamilyRenderLanes() {
     const headerRow = document.createElement("div");
     headerRow.className = "planner-family-header-row";
 
-    const spacer = document.createElement("div");
-    spacer.className = "planner-family-header-spacer";
-    spacer.style.flexBasis = `${times.getBoundingClientRect().width}px`;
+const spacer = document.createElement("div");
+spacer.className = "planner-family-header-spacer";
 
+const laneWidth = window.matchMedia("(max-width: 480px)").matches
+    ? PLANNER_FAMILY_MOBILE_LANE
+    : PLANNER_FAMILY_DESKTOP_LANE;
+
+spacer.style.flexBasis =
+    `${Math.max(
+        0,
+        times.getBoundingClientRect().width +
+        board.getBoundingClientRect().width -
+        members.length * laneWidth
+    )}px`;
+
+    
     const headerLanes = document.createElement("div");
     headerLanes.className = "planner-family-header-lanes";
 
@@ -1336,4 +1348,719 @@ function plannerFamilyShowEventDetail(event) {
     }
 
     screen.style.display = "block";
+}
+
+
+
+/* =====================================================
+   家族スケジュール改善
+   ・入力を1つのモーダルに集約
+   ・家族管理をアイコン操作に変更
+   ・レーン見出しと時間軸を位置合わせ
+   ・予定名を棒線とは別の要素で描画
+===================================================== */
+
+function plannerFamilyOpenFormModal({
+    title,
+    fields,
+    submitLabel = "保存",
+    onSubmit
+}) {
+    document.getElementById("plannerFamilyFormModal")?.remove();
+
+    const overlay = document.createElement("div");
+    overlay.id = "plannerFamilyFormModal";
+    overlay.className = "planner-family-form-overlay";
+
+    const modal = document.createElement("form");
+    modal.className = "planner-family-form-modal";
+
+    const heading = document.createElement("h2");
+    heading.textContent = title;
+
+    const close = document.createElement("button");
+    close.type = "button";
+    close.className = "planner-family-modal-close";
+    close.textContent = "×";
+    close.setAttribute("aria-label", "閉じる");
+    close.addEventListener("click", () => overlay.remove());
+
+    const top = document.createElement("div");
+    top.className = "planner-family-modal-top";
+    top.append(heading, close);
+
+    const fieldMap = {};
+
+    fields.forEach(field => {
+        const label = document.createElement("label");
+        label.className = "planner-family-form-field";
+        label.textContent = field.label;
+
+        let input;
+
+        if (field.type === "checkboxes") {
+            input = document.createElement("div");
+            input.className = "planner-family-weekdays";
+
+            const weekdayNames = ["日", "月", "火", "水", "木", "金", "土"];
+
+            weekdayNames.forEach((day, index) => {
+                const item = document.createElement("label");
+                item.className = "planner-family-weekday";
+
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.value = String(index);
+                checkbox.checked = (field.value || []).includes(index);
+
+                const text = document.createElement("span");
+                text.textContent = day;
+
+                item.append(checkbox, text);
+                input.appendChild(item);
+            });
+        } else {
+            input = document.createElement("input");
+            input.type = field.type || "text";
+            input.value = field.value ?? "";
+
+            if (field.placeholder) input.placeholder = field.placeholder;
+            if (field.maxLength) input.maxLength = field.maxLength;
+            if (field.required !== false) input.required = true;
+
+            if (field.type === "date") {
+                input.min = field.min || "";
+                input.max = field.max || "";
+            }
+
+            if (field.type === "time") {
+                input.step = "300";
+            }
+        }
+
+        if (field.help) {
+            const help = document.createElement("small");
+            help.className = "planner-family-form-help";
+            help.textContent = field.help;
+            label.appendChild(help);
+        }
+
+        label.appendChild(input);
+        modal.appendChild(label);
+        fieldMap[field.name] = { input, field };
+    });
+
+    const actions = document.createElement("div");
+    actions.className = "planner-family-modal-actions";
+
+    const cancel = document.createElement("button");
+    cancel.type = "button";
+    cancel.textContent = "キャンセル";
+    cancel.addEventListener("click", () => overlay.remove());
+
+    const submit = document.createElement("button");
+    submit.type = "submit";
+    submit.textContent = submitLabel;
+    submit.className = "planner-family-modal-submit";
+
+    actions.append(cancel, submit);
+    modal.appendChild(actions);
+
+    modal.addEventListener("submit", event => {
+        event.preventDefault();
+
+        const values = {};
+
+        for (const [name, entry] of Object.entries(fieldMap)) {
+            if (entry.field.type === "checkboxes") {
+                values[name] = [
+                    ...entry.input.querySelectorAll("input:checked")
+                ].map(input => Number(input.value));
+            } else {
+                values[name] = entry.input.value.trim();
+            }
+        }
+
+        if (onSubmit(values) !== false) {
+            overlay.remove();
+        }
+    });
+
+    overlay.addEventListener("click", event => {
+        if (event.target === overlay) overlay.remove();
+    });
+
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+
+    const firstInput = modal.querySelector(
+        'input:not([type="checkbox"])'
+    );
+
+    firstInput?.focus();
+
+    return overlay;
+}
+
+/* ---------- 家族管理：アイコン操作 ---------- */
+
+function plannerFamilyRenderMembers() {
+    const screen = document.getElementById("plannerFamilyScreen");
+    const list = document.getElementById("plannerFamilyMemberList");
+
+    if (!screen || !list) return;
+
+    const data = db.load();
+    const family = plannerFamilyEnsureData(data);
+
+    list.replaceChildren();
+
+    if (!family.members.length) {
+        const empty = document.createElement("p");
+        empty.textContent = "家族メンバーはまだ登録されていません。";
+        list.appendChild(empty);
+    }
+
+    family.members.forEach(member => {
+        const row = document.createElement("div");
+        row.className = "planner-family-member";
+
+        const identity = document.createElement("button");
+        identity.type = "button";
+        identity.className = "planner-family-member-identity";
+
+        const icon = document.createElement("span");
+        icon.className = "planner-family-member-icon";
+        icon.textContent = member.icon || "🧒";
+
+        const name = document.createElement("span");
+        name.className = "planner-family-member-name";
+        name.textContent = member.name || "";
+
+        identity.append(icon, name);
+        identity.addEventListener("click", () => {
+            plannerFamilyOpenMember(member.id);
+        });
+
+        const actions = document.createElement("div");
+        actions.className = "planner-family-member-actions";
+
+        const toggle = plannerFamilyMakeButton(
+            member.enabled ? "🔵" : "⚪",
+            () => plannerFamilyToggleMember(member.id),
+            "planner-family-icon-button"
+        );
+        toggle.title = member.enabled ? "表示をOFF" : "表示をON";
+        toggle.setAttribute("aria-label", toggle.title);
+
+        const edit = plannerFamilyMakeButton(
+            "✏️",
+            () => plannerFamilyEditMember(member.id),
+            "planner-family-icon-button"
+        );
+        edit.title = "編集";
+        edit.setAttribute("aria-label", "編集");
+
+        const remove = plannerFamilyMakeButton(
+            "🗑️",
+            () => plannerFamilyDeleteMember(member.id),
+            "planner-family-icon-button"
+        );
+        remove.title = "削除";
+        remove.setAttribute("aria-label", "削除");
+
+        actions.append(toggle, edit, remove);
+        row.append(identity, actions);
+        list.appendChild(row);
+    });
+
+    const addButton = screen.querySelector(
+        ".planner-family-add-button"
+    );
+
+    if (addButton) {
+        addButton.disabled =
+            family.members.length >= PLANNER_FAMILY_MAX_MEMBERS;
+    }
+}
+
+function openPlannerFamily() {
+    if (!plannerFamilyIsAllowed()) {
+        alert("家族スケジュールはプレミアム以上で利用できます。");
+        return;
+    }
+
+    const screen = plannerFamilyCreateScreen(
+        "plannerFamilyScreen",
+        10000
+    );
+
+    screen.replaceChildren();
+
+    screen.appendChild(
+        plannerFamilyMakeHeader("← 戻る", closePlannerFamily, "👨‍👩‍👧 家族管理")
+    );
+
+    const description = document.createElement("p");
+    description.textContent =
+        "家族の名前を押すと、その人の予定を管理できます。";
+
+    const list = document.createElement("div");
+    list.id = "plannerFamilyMemberList";
+
+    const addButton = plannerFamilyMakeButton(
+        "＋ 家族を追加",
+        plannerFamilyAddMember
+    );
+    addButton.classList.add("planner-family-add-button");
+
+    screen.append(description, list, addButton);
+    screen.style.display = "block";
+
+    plannerFamilyRenderMembers();
+}
+
+function plannerFamilyAddMember() {
+    if (!plannerFamilyIsAllowed()) return;
+
+    const data = db.load();
+    const family = plannerFamilyEnsureData(data);
+
+    if (family.members.length >= PLANNER_FAMILY_MAX_MEMBERS) {
+        alert("家族メンバーは4人まで登録できます（自分を除く）。");
+        return;
+    }
+
+    plannerFamilyOpenFormModal({
+        title: "家族を追加",
+        fields: [
+            {
+                name: "name",
+                label: "名前（1〜3文字）",
+                type: "text",
+                maxLength: 3,
+                value: "",
+                placeholder: "例：太郎"
+            },
+            {
+                name: "icon",
+                label: "アイコン",
+                type: "text",
+                value: "🧒",
+                placeholder: "例：👧"
+            }
+        ],
+        onSubmit(values) {
+            if (!values.name || [...values.name].length > 3) {
+                alert("名前は1〜3文字で入力してください。");
+                return false;
+            }
+
+            if (!values.icon) {
+                alert("アイコンを入力してください。");
+                return false;
+            }
+
+            const latest = db.load();
+            const latestFamily = plannerFamilyEnsureData(latest);
+
+            if (latestFamily.members.length >= PLANNER_FAMILY_MAX_MEMBERS) {
+                alert("家族メンバーは4人まで登録できます。");
+                return false;
+            }
+
+            latestFamily.members.push({
+                id: plannerFamilyNewId(),
+                name: values.name,
+                icon: values.icon,
+                enabled: true
+            });
+
+            plannerFamilySave(latest);
+            plannerFamilyRenderMembers();
+            plannerFamilyRenderLanes();
+        }
+    });
+}
+
+function plannerFamilyEditMember(memberId) {
+    const member = plannerFamilyGetMember(memberId);
+    if (!member) return;
+
+    plannerFamilyOpenFormModal({
+        title: "家族情報を編集",
+        fields: [
+            {
+                name: "name",
+                label: "名前（1〜3文字）",
+                type: "text",
+                maxLength: 3,
+                value: member.name
+            },
+            {
+                name: "icon",
+                label: "アイコン",
+                type: "text",
+                value: member.icon || "🧒"
+            }
+        ],
+        onSubmit(values) {
+            if (!values.name || [...values.name].length > 3) {
+                alert("名前は1〜3文字で入力してください。");
+                return false;
+            }
+
+            if (!values.icon) {
+                alert("アイコンを入力してください。");
+                return false;
+            }
+
+            const data = db.load();
+            const family = plannerFamilyEnsureData(data);
+            const target = family.members.find(item => item.id === memberId);
+
+            if (!target) return;
+
+            target.name = values.name;
+            target.icon = values.icon;
+
+            plannerFamilySave(data);
+            plannerFamilyRenderMembers();
+            plannerFamilyRenderLanes();
+        }
+    });
+}
+
+/* ---------- 単発予定：一つのモーダルで入力 ---------- */
+
+function plannerFamilyAddEvent(memberId) {
+    const member = plannerFamilyGetMember(memberId);
+    if (!member || !plannerFamilyIsAllowed()) return;
+
+    plannerFamilyOpenFormModal({
+        title: `${member.icon || "🧒"} ${member.name}：予定追加`,
+        fields: [
+            {
+                name: "date",
+                label: "日付",
+                type: "date",
+                value: plannerFamilyGetSelectedDate()
+            },
+            {
+                name: "title",
+                label: "予定名（1〜5文字）",
+                type: "text",
+                maxLength: 5,
+                value: "",
+                placeholder: "例：ピアノ"
+            },
+            {
+                name: "startTime",
+                label: "開始時刻",
+                type: "time",
+                value: "17:00"
+            },
+            {
+                name: "endTime",
+                label: "終了時刻",
+                type: "time",
+                value: "18:30"
+            }
+        ],
+        onSubmit(values) {
+            if (!plannerFamilyDateIsValid(values.date)) {
+                alert("日付を正しく入力してください。");
+                return false;
+            }
+
+            if (!values.title || [...values.title].length > 5) {
+                alert("予定名は1〜5文字で入力してください。");
+                return false;
+            }
+
+            if (
+                !plannerFamilyTimeIsValid(values.startTime) ||
+                !plannerFamilyTimeIsValid(values.endTime) ||
+                values.endTime <= values.startTime
+            ) {
+                alert("開始・終了時刻を正しく入力してください。");
+                return false;
+            }
+
+            const data = db.load();
+            const family = plannerFamilyEnsureData(data);
+
+            family.events.push({
+                id: plannerFamilyNewId(),
+                memberId,
+                date: values.date,
+                title: values.title,
+                startTime: values.startTime,
+                endTime: values.endTime
+            });
+
+            plannerFamilySave(data);
+            plannerFamilyRenderEvents(memberId);
+            plannerFamilyRenderLanes();
+        }
+    });
+}
+
+/* ---------- 繰り返し予定：曜日も同じ画面で入力 ---------- */
+
+function plannerFamilyAddRule(memberId) {
+    const member = plannerFamilyGetMember(memberId);
+    if (!member || !plannerFamilyIsAllowed()) return;
+
+    plannerFamilyOpenFormModal({
+        title: `${member.icon || "🧒"} ${member.name}：繰り返し予定`,
+        fields: [
+            {
+                name: "startDate",
+                label: "開始日",
+                type: "date",
+                value: plannerFamilyGetSelectedDate()
+            },
+            {
+                name: "endDate",
+                label: "終了日",
+                type: "date",
+                value: `${plannerFamilyGetSelectedDate().slice(0, 4)}-12-31`
+            },
+            {
+                name: "weekdays",
+                label: "繰り返す曜日",
+                type: "checkboxes",
+                value: [1, 5],
+                help: "複数の曜日を選択できます。"
+            },
+            {
+                name: "title",
+                label: "予定名（1〜5文字）",
+                type: "text",
+                maxLength: 5,
+                value: "",
+                placeholder: "例：ピアノ"
+            },
+            {
+                name: "startTime",
+                label: "開始時刻",
+                type: "time",
+                value: "17:00"
+            },
+            {
+                name: "endTime",
+                label: "終了時刻",
+                type: "time",
+                value: "18:30"
+            }
+        ],
+        onSubmit(values) {
+            if (
+                !plannerFamilyDateIsValid(values.startDate) ||
+                !plannerFamilyDateIsValid(values.endDate) ||
+                values.endDate < values.startDate
+            ) {
+                alert("開始日と終了日を正しく入力してください。");
+                return false;
+            }
+
+            if (!values.weekdays.length) {
+                alert("繰り返す曜日を1つ以上選んでください。");
+                return false;
+            }
+
+            if (!values.title || [...values.title].length > 5) {
+                alert("予定名は1〜5文字で入力してください。");
+                return false;
+            }
+
+            if (
+                !plannerFamilyTimeIsValid(values.startTime) ||
+                !plannerFamilyTimeIsValid(values.endTime) ||
+                values.endTime <= values.startTime
+            ) {
+                alert("開始・終了時刻を正しく入力してください。");
+                return false;
+            }
+
+            const data = db.load();
+            const family = plannerFamilyEnsureData(data);
+
+            family.rules.push({
+                id: plannerFamilyNewId(),
+                memberId,
+                title: values.title,
+                weekdays: values.weekdays,
+                startDate: values.startDate,
+                endDate: values.endDate,
+                startTime: values.startTime,
+                endTime: values.endTime,
+                createdAt: plannerFamilyToday()
+            });
+
+            plannerFamilySave(data);
+            plannerFamilyRenderEvents(memberId);
+            plannerFamilyRenderLanes();
+        }
+    });
+}
+
+/* ---------- レーン位置と予定表示の修正 ---------- */
+
+function plannerFamilyRenderLanes() {
+    const timeline = document.getElementById("plannerTimeline");
+    if (!timeline) return;
+
+    const layout = timeline.querySelector(".planner-layout");
+    const board = layout?.querySelector(".planner-board");
+    const times = layout?.querySelector(".planner-times");
+
+    if (!layout || !board || !times) return;
+
+    layout.querySelector(".planner-family-lanes")?.remove();
+    timeline.querySelector(".planner-family-header-row")?.remove();
+
+    if (!plannerFamilyIsAllowed()) return;
+
+    const data = db.load();
+    const family = plannerFamilyEnsureData(data);
+    const members = family.members.filter(member => member.enabled);
+
+    if (!members.length) return;
+
+    const date = plannerFamilyGetSelectedDate();
+
+    board.style.minWidth = "0";
+    board.style.flex = "1 1 0";
+
+    const headerRow = document.createElement("div");
+    headerRow.className = "planner-family-header-row";
+
+    const spacer = document.createElement("div");
+    spacer.className = "planner-family-header-spacer";
+
+    /*
+     * 重要：
+     * ヘッダーは「時間軸＋個人予定ボード」の幅だけ空ける。
+     * 時間軸の幅だけでは名前とレーンがずれる。
+     */
+    spacer.style.flexBasis =
+        `${times.getBoundingClientRect().width +
+           board.getBoundingClientRect().width}px`;
+
+    const headerLanes = document.createElement("div");
+    headerLanes.className = "planner-family-header-lanes";
+
+    const lanes = document.createElement("div");
+    lanes.className = "planner-family-lanes";
+    lanes.style.height = `${board.offsetHeight}px`;
+
+    members.forEach(member => {
+        const header = document.createElement("div");
+        header.className = "planner-family-lane-header";
+
+        const nameButton = document.createElement("button");
+        nameButton.type = "button";
+        nameButton.className = "planner-family-lane-name-button";
+
+        const icon = document.createElement("span");
+        icon.className = "planner-family-lane-icon";
+        icon.textContent = member.icon || "🧒";
+
+        const name = document.createElement("span");
+        name.className = "planner-family-lane-name";
+        name.textContent = member.name || "";
+
+        nameButton.append(icon, name);
+        nameButton.addEventListener("click", () => {
+            plannerFamilyOpenMember(member.id);
+        });
+
+        header.appendChild(nameButton);
+        headerLanes.appendChild(header);
+
+        const lane = document.createElement("div");
+        lane.className = "planner-family-lane";
+        lane.dataset.memberId = member.id;
+        lane.style.height = `${board.offsetHeight}px`;
+
+        plannerFamilyGetEventsForDate(member.id, date).forEach(event => {
+            plannerFamilyDrawEvent(lane, event);
+        });
+
+        lanes.appendChild(lane);
+    });
+
+    headerRow.append(spacer, headerLanes);
+
+    layout.insertAdjacentElement("beforebegin", headerRow);
+    board.insertAdjacentElement("afterend", lanes);
+}
+
+function plannerFamilyDrawEvent(lane, event) {
+    const [startHour, startMinute] = event.startTime.split(":").map(Number);
+    const [endHour, endMinute] = event.endTime.split(":").map(Number);
+
+    const start = startHour * 60 + startMinute;
+    const end = endHour * 60 + endMinute;
+
+    if (end <= start) return;
+
+    const scale = PLANNER_FAMILY_PIXELS_PER_30_MINUTES / 30;
+    const top = PLANNER_FAMILY_TOP_OFFSET + start * scale;
+    const height = Math.max(4, (end - start) * scale);
+
+    /*
+     * 外側はレーン幅全体を使う。
+     * 棒線とタイトルを別々にすることで、
+     * 棒線の幅に文字が切られる問題を防ぐ。
+     */
+    const item = document.createElement("div");
+    item.className = "planner-family-event-item";
+    item.style.top = `${top}px`;
+    item.style.height = `${height}px`;
+
+    const bar = document.createElement("span");
+    bar.className = "planner-family-event-bar";
+
+    const title = document.createElement("span");
+    title.className = "planner-family-event-title";
+    title.textContent = event.title;
+
+    const fontSize = window.matchMedia("(max-width: 480px)").matches
+        ? 11
+        : 12;
+
+    const requiredHeight = [...event.title].length * fontSize * 1.2;
+
+    if (height < requiredHeight) {
+        title.textContent = "⋮";
+        title.classList.add("is-ellipsis");
+    }
+
+    item.append(bar, title);
+    item.setAttribute("role", "button");
+    item.tabIndex = 0;
+    item.setAttribute(
+        "aria-label",
+        `${event.title}、${event.date}、${event.startTime}〜${event.endTime}`
+    );
+    item.title =
+        `${event.title} ${event.startTime}〜${event.endTime}`;
+
+    const openDetail = eventObject => {
+        eventObject.preventDefault();
+        eventObject.stopPropagation();
+        plannerFamilyShowEventDetail(event);
+    };
+
+    item.addEventListener("click", openDetail);
+    item.addEventListener("keydown", eventObject => {
+        if (eventObject.key === "Enter" || eventObject.key === " ") {
+            openDetail(eventObject);
+        }
+    });
+
+    lane.appendChild(item);
 }
