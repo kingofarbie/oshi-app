@@ -999,7 +999,7 @@ function showPlanner(date, fromCalendar = false){
 
 
         plannerFamilyRenderLanes();
-        
+
     /* =====================
        付箋以外をタップ
        → 編集モード解除
@@ -1305,63 +1305,41 @@ function plannerEventMouseLeave(){
    再タップで元に戻す
 ===================== */
 
+
 function plannerEventTap(event, id){
 
-    if(
-        event.target.closest(".planner-event-actions")
-    ){
-
+    if(event.target.closest(".planner-event-actions")){
         return;
-
     }
 
     if(plannerLongPressTriggered){
-
         plannerLongPressTriggered = false;
-
         return;
-
     }
 
-    const eventBox =
-        event.currentTarget;
+    const eventBox = event.currentTarget;
+    if(!eventBox) return;
 
-    if(!eventBox){
+    const displayHeight = Number(eventBox.dataset.displayHeight);
+    const originalTop = Number(eventBox.dataset.originalTop);
 
+    if(!Number.isFinite(displayHeight) ||
+       !Number.isFinite(originalTop)){
         return;
-
     }
 
-    const displayHeight =
-        Number(eventBox.dataset.displayHeight);
+    /* 再タップ：幅・高さ・位置を元に戻す */
+    if(eventBox.classList.contains("planner-event-expanded")){
 
-    const originalTop =
-        Number(eventBox.dataset.originalTop);
+        eventBox.style.height = `${displayHeight}px`;
+        eventBox.style.top = `${originalTop}px`;
 
-    if(
-        !Number.isFinite(displayHeight) ||
-        !Number.isFinite(originalTop)
-    ){
-
-        return;
-
-    }
-
-    /* =====================
-       展開中なら元に戻す
-    ===================== */
-
-    if(
-        eventBox.classList.contains("planner-event-compact")
-    ){
-
-        eventBox.style.height =
-            `${displayHeight}px`;
-
-        eventBox.style.top =
-            `${originalTop}px`;
+        eventBox.style.left = eventBox.dataset.originalLeft;
+        eventBox.style.right = eventBox.dataset.originalRight;
+        eventBox.style.width = eventBox.dataset.originalWidth;
 
         eventBox.classList.remove(
+            "planner-event-expanded",
             "planner-event-compact"
         );
 
@@ -1369,111 +1347,84 @@ function plannerEventTap(event, id){
             eventBox.dataset.originalZIndex || "";
 
         return;
-
     }
 
-    /* =====================
-       内容が隠れているか確認
-    ===================== */
-
-    const contentHeight =
-        eventBox.scrollHeight;
-
-    if(contentHeight <= displayHeight){
-
-        return;
-
+    /* 元の幅・位置・重なり順を保存 */
+    if(eventBox.dataset.originalLeft === undefined){
+        eventBox.dataset.originalLeft = eventBox.style.left;
+        eventBox.dataset.originalRight = eventBox.style.right;
+        eventBox.dataset.originalWidth = eventBox.style.width;
+        eventBox.dataset.originalZIndex = eventBox.style.zIndex || "";
     }
 
-    /* =====================
-       展開前の重なり順を保存
-    ===================== */
+    const board = eventBox.closest(".planner-board");
+    if(!board) return;
 
-    if(!eventBox.dataset.originalZIndex){
-
-        eventBox.dataset.originalZIndex =
-            eventBox.style.zIndex || "";
-
-    }
-
-    /* =====================
-       タップした予定を最前面へ
-    ===================== */
-
-    const board =
-        eventBox.closest(".planner-board");
-
-    if(board){
-
-        board.querySelectorAll(".planner-event").forEach(box => {
-
+    /* ほかの付箋の重なり順を復元 */
+    board.querySelectorAll(".planner-event").forEach(box => {
+        if(box !== eventBox){
             box.style.zIndex =
                 box.dataset.originalZIndex || "";
+        }
+    });
 
-        });
-
-    }
-
-    eventBox.style.zIndex =
-        "9999";
-
-    /* =====================
-       全内容が見える高さを計算
-    ===================== */
+    /* 内容が全部表示される高さを計算 */
+    const displayHeightNow =
+        Number(eventBox.dataset.displayHeight) || 40;
 
     const actualHeight =
         Number(eventBox.dataset.actualHeight) || 0;
 
-    const expandedHeight =
-        Math.max(
-            actualHeight,
-            contentHeight
-        );
+    const contentHeight =
+        eventBox.scrollHeight;
 
-    const expandDirection =
-        eventBox.dataset.expandDirection;
-
-    let expandedTop =
-        originalTop;
-
-    /* =====================
-       開始日の予定
-       → 上方向へ展開
-    ===================== */
-
-    if(expandDirection === "up"){
-
-        expandedTop =
-            Math.max(
-                15,
-                originalTop - (expandedHeight - displayHeight)
-            );
-
-    }
-
-    /* =====================
-       前日からの継続予定
-       → 下方向へ展開
-    ===================== */
-
-    else{
-
-        expandedTop =
-            originalTop;
-
-    }
-
-    eventBox.style.height =
-        `${expandedHeight}px`;
-
-    eventBox.style.top =
-        `${expandedTop}px`;
-
-    eventBox.classList.add(
-        "planner-event-compact"
+    const expandedHeight = Math.max(
+        displayHeightNow,
+        actualHeight,
+        contentHeight
     );
 
+    /* 展開前の横位置を取得 */
+    const boardRect = board.getBoundingClientRect();
+    const eventRect = eventBox.getBoundingClientRect();
+
+    const currentLeft = eventRect.left - boardRect.left;
+
+    /*
+     * 右端は個人予定ボードの右端に合わせる。
+     * 家族レーン側へはみ出さず、時間軸にも重ねない。
+     */
+    const rightGap = 6;
+    const expandedWidth = Math.max(
+        eventRect.width,
+        boardRect.right - eventRect.left - rightGap
+    );
+
+    /* 元の開始位置・展開方向は維持 */
+    let expandedTop = originalTop;
+
+    if(eventBox.dataset.expandDirection === "up"){
+        expandedTop = Math.max(
+            15,
+            originalTop - (expandedHeight - displayHeightNow)
+        );
+    }
+
+    eventBox.style.left = `${currentLeft}px`;
+    eventBox.style.right = "auto";
+    eventBox.style.width = `${expandedWidth}px`;
+
+    eventBox.style.height = `${expandedHeight}px`;
+    eventBox.style.top = `${expandedTop}px`;
+    eventBox.style.zIndex = "9999";
+
+    eventBox.classList.add(
+        "planner-event-expanded",
+        "planner-event-compact"
+    );
 }
+
+
 
 /* =====================
    長押し
@@ -1553,40 +1504,43 @@ function plannerEnterEditMode(id){
    編集モード解除
 ===================== */
 
+
 function plannerCancelEditMode(){
 
-    document
-        .querySelectorAll(".planner-event")
-        .forEach(el => {
+    document.querySelectorAll(".planner-event").forEach(el => {
 
-            el.classList.remove(
-                "planner-event-editing",
-                "planner-event-compact"
-            );
+        el.classList.remove(
+            "planner-event-editing",
+            "planner-event-compact",
+            "planner-event-expanded"
+        );
 
-            const displayHeight =
-                Number(el.dataset.displayHeight);
+        const displayHeight =
+            Number(el.dataset.displayHeight);
 
-            const originalTop =
-                Number(el.dataset.originalTop);
+        const originalTop =
+            Number(el.dataset.originalTop);
 
-            if(Number.isFinite(displayHeight)){
+        if(Number.isFinite(displayHeight)){
+            el.style.height = `${displayHeight}px`;
+        }
 
-                el.style.height =
-                    `${displayHeight}px`;
+        if(Number.isFinite(originalTop)){
+            el.style.top = `${originalTop}px`;
+        }
 
-            }
+        /* 展開した横幅も元に戻す */
+        if(el.dataset.originalLeft !== undefined){
+            el.style.left = el.dataset.originalLeft;
+            el.style.right = el.dataset.originalRight;
+            el.style.width = el.dataset.originalWidth;
 
-            if(Number.isFinite(originalTop)){
-
-                el.style.top =
-                    `${originalTop}px`;
-
-            }
-
-        });
-
+            el.style.zIndex =
+                el.dataset.originalZIndex || "";
+        }
+    });
 }
+
 
 
 /* =====================
