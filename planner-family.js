@@ -1412,6 +1412,7 @@ function plannerFamilyAddRule(memberId) {
 
 /* ---------- レーン位置と予定表示の修正 ---------- */
 
+
 function plannerFamilyRenderLanes() {
     const timeline = document.getElementById("plannerTimeline");
     if (!timeline) return;
@@ -1444,18 +1445,12 @@ function plannerFamilyRenderLanes() {
     const spacer = document.createElement("div");
     spacer.className = "planner-family-header-spacer";
 
-    /*
-     * 重要：
-     * ヘッダーは「時間軸＋個人予定ボード」の幅だけ空ける。
-     * 時間軸の幅だけでは名前とレーンがずれる。
-     */
-const layoutRect = layout.getBoundingClientRect();
-const timesRect = times.getBoundingClientRect();
-const boardRect = board.getBoundingClientRect();
+    // 予定ボードの左端に合わせてヘッダーの開始位置を決める
+    const layoutRect = layout.getBoundingClientRect();
+    const boardRect = board.getBoundingClientRect();
 
-spacer.style.flexBasis =
-    `${timesRect.width + (boardRect.left - layoutRect.left - timesRect.width)}px`;
-    
+    spacer.style.flexBasis =
+        `${Math.max(0, boardRect.left - layoutRect.left)}px`;
 
     const headerLanes = document.createElement("div");
     headerLanes.className = "planner-family-header-lanes";
@@ -1504,7 +1499,19 @@ spacer.style.flexBasis =
 
     layout.insertAdjacentElement("beforebegin", headerRow);
     board.insertAdjacentElement("afterend", lanes);
+
+    // 先頭に空白2列を追加し、家族ヘッダーを右へ2列分ずらす
+    const firstHeader = headerLanes.firstElementChild;
+    if (firstHeader) {
+        const columnWidth = firstHeader.getBoundingClientRect().width;
+        const blankWidth = columnWidth * 2;
+
+        spacer.style.flexBasis =
+            `${Math.max(0, boardRect.left - layoutRect.left) + blankWidth}px`;
+    }
 }
+
+
 
 
 function plannerFamilyDrawEvent(lane, event) {
