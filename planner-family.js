@@ -1459,9 +1459,9 @@ function plannerFamilyRenderLanes() {
     const familyLanesWidth = members.length * laneWidth;
     const boardWidth = board.getBoundingClientRect().width;
 
-    spacer.style.flexBasis =
-        `${Math.max(0, boardWidth - familyLanesWidth)}px`;
-
+spacer.style.flexBasis =
+    `${Math.max(0, boardWidth - familyLanesWidth) + 30}px`;
+    
 
         
     const headerLanes = document.createElement("div");
