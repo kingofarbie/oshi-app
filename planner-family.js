@@ -1460,7 +1460,7 @@ function plannerFamilyRenderLanes() {
     const boardWidth = board.getBoundingClientRect().width;
 
 spacer.style.flexBasis =
-    `${Math.max(0, boardWidth - familyLanesWidth) + 50}px`;
+    `${Math.max(0, boardWidth - familyLanesWidth) + 80}px`;
 
 
         
