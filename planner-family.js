@@ -1502,6 +1502,7 @@ function plannerFamilyRenderLanes() {
     board.insertAdjacentElement("afterend", lanes);
 }
 
+
 function plannerFamilyDrawEvent(lane, event) {
     const [startHour, startMinute] = event.startTime.split(":").map(Number);
     const [endHour, endMinute] = event.endTime.split(":").map(Number);

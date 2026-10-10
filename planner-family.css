@@ -697,3 +697,53 @@
         font-size: 18px;
     }
 }
+
+
+
+/* =========================================
+   家族ヘッダー：固定表示の調整
+   日付 → 記念日 → 家族ヘッダー → 予定
+========================================= */
+
+.planner-family-header-row {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    flex-shrink: 0;
+    overflow: visible;
+    background: var(--card, #fff);
+}
+
+.planner-family-header-spacer {
+    background: transparent;
+    border-right: 0;
+}
+
+.planner-family-header-lanes {
+    position: relative;
+    z-index: 21;
+    background: var(--card, #fff);
+}
+
+.planner-family-lane-header {
+    background: var(--card, #fff);
+}
+
+.planner-family-lane-name-button {
+    min-height: 66px !important;
+    padding: 6px 2px !important;
+    color: var(--text, #222) !important;
+}
+
+.planner-family-lane-icon,
+.planner-family-lane-name {
+    position: relative;
+    z-index: 22;
+}
+
+@media (max-width: 480px) {
+    .planner-family-lane-name-button {
+        min-height: 62px !important;
+        padding: 5px 1px !important;
+    }
+}
