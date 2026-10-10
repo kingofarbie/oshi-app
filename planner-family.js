@@ -1419,12 +1419,15 @@ function plannerFamilyRenderLanes() {
 
     const layout = timeline.querySelector(".planner-layout");
     const board = layout?.querySelector(".planner-board");
-    const times = layout?.querySelector(".planner-times");
 
-    if (!layout || !board || !times) return;
+    if (!layout || !board) return;
 
     layout.querySelector(".planner-family-lanes")?.remove();
-    timeline.querySelector(".planner-family-header-row")?.remove();
+
+    const HEADER_HEIGHT = 66;
+
+    // 家族レーンがないときは、追加した上部スペースを解除
+    layout.style.paddingTop = "0px";
 
     if (!plannerFamilyIsAllowed()) return;
 
@@ -1436,42 +1439,26 @@ function plannerFamilyRenderLanes() {
 
     const date = plannerFamilyGetSelectedDate();
 
-    board.style.minWidth = "0";
-    board.style.flex = "1 1 0";
-
-    const headerRow = document.createElement("div");
-    headerRow.className = "planner-family-header-row";
-
-    const spacer = document.createElement("div");
-    spacer.className = "planner-family-header-spacer";
-
-    /*
-     * 時間軸の幅ではなく、
-     * 「自分の予定」欄の右端までヘッダーの空白を確保する。
-     *
-     * 個人予定ボードの幅から、家族レーン全体の幅を引いて
-     * 自分の予定欄の幅を求める。
-     */
     const laneWidth = window.matchMedia("(max-width: 480px)").matches
         ? 46
         : 54;
 
-    const familyLanesWidth = members.length * laneWidth;
-    const boardWidth = board.getBoundingClientRect().width;
-
-spacer.style.flexBasis =
-    `${Math.max(0, boardWidth - familyLanesWidth) + 65}px`;
-
-
-        
-    const headerLanes = document.createElement("div");
-    headerLanes.className = "planner-family-header-lanes";
+    // 時間軸と予定ボードを一緒に下げ、上部にヘッダー用の空間を作る
+    layout.style.paddingTop = `${HEADER_HEIGHT}px`;
 
     const lanes = document.createElement("div");
     lanes.className = "planner-family-lanes";
     lanes.style.height = `${board.offsetHeight}px`;
 
     members.forEach(member => {
+        const lane = document.createElement("div");
+        lane.className = "planner-family-lane";
+        lane.dataset.memberId = member.id;
+        lane.style.flexBasis = `${laneWidth}px`;
+        lane.style.width = `${laneWidth}px`;
+        lane.style.height = `${board.offsetHeight}px`;
+
+        // アイコン・名前を各レーン自身の中に配置
         const header = document.createElement("div");
         header.className = "planner-family-lane-header";
 
@@ -1493,23 +1480,19 @@ spacer.style.flexBasis =
         });
 
         header.appendChild(nameButton);
-        headerLanes.appendChild(header);
 
-        const lane = document.createElement("div");
-        lane.className = "planner-family-lane";
-        lane.dataset.memberId = member.id;
-        lane.style.height = `${board.offsetHeight}px`;
+        // 予定を描画する領域は、これまでの時間軸の位置に維持
+        const eventLayer = document.createElement("div");
+        eventLayer.className = "planner-family-lane-events";
 
         plannerFamilyGetEventsForDate(member.id, date).forEach(event => {
-            plannerFamilyDrawEvent(lane, event);
+            plannerFamilyDrawEvent(eventLayer, event);
         });
 
+        lane.append(header, eventLayer);
         lanes.appendChild(lane);
     });
 
-    headerRow.append(spacer, headerLanes);
-
-    layout.insertAdjacentElement("beforebegin", headerRow);
     board.insertAdjacentElement("afterend", lanes);
 }
 

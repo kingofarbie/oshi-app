@@ -700,84 +700,71 @@
 
 
 
-function plannerFamilyRenderLanes() {
-    const timeline = document.getElementById("plannerTimeline");
-    if (!timeline) return;
 
-    const layout = timeline.querySelector(".planner-layout");
-    const board = layout?.querySelector(".planner-board");
-    const times = layout?.querySelector(".planner-times");
+/* =========================================
+   家族レーン：ヘッダーを各レーン内に配置
+========================================= */
 
-    if (!layout || !board || !times) return;
+.planner-family-header-row {
+    display: none !important;
+}
 
-    layout.querySelector(".planner-family-lanes")?.remove();
-    timeline.querySelector(".planner-family-header-row")?.remove();
+.planner-family-lanes {
+    overflow: visible !important;
+    align-self: stretch;
+}
 
-    if (!plannerFamilyIsAllowed()) return;
+.planner-family-lane {
+    position: relative;
+    overflow: visible !important;
+    box-sizing: border-box;
+}
 
-    const data = db.load();
-    const family = plannerFamilyEnsureData(data);
-    const members = family.members.filter(member => member.enabled);
+.planner-family-lane-header {
+    position: absolute !important;
+    top: -66px;
+    left: 0;
+    width: 100%;
+    height: 66px;
+    min-height: 66px;
+    box-sizing: border-box;
+    z-index: 5;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    padding: 0;
+    border-bottom: 1px solid var(--border, #ddd);
+    background: var(--surface, #f8f8f8);
+}
 
-    if (!members.length) return;
+.planner-family-lane-name-button {
+    width: 100%;
+    min-width: 0;
+    min-height: 0 !important;
+    height: 100%;
+    padding: 4px 2px !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    overflow: hidden;
+}
 
-    const date = plannerFamilyGetSelectedDate();
+.planner-family-lane-events {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    box-sizing: border-box;
+}
 
-    board.style.minWidth = "0";
-    board.style.flex = "1 1 0";
+.planner-family-lane-icon {
+    flex: 0 0 auto;
+}
 
-    const headerRow = document.createElement("div");
-    headerRow.className = "planner-family-header-row";
-
-    const spacer = document.createElement("div");
-    spacer.className = "planner-family-header-spacer";
-    spacer.style.flexBasis = `${times.getBoundingClientRect().width}px`;
-
-    const headerLanes = document.createElement("div");
-    headerLanes.className = "planner-family-header-lanes";
-
-    const lanes = document.createElement("div");
-    lanes.className = "planner-family-lanes";
-    lanes.style.height = `${board.offsetHeight}px`;
-
-    members.forEach(member => {
-        const header = document.createElement("div");
-        header.className = "planner-family-lane-header";
-
-        const nameButton = document.createElement("button");
-        nameButton.type = "button";
-        nameButton.className = "planner-family-lane-name-button";
-
-        const icon = document.createElement("span");
-        icon.className = "planner-family-lane-icon";
-        icon.textContent = member.icon || "🧒";
-
-        const name = document.createElement("span");
-        name.className = "planner-family-lane-name";
-        name.textContent = member.name || "";
-
-        nameButton.append(icon, name);
-        nameButton.addEventListener("click", () => {
-            plannerFamilyOpenMember(member.id);
-        });
-
-        header.appendChild(nameButton);
-        headerLanes.appendChild(header);
-
-        const lane = document.createElement("div");
-        lane.className = "planner-family-lane";
-        lane.dataset.memberId = member.id;
-        lane.style.height = `${board.offsetHeight}px`;
-
-        plannerFamilyGetEventsForDate(member.id, date).forEach(event => {
-            plannerFamilyDrawEvent(lane, event);
-        });
-
-        lanes.appendChild(lane);
-    });
-
-    headerRow.append(spacer, headerLanes);
-
-    layout.insertAdjacentElement("beforebegin", headerRow);
-    board.insertAdjacentElement("afterend", lanes);
+.planner-family-lane-name {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
