@@ -1449,7 +1449,7 @@ function plannerFamilyRenderLanes() {
      * ヘッダーは「時間軸＋個人予定ボード」の幅だけ空ける。
      * 時間軸の幅だけでは名前とレーンがずれる。
      */
-spacer.style.flexBasis = `${times.getBoundingClientRect().width}px`;
+spacer.style.flexBasis = `${times.offsetWidth + 8}px`;
 
 
     const headerLanes = document.createElement("div");
