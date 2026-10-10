@@ -1452,16 +1452,14 @@ function plannerFamilyRenderLanes() {
      * 個人予定ボードの幅から、家族レーン全体の幅を引いて
      * 自分の予定欄の幅を求める。
      */
-    const laneWidth = window.matchMedia("(max-width: 480px)").matches
-        ? 46
-        : 54;
+const boardRect = board.getBoundingClientRect();
+const layoutRect = layout.getBoundingClientRect();
 
-    const familyLanesWidth = members.length * laneWidth;
-    const boardWidth = board.getBoundingClientRect().width;
+spacer.style.flexBasis =
+    `${Math.max(0, boardRect.right - layoutRect.left)}px`;
+    
 
-    spacer.style.flexBasis =
-        `${Math.max(0, boardWidth - familyLanesWidth)}px`;
-
+        
     const headerLanes = document.createElement("div");
     headerLanes.className = "planner-family-header-lanes";
 
