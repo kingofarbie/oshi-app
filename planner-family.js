@@ -1445,12 +1445,22 @@ function plannerFamilyRenderLanes() {
     const spacer = document.createElement("div");
     spacer.className = "planner-family-header-spacer";
 
-    // 予定ボードの左端に合わせてヘッダーの開始位置を決める
-    const layoutRect = layout.getBoundingClientRect();
-    const boardRect = board.getBoundingClientRect();
+    /*
+     * 時間軸の幅ではなく、
+     * 「自分の予定」欄の右端までヘッダーの空白を確保する。
+     *
+     * 個人予定ボードの幅から、家族レーン全体の幅を引いて
+     * 自分の予定欄の幅を求める。
+     */
+    const laneWidth = window.matchMedia("(max-width: 480px)").matches
+        ? 46
+        : 54;
+
+    const familyLanesWidth = members.length * laneWidth;
+    const boardWidth = board.getBoundingClientRect().width;
 
     spacer.style.flexBasis =
-        `${Math.max(0, boardRect.left - layoutRect.left)}px`;
+        `${Math.max(0, boardWidth - familyLanesWidth)}px`;
 
     const headerLanes = document.createElement("div");
     headerLanes.className = "planner-family-header-lanes";
@@ -1499,18 +1509,7 @@ function plannerFamilyRenderLanes() {
 
     layout.insertAdjacentElement("beforebegin", headerRow);
     board.insertAdjacentElement("afterend", lanes);
-
-    // 先頭に空白2列を追加し、家族ヘッダーを右へ2列分ずらす
-    const firstHeader = headerLanes.firstElementChild;
-    if (firstHeader) {
-        const columnWidth = firstHeader.getBoundingClientRect().width;
-        const blankWidth = columnWidth * 2;
-
-        spacer.style.flexBasis =
-            `${Math.max(0, boardRect.left - layoutRect.left) + blankWidth}px`;
-    }
 }
-
 
 
 
