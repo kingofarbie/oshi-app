@@ -555,18 +555,27 @@ function openAnniversaryPage(){
 
 function closeAnniversaryPage() {
 
-    const anniversaryPage =
-        document.getElementById("anniversaryPage");
+/* 記念日画面を閉じる */
+const anniversaryPage =
+    document.getElementById("anniversaryPage");
 
-    if (anniversaryPage) {
-        anniversaryPage.style.display = "";
-    }
-
-    switchTab("settingsPage");
-
+if (anniversaryPage) {
+    anniversaryPage.classList.remove("active");
+    anniversaryPage.style.display = "";
 }
 
+/* 設定画面へ戻る */
+const settingsPage =
+    document.getElementById("settingsPage");
 
+if (settingsPage) {
+    settingsPage.classList.add("active");
+}
+
+/* 右上のボタンを × に戻す */
+setHomeMenuButton("close");
+
+}
 
 
 /* =====================
