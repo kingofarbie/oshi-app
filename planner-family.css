@@ -262,7 +262,7 @@ padding: 0;
 
 border-right: 1px solid var(--border, #ddd);
 border-bottom: 1px solid var(--border, #ddd);
-background: var(--surface, #f8f8f8);
+background: transparent;
 
 }
 
