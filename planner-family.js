@@ -1446,17 +1446,28 @@ function plannerFamilyRenderLanes() {
     // 時間軸と予定ボードを一緒に下げ、上部にヘッダー用の空間を作る
     layout.style.paddingTop = `${HEADER_HEIGHT}px`;
 
-    const lanes = document.createElement("div");
-    lanes.className = "planner-family-lanes";
-    lanes.style.height = `${board.offsetHeight}px`;
 
+const lanes = document.createElement("div");
+lanes.className = "planner-family-lanes";
+
+// 25:00の横ラインまで表示できる高さを確保
+const laneHeight = Math.max(
+    board.offsetHeight,
+    PLANNER_FAMILY_TOP_OFFSET +
+        (25 * 60 / 30) * PLANNER_FAMILY_PIXELS_PER_30_MINUTES + 1
+);
+
+lanes.style.height = `${laneHeight}px`;
+
+
+    
     members.forEach(member => {
         const lane = document.createElement("div");
         lane.className = "planner-family-lane";
         lane.dataset.memberId = member.id;
         lane.style.flexBasis = `${laneWidth}px`;
         lane.style.width = `${laneWidth}px`;
-        lane.style.height = `${board.offsetHeight}px`;
+        lane.style.height = `${laneHeight}px`;
 
         // アイコン・名前を各レーン自身の中に配置
         const header = document.createElement("div");
