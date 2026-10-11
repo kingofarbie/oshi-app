@@ -232,10 +232,22 @@ function showPlanner(date, fromCalendar = false){
 
     }
 
-    planner.insertAdjacentHTML(
-        "afterbegin",
+const anniversaryContainer =
+    planner.querySelector(".planner-anniversary-badge");
+
+if(anniversaryContainer){
+    anniversaryContainer.remove();
+}
+
+if(anniversaryHtml){
+
+    title.insertAdjacentHTML(
+        "afterend",
         anniversaryHtml
     );
+
+}
+
 
     /* =====================
        現在時刻
