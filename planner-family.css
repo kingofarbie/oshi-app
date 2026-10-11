@@ -244,7 +244,7 @@
 
 .planner-family-lane-header {
     position: sticky !important;
-    top: 0;
+    top: var(--planner-family-sticky-top, 66px);
     margin-top: -66px;
     left: 0;
     z-index: 30;
@@ -264,7 +264,6 @@
     border-bottom: 1px solid var(--border, #ddd);
     background: var(--surface, #f8f8f8);
 }
-
 
 .planner-family-lane-name-button {
     display: flex;
