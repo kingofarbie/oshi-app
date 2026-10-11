@@ -645,29 +645,39 @@ if(anniversaryHtml){
             <div class="planner-board">
     `;
 
-    /* =====================
-       時間線
-       30分ごとに40px間隔
-       25:00の線まで描画
-    ===================== */
 
-    for(
-        let i = 0;
-        i <= 50;
-        i++
-    ){
+/* =====================
+   時間線
+   30分ごとに40px間隔
+   25:00の線まで描画
+   00:00より上の最上部にも線を追加
+===================== */
 
-        const top =
-            15 + i * 40;
+// 時間枠の最上端の横線
+html += `
+    <div
+        class="planner-line planner-line-major"
+        style="top:0px;"
+    ></div>
+`;
 
-        html += `
-            <div
-                class="planner-line ${i % 2 === 0 ? "planner-line-major" : "planner-line-minor"}"
-                style="top:${top}px;"
-            ></div>
-        `;
+for(
+    let i = 0;
+    i <= 50;
+    i++
+){
 
-    }
+    const top =
+        15 + i * 40;
+
+    html += `
+        <div
+            class="planner-line ${i % 2 === 0 ? "planner-line-major" : "planner-line-minor"}"
+            style="top:${top}px;"
+        ></div>
+    `;
+
+}
 
     /* =====================
        現在時刻ライン
@@ -1003,7 +1013,7 @@ if(anniversaryHtml){
 timeline.innerHTML = html;
 plannerFamilyRenderLanes();
 requestAnimationFrame(plannerUpdateStickyOffsets);
-        
+
 
     /* =====================
        付箋以外をタップ
