@@ -538,6 +538,7 @@ if(visible){
 記念日・誕生日ページを開く
 ===================== */
 
+
 function openAnniversaryPage(){
 
     const page =
@@ -548,10 +549,33 @@ function openAnniversaryPage(){
         return;
     }
 
-    switchTab("anniversaryPage");
+    /* 他のページを閉じて記念日画面を表示 */
+    document
+        .querySelectorAll(".page")
+        .forEach(item => {
+            item.classList.remove("active");
+            item.style.display = "";
+        });
+
+    page.classList.add("active");
+
+    localStorage.setItem(
+        "oshi_last_page",
+        "anniversaryPage"
+    );
+
+    /* 右上を × にして、設定を閉じる動作を維持 */
+    setHomeMenuButton("close");
+
+    window.scrollTo({
+        top: 0,
+        behavior: "instant"
+    });
 
     renderAnniversaryList();
 }
+
+
 
 function closeAnniversaryPage() {
 
