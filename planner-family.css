@@ -364,8 +364,8 @@
     position: absolute;
     top: 0;
     bottom: 0;
-    left: 8px;
-    width: 5px;
+    left: 9px;
+    width: 7px;
     border-radius: 4px;
     background: var(--accent, #ec70a7);
 }
@@ -608,8 +608,8 @@
     }
 
     .planner-family-event-bar {
-        left: 6px;
-        width: 4px;
+        left: 8px;
+        width: 6px;
     }
 
     .planner-family-event-title {
