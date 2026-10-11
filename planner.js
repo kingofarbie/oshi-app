@@ -232,12 +232,6 @@ function showPlanner(date, fromCalendar = false){
 
     }
 
-const anniversaryContainer =
-    planner.querySelector(".planner-anniversary-badge");
-
-if(anniversaryContainer){
-    anniversaryContainer.remove();
-}
 
 if(anniversaryHtml){
 
