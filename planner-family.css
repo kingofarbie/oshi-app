@@ -771,3 +771,14 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+
+/* ================================
+家族レーン：ヘッダーを上部に固定
+================================ */
+
+.planner-family-lane-header {
+position: sticky !important;
+top: 0;
+z-index: 30;
+}
