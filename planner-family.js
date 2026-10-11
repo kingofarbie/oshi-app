@@ -1088,9 +1088,6 @@ function plannerFamilyRenderMembers() {
 }
 
 
-
-
-
 function openPlannerFamily() {
     if (!plannerFamilyIsAllowed()) {
         alert("家族スケジュールはプレミアム以上で利用できます。");
@@ -1145,7 +1142,6 @@ function openPlannerFamily() {
 
     plannerFamilyRenderMembers();
 }
-
 
 
 function plannerFamilyAddMember() {
