@@ -720,7 +720,7 @@
 
 .planner-anniversary-badge {
 position: sticky;
-top: 66px;
+top: var(--planner-anniversary-top, 0px);
 
 z-index: 100;
 

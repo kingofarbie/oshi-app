@@ -1000,11 +1000,10 @@ if(anniversaryHtml){
        描画
     ===================== */
 
-    timeline.innerHTML =
-        html;
-
-
-        plannerFamilyRenderLanes();
+timeline.innerHTML = html;
+plannerFamilyRenderLanes();
+requestAnimationFrame(plannerUpdateStickyOffsets);
+        
 
     /* =====================
        付箋以外をタップ
@@ -1059,6 +1058,66 @@ if(anniversaryHtml){
 }
 
 
+/* =========================================
+📅 1日手帳：上部の高さに合わせて位置を調整
+========================================= */
+
+function plannerUpdateStickyOffsets() {
+const planner = document.getElementById("dayPlanner");
+const title = document.getElementById("plannerTitle");
+
+if (!planner || !title) return;
+
+const badge = planner.querySelector(".planner-anniversary-badge");
+
+// 日付・祝日表示を含む実際の高さ
+const titleHeight = title.getBoundingClientRect().height;
+
+// 日付の下の余白も含める
+const titleStyle = getComputedStyle(title);
+const titleMarginBottom =
+    parseFloat(titleStyle.marginBottom) || 0;
+
+const badgeTop = titleHeight + titleMarginBottom;
+
+// 記念日バブルを日付の直下に配置
+if (badge) {
+    badge.style.top = `${badgeTop}px`;
+    planner.style.setProperty(
+        "--planner-anniversary-top",
+        `${badgeTop}px`
+    );
+} else {
+    planner.style.setProperty(
+        "--planner-anniversary-top",
+        "0px"
+    );
+}
+
+// 家族アイコンを記念日バブルの下に配置
+const badgeHeight = badge
+    ? badge.getBoundingClientRect().height
+    : 0;
+
+const familyTop = badgeTop + badgeHeight;
+
+planner.querySelectorAll(
+    ".planner-family-lane-header"
+).forEach(header => {
+    header.style.top = `${familyTop}px`;
+});
+
+}
+
+if (!window.__plannerStickyOffsetResizeBound) {
+window.__plannerStickyOffsetResizeBound = true;
+
+window.addEventListener(
+    "resize",
+    plannerUpdateStickyOffsets
+);
+
+}
 
 /* =====================
    共有日時を表示用に変換
