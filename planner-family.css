@@ -244,8 +244,8 @@
 
 .planner-family-lane-header {
     position: sticky !important;
-    top: var(--planner-family-sticky-top, 66px);
-    margin-top: -66px;
+top: 0;
+margin-top: 0;
     left: 0;
     z-index: 30;
     display: flex;
