@@ -772,54 +772,125 @@ function plannerFamilySkipOccurrence(ruleId, date) {
    指定日の家族予定を取得
 ===================================================== */
 
+
 function plannerFamilyGetEventsForDate(memberId, date) {
     const data = db.load();
     const family = plannerFamilyEnsureData(data);
+    const events = [];
 
-    const oneTime = family.events
-        .filter(event =>
-            event.memberId === memberId &&
-            event.date === date
-        )
-        .map(event => ({
-            id: event.id,
-            memberId,
-            date,
-            title: event.title,
-            startTime: event.startTime,
-            endTime: event.endTime,
-            sourceType: "event",
-            eventId: event.id
-        }));
-
-    const recurring = [];
-
-    family.rules.forEach(rule => {
-        if (rule.memberId !== memberId) return;
-        if (date < rule.startDate || date > rule.endDate) return;
-        if (!rule.weekdays.includes(plannerFamilyWeekday(date))) return;
-
-        const skipped = family.exceptions.some(exception =>
-            exception.ruleId === rule.id &&
-            exception.date === date &&
-            exception.action === "skip"
-        );
-
-        if (skipped) return;
-
-        recurring.push({
-            id: `${rule.id}-${date}`,
-            memberId,
-            date,
-            title: rule.title,
-            startTime: rule.startTime,
-            endTime: rule.endTime,
-            sourceType: "rule",
-            ruleId: rule.id
+    function addSegment(item, originalDate, startTime, endTime, sourceType) {
+        events.push({
+            ...item,
+            date: originalDate,
+            displayDate: date,
+            displayStartTime: startTime,
+            displayEndTime: endTime,
+            sourceType
         });
+    }
+
+    // 単発予定：当日分と前日からの日跨ぎ分
+    family.events.forEach(event => {
+        if (event.memberId !== memberId) return;
+
+        const crossesMidnight = event.endTime <= event.startTime;
+        const nextDate = plannerFamilyAddDays(event.date, 1);
+
+        if (event.date === date) {
+            addSegment(
+                {
+                    id: event.id,
+                    memberId,
+                    title: event.title,
+                    startTime: event.startTime,
+                    endTime: event.endTime,
+                    eventId: event.id
+                },
+                event.date,
+                event.startTime,
+                crossesMidnight ? "24:00" : event.endTime,
+                "event"
+            );
+        }
+
+        if (crossesMidnight && nextDate === date) {
+            addSegment(
+                {
+                    id: event.id + "-continuation",
+                    memberId,
+                    title: event.title,
+                    startTime: event.startTime,
+                    endTime: event.endTime,
+                    eventId: event.id
+                },
+                event.date,
+                "00:00",
+                event.endTime,
+                "event"
+            );
+        }
     });
 
-    return [...oneTime, ...recurring];
+    // 繰り返し予定：当日分と前日からの日跨ぎ分
+    family.rules.forEach(rule => {
+        if (rule.memberId !== memberId) return;
+
+        const crossesMidnight = rule.endTime <= rule.startTime;
+
+        function addRuleOccurrence(occurrenceDate, segmentStart, segmentEnd) {
+            if (
+                occurrenceDate < rule.startDate ||
+                occurrenceDate > rule.endDate
+            ) {
+                return;
+            }
+
+            if (!rule.weekdays.includes(
+                plannerFamilyWeekday(occurrenceDate)
+            )) {
+                return;
+            }
+
+            const skipped = family.exceptions.some(exception =>
+                exception.ruleId === rule.id &&
+                exception.date === occurrenceDate &&
+                exception.action === "skip"
+            );
+
+            if (skipped) return;
+
+            addSegment(
+                {
+                    id: `${rule.id}-${occurrenceDate}`,
+                    memberId,
+                    title: rule.title,
+                    startTime: rule.startTime,
+                    endTime: rule.endTime,
+                    ruleId: rule.id
+                },
+                occurrenceDate,
+                segmentStart,
+                segmentEnd,
+                "rule"
+            );
+        }
+
+        if (date >= rule.startDate && date <= rule.endDate) {
+            addRuleOccurrence(
+                date,
+                rule.startTime,
+                crossesMidnight ? "24:00" : rule.endTime
+            );
+        }
+
+        const previousDate = plannerFamilyAddDays(date, -1);
+
+        if (crossesMidnight) {
+            addRuleOccurrence(previousDate, "00:00", rule.endTime);
+        }
+    });
+
+    return events;
 }
 
 
@@ -1638,9 +1709,13 @@ plannerFamilyGetEventsForDate(member.id, date).forEach(event => {
 
 
 
+
 function plannerFamilyDrawEvent(lane, event) {
-    const [startHour, startMinute] = event.startTime.split(":").map(Number);
-    const [endHour, endMinute] = event.endTime.split(":").map(Number);
+    const startValue = event.displayStartTime || event.startTime;
+    const endValue = event.displayEndTime || event.endTime;
+
+    const [startHour, startMinute] = startValue.split(":").map(Number);
+    const [endHour, endMinute] = endValue.split(":").map(Number);
 
     const start = startHour * 60 + startMinute;
     const end = endHour * 60 + endMinute;
@@ -1651,11 +1726,6 @@ function plannerFamilyDrawEvent(lane, event) {
     const top = PLANNER_FAMILY_TOP_OFFSET + start * scale;
     const height = Math.max(4, (end - start) * scale);
 
-    /*
-     * 外側はレーン幅全体を使う。
-     * 棒線とタイトルを別々にすることで、
-     * 棒線の幅に文字が切られる問題を防ぐ。
-     */
     const item = document.createElement("div");
     item.className = "planner-family-event-item";
     item.style.top = `${top}px`;
@@ -1668,16 +1738,9 @@ function plannerFamilyDrawEvent(lane, event) {
     title.className = "planner-family-event-title";
     title.textContent = event.title;
 
-    const fontSize = window.matchMedia("(max-width: 480px)").matches
-        ? 11
-        : 12;
-
-    const requiredHeight = [...event.title].length * fontSize * 1.2;
-
-    if (height < requiredHeight) {
-        title.textContent = "⋮";
-        title.classList.add("is-ellipsis");
-    }
+    // 予定名は折り返さない。
+    // 時間が短いだけでは「⋮」に置き換えない。
+    title.style.whiteSpace = "nowrap";
 
     item.append(bar, title);
     item.setAttribute("role", "button");
