@@ -382,7 +382,7 @@
     writing-mode: vertical-rl;
     text-orientation: upright;
     overflow-wrap: anywhere;
-    font-size: 12px;
+    font-size: 14px;
     line-height: 1.2;
     color: var(--text, #222);
     pointer-events: none;
@@ -614,7 +614,7 @@
 
     .planner-family-event-title {
         left: 11px;
-        font-size: 11px;
+        font-size: 13px;
     }
 
     .planner-family-event-title.is-ellipsis {
