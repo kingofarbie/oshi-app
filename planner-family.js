@@ -1481,13 +1481,31 @@ function plannerFamilyRenderLanes() {
 
         header.appendChild(nameButton);
 
-        // 予定を描画する領域は、これまでの時間軸の位置に維持
-        const eventLayer = document.createElement("div");
-        eventLayer.className = "planner-family-lane-events";
 
-        plannerFamilyGetEventsForDate(member.id, date).forEach(event => {
-            plannerFamilyDrawEvent(eventLayer, event);
-        });
+        // 予定を描画する領域は、これまでの時間軸の位置に維持
+const eventLayer = document.createElement("div");
+eventLayer.className = "planner-family-lane-events";
+
+// 個人予定と同じ時間線を家族レーンにも描画
+for (let i = 0; i <= 50; i++) {
+    const line = document.createElement("div");
+
+    line.className =
+        `planner-line ${i % 2 === 0
+            ? "planner-line-major"
+            : "planner-line-minor"}`;
+
+    line.style.top = `${15 + i * 40}px`;
+
+    eventLayer.appendChild(line);
+}
+
+// 家族の予定は時間線の上に描画
+plannerFamilyGetEventsForDate(member.id, date).forEach(event => {
+    plannerFamilyDrawEvent(eventLayer, event);
+});
+
+
 
         lane.append(header, eventLayer);
         lanes.appendChild(lane);
