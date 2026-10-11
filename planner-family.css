@@ -364,7 +364,7 @@
     position: absolute;
     top: 0;
     bottom: 0;
-    left: 15px;
+    left: 20px;
     width: 7px;
     border-radius: 4px;
     background: var(--accent, #ec70a7);
@@ -383,6 +383,7 @@
     text-orientation: upright;
     overflow-wrap: anywhere;
     font-size: 14px;
+    font-weight: bold;
     line-height: 1.2;
     color: var(--text, #222);
     pointer-events: none;
