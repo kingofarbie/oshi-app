@@ -1029,8 +1029,8 @@ function plannerFamilyRenderMembers() {
         const row = document.createElement("div");
         row.className = "planner-family-member";
 
-        const identity = document.createElement("button");
-        identity.type = "button";
+        /* アイコンと名前：表示のみ */
+        const identity = document.createElement("div");
         identity.className = "planner-family-member-identity";
 
         const icon = document.createElement("span");
@@ -1042,28 +1042,10 @@ function plannerFamilyRenderMembers() {
         name.textContent = member.name || "";
 
         identity.append(icon, name);
-        identity.addEventListener("click", () => {
-            plannerFamilyOpenMember(member.id);
-        });
 
+        /* 操作ボタン：削除 → 編集 → ON/OFF */
         const actions = document.createElement("div");
         actions.className = "planner-family-member-actions";
-
-        const toggle = plannerFamilyMakeButton(
-            member.enabled ? "🔵" : "⚪",
-            () => plannerFamilyToggleMember(member.id),
-            "planner-family-icon-button"
-        );
-        toggle.title = member.enabled ? "表示をOFF" : "表示をON";
-        toggle.setAttribute("aria-label", toggle.title);
-
-        const edit = plannerFamilyMakeButton(
-            "✏️",
-            () => plannerFamilyEditMember(member.id),
-            "planner-family-icon-button"
-        );
-        edit.title = "編集";
-        edit.setAttribute("aria-label", "編集");
 
         const remove = plannerFamilyMakeButton(
             "🗑️",
@@ -1073,7 +1055,24 @@ function plannerFamilyRenderMembers() {
         remove.title = "削除";
         remove.setAttribute("aria-label", "削除");
 
-        actions.append(toggle, edit, remove);
+        const edit = plannerFamilyMakeButton(
+            "✏️",
+            () => plannerFamilyEditMember(member.id),
+            "planner-family-icon-button"
+        );
+        edit.title = "編集";
+        edit.setAttribute("aria-label", "編集");
+
+        const toggle = plannerFamilyMakeButton(
+            member.enabled ? "🔵" : "⚪",
+            () => plannerFamilyToggleMember(member.id),
+            "planner-family-icon-button"
+        );
+        toggle.title = member.enabled ? "表示をOFF" : "表示をON";
+        toggle.setAttribute("aria-label", toggle.title);
+        toggle.setAttribute("aria-pressed", String(!!member.enabled));
+
+        actions.append(remove, edit, toggle);
         row.append(identity, actions);
         list.appendChild(row);
     });
@@ -1088,6 +1087,10 @@ function plannerFamilyRenderMembers() {
     }
 }
 
+
+
+
+
 function openPlannerFamily() {
     if (!plannerFamilyIsAllowed()) {
         alert("家族スケジュールはプレミアム以上で利用できます。");
@@ -1101,28 +1104,49 @@ function openPlannerFamily() {
 
     screen.replaceChildren();
 
-    screen.appendChild(
-        plannerFamilyMakeHeader("← 戻る", closePlannerFamily, "👨‍👩‍👧 家族管理")
+    /* タイトル行：左にタイトル、右に閉じるボタン */
+    const header = document.createElement("div");
+    header.className = "planner-family-header";
+    header.style.display = "flex";
+    header.style.alignItems = "center";
+    header.style.justifyContent = "space-between";
+    header.style.width = "100%";
+    header.style.boxSizing = "border-box";
+
+    const heading = document.createElement("h2");
+    heading.textContent = "家族の管理";
+    heading.style.margin = "0";
+
+    const closeButton = plannerFamilyMakeButton(
+        "×",
+        closePlannerFamily,
+        "planner-family-modal-close"
     );
+    closeButton.setAttribute("aria-label", "スケジュール画面に戻る");
+    closeButton.title = "スケジュール画面に戻る";
+
+    header.append(heading, closeButton);
 
     const description = document.createElement("p");
-    description.textContent =
-        "家族の名前を押すと、その人の予定を管理できます。";
+    description.textContent = "家族の名前・アイコンと表示設定を管理できます。";
 
     const list = document.createElement("div");
     list.id = "plannerFamilyMemberList";
 
+    /* 家族の追加は従来どおり残す */
     const addButton = plannerFamilyMakeButton(
         "＋ 家族を追加",
         plannerFamilyAddMember
     );
     addButton.classList.add("planner-family-add-button");
 
-    screen.append(description, list, addButton);
+    screen.append(header, description, list, addButton);
     screen.style.display = "block";
 
     plannerFamilyRenderMembers();
 }
+
+
 
 function plannerFamilyAddMember() {
     if (!plannerFamilyIsAllowed()) return;
