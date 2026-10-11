@@ -248,7 +248,7 @@
     top: 66px;
     margin-top: -66px;
     left: 0;
-    z-index: 30;
+    z-index: 10;
 
     display: flex;
     flex: 0 0 54px;
@@ -262,7 +262,7 @@
     padding: 0;
 
     border-right: 1px solid var(--border, #ddd);
-    border-bottom: 1px solid var(--border, #ddd);
+    border-bottom: 0;
     background: transparent;
 }
 

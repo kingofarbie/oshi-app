@@ -1497,6 +1497,12 @@ const eventLayer = document.createElement("div");
 eventLayer.className = "planner-family-lane-events";
 
 // 個人予定と同じ時間線を家族レーンにも描画
+// 00:00の上端にも横線を追加
+const topLine = document.createElement("div");
+topLine.className = "planner-line planner-line-major";
+topLine.style.top = "0px";
+eventLayer.appendChild(topLine);
+
 for (let i = 0; i <= 50; i++) {
     const line = document.createElement("div");
 
@@ -1509,6 +1515,7 @@ for (let i = 0; i <= 50; i++) {
 
     eventLayer.appendChild(line);
 }
+
 
 // 家族の予定は時間線の上に描画
 plannerFamilyGetEventsForDate(member.id, date).forEach(event => {
