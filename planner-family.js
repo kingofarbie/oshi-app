@@ -165,6 +165,95 @@ function plannerFamilySave(data) {
     db.save(data);
 }
 
+
+
+function plannerFamilyHasOverlap(
+    family,
+    memberId,
+    startDate,
+    startTime,
+    endDate,
+    endTime,
+    excludeEventId = null
+) {
+    function toMinutes(time) {
+        const parts = String(time || "").split(":").map(Number);
+
+        if (
+            parts.length !== 2 ||
+            !Number.isInteger(parts[0]) ||
+            !Number.isInteger(parts[1]) ||
+            parts[0] < 0 ||
+            parts[0] > 23 ||
+            parts[1] < 0 ||
+            parts[1] > 59
+        ) {
+            return null;
+        }
+
+        return parts[0] * 60 + parts[1];
+    }
+
+    function toDateTime(date, time) {
+        if (!plannerFamilyDateIsValid(date)) return null;
+
+        const minutes = toMinutes(time);
+        if (minutes === null) return null;
+
+        return Date.parse(`${date}T00:00:00Z`) / 60000 + minutes;
+    }
+
+    const newStart = toDateTime(startDate, startTime);
+    const newEnd = toDateTime(endDate, endTime);
+
+    if (
+        newStart === null ||
+        newEnd === null ||
+        newEnd <= newStart
+    ) {
+        return false;
+    }
+
+    return family.events.some(event => {
+        if (event.memberId !== memberId) return false;
+        if (excludeEventId && event.id === excludeEventId) return false;
+
+        const existingStartDate = event.startDate || event.date;
+        let existingEndDate = event.endDate;
+
+        if (!plannerFamilyDateIsValid(existingEndDate)) {
+            existingEndDate = plannerFamilyAddDays(
+                existingStartDate,
+                event.endTime <= event.startTime ? 1 : 0
+            );
+        }
+
+        const existingStart = toDateTime(
+            existingStartDate,
+            event.startTime
+        );
+
+        const existingEnd = toDateTime(
+            existingEndDate,
+            event.endTime
+        );
+
+        if (
+            existingStart === null ||
+            existingEnd === null ||
+            existingEnd <= existingStart
+        ) {
+            return false;
+        }
+
+        // 開始・終了が接するだけなら重複とは扱わない
+        return newStart < existingEnd && newEnd > existingStart;
+    });
+}
+
+
+
+
 /* =====================================================
    画面共通
 ===================================================== */
@@ -385,6 +474,7 @@ function plannerFamilyCloseMember() {
 }
 
 
+
 function plannerFamilyRenderEvents(memberId) {
     const screen = document.getElementById("plannerFamilyMemberScreen");
     const list = document.getElementById("plannerFamilyMemberEvents");
@@ -394,34 +484,54 @@ function plannerFamilyRenderEvents(memberId) {
     const data = db.load();
     const family = plannerFamilyEnsureData(data);
 
-    // 単発予定：日付の新しい順で最大20件を表示
+    // 単発予定：開始日の新しい順で最大20件を表示
     const events = family.events
         .filter(event => event.memberId === memberId)
         .sort((a, b) => {
-            const dateOrder = String(b.date).localeCompare(String(a.date));
-            return dateOrder || String(b.startTime).localeCompare(String(a.startTime));
+            const dateA = a.startDate || a.date || "";
+            const dateB = b.startDate || b.date || "";
+            const dateOrder = String(dateB).localeCompare(String(dateA));
+
+            return dateOrder ||
+                String(b.startTime || "").localeCompare(String(a.startTime || ""));
         })
         .slice(0, 20)
-        .map(event => ({
-            date: event.date,
-            title: event.title,
-            startTime: event.startTime,
-            endTime: event.endTime,
-            kind: "単発",
-            eventId: event.id,
-            sortDate: event.date
-        }));
+        .map(event => {
+            const startDate = event.startDate || event.date || "";
+            let endDate = event.endDate || "";
+
+            // 旧形式データは、日跨ぎの時刻なら翌日を終了日とする
+            if (!plannerFamilyDateIsValid(endDate)) {
+                endDate = plannerFamilyAddDays(
+                    startDate,
+                    event.endTime <= event.startTime ? 1 : 0
+                );
+            }
+
+            return {
+                date: startDate,
+                endDate,
+                title: event.title,
+                startTime: event.startTime,
+                endTime: event.endTime,
+                kind: "単発",
+                eventId: event.id,
+                sortDate: startDate
+            };
+        });
 
     // 繰り返し予定：開始日の新しい順で最大10種類を表示
     const rules = family.rules
         .filter(rule => rule.memberId === memberId)
         .sort((a, b) => {
             const dateOrder = String(b.startDate).localeCompare(String(a.startDate));
-            return dateOrder || String(b.createdAt || "").localeCompare(String(a.createdAt || ""));
+            return dateOrder ||
+                String(b.createdAt || "").localeCompare(String(a.createdAt || ""));
         })
         .slice(0, 10)
         .map(rule => ({
             date: `${rule.startDate} ～ ${rule.endDate}`,
+            endDate: "",
             title: rule.title,
             startTime: rule.startTime,
             endTime: rule.endTime,
@@ -455,8 +565,14 @@ function plannerFamilyRenderEvents(memberId) {
         title.textContent = event.title;
 
         const time = document.createElement("div");
-        time.textContent =
-            `${event.date}　${event.startTime}〜${event.endTime}`;
+
+        if (event.kind === "単発") {
+            time.textContent =
+                `開始 ${event.date} ${event.startTime}　終了 ${event.endDate} ${event.endTime}`;
+        } else {
+            time.textContent =
+                `${event.date}　${event.startTime}〜${event.endTime}`;
+        }
 
         const kind = document.createElement("small");
         kind.textContent = event.kind;
@@ -511,9 +627,12 @@ function plannerFamilyRenderEvents(memberId) {
 
 
 
+
 /* =====================================================
    単発予定
 ===================================================== */
+
+
 
 
 function plannerFamilyEditEvent(eventId) {
@@ -523,49 +642,112 @@ function plannerFamilyEditEvent(eventId) {
 
     if (!event) return;
 
-    const date = plannerFamilyAskDate(
-        "日付（YYYY-MM-DD）",
-        event.date
-    );
+    // 旧形式の date にも対応
+    const startDateDefault = event.startDate || event.date || "";
+    let endDateDefault = event.endDate || "";
 
-    if (date === null || date === undefined) return;
+    if (!plannerFamilyDateIsValid(endDateDefault)) {
+        endDateDefault = plannerFamilyAddDays(
+            startDateDefault,
+            event.endTime <= event.startTime ? 1 : 0
+        );
+    }
+
+    const startDate = plannerFamilyAskDate(
+        "開始日（YYYY-MM-DD）",
+        startDateDefault
+    );
+    if (startDate === null || startDate === undefined) return;
+
+    const startTime = plannerFamilyAskTime(
+        "開始時刻（HH:MM）",
+        event.startTime
+    );
+    if (startTime === null || startTime === undefined) return;
+
+    const endDate = plannerFamilyAskDate(
+        "終了日（YYYY-MM-DD）",
+        endDateDefault
+    );
+    if (endDate === null || endDate === undefined) return;
+
+    const endTime = plannerFamilyAskTime(
+        "終了時刻（HH:MM）",
+        event.endTime
+    );
+    if (endTime === null || endTime === undefined) return;
 
     const title = plannerFamilyAskTitle(
         "予定名（1〜5文字）",
         event.title,
         5
     );
-
     if (title === null || title === undefined) return;
 
-    const startTime = plannerFamilyAskTime(
-        "開始時刻（HH:MM）",
-        event.startTime
-    );
-
-    if (startTime === null || startTime === undefined) return;
-
-    const endTime = plannerFamilyAskTime(
-        "終了時刻（HH:MM）",
-        event.endTime
-    );
-
-    if (endTime === null || endTime === undefined) return;
-
-    if (endTime <= startTime) {
-        alert("終了時刻は開始時刻より後にしてください。");
+    if (
+        !plannerFamilyDateIsValid(startDate) ||
+        !plannerFamilyDateIsValid(endDate)
+    ) {
+        alert("開始日と終了日を正しく入力してください。");
         return;
     }
 
-    event.date = date;
-    event.title = title;
+    if (endDate < startDate) {
+        alert("終了日は開始日以降にしてください。");
+        return;
+    }
+
+    if (
+        !plannerFamilyTimeIsValid(startTime) ||
+        !plannerFamilyTimeIsValid(endTime)
+    ) {
+        alert("開始・終了時刻を正しく入力してください。");
+        return;
+    }
+
+    if (
+        endDate === startDate &&
+        endTime <= startTime
+    ) {
+        alert("終了日時は開始日時より後にしてください。");
+        return;
+    }
+
+    // 自分自身を除外して、ほかの予定との重複を確認
+    if (
+        plannerFamilyHasOverlap(
+            family,
+            event.memberId,
+            startDate,
+            startTime,
+            endDate,
+            endTime,
+            event.id
+        )
+    ) {
+        alert("その時間は別の予定が入っています。");
+        return;
+    }
+
+    // 新形式で保存する
+    event.startDate = startDate;
     event.startTime = startTime;
+    event.endDate = endDate;
     event.endTime = endTime;
+    event.title = title;
+
+    // 旧 date 項目も維持
+    event.date = startDate;
 
     plannerFamilySave(data);
     plannerFamilyRenderEvents(event.memberId);
     plannerFamilyRenderLanes();
 }
+
+
+
+
+
 
 function plannerFamilyDeleteEvent(eventId) {
     const data = db.load();
@@ -615,6 +797,7 @@ function plannerFamilyAskWeekdays(defaultValue) {
 }
 
 
+
 function plannerFamilyEditRule(ruleId) {
     const data = db.load();
     const family = plannerFamilyEnsureData(data);
@@ -628,6 +811,11 @@ function plannerFamilyEditRule(ruleId) {
     );
 
     if (effectiveFrom === null || effectiveFrom === undefined) return;
+
+    if (!plannerFamilyDateIsValid(effectiveFrom)) {
+        alert("変更適用日を正しく入力してください。");
+        return;
+    }
 
     const title = plannerFamilyAskTitle(
         "新しい予定名（1〜5文字）",
@@ -657,7 +845,11 @@ function plannerFamilyEditRule(ruleId) {
 
     if (endTime === null || endTime === undefined) return;
 
-    if (endTime <= startTime) {
+    if (
+        !plannerFamilyTimeIsValid(startTime) ||
+        !plannerFamilyTimeIsValid(endTime) ||
+        endTime <= startTime
+    ) {
         alert("終了時刻は開始時刻より後にしてください。");
         return;
     }
@@ -669,8 +861,120 @@ function plannerFamilyEditRule(ruleId) {
 
     if (endDate === null || endDate === undefined) return;
 
-    if (endDate < effectiveFrom) {
+    if (
+        !plannerFamilyDateIsValid(endDate) ||
+        endDate < effectiveFrom
+    ) {
         alert("終了日は変更適用日以降にしてください。");
+        return;
+    }
+
+    if (!Array.isArray(weekdays) || weekdays.length === 0) {
+        alert("繰り返す曜日を1つ以上選んでください。");
+        return;
+    }
+
+    /*
+     * 変更適用日以降の新ルールと、
+     * 同じメンバーの単発予定・ほかの繰り返し予定との重複を確認する。
+     */
+    const hasOverlap = (() => {
+        let date = effectiveFrom;
+
+        while (date <= endDate) {
+            if (weekdays.includes(plannerFamilyWeekday(date))) {
+                const newStart = Date.parse(
+                    `${date}T${startTime}:00Z`
+                );
+                const newEnd = Date.parse(
+                    `${date}T${endTime}:00Z`
+                );
+
+                // 単発予定との重複
+                const eventOverlap = family.events.some(event => {
+                    if (event.memberId !== rule.memberId) return false;
+
+                    const eventStartDate = event.startDate || event.date;
+                    let eventEndDate = event.endDate;
+
+                    if (!plannerFamilyDateIsValid(eventEndDate)) {
+                        eventEndDate = plannerFamilyAddDays(
+                            eventStartDate,
+                            event.endTime <= event.startTime ? 1 : 0
+                        );
+                    }
+
+                    const eventStart = Date.parse(
+                        `${eventStartDate}T${event.startTime}:00Z`
+                    );
+                    const eventEnd = Date.parse(
+                        `${eventEndDate}T${event.endTime}:00Z`
+                    );
+
+                    return (
+                        Number.isFinite(newStart) &&
+                        Number.isFinite(newEnd) &&
+                        Number.isFinite(eventStart) &&
+                        Number.isFinite(eventEnd) &&
+                        newStart < eventEnd &&
+                        newEnd > eventStart
+                    );
+                });
+
+                if (eventOverlap) return true;
+
+                // ほかの繰り返し予定との重複
+                const otherRuleOverlap = family.rules.some(otherRule => {
+                    if (otherRule.id === rule.id) return false;
+                    if (otherRule.memberId !== rule.memberId) return false;
+
+                    // 変更適用日より前だけ残る旧ルールは対象外
+                    if (
+                        !plannerFamilyDateIsValid(otherRule.startDate) ||
+                        !plannerFamilyDateIsValid(otherRule.endDate) ||
+                        date < otherRule.startDate ||
+                        date > otherRule.endDate
+                    ) {
+                        return false;
+                    }
+
+                    if (
+                        !Array.isArray(otherRule.weekdays) ||
+                        !otherRule.weekdays.includes(
+                            plannerFamilyWeekday(date)
+                        )
+                    ) {
+                        return false;
+                    }
+
+                    const otherStart = Date.parse(
+                        `${date}T${otherRule.startTime}:00Z`
+                    );
+                    const otherEnd = Date.parse(
+                        `${date}T${otherRule.endTime}:00Z`
+                    );
+
+                    return (
+                        Number.isFinite(newStart) &&
+                        Number.isFinite(newEnd) &&
+                        Number.isFinite(otherStart) &&
+                        Number.isFinite(otherEnd) &&
+                        newStart < otherEnd &&
+                        newEnd > otherStart
+                    );
+                });
+
+                if (otherRuleOverlap) return true;
+            }
+
+            date = plannerFamilyAddDays(date, 1);
+        }
+
+        return false;
+    })();
+
+    if (hasOverlap) {
+        alert("その時間は別の予定が入っています。");
         return;
     }
 
@@ -704,6 +1008,9 @@ function plannerFamilyEditRule(ruleId) {
     plannerFamilyRenderEvents(rule.memberId);
     plannerFamilyRenderLanes();
 }
+
+
+
 
 function plannerFamilyDeleteRule(ruleId) {
     const data = db.load();
@@ -773,6 +1080,7 @@ function plannerFamilySkipOccurrence(ruleId, date) {
 ===================================================== */
 
 
+
 function plannerFamilyGetEventsForDate(memberId, date) {
     const data = db.load();
     const family = plannerFamilyEnsureData(data);
@@ -789,55 +1097,68 @@ function plannerFamilyGetEventsForDate(memberId, date) {
         });
     }
 
-    // 単発予定：当日分と前日からの日跨ぎ分
+    // 単発予定：開始日から終了日まで表示
+    // 旧形式の date にも対応
     family.events.forEach(event => {
         if (event.memberId !== memberId) return;
 
-        const crossesMidnight = event.endTime <= event.startTime;
-        const nextDate = plannerFamilyAddDays(event.date, 1);
+        const startDate = event.startDate || event.date;
+        if (!plannerFamilyDateIsValid(startDate)) return;
 
-        if (event.date === date) {
-            addSegment(
-                {
-                    id: event.id,
-                    memberId,
-                    title: event.title,
-                    startTime: event.startTime,
-                    endTime: event.endTime,
-                    eventId: event.id
-                },
-                event.date,
-                event.startTime,
-                crossesMidnight ? "24:00" : event.endTime,
-                "event"
+        // 旧形式で終了日がない場合は、時刻から日跨ぎを判定
+        let endDate = event.endDate;
+
+        if (!plannerFamilyDateIsValid(endDate)) {
+            endDate = plannerFamilyAddDays(
+                startDate,
+                event.endTime <= event.startTime ? 1 : 0
             );
         }
 
-        if (crossesMidnight && nextDate === date) {
-            addSegment(
-                {
-                    id: event.id + "-continuation",
-                    memberId,
-                    title: event.title,
-                    startTime: event.startTime,
-                    endTime: event.endTime,
-                    eventId: event.id
-                },
-                event.date,
-                "00:00",
-                event.endTime,
-                "event"
-            );
-        }
+        if (endDate < startDate) return;
+        if (date < startDate || date > endDate) return;
+
+        const isStartDate = date === startDate;
+        const isEndDate = date === endDate;
+
+        const segmentStart = isStartDate
+            ? event.startTime
+            : "00:00";
+
+        const segmentEnd = isEndDate
+            ? event.endTime
+            : "24:00";
+
+        addSegment(
+            {
+                id: event.id,
+                memberId,
+                title: event.title,
+                startTime: event.startTime,
+                endTime: event.endTime,
+                startDate,
+                endDate,
+                eventId: event.id
+            },
+            startDate,
+            segmentStart,
+            segmentEnd,
+            "event"
+        );
     });
 
     // 繰り返し予定：当日分と前日からの日跨ぎ分
+    // rule.endDate は繰り返し期間の最終日のまま維持
     family.rules.forEach(rule => {
         if (rule.memberId !== memberId) return;
 
         const crossesMidnight = rule.endTime <= rule.startTime;
 
-        function addRuleOccurrence(occurrenceDate, segmentStart, segmentEnd) {
+        function addRuleOccurrence(
+            occurrenceDate,
+            segmentStart,
+            segmentEnd
+        ) {
             if (
                 occurrenceDate < rule.startDate ||
                 occurrenceDate > rule.endDate
@@ -845,9 +1166,12 @@ function plannerFamilyGetEventsForDate(memberId, date) {
                 return;
             }
 
-            if (!rule.weekdays.includes(
-                plannerFamilyWeekday(occurrenceDate)
-            )) {
+            if (
+                !Array.isArray(rule.weekdays) ||
+                !rule.weekdays.includes(
+                    plannerFamilyWeekday(occurrenceDate)
+                )
+            ) {
                 return;
             }
 
@@ -883,10 +1207,14 @@ function plannerFamilyGetEventsForDate(memberId, date) {
             );
         }
 
-        const previousDate = plannerFamilyAddDays(date, -1);
-
         if (crossesMidnight) {
-            addRuleOccurrence(previousDate, "00:00", rule.endTime);
+            const previousDate = plannerFamilyAddDays(date, -1);
+
+            addRuleOccurrence(
+                previousDate,
+                "00:00",
+                rule.endTime
+            );
         }
     });
 
@@ -896,9 +1224,11 @@ function plannerFamilyGetEventsForDate(memberId, date) {
 
 
 
+
 /* =====================================================
    家族予定の詳細
 ===================================================== */
+
 
 function plannerFamilyShowEventDetail(event) {
     const member = plannerFamilyGetMember(event.memberId);
@@ -933,11 +1263,32 @@ function plannerFamilyShowEventDetail(event) {
         `${member.icon || "🧒"} ${member.name}`;
 
     const date = document.createElement("p");
-    date.textContent = event.date;
-
     const time = document.createElement("p");
-    time.textContent =
-        `${event.startTime}〜${event.endTime}`;
+
+    if (event.sourceType === "event") {
+        const startDate = event.startDate || event.date || "";
+        let endDate = event.endDate || "";
+
+        // 旧形式の予定にも対応
+        if (!plannerFamilyDateIsValid(endDate)) {
+            endDate = plannerFamilyAddDays(
+                startDate,
+                event.endTime <= event.startTime ? 1 : 0
+            );
+        }
+
+        date.textContent =
+            `開始日：${startDate}\n終了日：${endDate}`;
+
+        time.textContent =
+            `開始：${event.startTime}\n終了：${event.endTime}`;
+    } else {
+        // 繰り返し予定は従来どおり
+        date.textContent = event.date;
+
+        time.textContent =
+            `${event.startTime}〜${event.endTime}`;
+    }
 
     const type = document.createElement("p");
     type.textContent =
@@ -1009,6 +1360,7 @@ function plannerFamilyShowEventDetail(event) {
 
     screen.style.display = "block";
 }
+
 
 
 
@@ -1413,26 +1765,22 @@ function plannerFamilyEditMember(memberId) {
 
 /* ---------- 単発予定：一つのモーダルで入力 ---------- */
 
+
+
 function plannerFamilyAddEvent(memberId) {
     const member = plannerFamilyGetMember(memberId);
     if (!member || !plannerFamilyIsAllowed()) return;
+
+    const selectedDate = plannerFamilyGetSelectedDate();
 
     plannerFamilyOpenFormModal({
         title: `${member.icon || "🧒"} ${member.name}：予定追加`,
         fields: [
             {
-                name: "date",
-                label: "日付",
+                name: "startDate",
+                label: "開始日",
                 type: "date",
-                value: plannerFamilyGetSelectedDate()
-            },
-            {
-                name: "title",
-                label: "予定名（1〜5文字）",
-                type: "text",
-                maxLength: 5,
-                value: "",
-                placeholder: "例：ピアノ"
+                value: selectedDate
             },
             {
                 name: "startTime",
@@ -1441,42 +1789,92 @@ function plannerFamilyAddEvent(memberId) {
                 value: "17:00"
             },
             {
+                name: "endDate",
+                label: "終了日",
+                type: "date",
+                value: selectedDate
+            },
+            {
                 name: "endTime",
                 label: "終了時刻",
                 type: "time",
                 value: "18:30"
+            },
+            {
+                name: "title",
+                label: "予定名（1〜5文字）",
+                type: "text",
+                maxLength: 5,
+                value: "",
+                placeholder: "例：ピアノ"
             }
         ],
+
         onSubmit(values) {
-            if (!plannerFamilyDateIsValid(values.date)) {
-                alert("日付を正しく入力してください。");
+            if (
+                !plannerFamilyDateIsValid(values.startDate) ||
+                !plannerFamilyDateIsValid(values.endDate)
+            ) {
+                alert("開始日と終了日を正しく入力してください。");
                 return false;
             }
 
-            if (!values.title || [...values.title].length > 5) {
+            if (values.endDate < values.startDate) {
+                alert("終了日は開始日以降にしてください。");
+                return false;
+            }
+
+            if (
+                !values.title ||
+                [...values.title].length < 1 ||
+                [...values.title].length > 5
+            ) {
                 alert("予定名は1〜5文字で入力してください。");
                 return false;
             }
 
             if (
                 !plannerFamilyTimeIsValid(values.startTime) ||
-                !plannerFamilyTimeIsValid(values.endTime) ||
-                values.endTime <= values.startTime
+                !plannerFamilyTimeIsValid(values.endTime)
             ) {
                 alert("開始・終了時刻を正しく入力してください。");
+                return false;
+            }
+
+            if (
+                values.endDate === values.startDate &&
+                values.endTime <= values.startTime
+            ) {
+                alert("終了日時は開始日時より後にしてください。");
                 return false;
             }
 
             const data = db.load();
             const family = plannerFamilyEnsureData(data);
 
+            // 同じメンバーの既存予定と重複していないか確認
+            if (
+                plannerFamilyHasOverlap(
+                    family,
+                    memberId,
+                    values.startDate,
+                    values.startTime,
+                    values.endDate,
+                    values.endTime
+                )
+            ) {
+                alert("その時間は別の予定が入っています。");
+                return false;
+            }
+
             family.events.push({
                 id: plannerFamilyNewId(),
                 memberId,
-                date: values.date,
-                title: values.title,
+                startDate: values.startDate,
                 startTime: values.startTime,
-                endTime: values.endTime
+                endDate: values.endDate,
+                endTime: values.endTime,
+                title: values.title
             });
 
             plannerFamilySave(data);
@@ -1486,7 +1884,12 @@ function plannerFamilyAddEvent(memberId) {
     });
 }
 
+
+
+
+
 /* ---------- 繰り返し予定：曜日も同じ画面で入力 ---------- */
+
 
 function plannerFamilyAddRule(memberId) {
     const member = plannerFamilyGetMember(memberId);
@@ -1545,12 +1948,19 @@ function plannerFamilyAddRule(memberId) {
                 return false;
             }
 
-            if (!values.weekdays.length) {
+            if (
+                !Array.isArray(values.weekdays) ||
+                !values.weekdays.length
+            ) {
                 alert("繰り返す曜日を1つ以上選んでください。");
                 return false;
             }
 
-            if (!values.title || [...values.title].length > 5) {
+            if (
+                !values.title ||
+                [...values.title].length < 1 ||
+                [...values.title].length > 5
+            ) {
                 alert("予定名は1〜5文字で入力してください。");
                 return false;
             }
@@ -1566,6 +1976,129 @@ function plannerFamilyAddRule(memberId) {
 
             const data = db.load();
             const family = plannerFamilyEnsureData(data);
+
+            // 既存の単発予定との重複確認
+            const hasEventOverlap = family.events.some(event => {
+                if (event.memberId !== memberId) return false;
+
+                const eventStartDate = event.startDate || event.date;
+                let eventEndDate = event.endDate;
+
+                if (!plannerFamilyDateIsValid(eventEndDate)) {
+                    eventEndDate = plannerFamilyAddDays(
+                        eventStartDate,
+                        event.endTime <= event.startTime ? 1 : 0
+                    );
+                }
+
+                // 新しい繰り返し期間内で曜日が一致する日を調べる
+                let date = values.startDate;
+
+                while (date <= values.endDate) {
+                    if (
+                        values.weekdays.includes(
+                            plannerFamilyWeekday(date)
+                        )
+                    ) {
+                        const eventStart = Date.parse(
+                            `${eventStartDate}T${event.startTime}:00Z`
+                        );
+                        const eventEnd = Date.parse(
+                            `${eventEndDate}T${event.endTime}:00Z`
+                        );
+
+                        const ruleStart = Date.parse(
+                            `${date}T${values.startTime}:00Z`
+                        );
+                        const ruleEnd = Date.parse(
+                            `${date}T${values.endTime}:00Z`
+                        );
+
+                        if (
+                            Number.isFinite(eventStart) &&
+                            Number.isFinite(eventEnd) &&
+                            Number.isFinite(ruleStart) &&
+                            Number.isFinite(ruleEnd) &&
+                            ruleStart < eventEnd &&
+                            ruleEnd > eventStart
+                        ) {
+                            return true;
+                        }
+                    }
+
+                    date = plannerFamilyAddDays(date, 1);
+                }
+
+                return false;
+            });
+
+            // 既存の繰り返し予定との重複確認
+            const hasRuleOverlap = family.rules.some(rule => {
+                if (rule.memberId !== memberId) return false;
+                if (
+                    !Array.isArray(rule.weekdays) ||
+                    !rule.weekdays.length
+                ) {
+                    return false;
+                }
+
+                const periodStart =
+                    values.startDate > rule.startDate
+                        ? values.startDate
+                        : rule.startDate;
+
+                const periodEnd =
+                    values.endDate < rule.endDate
+                        ? values.endDate
+                        : rule.endDate;
+
+                let date = periodStart;
+
+                while (date <= periodEnd) {
+                    const sameWeekday =
+                        values.weekdays.includes(
+                            plannerFamilyWeekday(date)
+                        ) &&
+                        rule.weekdays.includes(
+                            plannerFamilyWeekday(date)
+                        );
+
+                    if (sameWeekday) {
+                        const newStart = Date.parse(
+                            `${date}T${values.startTime}:00Z`
+                        );
+                        const newEnd = Date.parse(
+                            `${date}T${values.endTime}:00Z`
+                        );
+                        const oldStart = Date.parse(
+                            `${date}T${rule.startTime}:00Z`
+                        );
+                        const oldEnd = Date.parse(
+                            `${date}T${rule.endTime}:00Z`
+                        );
+
+                        if (
+                            Number.isFinite(newStart) &&
+                            Number.isFinite(newEnd) &&
+                            Number.isFinite(oldStart) &&
+                            Number.isFinite(oldEnd) &&
+                            newStart < oldEnd &&
+                            newEnd > oldStart
+                        ) {
+                            return true;
+                        }
+                    }
+
+                    date = plannerFamilyAddDays(date, 1);
+                }
+
+                return false;
+            });
+
+            if (hasEventOverlap || hasRuleOverlap) {
+                alert("その時間は別の予定が入っています。");
+                return false;
+            }
 
             family.rules.push({
                 id: plannerFamilyNewId(),
@@ -1585,6 +2118,9 @@ function plannerFamilyAddRule(memberId) {
         }
     });
 }
+
+
+
 
 /* ---------- レーン位置と予定表示の修正 ---------- */
 
@@ -1779,6 +2315,7 @@ function plannerFamilyDrawEvent(lane, event) {
    ・期間外の予定や繰り返し設定は保持する
 ===================================================== */
 
+
 function plannerFamilyOpenBulkDelete() {
     if (!plannerFamilyIsAllowed()) {
         alert("家族スケジュールはプレミアム以上で利用できます。");
@@ -1807,7 +2344,7 @@ function plannerFamilyOpenBulkDelete() {
 
     const warning = document.createElement("p");
     warning.textContent =
-        "指定期間内の予定だけが対象です。削除前に対象件数を確認できます。";
+        "指定期間と重なる予定が対象です。削除前に対象件数を確認できます。";
 
     const memberLabel = document.createElement("label");
     memberLabel.className = "planner-family-form-field";
@@ -1884,22 +2421,41 @@ function plannerFamilyOpenBulkDelete() {
 
     actions.append(cancel, submit);
 
-    form.append(
-        heading,
-        warning,
-        memberLabel,
-        typeLabel
-    );
-
     memberLabel.appendChild(memberSelect);
     typeLabel.appendChild(typeSelect);
 
     form.append(
+        heading,
+        warning,
+        memberLabel,
+        typeLabel,
         startField.label,
         endField.label,
         count,
         actions
     );
+
+    // 予定の開始日・終了日が指定期間と重なるか判定する
+    function eventOverlapsRange(event, startDate, endDate) {
+        const eventStart = event.startDate || event.date || "";
+        let eventEnd = event.endDate || "";
+
+        if (!plannerFamilyDateIsValid(eventEnd)) {
+            eventEnd = plannerFamilyAddDays(
+                eventStart,
+                event.endTime <= event.startTime ? 1 : 0
+            );
+        }
+
+        if (
+            !plannerFamilyDateIsValid(eventStart) ||
+            !plannerFamilyDateIsValid(eventEnd)
+        ) {
+            return false;
+        }
+
+        return eventStart <= endDate && eventEnd >= startDate;
+    }
 
     function getTargets() {
         const latest = db.load();
@@ -1928,8 +2484,7 @@ function plannerFamilyOpenBulkDelete() {
             ? []
             : latestFamily.events.filter(event =>
                 memberIdSet.has(event.memberId) &&
-                event.date >= startDate &&
-                event.date <= endDate
+                eventOverlapsRange(event, startDate, endDate)
             );
 
         const rules = kind === "event"
@@ -2016,10 +2571,7 @@ function plannerFamilyOpenBulkDelete() {
             return;
         }
 
-        if (
-            !targets.events.length &&
-            !targets.occurrences
-        ) {
+        if (!targets.events.length && !targets.occurrences) {
             alert("指定条件に該当する予定はありません。");
             return;
         }
@@ -2046,14 +2598,18 @@ function plannerFamilyOpenBulkDelete() {
         const selectedMembers = new Set(targets.memberIds);
 
         const eventIds = new Set(
-            latestFamily.events
-                .filter(item =>
-                    selectedMembers.has(item.memberId) &&
-                    item.date >= targets.startDate &&
-                    item.date <= targets.endDate &&
-                    typeSelect.value !== "rule"
-                )
-                .map(item => item.id)
+            typeSelect.value === "rule"
+                ? []
+                : latestFamily.events
+                    .filter(item =>
+                        selectedMembers.has(item.memberId) &&
+                        eventOverlapsRange(
+                            item,
+                            targets.startDate,
+                            targets.endDate
+                        )
+                    )
+                    .map(item => item.id)
         );
 
         latestFamily.events = latestFamily.events.filter(
