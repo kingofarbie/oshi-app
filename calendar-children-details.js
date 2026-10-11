@@ -1239,7 +1239,7 @@ function renderChildrenHeightWeightHistory() {
                                     aria-label="削除"
                                     title="削除"
                                 >
-                                    ×
+                                    ✕
                                 </button>
 
                             </div>
@@ -3999,7 +3999,7 @@ function renderChildrenVaccinationTimeline(
                             class="children-vaccination-delete"
                             onclick="deleteChildrenVaccinationRecord('${record.id}')"
                         >
-                            ×
+                            ✕
                         </button>
 
                     </td>
@@ -4207,7 +4207,7 @@ function renderChildrenVaccinationRecordHtml(
                     class="children-vaccination-delete"
                     onclick="deleteChildrenVaccinationRecord('${record.id}')"
                 >
-                    ×
+                    ✕
                 </button>
 
             </div>
@@ -4374,7 +4374,7 @@ function openChildrenVaccinationRecordModal(
                     class="children-modal-close-button"
                     id="childrenVaccinationModalClose"
                 >
-                    ×
+                    ✕
                 </button>
 
             </div>
@@ -5040,7 +5040,7 @@ function openChildrenVaccinationNextScheduleModal() {
                     class="children-modal-close-button"
                     id="childrenVaccinationNextScheduleClose"
                 >
-                    ×
+                    ✕
                 </button>
 
             </div>

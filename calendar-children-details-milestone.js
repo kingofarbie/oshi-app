@@ -1006,7 +1006,7 @@ function renderChildrenMilestoneRecord(
                         aria-label="削除"
                         title="削除"
                     >
-                        ×
+                        ✕
                     </span>
 
                 </div>

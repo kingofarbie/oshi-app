@@ -4173,12 +4173,12 @@ switch(result){
 
     case "win":
 
-        return "○ 勝ち";
+        return "〇 勝ち";
 
 
     case "lose":
 
-        return "× 負け";
+        return "✕ 負け";
 
 
     case "draw":

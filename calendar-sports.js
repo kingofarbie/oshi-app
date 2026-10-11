@@ -1030,7 +1030,7 @@ if(game){
 
         resultMarkHTML = `
             <span class="sports-result-mark win">
-                ○
+                〇
             </span>
         `;
 
@@ -1038,7 +1038,7 @@ if(game){
 
         resultMarkHTML = `
             <span class="sports-result-mark lose">
-                ×
+                ✕
             </span>
         `;
 

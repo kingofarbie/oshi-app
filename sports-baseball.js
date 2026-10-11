@@ -2362,7 +2362,7 @@ if(game.result === "win"){
 
     resultHTML = `
         <div class="baseball-view-result win">
-            ○ 勝ち
+            〇 勝ち
         </div>
     `;
 
@@ -2370,7 +2370,7 @@ if(game.result === "win"){
 
     resultHTML = `
         <div class="baseball-view-result lose">
-            × 負け
+            ✕ 負け
         </div>
     `;
 

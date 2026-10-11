@@ -343,7 +343,7 @@ function plannerFamilyOpenMember(memberId) {
 
     // ×：スケジュール画面に戻る
     const closeButton = plannerFamilyMakeButton(
-        "×",
+        "✕",
         plannerFamilyCloseMember,
         "planner-family-modal-close"
     );
@@ -961,7 +961,7 @@ function plannerFamilyOpenFormModal({
     const close = document.createElement("button");
     close.type = "button";
     close.className = "planner-family-modal-close";
-    close.textContent = "×";
+    close.textContent = "✕";
     close.setAttribute("aria-label", "閉じる");
     close.addEventListener("click", () => overlay.remove());
 
@@ -1191,7 +1191,7 @@ function openPlannerFamily() {
     heading.style.margin = "0";
 
     const closeButton = plannerFamilyMakeButton(
-        "×",
+        "✕",
         closePlannerFamily,
         "planner-family-modal-close"
     );

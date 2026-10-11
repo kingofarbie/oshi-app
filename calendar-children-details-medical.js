@@ -798,7 +798,7 @@ function renderChildrenMedicalRecord(
                         aria-label="削除"
                         title="削除"
                     >
-                        ×
+                        ✕
                     </span>
 
                 </div>
@@ -1042,7 +1042,7 @@ function openChildrenMedicalRecordModal(
                     class="children-modal-close-button"
                     id="childrenMedicalModalClose"
                 >
-                    ×
+                    ✕
                 </button>
 
             </div>

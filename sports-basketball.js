@@ -855,7 +855,7 @@ function createBasketballOvertimeRow(
             type="button"
             class="basketball-remove-overtime-button"
         >
-            ×
+            ✕
         </button>
 
     `;
@@ -1736,11 +1736,11 @@ function getBasketballResultLabel(
 ){
 
     if(result === "win"){
-        return "○ 勝ち";
+        return "〇 勝ち";
     }
 
     if(result === "lose"){
-        return "× 負け";
+        return "✕ 負け";
     }
 
     if(result === "draw"){

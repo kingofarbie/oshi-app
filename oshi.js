@@ -39,10 +39,6 @@ function loadOshiPage(){
 
             container.innerHTML = html;
 
-            console.log(
-                "★ oshi.html 読み込みOK"
-            );
-
 
             /* =====================
                HTML読み込み後に初期化
@@ -50,18 +46,7 @@ function loadOshiPage(){
 
             initOshiList();
 
-
-            console.log(
-                "★ initOshiReadingHelper() 実行直前"
-            );
-
-
             initOshiReadingHelper();
-
-
-            console.log(
-                "★ initOshiReadingHelper() 実行完了"
-            );
 
         })
 
@@ -627,7 +612,7 @@ function renderOshiList(){
                                 );
                             ">
 
-                            ×
+                            ✕
 
                         </button>
 

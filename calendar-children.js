@@ -2788,7 +2788,7 @@ function openChildrenRecordTypeModal() {
                     id="childrenRecordTypeClose"
                     class="children-record-type-close"
                 >
-                    ×
+                    ✕
                 </button>
 
             </div>
@@ -3335,7 +3335,7 @@ function openChildrenRecordEditModal(
                     id="childrenRecordEditClose"
                     class="children-record-edit-close"
                 >
-                    ×
+                    ✕
                 </button>
 
             </div>
