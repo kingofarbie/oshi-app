@@ -284,6 +284,7 @@ function plannerFamilyDeleteMember(memberId) {
    家族メンバー別の予定管理画面
 ===================================================== */
 
+
 function plannerFamilyOpenMember(memberId) {
     if (!plannerFamilyIsAllowed()) {
         alert("家族スケジュールはプレミアム以上で利用できます。");
@@ -291,7 +292,6 @@ function plannerFamilyOpenMember(memberId) {
     }
 
     const member = plannerFamilyGetMember(memberId);
-
     if (!member) return;
 
     const screen = plannerFamilyCreateScreen(
@@ -302,49 +302,79 @@ function plannerFamilyOpenMember(memberId) {
     screen.dataset.memberId = memberId;
     screen.replaceChildren();
 
-    screen.appendChild(
-        plannerFamilyMakeHeader(
-            "← 家族一覧",
-            plannerFamilyCloseMember,
-            `${member.icon || "🧒"} ${member.name}の予定`
-        )
+    // タイトル行：左にタイトル、右端に ＋・🔁・×
+    const header = document.createElement("div");
+    header.className = "planner-family-header";
+    header.style.display = "flex";
+    header.style.alignItems = "center";
+    header.style.justifyContent = "space-between";
+    header.style.width = "100%";
+    header.style.boxSizing = "border-box";
+    header.style.gap = "8px";
+
+    const heading = document.createElement("h2");
+    heading.textContent =
+        `${member.icon || "🧒"} ${member.name}の予定`;
+    heading.style.margin = "0";
+    heading.style.flex = "1";
+    heading.style.minWidth = "0";
+
+    const actions = document.createElement("div");
+    actions.style.display = "flex";
+    actions.style.alignItems = "center";
+    actions.style.gap = "8px";
+    actions.style.flexShrink = "0";
+
+    // ＋：単発予定を追加
+    const addEventButton = plannerFamilyMakeButton(
+        "＋",
+        () => plannerFamilyAddEvent(memberId)
+    );
+    addEventButton.title = "単発予定を追加";
+    addEventButton.setAttribute("aria-label", "単発予定を追加");
+
+    // 🔁：繰り返し予定を追加
+    const addRuleButton = plannerFamilyMakeButton(
+        "🔁",
+        () => plannerFamilyAddRule(memberId)
+    );
+    addRuleButton.title = "繰り返し予定を追加";
+    addRuleButton.setAttribute("aria-label", "繰り返し予定を追加");
+
+    // ×：スケジュール画面に戻る
+    const closeButton = plannerFamilyMakeButton(
+        "×",
+        plannerFamilyCloseMember,
+        "planner-family-modal-close"
+    );
+    closeButton.title = "スケジュール画面に戻る";
+    closeButton.setAttribute(
+        "aria-label",
+        "スケジュール画面に戻る"
     );
 
-    const description = document.createElement("p");
-    description.textContent =
-        "単発予定と繰り返し予定を登録できます。";
-
-    screen.appendChild(description);
+    actions.append(addEventButton, addRuleButton, closeButton);
+    header.append(heading, actions);
+    screen.appendChild(header);
 
     const list = document.createElement("div");
     list.id = "plannerFamilyMemberEvents";
-
     screen.appendChild(list);
-
-    screen.appendChild(
-        plannerFamilyMakeButton(
-            "＋ 単発予定",
-            () => plannerFamilyAddEvent(memberId)
-        )
-    );
-
-    screen.appendChild(
-        plannerFamilyMakeButton(
-            "🔁 繰り返し予定",
-            () => plannerFamilyAddRule(memberId)
-        )
-    );
 
     screen.style.display = "block";
 
     plannerFamilyRenderEvents(memberId);
 }
 
+
+
+
 function plannerFamilyCloseMember() {
     const screen = document.getElementById("plannerFamilyMemberScreen");
 
     if (screen) screen.style.display = "none";
 }
+
 
 function plannerFamilyRenderEvents(memberId) {
     const screen = document.getElementById("plannerFamilyMemberScreen");
@@ -355,19 +385,32 @@ function plannerFamilyRenderEvents(memberId) {
     const data = db.load();
     const family = plannerFamilyEnsureData(data);
 
+    // 単発予定：日付の新しい順で最大20件を表示
     const events = family.events
         .filter(event => event.memberId === memberId)
+        .sort((a, b) => {
+            const dateOrder = String(b.date).localeCompare(String(a.date));
+            return dateOrder || String(b.startTime).localeCompare(String(a.startTime));
+        })
+        .slice(0, 20)
         .map(event => ({
             date: event.date,
             title: event.title,
             startTime: event.startTime,
             endTime: event.endTime,
             kind: "単発",
-            eventId: event.id
+            eventId: event.id,
+            sortDate: event.date
         }));
 
+    // 繰り返し予定：開始日の新しい順で最大10種類を表示
     const rules = family.rules
         .filter(rule => rule.memberId === memberId)
+        .sort((a, b) => {
+            const dateOrder = String(b.startDate).localeCompare(String(a.startDate));
+            return dateOrder || String(b.createdAt || "").localeCompare(String(a.createdAt || ""));
+        })
+        .slice(0, 10)
         .map(rule => ({
             date: `${rule.startDate} ～ ${rule.endDate}`,
             title: rule.title,
@@ -375,11 +418,12 @@ function plannerFamilyRenderEvents(memberId) {
             endTime: rule.endTime,
             kind: "繰り返し",
             ruleId: rule.id,
-            weekdays: rule.weekdays
+            weekdays: rule.weekdays,
+            sortDate: rule.startDate
         }));
 
     const all = [...events, ...rules].sort((a, b) =>
-        String(a.date).localeCompare(String(b.date))
+        String(b.sortDate).localeCompare(String(a.sortDate))
     );
 
     list.replaceChildren();
@@ -410,21 +454,53 @@ function plannerFamilyRenderEvents(memberId) {
 
         details.append(title, time, kind);
 
+        const actions = document.createElement("div");
+        actions.className = "planner-family-member-actions";
+
         const edit = plannerFamilyMakeButton(
-            "編集",
+            "✏️",
             () => {
                 if (event.kind === "単発") {
                     plannerFamilyEditEvent(event.eventId);
                 } else {
                     plannerFamilyEditRule(event.ruleId);
                 }
-            }
+            },
+            "planner-family-icon-button"
         );
+        edit.title = "編集";
+        edit.setAttribute("aria-label", "編集");
 
-        row.append(details, edit);
+        const remove = plannerFamilyMakeButton(
+            "🗑️",
+            () => {
+                if (event.kind === "単発") {
+                    plannerFamilyDeleteEvent(event.eventId);
+                } else {
+                    plannerFamilyDeleteRule(event.ruleId);
+                }
+            },
+            "planner-family-icon-button"
+        );
+        remove.title = "削除";
+        remove.setAttribute("aria-label", "削除");
+
+        actions.append(edit, remove);
+        row.append(details, actions);
         list.appendChild(row);
     });
+
+    // 上限を超えた予定は削除せず、表示件数だけを制限する
+    const counts = document.createElement("small");
+    counts.className = "planner-family-event-history-note";
+    counts.textContent =
+        `表示：単発 ${events.length}/20件・繰り返し ${rules.length}/10種類`;
+    list.appendChild(counts);
 }
+
+
+
+
 
 /* =====================================================
    単発予定
