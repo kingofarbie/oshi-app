@@ -1459,7 +1459,6 @@ const laneHeight = Math.max(
 
 lanes.style.height = `${laneHeight}px`;
 
-
     
     members.forEach(member => {
         const lane = document.createElement("div");

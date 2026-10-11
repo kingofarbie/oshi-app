@@ -714,36 +714,34 @@
 
 
 /* =====================
-   🎂 1日手帳 記念日クラウド
-   日付の下に配置し、予定表と連動
+🎂 1日手帳 記念日クラウド
+日付の下に配置し、スクロール時も追従
 ===================== */
 
 .planner-anniversary-badge {
-    position: relative;
+position: sticky;
+top: 66px;
 
-    top: auto;
-    right: auto;
+z-index: 100;
 
-    z-index: 100;
+display: flex;
+flex-direction: row-reverse;
+flex-wrap: wrap;
 
-    display: flex;
-    flex-direction: row-reverse;
-    flex-wrap: wrap;
+justify-content: flex-start;
+align-items: flex-start;
 
-    justify-content: flex-start;
-    align-items: flex-start;
+gap: 8px;
 
-    gap: 8px;
+width: 100%;
+max-width: 100%;
 
-    width: 100%;
-    max-width: 100%;
+box-sizing: border-box;
+padding: 8px 10px;
 
-    box-sizing: border-box;
-    padding: 8px 10px;
+pointer-events: auto;
 
-    pointer-events: auto;
 }
-
 
 /* =====================
    ☁️ カプセル型の雲
