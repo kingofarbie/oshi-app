@@ -1,10 +1,12 @@
-
 /* =====================================================
    👨‍👩‍👧 家族スケジュール専用CSS
    planner-family.css
 
-   既存の planner.css は変更しない
+   ・planner.css は直接変更しない
+   ・家族管理／予定詳細／入力モーダルの既存仕様を維持
+   ・家族レーンのCSS重複を整理
 ===================================================== */
+
 
 /* =====================================================
    共通画面
@@ -67,6 +69,7 @@
     margin: 8px 8px 0 0;
 }
 
+
 /* =====================================================
    家族メンバー一覧
 ===================================================== */
@@ -102,6 +105,41 @@
     font-size: 12px;
     color: var(--text-sub, #777);
 }
+
+.planner-family-member-identity {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    padding: 4px;
+    border: 0;
+    background: transparent;
+    color: var(--text, #222);
+    text-align: left;
+}
+
+.planner-family-member-actions {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 4px;
+}
+
+.planner-family-screen .planner-family-icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
+    min-height: 40px;
+    padding: 4px;
+    border: 0;
+    background: transparent;
+    font-size: 20px;
+}
+
 
 /* =====================================================
    メンバー別予定一覧
@@ -144,64 +182,99 @@
     color: var(--text-sub, #777);
 }
 
+
 /* =====================================================
-   家族レーン上部のヘッダー行
-   時間軸・個人予定ボードの上に配置する
+   家族レーンの旧ヘッダー行
+   現在のJSでは各レーン内にヘッダーを生成するため非表示
 ===================================================== */
 
 .planner-family-header-row {
-    display: flex;
-    align-items: stretch;
-    width: 100%;
-    min-width: 0;
-    position: relative;
-    z-index: 5;
-    background: var(--card, #fff);
-    border: 1px solid var(--border, #ddd);
-    border-bottom: 0;
-    border-radius: 12px 12px 0 0;
-    overflow: hidden;
+    display: none !important;
 }
 
 .planner-family-header-spacer {
-    flex: 0 0 65px;
+    flex: 0 0 auto;
     min-width: 0;
-    background: var(--surface, #f8f8f8);
-    border-right: 1px solid var(--border, #ddd);
 }
 
 .planner-family-header-lanes {
     display: flex;
     flex: 0 0 auto;
-    min-width: 0;
     align-items: stretch;
 }
 
-/* アイコンと名前のボタン */
 
-.planner-family-lane-header {
+/* =====================================================
+   家族レーン本体
+===================================================== */
+
+.planner-family-lanes {
     display: flex;
+    flex: 0 0 auto;
+    align-items: stretch;
+    align-self: stretch;
+    position: relative;
+    min-height: 0;
+    overflow: visible !important;
+    background: var(--card, #fff);
+    border-left: 1px solid var(--border, #ddd);
+}
+
+.planner-family-lane {
+    position: relative;
     flex: 0 0 54px;
     width: 54px;
     min-width: 0;
+    height: 100%;
+    overflow: visible !important;
+    border-right: 1px solid var(--border, #ddd);
+    background: var(--card, #fff) !important;
+}
+
+
+/* =====================================================
+   家族レーンのアイコン・名前
+===================================================== */
+
+/*
+   JS側で layout.paddingTop にヘッダー分の空間を確保する。
+   ヘッダーは各レーンの先頭から66px上に配置する。
+   予定や時間線の座標には手を加えない。
+*/
+
+.planner-family-lane-header {
+    position: sticky !important;
+    top: var(--planner-family-sticky-top, 66px);
+    margin-top: -66px;
+    left: 0;
+    z-index: 30;
+    display: flex;
+    flex: 0 0 54px;
     align-items: stretch;
     justify-content: center;
+    width: 54px;
+    min-width: 0;
+    height: 66px;
+    min-height: 66px;
     padding: 0;
     border-right: 1px solid var(--border, #ddd);
+    border-bottom: 1px solid var(--border, #ddd);
     background: var(--surface, #f8f8f8);
 }
 
 .planner-family-lane-name-button {
     display: flex;
-    flex-direction: column;
     flex: 1 1 auto;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 4px;
-    min-width: 0;
     width: 100%;
-    min-height: 66px !important;
-    padding: 6px 2px !important;
+    min-width: 0;
+    min-height: 0 !important;
+    height: 100%;
+    padding: 4px 2px !important;
+    overflow: hidden;
     border: 0 !important;
     border-radius: 0 !important;
     background: transparent !important;
@@ -210,6 +283,7 @@
 
 .planner-family-lane-icon {
     display: block;
+    flex: 0 0 auto;
     max-width: 100%;
     font-size: 20px;
     line-height: 1.2;
@@ -226,38 +300,25 @@
     font-weight: bold;
 }
 
+
 /* =====================================================
-   家族レーン本体
+   家族レーンの時間線・予定表示
+   時間線と予定の座標計算は変更しない
 ===================================================== */
 
-.planner-family-lanes {
-    display: flex;
-    flex: 0 0 auto;
-    align-items: stretch;
-    align-self: stretch;
-    position: relative;
-    min-height: 0;
+.planner-family-lane-events {
+    position: absolute;
+    inset: 0;
     overflow: hidden;
-    background: var(--card, #fff);
-    border-left: 1px solid var(--border, #ddd);
     box-sizing: border-box;
 }
 
-.planner-family-lane {
-    position: relative;
-    flex: 0 0 54px;
-    width: 54px;
-    min-width: 0;
-    height: 100%;
-    overflow: hidden;
-    border-right: 1px solid var(--border, #ddd);
-    background: var(--surface, #f8f8f8);
-    box-sizing: border-box;
+.planner-family-lane-events .planner-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    pointer-events: none;
 }
-
-/* =====================================================
-   家族予定の太い縦線
-===================================================== */
 
 .planner-family-event {
     display: block;
@@ -282,24 +343,52 @@
     outline-offset: 2px;
 }
 
-/* 縦書きの予定名 */
+/* 既存の予定表示形式 */
+.planner-family-event-item {
+    position: absolute;
+    left: 0;
+    right: 0;
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.planner-family-event-bar {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 5px;
+    width: 5px;
+    border-radius: 4px;
+    background: var(--accent, #ec70a7);
+}
 
 .planner-family-event-title {
     display: block;
     position: absolute;
     top: 0;
-    left: 15px;
-    right: 2px;
+    bottom: 0;
+    left: 14px;
+    right: 1px;
     max-height: 100%;
     overflow: hidden;
     writing-mode: vertical-rl;
     text-orientation: upright;
+    overflow-wrap: anywhere;
     font-size: 12px;
     line-height: 1.2;
     color: var(--text, #222);
-    overflow-wrap: anywhere;
     pointer-events: none;
 }
+
+.planner-family-event-title.is-ellipsis {
+    left: 14px;
+    right: 1px;
+    text-align: center;
+}
+
 
 /* =====================================================
    家族予定の詳細画面
@@ -327,204 +416,11 @@
     line-height: 1.6;
 }
 
-/* =====================================================
-   スマートフォン
-===================================================== */
-
-@media (max-width: 480px) {
-    .planner-family-screen {
-        padding: 12px;
-    }
-
-    .planner-family-screen .planner-family-header {
-        gap: 8px;
-    }
-
-    .planner-family-screen .planner-family-header h2 {
-        font-size: 19px;
-    }
-
-    #plannerFamilyScreen .planner-family-member {
-        gap: 6px;
-    }
-
-    #plannerFamilyScreen .planner-family-member-status {
-        margin-left: 0;
-    }
-
-    .planner-family-header-spacer {
-        flex-basis: 58px;
-    }
-
-    .planner-family-lane-header {
-        flex-basis: 46px;
-        width: 46px;
-    }
-
-
-    .planner-family-lane-icon {
-        font-size: 19px;
-    }
-
-    .planner-family-lane-name {
-        padding: 1px;
-        font-size: 11px;
-    }
-
-    .planner-family-lane {
-        flex-basis: 46px;
-        width: 46px;
-    }
-
-    .planner-family-event {
-        left: 5px;
-        width: 4px;
-    }
-
-    .planner-family-event-title {
-        left: 12px;
-        font-size: 11px;
-    }
-}
-
-
 
 /* =====================================================
-   家族スケジュール改善：入力モーダル・位置合わせ
+   入力モーダル
 ===================================================== */
 
-/* ヘッダー行は時間軸＋個人予定ボードの幅を空けて配置 */
-.planner-family-header-row {
-    display: flex;
-    width: 100%;
-    min-width: 0;
-    box-sizing: border-box;
-    overflow: hidden;
-}
-
-.planner-family-header-spacer {
-    flex: 0 0 auto;
-    min-width: 0;
-}
-
-.planner-family-header-lanes {
-    display: flex;
-    flex: 0 0 auto;
-    align-items: stretch;
-}
-
-.planner-family-lane-header {
-    flex: 0 0 54px;
-    width: 54px;
-    min-width: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-.planner-family-lane-name-button {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    width: 100%;
-    min-width: 0;
-    min-height: 66px;
-    padding: 6px 2px;
-    border: 0;
-    border-radius: 0;
-    background: transparent;
-    color: var(--text);
-}
-
-.planner-family-lane-name {
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-/* 棒線とタイトルを別要素にする */
-.planner-family-event-item {
-    position: absolute;
-    left: 0;
-    right: 0;
-    width: 100%;
-    min-width: 0;
-    overflow: hidden;
-    cursor: pointer;
-    z-index: 2;
-}
-
-.planner-family-event-bar {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 5px;
-    width: 5px;
-    border-radius: 4px;
-    background: var(--accent);
-}
-
-.planner-family-event-title {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 14px;
-    right: 1px;
-    max-height: 100%;
-    overflow: hidden;
-    writing-mode: vertical-rl;
-    text-orientation: upright;
-    overflow-wrap: anywhere;
-    font-size: 12px;
-    line-height: 1.2;
-    color: var(--text);
-    pointer-events: none;
-}
-
-.planner-family-event-title.is-ellipsis {
-    left: 14px;
-    right: 1px;
-    text-align: center;
-}
-
-/* 家族管理の名前ボタンと操作アイコン */
-.planner-family-member-identity {
-    display: flex;
-    flex: 1 1 auto;
-    align-items: center;
-    gap: 8px;
-    min-width: 0;
-    padding: 4px;
-    border: 0;
-    background: transparent;
-    color: var(--text);
-    text-align: left;
-}
-
-.planner-family-member-actions {
-    display: flex;
-    flex: 0 0 auto;
-    align-items: center;
-    gap: 4px;
-}
-
-.planner-family-screen .planner-family-icon-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    min-width: 40px;
-    height: 40px;
-    min-height: 40px;
-    padding: 4px;
-    border: 0;
-    background: transparent;
-    font-size: 20px;
-}
-
-/* 入力モーダル */
 .planner-family-form-overlay {
     position: fixed;
     inset: 0;
@@ -535,7 +431,6 @@
     padding: 16px;
     overflow-y: auto;
     background: rgba(0, 0, 0, 0.48);
-    box-sizing: border-box;
 }
 
 .planner-family-form-modal {
@@ -543,12 +438,11 @@
     max-height: calc(100% - 24px);
     overflow-y: auto;
     padding: 18px;
-    border: 1px solid var(--border);
+    border: 1px solid var(--border, #ddd);
     border-radius: 16px;
-    background: var(--card);
-    color: var(--text);
+    background: var(--card, #fff);
+    color: var(--text, #222);
     box-shadow: 0 10px 35px rgba(0, 0, 0, 0.24);
-    box-sizing: border-box;
 }
 
 .planner-family-modal-top {
@@ -590,19 +484,18 @@
     min-height: 44px;
     margin-top: 6px;
     padding: 10px;
-    border: 1px solid var(--border);
+    border: 1px solid var(--border, #ddd);
     border-radius: 9px;
-    background: var(--surface);
-    color: var(--text);
+    background: var(--surface, #fff);
+    color: var(--text, #222);
     font: inherit;
     font-weight: normal;
-    box-sizing: border-box;
 }
 
 .planner-family-form-help {
     display: block;
     margin-top: 4px;
-    color: var(--text-sub);
+    color: var(--text-sub, #777);
     font-size: 12px;
     font-weight: normal;
 }
@@ -622,9 +515,9 @@
     gap: 4px;
     width: 42px;
     min-height: 48px;
-    border: 1px solid var(--border);
+    border: 1px solid var(--border, #ddd);
     border-radius: 9px;
-    background: var(--surface);
+    background: var(--surface, #fff);
 }
 
 .planner-family-weekday input {
@@ -651,15 +544,62 @@
     color: #fff;
 }
 
+
+/* =====================================================
+   スマートフォン
+===================================================== */
+
 @media (max-width: 480px) {
+    .planner-family-screen {
+        padding: 12px;
+    }
+
+    .planner-family-screen .planner-family-header {
+        gap: 8px;
+    }
+
+    .planner-family-screen .planner-family-header h2 {
+        font-size: 19px;
+    }
+
+    #plannerFamilyScreen .planner-family-member {
+        gap: 6px;
+    }
+
+    #plannerFamilyScreen .planner-family-member-status {
+        margin-left: 0;
+    }
+
+    .planner-family-header-spacer {
+        flex-basis: 58px;
+    }
+
+    .planner-family-lane {
+        flex-basis: 46px;
+        width: 46px;
+    }
+
     .planner-family-lane-header {
         flex-basis: 46px;
         width: 46px;
     }
 
+    .planner-family-lane-icon {
+        font-size: 19px;
+    }
+
+    .planner-family-lane-name {
+        padding: 1px;
+        font-size: 11px;
+    }
+
     .planner-family-lane-name-button {
-        min-height: 62px;
-        padding: 5px 1px;
+        padding: 5px 1px !important;
+    }
+
+    .planner-family-event {
+        left: 5px;
+        width: 4px;
     }
 
     .planner-family-event-bar {
@@ -696,101 +636,4 @@
         min-height: 36px;
         font-size: 18px;
     }
-}
-
-
-
-
-/* =========================================
-   家族レーン：ヘッダーを各レーン内に配置
-========================================= */
-
-.planner-family-header-row {
-    display: none !important;
-}
-
-.planner-family-lanes {
-    overflow: visible !important;
-    align-self: stretch;
-}
-
-
-.planner-family-lane {
-    position: relative;
-    overflow: visible !important;
-    box-sizing: border-box;
-    background: var(--card, #fff) !important;
-}
-
-
-.planner-family-lane-header {
-    position: absolute !important;
-    top: -66px;
-    left: 0;
-    width: 100%;
-    height: 66px;
-    min-height: 66px;
-    box-sizing: border-box;
-    z-index: 5;
-    display: flex;
-    align-items: stretch;
-    justify-content: center;
-    padding: 0;
-    border-bottom: 1px solid var(--border, #ddd);
-    background: var(--surface, #f8f8f8);
-}
-
-.planner-family-lane-name-button {
-    width: 100%;
-    min-width: 0;
-    min-height: 0 !important;
-    height: 100%;
-    padding: 4px 2px !important;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    overflow: hidden;
-}
-
-.planner-family-lane-events {
-    position: absolute;
-    inset: 0;
-    overflow: hidden;
-    box-sizing: border-box;
-}
-
-.planner-family-lane-icon {
-    flex: 0 0 auto;
-}
-
-.planner-family-lane-name {
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-
-/* ================================
-家族レーン：ヘッダーを上部に固定
-================================ */
-
-
-.planner-family-lane-header {
-    position: sticky !important;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 66px;
-    min-height: 66px;
-    box-sizing: border-box;
-    z-index: 20;
-    display: flex;
-    align-items: stretch;
-    justify-content: center;
-    padding: 0;
-    border-bottom: 1px solid var(--border, #ddd);
-    background: var(--surface, #f8f8f8);
 }
