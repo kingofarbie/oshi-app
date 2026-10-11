@@ -714,11 +714,21 @@
     align-self: stretch;
 }
 
+
 .planner-family-lane {
     position: relative;
     overflow: visible !important;
     box-sizing: border-box;
+    background: var(--card, #fff) !important;
+    background-image: repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 39px,
+        var(--border, #ddd) 39px,
+        var(--border, #ddd) 40px
+    ) !important;
 }
+
 
 .planner-family-lane-header {
     position: absolute !important;
