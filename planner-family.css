@@ -243,27 +243,29 @@
 */
 
 .planner-family-lane-header {
-    position: sticky !important;
-    top: var(--planner-family-sticky-top, 66px);
-    margin-top: -66px;
-    left: 0;
-    z-index: 30;
+position: absolute !important;
+top: -66px;
+left: 0;
+z-index: 30;
 
-    display: flex;
-    flex: 0 0 54px;
-    align-items: stretch;
-    justify-content: center;
+display: flex;
+flex: 0 0 54px;
+align-items: stretch;
+justify-content: center;
 
-    width: 54px;
-    min-width: 0;
-    height: 66px;
-    min-height: 66px;
-    padding: 0;
+width: 54px;
+min-width: 0;
+height: 66px;
+min-height: 66px;
+margin-top: 0;
+padding: 0;
 
-    border-right: 1px solid var(--border, #ddd);
-    border-bottom: 1px solid var(--border, #ddd);
-    background: var(--surface, #f8f8f8);
+border-right: 1px solid var(--border, #ddd);
+border-bottom: 1px solid var(--border, #ddd);
+background: var(--surface, #f8f8f8);
+
 }
+
 
 .planner-family-lane-name-button {
     display: flex;
