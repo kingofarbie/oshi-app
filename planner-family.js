@@ -1910,32 +1910,16 @@ function plannerFamilyAddEvent(memberId) {
 /* ---------- 繰り返し予定：曜日も同じ画面で入力 ---------- */
 
 
+
 function plannerFamilyAddRule(memberId) {
     const member = plannerFamilyGetMember(memberId);
     if (!member || !plannerFamilyIsAllowed()) return;
 
+    const selectedDate = plannerFamilyGetSelectedDate();
+
     plannerFamilyOpenFormModal({
         title: `${member.icon || "🧒"} ${member.name}：繰り返し予定`,
         fields: [
-            {
-                name: "startDate",
-                label: "開始日",
-                type: "date",
-                value: plannerFamilyGetSelectedDate()
-            },
-            {
-                name: "endDate",
-                label: "終了日",
-                type: "date",
-                value: `${plannerFamilyGetSelectedDate().slice(0, 4)}-12-31`
-            },
-            {
-                name: "weekdays",
-                label: "繰り返す曜日",
-                type: "checkboxes",
-                value: [1, 5],
-                help: "複数の曜日を選択できます。"
-            },
             {
                 name: "title",
                 label: "予定名（1〜5文字）",
@@ -1945,16 +1929,35 @@ function plannerFamilyAddRule(memberId) {
                 placeholder: "例：ピアノ"
             },
             {
+                name: "startDate",
+                label: "開始日",
+                type: "date",
+                value: selectedDate
+            },
+            {
                 name: "startTime",
                 label: "開始時刻",
                 type: "time",
                 value: "17:00"
             },
             {
+                name: "endDate",
+                label: "終了日",
+                type: "date",
+                value: `${selectedDate.slice(0, 4)}-12-31`
+            },
+            {
                 name: "endTime",
                 label: "終了時刻",
                 type: "time",
                 value: "18:30"
+            },
+            {
+                name: "weekdays",
+                label: "繰り返す曜日",
+                type: "checkboxes",
+                value: [1, 5],
+                help: "複数の曜日を選択できます。"
             }
         ],
         onSubmit(values) {
@@ -2010,7 +2013,6 @@ function plannerFamilyAddRule(memberId) {
                     );
                 }
 
-                // 新しい繰り返し期間内で曜日が一致する日を調べる
                 let date = values.startDate;
 
                 while (date <= values.endDate) {
@@ -2025,7 +2027,6 @@ function plannerFamilyAddRule(memberId) {
                         const eventEnd = Date.parse(
                             `${eventEndDate}T${event.endTime}:00Z`
                         );
-
                         const ruleStart = Date.parse(
                             `${date}T${values.startTime}:00Z`
                         );
@@ -2137,6 +2138,7 @@ function plannerFamilyAddRule(memberId) {
         }
     });
 }
+
 
 
 
