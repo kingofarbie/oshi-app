@@ -357,9 +357,18 @@ function plannerFamilyOpenMember(memberId) {
     header.append(heading, actions);
     screen.appendChild(header);
 
-    const list = document.createElement("div");
-    list.id = "plannerFamilyMemberEvents";
-    screen.appendChild(list);
+
+const list = document.createElement("div");
+list.id = "plannerFamilyMemberEvents";
+screen.appendChild(list);
+
+// 期間を指定して一括削除
+const bulkDeleteButton = plannerFamilyMakeButton(
+    "🗑️ 期間を指定して一括削除",
+    plannerFamilyOpenBulkDelete
+);
+bulkDeleteButton.className = "planner-family-bulk-delete-button";
+screen.appendChild(bulkDeleteButton);
 
     screen.style.display = "block";
 
@@ -1694,4 +1703,372 @@ function plannerFamilyDrawEvent(lane, event) {
     });
 
     lane.appendChild(item);
+}
+
+
+
+/* =====================================================
+   🗑️ 家族予定の期間指定一括削除
+   ・家族メンバーを選択
+   ・単発／繰り返し／両方を選択
+   ・指定期間内の単発予定を削除
+   ・繰り返し予定は期間内の発生分だけ取り消す
+   ・期間外の予定や繰り返し設定は保持する
+===================================================== */
+
+function plannerFamilyOpenBulkDelete() {
+    if (!plannerFamilyIsAllowed()) {
+        alert("家族スケジュールはプレミアム以上で利用できます。");
+        return;
+    }
+
+    const data = db.load();
+    const family = plannerFamilyEnsureData(data);
+
+    if (!family.members.length) {
+        alert("家族メンバーが登録されていません。");
+        return;
+    }
+
+    document.getElementById("plannerFamilyBulkDeleteModal")?.remove();
+
+    const overlay = document.createElement("div");
+    overlay.id = "plannerFamilyBulkDeleteModal";
+    overlay.className = "planner-family-form-overlay";
+
+    const form = document.createElement("form");
+    form.className = "planner-family-form-modal";
+
+    const heading = document.createElement("h2");
+    heading.textContent = "予定の一括削除";
+
+    const warning = document.createElement("p");
+    warning.textContent =
+        "指定期間内の予定だけが対象です。削除前に対象件数を確認できます。";
+
+    const memberLabel = document.createElement("label");
+    memberLabel.className = "planner-family-form-field";
+    memberLabel.textContent = "削除する家族";
+
+    const memberSelect = document.createElement("select");
+    memberSelect.name = "memberId";
+
+    const allOption = document.createElement("option");
+    allOption.value = "all";
+    allOption.textContent = "家族全員";
+    memberSelect.appendChild(allOption);
+
+    family.members.forEach(member => {
+        const option = document.createElement("option");
+        option.value = member.id;
+        option.textContent =
+            `${member.icon || "🧒"} ${member.name}`;
+        memberSelect.appendChild(option);
+    });
+
+    const typeLabel = document.createElement("label");
+    typeLabel.className = "planner-family-form-field";
+    typeLabel.textContent = "予定の種類";
+
+    const typeSelect = document.createElement("select");
+    typeSelect.name = "kind";
+
+    [
+        ["all", "単発・繰り返し両方"],
+        ["event", "単発予定のみ"],
+        ["rule", "繰り返し予定のみ"]
+    ].forEach(([value, text]) => {
+        const option = document.createElement("option");
+        option.value = value;
+        option.textContent = text;
+        typeSelect.appendChild(option);
+    });
+
+    function makeDateField(labelText, name, value) {
+        const label = document.createElement("label");
+        label.className = "planner-family-form-field";
+        label.textContent = labelText;
+
+        const input = document.createElement("input");
+        input.type = "date";
+        input.name = name;
+        input.value = value;
+        input.required = true;
+
+        label.appendChild(input);
+        return { label, input };
+    }
+
+    const today = plannerFamilyToday();
+    const startField = makeDateField("開始日", "startDate", today);
+    const endField = makeDateField("終了日", "endDate", today);
+
+    const count = document.createElement("p");
+    count.setAttribute("aria-live", "polite");
+
+    const actions = document.createElement("div");
+    actions.className = "planner-family-modal-actions";
+
+    const cancel = document.createElement("button");
+    cancel.type = "button";
+    cancel.textContent = "キャンセル";
+    cancel.addEventListener("click", () => overlay.remove());
+
+    const submit = document.createElement("button");
+    submit.type = "submit";
+    submit.textContent = "対象を確認して削除";
+    submit.className = "planner-family-modal-submit";
+
+    actions.append(cancel, submit);
+
+    form.append(
+        heading,
+        warning,
+        memberLabel,
+        typeLabel
+    );
+
+    memberLabel.appendChild(memberSelect);
+    typeLabel.appendChild(typeSelect);
+
+    form.append(
+        startField.label,
+        endField.label,
+        count,
+        actions
+    );
+
+    function getTargets() {
+        const latest = db.load();
+        const latestFamily = plannerFamilyEnsureData(latest);
+
+        const memberId = memberSelect.value;
+        const kind = typeSelect.value;
+        const startDate = startField.input.value;
+        const endDate = endField.input.value;
+
+        if (
+            !plannerFamilyDateIsValid(startDate) ||
+            !plannerFamilyDateIsValid(endDate) ||
+            endDate < startDate
+        ) {
+            return null;
+        }
+
+        const memberIds = memberId === "all"
+            ? latestFamily.members.map(member => member.id)
+            : [memberId];
+
+        const memberIdSet = new Set(memberIds);
+
+        const events = kind === "rule"
+            ? []
+            : latestFamily.events.filter(event =>
+                memberIdSet.has(event.memberId) &&
+                event.date >= startDate &&
+                event.date <= endDate
+            );
+
+        const rules = kind === "event"
+            ? []
+            : latestFamily.rules.filter(rule =>
+                memberIdSet.has(rule.memberId) &&
+                rule.endDate >= startDate &&
+                rule.startDate <= endDate
+            );
+
+        let occurrences = 0;
+
+        rules.forEach(rule => {
+            const from = rule.startDate > startDate
+                ? rule.startDate
+                : startDate;
+
+            const to = rule.endDate < endDate
+                ? rule.endDate
+                : endDate;
+
+            for (
+                let date = from;
+                date <= to;
+                date = plannerFamilyAddDays(date, 1)
+            ) {
+                if (!rule.weekdays.includes(plannerFamilyWeekday(date))) {
+                    continue;
+                }
+
+                const alreadySkipped = latestFamily.exceptions.some(exception =>
+                    exception.ruleId === rule.id &&
+                    exception.date === date &&
+                    exception.action === "skip"
+                );
+
+                if (!alreadySkipped) occurrences++;
+            }
+        });
+
+        return {
+            data: latest,
+            family: latestFamily,
+            memberIds,
+            startDate,
+            endDate,
+            events,
+            rules,
+            occurrences
+        };
+    }
+
+    function updateCount() {
+        const targets = getTargets();
+
+        if (!targets) {
+            count.textContent = "期間を正しく選択してください。";
+            submit.disabled = true;
+            return;
+        }
+
+        submit.disabled = false;
+        count.textContent =
+            `対象：単発 ${targets.events.length}件` +
+            `／繰り返し ${targets.occurrences}回`;
+    }
+
+    [
+        memberSelect,
+        typeSelect,
+        startField.input,
+        endField.input
+    ].forEach(input => {
+        input.addEventListener("change", updateCount);
+    });
+
+    form.addEventListener("submit", event => {
+        event.preventDefault();
+
+        const targets = getTargets();
+
+        if (!targets) {
+            alert("開始日と終了日を正しく選択してください。");
+            return;
+        }
+
+        if (
+            !targets.events.length &&
+            !targets.occurrences
+        ) {
+            alert("指定条件に該当する予定はありません。");
+            return;
+        }
+
+        const memberNames = targets.family.members
+            .filter(member => targets.memberIds.includes(member.id))
+            .map(member => member.name)
+            .join("、");
+
+        const message =
+            `削除対象を確認してください。\n\n` +
+            `家族：${memberNames || "対象なし"}\n` +
+            `期間：${targets.startDate} ～ ${targets.endDate}\n` +
+            `単発予定：${targets.events.length}件\n` +
+            `繰り返し予定の発生分：${targets.occurrences}回\n\n` +
+            `繰り返し設定そのものは残し、期間内の発生分だけを取り消します。\n` +
+            `この内容で実行しますか？`;
+
+        if (!confirm(message)) return;
+
+        // 確認後、最新データを読み直して対象を再判定
+        const latest = db.load();
+        const latestFamily = plannerFamilyEnsureData(latest);
+        const selectedMembers = new Set(targets.memberIds);
+
+        const eventIds = new Set(
+            latestFamily.events
+                .filter(item =>
+                    selectedMembers.has(item.memberId) &&
+                    item.date >= targets.startDate &&
+                    item.date <= targets.endDate &&
+                    typeSelect.value !== "rule"
+                )
+                .map(item => item.id)
+        );
+
+        latestFamily.events = latestFamily.events.filter(
+            item => !eventIds.has(item.id)
+        );
+
+        let addedExceptions = 0;
+
+        if (typeSelect.value !== "event") {
+            latestFamily.rules.forEach(rule => {
+                if (!selectedMembers.has(rule.memberId)) return;
+
+                const from = rule.startDate > targets.startDate
+                    ? rule.startDate
+                    : targets.startDate;
+
+                const to = rule.endDate < targets.endDate
+                    ? rule.endDate
+                    : targets.endDate;
+
+                for (
+                    let date = from;
+                    date <= to;
+                    date = plannerFamilyAddDays(date, 1)
+                ) {
+                    if (!rule.weekdays.includes(plannerFamilyWeekday(date))) {
+                        continue;
+                    }
+
+                    const exists = latestFamily.exceptions.some(exception =>
+                        exception.ruleId === rule.id &&
+                        exception.date === date &&
+                        exception.action === "skip"
+                    );
+
+                    if (exists) continue;
+
+                    latestFamily.exceptions.push({
+                        id: plannerFamilyNewId(),
+                        ruleId: rule.id,
+                        memberId: rule.memberId,
+                        date,
+                        action: "skip"
+                    });
+
+                    addedExceptions++;
+                }
+            });
+        }
+
+        plannerFamilySave(latest);
+
+        overlay.remove();
+
+        const memberScreen =
+            document.getElementById("plannerFamilyMemberScreen");
+
+        const currentMemberId = memberScreen?.dataset.memberId;
+
+        if (currentMemberId) {
+            plannerFamilyRenderEvents(currentMemberId);
+        }
+
+        plannerFamilyRenderLanes();
+
+        alert(
+            `一括削除処理が完了しました。\n` +
+            `単発予定：${eventIds.size}件を削除\n` +
+            `繰り返し予定：${addedExceptions}回分を取り消し`
+        );
+    });
+
+    overlay.addEventListener("click", event => {
+        if (event.target === overlay) overlay.remove();
+    });
+
+    overlay.appendChild(form);
+    document.body.appendChild(overlay);
+
+    updateCount();
 }
