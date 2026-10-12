@@ -931,6 +931,7 @@ if(
 
 }
 
+
 function clearEventForm(){
 
 

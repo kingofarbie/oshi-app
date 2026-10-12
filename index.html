@@ -267,133 +267,190 @@
      イベント入力ポップアップ
 ===================== -->
 
-<div id="eventFormModal" class="modal"><div class="modal-content event-modal">
+<div id="eventFormModal" class="modal">
+    <div class="modal-content event-modal">
 
-    <h2 id="eventFormTitle">
-        ➕ 予定追加
-    </h2>
+        <h2 id="eventFormTitle">
+            ➕ 予定追加
+        </h2>
 
-    <div class="event-form-row">
-        <label for="event-category">種類</label>
-        <select id="event-category">
-            <option value="イベント">🎫 イベント</option>
-            <option value="フェス">🎵 フェス</option>
-            <option value="試合">⚽ 試合</option>
-        </select>
-    </div>
-
-<div class="event-form-row">
-    <label for="event-title">イベント名</label>
-    <input
-        type="text"
-        id="event-title"
-        placeholder="イベント名">
-</div>
-
-    <div class="event-form-row">
-        <label for="event-start">開始時間</label>
-        <input
-            type="datetime-local"
-            id="event-start">
-    </div>
-
-    <div class="event-form-row">
-        <label for="event-end">終了時間</label>
-        <input
-            type="datetime-local"
-            id="event-end">
-    </div>
-
-    <div class="event-form-row">
-        <label for="meeting-time">待ち合わせ</label>
-        <input
-            type="time"
-            id="meeting-time">
-    </div>
-
-    <div class="event-form-row">
-        <label for="event-place">場所</label>
-        <input
-            type="text"
-            id="event-place"
-            placeholder="場所">
-    </div>
-
-    <div class="event-form-row">
-        <label for="companions">同伴者</label>
-        <input
-            type="text"
-            id="companions"
-            placeholder="同伴者">
-    </div>
-
-    <div class="event-form-row">
-        <label for="map-url">地図</label>
-        <input
-            type="url"
-            id="map-url"
-            placeholder="GoogleマップURL">
-    </div>
-
-    <div class="event-form-row">
-        <label for="ticket-url">チケット</label>
-        <input
-            type="url"
-            id="ticket-url"
-            placeholder="チケットURL">
-    </div>
-
-    <hr>
-
-    <h3>📦 テンプレート</h3>
-
-    <div class="template-select-area">
-        <select id="templateSelect" onchange="applyTemplate()">
-            <option value="">テンプレートを選択</option>
-        </select>
-    </div>
-
-    <h3>👜 持ち物リスト</h3>
-
-    <div id="checklistContainer" class="checklist-list">
-        <div class="checklist-empty">
-            持ち物はありません
+        <div class="event-form-row">
+            <label for="event-category">種類</label>
+            <select id="event-category">
+                <option value="イベント">🎫 イベント</option>
+                <option value="フェス">🎵 フェス</option>
+                <option value="試合">⚽ 試合</option>
+            </select>
         </div>
+
+        <div class="event-form-row">
+            <label for="event-title">イベント名</label>
+            <input type="text" id="event-title" placeholder="イベント名">
+        </div>
+
+        <div class="event-form-row">
+            <label for="event-start">開始時間</label>
+            <input type="datetime-local" id="event-start">
+        </div>
+
+        <div class="event-form-row">
+            <label for="event-end">終了時間</label>
+            <input type="datetime-local" id="event-end">
+        </div>
+
+        <!-- 🔁 繰り返し設定 -->
+        <div class="event-form-row">
+            <label for="event-repeat">繰り返し</label>
+            <select id="event-repeat" onchange="toggleRepeatOptions()">
+                <option value="none">繰り返しなし</option>
+                <option value="daily">毎日</option>
+                <option value="weekly">毎週</option>
+                <option value="biweekly">2週間ごと</option>
+                <option value="monthly">毎月</option>
+                <option value="yearly">毎年</option>
+                <option value="interval">指定間隔</option>
+            </select>
+        </div>
+
+        <div id="repeatOptions" style="display:none;">
+
+            <div class="event-form-row" id="repeatIntervalRow" style="display:none;">
+                <label for="event-repeat-interval">間隔</label>
+                <input type="number" id="event-repeat-interval"
+                       min="1" max="365" value="1">
+                <select id="event-repeat-unit">
+                    <option value="day">日ごと</option>
+                    <option value="week">週ごと</option>
+                    <option value="month">か月ごと</option>
+                    <option value="year">年ごと</option>
+                </select>
+            </div>
+
+            <div class="event-form-row" id="repeatMonthlyRow" style="display:none;">
+                <label for="event-repeat-monthly">毎月の指定</label>
+                <select id="event-repeat-monthly" onchange="toggleMonthlyOptions()">
+                    <option value="date">同じ日付</option>
+                    <option value="weekday">第○曜日</option>
+                    <option value="lastWeekday">最終曜日</option>
+                </select>
+            </div>
+
+            <div id="repeatWeekdayOptions" style="display:none;">
+                <div class="event-form-row">
+                    <label for="event-repeat-week">何週目</label>
+                    <select id="event-repeat-week">
+                        <option value="1">第1</option>
+                        <option value="2">第2</option>
+                        <option value="3">第3</option>
+                        <option value="4">第4</option>
+                        <option value="-1">最終</option>
+                    </select>
+                </div>
+
+                <div class="event-form-row">
+                    <label for="event-repeat-weekday">曜日</label>
+                    <select id="event-repeat-weekday">
+                        <option value="0">日曜日</option>
+                        <option value="1">月曜日</option>
+                        <option value="2">火曜日</option>
+                        <option value="3">水曜日</option>
+                        <option value="4">木曜日</option>
+                        <option value="5">金曜日</option>
+                        <option value="6">土曜日</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="event-form-row">
+                <label for="event-repeat-end">終了条件</label>
+                <select id="event-repeat-end" onchange="toggleRepeatEndOptions()">
+                    <option value="never">終了日なし</option>
+                    <option value="until">指定日まで</option>
+                    <option value="count">指定回数まで</option>
+                </select>
+            </div>
+
+            <div class="event-form-row" id="repeatUntilRow" style="display:none;">
+                <label for="event-repeat-until">終了日</label>
+                <input type="date" id="event-repeat-until">
+            </div>
+
+            <div class="event-form-row" id="repeatCountRow" style="display:none;">
+                <label for="event-repeat-count">繰り返す回数</label>
+                <input type="number" id="event-repeat-count"
+                       min="1" max="1000" value="10">
+            </div>
+
+        </div>
+
+        <div class="event-form-row">
+            <label for="meeting-time">待ち合わせ</label>
+            <input type="time" id="meeting-time">
+        </div>
+
+        <div class="event-form-row">
+            <label for="event-place">場所</label>
+            <input type="text" id="event-place" placeholder="場所">
+        </div>
+
+        <div class="event-form-row">
+            <label for="companions">同伴者</label>
+            <input type="text" id="companions" placeholder="同伴者">
+        </div>
+
+        <div class="event-form-row">
+            <label for="map-url">地図</label>
+            <input type="url" id="map-url" placeholder="GoogleマップURL">
+        </div>
+
+        <div class="event-form-row">
+            <label for="ticket-url">チケット</label>
+            <input type="url" id="ticket-url" placeholder="チケットURL">
+        </div>
+
+        <hr>
+
+        <h3>📦 テンプレート</h3>
+
+        <div class="template-select-area">
+            <select id="templateSelect" onchange="applyTemplate()">
+                <option value="">テンプレートを選択</option>
+            </select>
+        </div>
+
+        <h3>👜 持ち物リスト</h3>
+
+        <div id="checklistContainer" class="checklist-list">
+            <div class="checklist-empty">
+                持ち物はありません
+            </div>
+        </div>
+
+        <div class="checklist-add">
+            <input type="text" id="newChecklistItem" placeholder="持ち物を入力">
+
+            <button
+                type="button"
+                class="save-btn"
+                onclick="addChecklistItem()">
+                ➕追加
+            </button>
+        </div>
+
+        <div class="event-modal-buttons">
+            <button type="button" onclick="saveEvent()">
+                💾 保存
+            </button>
+
+            <button type="button" onclick="closeEventModal()">
+                キャンセル
+            </button>
+        </div>
+
     </div>
-
-    <div class="checklist-add">
-
-        <input
-            type="text"
-            id="newChecklistItem"
-            placeholder="持ち物を入力">
-
-        <button
-            type="button"
-            class="save-btn"
-            onclick="addChecklistItem()">
-            ➕追加
-        </button>
-
-    </div>
-
-    <div class="event-modal-buttons">
-
-        <button
-            type="button"
-            onclick="saveEvent()">
-            💾 保存
-        </button>
-
-        <button
-            type="button"
-            onclick="closeEventModal()">
-            キャンセル
-        </button>
-
-    </div>
-
 </div>
+
+
 
 </div>
 
