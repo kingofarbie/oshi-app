@@ -247,8 +247,56 @@ async function renderCalendar(){
         new Date();
 
     
-const events =
-    db.load().events || [];
+
+const events = db.load().events || [];
+
+// =====================
+// 🔁 この月に表示する予定を作成（DBには保存しない）
+// =====================
+const monthStart = new Date(year, month, 1);
+const monthEnd = new Date(year, month + 1, 1);
+
+const monthStartString =
+    `${year}-${String(month + 1).padStart(2, "0")}-01`;
+
+const monthEndString =
+    `${year}-${String(month + 1).padStart(2, "0")}-${String(last.getDate()).padStart(2, "0")}`;
+
+const calendarEvents = [];
+
+events.forEach(event => {
+    const occurrences = getRecurringEventOccurrences(
+        event,
+        monthStart,
+        monthEnd
+    );
+
+    occurrences.forEach(occurrence => {
+        const occurrenceDate = occurrence.occurrenceDate;
+
+        if (
+            !occurrenceDate ||
+            occurrenceDate < monthStartString ||
+            occurrenceDate > monthEndString
+        ) {
+            return;
+        }
+
+        const start = occurrence.start;
+
+        const localStart =
+            `${start.getFullYear()}-` +
+            `${String(start.getMonth() + 1).padStart(2, "0")}-` +
+            `${String(start.getDate()).padStart(2, "0")}T` +
+            `${String(start.getHours()).padStart(2, "0")}:` +
+            `${String(start.getMinutes()).padStart(2, "0")}`;
+
+        calendarEvents.push({
+            ...event,
+            start: localStart
+        });
+    });
+});
 
 // =====================
 // 祝日取得
@@ -325,13 +373,9 @@ const holiday =
         h.date === date
     );
         
-const hasEvent =
-    events.some(
-        e =>
-        e.start &&
-        e.start.startsWith(date)
-    );
-
+const hasEvent = calendarEvents.some(
+    e => e.start && e.start.startsWith(date)
+);
 
 // =====================
 // 🎉 記念日・誕生日
@@ -416,18 +460,12 @@ else if(dayOfWeek === 6){
 
 
 const dayEvents =
-    events
-    .filter(
-        e =>
-            e.start &&
-            e.start.startsWith(date)
-    )
-    .sort(
-        (a,b) =>
-            new Date(a.start) -
-            new Date(b.start)
-    );
+    calendarEvents
+    .filter(e => e.start && e.start.startsWith(date))
+    .sort((a,b) => new Date(a.start) - new Date(b.start));
 
+
+    
 const preview =
     dayEvents
     .slice(0,2)
@@ -1506,6 +1544,8 @@ function displaySelectedDateEvents(){
         .join("");
 
 }
+
+
 
 function startPress(date, event){
 
