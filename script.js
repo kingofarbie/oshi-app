@@ -787,10 +787,17 @@ function openEventForm(){
    保存
 ===================== */
 
+
 function saveEvent(){
 
     const start =
         document.getElementById('event-start').value;
+
+    const repeat =
+        document.getElementById('event-repeat')?.value || "none";
+
+    const repeatEnd =
+        document.getElementById('event-repeat-end')?.value || "never";
 
     const data = {
 
@@ -825,6 +832,41 @@ function saveEvent(){
         checklist:
         JSON.parse(JSON.stringify(checklistItems)),
 
+        // 🔁 繰り返し設定保存
+        repeat:
+        repeat,
+
+        repeatInterval:
+        repeat === "interval"
+            ? Math.max(1, Number(document.getElementById('event-repeat-interval')?.value) || 1)
+            : 1,
+
+        repeatUnit:
+        document.getElementById('event-repeat-unit')?.value || "day",
+
+        repeatMonthly:
+        repeat === "monthly"
+            ? document.getElementById('event-repeat-monthly')?.value || "date"
+            : "date",
+
+        repeatWeek:
+        Number(document.getElementById('event-repeat-week')?.value || 1),
+
+        repeatWeekday:
+        Number(document.getElementById('event-repeat-weekday')?.value ?? 0),
+
+        repeatEnd:
+        repeatEnd,
+
+        repeatUntil:
+        repeatEnd === "until"
+            ? document.getElementById('event-repeat-until')?.value || ""
+            : "",
+
+        repeatCount:
+        repeatEnd === "count"
+            ? Math.max(1, Number(document.getElementById('event-repeat-count')?.value) || 10)
+            : 10
 
     };
 
@@ -883,53 +925,54 @@ function saveEvent(){
 
     displayHomeSchedule();
 
-displayUpcomingEvents();
+    displayUpcomingEvents();
 
-displayFavoritePhotoCard();
+    displayFavoritePhotoCard();
 
-displayCountdown();
+    displayCountdown();
 
 
-/* =====================
-   保存後の画面更新
-===================== */
+    /* =====================
+       保存後の画面更新
+    ===================== */
 
-const plannerPage =
-    document.getElementById("plannerPage");
+    const plannerPage =
+        document.getElementById("plannerPage");
 
-const calendarPage =
-    document.getElementById("calendarPage");
+    const calendarPage =
+        document.getElementById("calendarPage");
 
-/* 1日手帳を開いている場合だけ更新 */
 
-if(
-    plannerPage &&
-    plannerPage.classList.contains("active") &&
-    selectedCalendarDate
-){
+    /* 1日手帳を開いている場合だけ更新 */
 
-    showPlanner(
-        selectedCalendarDate,
-        false
-    );
+    if(
+        plannerPage &&
+        plannerPage.classList.contains("active") &&
+        selectedCalendarDate
+    ){
+
+        showPlanner(
+            selectedCalendarDate,
+            false
+        );
+
+    }
+
+
+    /* カレンダーを開いている場合は
+       カレンダーのまま */
+
+    if(
+        calendarPage &&
+        calendarPage.classList.contains("active")
+    ){
+
+        renderCalendar();
+
+    }
 
 }
 
-/* カレンダーを開いている場合は
-   カレンダーのまま */
-
-if(
-    calendarPage &&
-    calendarPage.classList.contains("active")
-){
-
-    renderCalendar();
-
-}
-
-
-
-}
 
 
 function clearEventForm(){
@@ -1893,6 +1936,7 @@ function selectEvent(id){
 
 }
 
+
 function closeEventModal(){
 
     document.getElementById(
@@ -2794,4 +2838,355 @@ function setHomeMenuButton(mode){
 
     }
 
+}
+
+
+
+// =====================
+// 🔁 繰り返し設定の表示切り替え
+// =====================
+
+function toggleRepeatOptions() {
+
+    const repeat =
+        document.getElementById("event-repeat")?.value || "none";
+
+    const options =
+        document.getElementById("repeatOptions");
+
+    const intervalRow =
+        document.getElementById("repeatIntervalRow");
+
+    const monthlyRow =
+        document.getElementById("repeatMonthlyRow");
+
+    if (!options) return;
+
+    const enabled = repeat !== "none";
+
+    options.style.display =
+        enabled ? "block" : "none";
+
+    if (intervalRow) {
+        intervalRow.style.display =
+            repeat === "interval" ? "flex" : "none";
+    }
+
+    if (monthlyRow) {
+        monthlyRow.style.display =
+            repeat === "monthly" ? "flex" : "none";
+    }
+
+    toggleMonthlyOptions();
+    toggleRepeatEndOptions();
+}
+
+
+// =====================
+// 🔁 毎月の曜日指定
+// =====================
+
+function toggleMonthlyOptions() {
+
+    const monthly =
+        document.getElementById("event-repeat-monthly")?.value || "date";
+
+    const weekdayOptions =
+        document.getElementById("repeatWeekdayOptions");
+
+    if (!weekdayOptions) return;
+
+    weekdayOptions.style.display =
+        monthly === "weekday" || monthly === "lastWeekday"
+            ? "block"
+            : "none";
+
+    const weekSelect =
+        document.getElementById("event-repeat-week");
+
+    if (weekSelect) {
+        weekSelect.disabled = monthly === "lastWeekday";
+    }
+}
+
+
+// =====================
+// 🔁 繰り返し終了条件
+// =====================
+
+function toggleRepeatEndOptions() {
+
+    const endType =
+        document.getElementById("event-repeat-end")?.value || "never";
+
+    const untilRow =
+        document.getElementById("repeatUntilRow");
+
+    const countRow =
+        document.getElementById("repeatCountRow");
+
+    if (untilRow) {
+        untilRow.style.display =
+            endType === "until" ? "flex" : "none";
+    }
+
+    if (countRow) {
+        countRow.style.display =
+            endType === "count" ? "flex" : "none";
+    }
+}
+
+
+/* ========================================
+   🔁 繰り返し予定の共通処理
+   ・予定データは複製しない
+   ・指定期間内の発生日を計算する
+   ・既存のDBデータは変更しない
+======================================== */
+
+function getRecurringEventOccurrences(event, rangeStart, rangeEnd) {
+
+    if (!event || !event.start || !rangeStart || !rangeEnd) {
+        return [];
+    }
+
+    const originalStart = new Date(event.start);
+    const startLimit = new Date(rangeStart);
+    const endLimit = new Date(rangeEnd);
+
+    if (
+        Number.isNaN(originalStart.getTime()) ||
+        Number.isNaN(startLimit.getTime()) ||
+        Number.isNaN(endLimit.getTime()) ||
+        endLimit <= startLimit
+    ) {
+        return [];
+    }
+
+    const repeat = event.repeat || "none";
+
+    // 繰り返さない予定
+    if (repeat === "none") {
+        const eventEnd = event.end
+            ? new Date(event.end)
+            : new Date(originalStart.getTime() + 30 * 60000);
+
+        const safeEnd =
+            !Number.isNaN(eventEnd.getTime()) && eventEnd > originalStart
+                ? eventEnd
+                : new Date(originalStart.getTime() + 30 * 60000);
+
+        return originalStart < endLimit && safeEnd > startLimit
+            ? [{ event, start: originalStart, end: safeEnd, occurrenceDate: event.start.slice(0, 10) }]
+            : [];
+    }
+
+    const results = [];
+    const originalDate = new Date(
+        originalStart.getFullYear(),
+        originalStart.getMonth(),
+        originalStart.getDate()
+    );
+
+    const originalDay = originalDate.getDate();
+    const originalMonth = originalDate.getMonth();
+    const originalYear = originalDate.getFullYear();
+
+    const interval = Math.max(1, Number(event.repeatInterval) || 1);
+    const unit = event.repeatUnit || "day";
+    const repeatEnd = event.repeatEnd || "never";
+    const repeatUntil = event.repeatUntil
+        ? new Date(event.repeatUntil + "T23:59:59")
+        : null;
+    const repeatCount = Math.max(1, Number(event.repeatCount) || 10);
+
+    function makeDate(year, month, day) {
+        const date = new Date(year, month, day);
+
+        // 月末に存在しない日付を翌月へ繰り越さない
+        if (
+            date.getFullYear() !== year ||
+            date.getMonth() !== month ||
+            date.getDate() !== day
+        ) {
+            return null;
+        }
+
+        return date;
+    }
+
+    function getMonthlyWeekday(year, month) {
+        const weekday = Number(event.repeatWeekday ?? originalDate.getDay());
+        const week = Number(event.repeatWeek || 1);
+
+        if (event.repeatMonthly === "lastWeekday") {
+            const lastDay = new Date(year, month + 1, 0);
+            const offset = (lastDay.getDay() - weekday + 7) % 7;
+            return new Date(year, month, lastDay.getDate() - offset);
+        }
+
+        if (event.repeatMonthly === "weekday") {
+            const firstDay = new Date(year, month, 1);
+            const firstOffset = (weekday - firstDay.getDay() + 7) % 7;
+
+            if (week === -1) {
+                const lastDay = new Date(year, month + 1, 0);
+                const lastOffset = (lastDay.getDay() - weekday + 7) % 7;
+                return new Date(year, month, lastDay.getDate() - lastOffset);
+            }
+
+            return makeDate(
+                year,
+                month,
+                1 + firstOffset + (Math.max(1, week) - 1) * 7
+            );
+        }
+
+        return makeDate(year, month, originalDay);
+    }
+
+    function getOccurrenceDate(index) {
+        if (index === 0) {
+            return originalDate;
+        }
+
+        if (repeat === "daily") {
+            const date = new Date(originalDate);
+            date.setDate(date.getDate() + index);
+            return date;
+        }
+
+        if (repeat === "weekly") {
+            const date = new Date(originalDate);
+            date.setDate(date.getDate() + index * 7);
+            return date;
+        }
+
+        if (repeat === "monthly") {
+            const monthOffset = index;
+            const monthDate = new Date(
+                originalYear,
+                originalMonth + monthOffset,
+                1
+            );
+
+            return getMonthlyWeekday(
+                monthDate.getFullYear(),
+                monthDate.getMonth()
+            );
+        }
+
+        if (repeat === "yearly") {
+            return makeDate(
+                originalYear + index,
+                originalMonth,
+                originalDay
+            );
+        }
+
+        if (repeat === "interval") {
+            const date = new Date(originalDate);
+            const amount = index * interval;
+
+            if (unit === "day") {
+                date.setDate(date.getDate() + amount);
+                return date;
+            }
+
+            if (unit === "week") {
+                date.setDate(date.getDate() + amount * 7);
+                return date;
+            }
+
+            if (unit === "month") {
+                const monthDate = new Date(
+                    originalYear,
+                    originalMonth + amount,
+                    1
+                );
+                return makeDate(
+                    monthDate.getFullYear(),
+                    monthDate.getMonth(),
+                    originalDay
+                );
+            }
+
+            if (unit === "year") {
+                return makeDate(
+                    originalYear + amount,
+                    originalMonth,
+                    originalDay
+                );
+            }
+        }
+
+        return null;
+    }
+
+    // 時刻・期間は元の予定を維持し、発生日だけを移動する
+    const duration = event.end
+        ? new Date(event.end).getTime() - originalStart.getTime()
+        : 30 * 60000;
+
+    if (!Number.isFinite(duration) || duration <= 0) {
+        return [];
+    }
+
+    // 無期限の繰り返しでも計算量を抑える
+    const MAX_OCCURRENCES = 5000;
+
+    for (let index = 0; index < MAX_OCCURRENCES; index++) {
+
+        const occurrenceDate = getOccurrenceDate(index);
+
+        // 存在しない日付（例：2月30日）はその月・年の発生を飛ばす
+        if (!occurrenceDate) {
+            if (repeatEnd === "count" && index + 1 >= repeatCount) {
+                break;
+            }
+            continue;
+        }
+
+        if (repeatEnd === "count" && index >= repeatCount) {
+            break;
+        }
+
+        if (repeatEnd === "until" && repeatUntil && occurrenceDate > repeatUntil) {
+            break;
+        }
+
+        // 発生日が検索期間の終わりを超えたら終了
+        if (occurrenceDate >= endLimit) {
+            break;
+        }
+
+        const occurrenceStart = new Date(occurrenceDate);
+        occurrenceStart.setHours(
+            originalStart.getHours(),
+            originalStart.getMinutes(),
+            originalStart.getSeconds(),
+            originalStart.getMilliseconds()
+        );
+
+        const occurrenceEnd = new Date(
+            occurrenceStart.getTime() + duration
+        );
+
+        if (
+            occurrenceStart < endLimit &&
+            occurrenceEnd > startLimit
+        ) {
+            results.push({
+                event,
+                start: occurrenceStart,
+                end: occurrenceEnd,
+                occurrenceDate:
+                    occurrenceStart.getFullYear() + "-" +
+                    String(occurrenceStart.getMonth() + 1).padStart(2, "0") + "-" +
+                    String(occurrenceStart.getDate()).padStart(2, "0")
+            });
+        }
+    }
+
+    return results;
 }
