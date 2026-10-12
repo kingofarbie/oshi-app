@@ -1582,6 +1582,7 @@ function showDayMenu(date){
 
 }
 
+
 function closeDayMenu(){
 
     document.getElementById(
@@ -1647,50 +1648,61 @@ function copyEventFromMenu(){
 }
 
 
-function openDeleteSelectModal(){
 
-    const list =
-        document.getElementById(
-            "deleteEventList"
+function openDeleteSelectModal() {
+    const list = document.getElementById("deleteEventList");
+
+    const data = db.load();
+
+    // 対象日をローカル日付として扱う
+    const [year, month, day] = menuDate.split("-").map(Number);
+
+    const dayStart = new Date(year, month - 1, day);
+    const dayEnd = new Date(year, month - 1, day + 1);
+
+    // 対象日に実際に発生する予定を集める
+    const entries = [];
+
+    data.events.forEach(event => {
+        if (!event.start) return;
+
+        const occurrences = getRecurringEventOccurrences(
+            event,
+            dayStart,
+            dayEnd
         );
 
-
-    const events =
-        db.load().events.filter(
-            e => e.start && e.start.startsWith(menuDate)
+        const occurrence = occurrences.find(
+            item => item.occurrenceDate === menuDate
         );
 
+        if (occurrence) {
+            entries.push({
+                event,
+                occurrenceDate: occurrence.occurrenceDate
+            });
+        }
+    });
 
-    if(events.length === 0){
-
+    if (entries.length === 0) {
         alert("予定がありません");
-
         return;
-
     }
 
-    list.innerHTML =
+    list.innerHTML = entries.map(({ event, occurrenceDate }) => `
+        <label class="delete-item">
+            <input
+                type="checkbox"
+                value="${String(event.id)}"
+                data-occurrence-date="${occurrenceDate}"
+                class="delete-check"
+            >
+            ${getCategoryInfo(event.category)?.icon || "📌"}
+            ${event.title}
+        </label>
+    `).join("");
 
-    events.map(e=>`
-
-<label class="delete-item">
-<input
-type="checkbox"
-value="${e.id}"
-class="delete-check">
-
-${getCategoryInfo(e.category)?.icon || "📌"}
-${e.title}
-
-</label>
-
-`).join('');
-
-
-    document.getElementById(
-        "deleteSelectModal"
-    ).style.display="block";
-
+    document.getElementById("deleteSelectModal").style.display = "block";
 }
 
 
@@ -1702,66 +1714,105 @@ function closeDeleteSelectModal(){
 
 }
 
-function deleteSelectedEvents(){
 
-    const checks =
-        document.querySelectorAll(
-            ".delete-check:checked"
-        );
+async function deleteSelectedEvents() {
+    const checks = Array.from(
+        document.querySelectorAll(".delete-check:checked")
+    );
 
-
-    if(checks.length === 0){
-
+    if (checks.length === 0) {
         alert("削除する予定を選択してください");
-
         return;
-
     }
 
-
-    if(!confirm(
-        "選択した予定を削除しますか？"
-    )){
-
+    if (!confirm("選択した予定を削除しますか？")) {
         return;
-
     }
 
+    const data = db.load();
+    const pendingActions = [];
 
-    const ids =
-        Array.from(checks)
-        .map(
-            c=>Number(c.value)
+    // 先に削除方法を確認し、選択結果を保持する
+    for (const check of checks) {
+        const eventId = check.value;
+        const occurrenceDate = check.dataset.occurrenceDate;
+
+        const event = data.events.find(
+            item => String(item.id) === eventId
         );
 
+        if (!event) continue;
 
-    const data =
-        db.load();
+        const isRecurring =
+            event.repeat &&
+            event.repeat !== "none";
 
+        if (!isRecurring) {
+            pendingActions.push({
+                type: "all",
+                eventId
+            });
+            continue;
+        }
 
-    data.events =
-        data.events.filter(
-            e=>!ids.includes(e.id)
+        const result = await openRecurringDeleteModal(
+            event.title || "予定",
+            occurrenceDate || menuDate
         );
 
+        // キャンセルされた予定は変更しない
+        if (result === null) continue;
 
-    db.save(data);
+        pendingActions.push({
+            type: result,
+            eventId,
+            occurrenceDate: occurrenceDate || menuDate
+        });
+    }
 
+    // 選択結果をまとめて反映する
+    const deleteAllIds = new Set();
+
+    pendingActions.forEach(action => {
+        if (action.type === "all") {
+            deleteAllIds.add(action.eventId);
+        }
+    });
+
+    data.events = data.events
+        .filter(event => !deleteAllIds.has(String(event.id)));
+
+    pendingActions.forEach(action => {
+        if (action.type !== "one") return;
+
+        const event = data.events.find(
+            item => String(item.id) === action.eventId
+        );
+
+        if (!event) return;
+
+        if (!Array.isArray(event.excludedOccurrences)) {
+            event.excludedOccurrences = [];
+        }
+
+        if (!event.excludedOccurrences.includes(action.occurrenceDate)) {
+            event.excludedOccurrences.push(action.occurrenceDate);
+        }
+    });
+
+    if (pendingActions.length > 0) {
+        db.save(data);
+    }
 
     closeDeleteSelectModal();
 
-
     displayEventList();
-
     displaySelectedDateEvents();
-
     renderCalendar();
-
     displayHomeSchedule();
-
     displayUpcomingEvents();
-
 }
+
 
 
 function openCopySelectModal(){

@@ -52,6 +52,8 @@ async function loadCommonModalHTML() {
 
         initializeNumberInputModal();
         initializeCommonConfirmModal();
+        initializeRecurringDeleteModal();
+
 
     }
     catch (error) {
@@ -883,8 +885,81 @@ function openCommonConfirmModal(
 
 
 
+/* =================================
+   🔁 繰り返し予定の削除専用モーダル
+================================= */
+
+let recurringDeleteModalResolver = null;
+
+function openRecurringDeleteModal(title, date) {
+    const modal = document.getElementById("recurringDeleteModal");
+    const message = document.getElementById("recurringDeleteMessage");
+
+    if (!modal || !message) {
+        console.error("繰り返し予定削除モーダルが見つかりません");
+        return Promise.resolve(null);
+    }
+
+    // 前の選択待ちが残っていた場合はキャンセル扱いにする
+    if (recurringDeleteModalResolver) {
+        const previousResolver = recurringDeleteModalResolver;
+        recurringDeleteModalResolver = null;
+        previousResolver(null);
+    }
+
+    message.textContent =
+        `予定：${title}\n対象日：${date}\n\n削除方法を選択してください。`;
+
+    modal.style.display = "flex";
+
+    return new Promise(resolve => {
+        recurringDeleteModalResolver = resolve;
+    });
+}
+
+function closeRecurringDeleteModal(result = null) {
+    const modal = document.getElementById("recurringDeleteModal");
+
+    if (modal) {
+        modal.style.display = "none";
+    }
+
+    const resolve = recurringDeleteModalResolver;
+    recurringDeleteModalResolver = null;
+
+    if (resolve) {
+        resolve(result);
+    }
+}
+
+function initializeRecurringDeleteModal() {
+    const modal = document.getElementById("recurringDeleteModal");
+    const oneButton = document.getElementById("recurringDeleteOneButton");
+    const allButton = document.getElementById("recurringDeleteAllButton");
+    const cancelButton = document.getElementById("recurringDeleteCancelButton");
+
+    if (!modal || !oneButton || !allButton || !cancelButton) {
+        return;
+    }
+
+    oneButton.onclick = () => closeRecurringDeleteModal("one");
+    allButton.onclick = () => closeRecurringDeleteModal("all");
+    cancelButton.onclick = () => closeRecurringDeleteModal(null);
+
+    modal.onclick = event => {
+        if (event.target === modal) {
+            closeRecurringDeleteModal(null);
+        }
+    };
+}
+
+
+
 // =====================================================
 // 共通モーダル読み込み開始
 // =====================================================
 
 loadCommonModalHTML();
+
+
+

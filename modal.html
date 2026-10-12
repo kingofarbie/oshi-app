@@ -190,3 +190,56 @@
     </div>
 
 </div>
+
+
+
+
+
+<!-- ==============================
+     🔁 繰り返し予定の削除
+     専用モーダル
+============================== -->
+<div
+    id="recurringDeleteModal"
+    class="recurring-delete-modal"
+    style="display:none;"
+>
+    <div
+        class="recurring-delete-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="recurringDeleteTitle"
+    >
+        <h3 id="recurringDeleteTitle">
+            🔁 繰り返し予定の削除
+        </h3>
+
+        <div
+            id="recurringDeleteMessage"
+            class="recurring-delete-message"
+        ></div>
+
+        <div class="recurring-delete-actions">
+            <button
+                type="button"
+                id="recurringDeleteOneButton"
+            >
+                この日だけ削除
+            </button>
+
+            <button
+                type="button"
+                id="recurringDeleteAllButton"
+            >
+                繰り返し予定をすべて削除
+            </button>
+
+            <button
+                type="button"
+                id="recurringDeleteCancelButton"
+            >
+                キャンセル
+            </button>
+        </div>
+    </div>
+</div>
