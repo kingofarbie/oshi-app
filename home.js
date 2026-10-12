@@ -87,36 +87,79 @@ function eventStartDate(e){
 }
 
 
-
     /* =====================
        今日の予定
+       繰り返し予定にも対応
+       保存データは複製しない
     ===================== */
 
-    const todayList = events
-        .filter(e => {
+    const todayList = [];
 
-            const d = eventStartDate(e);
+    events.forEach(e => {
 
-            if(!d || isNaN(d.getTime())){
-                return false;
+        if(!e.start){
+            return;
+        }
+
+        const occurrences =
+            getRecurringEventOccurrences(
+                e,
+                todayStart,
+                tomorrowStart
+            );
+
+        occurrences.forEach(occurrence => {
+
+            const eventStart =
+                occurrence.start;
+
+            const eventEnd =
+                occurrence.end;
+
+            if(
+                !eventStart ||
+                !eventEnd ||
+                Number.isNaN(eventStart.getTime()) ||
+                Number.isNaN(eventEnd.getTime())
+            ){
+                return;
             }
 
-            return (
-                d >= todayStart &&
-                d < tomorrowStart
-            );
+            // 今日に発生する予定だけを表示
+            if(
+                eventStart >= todayStart &&
+                eventStart < tomorrowStart
+            ){
 
-        })
-        .sort((a,b) => {
+                const startText =
+                    `${eventStart.getFullYear()}-` +
+                    `${String(eventStart.getMonth() + 1).padStart(2, "0")}-` +
+                    `${String(eventStart.getDate()).padStart(2, "0")}T` +
+                    `${String(eventStart.getHours()).padStart(2, "0")}:` +
+                    `${String(eventStart.getMinutes()).padStart(2, "0")}`;
 
-            return (
-                eventStartDate(a) -
-                eventStartDate(b)
-            );
+                const endText =
+                    `${eventEnd.getFullYear()}-` +
+                    `${String(eventEnd.getMonth() + 1).padStart(2, "0")}-` +
+                    `${String(eventEnd.getDate()).padStart(2, "0")}T` +
+                    `${String(eventEnd.getHours()).padStart(2, "0")}:` +
+                    `${String(eventEnd.getMinutes()).padStart(2, "0")}`;
+
+                todayList.push({
+                    ...e,
+                    start: startText,
+                    end: endText
+                });
+
+            }
 
         });
 
+    });
 
+    todayList.sort((a, b) => {
+        return eventStartDate(a) - eventStartDate(b);
+    });
 
     /* =====================
        表示
