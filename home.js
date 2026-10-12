@@ -241,7 +241,8 @@ function eventStartDate(e){
 
 /* =====================
    直近のイベント
-   ※本日の予定は除外
+   今日の予定は除外
+   繰り返し予定に対応
 ===================== */
 function displayUpcomingEvents(){
 
@@ -261,74 +262,95 @@ function displayUpcomingEvents(){
 
     // 明日の開始
     const tomorrowStart = new Date(todayStart);
+    tomorrowStart.setDate(todayStart.getDate() + 1);
 
-    tomorrowStart.setDate(
-        todayStart.getDate() + 1
-    );
+    const savedEvents =
+        db.load().events || [];
 
+    const upcomingEvents = [];
 
-function eventStartDate(e){
+    // 直近1年分を検索範囲にする
+    const searchEnd = new Date(tomorrowStart);
+    searchEnd.setFullYear(searchEnd.getFullYear() + 1);
 
-    if(!e.start){
-        return null;
-    }
+    savedEvents.forEach(e => {
 
-    const d = new Date(e.start);
+        if(!e.start){
+            return;
+        }
 
-    if(isNaN(d.getTime())){
-        return null;
-    }
-
-    return d;
-
-}
-
-    
-
-    /*
-       今日の予定を除外して
-       明日以降のイベントだけ取得
-    */
-    const events =
-        db.load().events
-
-        .filter(e=>{
-
-            const d =
-                eventStartDate(e);
-
-            return (
-                d &&
-                d >= tomorrowStart
+        const occurrences =
+            getRecurringEventOccurrences(
+                e,
+                tomorrowStart,
+                searchEnd
             );
 
-        })
+        occurrences.forEach(occurrence => {
 
-        .sort(
-            (a,b)=>
-                eventStartDate(a)
-                -
-                eventStartDate(b)
-        )
+            const start =
+                occurrence.start;
 
-        .slice(0,3);
+            const end =
+                occurrence.end;
 
+            if(
+                !start ||
+                !end ||
+                Number.isNaN(start.getTime()) ||
+                Number.isNaN(end.getTime())
+            ){
+                return;
+            }
 
-    if(events.length===0){
+            // 明日以降に始まる発生分だけを追加
+            if(start >= tomorrowStart){
 
-        box.innerHTML =
-            "該当なし";
+                const startText =
+                    `${start.getFullYear()}-` +
+                    `${String(start.getMonth() + 1).padStart(2, "0")}-` +
+                    `${String(start.getDate()).padStart(2, "0")}T` +
+                    `${String(start.getHours()).padStart(2, "0")}:` +
+                    `${String(start.getMinutes()).padStart(2, "0")}`;
 
+                const endText =
+                    `${end.getFullYear()}-` +
+                    `${String(end.getMonth() + 1).padStart(2, "0")}-` +
+                    `${String(end.getDate()).padStart(2, "0")}T` +
+                    `${String(end.getHours()).padStart(2, "0")}:` +
+                    `${String(end.getMinutes()).padStart(2, "0")}`;
+
+                upcomingEvents.push({
+                    ...e,
+                    start: startText,
+                    end: endText
+                });
+
+            }
+
+        });
+
+    });
+
+    // 発生日時の早い順に並べて3件に絞る
+    upcomingEvents.sort((a, b) => {
+        return new Date(a.start) - new Date(b.start);
+    });
+
+    const events =
+        upcomingEvents.slice(0, 3);
+
+    if(events.length === 0){
+
+        box.innerHTML = "該当なし";
         return;
 
     }
 
-
     box.innerHTML =
-        events.map(e=>{
+        events.map(e => {
 
-            const d =
-                eventStartDate(e);
+            const d = new Date(e.start);
 
             const month =
                 d.getMonth() + 1;
@@ -337,10 +359,7 @@ function eventStartDate(e){
                 d.getDate();
 
             const icon =
-                getCategoryInfo(
-                    e.category
-                )?.icon || "📌";
-
+                getCategoryInfo(e.category)?.icon || "📌";
 
             return `
 <div
