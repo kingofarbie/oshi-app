@@ -706,209 +706,196 @@ async function displayFavoritePhotoCard(){
 
 }
 
+
+
 function displayCountdown() {
 
-const box =
-    document.getElementById("countdown-card");
+    const box =
+        document.getElementById("countdown-card");
 
-if(!box) return;
+    if(!box) return;
 
+    const now = new Date();
 
-const now = new Date();
+    const today =
+        new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate()
+        );
 
-const events =
-    db.load().events
-    .filter(e => e.start)
-    .sort(
-        (a,b) =>
-            new Date(a.start) -
-            new Date(b.start)
+    // 1年先までの開催を検索
+    const searchEnd = new Date(today);
+    searchEnd.setFullYear(searchEnd.getFullYear() + 1);
+
+    const savedEvents =
+        db.load().events || [];
+
+    const upcomingEvents = [];
+
+    savedEvents.forEach(e => {
+
+        if(!e.start) return;
+
+        const occurrences =
+            getRecurringEventOccurrences(
+                e,
+                now,
+                searchEnd
+            );
+
+        occurrences.forEach(occurrence => {
+
+            const start = occurrence.start;
+            const end = occurrence.end;
+
+            if(
+                !start ||
+                !end ||
+                Number.isNaN(start.getTime()) ||
+                Number.isNaN(end.getTime()) ||
+                start <= now
+            ){
+                return;
+            }
+
+            // 表示用データのみ作成。保存データは変更しない
+            const startText =
+                `${start.getFullYear()}-` +
+                `${String(start.getMonth() + 1).padStart(2, "0")}-` +
+                `${String(start.getDate()).padStart(2, "0")}T` +
+                `${String(start.getHours()).padStart(2, "0")}:` +
+                `${String(start.getMinutes()).padStart(2, "0")}`;
+
+            const endText =
+                `${end.getFullYear()}-` +
+                `${String(end.getMonth() + 1).padStart(2, "0")}-` +
+                `${String(end.getDate()).padStart(2, "0")}T` +
+                `${String(end.getHours()).padStart(2, "0")}:` +
+                `${String(end.getMinutes()).padStart(2, "0")}`;
+
+            upcomingEvents.push({
+                ...e,
+                start: startText,
+                end: endText
+            });
+
+        });
+
+    });
+
+    // 次に始まる予定を選ぶ
+    upcomingEvents.sort(
+        (a, b) =>
+            new Date(a.start) - new Date(b.start)
     );
 
+    const next = upcomingEvents[0];
 
-/*
-   現在時刻より後の
-   一番近いイベント
-*/
-const next =
-    events.find(
-        e => new Date(e.start) > now
-    );
+    if(!next){
 
+        box.innerHTML = "予定はありません";
+        box.style.background = "";
+        box.style.border = "";
 
-if(!next){
+        return;
+    }
 
-    box.innerHTML =
-        "予定はありません";
+    const start = new Date(next.start);
 
-    box.style.background = "";
-    box.style.border = "";
+    const eventDay =
+        new Date(
+            start.getFullYear(),
+            start.getMonth(),
+            start.getDate()
+        );
 
-    return;
+    const days =
+        Math.floor(
+            (eventDay - today) / 86400000
+        );
 
-}
+    const diff = start - now;
 
+    const hours =
+        Math.floor(
+            (diff % 86400000) / 3600000
+        );
 
-const start =
-    new Date(next.start);
+    const mins =
+        Math.floor(
+            (diff % 3600000) / 60000
+        );
 
+    let countdownText = "";
 
-/*
-   今日の日付
-*/
-const today =
-    new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate()
-    );
+    if(days >= 1){
 
+        countdownText =
+            `あと <span class="countdown-number-large">${days}</span>日`;
 
-/*
-   イベントの日付
-*/
-const eventDay =
-    new Date(
-        start.getFullYear(),
-        start.getMonth(),
-        start.getDate()
-    );
+    }
+    else{
 
+        countdownText =
+            `あと <span class="countdown-number-large">${hours}</span>時間 <span class="countdown-number-large">${mins}</span>分`;
 
-/*
-   日付の差
-*/
-const days =
-    Math.floor(
-        (eventDay - today) /
-        86400000
-    );
+    }
 
+    const category =
+        getCategoryInfo(next.category);
 
-/*
-   現在時刻との差
-*/
-const diff =
-    start - now;
+    const icon =
+        category?.icon || "📌";
 
+    const dateText =
+        `${start.getMonth() + 1}月` +
+        `${start.getDate()}日` +
+        ` ${String(start.getHours()).padStart(2, "0")}:` +
+        `${String(start.getMinutes()).padStart(2, "0")}まで`;
 
-const hours =
-    Math.floor(
-        (diff % 86400000) /
-        3600000
-    );
+    let cardClass = "";
 
+    if(days === 1){
 
-const mins =
-    Math.floor(
-        (diff % 3600000) /
-        60000
-    );
+        cardClass = "countdown-tomorrow";
 
+    }
+    else if(days === 0){
 
-/*
-   カウントダウン文字
-*/
-let countdownText = "";
+        cardClass = "countdown-today";
 
-if(days >= 1){
+    }
 
-    countdownText =
-        `あと <span class="countdown-number-large">${days}</span>日`;
-
-}
-else if(diff > 0){
-
-    countdownText =
-        `あと <span class="countdown-number-large">${hours}</span>時間 <span class="countdown-number-large">${mins}</span>分`;
-
-}
-else{
-
-    countdownText =
-        "🎉 開催中";
-
-}
-
-
-
-/*
-   カテゴリー
-*/
-const category =
-    getCategoryInfo(next.category);
-
-
-const icon =
-    category?.icon || "📌";
-
-
-/*
-   日付・時刻
-*/
-const dateText =
-    `${start.getMonth() + 1}月` +
-    `${start.getDate()}日` +
-    ` ${String(start.getHours()).padStart(2,"0")}:` +
-    `${String(start.getMinutes()).padStart(2,"0")}まで`;
-
-
-/*
-   前日・当日の色
-*/
-let cardClass = "";
-
-
-if(days === 1){
-
-    cardClass =
-        "countdown-tomorrow";
-
-}
-else if(days === 0){
-
-    cardClass =
-        "countdown-today";
-
-}
-
-
-/*
-   カード表示
-   ※ schedule-item を入れ子にしない
-*/
-box.innerHTML = `
-
+    box.innerHTML = `
 <div
     class="countdown-inner ${cardClass}"
     onclick="openEventDetail(${next.id})"
 >
-
-<div class="countdown-event">
-    ${icon}
-    ${next.title}
-</div>
-
-<div class="countdown-date">
-    ${dateText}
-</div>
-
-<div class="countdown-number">
-    ${countdownText}
-</div>
-
-${
-    next.place
-    ?
-    `
-    <div class="countdown-place">
-        📍 ${next.place}
+    <div class="countdown-event">
+        ${icon}
+        ${next.title}
     </div>
-    `
-    :
-    ""
-}
 
+    <div class="countdown-date">
+        ${dateText}
+    </div>
+
+    <div class="countdown-number">
+        ${countdownText}
+    </div>
+
+    ${
+        next.place
+        ?
+        `
+        <div class="countdown-place">
+            📍 ${next.place}
+        </div>
+        `
+        :
+        ""
+    }
 </div>`;
 
 }

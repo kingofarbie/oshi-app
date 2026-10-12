@@ -3172,19 +3172,33 @@ function getRecurringEventOccurrences(event, rangeStart, rangeEnd) {
             occurrenceStart.getTime() + duration
         );
 
+        // この日だけ削除された繰り返し予定は表示しない
+        const occurrenceDateText =
+            occurrenceStart.getFullYear() + "-" +
+            String(occurrenceStart.getMonth() + 1).padStart(2, "0") + "-" +
+            String(occurrenceStart.getDate()).padStart(2, "0");
+
+        const excludedOccurrences =
+            Array.isArray(event.excludedOccurrences)
+                ? event.excludedOccurrences
+                : [];
+
+        if (excludedOccurrences.includes(occurrenceDateText)) {
+            continue;
+        }
+
         if (
             occurrenceStart < endLimit &&
             occurrenceEnd > startLimit
         ) {
+
             results.push({
                 event,
                 start: occurrenceStart,
                 end: occurrenceEnd,
-                occurrenceDate:
-                    occurrenceStart.getFullYear() + "-" +
-                    String(occurrenceStart.getMonth() + 1).padStart(2, "0") + "-" +
-                    String(occurrenceStart.getDate()).padStart(2, "0")
-            });
+                occurrenceDate: occurrenceDateText            
+            
+                });
         }
     }
 

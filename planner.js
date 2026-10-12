@@ -388,12 +388,12 @@ const allEvents = [];
                 `${String(eventEnd.getHours()).padStart(2, "0")}:` +
                 `${String(eventEnd.getMinutes()).padStart(2, "0")}`;
 
-            allEvents.push({
-                ...e,
-                start: startText,
-                end: endText
-            });
-
+allEvents.push({
+    ...e,
+    start: startText,
+    end: endText,
+    occurrenceDate: occurrence.occurrenceDate || startText.slice(0, 10)
+});
         }
 
     });
@@ -917,6 +917,7 @@ for(
             <div
                 class="planner-event ${finished ? "finished-event" : ""}"
                 data-event-id="${e.id}"
+                data-occurrence-date="${e.occurrenceDate || e.start.slice(0, 10)}"
                 data-actual-height="${actualHeight}"
                 data-display-height="${displayHeight}"
                 data-original-top="${displayTop}"
@@ -1684,52 +1685,91 @@ function plannerDeleteEvent(event, id){
 
     event.stopPropagation();
 
-    const target =
-        document.querySelector(
-            `.planner-event[data-event-id="${id}"]`
-        );
+    const target = document.querySelector(
+        `.planner-event[data-event-id="${id}"]`
+    );
 
     if(target){
-
-        target.classList.remove(
-            "planner-event-editing"
-        );
-
+        target.classList.remove("planner-event-editing");
     }
 
-    const eventData =
-        db.load()
-        .events
-        .find(
-            e=>e.id===id
-        );
+    const data = db.load();
+
+    const eventData = (data.events || []).find(
+        e => String(e.id) === String(id)
+    );
 
     if(!eventData){
         return;
     }
 
-    if(
-        !confirm(
-            `「${eventData.title}」を削除しますか？`
-        )
-    ){
-        return;
-    }
+    const isRecurring =
+        !!eventData.repeat &&
+        eventData.repeat !== "none";
 
-    const data =
-        db.load();
+    // 繰り返し予定以外は、従来どおり予定全体を削除
+    if(!isRecurring){
 
-    data.events =
-        data.events.filter(
-            e=>e.id!==id
+        if(!confirm(`「${eventData.title}」を削除しますか？`)){
+            return;
+        }
+
+        data.events = data.events.filter(
+            e => String(e.id) !== String(id)
         );
+
+    }
+    else{
+
+        // タップした付箋から、対象の日付を取得
+        const eventElement =
+            event.target.closest(".planner-event");
+
+        const occurrenceDate =
+            eventElement?.dataset.occurrenceDate;
+
+        if(!occurrenceDate){
+            alert("削除する予定の日付を取得できませんでした。");
+            return;
+        }
+
+        const deleteChoice = prompt(
+            `「${eventData.title}」の削除方法を選んでください。\n\n1：この日だけ削除\n2：繰り返し予定をすべて削除\n\n数字を入力してください。`,
+            "1"
+        );
+
+        if(deleteChoice === null){
+            return;
+        }
+
+        if(deleteChoice === "1"){
+
+            if(!Array.isArray(eventData.excludedOccurrences)){
+                eventData.excludedOccurrences = [];
+            }
+
+            if(!eventData.excludedOccurrences.includes(occurrenceDate)){
+                eventData.excludedOccurrences.push(occurrenceDate);
+            }
+
+        }
+        else if(deleteChoice === "2"){
+
+            data.events = data.events.filter(
+                e => String(e.id) !== String(id)
+            );
+
+        }
+        else{
+            alert("1 または 2 を入力してください。");
+            return;
+        }
+
+    }
 
     db.save(data);
 
-    showPlanner(
-        selectedCalendarDate,
-        false
-    );
+    showPlanner(selectedCalendarDate, false);
 
     displayEventList();
     displayHomeSchedule();
@@ -1737,7 +1777,6 @@ function plannerDeleteEvent(event, id){
     displayCountdown();
     renderCalendar();
 }
-
 
 
 /* =====================
