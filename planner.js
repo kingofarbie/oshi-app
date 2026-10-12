@@ -337,54 +337,72 @@ if(anniversaryHtml){
        元の保存データは変更しない
     ===================== */
 
-    const allEvents =
-        (plannerData.events || [])
-        .filter(e => {
 
-            if(!e.start){
+const allEvents = [];
 
-                return false;
+(plannerData.events || []).forEach(e => {
 
-            }
+    if(!e.start){
+        return;
+    }
 
-            const eventStart =
-                new Date(e.start);
+    const occurrences = getRecurringEventOccurrences(
+        e,
+        dayStart,
+        displayEnd
+    );
 
-            if(Number.isNaN(eventStart.getTime())){
+    occurrences.forEach(occurrence => {
 
-                return false;
+        const eventStart = occurrence.start;
 
-            }
+        const eventEnd = occurrence.end;
 
-            let eventEnd =
-                e.end
-                    ? new Date(e.end)
-                    : new Date(eventStart.getTime() + 30 * 60000);
+        if(
+            !eventStart ||
+            !eventEnd ||
+            Number.isNaN(eventStart.getTime()) ||
+            Number.isNaN(eventEnd.getTime())
+        ){
+            return;
+        }
 
-            if(
-                Number.isNaN(eventEnd.getTime()) ||
-                eventEnd <= eventStart
-            ){
+        // この日の時間範囲と重なる予定だけを表示
+        if(
+            eventStart < displayEnd &&
+            eventEnd > dayStart
+        ){
 
-                eventEnd =
-                    new Date(eventStart.getTime() + 30 * 60000);
+            // 表示用の予定を作成。保存データは変更しない
+            const startText =
+                `${eventStart.getFullYear()}-` +
+                `${String(eventStart.getMonth() + 1).padStart(2, "0")}-` +
+                `${String(eventStart.getDate()).padStart(2, "0")}T` +
+                `${String(eventStart.getHours()).padStart(2, "0")}:` +
+                `${String(eventStart.getMinutes()).padStart(2, "0")}`;
 
-            }
+            const endText =
+                `${eventEnd.getFullYear()}-` +
+                `${String(eventEnd.getMonth() + 1).padStart(2, "0")}-` +
+                `${String(eventEnd.getDate()).padStart(2, "0")}T` +
+                `${String(eventEnd.getHours()).padStart(2, "0")}:` +
+                `${String(eventEnd.getMinutes()).padStart(2, "0")}`;
 
-            return (
-                eventStart < displayEnd &&
-                eventEnd > dayStart
-            );
+            allEvents.push({
+                ...e,
+                start: startText,
+                end: endText
+            });
 
-        })
-        .sort((a, b) => {
+        }
 
-            return (
-                new Date(a.start) -
-                new Date(b.start)
-            );
+    });
 
-        });
+});
+
+allEvents.sort((a, b) => {
+    return new Date(a.start) - new Date(b.start);
+});
 
     /* =====================
        表示区間を計算
