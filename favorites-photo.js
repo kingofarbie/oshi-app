@@ -1481,11 +1481,15 @@ directTargets.forEach(
         [];
 
 
-    /* =====================================================
-       再表示
-    ===================================================== */
+        /* =====================
+   再表示
+===================== */
 
-    favoritePhotoRender();
+favoritePhotoRender();
+
+// ホームのお気に入り写真と枚数を更新
+favoritePhotoUpdateHomeCount();
+displayFavoritePhotoCard();
 
 }
 
