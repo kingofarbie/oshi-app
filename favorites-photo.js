@@ -1046,39 +1046,38 @@ function favoritePhotoSelected(
 
 function favoritePhotoDeleteMode(){
 
-    favoritePhotoDeleteSelecting =
-        true;
+    const photos = favoritePhotoGetOrdered();
 
-    favoritePhotoShareSelecting =
-        false;
+    if (!photos || photos.length === 0) {
+        alert("お気に入り写真はありません");
+        return;
+    }
 
-    favoritePhotoSortSelecting =
-        false;
-
+    favoritePhotoDeleteSelecting = true;
+    favoritePhotoShareSelecting = false;
+    favoritePhotoSortSelecting = false;
     selectedFavoritePhotoIds = [];
 
     favoritePhotoRender();
-
 }
 
 
 function favoritePhotoShareMode(){
 
-    favoritePhotoDeleteSelecting =
-        false;
+    const photos = favoritePhotoGetOrdered();
 
-    favoritePhotoShareSelecting =
-        true;
+    if (!photos || photos.length === 0) {
+        alert("お気に入り写真はありません");
+        return;
+    }
 
-    favoritePhotoSortSelecting =
-        false;
-
+    favoritePhotoDeleteSelecting = false;
+    favoritePhotoShareSelecting = true;
+    favoritePhotoSortSelecting = false;
     selectedFavoritePhotoIds = [];
 
     favoritePhotoRender();
-
 }
-
 
 /* =========================================================
    ⭐ 写真選択切り替え
