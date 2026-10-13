@@ -1323,126 +1323,82 @@ async function saveOshiPhotos(
    ⭐ アルバム表示
 ========================================================= */
 
-function renderOshiPhotoAlbum(
-    oshiId
-){
-        return;
 
-    const profileCard =
-        document.querySelector(
-            "#oshiDetailPage .oshi-profile-card"
-        );
+/* =========================================
+   📸 推しページ・ギャラリープレビュー
+   既存の写真データとビューアを利用
+========================================= */
+async function renderOshiPhotoAlbum(oshiId) {
+    const gallery = document.getElementById("oshiHomeGalleryPreview");
 
+    // 新しいページ構造がない場合は何もしない
+    if (!gallery) return;
 
-    if(!profileCard){
-        return;
-    }
+    gallery.innerHTML = "";
 
+    try {
+        const photos = await getOshiPhotos(oshiId);
 
-    let album =
-        document.getElementById(
-            "oshiPhotoAlbum"
-        );
-
-
-    /*
-       初回のみ作成
-    */
-
-    if(!album){
-
-        album =
-            document.createElement(
-                "div"
-            );
-
-        album.id =
-            "oshiPhotoAlbum";
-
-        album.className =
-            "oshi-photo-album";
-
-
-        profileCard.insertAdjacentElement(
-            "afterend",
-            album
-        );
-
-    }
-
-
-    const photos =
-        getOshiPhotos(
-            oshiId
-        );
-
-
-    /*
-       写真なし
-    */
-
-    if(photos.length === 0){
-
-        album.innerHTML =
-            "";
-
-        album.style.display =
-            "none";
-
-        return;
-
-    }
-
-
-    album.style.display =
-        "block";
-
-
-    let html = `
-
-<div class="oshi-photo-album-header">
-
-    <h3>
-        📸 写真
-    </h3>
-
-    <button
-        type="button"
-        class="oshi-photo-add-button"
-        onclick="openOshiPhotoAddModal()"
-    >
-        ＋ 写真を追加
-    </button>
-
-</div>
-
-<div class="oshi-photo-grid">
-
-`;
-
-
-    photos.forEach(
-        photo => {
-
-            html +=
-                createOshiPhotoThumbnailHtml(
-                    photo
-                );
-
+        if (!Array.isArray(photos) || photos.length === 0) {
+            gallery.innerHTML = `
+                <div class="oshi-home-gallery-empty">
+                    <span>♡</span>
+                    <p>あなたの好きな写真を集めよう</p>
+                    <small>写真はここから追加できます</small>
+                </div>
+            `;
+            return;
         }
-    );
 
+        const previewPhotos = photos.slice(0, 6);
+        const grid = document.createElement("div");
+        grid.className = "oshi-home-gallery-grid";
 
-    html += `
+        previewPhotos.forEach((photo) => {
+            if (!photo || !photo.src || !photo.photoId) return;
 
-</div>
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "oshi-home-gallery-photo";
+            button.setAttribute("aria-label", "写真を拡大表示");
 
-`;
+            const image = document.createElement("img");
+            image.src = photo.src;
+            image.alt = "推しの写真";
+            image.loading = "lazy";
 
+            button.appendChild(image);
 
-    album.innerHTML =
-        html;
+            button.addEventListener("click", () => {
+                openOshiPhotoViewer(photo.photoId);
+            });
 
+            grid.appendChild(button);
+        });
+
+        gallery.appendChild(grid);
+
+        const viewAll = document.createElement("button");
+        viewAll.type = "button";
+        viewAll.className = "oshi-home-gallery-view-all";
+        viewAll.textContent = "アルバムをすべて見る ›";
+        viewAll.addEventListener("click", () => {
+            openOshiPhotoAlbum();
+        });
+
+        gallery.appendChild(viewAll);
+
+    } catch (error) {
+        console.error("推しギャラリーの表示に失敗しました:", error);
+
+        gallery.innerHTML = `
+            <div class="oshi-home-gallery-empty">
+                <span>📷</span>
+                <p>写真を読み込めませんでした</p>
+                <small>もう一度ページを開いて確認してください</small>
+            </div>
+        `;
+    }
 }
 
 
