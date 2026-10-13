@@ -2325,3 +2325,1074 @@ outline:none !important;
         border-radius: 10px;
     }
 }
+
+
+
+
+
+
+
+
+/* =====================================================
+   💜 推しのページ — パステル・ファンタジーデザイン
+   天音レンのイメージ / スマートフォン対応
+===================================================== */
+
+#oshiDetailPage.oshi-home-page {
+    --oshi-lavender: #a995dc;
+    --oshi-purple: #8067b5;
+    --oshi-pink: #f1c5df;
+    --oshi-blue: #cce8fa;
+    --oshi-ink: #66567f;
+    --oshi-muted: #998ba9;
+    --oshi-border: #eee4f8;
+
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 760px;
+    min-height: 100%;
+    margin: 0 auto;
+    padding: 0 15px 30px;
+    overflow-wrap: anywhere;
+    color: var(--oshi-ink);
+    background:
+        radial-gradient(ellipse at 5% 8%, rgba(237, 214, 250, .35), transparent 32%),
+        radial-gradient(ellipse at 95% 25%, rgba(202, 231, 250, .35), transparent 30%),
+        #fffaff;
+    font-family:
+        -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN",
+        "Yu Gothic", Meiryo, sans-serif;
+}
+
+#oshiDetailPage.oshi-home-page *,
+#oshiDetailPage.oshi-home-page *::before,
+#oshiDetailPage.oshi-home-page *::after {
+    box-sizing: border-box;
+}
+
+#oshiDetailPage.oshi-home-page button,
+#oshiDetailPage.oshi-home-page a {
+    -webkit-tap-highlight-color: transparent;
+}
+
+#oshiDetailPage.oshi-home-page button {
+    font: inherit;
+}
+
+/* -------------------------
+   ヘッダー
+------------------------- */
+
+#oshiDetailPage .oshi-home-header {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 72px;
+    padding: 10px 0;
+}
+
+#oshiDetailPage .oshi-home-back,
+#oshiDetailPage .oshi-home-icon-button {
+    display: flex;
+    flex: 0 0 42px;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    border: 1px solid rgba(221, 206, 242, .8);
+    border-radius: 15px;
+    background: rgba(255, 255, 255, .86);
+    color: var(--oshi-purple);
+    font-size: 25px;
+    cursor: pointer;
+}
+
+#oshiDetailPage .oshi-home-header-title {
+    flex: 1;
+    min-width: 0;
+    text-align: center;
+}
+
+#oshiDetailPage .oshi-home-eyebrow {
+    display: block;
+    margin-bottom: 3px;
+    color: #b19bcd;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+#oshiDetailPage .oshi-home-header .oshi-detail-title {
+    margin: 0;
+    color: #79649e;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: .04em;
+}
+
+#oshiDetailPage .oshi-home-header-actions {
+    display: flex;
+    gap: 6px;
+}
+
+#oshiDetailPage .oshi-home-header-actions .oshi-home-icon-button {
+    flex-basis: 36px;
+    width: 36px;
+    height: 36px;
+    border-radius: 13px;
+    font-size: 21px;
+}
+
+/* -------------------------
+   メインビジュアル
+------------------------- */
+
+#oshiDetailPage .oshi-home-hero {
+    position: relative;
+    isolation: isolate;
+    padding: 25px 15px 20px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, .95);
+    border-radius: 27px;
+    background:
+        radial-gradient(circle at 15% 20%, rgba(255,255,255,.8), transparent 23%),
+        radial-gradient(circle at 90% 70%, rgba(255,255,255,.65), transparent 25%),
+        linear-gradient(145deg, #eee1ff 0%, #e2edff 47%, #ffe5f1 100%);
+    box-shadow: 0 8px 25px rgba(156, 129, 190, .13);
+}
+
+#oshiDetailPage .oshi-home-hero-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 18px;
+    color: #8c77b4;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-align: center;
+}
+
+#oshiDetailPage .oshi-home-hero-label span {
+    color: #d79ecb;
+    font-size: 15px;
+}
+
+#oshiDetailPage .oshi-home-main-photo-wrap {
+    position: relative;
+    width: min(100%, 320px);
+    margin: 0 auto;
+}
+
+#oshiDetailPage .oshi-main-photo-placeholder,
+#oshiDetailPage .oshi-home-main-photo-button {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    padding: 0;
+    overflow: hidden;
+    border: 5px solid rgba(255, 255, 255, .9);
+    border-radius: 25px;
+    background: linear-gradient(145deg, #dcd2f4, #d8eafa, #f8dced);
+    box-shadow: 0 9px 25px rgba(113, 89, 157, .2);
+}
+
+#oshiDetailPage .oshi-main-photo-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 9px;
+    color: #79649e;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+#oshiDetailPage .oshi-main-photo-placeholder .oshi-home-photo-placeholder-icon {
+    font-size: 45px;
+}
+
+#oshiDetailPage .oshi-main-photo-placeholder small {
+    color: #9381ad;
+    font-size: 11px;
+}
+
+#oshiDetailPage .oshi-home-main-photo-button {
+    position: relative;
+    cursor: pointer;
+}
+
+#oshiDetailPage .oshi-home-main-photo {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#oshiDetailPage .oshi-home-main-photo-badge {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    max-width: calc(100% - 20px);
+    padding: 7px 12px;
+    border: 1px solid rgba(255,255,255,.9);
+    border-radius: 30px;
+    background: rgba(255, 255, 255, .86);
+    color: #896eb1;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .6px;
+}
+
+#oshiDetailPage .oshi-home-hero-decoration,
+#oshiDetailPage .oshi-home-photo-sparkle {
+    position: absolute;
+    z-index: -1;
+    color: rgba(255, 255, 255, .9);
+    pointer-events: none;
+}
+
+#oshiDetailPage .oshi-home-decoration-one {
+    top: 24%;
+    left: 7%;
+    font-size: 28px;
+}
+
+#oshiDetailPage .oshi-home-decoration-two {
+    right: 8%;
+    bottom: 27%;
+    color: #fff;
+    font-size: 35px;
+}
+
+#oshiDetailPage .oshi-home-decoration-three {
+    top: 47%;
+    right: 8%;
+    font-size: 22px;
+}
+
+#oshiDetailPage .oshi-home-photo-sparkle {
+    z-index: 1;
+    color: #fff;
+    text-shadow: 0 1px 8px rgba(154, 120, 199, .25);
+}
+
+#oshiDetailPage .sparkle-one {
+    top: 12%;
+    left: -9px;
+    font-size: 27px;
+}
+
+#oshiDetailPage .sparkle-two {
+    right: -10px;
+    bottom: 24%;
+    font-size: 25px;
+}
+
+#oshiDetailPage .sparkle-three {
+    right: 8px;
+    top: 6%;
+    font-size: 21px;
+}
+
+#oshiDetailPage .oshi-home-hero-caption {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    margin-top: 20px;
+    color: #8d7bad;
+    font-size: 11px;
+    text-align: center;
+}
+
+#oshiDetailPage .oshi-home-caption-line {
+    width: 22px;
+    height: 1px;
+    background: rgba(157, 132, 191, .4);
+}
+
+/* -------------------------
+   共通セクション
+------------------------- */
+
+#oshiDetailPage .oshi-profile-card,
+#oshiDetailPage .oshi-home-content-section {
+    margin-top: 20px;
+    padding: 19px 16px;
+    border: 1px solid rgba(232, 220, 246, .9);
+    border-radius: 23px;
+    background: rgba(255, 255, 255, .88);
+    box-shadow: 0 5px 18px rgba(156, 129, 190, .07);
+}
+
+#oshiDetailPage .oshi-home-section-heading {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    min-width: 0;
+    margin-bottom: 17px;
+}
+
+#oshiDetailPage .oshi-home-section-icon {
+    display: flex;
+    flex: 0 0 41px;
+    align-items: center;
+    justify-content: center;
+    width: 41px;
+    height: 41px;
+    border: 1px solid #f0e4fb;
+    border-radius: 15px;
+    background: linear-gradient(145deg, #f7eaff, #e9f4ff);
+    font-size: 19px;
+}
+
+#oshiDetailPage .oshi-home-section-heading > div {
+    flex: 1;
+    min-width: 0;
+}
+
+#oshiDetailPage .oshi-home-section-en {
+    margin: 0 0 3px;
+    color: #b29acb;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1.7px;
+}
+
+#oshiDetailPage .oshi-home-section-heading h2 {
+    margin: 0;
+    color: #786392;
+    font-size: 16px;
+    font-weight: 800;
+    line-height: 1.5;
+}
+
+#oshiDetailPage .oshi-home-heading-decoration {
+    color: #d4a9d8;
+    font-size: 22px;
+}
+
+#oshiDetailPage .oshi-home-section-description {
+    margin: -5px 0 15px;
+    color: var(--oshi-muted);
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+/* -------------------------
+   メッセージカード
+------------------------- */
+
+#oshiDetailPage .oshi-home-message-card {
+    position: relative;
+    margin-bottom: 16px;
+    padding: 19px 18px 17px;
+    border: 1px solid #f1e3f7;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #fff5fc, #f5f6ff 60%, #eff9ff);
+}
+
+#oshiDetailPage .oshi-home-message-mark {
+    display: block;
+    height: 20px;
+    color: #d5b2e4;
+    font-family: Georgia, serif;
+    font-size: 37px;
+    line-height: 1;
+}
+
+#oshiDetailPage .oshi-home-message-card p {
+    margin: 6px 0;
+    color: #837194;
+    font-size: 13px;
+    line-height: 2;
+    white-space: pre-line;
+}
+
+#oshiDetailPage .oshi-home-message-heart {
+    display: block;
+    color: #dfaed4;
+    font-size: 17px;
+    text-align: right;
+}
+
+/* -------------------------
+   プロフィール情報
+------------------------- */
+
+#oshiDetailPage .oshi-home-profile-details {
+    display: flex;
+    flex-direction: column;
+}
+
+#oshiDetailPage .oshi-home-profile-row {
+    display: grid;
+    grid-template-columns: minmax(95px, .75fr) minmax(0, 1.5fr);
+    gap: 10px;
+    padding: 12px 2px;
+    border-bottom: 1px dashed #eee5f5;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+#oshiDetailPage .oshi-home-profile-row:last-child {
+    border-bottom: 0;
+}
+
+#oshiDetailPage .oshi-home-profile-label {
+    color: #a493b6;
+}
+
+#oshiDetailPage .oshi-home-profile-value {
+    color: #726086;
+    font-weight: 700;
+    text-align: right;
+    overflow-wrap: anywhere;
+}
+
+#oshiDetailPage .oshi-home-profile-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    margin-top: 12px;
+    padding: 12px;
+    border-radius: 14px;
+    background: #faf5ff;
+    color: #9b8aaf;
+}
+
+#oshiDetailPage .oshi-home-profile-note > span {
+    color: #d7a7d5;
+}
+
+#oshiDetailPage .oshi-home-profile-note p {
+    margin: 0;
+    font-size: 11px;
+    line-height: 1.8;
+}
+
+/* -------------------------
+   ページ内ナビゲーション
+------------------------- */
+
+#oshiDetailPage .oshi-home-section-nav {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 7px;
+    margin-top: 17px;
+    padding: 10px;
+    border: 1px solid #eee4f7;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, .92);
+    box-shadow: 0 4px 15px rgba(156, 129, 190, .06);
+}
+
+#oshiDetailPage .oshi-home-nav-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+    min-height: 65px;
+    padding: 8px 2px;
+    border-radius: 14px;
+    color: #86729f;
+    font-size: 11px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+#oshiDetailPage .oshi-home-nav-item:nth-child(1) {
+    background: #f5efff;
+}
+
+#oshiDetailPage .oshi-home-nav-item:nth-child(2) {
+    background: #fff0f8;
+}
+
+#oshiDetailPage .oshi-home-nav-item:nth-child(3) {
+    background: #eef7ff;
+}
+
+#oshiDetailPage .oshi-home-nav-item:nth-child(4) {
+    background: #f5f3ff;
+}
+
+#oshiDetailPage .oshi-home-nav-icon {
+    font-size: 20px;
+}
+
+/* -------------------------
+   スケジュールカード
+------------------------- */
+
+#oshiDetailPage .oshi-home-feature-card {
+    padding: 17px;
+    border: 1px solid #e7ddfa;
+    border-radius: 19px;
+    background: linear-gradient(135deg, #f4edff, #eef7ff);
+}
+
+#oshiDetailPage .oshi-home-feature-card-top {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 13px;
+}
+
+#oshiDetailPage .oshi-home-feature-icon {
+    font-size: 23px;
+}
+
+#oshiDetailPage .oshi-home-feature-label {
+    color: #a28dc4;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
+
+#oshiDetailPage .oshi-home-feature-card h3 {
+    margin: 0 0 8px;
+    color: #796493;
+    font-size: 15px;
+    line-height: 1.7;
+}
+
+#oshiDetailPage .oshi-home-feature-card p {
+    margin: 0 0 15px;
+    color: #9383a8;
+    font-size: 12px;
+    line-height: 1.9;
+}
+
+#oshiDetailPage .oshi-home-outline-button,
+#oshiDetailPage .oshi-home-primary-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 15px;
+    border-radius: 14px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+#oshiDetailPage .oshi-home-outline-button {
+    border: 1px solid #ddcef2;
+    background: rgba(255,255,255,.86);
+    color: #826bad;
+}
+
+#oshiDetailPage .oshi-home-primary-button {
+    border: 1px solid transparent;
+    background: linear-gradient(100deg, #c5a9ed, #b5cafa, #e9bce0);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(167, 140, 207, .16);
+}
+
+#oshiDetailPage .oshi-home-outline-button span {
+    font-size: 18px;
+}
+
+#oshiDetailPage .oshi-home-mini-note {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 13px;
+    color: #a396b5;
+    font-size: 11px;
+    line-height: 1.8;
+}
+
+/* -------------------------
+   ギャラリー
+------------------------- */
+
+#oshiDetailPage .oshi-home-gallery-section {
+    background:
+        radial-gradient(ellipse at 100% 0%, rgba(228, 239, 255, .4), transparent 35%),
+        rgba(255, 255, 255, .92);
+}
+
+#oshiDetailPage .oshi-home-gallery-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 9px;
+    margin-top: 13px;
+}
+
+/* 前回追加したギャラリーCSSを活かしつつ、ページの色に合わせる */
+#oshiDetailPage .oshi-home-gallery-empty {
+    border-color: #e4d5f3;
+    background: linear-gradient(135deg, #fcf5ff, #f0f7ff);
+}
+
+#oshiDetailPage .oshi-home-gallery-photo {
+    border-color: #fff;
+    box-shadow: 0 3px 12px rgba(139, 115, 174, .13);
+}
+
+/* -------------------------
+   記録カード
+------------------------- */
+
+#oshiDetailPage .oshi-home-record-card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    margin-top: 10px;
+    padding: 14px;
+    border: 1px solid #eee2f7;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #fff7fc, #f5f5ff);
+}
+
+#oshiDetailPage .oshi-home-record-card-secondary {
+    background: linear-gradient(135deg, #f2f8ff, #f9f4ff);
+}
+
+#oshiDetailPage .oshi-home-record-icon {
+    display: flex;
+    flex: 0 0 43px;
+    align-items: center;
+    justify-content: center;
+    width: 43px;
+    height: 43px;
+    border-radius: 15px;
+    background: rgba(255,255,255,.8);
+    font-size: 21px;
+}
+
+#oshiDetailPage .oshi-home-record-text {
+    flex: 1;
+    min-width: 0;
+}
+
+#oshiDetailPage .oshi-home-record-text h3 {
+    margin: 0 0 5px;
+    color: #7d6995;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+#oshiDetailPage .oshi-home-record-text p {
+    margin: 0;
+    color: #9b8eaa;
+    font-size: 11px;
+    line-height: 1.8;
+}
+
+#oshiDetailPage .oshi-home-record-button {
+    display: flex;
+    flex: 0 0 30px;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border: 1px solid #e7d9f2;
+    border-radius: 11px;
+    background: #fff;
+    color: #9a81bc;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+#oshiDetailPage .oshi-home-record-heart {
+    color: #d6a8d5;
+    font-size: 21px;
+}
+
+/* -------------------------
+   リンク
+------------------------- */
+
+#oshiDetailPage .oshi-home-links-card {
+    padding: 15px;
+    border: 1px solid #eae0f5;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #f9f4ff, #f1f8ff);
+}
+
+#oshiDetailPage .oshi-home-links-card > p {
+    margin: 0 0 12px;
+    color: #9282a7;
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+#oshiDetailPage .oshi-home-links-empty {
+    display: block;
+    padding: 13px;
+    border-radius: 13px;
+    background: rgba(255,255,255,.7);
+    color: #a092b2;
+    font-size: 11px;
+    line-height: 1.8;
+}
+
+/* -------------------------
+   フッター
+------------------------- */
+
+#oshiDetailPage .oshi-home-footer {
+    padding: 27px 8px 12px;
+    color: #a395b8;
+    text-align: center;
+}
+
+#oshiDetailPage .oshi-home-footer-stars {
+    margin-bottom: 9px;
+    color: #c5a7df;
+    font-size: 16px;
+    letter-spacing: 3px;
+}
+
+#oshiDetailPage .oshi-home-footer p {
+    margin: 0 0 7px;
+    font-family: Georgia, serif;
+    font-size: 11px;
+    letter-spacing: .3px;
+}
+
+#oshiDetailPage .oshi-home-footer > span {
+    font-size: 10px;
+}
+
+/* -------------------------
+   写真追加モーダル
+------------------------- */
+
+#oshiDetailPage #oshiPhotoAddModal {
+    position: fixed;
+    z-index: 10000;
+    inset: 0;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+}
+
+#oshiDetailPage #oshiPhotoAddModal[style*="display: flex"] {
+    display: flex !important;
+}
+
+#oshiDetailPage .oshi-photo-add-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(62, 47, 84, .45);
+    backdrop-filter: blur(5px);
+}
+
+#oshiDetailPage .oshi-photo-add-modal-content {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 390px);
+    padding: 24px 18px 20px;
+    border: 1px solid #fff;
+    border-radius: 25px;
+    background: linear-gradient(145deg, #fffaff, #f4f3ff);
+    box-shadow: 0 15px 50px rgba(61, 42, 85, .2);
+}
+
+#oshiDetailPage .oshi-photo-add-modal-close {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+    border: 1px solid #eee2f6;
+    border-radius: 12px;
+    background: #fff;
+    color: #8d78a9;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+#oshiDetailPage .oshi-photo-add-modal-heading {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+#oshiDetailPage .oshi-photo-add-modal-heading > span {
+    color: #d5a9d8;
+    font-size: 28px;
+}
+
+#oshiDetailPage .oshi-photo-add-modal-heading h2 {
+    margin: 8px 0 5px;
+    color: #786392;
+    font-size: 19px;
+}
+
+#oshiDetailPage .oshi-photo-add-modal-heading p {
+    margin: 0;
+    color: #a294b2;
+    font-size: 11px;
+}
+
+#oshiDetailPage .oshi-photo-add-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    min-height: 68px;
+    margin-top: 10px;
+    padding: 12px;
+    border: 1px solid #eadff6;
+    border-radius: 17px;
+    background: #fff;
+    color: #85709f;
+    text-align: left;
+    cursor: pointer;
+}
+
+#oshiDetailPage .oshi-photo-add-option > span:first-child {
+    font-size: 25px;
+}
+
+#oshiDetailPage .oshi-photo-add-option > span:nth-child(2) {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+}
+
+#oshiDetailPage .oshi-photo-add-option strong {
+    font-size: 13px;
+}
+
+#oshiDetailPage .oshi-photo-add-option small {
+    color: #a496b3;
+    font-size: 10px;
+}
+
+#oshiDetailPage .oshi-photo-add-option-arrow {
+    font-size: 22px;
+}
+
+/* -------------------------
+   写真アルバム・写真ビューア
+   既存機能を壊さないための基本レイアウト
+------------------------- */
+
+#oshiDetailPage #oshiPhotoAlbumViewer,
+#oshiDetailPage #oshiPhotoViewer {
+    position: fixed;
+    z-index: 10001;
+    inset: 0;
+    overflow: auto;
+    background: #fcf9ff;
+}
+
+#oshiDetailPage #oshiPhotoAlbumViewer {
+    padding: 16px;
+}
+
+#oshiDetailPage #oshiPhotoViewer {
+    display: flex;
+    flex-direction: column;
+    background: #17131f;
+    color: #fff;
+}
+
+#oshiDetailPage .oshi-photo-album-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 55px;
+}
+
+#oshiDetailPage .oshi-photo-album-header > button,
+#oshiDetailPage #oshiPhotoViewerCloseButton {
+    flex: 0 0 40px;
+    width: 40px;
+    height: 40px;
+    border: 1px solid #eadff6;
+    border-radius: 13px;
+    background: #fff;
+    color: #826ba2;
+    font-size: 23px;
+    cursor: pointer;
+}
+
+#oshiDetailPage .oshi-photo-album-header-title {
+    flex: 1;
+    min-width: 0;
+}
+
+#oshiDetailPage .oshi-photo-album-header-title h2 {
+    margin: 0 0 3px;
+    color: #7d6799;
+    font-size: 16px;
+}
+
+#oshiDetailPage .oshi-photo-album-header-title span {
+    color: #a294b2;
+    font-size: 10px;
+}
+
+#oshiDetailPage #oshiPhotoAlbumSelectedCount {
+    color: #8d77ad;
+    font-size: 12px;
+}
+
+#oshiDetailPage .oshi-photo-album-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 15px 0;
+}
+
+#oshiDetailPage .oshi-photo-album-toolbar button {
+    flex: 1;
+    min-width: 75px;
+    min-height: 40px;
+    padding: 8px;
+    border: 1px solid #e7dcf3;
+    border-radius: 13px;
+    background: #fff;
+    color: #826c9f;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+#oshiDetailPage #oshiPhotoAlbumViewerGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+}
+
+#oshiDetailPage #oshiPhotoAlbumViewerGrid img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+#oshiDetailPage .oshi-photo-viewer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px;
+}
+
+#oshiDetailPage #oshiPhotoViewerTopButton {
+    min-height: 40px;
+    padding: 8px 13px;
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 13px;
+    background: rgba(255,255,255,.1);
+    color: #fff;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+#oshiDetailPage .oshi-photo-viewer-stage {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    min-height: 0;
+    padding: 10px;
+    overflow: hidden;
+}
+
+#oshiDetailPage #oshiPhotoViewerImage {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+#oshiDetailPage .oshi-photo-viewer-toolbar {
+    display: flex;
+    justify-content: center;
+    gap: 13px;
+    padding: 14px 12px max(18px, env(safe-area-inset-bottom));
+}
+
+#oshiDetailPage .oshi-photo-viewer-toolbar button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+    border: 1px solid rgba(255,255,255,.18);
+    border-radius: 16px;
+    background: rgba(255,255,255,.1);
+    color: #fff;
+    font-size: 19px;
+    cursor: pointer;
+}
+
+/* -------------------------
+   スマートフォン
+------------------------- */
+
+@media (max-width: 420px) {
+    #oshiDetailPage.oshi-home-page {
+        padding-right: 11px;
+        padding-left: 11px;
+    }
+
+    #oshiDetailPage .oshi-home-hero {
+        padding: 22px 12px 18px;
+        border-radius: 23px;
+    }
+
+    #oshiDetailPage .oshi-home-main-photo-wrap {
+        width: min(100%, 285px);
+    }
+
+    #oshiDetailPage .oshi-profile-card,
+    #oshiDetailPage .oshi-home-content-section {
+        padding: 16px 13px;
+        border-radius: 20px;
+    }
+
+    #oshiDetailPage .oshi-home-profile-row {
+        grid-template-columns: minmax(86px, .8fr) minmax(0, 1.4fr);
+        font-size: 11px;
+    }
+
+    #oshiDetailPage .oshi-home-section-nav {
+        gap: 4px;
+        padding: 7px;
+    }
+
+    #oshiDetailPage .oshi-home-nav-item {
+        font-size: 10px;
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    #oshiDetailPage .oshi-home-nav-item,
+    #oshiDetailPage .oshi-home-outline-button,
+    #oshiDetailPage .oshi-home-primary-button,
+    #oshiDetailPage .oshi-home-gallery-photo {
+        transition: transform .16s ease, box-shadow .16s ease;
+    }
+
+    #oshiDetailPage .oshi-home-nav-item:active,
+    #oshiDetailPage .oshi-home-outline-button:active,
+    #oshiDetailPage .oshi-home-primary-button:active,
+    #oshiDetailPage .oshi-home-gallery-photo:active {
+        transform: scale(.98);
+    }
+}
