@@ -638,30 +638,34 @@ async function favoritePhotoRender(){
            → IndexedDBから取得
         */
 
-        if(
-            favorite.source ===
-            "favorite"
-        ){
+if(
+    favorite.source === "favorite"
+){
 
-            photo =
-                await favoritePhotoGetOshiData(
-                    favorite
-                );
+    // ＋ボタンで直接追加した写真は保存済みの画像を使う
+    if(favorite.src){
 
-        }else{
+        photo = favorite;
 
-            /*
-               1日手帳写真
-               → 今まで通り
-            */
+    }else{
 
-            photo =
-                favoritePhotoGetData(
-                    favorite
-                );
+        // 推し詳細から登録した写真は従来どおり取得
+        photo =
+            await favoritePhotoGetOshiData(
+                favorite
+            );
 
-        }
+    }
 
+}else{
+
+    // 1日手帳由来の写真は従来どおり
+    photo =
+        favoritePhotoGetData(
+            favorite
+        );
+
+}
 
         if(
             favorite.source ===
