@@ -1463,6 +1463,25 @@ directTargets.forEach(
     db.save(data);
 
 
+console.log(
+    "削除後の直接お気に入り件数:",
+    data.favorites?.photos?.length ?? 0
+);
+
+console.log(
+    "削除後の1日手帳お気に入り件数:",
+    Object.values(data.dayMemories || {})
+        .reduce(
+            (total, day) =>
+                total +
+                (Array.isArray(day?.photos)
+                    ? day.photos.filter(photo => photo?.favorite === true).length
+                    : 0),
+            0
+        )
+);
+
+
     console.log(
         "削除処理完了:",
         selectedFavoritePhotoIds
