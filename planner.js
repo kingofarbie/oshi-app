@@ -1087,6 +1087,14 @@ requestAnimationFrame(plannerUpdateStickyOffsets);
 }
 
 
+const calendarBack =
+    document.getElementById("plannerCalendarBack");
+
+if (calendarBack) {
+    calendarBack.style.display =
+        fromCalendar ? "block" : "none";
+}
+
 /* =========================================
 📅 1日手帳：上部の高さに合わせて位置を調整
 ========================================= */
