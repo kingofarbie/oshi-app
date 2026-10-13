@@ -930,3 +930,33 @@ function openFavoritePhotoPage(){
     favoritePhotoRender();
 
 }
+
+/* =================================
+   ⭐ お気に入り写真を閉じてホームへ戻る
+================================= */
+
+function closeFavoritePhotos() {
+
+    const pages =
+        document.querySelectorAll(".page");
+
+    pages.forEach(page => {
+        page.classList.remove("active");
+    });
+
+    document
+        .getElementById("home")
+        .classList.add("active");
+
+    // ホームのタブ表示も合わせる
+    document.querySelectorAll(".tab").forEach(tab => {
+        tab.classList.remove("active");
+    });
+
+    const homeTab =
+        document.querySelector('.tab[onclick*="switchTab(\'home\'"]');
+
+    if (homeTab) {
+        homeTab.classList.add("active");
+    }
+}
