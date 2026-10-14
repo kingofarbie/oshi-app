@@ -1732,6 +1732,22 @@
     cursor: pointer;
 }
 
+
+#oshiDetailPage #oshiPhotoViewerCloseButton {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 40px;
+    width: 40px;
+    height: 40px;
+    margin-left: auto;
+    position: relative;
+    z-index: 10;
+    color: #fff;
+    background: #383044;
+    font-size: 24px;
+}
+
 #oshiDetailPage #oshiPhotoViewerTopButton.active {
     border-color: rgba(255, 180, 220, .7);
     background: rgba(224, 130, 185, .25);
