@@ -1657,20 +1657,27 @@
     right: 5px;
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 6px;
-    min-height: 24px;
-    padding: 4px 7px;
-    border-radius: 8px;
-    background: rgba(16, 12, 27, .72);
+    gap: 5px;
     font-size: 16px;
     line-height: 1;
     pointer-events: none;
 }
 
-#oshiDetailPage .oshi-photo-album-viewer-status span:last-child {
+#oshiDetailPage .oshi-photo-album-viewer-status span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 26px;
+    min-height: 26px;
+    padding: 4px;
+    border-radius: 8px;
+    background: rgba(16, 12, 27, .72);
+}
+
+#oshiDetailPage .oshi-photo-album-viewer-status .top-icon {
     color: #ff4d6d;
 }
+
 
 #oshiDetailPage #oshiPhotoAlbumViewer.selection-mode .oshi-photo-album-viewer-item {
     border-color: rgba(231, 208, 255, .55);
