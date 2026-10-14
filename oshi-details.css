@@ -1654,18 +1654,22 @@
 #oshiDetailPage .oshi-photo-album-viewer-status {
     position: absolute;
     top: 5px;
-    right: 7px;
+    right: 5px;
     display: flex;
     align-items: center;
-    gap: 5px;
-    color: #fff;
+    justify-content: center;
+    gap: 6px;
+    min-height: 24px;
+    padding: 4px 7px;
+    border-radius: 8px;
+    background: rgba(16, 12, 27, .72);
     font-size: 16px;
     line-height: 1;
     pointer-events: none;
-    background: none;
-    border-radius: 0;
-    padding: 0;
-    min-height: 0;
+}
+
+#oshiDetailPage .oshi-photo-album-viewer-status span:last-child {
+    color: #ff4d6d;
 }
 
 #oshiDetailPage #oshiPhotoAlbumViewer.selection-mode .oshi-photo-album-viewer-item {
