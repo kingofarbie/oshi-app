@@ -1386,15 +1386,6 @@ async function renderOshiPhotoAlbum(oshiId) {
 
         gallery.appendChild(grid);
 
-        const viewAll = document.createElement("button");
-        viewAll.type = "button";
-        viewAll.className = "oshi-home-gallery-view-all";
-        viewAll.textContent = "アルバムをすべて見る ›";
-        viewAll.addEventListener("click", () => {
-            openOshiPhotoAlbum();
-        });
-
-        gallery.appendChild(viewAll);
 
     } catch (error) {
         console.error("推しギャラリーの表示に失敗しました:", error);
