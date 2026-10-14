@@ -1653,20 +1653,19 @@
 
 #oshiDetailPage .oshi-photo-album-viewer-status {
     position: absolute;
-    right: 5px;
-    bottom: 5px;
-    left: 5px;
+    top: 5px;
+    right: 7px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 4px;
-    min-height: 24px;
-    padding: 3px 5px;
-    border-radius: 8px;
-    background: rgba(16, 12, 27, .58);
+    gap: 5px;
     color: #fff;
-    font-size: 13px;
+    font-size: 16px;
+    line-height: 1;
     pointer-events: none;
+    background: none;
+    border-radius: 0;
+    padding: 0;
+    min-height: 0;
 }
 
 #oshiDetailPage #oshiPhotoAlbumViewer.selection-mode .oshi-photo-album-viewer-item {

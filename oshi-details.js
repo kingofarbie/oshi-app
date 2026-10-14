@@ -2163,18 +2163,10 @@ async function openOshiPhotoAlbum(){
                     alt="推しの写真"
                     draggable="false">
 
-                <div
-                    class="oshi-photo-album-viewer-status">
-
-                    <span>
-                        ${photo.favorite ? "⭐" : ""}
-                    </span>
-
-                    <span>
-                        ${photo.isTop ? "❤️" : ""}
-                    </span>
-
-                </div>
+<div class="oshi-photo-album-viewer-status">
+    <span>${photo.favorite ? "⭐" : ""}</span>
+    <span>${photo.isTop ? "♥" : ""}</span>
+</div>
 
             `;
 
