@@ -2077,7 +2077,6 @@ starsLayer.appendChild(
 ========================================================= */
 
 
-
 async function openOshiPhotoAlbum(){
 
     const oshiContainer =
@@ -2089,6 +2088,9 @@ async function openOshiPhotoAlbum(){
         oshiContainer?.dataset.oshiId;
 
     if(!oshiId){
+        console.error(
+            "推しアルバム：oshiIdを取得できません"
+        );
         return;
     }
 
@@ -2104,35 +2106,70 @@ async function openOshiPhotoAlbum(){
         );
 
     if(!viewer || !grid){
+        console.error(
+            "推しアルバム：表示要素が見つかりません"
+        );
         return;
     }
 
 
-    /* 🌌 星空を毎回ランダム生成 */
+    /* 🌌 星空を生成 */
 
     createOshiPhotoAlbumStars(
         viewer
     );
 
 
-    const photos =
-        (
+    /* =====================
+       📸 写真の取得・件数確認
+    ===================== */
+
+    let photos = [];
+
+    try{
+
+        photos =
             await getOshiPhotos(
                 oshiId
-            )
-        ).slice().sort(
+            );
+
+        console.log(
+            "推しアルバム取得結果:",
+            {
+                oshiId,
+                photoCount: photos.length,
+                photos
+            }
+        );
+
+        photos.sort(
             (a,b) =>
                 (a.order ?? 0) -
                 (b.order ?? 0)
         );
 
+    }catch(error){
 
-    grid.innerHTML = "";
+        console.error(
+            "推しアルバムの写真取得に失敗:",
+            error
+        );
+
+        alert(
+            "写真の取得に失敗しました。コンソールを確認してください。"
+        );
+
+        return;
+
+    }
 
 
     /* =====================
-       📸 写真一覧を生成
+       📸 写真一覧を表示
     ===================== */
+
+    grid.innerHTML = "";
+
 
     photos.forEach(
         photo => {
@@ -2142,8 +2179,7 @@ async function openOshiPhotoAlbum(){
                     "button"
                 );
 
-            button.type =
-                "button";
+            button.type = "button";
 
             button.className =
                 "oshi-photo-album-viewer-item";
@@ -2155,9 +2191,7 @@ async function openOshiPhotoAlbum(){
             if(
                 oshiPhotoAlbumSelectedIds
                     .includes(
-                        String(
-                            photo.photoId
-                        )
+                        String(photo.photoId)
                     )
             ){
 
@@ -2193,9 +2227,7 @@ async function openOshiPhotoAlbum(){
                         );
 
 
-                    /* =====================
-                       ↕ 並べ替えモード
-                    ===================== */
+                    /* 並べ替え中は写真を開かない */
 
                     if(
                         oshiPhotoAlbumSortMode
@@ -2204,9 +2236,7 @@ async function openOshiPhotoAlbum(){
                     }
 
 
-                    /* =====================
-                       選択モード
-                    ===================== */
+                    /* 選択モード */
 
                     if(
                         oshiPhotoAlbumSelectionMode
@@ -2227,8 +2257,7 @@ async function openOshiPhotoAlbum(){
                                     1
                                 );
 
-                        }
-                        else{
+                        }else{
 
                             oshiPhotoAlbumSelectedIds
                                 .push(
@@ -2247,9 +2276,7 @@ async function openOshiPhotoAlbum(){
                     }
 
 
-                    /* =====================
-                       通常モード
-                    ===================== */
+                    /* 通常モード */
 
                     closeOshiPhotoAlbum();
 
@@ -2270,7 +2297,7 @@ async function openOshiPhotoAlbum(){
 
 
     /* =====================
-       ↕ 並べ替えイベント設定
+       ↕ 並べ替えイベント
     ===================== */
 
     if(
@@ -2295,18 +2322,15 @@ async function openOshiPhotoAlbum(){
 
         addButton.onclick = null;
 
-        addButton.onclick =
-            function(){
+        addButton.onclick = function(){
 
-                if(
-                    oshiPhotoAlbumSortMode
-                ){
-                    return;
-                }
+            if(oshiPhotoAlbumSortMode){
+                return;
+            }
 
-                openOshiPhotoAddModal();
+            openOshiPhotoAddModal();
 
-            };
+        };
 
     }
 
@@ -2324,41 +2348,33 @@ async function openOshiPhotoAlbum(){
 
         deleteButton.onclick = null;
 
-        deleteButton.onclick =
-            function(){
+        deleteButton.onclick = function(){
 
-                if(
-                    oshiPhotoAlbumSortMode
-                ){
-                    return;
-                }
+            if(oshiPhotoAlbumSortMode){
+                return;
+            }
 
-                if(
-                    !oshiPhotoAlbumSelectionMode
-                ){
+            if(!oshiPhotoAlbumSelectionMode){
 
-                    enterOshiPhotoAlbumSelectionMode(
-                        "delete"
-                    );
+                enterOshiPhotoAlbumSelectionMode(
+                    "delete"
+                );
 
-                }
-                else if(
-                    oshiPhotoAlbumSelectionType ===
-                        "delete"
-                ){
+            }else if(
+                oshiPhotoAlbumSelectionType === "delete"
+            ){
 
-                    deleteSelectedOshiPhotos();
+                deleteSelectedOshiPhotos();
 
-                }
-                else{
+            }else{
 
-                    enterOshiPhotoAlbumSelectionMode(
-                        "delete"
-                    );
+                enterOshiPhotoAlbumSelectionMode(
+                    "delete"
+                );
 
-                }
+            }
 
-            };
+        };
 
     }
 
@@ -2376,41 +2392,33 @@ async function openOshiPhotoAlbum(){
 
         shareButton.onclick = null;
 
-        shareButton.onclick =
-            function(){
+        shareButton.onclick = function(){
 
-                if(
-                    oshiPhotoAlbumSortMode
-                ){
-                    return;
-                }
+            if(oshiPhotoAlbumSortMode){
+                return;
+            }
 
-                if(
-                    !oshiPhotoAlbumSelectionMode
-                ){
+            if(!oshiPhotoAlbumSelectionMode){
 
-                    enterOshiPhotoAlbumSelectionMode(
-                        "share"
-                    );
+                enterOshiPhotoAlbumSelectionMode(
+                    "share"
+                );
 
-                }
-                else if(
-                    oshiPhotoAlbumSelectionType ===
-                        "share"
-                ){
+            }else if(
+                oshiPhotoAlbumSelectionType === "share"
+            ){
 
-                    shareSelectedOshiPhotos();
+                shareSelectedOshiPhotos();
 
-                }
-                else{
+            }else{
 
-                    enterOshiPhotoAlbumSelectionMode(
-                        "share"
-                    );
+                enterOshiPhotoAlbumSelectionMode(
+                    "share"
+                );
 
-                }
+            }
 
-            };
+        };
 
     }
 
@@ -2433,43 +2441,27 @@ async function openOshiPhotoAlbum(){
                 ? "完了"
                 : "↕ 並べ替え";
 
-        sortButton.onclick =
-            function(){
+        sortButton.onclick = function(){
 
-                if(
-                    oshiPhotoAlbumSelectionMode
-                ){
-                    return;
-                }
+            if(oshiPhotoAlbumSelectionMode){
+                return;
+            }
 
+            if(oshiPhotoAlbumSortMode){
 
-                /* =====================
-                   並べ替え終了・保存
-                ===================== */
+                finishOshiPhotoAlbumSort();
 
-                if(
-                    oshiPhotoAlbumSortMode
-                ){
+                return;
 
-                    finishOshiPhotoAlbumSort();
+            }
 
-                    return;
+            oshiPhotoAlbumSortMode = true;
 
-                }
+            sortButton.textContent = "完了";
 
+            installOshiPhotoAlbumSortEvents();
 
-                /* =====================
-                   並べ替え開始
-                ===================== */
-
-                oshiPhotoAlbumSortMode = true;
-
-                sortButton.textContent =
-                    "完了";
-
-                installOshiPhotoAlbumSortEvents();
-
-            };
+        };
 
     }
 
@@ -2487,29 +2479,23 @@ async function openOshiPhotoAlbum(){
 
         closeButton.onclick = null;
 
-        closeButton.onclick =
-            function(){
+        closeButton.onclick = function(){
 
-                if(
-                    oshiPhotoAlbumSortMode
-                ){
-                    return;
-                }
+            if(oshiPhotoAlbumSortMode){
+                return;
+            }
 
-                if(
-                    oshiPhotoAlbumSelectionMode
-                ){
+            if(oshiPhotoAlbumSelectionMode){
 
-                    exitOshiPhotoAlbumSelectionMode();
+                exitOshiPhotoAlbumSelectionMode();
 
-                }
-                else{
+            }else{
 
-                    closeOshiPhotoAlbum();
+                closeOshiPhotoAlbum();
 
-                }
+            }
 
-            };
+        };
 
     }
 
@@ -2517,11 +2503,9 @@ async function openOshiPhotoAlbum(){
     updateOshiPhotoAlbumSelection();
 
 
-    viewer.style.display =
-        "flex";
+    viewer.style.display = "flex";
 
 }
-
 
 
 
