@@ -2538,135 +2538,224 @@ if(img){
    📸 推し写真アルバム：並べ替えドラッグ処理
 ========================================================= */
 
-function installOshiPhotoAlbumSortEvents(){
 
-    const grid =
-        document.getElementById(
-            "oshiPhotoAlbumViewerGrid"
-        );
+function installOshiPhotoAlbumSortEvents() {
+    const grid = document.getElementById("oshiPhotoAlbumViewerGrid");
+    if (!grid) return;
 
-    if(!grid){
+    // イベントの二重登録を防止
+    if (document.body.dataset.oshiPhotoAlbumSortInstalled === "true") {
         return;
     }
 
-    const items =
-        grid.querySelectorAll(
-            ".oshi-photo-album-viewer-item"
+    document.body.dataset.oshiPhotoAlbumSortInstalled = "true";
+
+    // ドラッグ状態
+    let draggingId = null;
+    let draggingElement = null;
+    let isDragging = false;
+    let touchMoved = false;
+    let startX = 0;
+    let startY = 0;
+    let longPressTimer = null;
+
+    function clearLongPressTimer() {
+        if (longPressTimer !== null) {
+            clearTimeout(longPressTimer);
+            longPressTimer = null;
+        }
+    }
+
+    function resetDragging() {
+        clearLongPressTimer();
+
+        if (draggingElement) {
+            draggingElement.classList.remove("oshi-photo-album-dragging");
+        }
+
+        draggingId = null;
+        draggingElement = null;
+        isDragging = false;
+        touchMoved = false;
+    }
+
+    // 長押し開始
+    document.addEventListener("touchstart", function (e) {
+        if (!oshiPhotoAlbumSortMode) return;
+
+        const item = e.target.closest(".oshi-photo-album-viewer-item");
+        if (!item || item.parentElement !== grid) return;
+
+        if (e.touches.length !== 1) {
+            resetDragging();
+            return;
+        }
+
+        clearLongPressTimer();
+
+        draggingId = String(item.dataset.oshiPhotoId || "");
+        draggingElement = item;
+        isDragging = false;
+        touchMoved = false;
+
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+
+        // お気に入り写真と同じく、短い長押しでドラッグ開始
+        longPressTimer = setTimeout(function () {
+            if (touchMoved || !draggingElement || !oshiPhotoAlbumSortMode) {
+                return;
+            }
+
+            isDragging = true;
+            draggingElement.classList.add("oshi-photo-album-dragging");
+
+            if (navigator.vibrate) {
+                navigator.vibrate(30);
+            }
+        }, 70);
+    }, { passive: true });
+
+    // 指の移動・写真の並べ替え
+    document.addEventListener("touchmove", function (e) {
+        if (!oshiPhotoAlbumSortMode || !draggingElement) return;
+
+        if (!isDragging) {
+            if (e.touches.length !== 1) {
+                touchMoved = true;
+                clearLongPressTimer();
+                draggingId = null;
+                draggingElement = null;
+                return;
+            }
+
+            const touch = e.touches[0];
+            const dx = Math.abs(touch.clientX - startX);
+            const dy = Math.abs(touch.clientY - startY);
+
+            // 長押し成立前に指が10px以上動いたら、ドラッグしない
+            if (dx > 10 || dy > 10) {
+                touchMoved = true;
+                clearLongPressTimer();
+                draggingId = null;
+                draggingElement = null;
+            }
+
+            return;
+        }
+
+        // ドラッグ中はページのスクロールを止める
+        e.preventDefault();
+
+        const touch = e.touches[0];
+        const dragging = draggingElement;
+
+        const items = Array.from(
+            grid.querySelectorAll(".oshi-photo-album-viewer-item")
         );
 
-    items.forEach(item => {
+        const draggingIndex = items.indexOf(dragging);
+        if (draggingIndex < 0) return;
 
-        item.style.touchAction =
-            oshiPhotoAlbumSortMode
-                ? "none"
-                : "";
+        // 指の位置にある移動先の写真を探す
+        let target = null;
 
-        item.onpointerdown = function(e){
+        for (const item of items) {
+            if (item === dragging) continue;
 
-            if(!oshiPhotoAlbumSortMode){
-                return;
+            const rect = item.getBoundingClientRect();
+
+            if (
+                touch.clientX >= rect.left &&
+                touch.clientX <= rect.right &&
+                touch.clientY >= rect.top &&
+                touch.clientY <= rect.bottom
+            ) {
+                target = item;
+                break;
             }
+        }
 
-            if(
-                e.pointerType === "mouse" &&
-                e.button !== 0
-            ){
-                return;
-            }
+        if (!target) return;
 
-            e.preventDefault();
+        const targetRect = target.getBoundingClientRect();
+        const targetIndex = items.indexOf(target);
 
-            item.classList.add(
-                "sorting-dragging"
-            );
+        const centerX = targetRect.left + targetRect.width / 2;
+        const centerY = targetRect.top + targetRect.height / 2;
 
-            try{
-                item.setPointerCapture(
-                    e.pointerId
-                );
-            }catch(_){}
+        // お気に入り写真と同じ考え方で、移動先の位置を入れ替える
+        if (
+            touch.clientX > centerX &&
+            draggingIndex < targetIndex
+        ) {
+            grid.insertBefore(dragging, target.nextSibling);
+            return;
+        }
 
-        };
+        if (
+            touch.clientX < centerX &&
+            draggingIndex > targetIndex
+        ) {
+            grid.insertBefore(dragging, target);
+            return;
+        }
 
+        if (
+            touch.clientY > centerY &&
+            draggingIndex < targetIndex
+        ) {
+            grid.insertBefore(dragging, target.nextSibling);
+            return;
+        }
 
-        item.onpointermove = function(e){
+        if (
+            touch.clientY < centerY &&
+            draggingIndex > targetIndex
+        ) {
+            grid.insertBefore(dragging, target);
+        }
+    }, { passive: false });
 
-            if(!oshiPhotoAlbumSortMode){
-                return;
-            }
+    // 指を離したらドラッグ終了
+    document.addEventListener("touchend", function () {
+        clearLongPressTimer();
 
-            if(
-                !item.classList.contains(
-                    "sorting-dragging"
-                )
-            ){
-                return;
-            }
+        if (draggingElement) {
+            draggingElement.classList.remove("oshi-photo-album-dragging");
+        }
 
-            const target =
-                document
-                    .elementFromPoint(
-                        e.clientX,
-                        e.clientY
-                    )
-                    ?.closest(
-                        ".oshi-photo-album-viewer-item"
-                    );
+        draggingId = null;
+        draggingElement = null;
+        isDragging = false;
+        touchMoved = false;
+    }, { passive: true });
 
-            if(
-                !target ||
-                target === item ||
-                target.parentElement !== grid
-            ){
-                return;
-            }
-
-            const rect =
-                target.getBoundingClientRect();
-
-            const centerX =
-                rect.left + rect.width / 2;
-
-            const centerY =
-                rect.top + rect.height / 2;
-
-            const after =
-                Math.abs(
-                    e.clientY - centerY
-                ) <= rect.height / 2
-                    ? e.clientX > centerX
-                    : e.clientY > centerY;
-
-            if(after){
-                target.after(item);
-            }else{
-                target.before(item);
-            }
-
-        };
-
-
-        item.onpointerup = function(){
-
-            item.classList.remove(
-                "sorting-dragging"
-            );
-
-        };
-
-
-        item.onpointercancel = function(){
-
-            item.classList.remove(
-                "sorting-dragging"
-            );
-
-        };
-
+    // タッチが中断された場合も状態をリセット
+    document.addEventListener("touchcancel", resetDragging, {
+        passive: true
     });
 
-}
+    // 並べ替え中のブラウザ標準メニューを抑止
+    grid.addEventListener("contextmenu", function (e) {
+        if (
+            oshiPhotoAlbumSortMode &&
+            e.target.closest(".oshi-photo-album-viewer-item")
+        ) {
+            e.preventDefault();
+        }
+    });
 
+    // 写真や文字の長押し選択を抑止
+    grid.addEventListener("selectstart", function (e) {
+        if (
+            oshiPhotoAlbumSortMode &&
+            e.target.closest(".oshi-photo-album-viewer-item")
+        ) {
+            e.preventDefault();
+        }
+    });
+}
 
 /* =========================================================
    📸 推し写真アルバム：並べ替えを保存
