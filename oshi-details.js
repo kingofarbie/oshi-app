@@ -66,6 +66,9 @@ let oshiPhotoAlbumSelectionMode = false;
 let oshiPhotoAlbumSelectedIds = [];
 let oshiPhotoAlbumSelectionType = "";
 
+
+let oshiPhotoAlbumSortMode = false;
+
 /* =========================================================
    ⭐ 現在の推しID取得
 ========================================================= */
@@ -2073,6 +2076,8 @@ starsLayer.appendChild(
    ⭐ 推しアルバムを開く
 ========================================================= */
 
+
+
 async function openOshiPhotoAlbum(){
 
     const oshiContainer =
@@ -2125,6 +2130,10 @@ async function openOshiPhotoAlbum(){
     grid.innerHTML = "";
 
 
+    /* =====================
+       📸 写真一覧を生成
+    ===================== */
+
     photos.forEach(
         photo => {
 
@@ -2138,6 +2147,9 @@ async function openOshiPhotoAlbum(){
 
             button.className =
                 "oshi-photo-album-viewer-item";
+
+            button.dataset.oshiPhotoId =
+                String(photo.photoId);
 
 
             if(
@@ -2163,10 +2175,10 @@ async function openOshiPhotoAlbum(){
                     alt="推しの写真"
                     draggable="false">
 
-<div class="oshi-photo-album-viewer-status">
-    ${photo.favorite ? '<span class="favorite-icon">⭐</span>' : ''}
-    ${photo.isTop ? '<span class="top-icon">♥</span>' : ''}
-</div>
+                <div class="oshi-photo-album-viewer-status">
+                    ${photo.favorite ? '<span class="favorite-icon">⭐</span>' : ''}
+                    ${photo.isTop ? '<span class="top-icon">♥</span>' : ''}
+                </div>
 
             `;
 
@@ -2179,6 +2191,17 @@ async function openOshiPhotoAlbum(){
                         String(
                             photo.photoId
                         );
+
+
+                    /* =====================
+                       ↕ 並べ替えモード
+                    ===================== */
+
+                    if(
+                        oshiPhotoAlbumSortMode
+                    ){
+                        return;
+                    }
 
 
                     /* =====================
@@ -2246,6 +2269,23 @@ async function openOshiPhotoAlbum(){
     );
 
 
+    /* =====================
+       ↕ 並べ替えイベント設定
+    ===================== */
+
+    if(
+        oshiPhotoAlbumSortMode
+    ){
+
+        installOshiPhotoAlbumSortEvents();
+
+    }
+
+
+    /* =====================
+       ＋ 追加
+    ===================== */
+
     const addButton =
         document.getElementById(
             "oshiPhotoAlbumAddButton"
@@ -2258,12 +2298,22 @@ async function openOshiPhotoAlbum(){
         addButton.onclick =
             function(){
 
+                if(
+                    oshiPhotoAlbumSortMode
+                ){
+                    return;
+                }
+
                 openOshiPhotoAddModal();
 
             };
 
     }
 
+
+    /* =====================
+       🗑️ 削除
+    ===================== */
 
     const deleteButton =
         document.getElementById(
@@ -2276,6 +2326,12 @@ async function openOshiPhotoAlbum(){
 
         deleteButton.onclick =
             function(){
+
+                if(
+                    oshiPhotoAlbumSortMode
+                ){
+                    return;
+                }
 
                 if(
                     !oshiPhotoAlbumSelectionMode
@@ -2307,6 +2363,10 @@ async function openOshiPhotoAlbum(){
     }
 
 
+    /* =====================
+       ↗ 共有
+    ===================== */
+
     const shareButton =
         document.getElementById(
             "oshiPhotoAlbumShareButton"
@@ -2318,6 +2378,12 @@ async function openOshiPhotoAlbum(){
 
         shareButton.onclick =
             function(){
+
+                if(
+                    oshiPhotoAlbumSortMode
+                ){
+                    return;
+                }
 
                 if(
                     !oshiPhotoAlbumSelectionMode
@@ -2349,6 +2415,69 @@ async function openOshiPhotoAlbum(){
     }
 
 
+    /* =====================
+       ↕ 並べ替え／完了
+    ===================== */
+
+    const sortButton =
+        document.getElementById(
+            "oshiPhotoAlbumSortButton"
+        );
+
+    if(sortButton){
+
+        sortButton.onclick = null;
+
+        sortButton.textContent =
+            oshiPhotoAlbumSortMode
+                ? "完了"
+                : "↕ 並べ替え";
+
+        sortButton.onclick =
+            function(){
+
+                if(
+                    oshiPhotoAlbumSelectionMode
+                ){
+                    return;
+                }
+
+
+                /* =====================
+                   並べ替え終了・保存
+                ===================== */
+
+                if(
+                    oshiPhotoAlbumSortMode
+                ){
+
+                    finishOshiPhotoAlbumSort();
+
+                    return;
+
+                }
+
+
+                /* =====================
+                   並べ替え開始
+                ===================== */
+
+                oshiPhotoAlbumSortMode = true;
+
+                sortButton.textContent =
+                    "完了";
+
+                installOshiPhotoAlbumSortEvents();
+
+            };
+
+    }
+
+
+    /* =====================
+       ‹ 閉じる
+    ===================== */
+
     const closeButton =
         document.getElementById(
             "oshiPhotoAlbumCloseButton"
@@ -2360,6 +2489,12 @@ async function openOshiPhotoAlbum(){
 
         closeButton.onclick =
             function(){
+
+                if(
+                    oshiPhotoAlbumSortMode
+                ){
+                    return;
+                }
 
                 if(
                     oshiPhotoAlbumSelectionMode
@@ -2386,6 +2521,241 @@ async function openOshiPhotoAlbum(){
         "flex";
 
 }
+
+
+
+
+
+/* =========================================================
+   📸 推し写真アルバム：並べ替えドラッグ処理
+========================================================= */
+
+function installOshiPhotoAlbumSortEvents(){
+
+    const grid =
+        document.getElementById(
+            "oshiPhotoAlbumViewerGrid"
+        );
+
+    if(!grid){
+        return;
+    }
+
+    const items =
+        grid.querySelectorAll(
+            ".oshi-photo-album-viewer-item"
+        );
+
+    items.forEach(item => {
+
+        item.style.touchAction =
+            oshiPhotoAlbumSortMode
+                ? "none"
+                : "";
+
+        item.onpointerdown = function(e){
+
+            if(!oshiPhotoAlbumSortMode){
+                return;
+            }
+
+            if(
+                e.pointerType === "mouse" &&
+                e.button !== 0
+            ){
+                return;
+            }
+
+            e.preventDefault();
+
+            item.classList.add(
+                "sorting-dragging"
+            );
+
+            try{
+                item.setPointerCapture(
+                    e.pointerId
+                );
+            }catch(_){}
+
+        };
+
+
+        item.onpointermove = function(e){
+
+            if(!oshiPhotoAlbumSortMode){
+                return;
+            }
+
+            if(
+                !item.classList.contains(
+                    "sorting-dragging"
+                )
+            ){
+                return;
+            }
+
+            const target =
+                document
+                    .elementFromPoint(
+                        e.clientX,
+                        e.clientY
+                    )
+                    ?.closest(
+                        ".oshi-photo-album-viewer-item"
+                    );
+
+            if(
+                !target ||
+                target === item ||
+                target.parentElement !== grid
+            ){
+                return;
+            }
+
+            const rect =
+                target.getBoundingClientRect();
+
+            const centerX =
+                rect.left + rect.width / 2;
+
+            const centerY =
+                rect.top + rect.height / 2;
+
+            const after =
+                Math.abs(
+                    e.clientY - centerY
+                ) <= rect.height / 2
+                    ? e.clientX > centerX
+                    : e.clientY > centerY;
+
+            if(after){
+                target.after(item);
+            }else{
+                target.before(item);
+            }
+
+        };
+
+
+        item.onpointerup = function(){
+
+            item.classList.remove(
+                "sorting-dragging"
+            );
+
+        };
+
+
+        item.onpointercancel = function(){
+
+            item.classList.remove(
+                "sorting-dragging"
+            );
+
+        };
+
+    });
+
+}
+
+
+/* =========================================================
+   📸 推し写真アルバム：並べ替えを保存
+========================================================= */
+
+async function finishOshiPhotoAlbumSort(){
+
+    const grid =
+        document.getElementById(
+            "oshiPhotoAlbumViewerGrid"
+        );
+
+    const oshiContainer =
+        document.getElementById(
+            "oshiContainer"
+        );
+
+    const oshiId =
+        oshiContainer?.dataset.oshiId;
+
+    if(!grid || !oshiId){
+        return;
+    }
+
+
+    const photoIds = [
+        ...grid.querySelectorAll(
+            ".oshi-photo-album-viewer-item"
+        )
+    ]
+        .map(
+            item =>
+                item.dataset.oshiPhotoId
+        )
+        .filter(Boolean);
+
+
+    const data =
+        db.load();
+
+    const photos =
+        data.oshiDetails?.[oshiId]?.photos;
+
+
+    if(!Array.isArray(photos)){
+
+        alert(
+            "写真の並び順を保存できませんでした。"
+        );
+
+        return;
+
+    }
+
+
+    photoIds.forEach(
+        (photoId, index) => {
+
+            const photo =
+                photos.find(
+                    p =>
+                        String(p.photoId) ===
+                        String(photoId)
+                );
+
+            if(photo){
+                photo.order = index;
+            }
+
+        }
+    );
+
+
+    db.save(data);
+
+
+    oshiPhotoAlbumSortMode =
+        false;
+
+
+    const sortButton =
+        document.getElementById(
+            "oshiPhotoAlbumSortButton"
+        );
+
+    if(sortButton){
+
+        sortButton.textContent =
+            "↕ 並べ替え";
+
+    }
+
+
+    await openOshiPhotoAlbum();
+
+}
+
 
 
 function closeOshiPhotoAlbum(){
