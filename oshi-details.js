@@ -2848,8 +2848,17 @@ async function finishOshiPhotoAlbumSort(){
 
     }
 
+    
+    // 推し詳細ページの写真表示を更新
+    await renderOshiMainPhoto(oshiId);
+    await renderOshiPhotoAlbum(oshiId);
 
+    // アルバム内も保存済みの順番で更新
     await openOshiPhotoAlbum();
+
+
+
+
 
 }
 
