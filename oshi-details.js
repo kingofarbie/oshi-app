@@ -2292,6 +2292,30 @@ async function openOshiPhotoAlbum(){
                 button
             );
 
+
+            const img = button.querySelector("img");
+
+if(img){
+    img.addEventListener("error", function(){
+        console.error(
+            "推しアルバム画像の表示失敗:",
+            {
+                photoId: photo.photoId,
+                src: img.src
+            }
+        );
+    });
+
+    img.addEventListener("load", function(){
+        console.log(
+            "推しアルバム画像の表示成功:",
+            photo.photoId
+        );
+    });
+}
+
+
+
         }
     );
 
