@@ -1,3 +1,4 @@
+
 /* =========================================
    LINEアプリ内ブラウザ対策
 ========================================= */
@@ -104,7 +105,7 @@ html.line-browser #lineBrowserNotice {
 .line-browser-notice-help {
     margin-top: 18px;
 
-    font-size: 13px;
+    font-size: 16px;
     line-height: 1.6;
 
     color: #777;
