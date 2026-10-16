@@ -484,7 +484,7 @@ const preview =
             style="
                 --event-preview-bg: color-mix(
                     in srgb,
-                    ${color} 25%,
+                    ${color} 12%,
                     var(--card)
                 );
                 border-left:2px solid ${color};
