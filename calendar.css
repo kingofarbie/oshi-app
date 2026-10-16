@@ -93,7 +93,7 @@ box-sizing:border-box;
 ========================= */
 
 .calendar-day{
-    height:85px;
+    height:90px;
 
     background:var(--card);
 
@@ -144,7 +144,7 @@ box-sizing:border-box;
     padding:1px 3px;
     margin-top:2px;
 
-    font-size:12px;
+    font-size:13px;
     font-weight:bold;
     line-height:1.1;
 
