@@ -132,15 +132,12 @@
    予定表示
 ========================= */
 
+
 .calendar-event-preview{
-    background:none !important;
-    background-color:transparent !important;
-
-    border:none !important;
-    border-radius:0 !important;
-    box-shadow:none !important;
-
+    background:var(--event-preview-bg, transparent) !important;
     color:var(--text);
+
+    border-radius:0;
 
     padding:1px 3px;
     margin-top:2px;

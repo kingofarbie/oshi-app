@@ -466,6 +466,7 @@ const dayEvents =
 
 
     
+
 const preview =
     dayEvents
     .slice(0,2)
@@ -481,6 +482,11 @@ const preview =
         <div
             class="calendar-event-preview"
             style="
+                --event-preview-bg: color-mix(
+                    in srgb,
+                    ${color} 25%,
+                    var(--card)
+                );
                 border-left:2px solid ${color};
             "
         >
