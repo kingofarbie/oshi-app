@@ -23,7 +23,7 @@
 
 
 .schedule-time{
-    font-size:12px;
+    font-size:16px;
     color:var(--text-sub);
 }
 
@@ -82,7 +82,7 @@
 /* 場所 */
 .countdown-place{
     margin-top:5px;
-    font-size:13px;
+    font-size:16px;
     opacity:0.8;
 }
 
