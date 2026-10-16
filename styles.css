@@ -1,3 +1,4 @@
+
 /* =========================
    推し活手帳 v1.8
    styles.css
@@ -90,7 +91,7 @@ body{
     z-index:2;
 
     pointer-events:none;
-    
+
     visibility:hidden;
 }
 
@@ -328,9 +329,10 @@ button:hover{
 }
 
 .oshi-link{
-    font-size:12px;
+    font-size:14px;
     color:var(--text-sub);
     margin-bottom:3px;
+    overflow-wrap:anywhere;
 }
 
 .oshi-actions{
@@ -377,15 +379,15 @@ button:hover{
 }
 
 .event-meta{
-    font-size:13px;
+    font-size:15px;
     color:var(--text-sub);
     margin-bottom:3px;
+    overflow-wrap:anywhere;
 }
 
 .event-actions{
     margin-top:8px;
 }
-
 
 
 /* =========================
@@ -447,7 +449,7 @@ button:hover{
 }
 
 #themeMenu button{
-    font-size:14px;
+    font-size:16px;
     padding:10px;
 }
 
@@ -492,7 +494,7 @@ button:hover{
     width:min(92vw,500px);
 
     max-height:85vh;
-    
+
     overflow:visible;
 
     background:var(--card);
@@ -637,6 +639,8 @@ button:hover{
     white-space:normal;
     word-break:break-word;
     overflow-wrap:anywhere;
+
+    font-size:16px;
 }
 
 .check-delete{
@@ -717,6 +721,8 @@ button:hover{
     word-break:break-word;
     overflow-wrap:anywhere;
     white-space:normal;
+
+    font-size:16px;
 }
 
 .detail-icon{
@@ -728,7 +734,6 @@ button:hover{
 
     flex-shrink:0;
 }
-
 
 
 /* =========================
@@ -755,7 +760,6 @@ button:hover{
         height:82px;
     }
 }
-
 
 
 /* =========================
@@ -785,9 +789,6 @@ button[style*="background"],
 }
 
 
-
-
-
 /* =====================
    予定追加・編集フォーム
 ===================== */
@@ -802,7 +803,7 @@ button[style*="background"],
 
 .event-form-row label{
     font-weight:bold;
-    font-size:14px;
+    font-size:16px;
 }
 
 .event-form-row input,
@@ -821,7 +822,3 @@ button[style*="background"],
 .event-modal-buttons button{
     flex:1;
 }
-
-
-
-
