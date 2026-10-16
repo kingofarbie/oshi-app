@@ -2,6 +2,9 @@
 /* =====================================================
    推し画面
    oshi.css
+   ・文字を読みやすく拡大
+   ・ボタンのタップ領域を拡大
+   ・付箋の2列表示と既存デザインを維持
 ===================================================== */
 
 
@@ -10,7 +13,7 @@
 ===================================================== */
 
 .oshi-page {
-    padding: 16px;
+    padding: 18px;
 }
 
 
@@ -20,22 +23,22 @@
 
 .oshi-filter-area {
     display: flex;
-    gap: 8px;
+    gap: 10px;
 
-    margin-bottom: 16px;
+    margin-bottom: 18px;
 
     overflow-x: auto;
 }
 
 .oshi-filter-area select {
-    min-width: 120px;
-    min-height: 44px;
+    min-width: 130px;
+    min-height: 48px;
 
-    padding: 10px;
+    padding: 10px 12px;
 
     border-radius: 10px;
 
-    font-size: 15px;
+    font-size: 17px;
 }
 
 
@@ -47,22 +50,21 @@
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
 
-    gap: 12px;
+    gap: 14px;
 }
 
 
 /* =====================================================
    📌 推し付箋カード
-   カレンダー風デザイン
 ===================================================== */
 
 .oshi-list-card {
     position: relative;
 
     min-width: 0;
-    min-height: 150px;
+    min-height: 180px;
 
-    padding: 18px 14px 14px;
+    padding: 20px 14px 14px;
 
     box-sizing: border-box;
 
@@ -76,10 +78,8 @@
 
     cursor: pointer;
 
-    /* 付箋らしい軽い影 */
     box-shadow: 2px 3px 7px rgba(0, 0, 0, 0.12);
 
-    /* 少し不規則な付箋感 */
     transform: rotate(-0.5deg);
 
     transition:
@@ -88,9 +88,7 @@
 }
 
 
-/* =====================================================
-   付箋ごとに少し角度を変える
-===================================================== */
+/* 付箋ごとに角度を変える */
 
 .oshi-list-card:nth-child(2n) {
     transform: rotate(0.6deg);
@@ -101,9 +99,7 @@
 }
 
 
-/* =====================================================
-   タップ時
-===================================================== */
+/* タップ時 */
 
 .oshi-list-card:active {
     transform: scale(0.97) rotate(0deg);
@@ -139,12 +135,12 @@
 ===================================================== */
 
 .oshi-list-name {
-    margin-bottom: 10px;
-    padding-right: 34px;
+    margin-bottom: 12px;
+    padding-right: 36px;
 
-    font-size: 19px;
+    font-size: 21px;
     font-weight: bold;
-    line-height: 1.5;
+    line-height: 1.45;
 
     color: #222;
 
@@ -160,12 +156,14 @@
     display: flex;
     flex-direction: column;
 
-    gap: 5px;
+    gap: 6px;
 
-    font-size: 14px;
-    line-height: 1.5;
+    font-size: 16px;
+    line-height: 1.55;
 
     color: #555;
+
+    overflow-wrap: anywhere;
 }
 
 
@@ -180,9 +178,9 @@
 
     flex-wrap: wrap;
 
-    gap: 12px;
+    gap: 8px;
 
-    margin-top: 14px;
+    margin-top: 16px;
     padding-top: 10px;
 
     border-top: 1px solid rgba(0, 0, 0, 0.08);
@@ -196,10 +194,10 @@
 .oshi-list-action {
     width: auto !important;
     min-width: 0 !important;
-    min-height: 36px;
+    min-height: 42px;
 
     margin: 0 !important;
-    padding: 5px 4px !important;
+    padding: 6px 4px !important;
 
     border: none !important;
 
@@ -212,7 +210,7 @@
 
     gap: 5px;
 
-    font-size: 14px;
+    font-size: 15px;
     font-weight: bold;
     line-height: 1.4;
 
@@ -237,7 +235,7 @@
     width: auto;
     height: auto;
 
-    font-size: 20px;
+    font-size: 22px;
     line-height: 1;
 }
 
@@ -251,9 +249,9 @@
     top: 5px;
     right: 5px;
 
-    width: 32px !important;
-    height: 32px;
-    min-width: 32px;
+    width: 36px !important;
+    height: 36px;
+    min-width: 36px;
 
     display: flex;
     align-items: center;
@@ -267,7 +265,7 @@
     background: transparent !important;
     color: #555 !important;
 
-    font-size: 23px;
+    font-size: 25px;
     line-height: 1;
 
     cursor: pointer;
@@ -282,14 +280,14 @@
 .oshi-empty {
     grid-column: 1 / -1;
 
-    padding: 40px 20px;
+    padding: 44px 20px;
 
     text-align: center;
 
     color: var(--text-sub);
 
-    font-size: 16px;
-    line-height: 1.7;
+    font-size: 17px;
+    line-height: 1.8;
 }
 
 
@@ -326,36 +324,32 @@
 
     width: 100%;
 
-    margin-top: 8px;
-    padding: 8px;
+    margin-top: 10px;
+    padding: 10px;
 
     box-sizing: border-box;
 }
 
 
-/* =====================================================
-   ローマ字候補の説明
-===================================================== */
+/* 候補の説明 */
 
 .oshi-reading-suggestion-label {
     display: block;
 
-    margin-bottom: 6px;
+    margin-bottom: 8px;
 
-    font-size: 15px;
-    line-height: 1.5;
+    font-size: 16px;
+    line-height: 1.6;
 }
 
 
-/* =====================================================
-   ローマ字候補ボタン
-===================================================== */
+/* 候補ボタン */
 
 .oshi-reading-suggestion-button {
     display: block;
 
     width: 100%;
-    min-height: 48px;
+    min-height: 52px;
 
     padding: 12px 14px;
 
@@ -367,7 +361,7 @@
     background: #f5f5f5;
     color: #333;
 
-    font-size: 17px;
+    font-size: 18px;
     line-height: 1.5;
 
     text-align: left;
@@ -383,82 +377,102 @@
 
 @media (max-width: 600px) {
 
-    /* 推し一覧は2列を維持 */
+    /* 2列表示を維持 */
+
+    .oshi-page {
+        padding: 14px;
+    }
 
     .oshi-list {
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 10px;
+        gap: 12px;
     }
 
     /* 付箋カード */
 
     .oshi-list-card {
-        min-height: 150px;
-        padding: 18px 10px 12px;
+        min-height: 180px;
+
+        padding: 20px 10px 12px;
     }
 
     /* 推しの名前 */
 
     .oshi-list-name {
+        margin-bottom: 12px;
         padding-right: 30px;
-        font-size: 18px;
+
+        font-size: 19px;
+        line-height: 1.5;
     }
 
     /* ジャンル・区分 */
 
     .oshi-list-info {
-        font-size: 13px;
+        gap: 6px;
+
+        font-size: 15px;
+        line-height: 1.55;
     }
 
-    /* アクション配置 */
+    /* 詳細・推し活記録 */
 
     .oshi-list-actions {
         gap: 6px;
-        margin-top: 12px;
-        padding-top: 8px;
+
+        margin-top: 14px;
+        padding-top: 10px;
     }
 
-    /* アクションボタン */
-
     .oshi-list-action {
-        min-height: 36px;
-        gap: 4px;
-        padding: 5px 2px !important;
+        min-height: 42px;
 
-        font-size: 13px;
+        gap: 4px;
+        padding: 6px 2px !important;
+
+        font-size: 14px;
     }
 
     /* アイコン */
 
     .oshi-list-action-icon {
-        font-size: 19px;
+        font-size: 21px;
     }
 
     /* 削除ボタン */
 
     .oshi-list-delete {
-        width: 32px !important;
-        height: 32px;
-        min-width: 32px;
+        width: 36px !important;
+        height: 36px;
+        min-width: 36px;
 
-        font-size: 22px;
+        font-size: 24px;
+    }
+
+    /* 絞り込み */
+
+    .oshi-filter-area select {
+        min-height: 48px;
+        font-size: 16px;
     }
 
     /* 空状態 */
 
     .oshi-empty {
-        padding: 32px 12px;
-        font-size: 15px;
+        padding: 36px 12px;
+
+        font-size: 16px;
     }
 
     /* ローマ字候補 */
 
     .oshi-reading-suggestion-label {
-        font-size: 14px;
+        font-size: 15px;
     }
 
     .oshi-reading-suggestion-button {
-        min-height: 48px;
-        font-size: 16px;
+        min-height: 50px;
+
+        font-size: 17px;
     }
 }
