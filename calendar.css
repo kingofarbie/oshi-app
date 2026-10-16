@@ -43,18 +43,15 @@
 
     background:var(--surface);
 
-    border:0;
+    border:1px solid var(--border);
+
     border-bottom:2px solid var(--border-strong);
 
-    border-radius:0;
+    border-radius:8px 8px 0 0;
 
     overflow:hidden;
 
     padding:9px 2px;
-
-    width:calc(100% + 4px);
-    margin-left:-2px;
-    box-sizing:border-box;
 }
 
 .calendar-week.sunday{
@@ -78,15 +75,12 @@
 
     gap:0;
 
-    border:0;
+    border-left:1px solid var(--border);
+    border-top:1px solid var(--border);
 
     overflow:hidden;
 
-    border-radius:0;
-
-    width:calc(100% + 4px);
-    margin-left:-2px;
-    box-sizing:border-box;
+    border-radius:0 0 8px 8px;
 }
 
 
@@ -117,16 +111,6 @@
     overflow:hidden;
 }
 
-/* 一番右の列は外側の縦線を表示しない */
-.calendar-day:nth-child(7n){
-    border-right:0;
-}
-
-/* 一番下の行は外側の横線を表示しない */
-.calendar-day:nth-last-child(-n+7){
-    border-bottom:0;
-}
-
 .calendar-day:hover{
     background:var(--surface);
 }
@@ -141,6 +125,7 @@
     margin-left:-2px;
     line-height:1;
 }
+
 
 /* =========================
    予定表示
@@ -207,6 +192,7 @@
 
     pointer-events:none;
 }
+
 
 /* =========================
    今日
@@ -333,29 +319,19 @@
 }
 
 
-
 /* =====================
    祝日表示
 ===================== */
 
 .holiday-name {
-
-    font-size: 11px;
-
-    color: #e53935;
-
-    font-weight: bold;
-
-    line-height: 1.2;
-
-    white-space: nowrap;
-
-    overflow: hidden;
-
-    text-overflow: ellipsis;
-
-    margin-top: 2px;
-
+    font-size:11px;
+    color:#e53935;
+    font-weight:bold;
+    line-height:1.2;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    margin-top:2px;
 }
 
 
@@ -371,25 +347,24 @@
 }
 
 
-
 .calendar-share-area {
-    display: flex;
-    gap: 8px;
-    width: 100%;
+    display:flex;
+    gap:8px;
+    width:100%;
 }
 
 .calendar-share-area button {
-    flex: 1;
-    min-width: 0;
+    flex:1;
+    min-width:0;
 
-    height: 36px;
+    height:36px;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 
-    font-size: 18px !important;
-    font-weight: 600;
+    font-size:18px !important;
+    font-weight:600;
 }
 
 
@@ -398,26 +373,27 @@
 ===================== */
 
 .calendar-title-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
 }
 
 .calendar-title-row h2 {
-    margin: 0;
-    font-size: 30px;
+    margin:0;
+    font-size:30px;
 }
+
 
 /* =====================
    📅 特別カレンダーアイコン
 ===================== */
 
 .calendar-special-buttons {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-shrink: 0;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-shrink:0;
 }
 
 
@@ -426,32 +402,31 @@
 .calendar-title-row .calendar-children-button,
 .calendar-title-row .calendar-health-button,
 .calendar-title-row .calendar-sports-button {
+    flex-shrink:0;
 
-    flex-shrink: 0;
+    width:46px;
+    height:46px;
 
-    width: 46px;
-    height: 46px;
+    padding:0;
 
-    padding: 0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    border:none;
+    border-radius:12px;
 
-    border: none;
-    border-radius: 12px;
+    font-size:25px;
+    line-height:1;
 
-    font-size: 25px;
-    line-height: 1;
+    cursor:pointer;
 
-    cursor: pointer;
-
-    background: var(--surface);
+    background:var(--surface);
 
     box-shadow:
         0 2px 5px rgba(0,0,0,.12);
 
-    box-sizing: border-box;
+    box-sizing:border-box;
 }
 
 .calendar-title-row .calendar-children-button{
@@ -460,87 +435,85 @@
 }
 
 
-
 .event-share-header {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    box-sizing: border-box;
+    display:flex;
+    align-items:center;
+    width:100%;
+    box-sizing:border-box;
 }
 
 .event-share-header h2 {
-    margin: 0;
-    flex: 1;
-    min-width: 0;
+    margin:0;
+    flex:1;
+    min-width:0;
 }
 
 
 .event-share-close-btn {
-    flex-shrink: 0;
+    flex-shrink:0;
 
-    width: 30px;
-    height: 30px;
+    width:30px;
+    height:30px;
 
-    margin: 0;
-    padding: 0;
+    margin:0;
+    padding:0;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 
-    border: none !important;
-    background: transparent !important;
-    box-shadow: none !important;
+    border:none !important;
+    background:transparent !important;
+    box-shadow:none !important;
 
-    color: var(--text) !important;
+    color:var(--text) !important;
 
-    font-size: 18px;
-    font-weight: 400;
-    line-height: 1;
+    font-size:18px;
+    font-weight:400;
+    line-height:1;
 
-    cursor: pointer;
+    cursor:pointer;
 }
-
 
 
 .event-share-event-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    width: 100%;
-    box-sizing: border-box;
-    cursor: pointer;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    width:100%;
+    box-sizing:border-box;
+    cursor:pointer;
 }
 
 .event-share-event-info {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex: 1;
-    min-width: 0;
-    overflow: hidden;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex:1;
+    min-width:0;
+    overflow:hidden;
 }
 
 .event-share-event-title {
-    flex: 0 1 auto;
-    min-width: 0;
+    flex:0 1 auto;
+    min-width:0;
 
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
 }
 
 .event-share-event-date {
-    flex: 0 1 auto;
-    min-width: 0;
+    flex:0 1 auto;
+    min-width:0;
 
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
 }
 
 .event-share-event-date.event-share-date-expanded {
-    white-space: normal;
-    overflow: visible;
-    text-overflow: clip;
+    white-space:normal;
+    overflow:visible;
+    text-overflow:clip;
 }
