@@ -2699,12 +2699,496 @@ function plannerShareChooseFamily(includeFamily) {
         return;
     }
 
-    // 画像生成処理は次の実装段階で接続する
-    alert(
-        includeFamily
-            ? "家族予定を含める設定を確認しました。画像生成処理は次の段階で接続します。"
-            : "個人の予定だけにする設定を確認しました。画像生成処理は次の段階で接続します。"
+plannerCreateScheduleImage(includeFamily);
+
+
+}
+
+
+
+/* =========================================
+   📤 1日手帳の予定画像を作成
+   ・元の画面は変更しない
+   ・家族レーンは選択時のみ画像に含める
+========================================= */
+
+async function plannerCreateScheduleImage(includeFamily) {
+    const layout = document.querySelector(
+        "#plannerTimeline .planner-layout"
     );
+
+    if (!layout) {
+        alert("1日手帳の予定が表示されていません。");
+        return;
+    }
+
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
+    if (!ctx) {
+        alert("画像を作成できませんでした。");
+        return;
+    }
+
+    const layoutRect = layout.getBoundingClientRect();
+
+    const elements = [
+        ...layout.querySelectorAll(
+            ".planner-times, .planner-board, " +
+            ".planner-line, .planner-time-fixed, " +
+            ".planner-event, .planner-family-lanes, " +
+            ".planner-family-lane, " +
+            ".planner-family-lane-header, " +
+            ".planner-family-event-item"
+        )
+    ];
+
+    // 家族レーンを除外する場合は描画対象から外す
+    const targets = elements.filter(element => {
+        if (
+            !includeFamily &&
+            element.closest(".planner-family-lanes")
+        ) {
+            return false;
+        }
+
+        return true;
+    });
+
+    let contentHeight = Math.max(
+        layout.scrollHeight,
+        layoutRect.height
+    );
+
+    targets.forEach(element => {
+        const rect = element.getBoundingClientRect();
+
+        contentHeight = Math.max(
+            contentHeight,
+            rect.bottom - layoutRect.top
+        );
+    });
+
+    const width = Math.ceil(
+        Math.max(layout.scrollWidth, layoutRect.width)
+    );
+
+    const height = Math.ceil(contentHeight);
+
+    // メモリ不足を避けるため、巨大画像は作らない
+    const maxPixels = 16000000;
+    const scale = Math.min(
+        2,
+        Math.sqrt(maxPixels / (width * height))
+    );
+
+    canvas.width = Math.ceil(width * scale);
+    canvas.height = Math.ceil(height * scale);
+
+    ctx.scale(scale, scale);
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, width, height);
+
+    function getRect(element) {
+        const rect = element.getBoundingClientRect();
+
+        return {
+            x: rect.left - layoutRect.left,
+            y: rect.top - layoutRect.top,
+            width: rect.width,
+            height: rect.height
+        };
+    }
+
+    function roundedRect(x, y, w, h, radius) {
+        const r = Math.min(radius, w / 2, h / 2);
+
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.arcTo(x + w, y, x + w, y + h, r);
+        ctx.arcTo(x + w, y + h, x, y + h, r);
+        ctx.arcTo(x, y + h, x, y, r);
+        ctx.arcTo(x, y, x + w, y, r);
+        ctx.closePath();
+    }
+
+    function drawText(text, x, y, maxWidth, lineHeight) {
+        const paragraphs = String(text || "").split("\n");
+        let currentY = y;
+
+        for (const paragraph of paragraphs) {
+            let line = "";
+
+            for (const character of paragraph) {
+                const testLine = line + character;
+
+                if (
+                    line &&
+                    ctx.measureText(testLine).width > maxWidth
+                ) {
+                    ctx.fillText(line, x, currentY);
+                    currentY += lineHeight;
+                    line = character;
+                } else {
+                    line = testLine;
+                }
+            }
+
+            if (line) {
+                ctx.fillText(line, x, currentY);
+                currentY += lineHeight;
+            }
+        }
+    }
+
+    try {
+        // 時間軸・予定ボード・家族レーンの背景
+        for (const element of targets) {
+            const rect = getRect(element);
+            const style = getComputedStyle(element);
+
+            if (
+                element.matches(
+                    ".planner-times, .planner-board, " +
+                    ".planner-family-lanes, .planner-family-lane"
+                )
+            ) {
+                ctx.fillStyle =
+                    style.backgroundColor &&
+                    style.backgroundColor !== "rgba(0, 0, 0, 0)"
+                        ? style.backgroundColor
+                        : "#ffffff";
+
+                ctx.fillRect(
+                    rect.x,
+                    rect.y,
+                    rect.width,
+                    rect.height
+                );
+            }
+        }
+
+        // 時間軸の罫線
+        for (const element of targets) {
+            if (!element.matches(".planner-line")) {
+                continue;
+            }
+
+            const rect = getRect(element);
+            const style = getComputedStyle(element);
+
+            ctx.beginPath();
+            ctx.strokeStyle =
+                style.borderTopColor || "#dddddd";
+            ctx.lineWidth = 1;
+            ctx.moveTo(rect.x, rect.y);
+            ctx.lineTo(rect.x + rect.width, rect.y);
+            ctx.stroke();
+        }
+
+        // 時刻ラベル
+        for (const element of targets) {
+            if (!element.matches(".planner-time-fixed")) {
+                continue;
+            }
+
+            const rect = getRect(element);
+            const style = getComputedStyle(element);
+
+            ctx.fillStyle = style.color || "#555555";
+            ctx.font =
+                style.fontWeight + " " +
+                (parseFloat(style.fontSize) || 12) +
+                "px sans-serif";
+
+            ctx.textBaseline = "top";
+            drawText(
+                element.innerText.trim(),
+                rect.x + 3,
+                rect.y + 4,
+                rect.width - 6,
+                15
+            );
+        }
+
+        // 家族レーンの見出し
+        for (const element of targets) {
+            if (
+                !element.matches(".planner-family-lane-header")
+            ) {
+                continue;
+            }
+
+            const rect = getRect(element);
+            const style = getComputedStyle(element);
+
+            ctx.fillStyle =
+                style.backgroundColor || "#f7eaf3";
+
+            ctx.fillRect(
+                rect.x,
+                rect.y,
+                rect.width,
+                rect.height
+            );
+
+            ctx.fillStyle = style.color || "#333333";
+            ctx.font = "bold 12px sans-serif";
+            ctx.textBaseline = "top";
+
+            drawText(
+                element.innerText.trim(),
+                rect.x + 3,
+                rect.y + 5,
+                rect.width - 6,
+                15
+            );
+        }
+
+        // 個人の予定と家族の予定
+        for (const element of targets) {
+            if (
+                !element.matches(
+                    ".planner-event, " +
+                    ".planner-family-event-item"
+                )
+            ) {
+                continue;
+            }
+
+            const rect = getRect(element);
+            const style = getComputedStyle(element);
+
+            ctx.save();
+
+            ctx.globalAlpha =
+                Number(style.opacity) || 1;
+
+            ctx.fillStyle =
+                style.backgroundColor &&
+                style.backgroundColor !== "rgba(0, 0, 0, 0)"
+                    ? style.backgroundColor
+                    : "#fce4ec";
+
+            roundedRect(
+                rect.x,
+                rect.y,
+                rect.width,
+                rect.height,
+                5
+            );
+
+            ctx.fill();
+
+            if (style.borderColor) {
+                ctx.strokeStyle = style.borderColor;
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
+
+            ctx.globalAlpha = 1;
+            ctx.fillStyle = style.color || "#333333";
+
+            const fontSize =
+                parseFloat(style.fontSize) || 12;
+
+            ctx.font =
+                style.fontWeight + " " +
+                fontSize + "px sans-serif";
+
+            ctx.textBaseline = "top";
+
+            // 操作用ボタンは画像に描かない
+            const text = [
+                ...element.childNodes
+            ].map(node => {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    return node.textContent;
+                }
+
+                if (node.nodeType === Node.ELEMENT_NODE) {
+                    const clone = node.cloneNode(true);
+
+                    clone.querySelectorAll("button").forEach(
+                        button => button.remove()
+                    );
+
+                    if (
+                        clone.matches &&
+                        clone.matches("button")
+                    ) {
+                        return "";
+                    }
+
+                    return clone.innerText || "";
+                }
+
+                return "";
+            }).join(" ").trim();
+
+            drawText(
+                text || element.innerText.trim(),
+                rect.x + 5,
+                rect.y + 4,
+                Math.max(10, rect.width - 10),
+                fontSize + 3
+            );
+
+            ctx.restore();
+        }
+
+        // 日付を画像上部に表示
+        ctx.save();
+
+        ctx.fillStyle = "#333333";
+        ctx.font = "bold 16px sans-serif";
+        ctx.textBaseline = "top";
+
+        const title = document.getElementById("plannerTitle");
+
+        if (title) {
+            drawText(
+                title.innerText.trim(),
+                8,
+                4,
+                width - 16,
+                20
+            );
+        }
+
+        ctx.restore();
+
+        const blob = await new Promise(resolve => {
+            canvas.toBlob(resolve, "image/png");
+        });
+
+        if (!blob) {
+            throw new Error("画像データを作成できませんでした。");
+        }
+
+        plannerShowScheduleImage(blob);
+
+    } catch (error) {
+        console.error("予定画像の作成エラー:", error);
+        alert(
+            "予定画像を作成できませんでした。\n" +
+            "ブラウザを更新して、もう一度お試しください。"
+        );
+    }
+}
+
+
+/* =========================================
+   🖼️ 画像プレビュー・保存・共有
+========================================= */
+
+function plannerShowScheduleImage(blob) {
+    const oldModal = document.getElementById(
+        "plannerScheduleImageModal"
+    );
+
+    if (oldModal) {
+        oldModal.remove();
+    }
+
+    const url = URL.createObjectURL(blob);
+
+    const modal = document.createElement("div");
+    modal.id = "plannerScheduleImageModal";
+    modal.className = "modal";
+
+    modal.style.display = "block";
+    modal.style.zIndex = "20000";
+
+    const content = document.createElement("div");
+    content.className = "modal-content";
+    content.style.maxHeight = "85vh";
+    content.style.overflowY = "auto";
+
+    const heading = document.createElement("h2");
+    heading.textContent = "📤 予定画像";
+
+    const preview = document.createElement("img");
+    preview.src = url;
+    preview.alt = "1日手帳の予定画像";
+    preview.style.display = "block";
+    preview.style.width = "100%";
+    preview.style.height = "auto";
+    preview.style.marginBottom = "12px";
+
+    const saveButton = document.createElement("button");
+    saveButton.type = "button";
+    saveButton.textContent = "💾 画像を保存";
+
+    saveButton.onclick = () => {
+        const link = document.createElement("a");
+        link.href = url;
+        link.download =
+            "1日手帳_" +
+            (typeof selectedCalendarDate !== "undefined"
+                ? selectedCalendarDate
+                : "予定") +
+            ".png";
+
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+    };
+
+    const shareButton = document.createElement("button");
+    shareButton.type = "button";
+    shareButton.textContent = "📤 保存して共有";
+
+    shareButton.onclick = async () => {
+        try {
+            const file = new File(
+                [blob],
+                "1日手帳.png",
+                { type: "image/png" }
+            );
+
+            if (
+                navigator.share &&
+                navigator.canShare &&
+                navigator.canShare({ files: [file] })
+            ) {
+                await navigator.share({
+                    files: [file],
+                    title: "1日手帳の予定"
+                });
+            } else {
+                alert(
+                    "このブラウザでは画像の直接共有に対応していません。" +
+                    "先に「画像を保存」を押してから共有してください。"
+                );
+            }
+        } catch (error) {
+            if (error.name !== "AbortError") {
+                console.error("画像共有エラー:", error);
+                alert("共有できませんでした。画像を保存してお試しください。");
+            }
+        }
+    };
+
+    const closeButton = document.createElement("button");
+    closeButton.type = "button";
+    closeButton.textContent = "閉じる";
+
+    closeButton.onclick = () => {
+        URL.revokeObjectURL(url);
+        modal.remove();
+    };
+
+    content.append(
+        heading,
+        preview,
+        saveButton,
+        shareButton,
+        closeButton
+    );
+
+    modal.appendChild(content);
+    document.body.appendChild(modal);
 }
 
 
