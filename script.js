@@ -2708,26 +2708,45 @@ plannerCreateScheduleImage(includeFamily);
 
 
 /* =========================================
-   📤 1日手帳を既存HTML・CSSから画像化
-   ・元の画面には変更を加えない
-   ・家族レーンは選択内容に従う
+   📤 1日手帳の予定画像を作成
+   html2canvas版
+   ・元画面のスクロール位置を変更しない
+   ・予定と時間軸を画像化する
+   ・家族レーンは選択に応じて処理する
 ========================================= */
 
 async function plannerCreateScheduleImage(includeFamily) {
-    const originalLayout = document.querySelector(
-        "#plannerTimeline .planner-layout"
+    if (typeof window.html2canvas !== "function") {
+        alert(
+            "画像生成ライブラリを読み込めませんでした。\n" +
+            "インターネット接続とCDNの読み込みを確認してください。"
+        );
+        return;
+    }
+
+    const originalTimeline = document.getElementById(
+        "plannerTimeline"
     );
 
     const originalTitle = document.getElementById(
         "plannerTitle"
     );
 
-    if (!originalLayout || !originalTitle) {
+    if (!originalTimeline || !originalTitle) {
         alert("1日手帳の表示が見つかりません。");
         return;
     }
 
-    let svgUrl = null;
+    const originalLayout = originalTimeline.querySelector(
+        ".planner-layout"
+    );
+
+    if (!originalLayout) {
+        alert("予定の表示領域が見つかりません。");
+        return;
+    }
+
+    let exportRoot = null;
 
     try {
         const layoutRect =
@@ -2740,186 +2759,109 @@ async function plannerCreateScheduleImage(includeFamily) {
             )
         );
 
-        const familyLanes = originalLayout.querySelector(
-            ".planner-family-lanes"
-        );
+        // 画像専用の複製を作る
+        exportRoot = document.createElement("div");
 
-        let height = Math.max(
-            originalLayout.scrollHeight,
-            layoutRect.height
-        );
+        exportRoot.id = "plannerScheduleExportTemp";
 
-        if (includeFamily && familyLanes) {
-            const laneRect =
-                familyLanes.getBoundingClientRect();
+        Object.assign(exportRoot.style, {
+            position: "fixed",
+            left: "-100000px",
+            top: "0",
+            width: width + "px",
+            height: "auto",
+            overflow: "visible",
+            background: "#ffffff",
+            color: "#222222",
+            zIndex: "-1",
+            pointerEvents: "none"
+        });
 
-            height = Math.max(
-                height,
-                Math.ceil(
-                    laneRect.bottom -
-                    originalLayout.getBoundingClientRect().top
-                )
-            );
-        }
-
-        // 元の画面を複製。表示中のDOMは変更しない
         const titleClone = originalTitle.cloneNode(true);
-        const layoutClone = originalLayout.cloneNode(true);
-
-        // 共有画像に不要な操作ボタンを除外
-        layoutClone.querySelectorAll(
-            ".planner-event button, " +
-            ".planner-family-event-item button, " +
-            ".planner-family-event-bar button"
-        ).forEach(button => button.remove());
-
-        // 家族レーンを含めない場合は複製側だけから除外
-        if (!includeFamily) {
-            layoutClone.querySelectorAll(
-                ".planner-family-lanes"
-            ).forEach(element => element.remove());
-        }
-
-        // 画像側ではスクロールや固定配置に依存させない
-        layoutClone.style.position = "relative";
-        layoutClone.style.left = "0";
-        layoutClone.style.top = "0";
-        layoutClone.style.width = width + "px";
-        layoutClone.style.minWidth = width + "px";
-        layoutClone.style.maxWidth = "none";
-        layoutClone.style.height = height + "px";
-        layoutClone.style.minHeight = height + "px";
-        layoutClone.style.maxHeight = "none";
-        layoutClone.style.overflow = "visible";
-        layoutClone.style.transform = "none";
-        layoutClone.style.contain = "none";
+        const timelineClone = originalTimeline.cloneNode(true);
 
         titleClone.style.position = "relative";
         titleClone.style.top = "0";
-        titleClone.style.left = "0";
         titleClone.style.width = width + "px";
-        titleClone.style.margin = "0";
         titleClone.style.transform = "none";
 
-        // 同一オリジンのCSSを画像側に引き継ぐ
-        let cssText = "";
+        timelineClone.style.width = width + "px";
+        timelineClone.style.height = "auto";
+        timelineClone.style.maxHeight = "none";
+        timelineClone.style.overflow = "visible";
+        timelineClone.style.transform = "none";
 
-        for (const sheet of document.styleSheets) {
-            try {
-                for (const rule of sheet.cssRules) {
-                    cssText += rule.cssText + "\n";
-                }
-            } catch (error) {
-                console.warn(
-                    "一部のCSSを読み取れませんでした。",
-                    error
-                );
+        // 複製側の不要な操作ボタンだけを除外
+        timelineClone.querySelectorAll(
+            ".planner-event button"
+        ).forEach(button => button.remove());
+
+        // 家族レーンを含めない場合は複製側だけ変更
+        const clonedLayout = timelineClone.querySelector(
+            ".planner-layout"
+        );
+
+        if (!includeFamily) {
+            timelineClone.querySelectorAll(
+                ".planner-family-lanes"
+            ).forEach(element => element.remove());
+
+            if (clonedLayout) {
+                clonedLayout.style.paddingTop = "0";
             }
         }
 
-        const titleHeight = Math.ceil(
-            originalTitle.getBoundingClientRect().height
-        );
-
-        const totalHeight = titleHeight + height + 8;
-
-        const markup = `
-            <div xmlns="http://www.w3.org/1999/xhtml"
-                 style="
-                    width:${width}px;
-                    height:${totalHeight}px;
-                    overflow:visible;
-                    background:#ffffff;
-                    color:#222222;
-                    font-family:Arial,sans-serif;
-                 ">
-                <style>${cssText}</style>
-
-                <div style="
-                    position:relative;
-                    width:${width}px;
-                    height:${titleHeight}px;
-                    overflow:visible;
-                ">
-                    ${titleClone.outerHTML}
-                </div>
-
-                <div style="
-                    position:relative;
-                    width:${width}px;
-                    height:${height}px;
-                    overflow:visible;
-                ">
-                    ${layoutClone.outerHTML}
-                </div>
-            </div>
-        `;
-
-        const svg = `
-            <svg xmlns="http://www.w3.org/2000/svg"
-                 xmlns:xhtml="http://www.w3.org/1999/xhtml"
-                 width="${width}"
-                 height="${totalHeight}"
-                 viewBox="0 0 ${width} ${totalHeight}">
-                <foreignObject
-                    x="0" y="0"
-                    width="${width}"
-                    height="${totalHeight}">
-                    ${markup}
-                </foreignObject>
-            </svg>
-        `;
-
-        const svgBlob = new Blob(
-            [svg],
-            { type: "image/svg+xml;charset=utf-8" }
-        );
-
-        svgUrl = URL.createObjectURL(svgBlob);
-
-        const image = new Image();
-
-        await new Promise((resolve, reject) => {
-            image.onload = resolve;
-            image.onerror = () => reject(
-                new Error("HTML表示を画像に変換できませんでした。")
-            );
-
-            image.src = svgUrl;
+        // 固定高・スクロール制限を複製側で解除
+        timelineClone.querySelectorAll(
+            ".planner-layout, .planner-board, " +
+            ".planner-times, .planner-family-lanes"
+        ).forEach(element => {
+            element.style.maxHeight = "none";
+            element.style.overflow = "visible";
         });
 
-        // 大きすぎる画像を避けつつ高解像度で出力
-        const maxPixels = 16000000;
+        exportRoot.appendChild(titleClone);
+        exportRoot.appendChild(timelineClone);
+        document.body.appendChild(exportRoot);
 
-        const scale = Math.min(
-            2,
-            Math.sqrt(
-                maxPixels / (width * totalHeight)
+        // レイアウト計算を待ってから画像化
+        await new Promise(resolve =>
+            requestAnimationFrame(() =>
+                requestAnimationFrame(resolve)
             )
         );
 
-        const canvas = document.createElement("canvas");
-
-        canvas.width = Math.max(
-            1,
-            Math.ceil(width * scale)
+        const exportHeight = Math.ceil(
+            exportRoot.scrollHeight
         );
 
-        canvas.height = Math.max(
-            1,
-            Math.ceil(totalHeight * scale)
+        const canvas = await window.html2canvas(
+            exportRoot,
+            {
+                backgroundColor: "#ffffff",
+                scale: Math.min(
+                    2,
+                    Math.sqrt(
+                        16000000 /
+                        Math.max(1, width * exportHeight)
+                    )
+                ),
+                useCORS: true,
+                logging: false,
+                width: width,
+                height: exportHeight,
+                windowWidth: Math.max(
+                    document.documentElement.clientWidth,
+                    width
+                ),
+                windowHeight: Math.max(
+                    window.innerHeight,
+                    exportHeight
+                ),
+                scrollX: 0,
+                scrollY: 0
+            }
         );
-
-        const ctx = canvas.getContext("2d");
-
-        if (!ctx) {
-            throw new Error("画像描画用キャンバスを作成できません。");
-        }
-
-        ctx.scale(scale, scale);
-        ctx.fillStyle = "#ffffff";
-        ctx.fillRect(0, 0, width, totalHeight);
-        ctx.drawImage(image, 0, 0, width, totalHeight);
 
         const blob = await new Promise(resolve => {
             canvas.toBlob(resolve, "image/png");
@@ -2932,16 +2874,20 @@ async function plannerCreateScheduleImage(includeFamily) {
         plannerShowScheduleImage(blob);
 
     } catch (error) {
-        console.error("予定画像の作成エラー:", error);
+        console.error(
+            "1日手帳の画像生成エラー:",
+            error
+        );
 
         alert(
             "画像を作成できませんでした。\n" +
-            "ブラウザがHTMLの画像化に対応していない可能性があります。"
+            "コンソールのエラーを確認してください。"
         );
 
     } finally {
-        if (svgUrl) {
-            URL.revokeObjectURL(svgUrl);
+        // 元の1日手帳には触れず、複製だけを削除
+        if (exportRoot) {
+            exportRoot.remove();
         }
     }
 }
