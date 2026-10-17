@@ -2706,376 +2706,246 @@ plannerCreateScheduleImage(includeFamily);
 
 
 
+
 /* =========================================
-   📤 1日手帳の予定画像を作成
-   ・元の画面は変更しない
-   ・家族レーンは選択時のみ画像に含める
+   📤 1日手帳を既存HTML・CSSから画像化
+   ・元の画面には変更を加えない
+   ・家族レーンは選択内容に従う
 ========================================= */
 
 async function plannerCreateScheduleImage(includeFamily) {
-    const layout = document.querySelector(
+    const originalLayout = document.querySelector(
         "#plannerTimeline .planner-layout"
     );
 
-    if (!layout) {
-        alert("1日手帳の予定が表示されていません。");
+    const originalTitle = document.getElementById(
+        "plannerTitle"
+    );
+
+    if (!originalLayout || !originalTitle) {
+        alert("1日手帳の表示が見つかりません。");
         return;
     }
 
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
-
-    if (!ctx) {
-        alert("画像を作成できませんでした。");
-        return;
-    }
-
-    const layoutRect = layout.getBoundingClientRect();
-
-    const elements = [
-        ...layout.querySelectorAll(
-            ".planner-times, .planner-board, " +
-            ".planner-line, .planner-time-fixed, " +
-            ".planner-event, .planner-family-lanes, " +
-            ".planner-family-lane, " +
-            ".planner-family-lane-header, " +
-            ".planner-family-event-item"
-        )
-    ];
-
-    // 家族レーンを除外する場合は描画対象から外す
-    const targets = elements.filter(element => {
-        if (
-            !includeFamily &&
-            element.closest(".planner-family-lanes")
-        ) {
-            return false;
-        }
-
-        return true;
-    });
-
-    let contentHeight = Math.max(
-        layout.scrollHeight,
-        layoutRect.height
-    );
-
-    targets.forEach(element => {
-        const rect = element.getBoundingClientRect();
-
-        contentHeight = Math.max(
-            contentHeight,
-            rect.bottom - layoutRect.top
-        );
-    });
-
-    const width = Math.ceil(
-        Math.max(layout.scrollWidth, layoutRect.width)
-    );
-
-    const height = Math.ceil(contentHeight);
-
-    // メモリ不足を避けるため、巨大画像は作らない
-    const maxPixels = 16000000;
-    const scale = Math.min(
-        2,
-        Math.sqrt(maxPixels / (width * height))
-    );
-
-    canvas.width = Math.ceil(width * scale);
-    canvas.height = Math.ceil(height * scale);
-
-    ctx.scale(scale, scale);
-    ctx.fillStyle = "#ffffff";
-    ctx.fillRect(0, 0, width, height);
-
-    function getRect(element) {
-        const rect = element.getBoundingClientRect();
-
-        return {
-            x: rect.left - layoutRect.left,
-            y: rect.top - layoutRect.top,
-            width: rect.width,
-            height: rect.height
-        };
-    }
-
-    function roundedRect(x, y, w, h, radius) {
-        const r = Math.min(radius, w / 2, h / 2);
-
-        ctx.beginPath();
-        ctx.moveTo(x + r, y);
-        ctx.arcTo(x + w, y, x + w, y + h, r);
-        ctx.arcTo(x + w, y + h, x, y + h, r);
-        ctx.arcTo(x, y + h, x, y, r);
-        ctx.arcTo(x, y, x + w, y, r);
-        ctx.closePath();
-    }
-
-    function drawText(text, x, y, maxWidth, lineHeight) {
-        const paragraphs = String(text || "").split("\n");
-        let currentY = y;
-
-        for (const paragraph of paragraphs) {
-            let line = "";
-
-            for (const character of paragraph) {
-                const testLine = line + character;
-
-                if (
-                    line &&
-                    ctx.measureText(testLine).width > maxWidth
-                ) {
-                    ctx.fillText(line, x, currentY);
-                    currentY += lineHeight;
-                    line = character;
-                } else {
-                    line = testLine;
-                }
-            }
-
-            if (line) {
-                ctx.fillText(line, x, currentY);
-                currentY += lineHeight;
-            }
-        }
-    }
+    let svgUrl = null;
 
     try {
-        // 時間軸・予定ボード・家族レーンの背景
-        for (const element of targets) {
-            const rect = getRect(element);
-            const style = getComputedStyle(element);
+        const layoutRect =
+            originalLayout.getBoundingClientRect();
 
-            if (
-                element.matches(
-                    ".planner-times, .planner-board, " +
-                    ".planner-family-lanes, .planner-family-lane"
+        const width = Math.ceil(
+            Math.max(
+                originalLayout.scrollWidth,
+                layoutRect.width
+            )
+        );
+
+        const familyLanes = originalLayout.querySelector(
+            ".planner-family-lanes"
+        );
+
+        let height = Math.max(
+            originalLayout.scrollHeight,
+            layoutRect.height
+        );
+
+        if (includeFamily && familyLanes) {
+            const laneRect =
+                familyLanes.getBoundingClientRect();
+
+            height = Math.max(
+                height,
+                Math.ceil(
+                    laneRect.bottom -
+                    originalLayout.getBoundingClientRect().top
                 )
-            ) {
-                ctx.fillStyle =
-                    style.backgroundColor &&
-                    style.backgroundColor !== "rgba(0, 0, 0, 0)"
-                        ? style.backgroundColor
-                        : "#ffffff";
+            );
+        }
 
-                ctx.fillRect(
-                    rect.x,
-                    rect.y,
-                    rect.width,
-                    rect.height
+        // 元の画面を複製。表示中のDOMは変更しない
+        const titleClone = originalTitle.cloneNode(true);
+        const layoutClone = originalLayout.cloneNode(true);
+
+        // 共有画像に不要な操作ボタンを除外
+        layoutClone.querySelectorAll(
+            ".planner-event button, " +
+            ".planner-family-event-item button, " +
+            ".planner-family-event-bar button"
+        ).forEach(button => button.remove());
+
+        // 家族レーンを含めない場合は複製側だけから除外
+        if (!includeFamily) {
+            layoutClone.querySelectorAll(
+                ".planner-family-lanes"
+            ).forEach(element => element.remove());
+        }
+
+        // 画像側ではスクロールや固定配置に依存させない
+        layoutClone.style.position = "relative";
+        layoutClone.style.left = "0";
+        layoutClone.style.top = "0";
+        layoutClone.style.width = width + "px";
+        layoutClone.style.minWidth = width + "px";
+        layoutClone.style.maxWidth = "none";
+        layoutClone.style.height = height + "px";
+        layoutClone.style.minHeight = height + "px";
+        layoutClone.style.maxHeight = "none";
+        layoutClone.style.overflow = "visible";
+        layoutClone.style.transform = "none";
+        layoutClone.style.contain = "none";
+
+        titleClone.style.position = "relative";
+        titleClone.style.top = "0";
+        titleClone.style.left = "0";
+        titleClone.style.width = width + "px";
+        titleClone.style.margin = "0";
+        titleClone.style.transform = "none";
+
+        // 同一オリジンのCSSを画像側に引き継ぐ
+        let cssText = "";
+
+        for (const sheet of document.styleSheets) {
+            try {
+                for (const rule of sheet.cssRules) {
+                    cssText += rule.cssText + "\n";
+                }
+            } catch (error) {
+                console.warn(
+                    "一部のCSSを読み取れませんでした。",
+                    error
                 );
             }
         }
 
-        // 時間軸の罫線
-        for (const element of targets) {
-            if (!element.matches(".planner-line")) {
-                continue;
-            }
+        const titleHeight = Math.ceil(
+            originalTitle.getBoundingClientRect().height
+        );
 
-            const rect = getRect(element);
-            const style = getComputedStyle(element);
+        const totalHeight = titleHeight + height + 8;
 
-            ctx.beginPath();
-            ctx.strokeStyle =
-                style.borderTopColor || "#dddddd";
-            ctx.lineWidth = 1;
-            ctx.moveTo(rect.x, rect.y);
-            ctx.lineTo(rect.x + rect.width, rect.y);
-            ctx.stroke();
+        const markup = `
+            <div xmlns="http://www.w3.org/1999/xhtml"
+                 style="
+                    width:${width}px;
+                    height:${totalHeight}px;
+                    overflow:visible;
+                    background:#ffffff;
+                    color:#222222;
+                    font-family:Arial,sans-serif;
+                 ">
+                <style>${cssText}</style>
+
+                <div style="
+                    position:relative;
+                    width:${width}px;
+                    height:${titleHeight}px;
+                    overflow:visible;
+                ">
+                    ${titleClone.outerHTML}
+                </div>
+
+                <div style="
+                    position:relative;
+                    width:${width}px;
+                    height:${height}px;
+                    overflow:visible;
+                ">
+                    ${layoutClone.outerHTML}
+                </div>
+            </div>
+        `;
+
+        const svg = `
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 xmlns:xhtml="http://www.w3.org/1999/xhtml"
+                 width="${width}"
+                 height="${totalHeight}"
+                 viewBox="0 0 ${width} ${totalHeight}">
+                <foreignObject
+                    x="0" y="0"
+                    width="${width}"
+                    height="${totalHeight}">
+                    ${markup}
+                </foreignObject>
+            </svg>
+        `;
+
+        const svgBlob = new Blob(
+            [svg],
+            { type: "image/svg+xml;charset=utf-8" }
+        );
+
+        svgUrl = URL.createObjectURL(svgBlob);
+
+        const image = new Image();
+
+        await new Promise((resolve, reject) => {
+            image.onload = resolve;
+            image.onerror = () => reject(
+                new Error("HTML表示を画像に変換できませんでした。")
+            );
+
+            image.src = svgUrl;
+        });
+
+        // 大きすぎる画像を避けつつ高解像度で出力
+        const maxPixels = 16000000;
+
+        const scale = Math.min(
+            2,
+            Math.sqrt(
+                maxPixels / (width * totalHeight)
+            )
+        );
+
+        const canvas = document.createElement("canvas");
+
+        canvas.width = Math.max(
+            1,
+            Math.ceil(width * scale)
+        );
+
+        canvas.height = Math.max(
+            1,
+            Math.ceil(totalHeight * scale)
+        );
+
+        const ctx = canvas.getContext("2d");
+
+        if (!ctx) {
+            throw new Error("画像描画用キャンバスを作成できません。");
         }
 
-        // 時刻ラベル
-        for (const element of targets) {
-            if (!element.matches(".planner-time-fixed")) {
-                continue;
-            }
-
-            const rect = getRect(element);
-            const style = getComputedStyle(element);
-
-            ctx.fillStyle = style.color || "#555555";
-            ctx.font =
-                style.fontWeight + " " +
-                (parseFloat(style.fontSize) || 12) +
-                "px sans-serif";
-
-            ctx.textBaseline = "top";
-            drawText(
-                element.innerText.trim(),
-                rect.x + 3,
-                rect.y + 4,
-                rect.width - 6,
-                15
-            );
-        }
-
-        // 家族レーンの見出し
-        for (const element of targets) {
-            if (
-                !element.matches(".planner-family-lane-header")
-            ) {
-                continue;
-            }
-
-            const rect = getRect(element);
-            const style = getComputedStyle(element);
-
-            ctx.fillStyle =
-                style.backgroundColor || "#f7eaf3";
-
-            ctx.fillRect(
-                rect.x,
-                rect.y,
-                rect.width,
-                rect.height
-            );
-
-            ctx.fillStyle = style.color || "#333333";
-            ctx.font = "bold 12px sans-serif";
-            ctx.textBaseline = "top";
-
-            drawText(
-                element.innerText.trim(),
-                rect.x + 3,
-                rect.y + 5,
-                rect.width - 6,
-                15
-            );
-        }
-
-        // 個人の予定と家族の予定
-        for (const element of targets) {
-            if (
-                !element.matches(
-                    ".planner-event, " +
-                    ".planner-family-event-item"
-                )
-            ) {
-                continue;
-            }
-
-            const rect = getRect(element);
-            const style = getComputedStyle(element);
-
-            ctx.save();
-
-            ctx.globalAlpha =
-                Number(style.opacity) || 1;
-
-            ctx.fillStyle =
-                style.backgroundColor &&
-                style.backgroundColor !== "rgba(0, 0, 0, 0)"
-                    ? style.backgroundColor
-                    : "#fce4ec";
-
-            roundedRect(
-                rect.x,
-                rect.y,
-                rect.width,
-                rect.height,
-                5
-            );
-
-            ctx.fill();
-
-            if (style.borderColor) {
-                ctx.strokeStyle = style.borderColor;
-                ctx.lineWidth = 1;
-                ctx.stroke();
-            }
-
-            ctx.globalAlpha = 1;
-            ctx.fillStyle = style.color || "#333333";
-
-            const fontSize =
-                parseFloat(style.fontSize) || 12;
-
-            ctx.font =
-                style.fontWeight + " " +
-                fontSize + "px sans-serif";
-
-            ctx.textBaseline = "top";
-
-            // 操作用ボタンは画像に描かない
-            const text = [
-                ...element.childNodes
-            ].map(node => {
-                if (node.nodeType === Node.TEXT_NODE) {
-                    return node.textContent;
-                }
-
-                if (node.nodeType === Node.ELEMENT_NODE) {
-                    const clone = node.cloneNode(true);
-
-                    clone.querySelectorAll("button").forEach(
-                        button => button.remove()
-                    );
-
-                    if (
-                        clone.matches &&
-                        clone.matches("button")
-                    ) {
-                        return "";
-                    }
-
-                    return clone.innerText || "";
-                }
-
-                return "";
-            }).join(" ").trim();
-
-            drawText(
-                text || element.innerText.trim(),
-                rect.x + 5,
-                rect.y + 4,
-                Math.max(10, rect.width - 10),
-                fontSize + 3
-            );
-
-            ctx.restore();
-        }
-
-        // 日付を画像上部に表示
-        ctx.save();
-
-        ctx.fillStyle = "#333333";
-        ctx.font = "bold 16px sans-serif";
-        ctx.textBaseline = "top";
-
-        const title = document.getElementById("plannerTitle");
-
-        if (title) {
-            drawText(
-                title.innerText.trim(),
-                8,
-                4,
-                width - 16,
-                20
-            );
-        }
-
-        ctx.restore();
+        ctx.scale(scale, scale);
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, width, totalHeight);
+        ctx.drawImage(image, 0, 0, width, totalHeight);
 
         const blob = await new Promise(resolve => {
             canvas.toBlob(resolve, "image/png");
         });
 
         if (!blob) {
-            throw new Error("画像データを作成できませんでした。");
+            throw new Error("PNG画像を作成できませんでした。");
         }
 
         plannerShowScheduleImage(blob);
 
     } catch (error) {
         console.error("予定画像の作成エラー:", error);
+
         alert(
-            "予定画像を作成できませんでした。\n" +
-            "ブラウザを更新して、もう一度お試しください。"
+            "画像を作成できませんでした。\n" +
+            "ブラウザがHTMLの画像化に対応していない可能性があります。"
         );
+
+    } finally {
+        if (svgUrl) {
+            URL.revokeObjectURL(svgUrl);
+        }
     }
 }
+
 
 
 /* =========================================
