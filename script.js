@@ -2805,32 +2805,35 @@ async function plannerCreateScheduleImage(includeFamily) {
 
 
         // 画像用の複製でも家族予定の縦書き設定を維持
-timelineClone.querySelectorAll(
-    ".planner-family-lane, " +
-    ".planner-family-lane-header, " +
-    ".planner-family-lane-events, " +
-    ".planner-family-event-item, " +
-    ".planner-family-event-bar, " +
+const familySelectors = [
+    ".planner-family-lane",
+    ".planner-family-lane-header",
+    ".planner-family-lane-events",
+    ".planner-family-event-item",
+    ".planner-family-event-bar",
     ".planner-family-event-title"
-).forEach(element => {
-    const original = originalTimeline.querySelector(
-        "#" + CSS.escape(element.id)
-    );
+];
 
-    const source = original ||
-        originalTimeline.querySelector(
-            "." + [...element.classList].join(".")
-        );
+familySelectors.forEach(selector => {
+    const originals =
+        originalTimeline.querySelectorAll(selector);
 
-    if (!source) return;
+    const clones =
+        timelineClone.querySelectorAll(selector);
 
-    const style = getComputedStyle(source);
+    clones.forEach((element, index) => {
+        const original = originals[index];
 
-    element.style.writingMode = style.writingMode;
-    element.style.textOrientation = style.textOrientation;
-    element.style.whiteSpace = style.whiteSpace;
-    element.style.wordBreak = style.wordBreak;
-    element.style.overflowWrap = style.overflowWrap;
+        if (!original) return;
+
+        const style = getComputedStyle(original);
+
+        element.style.writingMode = style.writingMode;
+        element.style.textOrientation = style.textOrientation;
+        element.style.whiteSpace = style.whiteSpace;
+        element.style.wordBreak = style.wordBreak;
+        element.style.overflowWrap = style.overflowWrap;
+    });
 });
 
 
