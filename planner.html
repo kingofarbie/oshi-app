@@ -180,7 +180,7 @@
     </button>
 
     <button onclick="openDayMemory()">
-        📝 メモ
+        📤 共有
     </button>
 
     <button onclick="openEventForm()">
@@ -196,6 +196,36 @@
 
 
 </div>
+
+
+
+
+
+
+<!-- 予定画像の共有設定 -->
+<div id="plannerShareModal" class="modal" style="display:none">
+    <div class="modal-content">
+        <h2>📤 予定画像を作成</h2>
+
+        <p>画像に家族の予定を含めますか？</p>
+
+        <button type="button"
+            onclick="plannerShareChooseFamily(true)">
+            👨‍👩‍👧 家族の予定を含める
+        </button>
+
+        <button type="button"
+            onclick="plannerShareChooseFamily(false)">
+            🗓️ 個人の予定だけ
+        </button>
+
+        <button type="button"
+            onclick="plannerShareCloseModal()">
+            キャンセル
+        </button>
+    </div>
+</div>
+
 
 
 <!-- =====================

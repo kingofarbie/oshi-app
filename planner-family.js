@@ -2726,3 +2726,4 @@ function plannerFamilyOpenBulkDelete() {
 
     updateCount();
 }
+

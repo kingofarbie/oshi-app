@@ -2640,12 +2640,72 @@ function applyTemplate(){
 }
 
 
-function openDayMemory(){
 
-    alert("1日手帳は次のStepで作成します😊");
+function openDayMemory() {
+    const modal = document.getElementById("plannerShareModal");
 
+    if (!modal) {
+        alert("共有設定画面が見つかりません。");
+        return;
+    }
+
+    modal.style.display = "block";
 }
 
+function plannerShareCloseModal() {
+    const modal = document.getElementById("plannerShareModal");
+
+    if (modal) {
+        modal.style.display = "none";
+    }
+}
+
+function plannerShareFamilyLaneIsVisible() {
+    const lanes = document.querySelector(
+        "#plannerTimeline .planner-family-lanes"
+    );
+
+    if (!lanes) {
+        return false;
+    }
+
+    const style = window.getComputedStyle(lanes);
+
+    return (
+        style.display !== "none" &&
+        style.visibility !== "hidden" &&
+        lanes.getClientRects().length > 0
+    );
+}
+
+function plannerShareChooseFamily(includeFamily) {
+    const familyVisible = plannerShareFamilyLaneIsVisible();
+
+    plannerShareCloseModal();
+
+    // 家族予定を含めたいのに、家族レーンが非表示
+    if (includeFamily && !familyVisible) {
+        alert(
+            "家族の予定を画像に含めるには、先に1日手帳で家族レーンを表示してから、もう一度「共有」を押してください。"
+        );
+        return;
+    }
+
+    // 家族予定を除外したいのに、家族レーンが表示中
+    if (!includeFamily && familyVisible) {
+        alert(
+            "個人の予定だけを画像にするには、先に1日手帳で家族レーンを非表示にしてから、もう一度「共有」を押してください。"
+        );
+        return;
+    }
+
+    // 画像生成処理は次の実装段階で接続する
+    alert(
+        includeFamily
+            ? "家族予定を含める設定を確認しました。画像生成処理は次の段階で接続します。"
+            : "個人の予定だけにする設定を確認しました。画像生成処理は次の段階で接続します。"
+    );
+}
 
 
 
@@ -2791,15 +2851,6 @@ if(
     }
 
 }
-
-
-
-
-
-
-
-
-
     /* ✕ → ☰ */
     setHomeMenuButton("open");
 
