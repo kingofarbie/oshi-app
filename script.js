@@ -2975,13 +2975,16 @@ function plannerShowScheduleImage(blob) {
     let currentUrl = originalUrl;
     let cropRanges = [];
     let cropMode = false;
+    let waitingForRange = false;
     let dragStartY = null;
     let dragCurrentY = null;
+    let imageObjectUrl = null;
 
     const modal = document.createElement("div");
     modal.id = "plannerScheduleImageModal";
     modal.className = "modal";
     modal.dataset.imageUrl = originalUrl;
+
     Object.assign(modal.style, {
         display: "block",
         zIndex: "20000"
@@ -2989,17 +2992,35 @@ function plannerShowScheduleImage(blob) {
 
     const content = document.createElement("div");
     content.className = "modal-content";
+
     Object.assign(content.style, {
         maxHeight: "90vh",
-        overflowY: "auto"
+        overflowY: "auto",
+        paddingTop: "8px"
     });
 
     const heading = document.createElement("h2");
     heading.textContent = "📤 予定画像";
 
+    // 操作ボタンを上部に固定
+    const toolbar = document.createElement("div");
+
+    Object.assign(toolbar.style, {
+        position: "sticky",
+        top: "0",
+        zIndex: "10",
+        display: "flex",
+        flexWrap: "wrap",
+        gap: "6px",
+        padding: "8px 0",
+        background: "var(--card-bg, #fff)",
+        borderBottom: "1px solid #ddd"
+    });
+
     const preview = document.createElement("img");
     preview.src = originalUrl;
     preview.alt = "1日手帳の予定画像";
+
     Object.assign(preview.style, {
         display: "block",
         width: "100%",
@@ -3008,6 +3029,7 @@ function plannerShowScheduleImage(blob) {
     });
 
     const cropArea = document.createElement("div");
+
     Object.assign(cropArea.style, {
         display: "none",
         position: "relative",
@@ -3019,6 +3041,7 @@ function plannerShowScheduleImage(blob) {
 
     const cropImage = document.createElement("img");
     cropImage.src = originalUrl;
+
     Object.assign(cropImage.style, {
         display: "block",
         width: "100%",
@@ -3027,6 +3050,7 @@ function plannerShowScheduleImage(blob) {
     });
 
     const selectionLayer = document.createElement("div");
+
     Object.assign(selectionLayer.style, {
         position: "absolute",
         inset: "0",
@@ -3074,15 +3098,18 @@ function plannerShowScheduleImage(blob) {
     closeButton.type = "button";
     closeButton.textContent = "閉じる";
 
-    let imageObjectUrl = null;
-
     function updateButtons() {
-        addRangeButton.style.display = cropMode ? "block" : "none";
+        addRangeButton.style.display =
+            cropMode && !waitingForRange ? "block" : "none";
+
         removeRangeButton.style.display =
-            cropMode && cropRanges.length ? "block" : "none";
+            cropRanges.length ? "block" : "none";
+
         previewCropButton.style.display =
-            cropMode && cropRanges.length ? "block" : "none";
-        undoButton.style.display = currentBlob !== blob ? "block" : "none";
+            cropRanges.length && !waitingForRange ? "block" : "none";
+
+        undoButton.style.display =
+            currentBlob !== blob ? "block" : "none";
     }
 
     function drawSelections() {
@@ -3090,6 +3117,7 @@ function plannerShowScheduleImage(blob) {
 
         cropRanges.forEach((range, index) => {
             const box = document.createElement("div");
+
             Object.assign(box.style, {
                 position: "absolute",
                 left: "0",
@@ -3103,6 +3131,7 @@ function plannerShowScheduleImage(blob) {
 
             const label = document.createElement("span");
             label.textContent = `残す範囲 ${index + 1}`;
+
             Object.assign(label.style, {
                 display: "inline-block",
                 background: "#16a34a",
@@ -3135,18 +3164,34 @@ function plannerShowScheduleImage(blob) {
         }
     }
 
-    cropButton.onclick = () => {
+    function startCropSelection() {
         cropMode = true;
+        waitingForRange = true;
+        dragStartY = null;
+        dragCurrentY = null;
+
         cropArea.style.display = "block";
         preview.style.display = "none";
         cropButton.style.display = "none";
+
         status.textContent =
-            "画像上で指を上下に動かし、残したい範囲を選んでください。";
+            "画像上で指を上下に動かして、残したい範囲を指定してください。";
+
+        drawSelections();
         updateButtons();
+    }
+
+    cropButton.onclick = () => {
+        startCropSelection();
+    };
+
+    addRangeButton.onclick = () => {
+        startCropSelection();
     };
 
     function getRelativeY(event) {
         const rect = cropArea.getBoundingClientRect();
+
         return Math.max(
             0,
             Math.min(1, (event.clientY - rect.top) / rect.height)
@@ -3154,22 +3199,38 @@ function plannerShowScheduleImage(blob) {
     }
 
     cropArea.addEventListener("pointerdown", event => {
-        if (!cropMode) return;
+        if (!cropMode || !waitingForRange) return;
+
         event.preventDefault();
         cropArea.setPointerCapture(event.pointerId);
+
         dragStartY = getRelativeY(event);
         dragCurrentY = dragStartY;
+
         drawSelections();
     });
 
     cropArea.addEventListener("pointermove", event => {
-        if (dragStartY === null) return;
+        if (
+            !cropMode ||
+            !waitingForRange ||
+            dragStartY === null
+        ) {
+            return;
+        }
+
         dragCurrentY = getRelativeY(event);
         drawSelections();
     });
 
     cropArea.addEventListener("pointerup", event => {
-        if (dragStartY === null) return;
+        if (
+            !cropMode ||
+            !waitingForRange ||
+            dragStartY === null
+        ) {
+            return;
+        }
 
         dragCurrentY = getRelativeY(event);
 
@@ -3179,45 +3240,40 @@ function plannerShowScheduleImage(blob) {
         if (end - start > 0.01) {
             cropRanges.push({ start, end });
             cropRanges.sort((a, b) => a.start - b.start);
+
+            waitingForRange = false;
+            status.textContent =
+                "範囲を指定しました。「範囲を追加」で次の範囲を指定できます。";
+        } else {
+            status.textContent =
+                "範囲が短すぎます。「範囲を追加」からもう一度指定してください。";
+            waitingForRange = false;
         }
 
         dragStartY = null;
         dragCurrentY = null;
+
         drawSelections();
         updateButtons();
     });
 
-    addRangeButton.onclick = () => {
-        status.textContent =
-            "画像上で次に残したい範囲を指で選んでください。";
-    };
-
-    removeRangeButton.onclick = () => {
-        cropRanges.pop();
-        drawSelections();
-        updateButtons();
-    };
-
     previewCropButton.onclick = async () => {
-        if (!cropRanges.length) return;
+        if (!cropRanges.length || waitingForRange) return;
 
         try {
             const image = new Image();
             image.src = originalUrl;
             await image.decode();
 
-            const sourceCanvas = document.createElement("canvas");
-            sourceCanvas.width = image.naturalWidth;
-            sourceCanvas.height = image.naturalHeight;
-
-            const ctx = sourceCanvas.getContext("2d");
-            ctx.drawImage(image, 0, 0);
-
             const ranges = [...cropRanges]
                 .sort((a, b) => a.start - b.start)
                 .map(range => ({
-                    start: Math.round(range.start * image.naturalHeight),
-                    end: Math.round(range.end * image.naturalHeight)
+                    start: Math.round(
+                        range.start * image.naturalHeight
+                    ),
+                    end: Math.round(
+                        range.end * image.naturalHeight
+                    )
                 }))
                 .filter(range => range.end > range.start);
 
@@ -3232,14 +3288,14 @@ function plannerShowScheduleImage(blob) {
             output.width = image.naturalWidth;
             output.height = outputHeight;
 
-            const outputCtx = output.getContext("2d");
+            const ctx = output.getContext("2d");
             let destinationY = 0;
 
             ranges.forEach(range => {
                 const height = range.end - range.start;
 
-                outputCtx.drawImage(
-                    sourceCanvas,
+                ctx.drawImage(
+                    image,
                     0,
                     range.start,
                     image.naturalWidth,
@@ -3258,7 +3314,7 @@ function plannerShowScheduleImage(blob) {
             );
 
             if (!resultBlob) {
-                throw new Error("画像を作成できませんでした。");
+                throw new Error("PNG画像を作成できませんでした。");
             }
 
             currentBlob = resultBlob;
@@ -3274,9 +3330,13 @@ function plannerShowScheduleImage(blob) {
             preview.style.display = "block";
             cropArea.style.display = "none";
             cropMode = false;
+            waitingForRange = false;
             cropButton.style.display = "block";
             cropButton.textContent = "✂️ さらにトリミング";
-            status.textContent = "トリミング結果を確認してください。";
+
+            status.textContent =
+                "トリミング結果を確認してください。";
+
             updateButtons();
         } catch (error) {
             console.error("トリミングエラー:", error);
@@ -3288,13 +3348,21 @@ function plannerShowScheduleImage(blob) {
         currentBlob = blob;
         currentUrl = originalUrl;
         preview.src = originalUrl;
+
         cropRanges = [];
         cropMode = false;
+        waitingForRange = false;
+        dragStartY = null;
+        dragCurrentY = null;
+
         cropArea.style.display = "none";
         preview.style.display = "block";
         cropButton.style.display = "block";
         cropButton.textContent = "✂️ トリミング";
+
         status.textContent = "元の画像に戻しました。";
+
+        drawSelections();
         updateButtons();
     };
 
@@ -3350,11 +3418,7 @@ function plannerShowScheduleImage(blob) {
         modal.remove();
     };
 
-    content.append(
-        heading,
-        preview,
-        cropArea,
-        status,
+    toolbar.append(
         cropButton,
         addRangeButton,
         removeRangeButton,
@@ -3365,10 +3429,27 @@ function plannerShowScheduleImage(blob) {
         closeButton
     );
 
+    content.append(
+        heading,
+        toolbar,
+        status,
+        preview,
+        cropArea
+    );
+
     modal.appendChild(content);
     document.body.appendChild(modal);
-}
 
+    updateButtons();
+
+    removeRangeButton.onclick = () => {
+        cropRanges.pop();
+        drawSelections();
+        updateButtons();
+        status.textContent =
+            "最後の範囲を削除しました。";
+    };
+}
 
 
 
