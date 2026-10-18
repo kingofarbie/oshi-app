@@ -3883,12 +3883,10 @@ function plannerShowScheduleImage(blob, headerHeight = 0) {
         startCropSelection();
     };
 
-    // 画像を保存
-    saveButton.onclick = () => {
-        const link = document.createElement("a");
 
-        link.href = currentUrl;
-        link.download =
+    // 画像を保存
+    saveButton.onclick = async () => {
+        const fileName =
             "1日手帳_" +
             (
                 typeof selectedCalendarDate !== "undefined"
@@ -3897,10 +3895,63 @@ function plannerShowScheduleImage(blob, headerHeight = 0) {
             ) +
             ".png";
 
+        // 保存先を選択できるブラウザでは、
+        // 実際の書き込み完了後に保存成功を表示する
+        if (typeof window.showSaveFilePicker === "function") {
+            try {
+                status.textContent = "画像を保存しています…";
+
+                const fileHandle = await window.showSaveFilePicker({
+                    suggestedName: fileName,
+                    types: [
+                        {
+                            description: "PNG画像",
+                            accept: {
+                                "image/png": [".png"]
+                            }
+                        }
+                    ]
+                });
+
+                const writable = await fileHandle.createWritable();
+
+                await writable.write(currentBlob);
+                await writable.close();
+
+                status.textContent = "✅ 保存しました！";
+
+            } catch (error) {
+                if (error.name === "AbortError") {
+                    status.textContent = "保存をキャンセルしました。";
+                    return;
+                }
+
+                console.error("画像保存エラー:", error);
+
+                status.textContent =
+                    "保存できませんでした。もう一度お試しください。";
+            }
+
+            return;
+        }
+
+        // 非対応ブラウザでは従来のダウンロード方式を維持
+        const link = document.createElement("a");
+
+        link.href = currentUrl;
+        link.download = fileName;
+
         document.body.appendChild(link);
         link.click();
         link.remove();
+
+        status.textContent =
+            "ダウンロードを開始しました。完了はブラウザのダウンロード一覧で確認してください。";
     };
+
+    
+
+
 
     // 画像を共有
     shareButton.onclick = async () => {
