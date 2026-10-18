@@ -3733,7 +3733,7 @@ function plannerShowScheduleImage(blob, headerHeight = 0) {
         ctx.save();
 
         ctx.strokeStyle = "#444";
-        ctx.lineWidth = Math.max(2.5, width / 650);
+        ctx.lineWidth = Math.max(3.5, width / 550);
         ctx.setLineDash([
             Math.max(3, width / 100),
             Math.max(3, width / 100)
