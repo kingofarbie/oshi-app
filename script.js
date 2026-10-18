@@ -2978,6 +2978,7 @@ async function plannerCreateScheduleImage(includeFamily) {
 
 
 
+
 function plannerShowScheduleImage(blob, headerHeight = 0) {
     const oldModal = document.getElementById(
         "plannerScheduleImageModal"
@@ -3119,7 +3120,7 @@ function plannerShowScheduleImage(blob, headerHeight = 0) {
 
     const removeRangeButton = document.createElement("button");
     removeRangeButton.type = "button";
-    removeRangeButton.textContent = "↩️ 最後の範囲を削除";
+    removeRangeButton.textContent = "🗑️ 選択範囲を削除";
 
     const previewCropButton = document.createElement("button");
     previewCropButton.type = "button";
@@ -3127,7 +3128,7 @@ function plannerShowScheduleImage(blob, headerHeight = 0) {
 
     const undoButton = document.createElement("button");
     undoButton.type = "button";
-    undoButton.textContent = "↩️ 元に戻す";
+    undoButton.textContent = "✂️ 元に戻して再トリミング";
 
     const saveButton = document.createElement("button");
     saveButton.type = "button";
@@ -3176,6 +3177,7 @@ function plannerShowScheduleImage(blob, headerHeight = 0) {
                 shareButton,
                 closeButton
             );
+
             return;
         }
 
@@ -3189,21 +3191,23 @@ function plannerShowScheduleImage(blob, headerHeight = 0) {
                 closeButton
             );
 
-            removeRangeButton.disabled = cropRanges.length === 0;
-            previewCropButton.disabled = cropRanges.length === 0;
+            removeRangeButton.disabled =
+                activeRangeIndex < 0 ||
+                !cropRanges[activeRangeIndex];
+
+            previewCropButton.disabled =
+                cropRanges.length === 0;
+
             return;
         }
 
         if (result) {
             toolbar.replaceChildren(
-                cropButton,
                 undoButton,
                 saveButton,
                 shareButton,
                 closeButton
             );
-
-            cropButton.textContent = "✂️ 再トリミング";
         } else {
             toolbar.replaceChildren(
                 cropButton,
@@ -3306,7 +3310,6 @@ function plannerShowScheduleImage(blob, headerHeight = 0) {
             box.appendChild(label);
 
             // 上下端の編集ハンドル
-            // 選択中でなくても直接つかめるようにする
             ["start", "end"].forEach(edge => {
                 const handle = document.createElement("div");
 
@@ -3327,7 +3330,6 @@ function plannerShowScheduleImage(blob, headerHeight = 0) {
                     [edge === "start" ? "top" : "bottom"]: "-16px"
                 });
 
-                // つかむ位置が分かる目印
                 const line = document.createElement("div");
 
                 Object.assign(line.style, {
@@ -3387,8 +3389,6 @@ function plannerShowScheduleImage(blob, headerHeight = 0) {
 
         cropImage.src = currentUrl;
         cropArea.style.display = "block";
-
-        // 新しい範囲を描く間はページスクロールを抑止
         cropArea.style.touchAction = "none";
 
         preview.style.display = "none";
@@ -3417,7 +3417,6 @@ function plannerShowScheduleImage(blob, headerHeight = 0) {
             ? event.target.closest("[data-crop-edge]")
             : null;
 
-        // ハンドル操作ではブラウザの標準動作を止める
         if (handle) {
             event.preventDefault();
             event.stopPropagation();
@@ -3474,6 +3473,7 @@ function plannerShowScheduleImage(blob, headerHeight = 0) {
                 "上下端をドラッグして範囲を調整できます。";
 
             drawSelections();
+            updateButtons();
             return;
         }
 
@@ -3491,6 +3491,7 @@ function plannerShowScheduleImage(blob, headerHeight = 0) {
             dragCurrentY = null;
 
             drawSelections();
+            updateButtons();
             return;
         }
 
@@ -3520,6 +3521,7 @@ function plannerShowScheduleImage(blob, headerHeight = 0) {
             : "上下端のバーをドラッグすると範囲を調整できます。";
 
         drawSelections();
+        updateButtons();
     });
 
     // ドラッグ中
@@ -3596,13 +3598,20 @@ function plannerShowScheduleImage(blob, headerHeight = 0) {
             const end = Math.max(dragStartY, currentY);
 
             if (end - start > 0.01) {
-                cropRanges.push({ start, end });
+                const newRange = { start, end };
+
+                cropRanges.push(newRange);
 
                 cropRanges.sort((a, b) => a.start - b.start);
 
+                // 追加した範囲を選択状態にする
+                activeRangeIndex = cropRanges.indexOf(newRange);
+
                 status.textContent =
-                    "範囲を指定しました。「範囲を追加」で次の範囲を指定できます。";
+                    "範囲を指定しました。選択範囲を削除する場合は、削除したい範囲をタップしてください。";
             } else {
+                activeRangeIndex = -1;
+
                 status.textContent =
                     "範囲が短すぎます。もう一度指定してください。";
             }
@@ -3611,7 +3620,6 @@ function plannerShowScheduleImage(blob, headerHeight = 0) {
             dragStartY = null;
             dragCurrentY = null;
 
-            // 範囲指定後は通常の縦スクロールを許可
             cropArea.style.touchAction = "pan-y";
 
             drawSelections();
@@ -3628,6 +3636,7 @@ function plannerShowScheduleImage(blob, headerHeight = 0) {
             status.textContent = "範囲を調整しました。";
 
             drawSelections();
+            updateButtons();
         }
     }
 
@@ -3726,7 +3735,6 @@ function plannerShowScheduleImage(blob, headerHeight = 0) {
                 0
             );
 
-            // 自動で残すヘッダーを最初に配置
             const output = document.createElement("canvas");
             output.width = naturalWidth;
             output.height = fixedHeaderHeight + selectedHeight;
@@ -3737,6 +3745,7 @@ function plannerShowScheduleImage(blob, headerHeight = 0) {
                 throw new Error("Canvasを利用できません。");
             }
 
+            // 自動で残すヘッダーを最初に配置
             if (fixedHeaderHeight > 0) {
                 ctx.drawImage(
                     image,
@@ -3753,7 +3762,6 @@ function plannerShowScheduleImage(blob, headerHeight = 0) {
 
             let destinationY = fixedHeaderHeight;
 
-            // ヘッダーと最初の範囲の境目にも目印を入れる
             if (fixedHeaderHeight > 0) {
                 drawWaveSeparator(ctx, naturalWidth, destinationY);
             }
@@ -3820,22 +3828,31 @@ function plannerShowScheduleImage(blob, headerHeight = 0) {
         }
     };
 
-    // 最後に追加した範囲を削除
+    // 選択中の範囲だけを削除
     removeRangeButton.onclick = () => {
-        if (!cropRanges.length) return;
+        if (
+            activeRangeIndex < 0 ||
+            !cropRanges[activeRangeIndex]
+        ) {
+            return;
+        }
 
-        cropRanges.pop();
+        cropRanges.splice(activeRangeIndex, 1);
+
         activeRangeIndex = -1;
+        editingEdge = null;
+        dragStartY = null;
+        dragCurrentY = null;
 
         drawSelections();
         updateButtons();
 
         status.textContent = cropRanges.length
-            ? "最後の範囲を削除しました。"
+            ? "選択範囲を削除しました。削除したい範囲をタップして選択できます。"
             : "範囲をすべて削除しました。";
     };
 
-    // 元の画像に戻す
+    // 元画像に戻して、そのまま再トリミング
     undoButton.onclick = () => {
         currentBlob = blob;
         currentUrl = originalUrl;
@@ -3847,7 +3864,6 @@ function plannerShowScheduleImage(blob, headerHeight = 0) {
         }
 
         preview.src = originalUrl;
-        preview.style.display = "block";
 
         cropRanges = [];
         cropMode = false;
@@ -3858,15 +3874,13 @@ function plannerShowScheduleImage(blob, headerHeight = 0) {
         dragCurrentY = null;
         editingEdge = null;
 
+        sourceImageHeight = 0;
         sourceHeaderHeight = headerHeight;
 
         cropArea.style.display = "none";
         cropArea.style.touchAction = "pan-y";
 
-        status.textContent = "元の画像に戻しました。";
-
-        drawSelections();
-        updateButtons();
+        startCropSelection();
     };
 
     // 画像を保存
@@ -3949,6 +3963,7 @@ function plannerShowScheduleImage(blob, headerHeight = 0) {
 
     updateButtons();
 }
+
 
 
 
