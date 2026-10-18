@@ -2960,6 +2960,7 @@ async function plannerCreateScheduleImage(includeFamily) {
 
 
 
+
 function plannerShowScheduleImage(blob) {
     const oldModal = document.getElementById(
         "plannerScheduleImageModal"
@@ -3004,7 +3005,7 @@ function plannerShowScheduleImage(blob) {
     Object.assign(content.style, {
         maxHeight: "90vh",
         overflowY: "auto",
-        paddingTop: "6px"
+        padding: "6px"
     });
 
     const heading = document.createElement("h2");
@@ -3083,7 +3084,7 @@ function plannerShowScheduleImage(blob) {
 
     cropArea.append(cropImage, selectionLayer);
 
-    // 操作ボタン
+    // ボタン作成
     const cropButton = document.createElement("button");
     cropButton.type = "button";
     cropButton.textContent = "✂️ トリミング";
@@ -3091,22 +3092,18 @@ function plannerShowScheduleImage(blob) {
     const addRangeButton = document.createElement("button");
     addRangeButton.type = "button";
     addRangeButton.textContent = "➕ 範囲を追加";
-    addRangeButton.style.display = "none";
 
     const removeRangeButton = document.createElement("button");
     removeRangeButton.type = "button";
-    removeRangeButton.textContent = "↩️ 最後を削除";
-    removeRangeButton.style.display = "none";
+    removeRangeButton.textContent = "↩️ 最後の範囲を削除";
 
     const previewCropButton = document.createElement("button");
     previewCropButton.type = "button";
     previewCropButton.textContent = "👀 結果を確認";
-    previewCropButton.style.display = "none";
 
     const undoButton = document.createElement("button");
     undoButton.type = "button";
     undoButton.textContent = "↩️ 元に戻す";
-    undoButton.style.display = "none";
 
     const saveButton = document.createElement("button");
     saveButton.type = "button";
@@ -3143,22 +3140,35 @@ function plannerShowScheduleImage(blob) {
         });
     });
 
+    // 画面状態に応じてボタンを切り替える
     function updateButtons() {
+        const isResult = currentBlob !== blob;
+
+        cropButton.style.display =
+            !cropMode && !isResult ? "inline-block" : "none";
+
         addRangeButton.style.display =
             cropMode && !waitingForRange ? "inline-block" : "none";
 
         removeRangeButton.style.display =
-            cropRanges.length ? "inline-block" : "none";
+            cropMode && !waitingForRange && cropRanges.length
+                ? "inline-block"
+                : "none";
 
         previewCropButton.style.display =
-            cropRanges.length && !waitingForRange
+            cropMode && !waitingForRange && cropRanges.length
                 ? "inline-block"
                 : "none";
 
         undoButton.style.display =
-            currentBlob !== blob ? "inline-block" : "none";
+            isResult ? "inline-block" : "none";
+
+        saveButton.style.display = "inline-block";
+        shareButton.style.display = "inline-block";
+        closeButton.style.display = "inline-block";
     }
 
+    // 選択範囲を描画
     function drawSelections() {
         selectionLayer.replaceChildren();
 
@@ -3224,17 +3234,15 @@ function plannerShowScheduleImage(blob) {
         cropArea.style.touchAction = "none";
 
         preview.style.display = "none";
-        cropButton.style.display = "none";
 
         status.textContent =
-            "画像上で指を上下に動かし、残したい範囲を指定してください。";
+            "画像上で指を上下に動かして、残したい範囲を指定してください。";
 
         drawSelections();
         updateButtons();
     }
 
     cropButton.onclick = () => {
-        // 新しくトリミングを始めるときは以前の範囲をクリア
         cropRanges = [];
         startCropSelection();
     };
@@ -3307,7 +3315,6 @@ function plannerShowScheduleImage(blob) {
                 "範囲が短すぎます。「範囲を追加」から指定し直してください。";
         }
 
-        // 選択終了。以後はスクロール可能にする
         waitingForRange = false;
         dragStartY = null;
         dragCurrentY = null;
@@ -3329,7 +3336,7 @@ function plannerShowScheduleImage(blob) {
         updateButtons();
     });
 
-    // 選択した複数の範囲をつなげて画像を作成
+    // 複数の選択範囲をつなげて結果を作成
     previewCropButton.onclick = async () => {
         if (!cropRanges.length || waitingForRange) return;
 
@@ -3420,9 +3427,6 @@ function plannerShowScheduleImage(blob) {
             cropMode = false;
             waitingForRange = false;
 
-            cropButton.style.display = "inline-block";
-            cropButton.textContent = "✂️ 再トリミング";
-
             status.textContent =
                 "トリミング結果を確認してください。";
 
@@ -3433,7 +3437,7 @@ function plannerShowScheduleImage(blob) {
         }
     };
 
-    // 最後に追加した範囲を削除
+    // 最後の範囲を削除
     removeRangeButton.onclick = () => {
         if (!cropRanges.length) return;
 
@@ -3459,19 +3463,17 @@ function plannerShowScheduleImage(blob) {
         }
 
         preview.src = originalUrl;
-        cropRanges = [];
+        preview.style.display = "block";
 
+        cropRanges = [];
         cropMode = false;
         waitingForRange = false;
+
         dragStartY = null;
         dragCurrentY = null;
 
         cropArea.style.display = "none";
         cropArea.style.touchAction = "pan-y";
-
-        preview.style.display = "block";
-        cropButton.style.display = "inline-block";
-        cropButton.textContent = "✂️ トリミング";
 
         status.textContent = "元の画像に戻しました。";
 
@@ -3479,7 +3481,7 @@ function plannerShowScheduleImage(blob) {
         updateButtons();
     };
 
-    // 画像を保存
+    // 保存
     saveButton.onclick = () => {
         const link = document.createElement("a");
 
@@ -3496,7 +3498,7 @@ function plannerShowScheduleImage(blob) {
         link.remove();
     };
 
-    // 画像を共有
+    // 共有
     shareButton.onclick = async () => {
         try {
             const file = new File(
