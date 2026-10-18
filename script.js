@@ -2804,37 +2804,7 @@ async function plannerCreateScheduleImage(includeFamily) {
 
 
 
-        // 画像用の複製でも家族予定の縦書き設定を維持
-const familySelectors = [
-    ".planner-family-lane",
-    ".planner-family-lane-header",
-    ".planner-family-lane-events",
-    ".planner-family-event-item",
-    ".planner-family-event-bar",
-    ".planner-family-event-title"
-];
-
-familySelectors.forEach(selector => {
-    const originals =
-        originalTimeline.querySelectorAll(selector);
-
-    const clones =
-        timelineClone.querySelectorAll(selector);
-
-    clones.forEach((element, index) => {
-        const original = originals[index];
-
-        if (!original) return;
-
-        const style = getComputedStyle(original);
-
-        element.style.writingMode = style.writingMode;
-        element.style.textOrientation = style.textOrientation;
-        element.style.whiteSpace = style.whiteSpace;
-        element.style.wordBreak = style.wordBreak;
-        element.style.overflowWrap = style.overflowWrap;
-    });
-});
+        
 
 
 
@@ -2850,6 +2820,56 @@ familySelectors.forEach(selector => {
                 clonedLayout.style.paddingTop = "0";
             }
         }
+
+
+
+
+        
+        // 共有画像内の家族予定名を縦書き用に変換
+        // 元の1日手帳には影響させない
+        if (includeFamily) {
+            timelineClone.querySelectorAll(
+                ".planner-family-event-title"
+            ).forEach(title => {
+                const text = title.textContent || "";
+
+                title.textContent = "";
+
+                Object.assign(title.style, {
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "flex-start",
+                    writingMode: "horizontal-tb",
+                    textOrientation: "mixed",
+                    whiteSpace: "normal",
+                    overflow: "hidden",
+                    lineHeight: "1.2"
+                });
+
+                Array.from(text).forEach(character => {
+                    const span = document.createElement("span");
+                    span.textContent = character;
+
+                    Object.assign(span.style, {
+                        display: "block",
+                        flex: "0 0 auto",
+                        writingMode: "horizontal-tb",
+                        transform: "none"
+                    });
+
+                    title.appendChild(span);
+                });
+            });
+        }
+
+
+
+
+
+
+
+
 
         // 固定高・スクロール制限を複製側で解除
         timelineClone.querySelectorAll(
