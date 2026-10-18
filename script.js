@@ -2958,47 +2958,349 @@ async function plannerCreateScheduleImage(includeFamily) {
    🖼️ 画像プレビュー・保存・共有
 ========================================= */
 
+
 function plannerShowScheduleImage(blob) {
     const oldModal = document.getElementById(
         "plannerScheduleImageModal"
     );
 
     if (oldModal) {
+        const oldUrl = oldModal.dataset.imageUrl;
+        if (oldUrl) URL.revokeObjectURL(oldUrl);
         oldModal.remove();
     }
 
-    const url = URL.createObjectURL(blob);
+    const originalUrl = URL.createObjectURL(blob);
+    let currentBlob = blob;
+    let currentUrl = originalUrl;
+    let cropRanges = [];
+    let cropMode = false;
+    let dragStartY = null;
+    let dragCurrentY = null;
 
     const modal = document.createElement("div");
     modal.id = "plannerScheduleImageModal";
     modal.className = "modal";
-
-    modal.style.display = "block";
-    modal.style.zIndex = "20000";
+    modal.dataset.imageUrl = originalUrl;
+    Object.assign(modal.style, {
+        display: "block",
+        zIndex: "20000"
+    });
 
     const content = document.createElement("div");
     content.className = "modal-content";
-    content.style.maxHeight = "85vh";
-    content.style.overflowY = "auto";
+    Object.assign(content.style, {
+        maxHeight: "90vh",
+        overflowY: "auto"
+    });
 
     const heading = document.createElement("h2");
     heading.textContent = "📤 予定画像";
 
     const preview = document.createElement("img");
-    preview.src = url;
+    preview.src = originalUrl;
     preview.alt = "1日手帳の予定画像";
-    preview.style.display = "block";
-    preview.style.width = "100%";
-    preview.style.height = "auto";
-    preview.style.marginBottom = "12px";
+    Object.assign(preview.style, {
+        display: "block",
+        width: "100%",
+        height: "auto",
+        marginBottom: "12px"
+    });
+
+    const cropArea = document.createElement("div");
+    Object.assign(cropArea.style, {
+        display: "none",
+        position: "relative",
+        width: "100%",
+        touchAction: "none",
+        userSelect: "none",
+        marginBottom: "12px"
+    });
+
+    const cropImage = document.createElement("img");
+    cropImage.src = originalUrl;
+    Object.assign(cropImage.style, {
+        display: "block",
+        width: "100%",
+        height: "auto",
+        pointerEvents: "none"
+    });
+
+    const selectionLayer = document.createElement("div");
+    Object.assign(selectionLayer.style, {
+        position: "absolute",
+        inset: "0",
+        pointerEvents: "none"
+    });
+
+    cropArea.append(cropImage, selectionLayer);
+
+    const status = document.createElement("p");
+    status.textContent = "画像をそのまま保存・共有できます。";
+
+    const cropButton = document.createElement("button");
+    cropButton.type = "button";
+    cropButton.textContent = "✂️ トリミング";
+
+    const addRangeButton = document.createElement("button");
+    addRangeButton.type = "button";
+    addRangeButton.textContent = "➕ 範囲を追加";
+    addRangeButton.style.display = "none";
+
+    const removeRangeButton = document.createElement("button");
+    removeRangeButton.type = "button";
+    removeRangeButton.textContent = "↩️ 最後の範囲を削除";
+    removeRangeButton.style.display = "none";
+
+    const previewCropButton = document.createElement("button");
+    previewCropButton.type = "button";
+    previewCropButton.textContent = "👀 トリミング結果を確認";
+    previewCropButton.style.display = "none";
+
+    const undoButton = document.createElement("button");
+    undoButton.type = "button";
+    undoButton.textContent = "元の画像に戻す";
+    undoButton.style.display = "none";
 
     const saveButton = document.createElement("button");
     saveButton.type = "button";
     saveButton.textContent = "💾 画像を保存";
 
+    const shareButton = document.createElement("button");
+    shareButton.type = "button";
+    shareButton.textContent = "📤 保存して共有";
+
+    const closeButton = document.createElement("button");
+    closeButton.type = "button";
+    closeButton.textContent = "閉じる";
+
+    let imageObjectUrl = null;
+
+    function updateButtons() {
+        addRangeButton.style.display = cropMode ? "block" : "none";
+        removeRangeButton.style.display =
+            cropMode && cropRanges.length ? "block" : "none";
+        previewCropButton.style.display =
+            cropMode && cropRanges.length ? "block" : "none";
+        undoButton.style.display = currentBlob !== blob ? "block" : "none";
+    }
+
+    function drawSelections() {
+        selectionLayer.replaceChildren();
+
+        cropRanges.forEach((range, index) => {
+            const box = document.createElement("div");
+            Object.assign(box.style, {
+                position: "absolute",
+                left: "0",
+                right: "0",
+                top: `${range.start * 100}%`,
+                height: `${(range.end - range.start) * 100}%`,
+                boxSizing: "border-box",
+                border: "2px solid #16a34a",
+                background: "rgba(22,163,74,0.12)"
+            });
+
+            const label = document.createElement("span");
+            label.textContent = `残す範囲 ${index + 1}`;
+            Object.assign(label.style, {
+                display: "inline-block",
+                background: "#16a34a",
+                color: "#fff",
+                padding: "3px 6px",
+                fontSize: "12px"
+            });
+
+            box.appendChild(label);
+            selectionLayer.appendChild(box);
+        });
+
+        if (dragStartY !== null && dragCurrentY !== null) {
+            const top = Math.min(dragStartY, dragCurrentY);
+            const bottom = Math.max(dragStartY, dragCurrentY);
+            const box = document.createElement("div");
+
+            Object.assign(box.style, {
+                position: "absolute",
+                left: "0",
+                right: "0",
+                top: `${top * 100}%`,
+                height: `${(bottom - top) * 100}%`,
+                border: "2px dashed #2563eb",
+                background: "rgba(37,99,235,0.12)",
+                boxSizing: "border-box"
+            });
+
+            selectionLayer.appendChild(box);
+        }
+    }
+
+    cropButton.onclick = () => {
+        cropMode = true;
+        cropArea.style.display = "block";
+        preview.style.display = "none";
+        cropButton.style.display = "none";
+        status.textContent =
+            "画像上で指を上下に動かし、残したい範囲を選んでください。";
+        updateButtons();
+    };
+
+    function getRelativeY(event) {
+        const rect = cropArea.getBoundingClientRect();
+        return Math.max(
+            0,
+            Math.min(1, (event.clientY - rect.top) / rect.height)
+        );
+    }
+
+    cropArea.addEventListener("pointerdown", event => {
+        if (!cropMode) return;
+        event.preventDefault();
+        cropArea.setPointerCapture(event.pointerId);
+        dragStartY = getRelativeY(event);
+        dragCurrentY = dragStartY;
+        drawSelections();
+    });
+
+    cropArea.addEventListener("pointermove", event => {
+        if (dragStartY === null) return;
+        dragCurrentY = getRelativeY(event);
+        drawSelections();
+    });
+
+    cropArea.addEventListener("pointerup", event => {
+        if (dragStartY === null) return;
+
+        dragCurrentY = getRelativeY(event);
+
+        const start = Math.min(dragStartY, dragCurrentY);
+        const end = Math.max(dragStartY, dragCurrentY);
+
+        if (end - start > 0.01) {
+            cropRanges.push({ start, end });
+            cropRanges.sort((a, b) => a.start - b.start);
+        }
+
+        dragStartY = null;
+        dragCurrentY = null;
+        drawSelections();
+        updateButtons();
+    });
+
+    addRangeButton.onclick = () => {
+        status.textContent =
+            "画像上で次に残したい範囲を指で選んでください。";
+    };
+
+    removeRangeButton.onclick = () => {
+        cropRanges.pop();
+        drawSelections();
+        updateButtons();
+    };
+
+    previewCropButton.onclick = async () => {
+        if (!cropRanges.length) return;
+
+        try {
+            const image = new Image();
+            image.src = originalUrl;
+            await image.decode();
+
+            const sourceCanvas = document.createElement("canvas");
+            sourceCanvas.width = image.naturalWidth;
+            sourceCanvas.height = image.naturalHeight;
+
+            const ctx = sourceCanvas.getContext("2d");
+            ctx.drawImage(image, 0, 0);
+
+            const ranges = [...cropRanges]
+                .sort((a, b) => a.start - b.start)
+                .map(range => ({
+                    start: Math.round(range.start * image.naturalHeight),
+                    end: Math.round(range.end * image.naturalHeight)
+                }))
+                .filter(range => range.end > range.start);
+
+            if (!ranges.length) return;
+
+            const outputHeight = ranges.reduce(
+                (sum, range) => sum + range.end - range.start,
+                0
+            );
+
+            const output = document.createElement("canvas");
+            output.width = image.naturalWidth;
+            output.height = outputHeight;
+
+            const outputCtx = output.getContext("2d");
+            let destinationY = 0;
+
+            ranges.forEach(range => {
+                const height = range.end - range.start;
+
+                outputCtx.drawImage(
+                    sourceCanvas,
+                    0,
+                    range.start,
+                    image.naturalWidth,
+                    height,
+                    0,
+                    destinationY,
+                    image.naturalWidth,
+                    height
+                );
+
+                destinationY += height;
+            });
+
+            const resultBlob = await new Promise(resolve =>
+                output.toBlob(resolve, "image/png")
+            );
+
+            if (!resultBlob) {
+                throw new Error("画像を作成できませんでした。");
+            }
+
+            currentBlob = resultBlob;
+
+            if (imageObjectUrl) {
+                URL.revokeObjectURL(imageObjectUrl);
+            }
+
+            imageObjectUrl = URL.createObjectURL(currentBlob);
+            currentUrl = imageObjectUrl;
+
+            preview.src = currentUrl;
+            preview.style.display = "block";
+            cropArea.style.display = "none";
+            cropMode = false;
+            cropButton.style.display = "block";
+            cropButton.textContent = "✂️ さらにトリミング";
+            status.textContent = "トリミング結果を確認してください。";
+            updateButtons();
+        } catch (error) {
+            console.error("トリミングエラー:", error);
+            alert("トリミングに失敗しました。");
+        }
+    };
+
+    undoButton.onclick = () => {
+        currentBlob = blob;
+        currentUrl = originalUrl;
+        preview.src = originalUrl;
+        cropRanges = [];
+        cropMode = false;
+        cropArea.style.display = "none";
+        preview.style.display = "block";
+        cropButton.style.display = "block";
+        cropButton.textContent = "✂️ トリミング";
+        status.textContent = "元の画像に戻しました。";
+        updateButtons();
+    };
+
     saveButton.onclick = () => {
         const link = document.createElement("a");
-        link.href = url;
+        link.href = currentUrl;
         link.download =
             "1日手帳_" +
             (typeof selectedCalendarDate !== "undefined"
@@ -3011,14 +3313,10 @@ function plannerShowScheduleImage(blob) {
         link.remove();
     };
 
-    const shareButton = document.createElement("button");
-    shareButton.type = "button";
-    shareButton.textContent = "📤 保存して共有";
-
     shareButton.onclick = async () => {
         try {
             const file = new File(
-                [blob],
+                [currentBlob],
                 "1日手帳.png",
                 { type: "image/png" }
             );
@@ -3046,18 +3344,22 @@ function plannerShowScheduleImage(blob) {
         }
     };
 
-    const closeButton = document.createElement("button");
-    closeButton.type = "button";
-    closeButton.textContent = "閉じる";
-
     closeButton.onclick = () => {
-        URL.revokeObjectURL(url);
+        if (imageObjectUrl) URL.revokeObjectURL(imageObjectUrl);
+        URL.revokeObjectURL(originalUrl);
         modal.remove();
     };
 
     content.append(
         heading,
         preview,
+        cropArea,
+        status,
+        cropButton,
+        addRangeButton,
+        removeRangeButton,
+        previewCropButton,
+        undoButton,
         saveButton,
         shareButton,
         closeButton
@@ -3066,6 +3368,7 @@ function plannerShowScheduleImage(blob) {
     modal.appendChild(content);
     document.body.appendChild(modal);
 }
+
 
 
 
