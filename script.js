@@ -3141,32 +3141,77 @@ function plannerShowScheduleImage(blob) {
     });
 
     // 画面状態に応じてボタンを切り替える
-    function updateButtons() {
-        const isResult = currentBlob !== blob;
 
-        cropButton.style.display =
-            !cropMode && !isResult ? "inline-block" : "none";
+function updateButtons() {
+    const isResult = currentBlob !== blob;
 
-        addRangeButton.style.display =
-            cropMode && !waitingForRange ? "inline-block" : "none";
+    // 最初の画面
+    cropButton.style.display =
+        !cropMode && !isResult ? "inline-block" : "none";
 
-        removeRangeButton.style.display =
-            cropMode && !waitingForRange && cropRanges.length
-                ? "inline-block"
-                : "none";
+    // トリミング中：範囲選択が終わったら操作ボタンを表示
+    addRangeButton.style.display =
+        cropMode && !waitingForRange ? "inline-block" : "none";
 
-        previewCropButton.style.display =
-            cropMode && !waitingForRange && cropRanges.length
-                ? "inline-block"
-                : "none";
+    removeRangeButton.style.display =
+        cropMode && !waitingForRange && cropRanges.length > 0
+            ? "inline-block"
+            : "none";
 
-        undoButton.style.display =
-            isResult ? "inline-block" : "none";
+    previewCropButton.style.display =
+        cropMode && !waitingForRange && cropRanges.length > 0
+            ? "inline-block"
+            : "none";
 
-        saveButton.style.display = "inline-block";
-        shareButton.style.display = "inline-block";
-        closeButton.style.display = "inline-block";
+    // 結果確認後
+    undoButton.style.display =
+        isResult ? "inline-block" : "none";
+
+    // 保存・共有・閉じるは常に表示
+    saveButton.style.display = "inline-block";
+    shareButton.style.display = "inline-block";
+    closeButton.style.display = "inline-block";
+
+    // ボタンの順番も状態に合わせて整理
+    if (isResult) {
+        toolbar.replaceChildren(
+            cropButton,
+            undoButton,
+            saveButton,
+            shareButton,
+            closeButton
+        );
+
+        cropButton.textContent = "✂️ 再トリミング";
+        cropButton.style.display = "inline-block";
+    } else if (cropMode && !waitingForRange) {
+        toolbar.replaceChildren(
+            addRangeButton,
+            removeRangeButton,
+            previewCropButton,
+            saveButton,
+            shareButton,
+            closeButton
+        );
+    } else if (cropMode && waitingForRange) {
+        toolbar.replaceChildren(
+            saveButton,
+            shareButton,
+            closeButton
+        );
+    } else {
+        toolbar.replaceChildren(
+            cropButton,
+            saveButton,
+            shareButton,
+            closeButton
+        );
+
+        cropButton.textContent = "✂️ トリミング";
     }
+}
+
+
 
     // 選択範囲を描画
     function drawSelections() {
