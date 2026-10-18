@@ -3916,10 +3916,21 @@ function plannerShowScheduleImage(blob, headerHeight = 0) {
                 const writable = await fileHandle.createWritable();
 
                 await writable.write(currentBlob);
-                await writable.close();
+                
+                
+                
+await writable.close();
 
-                status.textContent = "✅ 保存しました！";
-
+status.textContent = "✅ 保存しました！";
+status.style.display = "block";
+status.style.color = "#16a34a";
+status.style.fontWeight = "bold";
+status.scrollIntoView({
+    behavior: "smooth",
+    block: "nearest"
+});
+            
+            
             } catch (error) {
                 if (error.name === "AbortError") {
                     status.textContent = "保存をキャンセルしました。";
@@ -3949,7 +3960,7 @@ function plannerShowScheduleImage(blob, headerHeight = 0) {
             "ダウンロードを開始しました。完了はブラウザのダウンロード一覧で確認してください。";
     };
 
-    
+
 
 
 
