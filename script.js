@@ -3057,6 +3057,77 @@ function plannerShowScheduleImage(blob, headerHeight = 0) {
     });
 
     const status = document.createElement("p");
+
+
+
+
+
+    
+    // 保存完了ポップアップ
+    function showSaveSuccess() {
+        const toast = document.createElement("div");
+
+        toast.innerHTML = `
+            <div style="
+                width: 52px;
+                height: 52px;
+                border-radius: 50%;
+                background: #e9f9ef;
+                color: #16834a;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 30px;
+                font-weight: bold;
+            ">✓</div>
+            <div style="
+                color: #ffffff;
+                font-size: 17px;
+                font-weight: bold;
+            ">保存しました！</div>
+        `;
+
+        Object.assign(toast.style, {
+            position: "fixed",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%) scale(0.95)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "14px",
+            width: "min(260px, calc(100vw - 48px))",
+            minHeight: "150px",
+            boxSizing: "border-box",
+            padding: "24px",
+            background: "#22212b",
+            borderRadius: "22px",
+            boxShadow: "0 12px 40px rgba(0,0,0,0.3)",
+            zIndex: "30000",
+            opacity: "0",
+            transition: "opacity 0.2s ease, transform 0.2s ease"
+        });
+
+        document.body.appendChild(toast);
+
+        requestAnimationFrame(() => {
+            toast.style.opacity = "1";
+            toast.style.transform = "translate(-50%, -50%) scale(1)";
+        });
+
+        setTimeout(() => {
+            toast.style.opacity = "0";
+            toast.style.transform = "translate(-50%, -50%) scale(0.95)";
+
+            setTimeout(() => toast.remove(), 250);
+        }, 1800);
+    }
+
+
+
+
+
     status.textContent = "画像をそのまま保存・共有できます。";
 
     Object.assign(status.style, {
@@ -3921,14 +3992,7 @@ function plannerShowScheduleImage(blob, headerHeight = 0) {
                 
 await writable.close();
 
-status.textContent = "✅ 保存しました！";
-status.style.display = "block";
-status.style.color = "#16a34a";
-status.style.fontWeight = "bold";
-status.scrollIntoView({
-    behavior: "smooth",
-    block: "nearest"
-});
+showSaveSuccess();
             
             
             } catch (error) {
