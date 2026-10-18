@@ -3727,33 +3727,22 @@ function plannerShowScheduleImage(blob, headerHeight = 0) {
         updateButtons();
     });
 
-    // 二重波線で画像の省略・接続位置を示す
+
+    // 横の点線で画像の省略・接続位置を示す
     function drawWaveSeparator(ctx, width, y) {
         ctx.save();
+
         ctx.strokeStyle = "#444";
-        ctx.lineWidth = Math.max(2, width / 500);
-        ctx.setLineDash([]);
+        ctx.lineWidth = Math.max(1.5, width / 800);
+        ctx.setLineDash([
+            Math.max(3, width / 100),
+            Math.max(3, width / 100)
+        ]);
 
-        for (const offset of [-2, 2]) {
-            ctx.beginPath();
-
-            const amplitude = Math.max(3, width / 180);
-            const wavelength = Math.max(20, width / 12);
-
-            for (let x = 0; x <= width; x += 2) {
-                const py =
-                    y + offset +
-                    Math.sin((x / wavelength) * Math.PI * 2) * amplitude;
-
-                if (x === 0) {
-                    ctx.moveTo(x, py);
-                } else {
-                    ctx.lineTo(x, py);
-                }
-            }
-
-            ctx.stroke();
-        }
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
+        ctx.stroke();
 
         ctx.restore();
     }
