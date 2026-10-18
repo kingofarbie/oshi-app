@@ -1155,6 +1155,7 @@ planner.querySelectorAll(
 
 }
 
+
 if (!window.__plannerStickyOffsetResizeBound) {
 window.__plannerStickyOffsetResizeBound = true;
 

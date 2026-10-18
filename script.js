@@ -2715,6 +2715,7 @@ plannerCreateScheduleImage(includeFamily);
    ・家族レーンは選択に応じて処理する
 ========================================= */
 
+
 async function plannerCreateScheduleImage(includeFamily) {
     if (typeof window.html2canvas !== "function") {
         alert(
@@ -2724,22 +2725,16 @@ async function plannerCreateScheduleImage(includeFamily) {
         return;
     }
 
-    const originalTimeline = document.getElementById(
-        "plannerTimeline"
-    );
+    const originalTimeline = document.getElementById("plannerTimeline");
+    const originalTitle = document.getElementById("plannerTitle");
+    const originalPlanner = document.getElementById("dayPlanner");
 
-    const originalTitle = document.getElementById(
-        "plannerTitle"
-    );
-
-    if (!originalTimeline || !originalTitle) {
+    if (!originalTimeline || !originalTitle || !originalPlanner) {
         alert("1日手帳の表示が見つかりません。");
         return;
     }
 
-    const originalLayout = originalTimeline.querySelector(
-        ".planner-layout"
-    );
+    const originalLayout = originalTimeline.querySelector(".planner-layout");
 
     if (!originalLayout) {
         alert("予定の表示領域が見つかりません。");
@@ -2749,19 +2744,13 @@ async function plannerCreateScheduleImage(includeFamily) {
     let exportRoot = null;
 
     try {
-        const layoutRect =
-            originalLayout.getBoundingClientRect();
+        const layoutRect = originalLayout.getBoundingClientRect();
 
         const width = Math.ceil(
-            Math.max(
-                originalLayout.scrollWidth,
-                layoutRect.width
-            )
+            Math.max(originalLayout.scrollWidth, layoutRect.width)
         );
 
-        // 画像専用の複製を作る
         exportRoot = document.createElement("div");
-
         exportRoot.id = "plannerScheduleExportTemp";
 
         Object.assign(exportRoot.style, {
@@ -2780,10 +2769,26 @@ async function plannerCreateScheduleImage(includeFamily) {
         const titleClone = originalTitle.cloneNode(true);
         const timelineClone = originalTimeline.cloneNode(true);
 
+        // 記念日バブルはタイトルの兄弟要素なので、別に複製する
+        const originalBadge = originalPlanner.querySelector(
+            ".planner-anniversary-badge"
+        );
+
+        const badgeClone = originalBadge
+            ? originalBadge.cloneNode(true)
+            : null;
+
         titleClone.style.position = "relative";
         titleClone.style.top = "0";
         titleClone.style.width = width + "px";
         titleClone.style.transform = "none";
+
+        if (badgeClone) {
+            badgeClone.style.position = "relative";
+            badgeClone.style.top = "0";
+            badgeClone.style.left = "0";
+            badgeClone.style.transform = "none";
+        }
 
         timelineClone.style.width = width + "px";
         timelineClone.style.height = "auto";
@@ -2797,19 +2802,7 @@ async function plannerCreateScheduleImage(includeFamily) {
         ).forEach(button => button.remove());
 
         // 家族レーンを含めない場合は複製側だけ変更
-        const clonedLayout = timelineClone.querySelector(
-            ".planner-layout"
-        );
-
-
-
-
-        
-
-
-
-
-
+        const clonedLayout = timelineClone.querySelector(".planner-layout");
 
         if (!includeFamily) {
             timelineClone.querySelectorAll(
@@ -2821,10 +2814,6 @@ async function plannerCreateScheduleImage(includeFamily) {
             }
         }
 
-
-
-
-        
         // 共有画像内の家族予定名を縦書き用に変換
         // 元の1日手帳には影響させない
         if (includeFamily) {
@@ -2832,7 +2821,6 @@ async function plannerCreateScheduleImage(includeFamily) {
                 ".planner-family-event-title"
             ).forEach(title => {
                 const text = title.textContent || "";
-
                 title.textContent = "";
 
                 Object.assign(title.style, {
@@ -2863,14 +2851,6 @@ async function plannerCreateScheduleImage(includeFamily) {
             });
         }
 
-
-
-
-
-
-
-
-
         // 固定高・スクロール制限を複製側で解除
         timelineClone.querySelectorAll(
             ".planner-layout, .planner-board, " +
@@ -2881,47 +2861,77 @@ async function plannerCreateScheduleImage(includeFamily) {
         });
 
         exportRoot.appendChild(titleClone);
+
+        if (badgeClone) {
+            exportRoot.appendChild(badgeClone);
+        }
+
         exportRoot.appendChild(timelineClone);
         document.body.appendChild(exportRoot);
 
-        // レイアウト計算を待ってから画像化
+        // レイアウト計算を待つ
         await new Promise(resolve =>
             requestAnimationFrame(() =>
                 requestAnimationFrame(resolve)
             )
         );
 
-        const exportHeight = Math.ceil(
-            exportRoot.scrollHeight
+        // ヘッダーの下端を実際の表示位置から計測する
+        const rootRect = exportRoot.getBoundingClientRect();
+
+        let headerBottom = Math.max(
+            titleClone.getBoundingClientRect().bottom,
+            badgeClone
+                ? badgeClone.getBoundingClientRect().bottom
+                : 0
         );
 
-        const canvas = await window.html2canvas(
-            exportRoot,
-            {
-                backgroundColor: "#ffffff",
-                scale: Math.min(
-                    2,
-                    Math.sqrt(
-                        16000000 /
-                        Math.max(1, width * exportHeight)
-                    )
-                ),
-                useCORS: true,
-                logging: false,
-                width: width,
-                height: exportHeight,
-                windowWidth: Math.max(
-                    document.documentElement.clientWidth,
-                    width
-                ),
-                windowHeight: Math.max(
-                    window.innerHeight,
-                    exportHeight
-                ),
-                scrollX: 0,
-                scrollY: 0
-            }
+        if (includeFamily) {
+            timelineClone.querySelectorAll(
+                ".planner-family-lane-header"
+            ).forEach(header => {
+                headerBottom = Math.max(
+                    headerBottom,
+                    header.getBoundingClientRect().bottom
+                );
+            });
+        }
+
+        const exportHeight = Math.ceil(exportRoot.scrollHeight);
+
+        const headerRatio = Math.max(
+            0,
+            Math.min(
+                1,
+                (headerBottom - rootRect.top) /
+                    Math.max(1, exportHeight)
+            )
         );
+
+        const canvas = await window.html2canvas(exportRoot, {
+            backgroundColor: "#ffffff",
+            scale: Math.min(
+                2,
+                Math.sqrt(
+                    16000000 /
+                    Math.max(1, width * exportHeight)
+                )
+            ),
+            useCORS: true,
+            logging: false,
+            width,
+            height: exportHeight,
+            windowWidth: Math.max(
+                document.documentElement.clientWidth,
+                width
+            ),
+            windowHeight: Math.max(
+                window.innerHeight,
+                exportHeight
+            ),
+            scrollX: 0,
+            scrollY: 0
+        });
 
         const blob = await new Promise(resolve => {
             canvas.toBlob(resolve, "image/png");
@@ -2931,13 +2941,19 @@ async function plannerCreateScheduleImage(includeFamily) {
             throw new Error("PNG画像を作成できませんでした。");
         }
 
-        plannerShowScheduleImage(blob);
+        // 実際の画像ピクセル数に変換して渡す
+        const headerHeight = Math.max(
+            0,
+            Math.min(
+                canvas.height,
+                Math.round(headerRatio * canvas.height)
+            )
+        );
+
+        plannerShowScheduleImage(blob, headerHeight);
 
     } catch (error) {
-        console.error(
-            "1日手帳の画像生成エラー:",
-            error
-        );
+        console.error("1日手帳の画像生成エラー:", error);
 
         alert(
             "画像を作成できませんでした。\n" +
@@ -2961,17 +2977,20 @@ async function plannerCreateScheduleImage(includeFamily) {
 
 
 
-function plannerShowScheduleImage(blob) {
+
+function plannerShowScheduleImage(blob, headerHeight = 0) {
     const oldModal = document.getElementById(
         "plannerScheduleImageModal"
     );
 
     if (oldModal) {
-        const oldUrl = oldModal.dataset.imageUrl;
-        const oldResultUrl = oldModal.dataset.resultUrl;
+        if (oldModal.dataset.imageUrl) {
+            URL.revokeObjectURL(oldModal.dataset.imageUrl);
+        }
 
-        if (oldUrl) URL.revokeObjectURL(oldUrl);
-        if (oldResultUrl) URL.revokeObjectURL(oldResultUrl);
+        if (oldModal.dataset.resultUrl) {
+            URL.revokeObjectURL(oldModal.dataset.resultUrl);
+        }
 
         oldModal.remove();
     }
@@ -2985,9 +3004,15 @@ function plannerShowScheduleImage(blob) {
     let cropRanges = [];
     let cropMode = false;
     let waitingForRange = false;
+    let activeRangeIndex = -1;
 
     let dragStartY = null;
     let dragCurrentY = null;
+    let editingEdge = null;
+    let pointerMoved = false;
+
+    let sourceImageHeight = 0;
+    let sourceHeaderHeight = headerHeight;
 
     const modal = document.createElement("div");
     modal.id = "plannerScheduleImageModal";
@@ -3016,7 +3041,6 @@ function plannerShowScheduleImage(blob) {
         fontSize: "18px"
     });
 
-    // 上部のコンパクトな操作欄
     const toolbar = document.createElement("div");
 
     Object.assign(toolbar.style, {
@@ -3051,7 +3075,6 @@ function plannerShowScheduleImage(blob) {
         marginBottom: "8px"
     });
 
-    // 範囲選択エリア
     const cropArea = document.createElement("div");
 
     Object.assign(cropArea.style, {
@@ -3084,7 +3107,6 @@ function plannerShowScheduleImage(blob) {
 
     cropArea.append(cropImage, selectionLayer);
 
-    // ボタン作成
     const cropButton = document.createElement("button");
     cropButton.type = "button";
     cropButton.textContent = "✂️ トリミング";
@@ -3117,7 +3139,6 @@ function plannerShowScheduleImage(blob) {
     closeButton.type = "button";
     closeButton.textContent = "閉じる";
 
-    // ボタンを小さく統一
     toolbar.append(
         cropButton,
         addRangeButton,
@@ -3140,82 +3161,113 @@ function plannerShowScheduleImage(blob) {
         });
     });
 
-    // 画面状態に応じてボタンを切り替える
-
-function updateButtons() {
-    const isResult = currentBlob !== blob;
-
-    // 最初の画面
-    cropButton.style.display =
-        !cropMode && !isResult ? "inline-block" : "none";
-
-    // トリミング中：範囲選択が終わったら操作ボタンを表示
-    addRangeButton.style.display =
-        cropMode && !waitingForRange ? "inline-block" : "none";
-
-    removeRangeButton.style.display =
-        cropMode && !waitingForRange && cropRanges.length > 0
-            ? "inline-block"
-            : "none";
-
-    previewCropButton.style.display =
-        cropMode && !waitingForRange && cropRanges.length > 0
-            ? "inline-block"
-            : "none";
-
-    // 結果確認後
-    undoButton.style.display =
-        isResult ? "inline-block" : "none";
-
-    // 保存・共有・閉じるは常に表示
-    saveButton.style.display = "inline-block";
-    shareButton.style.display = "inline-block";
-    closeButton.style.display = "inline-block";
-
-    // ボタンの順番も状態に合わせて整理
-    if (isResult) {
-        toolbar.replaceChildren(
-            cropButton,
-            undoButton,
-            saveButton,
-            shareButton,
-            closeButton
-        );
-
-        cropButton.textContent = "✂️ 再トリミング";
-        cropButton.style.display = "inline-block";
-    } else if (cropMode && !waitingForRange) {
-        toolbar.replaceChildren(
-            addRangeButton,
-            removeRangeButton,
-            previewCropButton,
-            saveButton,
-            shareButton,
-            closeButton
-        );
-    } else if (cropMode && waitingForRange) {
-        toolbar.replaceChildren(
-            saveButton,
-            shareButton,
-            closeButton
-        );
-    } else {
-        toolbar.replaceChildren(
-            cropButton,
-            saveButton,
-            shareButton,
-            closeButton
-        );
-
-        cropButton.textContent = "✂️ トリミング";
+    function isResult() {
+        return currentBlob !== blob;
     }
-}
 
+    function updateButtons() {
+        const result = isResult();
 
+        if (cropMode && waitingForRange) {
+            toolbar.replaceChildren(
+                saveButton,
+                shareButton,
+                closeButton
+            );
+            return;
+        }
 
-    // 選択範囲を描画
+        if (cropMode) {
+            toolbar.replaceChildren(
+                addRangeButton,
+                removeRangeButton,
+                previewCropButton,
+                saveButton,
+                shareButton,
+                closeButton
+            );
+
+            removeRangeButton.disabled = cropRanges.length === 0;
+            previewCropButton.disabled = cropRanges.length === 0;
+            return;
+        }
+
+        if (result) {
+            toolbar.replaceChildren(
+                cropButton,
+                undoButton,
+                saveButton,
+                shareButton,
+                closeButton
+            );
+
+            cropButton.textContent = "✂️ 再トリミング";
+        } else {
+            toolbar.replaceChildren(
+                cropButton,
+                saveButton,
+                shareButton,
+                closeButton
+            );
+
+            cropButton.textContent = "✂️ トリミング";
+        }
+    }
+
+    function getHeaderRatio() {
+        if (!sourceImageHeight) return 0;
+
+        return Math.max(
+            0,
+            Math.min(1, sourceHeaderHeight / sourceImageHeight)
+        );
+    }
+
+    function getRelativeY(event) {
+        const rect = cropArea.getBoundingClientRect();
+
+        if (!rect.height) return 0;
+
+        return Math.max(
+            0,
+            Math.min(1, (event.clientY - rect.top) / rect.height)
+        );
+    }
+
     function drawSelections() {
         selectionLayer.replaceChildren();
+
+        const headerRatio = getHeaderRatio();
+
+        // 自動で残すヘッダー領域
+        if (headerRatio > 0) {
+            const headerLine = document.createElement("div");
+
+            Object.assign(headerLine.style, {
+                position: "absolute",
+                left: "0",
+                right: "0",
+                top: `${headerRatio * 100}%`,
+                borderTop: "2px dashed #d97706"
+            });
+
+            selectionLayer.appendChild(headerLine);
+
+            const headerLabel = document.createElement("span");
+            headerLabel.textContent = "日付・ヘッダーは自動で残ります";
+
+            Object.assign(headerLabel.style, {
+                position: "absolute",
+                left: "3px",
+                top: "3px",
+                padding: "3px 5px",
+                background: "rgba(255,255,255,0.9)",
+                color: "#92400e",
+                fontSize: "11px"
+            });
+
+            selectionLayer.appendChild(headerLabel);
+        }
 
         cropRanges.forEach((range, index) => {
             const box = document.createElement("div");
@@ -3227,8 +3279,12 @@ function updateButtons() {
                 top: `${range.start * 100}%`,
                 height: `${(range.end - range.start) * 100}%`,
                 boxSizing: "border-box",
-                border: "2px solid #16a34a",
-                background: "rgba(22,163,74,0.12)"
+                border: index === activeRangeIndex
+                    ? "3px solid #2563eb"
+                    : "2px solid #16a34a",
+                background: index === activeRangeIndex
+                    ? "rgba(37,99,235,0.10)"
+                    : "rgba(22,163,74,0.10)"
             });
 
             const label = document.createElement("span");
@@ -3236,13 +3292,35 @@ function updateButtons() {
 
             Object.assign(label.style, {
                 display: "inline-block",
-                background: "#16a34a",
+                background: index === activeRangeIndex
+                    ? "#2563eb"
+                    : "#16a34a",
                 color: "#fff",
                 padding: "2px 5px",
                 fontSize: "11px"
             });
 
             box.appendChild(label);
+
+            // 選択中の範囲に上下の編集ハンドルを表示
+            if (index === activeRangeIndex) {
+                ["start", "end"].forEach(edge => {
+                    const handle = document.createElement("div");
+
+                    Object.assign(handle.style, {
+                        position: "absolute",
+                        left: "0",
+                        right: "0",
+                        height: "12px",
+                        background: "#2563eb",
+                        opacity: "0.9",
+                        [edge === "start" ? "top" : "bottom"]: "-4px"
+                    });
+
+                    box.appendChild(handle);
+                });
+            }
+
             selectionLayer.appendChild(box);
         });
 
@@ -3267,21 +3345,23 @@ function updateButtons() {
         }
     }
 
-    // 範囲選択を開始
     function startCropSelection() {
         cropMode = true;
         waitingForRange = true;
+        activeRangeIndex = -1;
 
         dragStartY = null;
         dragCurrentY = null;
+        editingEdge = null;
 
+        cropImage.src = currentUrl;
         cropArea.style.display = "block";
         cropArea.style.touchAction = "none";
 
         preview.style.display = "none";
 
         status.textContent =
-            "画像上で指を上下に動かして、残したい範囲を指定してください。";
+            "残したい範囲を上下にドラッグしてください。ヘッダーは自動で残ります。";
 
         drawSelections();
         updateButtons();
@@ -3296,19 +3376,8 @@ function updateButtons() {
         startCropSelection();
     };
 
-    function getRelativeY(event) {
-        const rect = cropArea.getBoundingClientRect();
-
-        if (!rect.height) return 0;
-
-        return Math.max(
-            0,
-            Math.min(1, (event.clientY - rect.top) / rect.height)
-        );
-    }
-
     cropArea.addEventListener("pointerdown", event => {
-        if (!cropMode || !waitingForRange) return;
+        if (!cropMode) return;
 
         event.preventDefault();
 
@@ -3316,110 +3385,238 @@ function updateButtons() {
             cropArea.setPointerCapture(event.pointerId);
         }
 
-        dragStartY = getRelativeY(event);
-        dragCurrentY = dragStartY;
+        const y = getRelativeY(event);
+
+        if (waitingForRange) {
+            dragStartY = Math.max(getHeaderRatio(), y);
+            dragCurrentY = dragStartY;
+            pointerMoved = false;
+            drawSelections();
+            return;
+        }
+
+        // 選択済み範囲の中なら編集対象にする
+        const index = cropRanges.findIndex(
+            range => y >= range.start && y <= range.end
+        );
+
+        if (index === -1) {
+            activeRangeIndex = -1;
+            editingEdge = null;
+            drawSelections();
+            return;
+        }
+
+        activeRangeIndex = index;
+
+        const range = cropRanges[index];
+        const edgeTolerance = 0.025;
+
+        if (Math.abs(y - range.start) <= edgeTolerance) {
+            editingEdge = "start";
+            dragStartY = y;
+            dragCurrentY = y;
+            pointerMoved = false;
+        } else if (Math.abs(y - range.end) <= edgeTolerance) {
+            editingEdge = "end";
+            dragStartY = y;
+            dragCurrentY = y;
+            pointerMoved = false;
+        } else {
+            editingEdge = null;
+            dragStartY = null;
+            dragCurrentY = null;
+        }
+
+        status.textContent = editingEdge
+            ? "上下端をドラッグして範囲を調整できます。"
+            : "上下端の近くをドラッグすると範囲を調整できます。";
 
         drawSelections();
     });
 
     cropArea.addEventListener("pointermove", event => {
-        if (
-            !cropMode ||
-            !waitingForRange ||
-            dragStartY === null
-        ) {
+        if (!cropMode) return;
+
+        const y = getRelativeY(event);
+
+        if (waitingForRange && dragStartY !== null) {
+            dragCurrentY = Math.max(getHeaderRatio(), y);
+            pointerMoved = true;
+            drawSelections();
             return;
         }
 
-        dragCurrentY = getRelativeY(event);
-        drawSelections();
+        if (
+            activeRangeIndex !== -1 &&
+            editingEdge &&
+            dragStartY !== null
+        ) {
+            const range = cropRanges[activeRangeIndex];
+            const minY = getHeaderRatio();
+
+            dragCurrentY = Math.max(minY, y);
+            pointerMoved = true;
+
+            if (editingEdge === "start") {
+                range.start = Math.min(
+                    dragCurrentY,
+                    range.end - 0.01
+                );
+                range.start = Math.max(minY, range.start);
+            } else {
+                range.end = Math.max(
+                    dragCurrentY,
+                    range.start + 0.01
+                );
+            }
+
+            drawSelections();
+        }
     });
 
-    cropArea.addEventListener("pointerup", event => {
-        if (
-            !cropMode ||
-            !waitingForRange ||
-            dragStartY === null
-        ) {
+    function finishPointer() {
+        if (!cropMode) return;
+
+        if (waitingForRange && dragStartY !== null) {
+            const start = Math.max(
+                getHeaderRatio(),
+                Math.min(dragStartY, dragCurrentY)
+            );
+
+            const end = Math.max(dragStartY, dragCurrentY);
+
+            if (end - start > 0.01) {
+                cropRanges.push({ start, end });
+
+                cropRanges.sort((a, b) => a.start - b.start);
+
+                status.textContent =
+                    "範囲を指定しました。「範囲を追加」で次の範囲を指定できます。";
+            } else {
+                status.textContent =
+                    "範囲が短すぎます。もう一度指定してください。";
+            }
+
+            waitingForRange = false;
+            dragStartY = null;
+            dragCurrentY = null;
+
+            cropArea.style.touchAction = "pan-y";
+
+            drawSelections();
+            updateButtons();
             return;
         }
 
-        dragCurrentY = getRelativeY(event);
+        if (editingEdge) {
+            editingEdge = null;
+            dragStartY = null;
+            dragCurrentY = null;
 
-        const start = Math.min(dragStartY, dragCurrentY);
-        const end = Math.max(dragStartY, dragCurrentY);
-
-        if (end - start > 0.01) {
-            cropRanges.push({ start, end });
-            cropRanges.sort((a, b) => a.start - b.start);
-
-            status.textContent =
-                "範囲を指定しました。「範囲を追加」で次の範囲を指定できます。";
-        } else {
-            status.textContent =
-                "範囲が短すぎます。「範囲を追加」から指定し直してください。";
+            status.textContent = "範囲を調整しました。";
+            drawSelections();
         }
+    }
 
-        waitingForRange = false;
-        dragStartY = null;
-        dragCurrentY = null;
-
-        cropArea.style.touchAction = "pan-y";
-
-        drawSelections();
-        updateButtons();
-    });
+    cropArea.addEventListener("pointerup", finishPointer);
 
     cropArea.addEventListener("pointercancel", () => {
         dragStartY = null;
         dragCurrentY = null;
+        editingEdge = null;
 
-        waitingForRange = false;
-        cropArea.style.touchAction = "pan-y";
+        if (waitingForRange) {
+            waitingForRange = false;
+            cropArea.style.touchAction = "pan-y";
+        }
 
         drawSelections();
         updateButtons();
     });
 
-    // 複数の選択範囲をつなげて結果を作成
+    // 二重波線で画像の省略・接続位置を示す
+    function drawWaveSeparator(ctx, width, y) {
+        ctx.save();
+        ctx.strokeStyle = "#444";
+        ctx.lineWidth = Math.max(2, width / 500);
+        ctx.setLineDash([]);
+
+        for (const offset of [-2, 2]) {
+            ctx.beginPath();
+
+            const amplitude = Math.max(3, width / 180);
+            const wavelength = Math.max(20, width / 12);
+
+            for (let x = 0; x <= width; x += 2) {
+                const py =
+                    y + offset +
+                    Math.sin((x / wavelength) * Math.PI * 2) * amplitude;
+
+                if (x === 0) {
+                    ctx.moveTo(x, py);
+                } else {
+                    ctx.lineTo(x, py);
+                }
+            }
+
+            ctx.stroke();
+        }
+
+        ctx.restore();
+    }
+
     previewCropButton.onclick = async () => {
         if (!cropRanges.length || waitingForRange) return;
 
         try {
             const image = new Image();
-            image.src = originalUrl;
+            image.src = currentUrl;
+
             await image.decode();
 
-            const ranges = [...cropRanges]
-                .sort((a, b) => a.start - b.start)
+            const naturalWidth = image.naturalWidth;
+            const naturalHeight = image.naturalHeight;
+
+            const fixedHeaderHeight = Math.max(
+                0,
+                Math.min(naturalHeight, sourceHeaderHeight)
+            );
+
+            const ranges = cropRanges
                 .map(range => ({
                     start: Math.max(
-                        0,
+                        fixedHeaderHeight,
                         Math.min(
-                            image.naturalHeight,
-                            Math.round(range.start * image.naturalHeight)
+                            naturalHeight,
+                            Math.round(range.start * naturalHeight)
                         )
                     ),
                     end: Math.max(
                         0,
                         Math.min(
-                            image.naturalHeight,
-                            Math.round(range.end * image.naturalHeight)
+                            naturalHeight,
+                            Math.round(range.end * naturalHeight)
                         )
                     )
                 }))
-                .filter(range => range.end > range.start);
+                .filter(range => range.end > range.start)
+                .sort((a, b) => a.start - b.start);
 
-            if (!ranges.length) return;
+            if (!ranges.length) {
+                alert("残す範囲を指定してください。");
+                return;
+            }
 
-            const outputHeight = ranges.reduce(
+            const selectedHeight = ranges.reduce(
                 (sum, range) => sum + range.end - range.start,
                 0
             );
 
+            // 自動で残すヘッダーを最初に配置
             const output = document.createElement("canvas");
-            output.width = image.naturalWidth;
-            output.height = outputHeight;
+            output.width = naturalWidth;
+            output.height = fixedHeaderHeight + selectedHeight;
 
             const ctx = output.getContext("2d");
 
@@ -3427,24 +3624,47 @@ function updateButtons() {
                 throw new Error("Canvasを利用できません。");
             }
 
-            let destinationY = 0;
+            if (fixedHeaderHeight > 0) {
+                ctx.drawImage(
+                    image,
+                    0,
+                    0,
+                    naturalWidth,
+                    fixedHeaderHeight,
+                    0,
+                    0,
+                    naturalWidth,
+                    fixedHeaderHeight
+                );
+            }
 
-            ranges.forEach(range => {
+            let destinationY = fixedHeaderHeight;
+
+            // ヘッダーと最初の範囲の境目にも目印を入れる
+            if (fixedHeaderHeight > 0) {
+                drawWaveSeparator(ctx, naturalWidth, destinationY);
+            }
+
+            ranges.forEach((range, index) => {
                 const height = range.end - range.start;
 
                 ctx.drawImage(
                     image,
                     0,
                     range.start,
-                    image.naturalWidth,
+                    naturalWidth,
                     height,
                     0,
                     destinationY,
-                    image.naturalWidth,
+                    naturalWidth,
                     height
                 );
 
                 destinationY += height;
+
+                if (index < ranges.length - 1) {
+                    drawWaveSeparator(ctx, naturalWidth, destinationY);
+                }
             });
 
             const resultBlob = await new Promise(resolve => {
@@ -3471,22 +3691,27 @@ function updateButtons() {
             cropArea.style.display = "none";
             cropMode = false;
             waitingForRange = false;
+            activeRangeIndex = -1;
 
-            status.textContent =
-                "トリミング結果を確認してください。";
+            dragStartY = null;
+            dragCurrentY = null;
+            editingEdge = null;
+
+            status.textContent = "トリミング結果を確認してください。";
 
             updateButtons();
+
         } catch (error) {
             console.error("トリミングエラー:", error);
             alert("トリミングに失敗しました。");
         }
     };
 
-    // 最後の範囲を削除
     removeRangeButton.onclick = () => {
         if (!cropRanges.length) return;
 
         cropRanges.pop();
+        activeRangeIndex = -1;
 
         drawSelections();
         updateButtons();
@@ -3496,7 +3721,6 @@ function updateButtons() {
             : "範囲をすべて削除しました。";
     };
 
-    // 元画像に戻す
     undoButton.onclick = () => {
         currentBlob = blob;
         currentUrl = originalUrl;
@@ -3513,9 +3737,13 @@ function updateButtons() {
         cropRanges = [];
         cropMode = false;
         waitingForRange = false;
+        activeRangeIndex = -1;
 
         dragStartY = null;
         dragCurrentY = null;
+        editingEdge = null;
+
+        sourceHeaderHeight = headerHeight;
 
         cropArea.style.display = "none";
         cropArea.style.touchAction = "pan-y";
@@ -3526,16 +3754,17 @@ function updateButtons() {
         updateButtons();
     };
 
-    // 保存
     saveButton.onclick = () => {
         const link = document.createElement("a");
 
         link.href = currentUrl;
         link.download =
             "1日手帳_" +
-            (typeof selectedCalendarDate !== "undefined"
-                ? selectedCalendarDate
-                : "予定") +
+            (
+                typeof selectedCalendarDate !== "undefined"
+                    ? selectedCalendarDate
+                    : "予定"
+            ) +
             ".png";
 
         document.body.appendChild(link);
@@ -3543,7 +3772,6 @@ function updateButtons() {
         link.remove();
     };
 
-    // 共有
     shareButton.onclick = async () => {
         try {
             const file = new File(
@@ -3570,14 +3798,16 @@ function updateButtons() {
         } catch (error) {
             if (error.name !== "AbortError") {
                 console.error("画像共有エラー:", error);
-                alert("共有できませんでした。画像を保存してお試しください。");
+                alert(
+                    "共有できませんでした。画像を保存してお試しください。"
+                );
             }
         }
     };
 
-    // 閉じる
     closeButton.onclick = () => {
         if (resultUrl) URL.revokeObjectURL(resultUrl);
+
         URL.revokeObjectURL(originalUrl);
         modal.remove();
     };
@@ -3593,8 +3823,15 @@ function updateButtons() {
     modal.appendChild(content);
     document.body.appendChild(modal);
 
+    // 画像の実際の高さを取得してから範囲選択に使う
+    cropImage.onload = () => {
+        sourceImageHeight = cropImage.naturalHeight;
+        drawSelections();
+    };
+
     updateButtons();
 }
+
 
 
 
