@@ -969,8 +969,9 @@ loadCommonModalHTML();
 ===================================================== */
 
 let plannerNoteEditorMode = "text";
+let plannerNoteEditingId = null;
 
-function openPlannerNoteEditor(mode = "text") {
+function openPlannerNoteEditor(mode = "text", noteId = null) {
 
     const modal =
         document.getElementById("plannerNoteEditorModal");
@@ -992,6 +993,8 @@ function openPlannerNoteEditor(mode = "text") {
     plannerNoteEditorMode =
         mode === "drawing" ? "drawing" : "text";
 
+    plannerNoteEditingId = noteId;
+
     title.textContent =
         plannerNoteEditorMode === "drawing"
             ? "✍️ 手書きメモ"
@@ -1003,8 +1006,145 @@ function openPlannerNoteEditor(mode = "text") {
     drawingSettings.style.display =
         plannerNoteEditorMode === "drawing" ? "block" : "none";
 
+    const textInput =
+        document.getElementById("plannerNoteText");
+
+    const fontInput =
+        document.getElementById("plannerNoteFont");
+
+    const sizeInput =
+        document.getElementById("plannerNoteFontSize");
+
+    const colorInput =
+        document.getElementById("plannerNoteColor");
+
+    // 初期値
+    if (textInput) textInput.value = "";
+    if (fontInput) fontInput.value = "sans-serif";
+    if (sizeInput) sizeInput.value = "16";
+    if (colorInput) colorInput.value = "#333333";
+
+    // 保存済みメモを編集する場合
+    if (noteId !== null) {
+
+        const data = db.load();
+
+        const note = (data.plannerNotes || []).find(
+            item => String(item.id) === String(noteId)
+        );
+
+        if (!note) {
+            alert("編集するメモが見つかりませんでした。");
+            return;
+        }
+
+        if (textInput) textInput.value = note.text || "";
+        if (fontInput) fontInput.value = note.font || "sans-serif";
+        if (sizeInput) sizeInput.value = String(note.fontSize || 16);
+        if (colorInput) colorInput.value = note.color || "#333333";
+    }
+
     modal.style.display = "flex";
 }
+
+
+function initializePlannerNoteEditor() {
+
+    const saveButton =
+        document.getElementById("plannerNoteSaveButton");
+
+    const cancelButton =
+        document.getElementById("plannerNoteCancelButton");
+
+    if (saveButton) {
+
+        saveButton.onclick = function() {
+
+            // 手書きメモの保存処理は次の段階で実装
+            if (plannerNoteEditorMode === "drawing") {
+                alert("手書きメモの保存機能は、次の段階で追加します。");
+                return;
+            }
+
+            const textInput =
+                document.getElementById("plannerNoteText");
+
+            const fontInput =
+                document.getElementById("plannerNoteFont");
+
+            const sizeInput =
+                document.getElementById("plannerNoteFontSize");
+
+            const colorInput =
+                document.getElementById("plannerNoteColor");
+
+            const text =
+                textInput ? textInput.value.trim() : "";
+
+            if (!text) {
+                alert("メモの内容を入力してください。");
+                return;
+            }
+
+            if (!selectedCalendarDate) {
+                alert("メモの日付を取得できませんでした。");
+                return;
+            }
+
+            const data = db.load();
+
+            if (!Array.isArray(data.plannerNotes)) {
+                data.plannerNotes = [];
+            }
+
+            let note = null;
+
+            if (plannerNoteEditingId !== null) {
+
+                note = data.plannerNotes.find(
+                    item =>
+                        String(item.id) ===
+                        String(plannerNoteEditingId)
+                );
+
+                if (!note) {
+                    alert("編集するメモが見つかりませんでした。");
+                    return;
+                }
+
+            } else {
+
+                note = {
+                    id: "planner-note-" + Date.now(),
+                    date: selectedCalendarDate,
+                    top: plannerNotePlacementTop,
+                    type: "text"
+                };
+
+                data.plannerNotes.push(note);
+            }
+
+            note.date = selectedCalendarDate;
+            note.type = "text";
+            note.text = text;
+            note.font = fontInput ? fontInput.value : "sans-serif";
+            note.fontSize = Number(sizeInput ? sizeInput.value : 16) || 16;
+            note.color = colorInput ? colorInput.value : "#333333";
+
+            db.save(data);
+
+            closePlannerNoteEditor();
+
+            showPlanner(selectedCalendarDate);
+        };
+    }
+
+    if (cancelButton) {
+        cancelButton.onclick = closePlannerNoteEditor;
+    }
+}
+
+
 
 
 function closePlannerNoteEditor() {
@@ -1016,25 +1156,3 @@ function closePlannerNoteEditor() {
         modal.style.display = "none";
     }
 }
-
-
-/* 共通モーダルのボタン初期化 */
-function initializePlannerNoteEditor() {
-
-    const saveButton =
-        document.getElementById("plannerNoteSaveButton");
-
-    const cancelButton =
-        document.getElementById("plannerNoteCancelButton");
-
-    if (saveButton) {
-        saveButton.onclick = function() {
-            alert("メモの保存処理は次の段階で追加します。");
-        };
-    }
-
-    if (cancelButton) {
-        cancelButton.onclick = closePlannerNoteEditor;
-    }
-}
-

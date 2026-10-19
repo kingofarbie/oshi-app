@@ -1030,27 +1030,83 @@ for(
     ===================== */
 
 timeline.innerHTML = html;
-plannerFamilyRenderLanes();
-requestAnimationFrame(plannerUpdateStickyOffsets);
 
+plannerFamilyRenderLanes();
+
+renderPlannerNotes(date);
+
+requestAnimationFrame(plannerUpdateStickyOffsets);
 
     /* =====================
        付箋以外をタップ
        → 編集モード解除
     ===================== */
 
-    timeline.onclick =
-        function(event){
 
-            if(
-                !event.target.closest(".planner-event")
-            ){
+timeline.onclick =
+    function(event){
+
+        /* =====================
+           📝 自由メモの配置
+        ===================== */
+
+        if(
+            plannerNotePlacementMode &&
+            !event.target.closest(".planner-event")
+        ){
+
+            const board =
+                event.target.closest(".planner-board");
+
+            if(board){
+
+                event.stopPropagation();
+
+                const rect =
+                    board.getBoundingClientRect();
+
+                const top =
+                    board.scrollTop +
+                    event.clientY -
+                    rect.top;
+
+                const noteTop =
+                    Math.max(15, top);
+
+                const noteMode =
+                    plannerNotePlacementMode;
+
+                    plannerNotePlacementTop = noteTop;
+
+
+                plannerNotePlacementMode = "";
 
                 plannerCancelEditMode();
 
+                openPlannerNoteEditor(noteMode);
+
+                return;
+
             }
 
-        };
+        }
+
+        /* =====================
+           既存の予定編集モード解除
+        ===================== */
+
+        if(
+            !event.target.closest(".planner-event")
+        ){
+
+            plannerCancelEditMode();
+
+        }
+
+    };
+
+
+
 
     /* =====================
        写真・動画
@@ -1083,6 +1139,73 @@ requestAnimationFrame(plannerUpdateStickyOffsets);
     }
 
     setupPlannerSwipe();
+
+}
+
+
+/* =====================================================
+   📝 1日手帳：保存済み文字メモを表示
+===================================================== */
+
+function renderPlannerNotes(date) {
+
+    const board =
+        document.querySelector("#plannerTimeline .planner-board");
+
+    if (!board) {
+        return;
+    }
+
+    const data = db.load();
+
+    const notes = (data.plannerNotes || []).filter(
+        note => note.date === date && note.type === "text"
+    );
+
+    notes.forEach(note => {
+
+        const element =
+            document.createElement("div");
+
+        element.className = "planner-free-note";
+        element.dataset.noteId = note.id;
+        element.tabIndex = 0;
+        element.setAttribute("role", "button");
+        element.setAttribute("aria-label", "メモを編集");
+
+        element.textContent = note.text || "";
+
+        Object.assign(element.style, {
+            position: "absolute",
+            top: `${Number(note.top) || 15}px`,
+            left: "6px",
+            right: "6px",
+            minHeight: "40px",
+            padding: "8px",
+            boxSizing: "border-box",
+            border: "1px solid #e8a6c1",
+            borderRadius: "8px",
+            background: "#fff8fc",
+            color: note.color || "#333333",
+            fontFamily: note.font || "sans-serif",
+            fontSize: `${Number(note.fontSize) || 16}px`,
+            whiteSpace: "pre-wrap",
+            overflowWrap: "anywhere",
+            zIndex: "20",
+            cursor: "pointer"
+        });
+
+        element.addEventListener("click", function(event) {
+
+            event.stopPropagation();
+
+            openPlannerNoteEditor("text", note.id);
+
+        });
+
+        board.appendChild(element);
+
+    });
 
 }
 
