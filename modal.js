@@ -53,6 +53,7 @@ async function loadCommonModalHTML() {
         initializeNumberInputModal();
         initializeCommonConfirmModal();
         initializeRecurringDeleteModal();
+        initializePlannerNoteEditor();
 
 
     }
@@ -962,4 +963,78 @@ function initializeRecurringDeleteModal() {
 loadCommonModalHTML();
 
 
+
+/* =====================================================
+   📝 自由メモ・手書きメモ 共通モーダル
+===================================================== */
+
+let plannerNoteEditorMode = "text";
+
+function openPlannerNoteEditor(mode = "text") {
+
+    const modal =
+        document.getElementById("plannerNoteEditorModal");
+
+    const title =
+        document.getElementById("plannerNoteEditorTitle");
+
+    const textSettings =
+        document.getElementById("plannerNoteTextSettings");
+
+    const drawingSettings =
+        document.getElementById("plannerNoteDrawingSettings");
+
+    if (!modal || !title || !textSettings || !drawingSettings) {
+        console.error("メモ編集モーダルが見つかりません");
+        return;
+    }
+
+    plannerNoteEditorMode =
+        mode === "drawing" ? "drawing" : "text";
+
+    title.textContent =
+        plannerNoteEditorMode === "drawing"
+            ? "✍️ 手書きメモ"
+            : "📝 自由メモ";
+
+    textSettings.style.display =
+        plannerNoteEditorMode === "text" ? "block" : "none";
+
+    drawingSettings.style.display =
+        plannerNoteEditorMode === "drawing" ? "block" : "none";
+
+    modal.style.display = "flex";
+}
+
+
+function closePlannerNoteEditor() {
+
+    const modal =
+        document.getElementById("plannerNoteEditorModal");
+
+    if (modal) {
+        modal.style.display = "none";
+    }
+}
+
+
+/* 共通モーダルのボタン初期化 */
+function initializePlannerNoteEditor() {
+
+    const saveButton =
+        document.getElementById("plannerNoteSaveButton");
+
+    const cancelButton =
+        document.getElementById("plannerNoteCancelButton");
+
+    if (saveButton) {
+        saveButton.onclick = function() {
+            alert("メモの保存処理は次の段階で追加します。");
+        };
+    }
+
+    if (cancelButton) {
+        cancelButton.onclick = closePlannerNoteEditor;
+    }
+}
 

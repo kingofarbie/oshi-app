@@ -817,6 +817,18 @@ function closePlannerAddMenu(){
 }
 
 
+/* =====================================================
+   📝 1日手帳：自由メモの編集画面を開く
+===================================================== */
+
+function openPlannerMemo() {
+    openPlannerNoteEditor("text");
+}
+
+function openPlannerHandwriting() {
+    openPlannerNoteEditor("drawing");
+}
+
 
 
 /* =====================

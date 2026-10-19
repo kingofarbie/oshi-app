@@ -243,3 +243,105 @@
         </div>
     </div>
 </div>
+
+
+
+
+
+<!-- =====================================================
+     📝 自由メモ・手書きメモ 共通編集モーダル
+===================================================== -->
+
+<div
+    id="plannerNoteEditorModal"
+    class="modal"
+    style="display:none;"
+>
+    <div
+        class="modal-content planner-note-editor"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="plannerNoteEditorTitle"
+    >
+
+        <h2 id="plannerNoteEditorTitle">
+            📝 自由メモ
+        </h2>
+
+        <!-- 文字メモ設定 -->
+        <div id="plannerNoteTextSettings">
+
+            <label for="plannerNoteText">
+                メモ内容
+            </label>
+
+            <textarea
+                id="plannerNoteText"
+                rows="4"
+                placeholder="ここにメモを追加"
+            ></textarea>
+
+            <label for="plannerNoteFont">
+                フォント
+            </label>
+
+            <select id="plannerNoteFont">
+                <option value="sans-serif">ゴシック体</option>
+                <option value="serif">明朝体</option>
+                <option value="system-ui">システム標準</option>
+            </select>
+
+            <label for="plannerNoteFontSize">
+                文字サイズ
+            </label>
+
+            <select id="plannerNoteFontSize">
+                <option value="12">小</option>
+                <option value="16" selected>標準</option>
+                <option value="20">大</option>
+                <option value="24">特大</option>
+            </select>
+
+            <label for="plannerNoteColor">
+                文字色
+            </label>
+
+            <select id="plannerNoteColor">
+                <option value="#333333">黒</option>
+                <option value="#e91e63">ピンク</option>
+                <option value="#2196f3">青</option>
+                <option value="#4caf50">緑</option>
+                <option value="#9c27b0">紫</option>
+                <option value="#ff9800">オレンジ</option>
+            </select>
+
+        </div>
+
+        <!-- 手書きメモ用の説明 -->
+        <div
+            id="plannerNoteDrawingSettings"
+            style="display:none;"
+        >
+            手書きメモの編集画面は次の段階で追加します。
+        </div>
+
+        <div class="planner-note-editor-actions">
+
+            <button
+                type="button"
+                id="plannerNoteSaveButton"
+            >
+                💾 保存
+            </button>
+
+            <button
+                type="button"
+                id="plannerNoteCancelButton"
+            >
+                キャンセル
+            </button>
+
+        </div>
+
+    </div>
+</div>
