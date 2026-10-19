@@ -1151,7 +1151,7 @@ timeline.onclick =
 
     };
 
-    
+
 
 
 
@@ -1190,24 +1190,58 @@ timeline.onclick =
 }
 
 
+
 /* =====================================================
-   📝 1日手帳：保存済み文字メモを表示
+   📝 1日手帳：保存済み文字メモを表示・ドラッグ移動
 ===================================================== */
 
 function renderPlannerNotes(date) {
 
-    const board =
-        document.querySelector("#plannerTimeline .planner-board");
+    const timeline =
+        document.getElementById("plannerTimeline");
 
-    if (!board) {
+    const layout =
+        timeline?.querySelector(".planner-layout");
+
+    const board =
+        layout?.querySelector(".planner-board");
+
+    const times =
+        layout?.querySelector(".planner-times");
+
+    if (!layout || !board || !times) {
         return;
     }
+
+    /* 前回のメモレイヤーを削除 */
+    layout
+        .querySelector(".planner-notes-layer")
+        ?.remove();
 
     const data = db.load();
 
     const notes = (data.plannerNotes || []).filter(
-        note => note.date === date && note.type === "text"
+        note =>
+            note.date === date &&
+            note.type === "text"
     );
+
+    /* メモ専用レイヤーを作成 */
+    const layer =
+        document.createElement("div");
+
+    layer.className = "planner-notes-layer";
+
+    Object.assign(layer.style, {
+        position: "absolute",
+        top: `${board.offsetTop}px`,
+        left: `${times.offsetWidth}px`,
+        right: "0",
+        height: `${board.offsetHeight}px`,
+        overflow: "visible",
+        pointerEvents: "none",
+        zIndex: "30"
+    });
 
     notes.forEach(note => {
 
@@ -1224,9 +1258,10 @@ function renderPlannerNotes(date) {
 
         Object.assign(element.style, {
             position: "absolute",
-            top: `${Number(note.top) || 15}px`,
-            left: "6px",
-            right: "6px",
+            top: `${Math.max(0, Number(note.top) || 0)}px`,
+            left: `${Math.max(0, Number(note.left) || 6)}px`,
+            width: "220px",
+            maxWidth: "calc(100% - 12px)",
             minHeight: "40px",
             padding: "8px",
             boxSizing: "border-box",
@@ -1238,23 +1273,208 @@ function renderPlannerNotes(date) {
             fontSize: `${Number(note.fontSize) || 16}px`,
             whiteSpace: "pre-wrap",
             overflowWrap: "anywhere",
-            zIndex: "20",
-            cursor: "pointer"
+            zIndex: "31",
+            cursor: "grab",
+            pointerEvents: "auto",
+            touchAction: "none",
+            userSelect: "none",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.12)"
         });
 
-        element.addEventListener("click", function(event) {
+        let startX = 0;
+        let startY = 0;
+        let startLeft = 0;
+        let startTop = 0;
+        let dragging = false;
+        let moved = false;
+        let activePointerId = null;
+
+        /* ドラッグ開始 */
+        element.addEventListener(
+            "pointerdown",
+            function(event) {
+
+                if (
+                    event.pointerType === "mouse" &&
+                    event.button !== 0
+                ) {
+                    return;
+                }
+
+                activePointerId = event.pointerId;
+
+                startX = event.clientX;
+                startY = event.clientY;
+
+                startLeft =
+                    Number(note.left) || 6;
+
+                startTop =
+                    Number(note.top) || 0;
+
+                dragging = true;
+                moved = false;
+
+                element.style.cursor = "grabbing";
+                element.style.zIndex = "32";
+
+                element.setPointerCapture(
+                    event.pointerId
+                );
+
+                event.stopPropagation();
+            }
+        );
+
+        /* ドラッグ中 */
+        element.addEventListener(
+            "pointermove",
+            function(event) {
+
+                if (
+                    !dragging ||
+                    event.pointerId !== activePointerId
+                ) {
+                    return;
+                }
+
+                const dx = event.clientX - startX;
+                const dy = event.clientY - startY;
+
+                if (
+                    !moved &&
+                    Math.abs(dx) < 5 &&
+                    Math.abs(dy) < 5
+                ) {
+                    return;
+                }
+
+                moved = true;
+
+                const maxLeft = Math.max(
+                    0,
+                    layer.clientWidth - element.offsetWidth
+                );
+
+                const maxTop = Math.max(
+                    0,
+                    layer.clientHeight - element.offsetHeight
+                );
+
+                const nextLeft = Math.max(
+                    0,
+                    Math.min(maxLeft, startLeft + dx)
+                );
+
+                const nextTop = Math.max(
+                    0,
+                    Math.min(maxTop, startTop + dy)
+                );
+
+                element.style.left =
+                    `${nextLeft}px`;
+
+                element.style.top =
+                    `${nextTop}px`;
+
+                event.preventDefault();
+                event.stopPropagation();
+            }
+        );
+
+        /* ドラッグ終了・位置保存 */
+        function finishNoteDrag(event) {
+
+            if (
+                !dragging ||
+                event.pointerId !== activePointerId
+            ) {
+                return;
+            }
+
+            dragging = false;
+            activePointerId = null;
+
+            element.style.cursor = "grab";
+            element.style.zIndex = "31";
+
+            if (!moved) {
+                return;
+            }
+
+            const finalLeft =
+                parseFloat(element.style.left) || 0;
+
+            const finalTop =
+                parseFloat(element.style.top) || 0;
+
+            const latestData = db.load();
+
+            const savedNotes =
+                Array.isArray(latestData.plannerNotes)
+                    ? latestData.plannerNotes
+                    : [];
+
+            const savedNote = savedNotes.find(
+                item =>
+                    String(item.id) === String(note.id)
+            );
+
+            if (!savedNote) {
+                alert("メモを保存できませんでした。");
+                showPlanner(date);
+                return;
+            }
+
+            savedNote.left = finalLeft;
+            savedNote.top = finalTop;
+
+            db.save(latestData);
+
+            /* ドラッグ後のクリックで編集画面を開かない */
+            element.dataset.dragged = "true";
 
             event.stopPropagation();
+        }
 
-            openPlannerNoteEditor("text", note.id);
+        element.addEventListener(
+            "pointerup",
+            finishNoteDrag
+        );
 
-        });
+        element.addEventListener(
+            "pointercancel",
+            finishNoteDrag
+        );
 
-        board.appendChild(element);
+        /* タップで編集 */
+        element.addEventListener(
+            "click",
+            function(event) {
+
+                event.stopPropagation();
+
+                if (element.dataset.dragged === "true") {
+                    element.dataset.dragged = "false";
+                    event.preventDefault();
+                    return;
+                }
+
+                openPlannerNoteEditor(
+                    "text",
+                    note.id
+                );
+            }
+        );
+
+        layer.appendChild(element);
 
     });
 
+    /* 予定ボードと家族レーンより手前に配置 */
+    layout.appendChild(layer);
 }
+
 
 
 
