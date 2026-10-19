@@ -1043,6 +1043,7 @@ requestAnimationFrame(plannerUpdateStickyOffsets);
     ===================== */
 
 
+
 timeline.onclick =
     function(event){
 
@@ -1052,7 +1053,8 @@ timeline.onclick =
 
         if(
             plannerNotePlacementMode &&
-            !event.target.closest(".planner-event")
+            !event.target.closest(".planner-event") &&
+            !event.target.closest(".planner-free-note")
         ){
 
             const board =
@@ -1076,14 +1078,57 @@ timeline.onclick =
                 const noteMode =
                     plannerNotePlacementMode;
 
-                    plannerNotePlacementTop = noteTop;
-
+                plannerNotePlacementTop =
+                    noteTop;
 
                 plannerNotePlacementMode = "";
 
                 plannerCancelEditMode();
 
-                openPlannerNoteEditor(noteMode);
+                /* 仮メモを表示 */
+                const placeholder =
+                    document.createElement("div");
+
+                placeholder.className =
+                    "planner-free-note planner-free-note-placeholder";
+
+                placeholder.textContent =
+                    noteMode === "drawing"
+                        ? "ここに手書きメモを追加"
+                        : "ここにメモを追加";
+
+                Object.assign(placeholder.style, {
+                    position: "absolute",
+                    top: `${noteTop}px`,
+                    left: "6px",
+                    right: "6px",
+                    minHeight: "40px",
+                    padding: "8px",
+                    boxSizing: "border-box",
+                    border: "2px dashed #e91e63",
+                    borderRadius: "8px",
+                    background: "#fff0f6",
+                    color: "#c2185b",
+                    fontSize: "14px",
+                    zIndex: "30",
+                    cursor: "pointer"
+                });
+
+                placeholder.addEventListener(
+                    "click",
+                    function(noteEvent){
+
+                        noteEvent.stopPropagation();
+
+                        openPlannerNoteEditor(noteMode);
+
+                        /* 編集画面を開く前に仮メモを削除 */
+                        placeholder.remove();
+
+                    }
+                );
+
+                board.appendChild(placeholder);
 
                 return;
 
@@ -1096,7 +1141,8 @@ timeline.onclick =
         ===================== */
 
         if(
-            !event.target.closest(".planner-event")
+            !event.target.closest(".planner-event") &&
+            !event.target.closest(".planner-free-note")
         ){
 
             plannerCancelEditMode();
@@ -1105,6 +1151,7 @@ timeline.onclick =
 
     };
 
+    
 
 
 
