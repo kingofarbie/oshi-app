@@ -183,8 +183,8 @@
         📤 共有
     </button>
 
-    <button onclick="openEventForm()">
-        ➕ 予定
+    <button onclick="openPlannerAddMenu()">
+        ＋ 追加
     </button>
 
     <button
@@ -193,6 +193,37 @@
         📅 今日
     </button>
 </div>
+
+
+<!-- ＋追加メニュー -->
+<div id="plannerAddMenu" class="modal" style="display:none;">
+
+    <div class="modal-content">
+
+        <h3>＋ 追加する内容</h3>
+
+        <button onclick="closePlannerAddMenu(); openEventForm();">
+            📅 予定
+        </button>
+
+        <button onclick="openPlannerMemo()">
+            📝 メモ
+        </button>
+
+        <button onclick="openPlannerHandwriting()">
+            ✍️ 手書きメモ
+        </button>
+
+        <button onclick="closePlannerAddMenu()">
+            キャンセル
+        </button>
+
+    </div>
+
+</div>
+
+
+
 
 
 </div>

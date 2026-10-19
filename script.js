@@ -783,6 +783,42 @@ function openEventForm(){
 
 }
 
+
+
+// =====================
+// ＋追加メニュー
+// =====================
+
+function openPlannerAddMenu(){
+
+    const menu =
+        document.getElementById("plannerAddMenu");
+
+    if(!menu){
+        return;
+    }
+
+    menu.style.display = "block";
+
+}
+
+
+function closePlannerAddMenu(){
+
+    const menu =
+        document.getElementById("plannerAddMenu");
+
+    if(!menu){
+        return;
+    }
+
+    menu.style.display = "none";
+
+}
+
+
+
+
 /* =====================
    保存
 ===================== */
