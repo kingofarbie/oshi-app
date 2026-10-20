@@ -2981,20 +2981,35 @@ async function placePlannerStickerAtPosition(
            🎨 絵文字スタンプ
         ===================== */
 
-        const emojiStickers = {
-            "emoji-heart": "❤️",
-            "emoji-star": "⭐",
-            "emoji-flower": "🌸",
-            "emoji-ribbon": "🎀",
-            "emoji-sparkles": "✨",
-            "emoji-music": "🎵",
-            "emoji-cat": "🐱",
-            "emoji-rabbit": "🐰",
-            "emoji-clap": "👏",
-            "emoji-gift": "🎁",
-            "emoji-crown": "👑",
-            "emoji-rainbow": "🌈"
-        };
+
+const emojiStickers = {
+    "emoji-heart": "❤️",
+    "emoji-star": "⭐",
+    "emoji-flower": "🌸",
+    "emoji-ribbon": "🎀",
+    "emoji-sparkles": "✨",
+    "emoji-music": "🎵",
+    "emoji-cat": "🐱",
+    "emoji-rabbit": "🐰",
+    "emoji-clap": "👏",
+    "emoji-gift": "🎁",
+    "emoji-crown": "👑",
+    "emoji-rainbow": "🌈",
+    "emoji-laugh": "😆",
+    "emoji-love": "😍",
+    "emoji-dog": "🐶",
+    "emoji-panda": "🐼",
+    "emoji-penguin": "🐧",
+    "emoji-wildboar": "🐗",
+    "emoji-sweat": "😰",
+    "emoji-peek": "🫣",
+    "emoji-down": "⬇️",
+    "emoji-check": "✅",
+    "emoji-repeat": "🔁",
+    "emoji-eyes": "👁️‍🗨️",
+    "emoji-chart": "💹",
+    "emoji-laughcry": "😂"
+};
 
         const isEmoji =
             Object.prototype.hasOwnProperty.call(
