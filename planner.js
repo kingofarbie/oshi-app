@@ -2195,8 +2195,16 @@ function setupPlannerSwipe(){
 
         if(event.touches.length !== 1) return;
 
-        if(event.target.closest(".planner-event")) return;
-        if(event.target.closest(".memory-photo-box, .memory-photo, video, textarea, input, select, button")){return;}
+if(event.target.closest(".planner-event")) return;
+
+if(event.target.closest(
+    ".planner-free-note, .memory-photo-box, .memory-photo, video, textarea, input, select, button"
+)){
+    return;
+}
+
+
+
 
         plannerSwipeStartX =
             event.touches[0].clientX;
@@ -2211,8 +2219,15 @@ function setupPlannerSwipe(){
 
         if(!selectedCalendarDate) return;
 
-        if(event.target.closest(".planner-event")) return;
-        if(event.target.closest(".memory-photo-box, .memory-photo, video, textarea, input, select, button")){return;}
+if(event.target.closest(".planner-event")) return;
+
+if(event.target.closest(
+    ".planner-free-note, .memory-photo-box, .memory-photo, video, textarea, input, select, button"
+)){
+    return;
+}
+
+
 
         const diffX =
             event.changedTouches[0].clientX -
