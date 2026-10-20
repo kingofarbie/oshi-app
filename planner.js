@@ -1259,7 +1259,7 @@ function renderPlannerNotes(date) {
         Object.assign(element.style, {
             position: "absolute",
             transform: `rotate(${Number(note.rotation) || 0}deg)`,
-            
+
             top: `${Math.max(0, Number(note.top) || 0)}px`,
             left: `${Math.max(0, Number(note.left) || 6)}px`,
 width: `${Number(note.width) || 220}px`,
@@ -1351,6 +1351,21 @@ minHeight: "40px",
         );
 
         element.appendChild(rotateHandle);
+
+                /* 編集モードの初期状態 */
+        resizeHandle.classList.add(
+            "planner-note-resize-handle"
+        );
+
+        rotateHandle.classList.add(
+            "planner-note-rotate-handle"
+        );
+
+        resizeHandle.style.display = "none";
+        rotateHandle.style.display = "none";
+
+        element.dataset.editMode = "false";
+
 
         let rotating = false;
         let rotatePointerId = null;
@@ -1658,11 +1673,6 @@ minHeight: "40px",
 
 
 
-
-
-
-
-
 let startX = 0;
 let startY = 0;
 let grabOffsetX = 0;
@@ -1670,8 +1680,6 @@ let grabOffsetY = 0;
 let dragging = false;
 let moved = false;
 let activePointerId = null;
-
-
 
 
         /* ドラッグ開始 */
@@ -1852,35 +1860,179 @@ let activePointerId = null;
             finishNoteDrag
         );
 
-        /* タップで編集 */
+        /* タップで編集モード切り替え */
         element.addEventListener(
             "click",
             function(event) {
 
                 event.stopPropagation();
 
+                // ドラッグ・サイズ変更・回転の直後は無視
                 if (element.dataset.dragged === "true") {
                     element.dataset.dragged = "false";
                     event.preventDefault();
                     return;
                 }
 
-                openPlannerNoteEditor(
-                    "text",
-                    note.id
-                );
+                // 通常表示なら編集モードにする
+                if (element.dataset.editMode !== "true") {
+
+                    // ほかのメモの編集モードを解除
+                    layer.querySelectorAll(
+                        ".planner-free-note"
+                    ).forEach(otherNote => {
+
+                        otherNote.dataset.editMode = "false";
+                        otherNote.style.outline = "none";
+
+                        const resize =
+                            otherNote.querySelector(
+                                ".planner-note-resize-handle"
+                            );
+
+                        const rotate =
+                            otherNote.querySelector(
+                                ".planner-note-rotate-handle"
+                            );
+
+                        if (resize) {
+                            resize.style.display = "none";
+                        }
+
+                        if (rotate) {
+                            rotate.style.display = "none";
+                        }
+                    });
+
+                    element.dataset.editMode = "true";
+
+                    resizeHandle.style.display = "block";
+                    rotateHandle.style.display = "flex";
+
+                    element.style.outline =
+                        "2px solid #e8a6c1";
+
+                    return;
+                }
+
+                // 編集モード中に中央をタップしたら操作メニュー
+                showPlannerNoteMenu(note.id);
+            
+            
+            
             }
         );
+        
 
         layer.appendChild(element);
 
     });
 
+
+
+
     /* 予定ボードと家族レーンより手前に配置 */
     layout.appendChild(layer);
+
+
+        /* メモ以外をタップしたら編集モードを解除 */
+    if (!layout.dataset.noteOutsideTapBound) {
+
+        layout.dataset.noteOutsideTapBound = "true";
+
+        layout.addEventListener("click", function(event) {
+
+            if (event.target.closest(".planner-free-note")) {
+                return;
+            }
+
+            layout.querySelectorAll(
+                ".planner-free-note"
+            ).forEach(element => {
+
+                element.dataset.editMode = "false";
+                element.style.outline = "none";
+
+                const resize =
+                    element.querySelector(
+                        ".planner-note-resize-handle"
+                    );
+
+                const rotate =
+                    element.querySelector(
+                        ".planner-note-rotate-handle"
+                    );
+
+                if (resize) {
+                    resize.style.display = "none";
+                }
+
+                if (rotate) {
+                    rotate.style.display = "none";
+                }
+            });
+        });
+    }
+
+
+
+
+
 }
 
+/* =====================================================
+   📝 メモ操作メニュー
+===================================================== */
 
+function showPlannerNoteMenu(noteId) {
+
+    const action = prompt(
+        "メモの操作を選んでください\n\n" +
+        "1：メモ編集\n" +
+        "2：メモ削除\n\n" +
+        "番号を入力してください"
+    );
+
+    if (action === "1") {
+
+        openPlannerNoteEditor(
+            "text",
+            noteId
+        );
+
+        return;
+    }
+
+    if (action === "2") {
+
+        const confirmed = confirm(
+            "このメモを削除しますか？"
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+        const data = db.load();
+
+        if (!Array.isArray(data.plannerNotes)) {
+            return;
+        }
+
+        data.plannerNotes =
+            data.plannerNotes.filter(
+                note => String(note.id) !== String(noteId)
+            );
+
+        db.save(data);
+
+        showPlanner(
+            selectedPlannerDate
+        );
+
+    }
+
+}
 
 
 /* =================================
