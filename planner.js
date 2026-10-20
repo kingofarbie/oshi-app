@@ -1281,13 +1281,16 @@ function renderPlannerNotes(date) {
             boxShadow: "0 2px 8px rgba(0,0,0,0.12)"
         });
 
-        let startX = 0;
-        let startY = 0;
-        let startLeft = 0;
-        let startTop = 0;
-        let dragging = false;
-        let moved = false;
-        let activePointerId = null;
+let startX = 0;
+let startY = 0;
+let grabOffsetX = 0;
+let grabOffsetY = 0;
+let dragging = false;
+let moved = false;
+let activePointerId = null;
+
+
+
 
         /* ドラッグ開始 */
         element.addEventListener(
@@ -1306,11 +1309,15 @@ function renderPlannerNotes(date) {
                 startX = event.clientX;
                 startY = event.clientY;
 
-                startLeft =
-                    Number(note.left) || 6;
+                // 指でつかんだ位置を記録
+                const noteRect =
+                    element.getBoundingClientRect();
 
-                startTop =
-                    Number(note.top) || 0;
+                grabOffsetX =
+                    event.clientX - noteRect.left;
+
+                grabOffsetY =
+                    event.clientY - noteRect.top;
 
                 dragging = true;
                 moved = false;
@@ -1322,6 +1329,7 @@ function renderPlannerNotes(date) {
                     event.pointerId
                 );
 
+                event.preventDefault();
                 event.stopPropagation();
             }
         );
@@ -1351,6 +1359,11 @@ function renderPlannerNotes(date) {
 
                 moved = true;
 
+                // メモレイヤーの現在位置を取得
+                const layerRect =
+                    layer.getBoundingClientRect();
+
+                // 指でつかんだ位置を維持して移動
                 const maxLeft = Math.max(
                     0,
                     layer.clientWidth - element.offsetWidth
@@ -1363,12 +1376,22 @@ function renderPlannerNotes(date) {
 
                 const nextLeft = Math.max(
                     0,
-                    Math.min(maxLeft, startLeft + dx)
+                    Math.min(
+                        maxLeft,
+                        event.clientX -
+                            layerRect.left -
+                            grabOffsetX
+                    )
                 );
 
                 const nextTop = Math.max(
                     0,
-                    Math.min(maxTop, startTop + dy)
+                    Math.min(
+                        maxTop,
+                        event.clientY -
+                            layerRect.top -
+                            grabOffsetY
+                    )
                 );
 
                 element.style.left =
@@ -1381,7 +1404,7 @@ function renderPlannerNotes(date) {
                 event.stopPropagation();
             }
         );
-
+        
         /* ドラッグ終了・位置保存 */
         function finishNoteDrag(event) {
 
