@@ -1260,9 +1260,15 @@ function renderPlannerNotes(date) {
             position: "absolute",
             top: `${Math.max(0, Number(note.top) || 0)}px`,
             left: `${Math.max(0, Number(note.left) || 6)}px`,
-            width: "220px",
-            maxWidth: "calc(100% - 12px)",
-            minHeight: "40px",
+width: `${Number(note.width) || 220}px`,
+maxWidth: "calc(100% - 12px)",
+height: note.height
+    ? `${Number(note.height)}px`
+    : "auto",
+minWidth: "100px",
+minHeight: "40px",
+
+
             padding: "8px",
             boxSizing: "border-box",
             border: "1px solid #e8a6c1",
@@ -1280,6 +1286,200 @@ function renderPlannerNotes(date) {
             userSelect: "none",
             boxShadow: "0 2px 8px rgba(0,0,0,0.12)"
         });
+
+
+
+
+                /* メモのサイズ変更ハンドル */
+        const resizeHandle =
+            document.createElement("div");
+
+        Object.assign(resizeHandle.style, {
+            position: "absolute",
+            right: "0",
+            bottom: "0",
+            width: "22px",
+            height: "22px",
+            borderRadius: "6px 0 7px 0",
+            background: "#e8a6c1",
+            border: "1px solid #d77da3",
+            boxSizing: "border-box",
+            cursor: "nwse-resize",
+            touchAction: "none",
+            zIndex: "5"
+        });
+
+        resizeHandle.setAttribute(
+            "aria-label",
+            "メモのサイズを変更"
+        );
+
+        element.appendChild(resizeHandle);
+
+        let resizing = false;
+        let resizePointerId = null;
+        let resizeStartX = 0;
+        let resizeStartY = 0;
+        let resizeStartWidth = 0;
+        let resizeStartHeight = 0;
+
+        /* サイズ変更開始 */
+        resizeHandle.addEventListener(
+            "pointerdown",
+            function(event) {
+
+                if (
+                    event.pointerType === "mouse" &&
+                    event.button !== 0
+                ) {
+                    return;
+                }
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                const rect =
+                    element.getBoundingClientRect();
+
+                resizePointerId = event.pointerId;
+                resizeStartX = event.clientX;
+                resizeStartY = event.clientY;
+                resizeStartWidth = rect.width;
+                resizeStartHeight = rect.height;
+
+                resizing = true;
+
+                resizeHandle.setPointerCapture(
+                    event.pointerId
+                );
+            }
+        );
+
+        /* サイズ変更中 */
+        resizeHandle.addEventListener(
+            "pointermove",
+            function(event) {
+
+                if (
+                    !resizing ||
+                    event.pointerId !== resizePointerId
+                ) {
+                    return;
+                }
+
+                const dx = event.clientX - resizeStartX;
+                const dy = event.clientY - resizeStartY;
+
+                const maxWidth = Math.max(
+                    100,
+                    layer.clientWidth -
+                        (parseFloat(element.style.left) || 0)
+                );
+
+                const maxHeight = Math.max(
+                    40,
+                    layer.clientHeight -
+                        (parseFloat(element.style.top) || 0)
+                );
+
+                const nextWidth = Math.max(
+                    100,
+                    Math.min(
+                        maxWidth,
+                        resizeStartWidth + dx
+                    )
+                );
+
+                const nextHeight = Math.max(
+                    40,
+                    Math.min(
+                        maxHeight,
+                        resizeStartHeight + dy
+                    )
+                );
+
+                element.style.width =
+                    `${nextWidth}px`;
+
+                element.style.height =
+                    `${nextHeight}px`;
+
+                element.style.maxWidth = "none";
+
+                event.preventDefault();
+                event.stopPropagation();
+            }
+        );
+
+        /* サイズ変更終了・保存 */
+        function finishNoteResize(event) {
+
+            if (
+                !resizing ||
+                event.pointerId !== resizePointerId
+            ) {
+                return;
+            }
+
+            resizing = false;
+            resizePointerId = null;
+
+            const latestData = db.load();
+
+            const savedNotes =
+                Array.isArray(latestData.plannerNotes)
+                    ? latestData.plannerNotes
+                    : [];
+
+            const savedNote = savedNotes.find(
+                item =>
+                    String(item.id) === String(note.id)
+            );
+
+            if (!savedNote) {
+                alert("メモのサイズを保存できませんでした。");
+                showPlanner(date);
+                return;
+            }
+
+            savedNote.width =
+                element.offsetWidth;
+
+            savedNote.height =
+                element.offsetHeight;
+
+            db.save(latestData);
+
+            /* サイズ変更後のタップで編集画面を開かない */
+            element.dataset.dragged = "true";
+
+            event.stopPropagation();
+        }
+
+        resizeHandle.addEventListener(
+            "pointerup",
+            finishNoteResize
+        );
+
+        resizeHandle.addEventListener(
+            "pointercancel",
+            finishNoteResize
+        );
+
+        resizeHandle.addEventListener(
+            "click",
+            function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+        );
+
+
+
+
+
+
+
 
 let startX = 0;
 let startY = 0;
@@ -1404,7 +1604,7 @@ let activePointerId = null;
                 event.stopPropagation();
             }
         );
-        
+
         /* ドラッグ終了・位置保存 */
         function finishNoteDrag(event) {
 
