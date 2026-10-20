@@ -910,8 +910,9 @@ async function plannerStickerFilesSelected(event) {
 
 
 
+
 /* =====================================================
-   🎨 マイスタンプ・初期スタンプ一覧
+   🎨 マイスタンプ・アイコン一覧
 ===================================================== */
 
 async function renderPlannerStickerList() {
@@ -924,80 +925,103 @@ async function renderPlannerStickerList() {
     list.replaceChildren();
 
     /* =====================
-       初期スタンプ
+       最初から使えるスタンプ
     ===================== */
 
     const defaultStickers = [
-        { id: "emoji-heart", name: "❤️ ハート", emoji: "❤️" },
-        { id: "emoji-star", name: "⭐ 星", emoji: "⭐" },
-        { id: "emoji-flower", name: "🌸 花", emoji: "🌸" },
-        { id: "emoji-ribbon", name: "🎀 リボン", emoji: "🎀" },
-        { id: "emoji-sparkles", name: "✨ キラキラ", emoji: "✨" },
-        { id: "emoji-music", name: "🎵 音符", emoji: "🎵" },
-        { id: "emoji-cat", name: "🐱 ねこ", emoji: "🐱" },
-        { id: "emoji-rabbit", name: "🐰 うさぎ", emoji: "🐰" },
-        { id: "emoji-clap", name: "👏 拍手", emoji: "👏" },
-        { id: "emoji-gift", name: "🎁 プレゼント", emoji: "🎁" },
-        { id: "emoji-crown", name: "👑 王冠", emoji: "👑" },
-        { id: "emoji-rainbow", name: "🌈 虹", emoji: "🌈" }
+        { id: "emoji-heart", emoji: "❤️" },
+        { id: "emoji-star", emoji: "⭐" },
+        { id: "emoji-flower", emoji: "🌸" },
+        { id: "emoji-ribbon", emoji: "🎀" },
+        { id: "emoji-sparkles", emoji: "✨" },
+        { id: "emoji-music", emoji: "🎵" },
+        { id: "emoji-cat", emoji: "🐱" },
+        { id: "emoji-rabbit", emoji: "🐰" },
+        { id: "emoji-clap", emoji: "👏" },
+        { id: "emoji-gift", emoji: "🎁" },
+        { id: "emoji-crown", emoji: "👑" },
+        { id: "emoji-rainbow", emoji: "🌈" },
+
+        { id: "emoji-laugh", emoji: "😆" },
+        { id: "emoji-love", emoji: "😍" },
+        { id: "emoji-dog", emoji: "🐶" },
+        { id: "emoji-panda", emoji: "🐼" },
+        { id: "emoji-penguin", emoji: "🐧" },
+        { id: "emoji-wildboar", emoji: "🐗" },
+        { id: "emoji-sweat", emoji: "😰" },
+        { id: "emoji-peek", emoji: "🫣" },
+        { id: "emoji-down", emoji: "⬇️" },
+        { id: "emoji-check", emoji: "✅" },
+        { id: "emoji-repeat", emoji: "🔁" },
+        { id: "emoji-eyes", emoji: "👁️‍🗨️" },
+        { id: "emoji-chart", emoji: "💹" },
+        { id: "emoji-laughcry", emoji: "😂" }
     ];
 
-    const defaultTitle =
-        document.createElement("h3");
+    const gridStyle = {
+        display: "flex",
+        flexWrap: "wrap",
+        justifyContent: "flex-start",
+        gap: "8px",
+        width: "100%",
+        boxSizing: "border-box"
+    };
 
-    defaultTitle.textContent =
-        "🌟 最初から使えるスタンプ";
-
-    list.appendChild(defaultTitle);
+    const itemStyle = {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        flex: "0 0 44px",
+        width: "44px",
+        height: "44px",
+        padding: "0",
+        margin: "0",
+        border: "none",
+        borderRadius: "8px",
+        background: "transparent",
+        cursor: "pointer",
+        fontSize: "32px",
+        lineHeight: "1",
+        boxSizing: "border-box",
+        overflow: "hidden"
+    };
 
     const defaultGrid =
         document.createElement("div");
 
-    defaultGrid.className =
-        "planner-sticker-grid";
+    Object.assign(defaultGrid.style, gridStyle);
 
     for (const sticker of defaultStickers) {
 
-        const button =
-            document.createElement("button");
+        const item =
+            document.createElement("div");
 
-        button.type = "button";
-        button.className = "planner-sticker-item";
+        Object.assign(item.style, itemStyle);
 
-        const image =
-            document.createElement("span");
+        item.textContent = sticker.emoji;
+        item.setAttribute("role", "button");
+        item.setAttribute("tabindex", "0");
+        item.setAttribute("aria-label", sticker.emoji);
 
-        image.className = "planner-sticker-emoji";
-        image.textContent = sticker.emoji;
-        image.setAttribute("aria-hidden", "true");
-
-        const name =
-            document.createElement("span");
-
-        name.textContent = sticker.name;
-
-        button.append(image, name);
-
-        button.addEventListener("click", () => {
+        item.addEventListener("click", () => {
             selectPlannerSticker(sticker.id);
         });
 
-        defaultGrid.appendChild(button);
+        item.addEventListener("keydown", event => {
+            if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                selectPlannerSticker(sticker.id);
+            }
+        });
+
+        defaultGrid.appendChild(item);
     }
 
     list.appendChild(defaultGrid);
 
     /* =====================
-       マイスタンプ
+       自分で登録した画像スタンプ
     ===================== */
-
-    const myTitle =
-        document.createElement("h3");
-
-    myTitle.textContent =
-        "🎨 マイスタンプ";
-
-    list.appendChild(myTitle);
 
     const data = db.load();
 
@@ -1009,8 +1033,10 @@ async function renderPlannerStickerList() {
     const myGrid =
         document.createElement("div");
 
-    myGrid.className =
-        "planner-sticker-grid";
+    Object.assign(myGrid.style, {
+        ...gridStyle,
+        marginTop: "12px"
+    });
 
     for (const sticker of stickers) {
 
@@ -1024,47 +1050,50 @@ async function renderPlannerStickerList() {
 
         if (!imageUrl) continue;
 
-        const button =
-            document.createElement("button");
+        const item =
+            document.createElement("div");
 
-        button.type = "button";
-        button.className = "planner-sticker-item";
+        Object.assign(item.style, itemStyle);
+
+        item.setAttribute("role", "button");
+        item.setAttribute("tabindex", "0");
+        item.setAttribute(
+            "aria-label",
+            sticker.name || "マイスタンプ"
+        );
 
         const image =
             document.createElement("img");
 
         image.src = imageUrl;
-        image.alt = sticker.name || "マイスタンプ";
+        image.alt = "";
+        image.draggable = false;
 
-        const name =
-            document.createElement("span");
+        Object.assign(image.style, {
+            width: "100%",
+            height: "100%",
+            objectFit: "contain",
+            pointerEvents: "none"
+        });
 
-        name.textContent =
-            sticker.name || "マイスタンプ";
+        item.appendChild(image);
 
-        button.append(image, name);
-
-        button.addEventListener("click", () => {
+        item.addEventListener("click", () => {
             selectPlannerSticker(sticker.id);
         });
 
-        myGrid.appendChild(button);
+        item.addEventListener("keydown", event => {
+            if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                selectPlannerSticker(sticker.id);
+            }
+        });
+
+        myGrid.appendChild(item);
     }
 
-    if (myGrid.childElementCount === 0) {
-
-        const empty =
-            document.createElement("p");
-
-        empty.textContent =
-            "自分の画像もここに追加できます。";
-
-        list.appendChild(empty);
-
-    } else {
-
+    if (myGrid.childElementCount > 0) {
         list.appendChild(myGrid);
-
     }
 }
 
