@@ -3255,10 +3255,108 @@ async function renderPlannerStickers(date) {
 
         });
 
-        // 背景タップによる別の操作を防ぐ
-        element.addEventListener("click", event => {
-            event.stopPropagation();
-        });
+
+/* =====================
+   🎨 スタンプのドラッグ移動
+===================== */
+
+element.style.touchAction = "none";
+element.style.cursor = "grab";
+
+let dragStartX = 0;
+let dragStartY = 0;
+let originalLeft = 0;
+let originalTop = 0;
+let isDragging = false;
+
+function saveStickerPosition() {
+
+    if (!isDragging) return;
+
+    const data = db.load();
+
+    const placements =
+        Array.isArray(data.plannerStickerPlacements)
+            ? data.plannerStickerPlacements
+            : [];
+
+    const savedSticker =
+        placements.find(placement => placement.id === item.id);
+
+    if (savedSticker) {
+
+        savedSticker.left =
+            parseFloat(element.style.left) || 0;
+
+        savedSticker.top =
+            parseFloat(element.style.top) || 0;
+
+        db.save(data);
+
+    }
+
+    isDragging = false;
+    element.style.cursor = "grab";
+}
+
+element.addEventListener("pointerdown", event => {
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    isDragging = true;
+
+    dragStartX = event.clientX;
+    dragStartY = event.clientY;
+
+    originalLeft = item.left;
+    originalTop = item.top;
+
+    element.style.cursor = "grabbing";
+
+    element.setPointerCapture(event.pointerId);
+
+});
+
+element.addEventListener("pointermove", event => {
+
+    if (!isDragging) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    const deltaX = event.clientX - dragStartX;
+    const deltaY = event.clientY - dragStartY;
+
+    element.style.left =
+        `${originalLeft + deltaX}px`;
+
+    element.style.top =
+        `${Math.max(0, originalTop + deltaY)}px`;
+
+});
+
+element.addEventListener("pointerup", event => {
+
+    event.stopPropagation();
+    saveStickerPosition();
+
+});
+
+element.addEventListener("pointercancel", () => {
+
+    saveStickerPosition();
+
+});
+
+// 背景タップによる別の操作を防ぐ
+element.addEventListener("click", event => {
+    event.stopPropagation();
+});
+
+
+
+
 
         layer.appendChild(element);
 
