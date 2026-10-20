@@ -1035,6 +1035,15 @@ plannerFamilyRenderLanes();
 
 renderPlannerNotes(date);
 
+/* =====================
+   🎨 スタンプ表示
+===================== */
+
+renderPlannerStickers(date);
+
+
+
+
 requestAnimationFrame(plannerUpdateStickyOffsets);
 
     /* =====================
@@ -1044,8 +1053,69 @@ requestAnimationFrame(plannerUpdateStickyOffsets);
 
 
 
+
+
 timeline.onclick =
     function(event){
+
+        /* =====================
+           🎨 スタンプの配置
+        ===================== */
+
+        if(
+            plannerStickerPlacementMode &&
+            !event.target.closest(".planner-event") &&
+            !event.target.closest(".planner-free-note")
+        ){
+
+            const board =
+                event.target.closest(".planner-board");
+
+            if(board){
+
+                event.stopPropagation();
+
+                const rect =
+                    board.getBoundingClientRect();
+
+                const top =
+                    board.scrollTop +
+                    event.clientY -
+                    rect.top;
+
+                const left =
+                    board.scrollLeft +
+                    event.clientX -
+                    rect.left;
+
+                const position = {
+                    top: Math.max(0, top),
+                    left: Math.max(0, left)
+                };
+
+                const stickerId =
+                    plannerSelectedStickerId;
+
+                plannerStickerPlacementMode = false;
+
+                plannerCancelEditMode();
+
+                if(stickerId){
+
+                    placePlannerStickerAtPosition(
+                        selectedCalendarDate,
+                        stickerId,
+                        position
+                    );
+
+                }
+
+                return;
+
+            }
+
+        }
+
 
         /* =====================
            📝 自由メモの配置
@@ -1136,6 +1206,7 @@ timeline.onclick =
 
         }
 
+
         /* =====================
            既存の予定編集モード解除
         ===================== */
@@ -1151,6 +1222,7 @@ timeline.onclick =
 
     };
 
+    
 
 
 
@@ -1979,6 +2051,8 @@ let activePointerId = null;
 
 
 }
+
+
 
 /* =====================================================
    📝 メモ操作メニュー
@@ -2880,3 +2954,212 @@ function backToCalendar(){
 
 
 
+
+/* =====================================================
+   🎨 1日手帳：スタンプ配置・保存・表示
+===================================================== */
+
+// スタンプを配置して保存
+async function placePlannerStickerAtPosition(
+    date,
+    stickerId,
+    position
+){
+
+    try{
+
+        const media =
+            await getMediaFile(stickerId);
+
+        if(!media || !media.file){
+
+            alert("スタンプ画像を読み込めませんでした。");
+            return;
+
+        }
+
+        const data =
+            db.load();
+
+        if(!Array.isArray(data.plannerStickerPlacements)){
+
+            data.plannerStickerPlacements = [];
+
+        }
+
+        data.plannerStickerPlacements.push({
+
+            id:
+                "placement_" +
+                Date.now() +
+                "_" +
+                Math.random().toString(36).slice(2, 8),
+
+            date:
+                date,
+
+            stickerId:
+                stickerId,
+
+            top:
+                position.top,
+
+            left:
+                position.left,
+
+            width:
+                80,
+
+            height:
+                80,
+
+            rotation:
+                0,
+
+            zIndex:
+                Date.now()
+
+        });
+
+        db.save(data);
+
+        await renderPlannerStickers(date);
+
+    }
+    catch(error){
+
+        console.error(
+            "スタンプ配置エラー:",
+            error
+        );
+
+        alert("スタンプを配置できませんでした。");
+
+    }
+
+}
+
+
+// 保存済みスタンプを表示
+async function renderPlannerStickers(date){
+
+    const board =
+        document.querySelector(
+            "#plannerTimeline .planner-board"
+        );
+
+    if(!board) return;
+
+    // 前回の専用レイヤーを削除
+    const oldLayer =
+        board.querySelector(
+            ".planner-stickers-layer"
+        );
+
+    if(oldLayer){
+
+        oldLayer.querySelectorAll("img").forEach(image => {
+
+            if(image.dataset.objectUrl){
+
+                URL.revokeObjectURL(
+                    image.dataset.objectUrl
+                );
+
+            }
+
+        });
+
+        oldLayer.remove();
+
+    }
+
+    const layer =
+        document.createElement("div");
+
+    layer.className =
+        "planner-stickers-layer";
+
+    Object.assign(layer.style, {
+
+        position: "absolute",
+        top: "0",
+        left: "0",
+        width: "100%",
+        height: "100%",
+        overflow: "visible",
+        pointerEvents: "none",
+        zIndex: "40"
+
+    });
+
+    const data =
+        db.load();
+
+    const placements =
+        Array.isArray(data.plannerStickerPlacements)
+            ? data.plannerStickerPlacements.filter(
+                item => item.date === date
+            )
+            : [];
+
+    placements.sort(
+        (a, b) => (a.zIndex || 0) - (b.zIndex || 0)
+    );
+
+    for(const item of placements){
+
+        const media =
+            await getMediaFile(item.stickerId);
+
+        if(!media || !media.file) continue;
+
+        const imageUrl =
+            createMediaURL(media);
+
+        if(!imageUrl) continue;
+
+        const image =
+            document.createElement("img");
+
+        image.src = imageUrl;
+
+        image.dataset.objectUrl =
+            imageUrl;
+
+        image.alt =
+            "マイスタンプ";
+
+        image.draggable = false;
+
+        Object.assign(image.style, {
+
+            position: "absolute",
+            top: `${item.top}px`,
+            left: `${item.left}px`,
+            width: `${item.width || 80}px`,
+            height: `${item.height || 80}px`,
+            objectFit: "contain",
+            transform: `rotate(${item.rotation || 0}deg)`,
+            transformOrigin: "center center",
+            zIndex: String(item.zIndex || 1),
+            pointerEvents: "auto",
+            userSelect: "none"
+
+        });
+
+        // スタンプをタップしても
+        // 手帳の背景タップ処理を起動させない
+        image.addEventListener("click", event => {
+
+            event.stopPropagation();
+
+        });
+
+        layer.appendChild(image);
+
+    }
+
+    board.appendChild(layer);
+
+}

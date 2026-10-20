@@ -214,6 +214,10 @@
             ✍️ 手書きメモ
         </button>
 
+        <button onclick="openPlannerSticker()">
+            🎨 スタンプ
+        </button>
+
         <button onclick="closePlannerAddMenu()">
             キャンセル
         </button>
@@ -229,6 +233,48 @@
 </div>
 
 
+
+
+
+
+<!-- =====================
+     🎨 マイスタンプ
+===================== -->
+
+<div id="plannerStickerMenu" class="modal" style="display:none;">
+
+    <div class="modal-content">
+
+        <h2>🎨 マイスタンプ</h2>
+
+        <div id="plannerStickerList">
+            登録したスタンプはありません
+        </div>
+
+        <button
+            type="button"
+            onclick="document.getElementById('plannerStickerPicker').click()">
+            ＋ 画像を登録
+        </button>
+
+        <button
+            type="button"
+            onclick="closePlannerStickerMenu()">
+            閉じる
+        </button>
+
+    </div>
+
+</div>
+
+<!-- スタンプ画像選択 -->
+<input
+    type="file"
+    id="plannerStickerPicker"
+    accept="image/*"
+    multiple
+    style="display:none"
+    onchange="plannerStickerFilesSelected(event)">
 
 
 

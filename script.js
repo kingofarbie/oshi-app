@@ -824,6 +824,8 @@ function closePlannerAddMenu(){
 
 let plannerNotePlacementMode = "";
 let plannerNotePlacementTop = 15;
+let plannerStickerPlacementMode = false;
+
 
 function openPlannerMemo() {
     closePlannerAddMenu();
@@ -834,6 +836,157 @@ function openPlannerHandwriting() {
     closePlannerAddMenu();
     plannerNotePlacementMode = "drawing";
 }
+
+
+/* =====================================================
+   🎨 1日手帳：マイスタンプ
+===================================================== */
+
+// スタンプ一覧を開く
+async function openPlannerSticker() {
+
+    closePlannerAddMenu();
+
+    plannerNotePlacementMode = "";
+    plannerStickerPlacementMode = false;
+
+    await renderPlannerStickerList();
+
+    document.getElementById("plannerStickerMenu").style.display = "flex";
+}
+
+
+// 画像をマイスタンプとして登録
+async function plannerStickerFilesSelected(event) {
+
+    const files = Array.from(event.target.files || []);
+
+    if (!files.length) return;
+
+    try {
+
+        const data = db.load();
+
+        if (!Array.isArray(data.plannerStickers)) {
+            data.plannerStickers = [];
+        }
+
+        for (const file of files) {
+
+            if (!file.type.startsWith("image/")) continue;
+
+            const id =
+                "planner_sticker_" +
+                Date.now() +
+                "_" +
+                Math.random().toString(36).slice(2, 10);
+
+            // 画像本体は既存のIndexedDBに保存
+            await saveMediaFile(id, file, "sticker");
+
+            // アプリのデータには管理情報だけ保存
+            data.plannerStickers.push({
+                id,
+                name: file.name,
+                savedAt: Date.now()
+            });
+        }
+
+        db.save(data);
+
+        await renderPlannerStickerList();
+
+    } catch (error) {
+
+        console.error("スタンプ登録エラー:", error);
+        alert("スタンプを登録できませんでした。");
+
+    } finally {
+
+        // 同じ画像をもう一度選べるようにする
+        event.target.value = "";
+    }
+}
+
+
+// マイスタンプ一覧を表示
+async function renderPlannerStickerList() {
+
+    const list =
+        document.getElementById("plannerStickerList");
+
+    if (!list) return;
+
+    list.replaceChildren();
+
+    const data = db.load();
+    const stickers = Array.isArray(data.plannerStickers)
+        ? data.plannerStickers
+        : [];
+
+    if (!stickers.length) {
+
+        list.textContent = "登録したスタンプはありません";
+        return;
+    }
+
+    for (const sticker of stickers) {
+
+        const media = await getMediaFile(sticker.id);
+
+        if (!media || !media.file) continue;
+
+        const imageUrl = createMediaURL(media);
+
+        if (!imageUrl) continue;
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "planner-sticker-item";
+
+        const image = document.createElement("img");
+        image.src = imageUrl;
+        image.alt = sticker.name || "マイスタンプ";
+
+        const name = document.createElement("span");
+        name.textContent = sticker.name || "マイスタンプ";
+
+        button.append(image, name);
+
+        // 次の段階で、この選択から配置モードにつなげる
+        button.addEventListener("click", () => {
+            selectPlannerSticker(sticker.id);
+        });
+
+        list.appendChild(button);
+    }
+}
+
+
+// マイスタンプ画面を閉じる
+function closePlannerStickerMenu() {
+
+    document.getElementById("plannerStickerMenu").style.display = "none";
+}
+
+
+
+/* =====================================================
+   🎨 選択したスタンプの配置準備
+===================================================== */
+
+let plannerSelectedStickerId = "";
+let plannerStickerPlacementPosition = null;
+
+function selectPlannerSticker(stickerId) {
+
+    plannerSelectedStickerId = stickerId;
+
+    plannerStickerPlacementMode = true;
+
+    closePlannerStickerMenu();
+
+}
+
 
 
 
