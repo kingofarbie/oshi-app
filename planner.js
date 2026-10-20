@@ -1258,6 +1258,8 @@ function renderPlannerNotes(date) {
 
         Object.assign(element.style, {
             position: "absolute",
+            transform: `rotate(${Number(note.rotation) || 0}deg)`,
+            
             top: `${Math.max(0, Number(note.top) || 0)}px`,
             left: `${Math.max(0, Number(note.left) || 6)}px`,
 width: `${Number(note.width) || 220}px`,
@@ -1315,6 +1317,186 @@ minHeight: "40px",
         );
 
         element.appendChild(resizeHandle);
+
+
+
+                /* メモの回転ハンドル */
+        const rotateHandle =
+            document.createElement("div");
+
+        Object.assign(rotateHandle.style, {
+            position: "absolute",
+            top: "-28px",
+            right: "0",
+            width: "24px",
+            height: "24px",
+            borderRadius: "50%",
+            background: "#e8a6c1",
+            border: "1px solid #d77da3",
+            boxSizing: "border-box",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "#ffffff",
+            fontSize: "16px",
+            cursor: "grab",
+            touchAction: "none",
+            zIndex: "6"
+        });
+
+        rotateHandle.textContent = "↻";
+        rotateHandle.setAttribute(
+            "aria-label",
+            "メモを回転"
+        );
+
+        element.appendChild(rotateHandle);
+
+        let rotating = false;
+        let rotatePointerId = null;
+        let rotateCenterX = 0;
+        let rotateCenterY = 0;
+        let rotateStartAngle = 0;
+        let rotateInitialValue = 0;
+
+        /* 回転開始 */
+        rotateHandle.addEventListener(
+            "pointerdown",
+            function(event) {
+
+                if (
+                    event.pointerType === "mouse" &&
+                    event.button !== 0
+                ) {
+                    return;
+                }
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                const rect =
+                    element.getBoundingClientRect();
+
+                rotateCenterX =
+                    rect.left + rect.width / 2;
+
+                rotateCenterY =
+                    rect.top + rect.height / 2;
+
+                rotateStartAngle = Math.atan2(
+                    event.clientY - rotateCenterY,
+                    event.clientX - rotateCenterX
+                );
+
+                rotateInitialValue =
+                    Number(note.rotation) || 0;
+
+                rotatePointerId = event.pointerId;
+                rotating = true;
+
+                rotateHandle.setPointerCapture(
+                    event.pointerId
+                );
+            }
+        );
+
+        /* 回転中 */
+        rotateHandle.addEventListener(
+            "pointermove",
+            function(event) {
+
+                if (
+                    !rotating ||
+                    event.pointerId !== rotatePointerId
+                ) {
+                    return;
+                }
+
+                const currentAngle = Math.atan2(
+                    event.clientY - rotateCenterY,
+                    event.clientX - rotateCenterX
+                );
+
+                const deltaAngle =
+                    (currentAngle - rotateStartAngle) *
+                    180 / Math.PI;
+
+                const nextRotation =
+                    rotateInitialValue + deltaAngle;
+
+                element.style.transform =
+                    `rotate(${nextRotation}deg)`;
+
+                element.dataset.rotation =
+                    String(nextRotation);
+
+                event.preventDefault();
+                event.stopPropagation();
+            }
+        );
+
+        /* 回転終了・角度保存 */
+        function finishNoteRotation(event) {
+
+            if (
+                !rotating ||
+                event.pointerId !== rotatePointerId
+            ) {
+                return;
+            }
+
+            rotating = false;
+            rotatePointerId = null;
+
+            const latestData = db.load();
+
+            const savedNotes =
+                Array.isArray(latestData.plannerNotes)
+                    ? latestData.plannerNotes
+                    : [];
+
+            const savedNote = savedNotes.find(
+                item =>
+                    String(item.id) === String(note.id)
+            );
+
+            if (!savedNote) {
+                alert("メモの回転を保存できませんでした。");
+                showPlanner(date);
+                return;
+            }
+
+            savedNote.rotation =
+                Number(element.dataset.rotation) || 0;
+
+            db.save(latestData);
+
+            /* 回転後のタップで編集画面を開かない */
+            element.dataset.dragged = "true";
+
+            event.stopPropagation();
+        }
+
+        rotateHandle.addEventListener(
+            "pointerup",
+            finishNoteRotation
+        );
+
+        rotateHandle.addEventListener(
+            "pointercancel",
+            finishNoteRotation
+        );
+
+        rotateHandle.addEventListener(
+            "click",
+            function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+        );
+
+
+
 
         let resizing = false;
         let resizePointerId = null;
