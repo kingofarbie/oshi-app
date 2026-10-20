@@ -3256,6 +3256,7 @@ async function renderPlannerStickers(date) {
         });
 
 
+
 /* =====================
    🎨 スタンプのドラッグ移動
 ===================== */
@@ -3268,6 +3269,8 @@ let dragStartY = 0;
 let originalLeft = 0;
 let originalTop = 0;
 let isDragging = false;
+let dragScaleX = 1;
+let dragScaleY = 1;
 
 function saveStickerPosition() {
 
@@ -3292,7 +3295,6 @@ function saveStickerPosition() {
             parseFloat(element.style.top) || 0;
 
         db.save(data);
-
     }
 
     isDragging = false;
@@ -3304,18 +3306,40 @@ element.addEventListener("pointerdown", event => {
     event.preventDefault();
     event.stopPropagation();
 
+    const board =
+        element.closest(".planner-board");
+
+    if (!board) return;
+
+    const boardRect = board.getBoundingClientRect();
+
+    dragScaleX =
+        board.offsetWidth > 0
+            ? boardRect.width / board.offsetWidth
+            : 1;
+
+    dragScaleY =
+        board.offsetHeight > 0
+            ? boardRect.height / board.offsetHeight
+            : 1;
+
+    if (!dragScaleX) dragScaleX = 1;
+    if (!dragScaleY) dragScaleY = 1;
+
     isDragging = true;
 
     dragStartX = event.clientX;
     dragStartY = event.clientY;
 
-    originalLeft = item.left;
-    originalTop = item.top;
+    originalLeft =
+        parseFloat(element.style.left) || 0;
+
+    originalTop =
+        parseFloat(element.style.top) || 0;
 
     element.style.cursor = "grabbing";
 
     element.setPointerCapture(event.pointerId);
-
 });
 
 element.addEventListener("pointermove", event => {
@@ -3325,35 +3349,34 @@ element.addEventListener("pointermove", event => {
     event.preventDefault();
     event.stopPropagation();
 
-    const deltaX = event.clientX - dragStartX;
-    const deltaY = event.clientY - dragStartY;
+    const deltaX =
+        (event.clientX - dragStartX) / dragScaleX;
+
+    const deltaY =
+        (event.clientY - dragStartY) / dragScaleY;
 
     element.style.left =
         `${originalLeft + deltaX}px`;
 
     element.style.top =
         `${Math.max(0, originalTop + deltaY)}px`;
-
 });
 
 element.addEventListener("pointerup", event => {
 
     event.stopPropagation();
     saveStickerPosition();
-
 });
 
 element.addEventListener("pointercancel", () => {
 
     saveStickerPosition();
-
 });
 
-// 背景タップによる別の操作を防ぐ
 element.addEventListener("click", event => {
+
     event.stopPropagation();
 });
-
 
 
 
