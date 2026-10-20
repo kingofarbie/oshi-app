@@ -2243,6 +2243,7 @@ function togglePlannerAnniversary(element){
 }
 
 
+
 /* =====================
    1日手帳 左右スワイプ
    左 → 翌日
@@ -2251,6 +2252,7 @@ function togglePlannerAnniversary(element){
 
 let plannerSwipeStartX = 0;
 let plannerSwipeStartY = 0;
+let plannerSwipeBlocked = false;
 
 function setupPlannerSwipe(){
 
@@ -2267,18 +2269,22 @@ function setupPlannerSwipe(){
 
     planner.addEventListener("touchstart", function(event){
 
+        plannerSwipeBlocked = false;
+
+        if(window.plannerStickerIsDragging){
+            plannerSwipeBlocked = true;
+            return;
+        }
+
         if(event.touches.length !== 1) return;
 
-if(event.target.closest(".planner-event")) return;
+        if(event.target.closest(".planner-event")) return;
 
-if(event.target.closest(
-    ".planner-free-note, .memory-photo-box, .memory-photo, video, textarea, input, select, button"
-)){
-    return;
-}
-
-
-
+        if(event.target.closest(
+            ".planner-stickers-layer, .planner-free-note, .memory-photo-box, .memory-photo, video, textarea, input, select, button"
+        )){
+            return;
+        }
 
         plannerSwipeStartX =
             event.touches[0].clientX;
@@ -2291,17 +2297,19 @@ if(event.target.closest(
 
     planner.addEventListener("touchend", function(event){
 
+        if(plannerSwipeBlocked) return;
+
+        if(window.plannerStickerIsDragging) return;
+
         if(!selectedCalendarDate) return;
 
-if(event.target.closest(".planner-event")) return;
+        if(event.target.closest(".planner-event")) return;
 
-if(event.target.closest(
-    ".planner-free-note, .memory-photo-box, .memory-photo, video, textarea, input, select, button"
-)){
-    return;
-}
-
-
+        if(event.target.closest(
+            ".planner-stickers-layer, .planner-free-note, .memory-photo-box, .memory-photo, video, textarea, input, select, button"
+        )){
+            return;
+        }
 
         const diffX =
             event.changedTouches[0].clientX -
@@ -2311,13 +2319,13 @@ if(event.target.closest(
             event.changedTouches[0].clientY -
             plannerSwipeStartY;
 
-if(
-    Math.abs(diffX) < 120 ||
-    Math.abs(diffX) <= Math.abs(diffY) * 1.3
-){
-    return;
-}
-        
+        if(
+            Math.abs(diffX) < 120 ||
+            Math.abs(diffX) <= Math.abs(diffY) * 1.3
+        ){
+            return;
+        }
+
         const current =
             new Date(
                 selectedCalendarDate + "T00:00:00"
@@ -3312,8 +3320,10 @@ function saveStickerPosition() {
         db.save(data);
     }
 
-    isDragging = false;
-    element.style.cursor = "grab";
+isDragging = false;
+window.plannerStickerIsDragging = false;
+element.style.cursor = "grab";
+
 }
 
 element.addEventListener("pointerdown", event => {
@@ -3342,6 +3352,7 @@ element.addEventListener("pointerdown", event => {
     if (!dragScaleY) dragScaleY = 1;
 
     isDragging = true;
+    window.plannerStickerIsDragging = true;
 
     dragStartX = event.clientX;
     dragStartY = event.clientY;
