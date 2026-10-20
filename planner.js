@@ -3105,6 +3105,7 @@ const emojiStickers = {
 
 // 保存済みスタンプを表示
 
+
 async function renderPlannerStickers(date) {
 
     const board =
@@ -3152,7 +3153,6 @@ async function renderPlannerStickers(date) {
         "planner-stickers-layer";
 
     Object.assign(layer.style, {
-
         position: "absolute",
         top: "0",
         left: "0",
@@ -3161,7 +3161,6 @@ async function renderPlannerStickers(date) {
         overflow: "visible",
         pointerEvents: "none",
         zIndex: "40"
-
     });
 
     const data = db.load();
@@ -3178,6 +3177,122 @@ async function renderPlannerStickers(date) {
     );
 
     /* =====================
+       編集状態を管理
+    ===================== */
+
+    function exitStickerEditMode() {
+
+        layer.querySelectorAll(".planner-sticker").forEach(
+            sticker => {
+
+                sticker.dataset.editMode = "false";
+                sticker.style.outline = "none";
+
+                const resizeHandle =
+                    sticker.querySelector(
+                        ".planner-sticker-resize-handle"
+                    );
+
+                const rotateHandle =
+                    sticker.querySelector(
+                        ".planner-sticker-rotate-handle"
+                    );
+
+                if (resizeHandle) {
+                    resizeHandle.style.display = "none";
+                }
+
+                if (rotateHandle) {
+                    rotateHandle.style.display = "none";
+                }
+
+            }
+        );
+
+    }
+
+    function saveStickerProperty(id, property, value) {
+
+        const latestData = db.load();
+
+        if (
+            !Array.isArray(
+                latestData.plannerStickerPlacements
+            )
+        ) {
+            return;
+        }
+
+        const savedSticker =
+            latestData.plannerStickerPlacements.find(
+                placement => placement.id === id
+            );
+
+        if (!savedSticker) return;
+
+        savedSticker[property] = value;
+
+        db.save(latestData);
+
+    }
+
+    /* =====================
+       スタンプ以外をタップしたら編集解除
+    ===================== */
+
+    if (board.dataset.stickerOutsideTapReady !== "true") {
+
+        board.dataset.stickerOutsideTapReady = "true";
+
+        board.addEventListener("click", event => {
+
+            if (
+                event.target.closest(
+                    ".planner-sticker"
+                )
+            ) {
+                return;
+            }
+
+            const currentLayer =
+                board.querySelector(
+                    ".planner-stickers-layer"
+                );
+
+            if (!currentLayer) return;
+
+            currentLayer.querySelectorAll(
+                ".planner-sticker"
+            ).forEach(sticker => {
+
+                sticker.dataset.editMode = "false";
+                sticker.style.outline = "none";
+
+                const resizeHandle =
+                    sticker.querySelector(
+                        ".planner-sticker-resize-handle"
+                    );
+
+                const rotateHandle =
+                    sticker.querySelector(
+                        ".planner-sticker-rotate-handle"
+                    );
+
+                if (resizeHandle) {
+                    resizeHandle.style.display = "none";
+                }
+
+                if (rotateHandle) {
+                    rotateHandle.style.display = "none";
+                }
+
+            });
+
+        });
+
+    }
+
+    /* =====================
        スタンプを表示
     ===================== */
 
@@ -3185,7 +3300,9 @@ async function renderPlannerStickers(date) {
 
         let element;
 
-        /* 絵文字スタンプ */
+        /* =====================
+           絵文字スタンプ
+        ===================== */
 
         if (
             item.type === "emoji" ||
@@ -3197,32 +3314,33 @@ async function renderPlannerStickers(date) {
 
             const emojiStickers = {
 
-"emoji-heart": "❤️",
-"emoji-star": "⭐",
-"emoji-flower": "🌸",
-"emoji-ribbon": "🎀",
-"emoji-sparkles": "✨",
-"emoji-music": "🎵",
-"emoji-cat": "🐱",
-"emoji-rabbit": "🐰",
-"emoji-clap": "👏",
-"emoji-gift": "🎁",
-"emoji-crown": "👑",
-"emoji-rainbow": "🌈",
-"emoji-laugh": "😆",
-"emoji-love": "😍",
-"emoji-dog": "🐶",
-"emoji-panda": "🐼",
-"emoji-penguin": "🐧",
-"emoji-wildboar": "🐗",
-"emoji-sweat": "😰",
-"emoji-peek": "🫣",
-"emoji-down": "⬇️",
-"emoji-check": "✅",
-"emoji-repeat": "🔁",
-"emoji-eyes": "👁️‍🗨️",
-"emoji-chart": "💹",
-"emoji-laughcry": "😂"
+                "emoji-heart": "❤️",
+                "emoji-star": "⭐",
+                "emoji-flower": "🌸",
+                "emoji-ribbon": "🎀",
+                "emoji-sparkles": "✨",
+                "emoji-music": "🎵",
+                "emoji-cat": "🐱",
+                "emoji-rabbit": "🐰",
+                "emoji-clap": "👏",
+                "emoji-gift": "🎁",
+                "emoji-crown": "👑",
+                "emoji-rainbow": "🌈",
+                "emoji-laugh": "😆",
+                "emoji-love": "😍",
+                "emoji-dog": "🐶",
+                "emoji-panda": "🐼",
+                "emoji-penguin": "🐧",
+                "emoji-wildboar": "🐗",
+                "emoji-sweat": "😰",
+                "emoji-peek": "🫣",
+                "emoji-down": "⬇️",
+                "emoji-check": "✅",
+                "emoji-repeat": "🔁",
+                "emoji-eyes": "👁️‍🗨️",
+                "emoji-chart": "💹",
+                "emoji-laughcry": "😂"
+
             };
 
             const emoji =
@@ -3235,21 +3353,25 @@ async function renderPlannerStickers(date) {
                 document.createElement("div");
 
             element.textContent = emoji;
-            element.setAttribute("aria-label", "スタンプ");
+
+            element.setAttribute(
+                "aria-label",
+                "スタンプ"
+            );
 
             Object.assign(element.style, {
-
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 fontSize: "64px",
                 lineHeight: "1"
-
             });
 
         } else {
 
-            /* 登録画像スタンプ */
+            /* =====================
+               登録画像スタンプ
+            ===================== */
 
             const media =
                 await getMediaFile(item.stickerId);
@@ -3275,13 +3397,23 @@ async function renderPlannerStickers(date) {
 
         }
 
-        /* 共通の配置設定 */
+        /* =====================
+           共通の配置設定
+        ===================== */
+
+        element.classList.add("planner-sticker");
+
+        element.dataset.stickerId = item.id;
+        element.dataset.editMode = "false";
+        element.dataset.dragged = "false";
+        element.dataset.rotation =
+            String(item.rotation || 0);
 
         Object.assign(element.style, {
 
             position: "absolute",
-            top: `${item.top}px`,
-            left: `${item.left}px`,
+            top: `${item.top || 0}px`,
+            left: `${item.left || 0}px`,
             width: `${item.width || 80}px`,
             height: `${item.height || 80}px`,
             boxSizing: "border-box",
@@ -3289,138 +3421,547 @@ async function renderPlannerStickers(date) {
             transformOrigin: "center center",
             zIndex: String(item.zIndex || 1),
             pointerEvents: "auto",
-            userSelect: "none"
+            userSelect: "none",
+            touchAction: "none",
+            cursor: "grab",
+            outline: "none"
 
         });
 
+        /* =====================
+           右下：拡大・縮小ハンドル
+        ===================== */
 
+        const resizeHandle =
+            document.createElement("div");
 
-/* =====================
-   🎨 スタンプのドラッグ移動
-===================== */
+        resizeHandle.className =
+            "planner-sticker-resize-handle";
 
-element.style.touchAction = "none";
-element.style.cursor = "grab";
+        resizeHandle.textContent = "↘";
 
-let dragStartX = 0;
-let dragStartY = 0;
-let originalLeft = 0;
-let originalTop = 0;
-let isDragging = false;
-let dragScaleX = 1;
-let dragScaleY = 1;
+        Object.assign(resizeHandle.style, {
 
-function saveStickerPosition() {
+            position: "absolute",
+            right: "-9px",
+            bottom: "-9px",
+            width: "22px",
+            height: "22px",
+            display: "none",
+            alignItems: "center",
+            justifyContent: "center",
+            border: "2px solid white",
+            borderRadius: "50%",
+            background: "#e8a6c1",
+            color: "white",
+            fontSize: "15px",
+            fontWeight: "bold",
+            lineHeight: "1",
+            cursor: "nwse-resize",
+            touchAction: "none",
+            userSelect: "none",
+            zIndex: "100",
+            boxSizing: "border-box"
 
-    if (!isDragging) return;
+        });
 
-    const data = db.load();
+        /* =====================
+           右上：回転ハンドル
+        ===================== */
 
-    const placements =
-        Array.isArray(data.plannerStickerPlacements)
-            ? data.plannerStickerPlacements
-            : [];
+        const rotateHandle =
+            document.createElement("div");
 
-    const savedSticker =
-        placements.find(placement => placement.id === item.id);
+        rotateHandle.className =
+            "planner-sticker-rotate-handle";
 
-    if (savedSticker) {
+        rotateHandle.textContent = "↻";
 
-        savedSticker.left =
-            parseFloat(element.style.left) || 0;
+        Object.assign(rotateHandle.style, {
 
-        savedSticker.top =
-            parseFloat(element.style.top) || 0;
+            position: "absolute",
+            top: "-28px",
+            right: "-10px",
+            width: "24px",
+            height: "24px",
+            display: "none",
+            alignItems: "center",
+            justifyContent: "center",
+            border: "2px solid white",
+            borderRadius: "50%",
+            background: "#e8a6c1",
+            color: "white",
+            fontSize: "17px",
+            fontWeight: "bold",
+            lineHeight: "1",
+            cursor: "grab",
+            touchAction: "none",
+            userSelect: "none",
+            zIndex: "100",
+            boxSizing: "border-box"
 
-        db.save(data);
-    }
+        });
 
-isDragging = false;
-window.plannerStickerIsDragging = false;
-element.style.cursor = "grab";
+        element.appendChild(resizeHandle);
+        element.appendChild(rotateHandle);
 
-}
+        /* =====================
+           編集モードの切り替え
+        ===================== */
 
-element.addEventListener("pointerdown", event => {
+        function enterStickerEditMode() {
 
-    event.preventDefault();
-    event.stopPropagation();
+            exitStickerEditMode();
 
-    const board =
-        element.closest(".planner-board");
+            element.dataset.editMode = "true";
 
-    if (!board) return;
+            element.style.outline =
+                "2px solid #e8a6c1";
 
-    const boardRect = board.getBoundingClientRect();
+            resizeHandle.style.display = "flex";
+            rotateHandle.style.display = "flex";
 
-    dragScaleX =
-        board.offsetWidth > 0
-            ? boardRect.width / board.offsetWidth
-            : 1;
+        }
 
-    dragScaleY =
-        board.offsetHeight > 0
-            ? boardRect.height / board.offsetHeight
-            : 1;
+        /* =====================
+           スタンプ本体のドラッグ移動
+        ===================== */
 
-    if (!dragScaleX) dragScaleX = 1;
-    if (!dragScaleY) dragScaleY = 1;
+        let dragStartX = 0;
+        let dragStartY = 0;
+        let originalLeft = 0;
+        let originalTop = 0;
+        let isDragging = false;
+        let dragMoved = false;
+        let dragScaleX = 1;
+        let dragScaleY = 1;
 
-    isDragging = true;
-    window.plannerStickerIsDragging = true;
+        function saveStickerPosition() {
 
-    dragStartX = event.clientX;
-    dragStartY = event.clientY;
+            if (!isDragging) return;
 
-    originalLeft =
-        parseFloat(element.style.left) || 0;
+            if (dragMoved) {
 
-    originalTop =
-        parseFloat(element.style.top) || 0;
+                saveStickerProperty(
+                    item.id,
+                    "left",
+                    parseFloat(element.style.left) || 0
+                );
 
-    element.style.cursor = "grabbing";
+                saveStickerProperty(
+                    item.id,
+                    "top",
+                    parseFloat(element.style.top) || 0
+                );
 
-    element.setPointerCapture(event.pointerId);
-});
+            }
 
-element.addEventListener("pointermove", event => {
+            isDragging = false;
 
-    if (!isDragging) return;
+            window.plannerStickerIsDragging = false;
 
-    event.preventDefault();
-    event.stopPropagation();
+            element.style.cursor = "grab";
 
-    const deltaX =
-        (event.clientX - dragStartX) / dragScaleX;
+            if (dragMoved) {
+                element.dataset.dragged = "true";
+            }
 
-    const deltaY =
-        (event.clientY - dragStartY) / dragScaleY;
+        }
 
-    element.style.left =
-        `${originalLeft + deltaX}px`;
+        element.addEventListener(
+            "pointerdown",
+            event => {
 
-    element.style.top =
-        `${Math.max(0, originalTop + deltaY)}px`;
-});
+                if (
+                    event.target.closest(
+                        ".planner-sticker-resize-handle, " +
+                        ".planner-sticker-rotate-handle"
+                    )
+                ) {
+                    return;
+                }
 
-element.addEventListener("pointerup", event => {
+                event.preventDefault();
+                event.stopPropagation();
 
-    event.stopPropagation();
-    saveStickerPosition();
-});
+                const currentBoard =
+                    element.closest(".planner-board");
 
-element.addEventListener("pointercancel", () => {
+                if (!currentBoard) return;
 
-    saveStickerPosition();
-});
+                const boardRect =
+                    currentBoard.getBoundingClientRect();
 
-element.addEventListener("click", event => {
+                dragScaleX =
+                    currentBoard.offsetWidth > 0
+                        ? boardRect.width /
+                          currentBoard.offsetWidth
+                        : 1;
 
-    event.stopPropagation();
-});
+                dragScaleY =
+                    currentBoard.offsetHeight > 0
+                        ? boardRect.height /
+                          currentBoard.offsetHeight
+                        : 1;
 
+                if (!dragScaleX) dragScaleX = 1;
+                if (!dragScaleY) dragScaleY = 1;
 
+                isDragging = true;
+                dragMoved = false;
 
+                window.plannerStickerIsDragging = true;
+
+                dragStartX = event.clientX;
+                dragStartY = event.clientY;
+
+                originalLeft =
+                    parseFloat(element.style.left) || 0;
+
+                originalTop =
+                    parseFloat(element.style.top) || 0;
+
+                element.style.cursor = "grabbing";
+
+                element.setPointerCapture(
+                    event.pointerId
+                );
+
+            }
+        );
+
+        element.addEventListener(
+            "pointermove",
+            event => {
+
+                if (!isDragging) return;
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                const rawDeltaX =
+                    event.clientX - dragStartX;
+
+                const rawDeltaY =
+                    event.clientY - dragStartY;
+
+                if (
+                    Math.abs(rawDeltaX) >= 5 ||
+                    Math.abs(rawDeltaY) >= 5
+                ) {
+                    dragMoved = true;
+                }
+
+                const deltaX =
+                    rawDeltaX / dragScaleX;
+
+                const deltaY =
+                    rawDeltaY / dragScaleY;
+
+                element.style.left =
+                    `${originalLeft + deltaX}px`;
+
+                element.style.top =
+                    `${Math.max(
+                        0,
+                        originalTop + deltaY
+                    )}px`;
+
+            }
+        );
+
+        element.addEventListener(
+            "pointerup",
+            event => {
+
+                event.stopPropagation();
+
+                saveStickerPosition();
+
+            }
+        );
+
+        element.addEventListener(
+            "pointercancel",
+            saveStickerPosition
+        );
+
+        /* =====================
+           右下ハンドル：サイズ変更
+        ===================== */
+
+        let resizing = false;
+        let resizeStartX = 0;
+        let resizeStartY = 0;
+        let resizeStartWidth = 0;
+        let resizeStartHeight = 0;
+        let resizeScaleX = 1;
+        let resizeScaleY = 1;
+
+        function finishStickerResize() {
+
+            if (!resizing) return;
+
+            resizing = false;
+
+            saveStickerProperty(
+                item.id,
+                "width",
+                element.offsetWidth
+            );
+
+            saveStickerProperty(
+                item.id,
+                "height",
+                element.offsetHeight
+            );
+
+            element.dataset.dragged = "true";
+
+        }
+
+        resizeHandle.addEventListener(
+            "pointerdown",
+            event => {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                resizing = true;
+
+                const rect =
+                    element.getBoundingClientRect();
+
+                const currentBoard =
+                    element.closest(".planner-board");
+
+                const boardRect =
+                    currentBoard.getBoundingClientRect();
+
+                resizeScaleX =
+                    currentBoard.offsetWidth > 0
+                        ? boardRect.width /
+                          currentBoard.offsetWidth
+                        : 1;
+
+                resizeScaleY =
+                    currentBoard.offsetHeight > 0
+                        ? boardRect.height /
+                          currentBoard.offsetHeight
+                        : 1;
+
+                if (!resizeScaleX) resizeScaleX = 1;
+                if (!resizeScaleY) resizeScaleY = 1;
+
+                resizeStartX = event.clientX;
+                resizeStartY = event.clientY;
+
+                resizeStartWidth =
+                    parseFloat(element.style.width) ||
+                    rect.width;
+
+                resizeStartHeight =
+                    parseFloat(element.style.height) ||
+                    rect.height;
+
+                resizeHandle.setPointerCapture(
+                    event.pointerId
+                );
+
+            }
+        );
+
+        resizeHandle.addEventListener(
+            "pointermove",
+            event => {
+
+                if (!resizing) return;
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                const deltaX =
+                    (event.clientX - resizeStartX) /
+                    resizeScaleX;
+
+                const deltaY =
+                    (event.clientY - resizeStartY) /
+                    resizeScaleY;
+
+                const nextWidth =
+                    Math.max(
+                        40,
+                        resizeStartWidth + deltaX
+                    );
+
+                const nextHeight =
+                    Math.max(
+                        40,
+                        resizeStartHeight + deltaY
+                    );
+
+                element.style.width =
+                    `${nextWidth}px`;
+
+                element.style.height =
+                    `${nextHeight}px`;
+
+            }
+        );
+
+        resizeHandle.addEventListener(
+            "pointerup",
+            event => {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                finishStickerResize();
+
+            }
+        );
+
+        resizeHandle.addEventListener(
+            "pointercancel",
+            finishStickerResize
+        );
+
+        /* =====================
+           右上ハンドル：回転
+        ===================== */
+
+        let rotating = false;
+        let rotateCenterX = 0;
+        let rotateCenterY = 0;
+        let rotateStartAngle = 0;
+        let rotateInitialValue = 0;
+
+        function finishStickerRotate() {
+
+            if (!rotating) return;
+
+            rotating = false;
+
+            saveStickerProperty(
+                item.id,
+                "rotation",
+                Number(element.dataset.rotation) || 0
+            );
+
+            element.dataset.dragged = "true";
+
+        }
+
+        rotateHandle.addEventListener(
+            "pointerdown",
+            event => {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                rotating = true;
+
+                const rect =
+                    element.getBoundingClientRect();
+
+                rotateCenterX =
+                    rect.left + rect.width / 2;
+
+                rotateCenterY =
+                    rect.top + rect.height / 2;
+
+                rotateStartAngle =
+                    Math.atan2(
+                        event.clientY - rotateCenterY,
+                        event.clientX - rotateCenterX
+                    ) * 180 / Math.PI;
+
+                rotateInitialValue =
+                    Number(element.dataset.rotation) || 0;
+
+                rotateHandle.setPointerCapture(
+                    event.pointerId
+                );
+
+            }
+        );
+
+        rotateHandle.addEventListener(
+            "pointermove",
+            event => {
+
+                if (!rotating) return;
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                const currentAngle =
+                    Math.atan2(
+                        event.clientY - rotateCenterY,
+                        event.clientX - rotateCenterX
+                    ) * 180 / Math.PI;
+
+                const nextRotation =
+                    rotateInitialValue +
+                    currentAngle -
+                    rotateStartAngle;
+
+                element.dataset.rotation =
+                    String(nextRotation);
+
+                element.style.transform =
+                    `rotate(${nextRotation}deg)`;
+
+            }
+        );
+
+        rotateHandle.addEventListener(
+            "pointerup",
+            event => {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                finishStickerRotate();
+
+            }
+        );
+
+        rotateHandle.addEventListener(
+            "pointercancel",
+            finishStickerRotate
+        );
+
+        /* =====================
+           タップで編集モードに入る
+        ===================== */
+
+        element.addEventListener(
+            "click",
+            event => {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                if (
+                    element.dataset.dragged === "true"
+                ) {
+                    element.dataset.dragged = "false";
+                    return;
+                }
+
+                if (
+                    element.dataset.editMode !== "true"
+                ) {
+                    enterStickerEditMode();
+                }
+
+            }
+        );
+
+        /* =====================
+           レイヤーに追加
+        ===================== */
 
         layer.appendChild(element);
 
