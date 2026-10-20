@@ -909,7 +909,11 @@ async function plannerStickerFilesSelected(event) {
 }
 
 
-// マイスタンプ一覧を表示
+
+/* =====================================================
+   🎨 マイスタンプ・初期スタンプ一覧
+===================================================== */
+
 async function renderPlannerStickerList() {
 
     const list =
@@ -919,47 +923,151 @@ async function renderPlannerStickerList() {
 
     list.replaceChildren();
 
-    const data = db.load();
-    const stickers = Array.isArray(data.plannerStickers)
-        ? data.plannerStickers
-        : [];
+    /* =====================
+       初期スタンプ
+    ===================== */
 
-    if (!stickers.length) {
+    const defaultStickers = [
+        { id: "emoji-heart", name: "❤️ ハート", emoji: "❤️" },
+        { id: "emoji-star", name: "⭐ 星", emoji: "⭐" },
+        { id: "emoji-flower", name: "🌸 花", emoji: "🌸" },
+        { id: "emoji-ribbon", name: "🎀 リボン", emoji: "🎀" },
+        { id: "emoji-sparkles", name: "✨ キラキラ", emoji: "✨" },
+        { id: "emoji-music", name: "🎵 音符", emoji: "🎵" },
+        { id: "emoji-cat", name: "🐱 ねこ", emoji: "🐱" },
+        { id: "emoji-rabbit", name: "🐰 うさぎ", emoji: "🐰" },
+        { id: "emoji-clap", name: "👏 拍手", emoji: "👏" },
+        { id: "emoji-gift", name: "🎁 プレゼント", emoji: "🎁" },
+        { id: "emoji-crown", name: "👑 王冠", emoji: "👑" },
+        { id: "emoji-rainbow", name: "🌈 虹", emoji: "🌈" }
+    ];
 
-        list.textContent = "登録したスタンプはありません";
-        return;
-    }
+    const defaultTitle =
+        document.createElement("h3");
 
-    for (const sticker of stickers) {
+    defaultTitle.textContent =
+        "🌟 最初から使えるスタンプ";
 
-        const media = await getMediaFile(sticker.id);
+    list.appendChild(defaultTitle);
 
-        if (!media || !media.file) continue;
+    const defaultGrid =
+        document.createElement("div");
 
-        const imageUrl = createMediaURL(media);
+    defaultGrid.className =
+        "planner-sticker-grid";
 
-        if (!imageUrl) continue;
-        const button = document.createElement("button");
+    for (const sticker of defaultStickers) {
+
+        const button =
+            document.createElement("button");
+
         button.type = "button";
         button.className = "planner-sticker-item";
 
-        const image = document.createElement("img");
-        image.src = imageUrl;
-        image.alt = sticker.name || "マイスタンプ";
+        const image =
+            document.createElement("span");
 
-        const name = document.createElement("span");
-        name.textContent = sticker.name || "マイスタンプ";
+        image.className = "planner-sticker-emoji";
+        image.textContent = sticker.emoji;
+        image.setAttribute("aria-hidden", "true");
+
+        const name =
+            document.createElement("span");
+
+        name.textContent = sticker.name;
 
         button.append(image, name);
 
-        // 次の段階で、この選択から配置モードにつなげる
         button.addEventListener("click", () => {
             selectPlannerSticker(sticker.id);
         });
 
-        list.appendChild(button);
+        defaultGrid.appendChild(button);
+    }
+
+    list.appendChild(defaultGrid);
+
+    /* =====================
+       マイスタンプ
+    ===================== */
+
+    const myTitle =
+        document.createElement("h3");
+
+    myTitle.textContent =
+        "🎨 マイスタンプ";
+
+    list.appendChild(myTitle);
+
+    const data = db.load();
+
+    const stickers =
+        Array.isArray(data.plannerStickers)
+            ? data.plannerStickers
+            : [];
+
+    const myGrid =
+        document.createElement("div");
+
+    myGrid.className =
+        "planner-sticker-grid";
+
+    for (const sticker of stickers) {
+
+        const media =
+            await getMediaFile(sticker.id);
+
+        if (!media || !media.file) continue;
+
+        const imageUrl =
+            createMediaURL(media);
+
+        if (!imageUrl) continue;
+
+        const button =
+            document.createElement("button");
+
+        button.type = "button";
+        button.className = "planner-sticker-item";
+
+        const image =
+            document.createElement("img");
+
+        image.src = imageUrl;
+        image.alt = sticker.name || "マイスタンプ";
+
+        const name =
+            document.createElement("span");
+
+        name.textContent =
+            sticker.name || "マイスタンプ";
+
+        button.append(image, name);
+
+        button.addEventListener("click", () => {
+            selectPlannerSticker(sticker.id);
+        });
+
+        myGrid.appendChild(button);
+    }
+
+    if (myGrid.childElementCount === 0) {
+
+        const empty =
+            document.createElement("p");
+
+        empty.textContent =
+            "自分の画像もここに追加できます。";
+
+        list.appendChild(empty);
+
+    } else {
+
+        list.appendChild(myGrid);
+
     }
 }
+
 
 
 // マイスタンプ画面を閉じる
@@ -977,9 +1085,18 @@ function closePlannerStickerMenu() {
 let plannerSelectedStickerId = "";
 let plannerStickerPlacementPosition = null;
 
+
 function selectPlannerSticker(stickerId) {
 
     plannerSelectedStickerId = stickerId;
+
+    // 絵文字スタンプか、登録画像スタンプかを判定
+    const isEmojiSticker =
+        typeof stickerId === "string" &&
+        stickerId.startsWith("emoji-");
+
+    plannerSelectedStickerType =
+        isEmojiSticker ? "emoji" : "image";
 
     plannerStickerPlacementMode = true;
 

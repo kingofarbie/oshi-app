@@ -1222,7 +1222,7 @@ timeline.onclick =
 
     };
 
-    
+
 
 
 
@@ -2960,28 +2960,71 @@ function backToCalendar(){
 ===================================================== */
 
 // スタンプを配置して保存
+
 async function placePlannerStickerAtPosition(
     date,
     stickerId,
     position
-){
+) {
 
-    try{
+    try {
 
-        const media =
-            await getMediaFile(stickerId);
+        /* =====================
+           🎨 絵文字スタンプ
+        ===================== */
 
-        if(!media || !media.file){
+        const emojiStickers = {
+            "emoji-heart": "❤️",
+            "emoji-star": "⭐",
+            "emoji-flower": "🌸",
+            "emoji-ribbon": "🎀",
+            "emoji-sparkles": "✨",
+            "emoji-music": "🎵",
+            "emoji-cat": "🐱",
+            "emoji-rabbit": "🐰",
+            "emoji-clap": "👏",
+            "emoji-gift": "🎁",
+            "emoji-crown": "👑",
+            "emoji-rainbow": "🌈"
+        };
 
-            alert("スタンプ画像を読み込めませんでした。");
-            return;
+        const isEmoji =
+            Object.prototype.hasOwnProperty.call(
+                emojiStickers,
+                stickerId
+            );
+
+        let emoji = "";
+
+        if (isEmoji) {
+
+            emoji = emojiStickers[stickerId];
+
+        } else {
+
+            /* =====================
+               🖼️ 登録画像スタンプ
+            ===================== */
+
+            const media =
+                await getMediaFile(stickerId);
+
+            if (!media || !media.file) {
+
+                alert("スタンプ画像を読み込めませんでした。");
+                return;
+
+            }
 
         }
 
-        const data =
-            db.load();
+        /* =====================
+           💾 配置データを保存
+        ===================== */
 
-        if(!Array.isArray(data.plannerStickerPlacements)){
+        const data = db.load();
+
+        if (!Array.isArray(data.plannerStickerPlacements)) {
 
             data.plannerStickerPlacements = [];
 
@@ -2995,29 +3038,25 @@ async function placePlannerStickerAtPosition(
                 "_" +
                 Math.random().toString(36).slice(2, 8),
 
-            date:
-                date,
+            date: date,
 
-            stickerId:
-                stickerId,
+            stickerId: stickerId,
 
-            top:
-                position.top,
+            type: isEmoji ? "emoji" : "image",
 
-            left:
-                position.left,
+            emoji: emoji,
 
-            width:
-                80,
+            top: position.top,
 
-            height:
-                80,
+            left: position.left,
 
-            rotation:
-                0,
+            width: 80,
 
-            zIndex:
-                Date.now()
+            height: 80,
+
+            rotation: 0,
+
+            zIndex: Date.now()
 
         });
 
@@ -3025,8 +3064,7 @@ async function placePlannerStickerAtPosition(
 
         await renderPlannerStickers(date);
 
-    }
-    catch(error){
+    } catch (error) {
 
         console.error(
             "スタンプ配置エラー:",
@@ -3040,27 +3078,33 @@ async function placePlannerStickerAtPosition(
 }
 
 
+
+
 // 保存済みスタンプを表示
-async function renderPlannerStickers(date){
+
+async function renderPlannerStickers(date) {
 
     const board =
         document.querySelector(
             "#plannerTimeline .planner-board"
         );
 
-    if(!board) return;
+    if (!board) return;
 
-    // 前回の専用レイヤーを削除
+    /* =====================
+       前回の専用レイヤーを削除
+    ===================== */
+
     const oldLayer =
         board.querySelector(
             ".planner-stickers-layer"
         );
 
-    if(oldLayer){
+    if (oldLayer) {
 
         oldLayer.querySelectorAll("img").forEach(image => {
 
-            if(image.dataset.objectUrl){
+            if (image.dataset.objectUrl) {
 
                 URL.revokeObjectURL(
                     image.dataset.objectUrl
@@ -3073,6 +3117,10 @@ async function renderPlannerStickers(date){
         oldLayer.remove();
 
     }
+
+    /* =====================
+       スタンプ専用レイヤー
+    ===================== */
 
     const layer =
         document.createElement("div");
@@ -3093,8 +3141,7 @@ async function renderPlannerStickers(date){
 
     });
 
-    const data =
-        db.load();
+    const data = db.load();
 
     const placements =
         Array.isArray(data.plannerStickerPlacements)
@@ -3107,39 +3154,99 @@ async function renderPlannerStickers(date){
         (a, b) => (a.zIndex || 0) - (b.zIndex || 0)
     );
 
-    for(const item of placements){
+    /* =====================
+       スタンプを表示
+    ===================== */
 
-        const media =
-            await getMediaFile(item.stickerId);
+    for (const item of placements) {
 
-        if(!media || !media.file) continue;
+        let element;
 
-        const imageUrl =
-            createMediaURL(media);
+        /* 絵文字スタンプ */
 
-        if(!imageUrl) continue;
+        if (
+            item.type === "emoji" ||
+            (
+                typeof item.stickerId === "string" &&
+                item.stickerId.startsWith("emoji-")
+            )
+        ) {
 
-        const image =
-            document.createElement("img");
+            const emojiStickers = {
+                "emoji-heart": "❤️",
+                "emoji-star": "⭐",
+                "emoji-flower": "🌸",
+                "emoji-ribbon": "🎀",
+                "emoji-sparkles": "✨",
+                "emoji-music": "🎵",
+                "emoji-cat": "🐱",
+                "emoji-rabbit": "🐰",
+                "emoji-clap": "👏",
+                "emoji-gift": "🎁",
+                "emoji-crown": "👑",
+                "emoji-rainbow": "🌈"
+            };
 
-        image.src = imageUrl;
+            const emoji =
+                item.emoji ||
+                emojiStickers[item.stickerId];
 
-        image.dataset.objectUrl =
-            imageUrl;
+            if (!emoji) continue;
 
-        image.alt =
-            "マイスタンプ";
+            element =
+                document.createElement("div");
 
-        image.draggable = false;
+            element.textContent = emoji;
+            element.setAttribute("aria-label", "スタンプ");
 
-        Object.assign(image.style, {
+            Object.assign(element.style, {
+
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "64px",
+                lineHeight: "1"
+
+            });
+
+        } else {
+
+            /* 登録画像スタンプ */
+
+            const media =
+                await getMediaFile(item.stickerId);
+
+            if (!media || !media.file) continue;
+
+            const imageUrl =
+                createMediaURL(media);
+
+            if (!imageUrl) continue;
+
+            element =
+                document.createElement("img");
+
+            element.src = imageUrl;
+            element.dataset.objectUrl = imageUrl;
+            element.alt = "マイスタンプ";
+            element.draggable = false;
+
+            Object.assign(element.style, {
+                objectFit: "contain"
+            });
+
+        }
+
+        /* 共通の配置設定 */
+
+        Object.assign(element.style, {
 
             position: "absolute",
             top: `${item.top}px`,
             left: `${item.left}px`,
             width: `${item.width || 80}px`,
             height: `${item.height || 80}px`,
-            objectFit: "contain",
+            boxSizing: "border-box",
             transform: `rotate(${item.rotation || 0}deg)`,
             transformOrigin: "center center",
             zIndex: String(item.zIndex || 1),
@@ -3148,18 +3255,16 @@ async function renderPlannerStickers(date){
 
         });
 
-        // スタンプをタップしても
-        // 手帳の背景タップ処理を起動させない
-        image.addEventListener("click", event => {
-
+        // 背景タップによる別の操作を防ぐ
+        element.addEventListener("click", event => {
             event.stopPropagation();
-
         });
 
-        layer.appendChild(image);
+        layer.appendChild(element);
 
     }
 
     board.appendChild(layer);
 
 }
+
