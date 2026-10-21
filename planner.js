@@ -1055,6 +1055,7 @@ requestAnimationFrame(plannerUpdateStickyOffsets);
 
 
 
+
 timeline.onclick =
     function(event){
 
@@ -1068,8 +1069,9 @@ timeline.onclick =
             !event.target.closest(".planner-free-note")
         ){
 
+            // タップした場所に関係なく、基準となるボードを取得
             const board =
-                event.target.closest(".planner-board");
+                timeline.querySelector(".planner-board");
 
             if(board){
 
@@ -1078,6 +1080,7 @@ timeline.onclick =
                 const rect =
                     board.getBoundingClientRect();
 
+                // 家族レーン上のタップ位置もボード基準に変換
                 const top =
                     board.scrollTop +
                     event.clientY -
@@ -1127,8 +1130,9 @@ timeline.onclick =
             !event.target.closest(".planner-free-note")
         ){
 
+            // タップした場所に関係なく、基準となるボードを取得
             const board =
-                event.target.closest(".planner-board");
+                timeline.querySelector(".planner-board");
 
             if(board){
 
@@ -1137,6 +1141,7 @@ timeline.onclick =
                 const rect =
                     board.getBoundingClientRect();
 
+                // 家族レーン上のタップ位置もボード基準に変換
                 const top =
                     board.scrollTop +
                     event.clientY -
@@ -1156,6 +1161,7 @@ timeline.onclick =
                 plannerCancelEditMode();
 
                 /* 仮メモを表示 */
+
                 const placeholder =
                     document.createElement("div");
 
