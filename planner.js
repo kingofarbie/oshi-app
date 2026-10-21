@@ -1615,6 +1615,8 @@ minHeight: "40px",
                 resizeStartY = event.clientY;
                 resizeStartWidth = rect.width;
                 resizeStartHeight = rect.height;
+                resizeStartFontSize =
+    parseFloat(getComputedStyle(element).fontSize) || 16;
 
                 resizing = true;
 
@@ -1676,26 +1678,21 @@ element.style.height =
 
 element.style.maxWidth = "none";
 
+
 /* =====================
    📝 メモの文字サイズも連動
 ===================== */
 
-const originalFontSize =
-    Number(note.fontSize) || 16;
-
-const originalWidth =
-    Number(note.width) || 220;
-
 const scale =
-    nextWidth / originalWidth;
+    nextWidth / resizeStartWidth;
 
 element.style.fontSize =
     `${Math.max(
         6,
-        originalFontSize * scale
+        resizeStartFontSize * scale
     )}px`;
 
-    
+
                 event.preventDefault();
                 event.stopPropagation();
             }
@@ -3716,6 +3713,7 @@ async function renderPlannerStickers(date) {
         let resizeStartY = 0;
         let resizeStartWidth = 0;
         let resizeStartHeight = 0;
+        let resizeStartFontSize = 16;
         let resizeScaleX = 1;
         let resizeScaleY = 1;
 
