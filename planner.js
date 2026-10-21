@@ -3272,6 +3272,20 @@ async function renderPlannerStickers(date) {
                 rotateHandle.style.display = "none";
             }
 
+
+
+            const deleteButton =
+    sticker.querySelector(
+        ".planner-sticker-delete-button"
+    );
+
+if (deleteButton) {
+    deleteButton.style.display = "none";
+}
+
+
+
+
         });
 
     }
@@ -3545,6 +3559,96 @@ async function renderPlannerStickers(date) {
         element.appendChild(resizeHandle);
         element.appendChild(rotateHandle);
 
+
+        
+/* =====================
+   ✕ スタンプ削除ボタン
+===================== */
+
+const deleteButton =
+    document.createElement("button");
+
+deleteButton.type = "button";
+deleteButton.className =
+    "planner-sticker-delete-button";
+
+deleteButton.textContent = "✕";
+
+deleteButton.setAttribute(
+    "aria-label",
+    "スタンプを削除"
+);
+
+Object.assign(deleteButton.style, {
+    position: "absolute",
+    top: "-28px",
+    left: "-10px",
+    width: "26px",
+    height: "26px",
+    display: "none",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "0",
+    border: "2px solid white",
+    borderRadius: "50%",
+    background: "#e85b76",
+    color: "white",
+    fontSize: "14px",
+    cursor: "pointer",
+    zIndex: "101",
+    boxSizing: "border-box",
+    pointerEvents: "auto",
+    touchAction: "manipulation"
+});
+
+deleteButton.addEventListener(
+    "click",
+    function(event) {
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (
+            !confirm("このスタンプを削除しますか？")
+        ) {
+            return;
+        }
+
+        const latestData = db.load();
+
+        if (
+            !Array.isArray(
+                latestData.plannerStickerPlacements
+            )
+        ) {
+            return;
+        }
+
+        latestData.plannerStickerPlacements =
+            latestData.plannerStickerPlacements.filter(
+                placement =>
+                    String(placement.id) !==
+                    String(item.id)
+            );
+
+        db.save(latestData);
+
+        renderPlannerStickers(date);
+
+    }
+);
+
+element.appendChild(deleteButton);
+
+
+
+
+
+
+
+
+
+
         /* =====================
            編集モードの切り替え
         ===================== */
@@ -3560,6 +3664,7 @@ async function renderPlannerStickers(date) {
 
             resizeHandle.style.display = "flex";
             rotateHandle.style.display = "flex";
+            deleteButton.style.display = "flex";
 
         }
 
