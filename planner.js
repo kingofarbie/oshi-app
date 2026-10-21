@@ -3788,23 +3788,48 @@ async function renderPlannerStickers(date) {
                     (event.clientY - resizeStartY) /
                     resizeScaleY;
 
-                const nextWidth =
-                    Math.max(
-                        40,
-                        resizeStartWidth + deltaX
-                    );
 
-                const nextHeight =
-                    Math.max(
-                        40,
-                        resizeStartHeight + deltaY
-                    );
+const nextWidth =
+    Math.max(
+        40,
+        resizeStartWidth + deltaX
+    );
 
-                element.style.width =
-                    `${nextWidth}px`;
+const nextHeight =
+    Math.max(
+        40,
+        resizeStartHeight + deltaY
+    );
 
-                element.style.height =
-                    `${nextHeight}px`;
+element.style.width =
+    `${nextWidth}px`;
+
+element.style.height =
+    `${nextHeight}px`;
+
+/* =====================
+   絵文字の表示サイズも連動
+===================== */
+
+if (element.dataset.stickerId) {
+
+    const emojiElement =
+        element.firstChild;
+
+    if (
+        emojiElement &&
+        element.getAttribute("aria-label") === "スタンプ"
+    ) {
+
+        element.style.fontSize =
+            `${64 * nextWidth / 80}px`;
+
+    }
+
+}
+
+
+
 
             }
         );
