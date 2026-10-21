@@ -1273,6 +1273,7 @@ timeline.onclick =
    📝 1日手帳：保存済み文字メモを表示・ドラッグ移動
 ===================================================== */
 
+
 function renderPlannerNotes(date) {
 
     const timeline =
@@ -1291,7 +1292,6 @@ function renderPlannerNotes(date) {
         return;
     }
 
-    /* 前回のメモレイヤーを削除 */
     layout
         .querySelector(".planner-notes-layer")
         ?.remove();
@@ -1304,7 +1304,6 @@ function renderPlannerNotes(date) {
             note.type === "text"
     );
 
-    /* メモ専用レイヤーを作成 */
     const layer =
         document.createElement("div");
 
@@ -1330,25 +1329,26 @@ function renderPlannerNotes(date) {
         element.dataset.noteId = note.id;
         element.tabIndex = 0;
         element.setAttribute("role", "button");
-        element.setAttribute("aria-label", "メモを編集");
+        element.setAttribute(
+            "aria-label",
+            "メモを選択。もう一度タップすると編集"
+        );
 
         element.textContent = note.text || "";
 
         Object.assign(element.style, {
             position: "absolute",
-            transform: `rotate(${Number(note.rotation) || 0}deg)`,
-
+            transform:
+                `rotate(${Number(note.rotation) || 0}deg)`,
             top: `${Math.max(0, Number(note.top) || 0)}px`,
             left: `${Math.max(0, Number(note.left) || 6)}px`,
-width: `${Number(note.width) || 220}px`,
-maxWidth: "calc(100% - 12px)",
-height: note.height
-    ? `${Number(note.height)}px`
-    : "auto",
-minWidth: "100px",
-minHeight: "40px",
-
-
+            width: `${Number(note.width) || 220}px`,
+            maxWidth: "calc(100% - 12px)",
+            height: note.height
+                ? `${Number(note.height)}px`
+                : "auto",
+            minWidth: "100px",
+            minHeight: "40px",
             padding: "8px",
             boxSizing: "border-box",
             border: "1px solid #e8a6c1",
@@ -1367,12 +1367,116 @@ minHeight: "40px",
             boxShadow: "0 2px 8px rgba(0,0,0,0.12)"
         });
 
+        /* =====================
+           ✕ 削除ボタン
+           スタンプと同じ左上
+        ===================== */
 
+        const deleteHandle =
+            document.createElement("button");
 
+        deleteHandle.type = "button";
+        deleteHandle.className =
+            "planner-note-delete-handle";
 
-                /* メモのサイズ変更ハンドル */
+        deleteHandle.textContent = "✕";
+
+        deleteHandle.setAttribute(
+            "aria-label",
+            "メモを削除"
+        );
+
+        Object.assign(deleteHandle.style, {
+            position: "absolute",
+            top: "-28px",
+            left: "-10px",
+            width: "26px",
+            height: "26px",
+            padding: "0",
+            display: "none",
+            alignItems: "center",
+            justifyContent: "center",
+            border: "2px solid white",
+            borderRadius: "50%",
+            background: "#e85b76",
+            color: "#ffffff",
+            fontSize: "14px",
+            fontWeight: "bold",
+            cursor: "pointer",
+            boxSizing: "border-box",
+            zIndex: "101",
+            pointerEvents: "auto",
+            touchAction: "manipulation"
+        });
+
+        /* 削除ボタンからのドラッグを防止 */
+        deleteHandle.addEventListener(
+            "pointerdown",
+            function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+        );
+
+        deleteHandle.addEventListener(
+            "click",
+            function(event) {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                if (
+                    !confirm("このメモを削除しますか？")
+                ) {
+                    return;
+                }
+
+                const latestData = db.load();
+
+                if (
+                    !Array.isArray(
+                        latestData.plannerNotes
+                    )
+                ) {
+                    return;
+                }
+
+                const exists =
+                    latestData.plannerNotes.some(
+                        item =>
+                            String(item.id) ===
+                            String(note.id)
+                    );
+
+                if (!exists) {
+                    return;
+                }
+
+                latestData.plannerNotes =
+                    latestData.plannerNotes.filter(
+                        item =>
+                            String(item.id) !==
+                            String(note.id)
+                    );
+
+                db.save(latestData);
+
+                showPlanner(date);
+            }
+        );
+
+        element.appendChild(deleteHandle);
+
+        /* =====================
+           ↔ サイズ変更ハンドル
+           スタンプと同じ右下
+        ===================== */
+
         const resizeHandle =
             document.createElement("div");
+
+        resizeHandle.className =
+            "planner-note-resize-handle";
 
         Object.assign(resizeHandle.style, {
             position: "absolute",
@@ -1386,7 +1490,8 @@ minHeight: "40px",
             boxSizing: "border-box",
             cursor: "nwse-resize",
             touchAction: "none",
-            zIndex: "5"
+            zIndex: "5",
+            display: "none"
         });
 
         resizeHandle.setAttribute(
@@ -1396,11 +1501,16 @@ minHeight: "40px",
 
         element.appendChild(resizeHandle);
 
+        /* =====================
+           ↻ 回転ハンドル
+           スタンプと同じ右上
+        ===================== */
 
-
-                /* メモの回転ハンドル */
         const rotateHandle =
             document.createElement("div");
+
+        rotateHandle.className =
+            "planner-note-rotate-handle";
 
         Object.assign(rotateHandle.style, {
             position: "absolute",
@@ -1412,7 +1522,7 @@ minHeight: "40px",
             background: "#e8a6c1",
             border: "1px solid #d77da3",
             boxSizing: "border-box",
-            display: "flex",
+            display: "none",
             alignItems: "center",
             justifyContent: "center",
             color: "#ffffff",
@@ -1423,6 +1533,7 @@ minHeight: "40px",
         });
 
         rotateHandle.textContent = "↻";
+
         rotateHandle.setAttribute(
             "aria-label",
             "メモを回転"
@@ -1430,20 +1541,35 @@ minHeight: "40px",
 
         element.appendChild(rotateHandle);
 
-                /* 編集モードの初期状態 */
-        resizeHandle.classList.add(
-            "planner-note-resize-handle"
-        );
-
-        rotateHandle.classList.add(
-            "planner-note-rotate-handle"
-        );
-
-        resizeHandle.style.display = "none";
-        rotateHandle.style.display = "none";
-
         element.dataset.editMode = "false";
 
+        /* =====================
+           編集モード切り替え
+        ===================== */
+
+        function setNoteEditMode(enabled) {
+
+            element.dataset.editMode =
+                enabled ? "true" : "false";
+
+            element.style.outline =
+                enabled
+                    ? "2px solid #e8a6c1"
+                    : "none";
+
+            deleteHandle.style.display =
+                enabled ? "flex" : "none";
+
+            resizeHandle.style.display =
+                enabled ? "block" : "none";
+
+            rotateHandle.style.display =
+                enabled ? "flex" : "none";
+        }
+
+        /* =====================
+           ↻ 回転処理
+        ===================== */
 
         let rotating = false;
         let rotatePointerId = null;
@@ -1452,7 +1578,6 @@ minHeight: "40px",
         let rotateStartAngle = 0;
         let rotateInitialValue = 0;
 
-        /* 回転開始 */
         rotateHandle.addEventListener(
             "pointerdown",
             function(event) {
@@ -1493,7 +1618,6 @@ minHeight: "40px",
             }
         );
 
-        /* 回転中 */
         rotateHandle.addEventListener(
             "pointermove",
             function(event) {
@@ -1528,7 +1652,6 @@ minHeight: "40px",
             }
         );
 
-        /* 回転終了・角度保存 */
         function finishNoteRotation(event) {
 
             if (
@@ -1564,7 +1687,6 @@ minHeight: "40px",
 
             db.save(latestData);
 
-            /* 回転後のタップで編集画面を開かない */
             element.dataset.dragged = "true";
 
             event.stopPropagation();
@@ -1588,8 +1710,9 @@ minHeight: "40px",
             }
         );
 
-
-
+        /* =====================
+           ↔ サイズ変更処理
+        ===================== */
 
         let resizing = false;
         let resizePointerId = null;
@@ -1597,8 +1720,8 @@ minHeight: "40px",
         let resizeStartY = 0;
         let resizeStartWidth = 0;
         let resizeStartHeight = 0;
+        let resizeStartFontSize = 16;
 
-        /* サイズ変更開始 */
         resizeHandle.addEventListener(
             "pointerdown",
             function(event) {
@@ -1621,8 +1744,11 @@ minHeight: "40px",
                 resizeStartY = event.clientY;
                 resizeStartWidth = rect.width;
                 resizeStartHeight = rect.height;
+
                 resizeStartFontSize =
-    parseFloat(getComputedStyle(element).fontSize) || 16;
+                    parseFloat(
+                        getComputedStyle(element).fontSize
+                    ) || 16;
 
                 resizing = true;
 
@@ -1632,7 +1758,6 @@ minHeight: "40px",
             }
         );
 
-        /* サイズ変更中 */
         resizeHandle.addEventListener(
             "pointermove",
             function(event) {
@@ -1675,64 +1800,47 @@ minHeight: "40px",
                     )
                 );
 
+                element.style.width =
+                    `${nextWidth}px`;
 
-element.style.width =
-    `${nextWidth}px`;
+                element.style.height =
+                    `${nextHeight}px`;
 
-element.style.height =
-    `${nextHeight}px`;
+                element.style.maxWidth = "none";
 
-element.style.maxWidth = "none";
+                const scale =
+                    nextWidth / resizeStartWidth;
 
+                const desiredFontSize =
+                    resizeStartFontSize * scale * scale;
 
-/* =====================
-   📝 メモの文字サイズも連動
-===================== */
+                element.style.fontSize =
+                    `${Math.max(6, desiredFontSize)}px`;
 
-/* =====================
-   📝 メモの文字サイズを枠内に調整
-===================== */
+                while (
+                    element.scrollHeight > element.clientHeight ||
+                    element.scrollWidth > element.clientWidth
+                ) {
 
-const scale =
-    nextWidth / resizeStartWidth;
+                    const currentFontSize =
+                        parseFloat(element.style.fontSize);
 
-const desiredFontSize =
-    resizeStartFontSize * scale * scale;
+                    if (currentFontSize <= 6) {
+                        break;
+                    }
 
-/* 文字サイズをいったん適用 */
-element.style.fontSize =
-    `${Math.max(6, desiredFontSize)}px`;
-
-/* 枠の内側に文字が収まるまで縮小 */
-const minFontSize = 6;
-
-while (
-    element.scrollHeight > element.clientHeight ||
-    element.scrollWidth > element.clientWidth
-) {
-
-    const currentFontSize =
-        parseFloat(element.style.fontSize);
-
-    if (currentFontSize <= minFontSize) {
-        break;
-    }
-
-    element.style.fontSize =
-        `${Math.max(
-            minFontSize,
-            currentFontSize - 1
-        )}px`;
-}    
-    
-
+                    element.style.fontSize =
+                        `${Math.max(
+                            6,
+                            currentFontSize - 1
+                        )}px`;
+                }
 
                 event.preventDefault();
                 event.stopPropagation();
             }
         );
 
-        /* サイズ変更終了・保存 */
         function finishNoteResize(event) {
 
             if (
@@ -1763,15 +1871,11 @@ while (
                 return;
             }
 
-            savedNote.width =
-                element.offsetWidth;
-
-            savedNote.height =
-                element.offsetHeight;
+            savedNote.width = element.offsetWidth;
+            savedNote.height = element.offsetHeight;
 
             db.save(latestData);
 
-            /* サイズ変更後のタップで編集画面を開かない */
             element.dataset.dragged = "true";
 
             event.stopPropagation();
@@ -1795,21 +1899,32 @@ while (
             }
         );
 
+        /* =====================
+           メモの移動処理
+        ===================== */
 
+        let startX = 0;
+        let startY = 0;
+        let grabOffsetX = 0;
+        let grabOffsetY = 0;
+        let dragging = false;
+        let moved = false;
+        let activePointerId = null;
 
-let startX = 0;
-let startY = 0;
-let grabOffsetX = 0;
-let grabOffsetY = 0;
-let dragging = false;
-let moved = false;
-let activePointerId = null;
-
-
-        /* ドラッグ開始 */
         element.addEventListener(
             "pointerdown",
             function(event) {
+
+                /* 操作ハンドルからのイベントは除外 */
+                if (
+                    event.target.closest(
+                        ".planner-note-delete-handle, " +
+                        ".planner-note-resize-handle, " +
+                        ".planner-note-rotate-handle"
+                    )
+                ) {
+                    return;
+                }
 
                 if (
                     event.pointerType === "mouse" &&
@@ -1823,7 +1938,6 @@ let activePointerId = null;
                 startX = event.clientX;
                 startY = event.clientY;
 
-                // 指でつかんだ位置を記録
                 const noteRect =
                     element.getBoundingClientRect();
 
@@ -1848,7 +1962,6 @@ let activePointerId = null;
             }
         );
 
-        /* ドラッグ中 */
         element.addEventListener(
             "pointermove",
             function(event) {
@@ -1873,11 +1986,9 @@ let activePointerId = null;
 
                 moved = true;
 
-                // メモレイヤーの現在位置を取得
                 const layerRect =
                     layer.getBoundingClientRect();
 
-                // 指でつかんだ位置を維持して移動
                 const maxLeft = Math.max(
                     0,
                     layer.clientWidth - element.offsetWidth
@@ -1908,18 +2019,14 @@ let activePointerId = null;
                     )
                 );
 
-                element.style.left =
-                    `${nextLeft}px`;
-
-                element.style.top =
-                    `${nextTop}px`;
+                element.style.left = `${nextLeft}px`;
+                element.style.top = `${nextTop}px`;
 
                 event.preventDefault();
                 event.stopPropagation();
             }
         );
 
-        /* ドラッグ終了・位置保存 */
         function finishNoteDrag(event) {
 
             if (
@@ -1968,7 +2075,6 @@ let activePointerId = null;
 
             db.save(latestData);
 
-            /* ドラッグ後のクリックで編集画面を開かない */
             element.dataset.dragged = "true";
 
             event.stopPropagation();
@@ -1984,24 +2090,37 @@ let activePointerId = null;
             finishNoteDrag
         );
 
-        /* タップで編集モード切り替え */
+        /* =====================
+           1回タップ：操作ボタン表示
+           2回目：内容を編集
+        ===================== */
+
         element.addEventListener(
             "click",
             function(event) {
 
                 event.stopPropagation();
 
-                // ドラッグ・サイズ変更・回転の直後は無視
+                if (
+                    event.target.closest(
+                        ".planner-note-delete-handle, " +
+                        ".planner-note-resize-handle, " +
+                        ".planner-note-rotate-handle"
+                    )
+                ) {
+                    return;
+                }
+
+                /* 移動・回転・サイズ変更直後は無視 */
                 if (element.dataset.dragged === "true") {
                     element.dataset.dragged = "false";
                     event.preventDefault();
                     return;
                 }
 
-                // 通常表示なら編集モードにする
+                /* 1回目のタップ */
                 if (element.dataset.editMode !== "true") {
 
-                    // ほかのメモの編集モードを解除
                     layer.querySelectorAll(
                         ".planner-free-note"
                     ).forEach(otherNote => {
@@ -2009,99 +2128,109 @@ let activePointerId = null;
                         otherNote.dataset.editMode = "false";
                         otherNote.style.outline = "none";
 
-                        const resize =
+                        const otherDelete =
+                            otherNote.querySelector(
+                                ".planner-note-delete-handle"
+                            );
+
+                        const otherResize =
                             otherNote.querySelector(
                                 ".planner-note-resize-handle"
                             );
 
-                        const rotate =
+                        const otherRotate =
                             otherNote.querySelector(
                                 ".planner-note-rotate-handle"
                             );
 
-                        if (resize) {
-                            resize.style.display = "none";
+                        if (otherDelete) {
+                            otherDelete.style.display = "none";
                         }
 
-                        if (rotate) {
-                            rotate.style.display = "none";
+                        if (otherResize) {
+                            otherResize.style.display = "none";
+                        }
+
+                        if (otherRotate) {
+                            otherRotate.style.display = "none";
                         }
                     });
 
-                    element.dataset.editMode = "true";
-
-                    resizeHandle.style.display = "block";
-                    rotateHandle.style.display = "flex";
-
-                    element.style.outline =
-                        "2px solid #e8a6c1";
+                    setNoteEditMode(true);
 
                     return;
                 }
 
-                // 編集モード中に中央をタップしたら操作メニュー
-                showPlannerNoteMenu(note.id);
-            
-            
-            
+                /* 2回目のタップ：内容を編集 */
+                setNoteEditMode(false);
+
+                openPlannerNoteEditor(
+                    "text",
+                    note.id
+                );
             }
         );
-        
 
         layer.appendChild(element);
-
     });
-
-
-
 
     /* 予定ボードと家族レーンより手前に配置 */
     layout.appendChild(layer);
 
-
-        /* メモ以外をタップしたら編集モードを解除 */
+    /* メモ以外をタップしたら操作ボタンを隠す */
     if (!layout.dataset.noteOutsideTapBound) {
 
         layout.dataset.noteOutsideTapBound = "true";
 
-        layout.addEventListener("click", function(event) {
+        layout.addEventListener(
+            "click",
+            function(event) {
 
-            if (event.target.closest(".planner-free-note")) {
-                return;
+                if (
+                    event.target.closest(
+                        ".planner-free-note"
+                    )
+                ) {
+                    return;
+                }
+
+                layout.querySelectorAll(
+                    ".planner-free-note"
+                ).forEach(element => {
+
+                    element.dataset.editMode = "false";
+                    element.style.outline = "none";
+
+                    const deleteHandle =
+                        element.querySelector(
+                            ".planner-note-delete-handle"
+                        );
+
+                    const resize =
+                        element.querySelector(
+                            ".planner-note-resize-handle"
+                        );
+
+                    const rotate =
+                        element.querySelector(
+                            ".planner-note-rotate-handle"
+                        );
+
+                    if (deleteHandle) {
+                        deleteHandle.style.display = "none";
+                    }
+
+                    if (resize) {
+                        resize.style.display = "none";
+                    }
+
+                    if (rotate) {
+                        rotate.style.display = "none";
+                    }
+                });
             }
-
-            layout.querySelectorAll(
-                ".planner-free-note"
-            ).forEach(element => {
-
-                element.dataset.editMode = "false";
-                element.style.outline = "none";
-
-                const resize =
-                    element.querySelector(
-                        ".planner-note-resize-handle"
-                    );
-
-                const rotate =
-                    element.querySelector(
-                        ".planner-note-rotate-handle"
-                    );
-
-                if (resize) {
-                    resize.style.display = "none";
-                }
-
-                if (rotate) {
-                    rotate.style.display = "none";
-                }
-            });
-        });
+        );
     }
-
-
-
-
-
 }
 
 
