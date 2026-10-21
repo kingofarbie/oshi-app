@@ -1667,14 +1667,35 @@ minHeight: "40px",
                     )
                 );
 
-                element.style.width =
-                    `${nextWidth}px`;
 
-                element.style.height =
-                    `${nextHeight}px`;
+element.style.width =
+    `${nextWidth}px`;
 
-                element.style.maxWidth = "none";
+element.style.height =
+    `${nextHeight}px`;
 
+element.style.maxWidth = "none";
+
+/* =====================
+   📝 メモの文字サイズも連動
+===================== */
+
+const originalFontSize =
+    Number(note.fontSize) || 16;
+
+const originalWidth =
+    Number(note.width) || 220;
+
+const scale =
+    nextWidth / originalWidth;
+
+element.style.fontSize =
+    `${Math.max(
+        6,
+        originalFontSize * scale
+    )}px`;
+
+    
                 event.preventDefault();
                 event.stopPropagation();
             }
