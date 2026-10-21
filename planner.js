@@ -1684,7 +1684,11 @@ element.style.maxWidth = "none";
 ===================== */
 
 const scale =
-    nextWidth / resizeStartWidth;
+    Math.pow(
+        nextWidth / resizeStartWidth,
+        1.5
+    );
+
 
 element.style.fontSize =
     `${Math.max(
