@@ -3152,6 +3152,7 @@ const emojiStickers = {
 // 保存済みスタンプを表示
 
 
+
 async function renderPlannerStickers(date) {
 
     const board =
@@ -3160,6 +3161,9 @@ async function renderPlannerStickers(date) {
         );
 
     if (!board) return;
+
+    const timeline =
+        document.getElementById("plannerTimeline");
 
     /* =====================
        前回の専用レイヤーを削除
@@ -3228,32 +3232,41 @@ async function renderPlannerStickers(date) {
 
     function exitStickerEditMode() {
 
-        layer.querySelectorAll(".planner-sticker").forEach(
-            sticker => {
+        const currentLayer =
+            timeline
+                ? timeline.querySelector(
+                    ".planner-stickers-layer"
+                )
+                : layer;
 
-                sticker.dataset.editMode = "false";
-                sticker.style.outline = "none";
+        if (!currentLayer) return;
 
-                const resizeHandle =
-                    sticker.querySelector(
-                        ".planner-sticker-resize-handle"
-                    );
+        currentLayer.querySelectorAll(
+            ".planner-sticker"
+        ).forEach(sticker => {
 
-                const rotateHandle =
-                    sticker.querySelector(
-                        ".planner-sticker-rotate-handle"
-                    );
+            sticker.dataset.editMode = "false";
+            sticker.style.outline = "none";
 
-                if (resizeHandle) {
-                    resizeHandle.style.display = "none";
-                }
+            const resizeHandle =
+                sticker.querySelector(
+                    ".planner-sticker-resize-handle"
+                );
 
-                if (rotateHandle) {
-                    rotateHandle.style.display = "none";
-                }
+            const rotateHandle =
+                sticker.querySelector(
+                    ".planner-sticker-rotate-handle"
+                );
 
+            if (resizeHandle) {
+                resizeHandle.style.display = "none";
             }
-        );
+
+            if (rotateHandle) {
+                rotateHandle.style.display = "none";
+            }
+
+        });
 
     }
 
@@ -3284,57 +3297,32 @@ async function renderPlannerStickers(date) {
 
     /* =====================
        スタンプ以外をタップしたら編集解除
+       家族レーンを含むタイムライン全体で判定
     ===================== */
 
-    if (board.dataset.stickerOutsideTapReady !== "true") {
+    if (
+        timeline &&
+        timeline.dataset.stickerOutsideTapReady !== "true"
+    ) {
 
-        board.dataset.stickerOutsideTapReady = "true";
+        timeline.dataset.stickerOutsideTapReady = "true";
 
-        board.addEventListener("click", event => {
+        timeline.addEventListener(
+            "click",
+            event => {
 
-            if (
-                event.target.closest(
-                    ".planner-sticker"
-                )
-            ) {
-                return;
+                if (
+                    event.target.closest(
+                        ".planner-sticker"
+                    )
+                ) {
+                    return;
+                }
+
+                exitStickerEditMode();
+
             }
-
-            const currentLayer =
-                board.querySelector(
-                    ".planner-stickers-layer"
-                );
-
-            if (!currentLayer) return;
-
-            currentLayer.querySelectorAll(
-                ".planner-sticker"
-            ).forEach(sticker => {
-
-                sticker.dataset.editMode = "false";
-                sticker.style.outline = "none";
-
-                const resizeHandle =
-                    sticker.querySelector(
-                        ".planner-sticker-resize-handle"
-                    );
-
-                const rotateHandle =
-                    sticker.querySelector(
-                        ".planner-sticker-rotate-handle"
-                    );
-
-                if (resizeHandle) {
-                    resizeHandle.style.display = "none";
-                }
-
-                if (rotateHandle) {
-                    rotateHandle.style.display = "none";
-                }
-
-            });
-
-        });
+        );
 
     }
 
@@ -3741,7 +3729,6 @@ async function renderPlannerStickers(date) {
         let resizeStartY = 0;
         let resizeStartWidth = 0;
         let resizeStartHeight = 0;
-        let resizeStartFontSize = 16;
         let resizeScaleX = 1;
         let resizeScaleY = 1;
 
@@ -3781,6 +3768,11 @@ async function renderPlannerStickers(date) {
 
                 const currentBoard =
                     element.closest(".planner-board");
+
+                if (!currentBoard) {
+                    resizing = false;
+                    return;
+                }
 
                 const boardRect =
                     currentBoard.getBoundingClientRect();
@@ -3835,48 +3827,37 @@ async function renderPlannerStickers(date) {
                     (event.clientY - resizeStartY) /
                     resizeScaleY;
 
+                const nextWidth =
+                    Math.max(
+                        40,
+                        resizeStartWidth + deltaX
+                    );
 
-const nextWidth =
-    Math.max(
-        40,
-        resizeStartWidth + deltaX
-    );
+                const nextHeight =
+                    Math.max(
+                        40,
+                        resizeStartHeight + deltaY
+                    );
 
-const nextHeight =
-    Math.max(
-        40,
-        resizeStartHeight + deltaY
-    );
+                element.style.width =
+                    `${nextWidth}px`;
 
-element.style.width =
-    `${nextWidth}px`;
+                element.style.height =
+                    `${nextHeight}px`;
 
-element.style.height =
-    `${nextHeight}px`;
+                /* =====================
+                   絵文字の表示サイズも連動
+                ===================== */
 
-/* =====================
-   絵文字の表示サイズも連動
-===================== */
+                if (
+                    element.getAttribute("aria-label") ===
+                    "スタンプ"
+                ) {
 
-if (element.dataset.stickerId) {
+                    element.style.fontSize =
+                        `${64 * nextWidth / 80}px`;
 
-    const emojiElement =
-        element.firstChild;
-
-    if (
-        emojiElement &&
-        element.getAttribute("aria-label") === "スタンプ"
-    ) {
-
-        element.style.fontSize =
-            `${64 * nextWidth / 80}px`;
-
-    }
-
-}
-
-
-
+                }
 
             }
         );
@@ -4042,4 +4023,3 @@ if (element.dataset.stickerId) {
     board.appendChild(layer);
 
 }
-
