@@ -1694,12 +1694,6 @@ element.style.fontSize =
     
     
 
-element.style.fontSize =
-    `${Math.max(
-        6,
-        resizeStartFontSize * scale
-    )}px`;
-
 
                 event.preventDefault();
                 event.stopPropagation();
