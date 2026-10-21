@@ -1683,15 +1683,41 @@ element.style.maxWidth = "none";
    📝 メモの文字サイズも連動
 ===================== */
 
+/* =====================
+   📝 メモの文字サイズを枠内に調整
+===================== */
+
 const scale =
     nextWidth / resizeStartWidth;
 
+const desiredFontSize =
+    resizeStartFontSize * scale * scale;
+
+/* 文字サイズをいったん適用 */
 element.style.fontSize =
-    `${Math.max(
-        6,
-        resizeStartFontSize * scale * scale
-    )}px`;
-    
+    `${Math.max(6, desiredFontSize)}px`;
+
+/* 枠の内側に文字が収まるまで縮小 */
+const minFontSize = 6;
+
+while (
+    element.scrollHeight > element.clientHeight ||
+    element.scrollWidth > element.clientWidth
+) {
+
+    const currentFontSize =
+        parseFloat(element.style.fontSize);
+
+    if (currentFontSize <= minFontSize) {
+        break;
+    }
+
+    element.style.fontSize =
+        `${Math.max(
+            minFontSize,
+            currentFontSize - 1
+        )}px`;
+}    
     
 
 
