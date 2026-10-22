@@ -268,39 +268,43 @@
             📝 自由メモ
         </h2>
 
+
 <!-- 文字メモ設定 -->
-    <div id="plannerNoteTextSettings">
+<div id="plannerNoteTextSettings">
 
-        <!-- メモ内容 -->
-        <label for="plannerNoteText">
-            メモ内容
-        </label>
+    <!-- メモ内容 -->
+    <label for="plannerNoteText">
+        メモ内容
+    </label>
 
-        <textarea
-            id="plannerNoteText"
-            rows="4"
-            placeholder="ここにメモを追加"
-        ></textarea>
+    <textarea
+        id="plannerNoteText"
+        rows="4"
+        placeholder="ここにメモを追加"
+    ></textarea>
 
 
-        <!-- フォント -->
-        <label
-            for="plannerNoteFont"
-            class="planner-note-font-label"
-        >
-            フォント
-        </label>
+    <!-- フォント -->
+    <label
+        for="plannerNoteFont"
+        class="planner-note-font-label"
+    >
+        フォント
+    </label>
 
-        <select id="plannerNoteFont">
-            <option value="sans-serif">ゴシック体</option>
-            <option value="serif">明朝体</option>
-            <option value="system-ui">システム標準</option>
-            <option value="ui-rounded, sans-serif">丸ゴシック風</option>
-            <option value="monospace">等幅フォント</option>
-            <option value="cursive">手書き風</option>
-            <option value="fantasy">装飾フォント</option>
-        </select>
+    <select id="plannerNoteFont">
+        <option value="sans-serif">ゴシック体</option>
+        <option value="serif">明朝体</option>
+        <option value="system-ui">システム標準</option>
+        <option value="ui-rounded, sans-serif">丸ゴシック風</option>
+        <option value="monospace">等幅フォント</option>
+        <option value="cursive">手書き風</option>
+        <option value="fantasy">装飾フォント</option>
+    </select>
 
+
+    <!-- 色設定：横一列 -->
+    <div class="planner-note-color-settings">
 
         <!-- 文字色 -->
         <div class="planner-note-style-group">
@@ -326,7 +330,6 @@
                 <button type="button" class="planner-note-color-swatch" data-color-group="text" data-color="#FFFFFF" style="background:#FFFFFF" aria-label="白" aria-pressed="false"></button>
 
             </div>
-
         </div>
 
 
@@ -354,36 +357,6 @@
                 <button type="button" class="planner-note-color-swatch" data-color-group="background" data-color="#F0E5FF" style="background:#F0E5FF" aria-label="薄い紫" aria-pressed="false"></button>
 
             </div>
-
-        </div>
-
-
-        <!-- 枠線の種類 -->
-        <div class="planner-note-style-group">
-
-            <div class="planner-note-style-title">
-                枠線の種類
-            </div>
-
-            <input
-                type="hidden"
-                id="plannerNoteBorderStyle"
-                value="solid"
-            >
-
-            <div class="planner-note-border-list">
-
-                <button type="button" class="planner-note-border-option" data-border-style="solid" aria-pressed="true">通常</button>
-                <button type="button" class="planner-note-border-option" data-border-style="dashed" aria-pressed="false">破線</button>
-                <button type="button" class="planner-note-border-option" data-border-style="dotted" aria-pressed="false">点線</button>
-                <button type="button" class="planner-note-border-option" data-border-style="thick" aria-pressed="false">太枠</button>
-                <button type="button" class="planner-note-border-option" data-border-style="double" aria-pressed="false">二重線</button>
-                <button type="button" class="planner-note-border-option" data-border-style="wavy" aria-pressed="false">波型</button>
-                <button type="button" class="planner-note-border-option" data-border-style="zigzag" aria-pressed="false">ギザギザ</button>
-                <button type="button" class="planner-note-border-option" data-border-style="cloud" aria-pressed="false">雲型</button>
-
-            </div>
-
         </div>
 
 
@@ -411,31 +384,59 @@
                 <button type="button" class="planner-note-color-swatch" data-color-group="border" data-color="#333333" style="background:#333333" aria-label="黒" aria-pressed="false"></button>
 
             </div>
-
-        </div>
-
-
-        <!-- リアルタイムプレビュー -->
-        <div class="planner-note-style-group">
-
-            <div class="planner-note-style-title">
-                プレビュー
-            </div>
-
-            <div
-                id="plannerNotePreview"
-                class="planner-note-preview"
-            >
-                <span
-                    id="plannerNotePreviewText"
-                    class="planner-note-text"
-                >メモの見本 ♡</span>
-            </div>
-
         </div>
 
     </div>
 
+
+    <!-- 枠線の種類 -->
+    <div class="planner-note-style-group">
+
+        <div class="planner-note-style-title">
+            枠線の種類
+        </div>
+
+        <input
+            type="hidden"
+            id="plannerNoteBorderStyle"
+            value="solid"
+        >
+
+        <div class="planner-note-border-list">
+
+            <button type="button" class="planner-note-border-option" data-border-style="solid" aria-pressed="true">通常</button>
+            <button type="button" class="planner-note-border-option" data-border-style="dashed" aria-pressed="false">破線</button>
+            <button type="button" class="planner-note-border-option" data-border-style="dotted" aria-pressed="false">点線</button>
+            <button type="button" class="planner-note-border-option" data-border-style="thick" aria-pressed="false">太枠</button>
+            <button type="button" class="planner-note-border-option" data-border-style="double" aria-pressed="false">二重線</button>
+            <button type="button" class="planner-note-border-option" data-border-style="wavy" aria-pressed="false">波型</button>
+            <button type="button" class="planner-note-border-option" data-border-style="zigzag" aria-pressed="false">ギザギザ</button>
+            <button type="button" class="planner-note-border-option" data-border-style="cloud" aria-pressed="false">雲型</button>
+
+        </div>
+    </div>
+
+
+    <!-- リアルタイムプレビュー -->
+    <div class="planner-note-style-group">
+
+        <div class="planner-note-style-title">
+            プレビュー
+        </div>
+
+        <div
+            id="plannerNotePreview"
+            class="planner-note-preview"
+        >
+            <span
+                id="plannerNotePreviewText"
+                class="planner-note-text"
+            >メモの見本 ♡</span>
+        </div>
+
+    </div>
+
+</div>
 
 
 

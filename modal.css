@@ -947,4 +947,54 @@
 
 
 
+/* =====================================================
+   📝 自由メモ：3色設定を横一列に配置
+===================================================== */
+
+#plannerNoteTextSettings .planner-note-color-settings {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: start;
+    gap: 5px;
+
+    width: 100%;
+    min-width: 0;
+}
+
+/* 3つの色設定をコンパクトに */
+#plannerNoteTextSettings
+.planner-note-color-settings
+.planner-note-style-group {
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 5px 2px;
+    box-sizing: border-box;
+}
+
+/* 色のタイトルを中央揃え */
+#plannerNoteTextSettings
+.planner-note-color-settings
+.planner-note-style-title {
+    text-align: center;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+/* 色見本を中央に配置 */
+#plannerNoteTextSettings
+.planner-note-color-settings
+.planner-note-color-list {
+    justify-content: center;
+    align-items: center;
+    min-height: 28px;
+}
+
+/* 小さい画面でも3列を維持 */
+#plannerNoteTextSettings
+.planner-note-color-settings
+.planner-note-color-swatch {
+    flex-shrink: 0;
+}
+
 
