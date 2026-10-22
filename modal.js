@@ -1054,105 +1054,138 @@ document
 📝 自由メモ編集：リアルタイムプレビュー
 ===================================================== */
 
+
 function updatePlannerNoteEditorPreview() {
 
-const textInput =
-    document.getElementById("plannerNoteText");
+    const textInput =
+        document.getElementById("plannerNoteText");
 
-const fontInput =
-    document.getElementById("plannerNoteFont");
+    const fontInput =
+        document.getElementById("plannerNoteFont");
 
-const colorInput =
-    document.getElementById("plannerNoteColor");
+    const colorInput =
+        document.getElementById("plannerNoteColor");
 
-const backgroundInput =
-    document.getElementById(
-        "plannerNoteBackgroundColor"
+    const backgroundInput =
+        document.getElementById(
+            "plannerNoteBackgroundColor"
+        );
+
+    const borderColorInput =
+        document.getElementById(
+            "plannerNoteBorderColor"
+        );
+
+    const borderStyleInput =
+        document.getElementById(
+            "plannerNoteBorderStyle"
+        );
+
+    const preview =
+        document.getElementById(
+            "plannerNotePreview"
+        );
+
+    const previewText =
+        document.getElementById(
+            "plannerNotePreviewText"
+        );
+
+    if (!preview || !previewText) return;
+
+    const text =
+        textInput?.value || "";
+
+    /* =====================
+       📝 プレビュー文字
+    ===================== */
+
+    previewText.textContent =
+        text || "メモの見本 ♡";
+
+    previewText.style.fontFamily =
+        fontInput?.value || "sans-serif";
+
+    previewText.style.color =
+        colorInput?.value || "#333333";
+
+    /* 文字をプレビューの幅に収める */
+    previewText.style.display = "block";
+    previewText.style.width = "100%";
+    previewText.style.maxWidth = "100%";
+    previewText.style.minWidth = "0";
+    previewText.style.boxSizing = "border-box";
+    previewText.style.margin = "0";
+    previewText.style.whiteSpace = "pre-wrap";
+    previewText.style.overflowWrap = "anywhere";
+    previewText.style.wordBreak = "break-word";
+    previewText.style.textAlign = "center";
+
+    /* =====================
+       🎨 背景色
+    ===================== */
+
+    preview.style.backgroundColor =
+        backgroundInput?.value || "#FFF8FC";
+
+    /* =====================
+       🖌️ 枠線
+    ===================== */
+
+    const borderColor =
+        borderColorInput?.value || "#E8A6C1";
+
+    const borderStyle =
+        borderStyleInput?.value || "solid";
+
+    preview.style.borderColor = borderColor;
+
+    preview.style.borderWidth =
+        borderStyle === "thick" ? "3px" :
+        borderStyle === "double" ? "3px" :
+        "2px";
+
+    preview.style.borderStyle =
+        ["solid", "dashed", "dotted", "double"]
+            .includes(borderStyle)
+            ? borderStyle
+            : "solid";
+
+    preview.classList.remove(
+        "planner-note-preview-border-wavy",
+        "planner-note-preview-border-zigzag",
+        "planner-note-preview-border-cloud"
     );
 
-const borderColorInput =
-    document.getElementById(
-        "plannerNoteBorderColor"
-    );
+    if (
+        borderStyle === "wavy" ||
+        borderStyle === "zigzag" ||
+        borderStyle === "cloud"
+    ) {
+        preview.classList.add(
+            "planner-note-preview-border-" +
+            borderStyle
+        );
+    }
 
-const borderStyleInput =
-    document.getElementById(
-        "plannerNoteBorderStyle"
-    );
+    /* =====================
+       🎨 色選択状態を更新
+    ===================== */
 
-const preview =
-    document.getElementById(
-        "plannerNotePreview"
-    );
+    updatePlannerNoteSwatchSelection();
 
-const previewText =
-    document.getElementById(
-        "plannerNotePreviewText"
-    );
+    /* =====================
+       📏 既存の文字フィット処理
+    ===================== */
 
-if (!preview || !previewText) return;
-
-const text =
-    textInput?.value || "";
-
-previewText.textContent =
-    text || "メモの見本 ♡";
-
-previewText.style.fontFamily =
-    fontInput?.value || "sans-serif";
-
-previewText.style.color =
-    colorInput?.value || "#333333";
-
-preview.style.backgroundColor =
-    backgroundInput?.value || "#FFF8FC";
-
-const borderColor =
-    borderColorInput?.value || "#E8A6C1";
-
-const borderStyle =
-    borderStyleInput?.value || "solid";
-
-preview.style.borderColor = borderColor;
-
-preview.style.borderWidth =
-    borderStyle === "thick" ? "3px" :
-    borderStyle === "double" ? "3px" :
-    "2px";
-
-preview.style.borderStyle =
-    ["solid", "dashed", "dotted", "double"]
-        .includes(borderStyle)
-        ? borderStyle
-        : "solid";
-
-preview.classList.remove(
-    "planner-note-preview-border-wavy",
-    "planner-note-preview-border-zigzag",
-    "planner-note-preview-border-cloud"
-);
-
-if (
-    borderStyle === "wavy" ||
-    borderStyle === "zigzag" ||
-    borderStyle === "cloud"
-) {
-    preview.classList.add(
-        "planner-note-preview-border-" +
-        borderStyle
-    );
+    if (typeof fitPlannerNoteText === "function") {
+        requestAnimationFrame(() => {
+            fitPlannerNoteText(preview);
+        });
+    }
 }
 
-updatePlannerNoteSwatchSelection();
 
-/* 既存の文字フィット処理が使える場合は適用 */
-if (typeof fitPlannerNoteText === "function") {
-    requestAnimationFrame(() => {
-        fitPlannerNoteText(preview);
-    });
-}
-
-}
 
 /* =====================================================
 📝 自由メモ編集画面を開く
