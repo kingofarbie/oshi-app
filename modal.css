@@ -564,12 +564,13 @@
 
 
 
+
 /* =====================================================
    📝 自由メモ編集モーダル
-   コンパクト表示・正方形カラー見本
+   コンパクト表示・浮かぶカラーパレット
 ===================================================== */
 
-/* モーダルの背景 */
+/* モーダル背景 */
 #plannerNoteEditorModal {
     padding: 8px;
     box-sizing: border-box;
@@ -581,7 +582,6 @@
 #plannerNoteEditorModal .planner-note-editor {
     width: min(100%, 420px);
     max-width: 420px;
-
     max-height: calc(100vh - 16px);
     max-height: calc(100dvh - 16px);
 
@@ -591,7 +591,6 @@
 
     box-sizing: border-box;
     padding: 14px;
-
     border-radius: 16px;
 
     scrollbar-width: thin;
@@ -605,7 +604,7 @@
     line-height: 1.3;
 }
 
-/* 各設定の余白 */
+/* 設定全体 */
 #plannerNoteTextSettings {
     display: flex;
     flex-direction: column;
@@ -625,16 +624,15 @@
     min-height: 52px;
     height: 52px;
     max-height: 72px;
-
     padding: 7px 9px;
-    box-sizing: border-box;
 
+    box-sizing: border-box;
     font-size: 14px;
     line-height: 1.4;
     resize: vertical;
 }
 
-/* フォント選択 */
+/* フォント */
 #plannerNoteFont {
     width: 100%;
     min-height: 34px;
@@ -643,8 +641,9 @@
     font-size: 13px;
 }
 
-/* 色設定グループ */
+/* 設定グループ */
 #plannerNoteTextSettings .planner-note-style-group {
+    position: relative;
     min-width: 0;
     margin: 2px 0;
     padding: 5px 7px;
@@ -653,7 +652,43 @@
     background: rgba(128, 128, 128, 0.07);
 }
 
-/* 色一覧：正方形の見本を格子状に */
+/* 文字色・背景色・枠線色を横並びにする */
+#plannerNoteTextSettings {
+    --planner-note-swatch-size: 30px;
+}
+
+#plannerNoteTextSettings .planner-note-style-group:has(
+    .planner-note-color-list
+) {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 色設定の見出し */
+#plannerNoteTextSettings
+.planner-note-style-group:has(.planner-note-color-list)
+.planner-note-style-title {
+    align-self: flex-start;
+    white-space: nowrap;
+}
+
+/* 3つの色設定を横並びにまとめるための配置 */
+#plannerNoteTextSettings .planner-note-style-group:has(
+    .planner-note-color-list
+) {
+    width: 100%;
+}
+
+/*
+   色設定3項目を横並びにする。
+   親要素の中で各グループをコンパクトに配置する。
+*/
+#plannerNoteTextSettings {
+    position: relative;
+}
+
+/* 色見本一覧 */
 #plannerNoteTextSettings .planner-note-color-list {
     display: flex;
     flex-wrap: wrap;
@@ -667,32 +702,110 @@
 /* 色見本 */
 #plannerNoteTextSettings .planner-note-color-swatch {
     display: block;
-    flex: 0 0 28px;
+    flex: 0 0 var(--planner-note-swatch-size);
 
-    width: 28px;
-    min-width: 28px;
-    height: 28px;
-    min-height: 28px;
+    width: var(--planner-note-swatch-size);
+    min-width: var(--planner-note-swatch-size);
+    height: var(--planner-note-swatch-size);
+    min-height: var(--planner-note-swatch-size);
 
     margin: 0;
     padding: 0;
 
-    border: 2px solid rgba(100, 100, 100, 0.25);
+    border: 2px solid rgba(100, 100, 100, 0.3);
     border-radius: 5px;
 
     box-sizing: border-box;
     box-shadow: none;
     cursor: pointer;
+    touch-action: manipulation;
 }
 
-/* 選択中の色 */
+/* 選択色 */
 #plannerNoteTextSettings
 .planner-note-color-swatch.is-selected {
     outline: 2px solid var(--text, #333333);
     outline-offset: 2px;
 }
 
-/* 枠線の種類 */
+/* 閉じたときは選択色だけ表示 */
+#plannerNoteTextSettings
+.planner-note-style-group:not(.is-color-open)
+.planner-note-color-swatch:not(.is-selected) {
+    display: none;
+}
+
+/* =========================================
+   浮かぶカラーパレット
+========================================= */
+
+/* 色一覧のあるグループを基準にする */
+#plannerNoteTextSettings
+.planner-note-style-group:has(.planner-note-color-list) {
+    position: relative;
+    z-index: 1;
+}
+
+/* パレットを開いたグループを最前面に */
+#plannerNoteTextSettings
+.planner-note-style-group.is-color-open {
+    z-index: 100;
+}
+
+/* 開いた色一覧をポップアップにする */
+#plannerNoteTextSettings
+.planner-note-style-group.is-color-open
+.planner-note-color-list {
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 8px);
+    transform: translateX(-50%);
+
+    display: grid;
+    grid-template-columns: repeat(6, 30px);
+    gap: 7px;
+
+    width: max-content;
+    max-width: calc(100vw - 48px);
+    padding: 12px;
+
+    box-sizing: border-box;
+    margin: 0;
+
+    background: var(--card-bg, #ffffff);
+    border: 1px solid rgba(140, 100, 120, 0.25);
+    border-radius: 14px;
+
+    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.2);
+    z-index: 200;
+
+    animation: plannerNotePaletteIn 180ms ease-out;
+}
+
+/* ポップアップ内の色を表示 */
+#plannerNoteTextSettings
+.planner-note-style-group.is-color-open
+.planner-note-color-swatch {
+    display: block;
+}
+
+/* ふわっと上に出るアニメーション */
+@keyframes plannerNotePaletteIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, 8px) scale(0.94);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0) scale(1);
+    }
+}
+
+/* =========================================
+   枠線の種類
+========================================= */
+
 #plannerNoteTextSettings .planner-note-border-list {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -725,10 +838,12 @@
     font-weight: 700;
 }
 
-/* プレビュー */
+/* =========================================
+   プレビュー
+========================================= */
+
 #plannerNotePreview {
     position: relative;
-
     width: 100%;
     min-height: 48px;
     max-height: 64px;
@@ -741,18 +856,19 @@
 
     border: 2px solid #e8a6c1;
     border-radius: 8px;
-
     font-size: 14px;
 }
 
-/* プレビュー内の文字 */
 #plannerNotePreviewText {
     display: inline-block;
     max-width: 100%;
     overflow-wrap: anywhere;
 }
 
-/* 保存・キャンセル */
+/* =========================================
+   保存・キャンセル
+========================================= */
+
 #plannerNoteEditorModal .planner-note-editor-actions {
     position: sticky;
     bottom: -14px;
@@ -777,11 +893,13 @@
 
     box-sizing: border-box;
     border-radius: 9px;
-
     font-size: 14px;
 }
 
-/* 画面の高さが低いスマホ */
+/* =========================================
+   画面の高さが低いスマホ
+========================================= */
+
 @media (max-height: 740px) {
     #plannerNoteEditorModal .planner-note-editor {
         padding: 10px;
@@ -802,12 +920,8 @@
         margin: 1px 0;
     }
 
-    #plannerNoteTextSettings .planner-note-color-swatch {
-        flex-basis: 25px;
-        width: 25px;
-        min-width: 25px;
-        height: 25px;
-        min-height: 25px;
+    #plannerNoteTextSettings {
+        --planner-note-swatch-size: 25px;
     }
 
     #plannerNoteTextSettings .planner-note-border-option {
@@ -820,53 +934,15 @@
         min-height: 40px;
         max-height: 48px;
     }
+
+    #plannerNoteTextSettings
+    .planner-note-style-group.is-color-open
+    .planner-note-color-list {
+        grid-template-columns: repeat(6, 25px);
+        gap: 6px;
+        padding: 10px;
+    }
 }
-
-
-
-
-/* 自由メモ：閉じている色一覧は選択色だけ表示 */
-
-#plannerNoteTextSettings
-.planner-note-style-group:not(.is-color-open)
-.planner-note-color-swatch:not(.is-selected) {
-    display: none;
-}
-
-
-
-
-/* 自由メモ：色見本そのものを開閉ボタンにする */
-
-#plannerNoteTextSettings
-.planner-note-style-group:has(.planner-note-color-list)
-.planner-note-color-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-}
-
-/* 閉じているときは選択中の色だけ表示 */
-
-#plannerNoteTextSettings
-.planner-note-style-group:not(.is-color-open)
-.planner-note-color-swatch:not(.is-selected) {
-    display: none;
-}
-
-/* 色見本をタップしやすくする */
-
-#plannerNoteTextSettings
-.planner-note-color-swatch {
-    cursor: pointer;
-    touch-action: manipulation;
-}
-
-
-
-
-
-
 
 
 
