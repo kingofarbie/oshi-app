@@ -1204,7 +1204,16 @@ timeline.onclick =
                     }
                 );
 
-                board.appendChild(placeholder);
+
+
+                const notesLayer =
+    layout.querySelector(".planner-notes-layer");
+
+if (notesLayer) {
+    notesLayer.appendChild(placeholder);
+} else {
+    board.appendChild(placeholder);
+}
 
                 return;
 
