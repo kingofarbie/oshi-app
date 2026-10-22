@@ -1335,8 +1335,8 @@ function fitPlannerNoteText(element) {
 
     } else if (style === "cloud") {
 
-        horizontalPadding = 90;
-        verticalPadding = 65;
+        horizontalPadding = 100;
+        verticalPadding = 85;
 
     }
 
@@ -1414,13 +1414,10 @@ function applyPlannerNoteCustomBorder(
 
         delete element.dataset.plannerNoteBorderStyle;
 
-        element.style.border = "";
-        element.style.borderRadius = "";
-        element.style.background = "";
-        element.style.padding = "";
-
         return;
     }
+
+
 
     const backgroundColor =
         note.backgroundColor || "#FFF8FC";
