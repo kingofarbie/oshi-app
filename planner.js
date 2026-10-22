@@ -1335,8 +1335,8 @@ function fitPlannerNoteText(element) {
 
     } else if (style === "cloud") {
 
-        horizontalPadding = 70;
-        verticalPadding = 55;
+        horizontalPadding = 90;
+        verticalPadding = 65;
 
     }
 
