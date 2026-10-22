@@ -1642,39 +1642,59 @@ Object.assign(layer.style, {
             }
         );
 
-        rotateHandle.addEventListener(
-            "pointermove",
-            function(event) {
+element.addEventListener(
+    "pointermove",
+    function(event) {
 
-                if (
-                    !rotating ||
-                    event.pointerId !== rotatePointerId
-                ) {
-                    return;
-                }
+        if (
+            !dragging ||
+            event.pointerId !== activePointerId
+        ) {
+            return;
+        }
 
-                const currentAngle = Math.atan2(
-                    event.clientY - rotateCenterY,
-                    event.clientX - rotateCenterX
-                );
+        const dx = event.clientX - startX;
+        const dy = event.clientY - startY;
 
-                const deltaAngle =
-                    (currentAngle - rotateStartAngle) *
-                    180 / Math.PI;
+        if (
+            !moved &&
+            Math.abs(dx) < 5 &&
+            Math.abs(dy) < 5
+        ) {
+            return;
+        }
 
-                const nextRotation =
-                    rotateInitialValue + deltaAngle;
+        moved = true;
 
-                element.style.transform =
-                    `rotate(${nextRotation}deg)`;
+        const layerRect =
+            layer.getBoundingClientRect();
 
-                element.dataset.rotation =
-                    String(nextRotation);
+        /*
+           レイヤーの幅で移動を制限せず、
+           画面上のドラッグ位置をそのまま座標に変換
+        */
 
-                event.preventDefault();
-                event.stopPropagation();
-            }
+        const nextLeft = Math.max(
+            0,
+            event.clientX -
+                layerRect.left -
+                grabOffsetX
         );
+
+        const nextTop = Math.max(
+            0,
+            event.clientY -
+                layerRect.top -
+                grabOffsetY
+        );
+
+        element.style.left = `${nextLeft}px`;
+        element.style.top = `${nextTop}px`;
+
+        event.preventDefault();
+        event.stopPropagation();
+    }
+);
 
         function finishNoteRotation(event) {
 
