@@ -1309,18 +1309,18 @@ function renderPlannerNotes(date) {
 
     layer.className = "planner-notes-layer";
 
-Object.assign(layer.style, {
-    position: "absolute",
-    top: `${board.offsetTop}px`,
-    left: `${board.offsetLeft}px`,
-    width: `${board.offsetWidth}px`,
-    height: `${board.offsetHeight}px`,
-    overflow: "visible",
-    pointerEvents: "none",
-    zIndex: "30",
-    boxSizing: "border-box"
-});
+    Object.assign(layer.style, {
+        position: "absolute",
+        top: `${board.offsetTop}px`,
+        left: `${times.offsetWidth}px`,
+        right: "0",
+        height: `${board.offsetHeight}px`,
+        overflow: "visible",
+        pointerEvents: "none",
+        zIndex: "30"
+    });
 
+    
 
     notes.forEach(note => {
 
