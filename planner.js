@@ -1346,12 +1346,26 @@ function fitPlannerNoteText(element) {
 
 
 
-function applyPlannerNoteCustomBorder(element, textElement, note) {
+/* =====================
+   📝 自由メモの特殊な枠線
+   ・均等な半円のもこもこ
+   ・均等な三角形のギザギザ
+   ・文字の安全範囲を確保した雲型
+===================== */
 
-    const style = note.borderStyle || "solid";
+function applyPlannerNoteCustomBorder(
+    element,
+    textElement,
+    note
+) {
 
-    /* 波型・ギザギザ・雲型以外は何もしない */
-    if (!["wavy", "zigzag", "cloud"].includes(style)) {
+    const style =
+        note.borderStyle || "solid";
+
+    /* 特殊な枠線以外は通常表示 */
+    if (
+        !["wavy", "zigzag", "cloud"].includes(style)
+    ) {
         return;
     }
 
@@ -1361,19 +1375,38 @@ function applyPlannerNoteCustomBorder(element, textElement, note) {
     const borderColor =
         note.borderColor || "#E8A6C1";
 
-    /* 以前の専用枠があれば削除 */
+    /* 古い特殊枠を削除 */
     element.querySelector(
         ".planner-note-custom-border"
     )?.remove();
 
-    const svgNS = "http://www.w3.org/2000/svg";
+    const svgNS =
+        "http://www.w3.org/2000/svg";
 
-    const svg = document.createElementNS(svgNS, "svg");
+    const svg =
+        document.createElementNS(
+            svgNS,
+            "svg"
+        );
 
-    svg.setAttribute("viewBox", "0 0 100 100");
-    svg.setAttribute("preserveAspectRatio", "none");
-    svg.setAttribute("aria-hidden", "true");
-    svg.classList.add("planner-note-custom-border");
+    svg.setAttribute(
+        "viewBox",
+        "0 0 100 100"
+    );
+
+    svg.setAttribute(
+        "preserveAspectRatio",
+        "none"
+    );
+
+    svg.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+    svg.classList.add(
+        "planner-note-custom-border"
+    );
 
     Object.assign(svg.style, {
         position: "absolute",
@@ -1385,75 +1418,319 @@ function applyPlannerNoteCustomBorder(element, textElement, note) {
         zIndex: "0"
     });
 
-    const path = document.createElementNS(svgNS, "path");
+    const path =
+        document.createElementNS(
+            svgNS,
+            "path"
+        );
 
     let pathData = "";
 
+    /* =====================
+       🌸 均等な半円のもこもこ
+    ===================== */
+
     if (style === "wavy") {
 
-        pathData =
-            "M 12 5 Q 17 0 22 5 T 42 5 T 62 5 T 82 5 " +
-            "Q 92 5 88 15 T 88 35 T 88 55 T 88 75 " +
-            "Q 92 88 82 88 T 62 88 T 42 88 T 22 88 " +
-            "Q 8 92 12 78 T 12 58 T 12 38 T 12 18 Z";
+        const radius = 5;
+        const step = radius * 2;
 
-    } else if (style === "zigzag") {
+        const points = [];
 
-        pathData =
-            "M 5 5 L 12 2 L 19 5 L 26 2 L 33 5 " +
-            "L 40 2 L 47 5 L 54 2 L 61 5 L 68 2 " +
-            "L 75 5 L 82 2 L 95 5 " +
-            "L 92 14 L 95 23 L 92 32 L 95 41 " +
-            "L 92 50 L 95 59 L 92 68 L 95 77 " +
-            "L 92 86 L 95 95 " +
-            "L 82 92 L 69 95 L 56 92 L 43 95 " +
-            "L 30 92 L 17 95 L 5 92 " +
-            "L 8 81 L 5 70 L 8 59 L 5 48 " +
-            "L 8 37 L 5 26 L 8 15 Z";
+        /*
+           上辺：半円を均等に配置
+        */
+        pathData = "M 5 10";
 
-    } else {
+        for (
+            let x = 5;
+            x < 95;
+            x += step
+        ) {
 
-        pathData =
-            "M 18 8 C 22 1 30 2 33 8 " +
-            "C 39 1 47 2 50 8 " +
-            "C 57 1 65 2 68 8 " +
-            "C 78 3 86 10 84 18 " +
-            "C 94 22 94 31 87 36 " +
-            "C 95 43 94 52 87 57 " +
-            "C 94 65 89 73 82 75 " +
-            "C 83 86 73 91 65 84 " +
-            "C 58 92 49 91 45 84 " +
-            "C 37 92 28 89 27 82 " +
-            "C 17 88 9 81 13 73 " +
-            "C 4 68 5 59 12 54 " +
-            "C 4 47 6 39 13 35 " +
-            "C 5 27 9 18 17 17 Z";
+            const nextX =
+                Math.min(x + step, 95);
+
+            const midX =
+                (x + nextX) / 2;
+
+            pathData +=
+                ` Q ${midX} 0 ${nextX} 10`;
+
+        }
+
+        /*
+           右辺：半円を均等に配置
+        */
+        for (
+            let y = 10;
+            y < 95;
+            y += step
+        ) {
+
+            const nextY =
+                Math.min(y + step, 95);
+
+            const midY =
+                (y + nextY) / 2;
+
+            pathData +=
+                ` Q 100 ${midY} 90 ${nextY}`;
+
+        }
+
+        /*
+           下辺：逆向きの半円
+        */
+        for (
+            let x = 95;
+            x > 5;
+            x -= step
+        ) {
+
+            const nextX =
+                Math.max(x - step, 5);
+
+            const midX =
+                (x + nextX) / 2;
+
+            pathData +=
+                ` Q ${midX} 100 ${nextX} 90`;
+
+        }
+
+        /*
+           左辺：逆向きの半円
+        */
+        for (
+            let y = 90;
+            y > 10;
+            y -= step
+        ) {
+
+            const nextY =
+                Math.max(y - step, 10);
+
+            const midY =
+                (y + nextY) / 2;
+
+            pathData +=
+                ` Q 0 ${midY} 10 ${nextY}`;
+
+        }
+
+        pathData += " Z";
+
     }
 
-    path.setAttribute("d", pathData);
-    path.setAttribute("fill", backgroundColor);
-    path.setAttribute("stroke", borderColor);
-    path.setAttribute("stroke-width", "2");
-    path.setAttribute("stroke-linejoin", "round");
-    path.setAttribute("vector-effect", "non-scaling-stroke");
+    /* =====================
+       ⚡ 均等な三角形のギザギザ
+    ===================== */
+
+    else if (style === "zigzag") {
+
+        const points = [];
+
+        const start = 10;
+        const end = 90;
+        const step = 5;
+
+        /*
+           上辺
+        */
+        points.push([start, 10]);
+
+        for (
+            let x = start;
+            x < end;
+            x += step
+        ) {
+
+            points.push([
+                Math.min(x + step / 2, end),
+                3
+            ]);
+
+            points.push([
+                Math.min(x + step, end),
+                10
+            ]);
+
+        }
+
+        /*
+           右辺
+        */
+        for (
+            let y = 10;
+            y < end;
+            y += step
+        ) {
+
+            points.push([
+                97,
+                Math.min(y + step / 2, end)
+            ]);
+
+            points.push([
+                90,
+                Math.min(y + step, end)
+            ]);
+
+        }
+
+        /*
+           下辺
+        */
+        for (
+            let x = end;
+            x > start;
+            x -= step
+        ) {
+
+            points.push([
+                Math.max(x - step / 2, start),
+                97
+            ]);
+
+            points.push([
+                Math.max(x - step, start),
+                90
+            ]);
+
+        }
+
+        /*
+           左辺
+        */
+        for (
+            let y = end;
+            y > start;
+            y -= step
+        ) {
+
+            points.push([
+                3,
+                Math.max(y - step / 2, start)
+            ]);
+
+            points.push([
+                10,
+                Math.max(y - step, start)
+            ]);
+
+        }
+
+        pathData =
+            points
+                .map((point, index) =>
+                    `${index === 0 ? "M" : "L"} ${point[0]} ${point[1]}`
+                )
+                .join(" ") + " Z";
+
+    }
+
+    /* =====================
+       ☁️ 雲型
+    ===================== */
+
+    else {
+
+        pathData =
+            "M 20 12 " +
+            "C 20 5 28 3 34 9 " +
+            "C 39 2 47 2 50 9 " +
+            "C 56 2 65 3 68 10 " +
+            "C 77 4 86 10 84 18 " +
+            "C 95 20 96 30 88 36 " +
+            "C 97 43 96 52 88 57 " +
+            "C 96 65 91 74 83 76 " +
+            "C 84 86 74 93 65 85 " +
+            "C 58 94 49 93 45 85 " +
+            "C 37 93 28 91 27 83 " +
+            "C 17 90 8 83 13 74 " +
+            "C 4 68 5 59 12 54 " +
+            "C 4 47 6 39 13 35 " +
+            "C 5 27 10 18 20 18 Z";
+
+    }
+
+    path.setAttribute(
+        "d",
+        pathData
+    );
+
+    path.setAttribute(
+        "fill",
+        backgroundColor
+    );
+
+    path.setAttribute(
+        "stroke",
+        borderColor
+    );
+
+    path.setAttribute(
+        "stroke-width",
+        "1.5"
+    );
+
+    path.setAttribute(
+        "stroke-linejoin",
+        "round"
+    );
+
+    path.setAttribute(
+        "vector-effect",
+        "non-scaling-stroke"
+    );
 
     svg.appendChild(path);
 
-    /* 文字より後ろに枠を配置 */
-    element.insertBefore(svg, textElement);
+    /*
+       文字より後ろに枠を配置
+    */
+    element.insertBefore(
+        svg,
+        textElement
+    );
 
     Object.assign(textElement.style, {
         position: "relative",
         zIndex: "1"
     });
 
-    /* 通常の四角い枠は消して、専用形状を表示 */
+    /*
+       通常の四角い枠を消す
+    */
     element.style.border = "none";
     element.style.borderRadius = "0";
     element.style.background = "transparent";
+
+    /*
+       雲型は文字を内側に収める
+       他の形は既存の文字配置を維持
+    */
+    if (style === "cloud") {
+
+        element.style.padding =
+            "14px 18px";
+
+        textElement.style.maxWidth =
+            "100%";
+
+        textElement.style.whiteSpace =
+            "pre-wrap";
+
+        textElement.style.overflowWrap =
+            "anywhere";
+
+        textElement.style.boxSizing =
+            "border-box";
+
+    }
+
 }
-
-
 
 
 /* =====================================================
@@ -1624,7 +1901,7 @@ element.appendChild(textElement);
         });
 
         applyPlannerNoteCustomBorder(element, textElement, note);
-        
+
 
 
         /* =====================
