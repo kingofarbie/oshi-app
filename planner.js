@@ -1335,15 +1335,14 @@ function renderPlannerNotes(date) {
 Object.assign(layer.style, {
     position: "absolute",
     top: `${board.offsetTop}px`,
-    left: `${board.offsetLeft + times.offsetWidth}px`,
-    width: `${board.clientWidth}px`,
+    left: `${times.offsetWidth}px`,
+    right: "0",
     height: `${board.offsetHeight}px`,
     overflow: "visible",
     pointerEvents: "none",
     zIndex: "30",
     boxSizing: "border-box"
-});
-    
+});    
 
     notes.forEach(note => {
 
