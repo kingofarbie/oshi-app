@@ -561,3 +561,263 @@
         font-size: 16px;
     }
 }
+
+
+
+/* =====================================================
+   📝 自由メモ編集モーダル
+   コンパクト表示・正方形カラー見本
+===================================================== */
+
+/* モーダルの背景 */
+#plannerNoteEditorModal {
+    padding: 8px;
+    box-sizing: border-box;
+    align-items: center;
+    justify-content: center;
+}
+
+/* モーダル本体 */
+#plannerNoteEditorModal .planner-note-editor {
+    width: min(100%, 420px);
+    max-width: 420px;
+
+    max-height: calc(100vh - 16px);
+    max-height: calc(100dvh - 16px);
+
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+
+    box-sizing: border-box;
+    padding: 14px;
+
+    border-radius: 16px;
+
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* タイトル */
+#plannerNoteEditorTitle {
+    margin: 0 0 8px;
+    font-size: 19px;
+    line-height: 1.3;
+}
+
+/* 各設定の余白 */
+#plannerNoteTextSettings {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+#plannerNoteTextSettings label,
+#plannerNoteTextSettings .planner-note-style-title {
+    margin: 2px 0;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+/* メモ入力欄 */
+#plannerNoteText {
+    width: 100%;
+    min-height: 52px;
+    height: 52px;
+    max-height: 72px;
+
+    padding: 7px 9px;
+    box-sizing: border-box;
+
+    font-size: 14px;
+    line-height: 1.4;
+    resize: vertical;
+}
+
+/* フォント選択 */
+#plannerNoteFont {
+    width: 100%;
+    min-height: 34px;
+    padding: 5px 8px;
+    box-sizing: border-box;
+    font-size: 13px;
+}
+
+/* 色設定グループ */
+#plannerNoteTextSettings .planner-note-style-group {
+    min-width: 0;
+    margin: 2px 0;
+    padding: 5px 7px;
+
+    border-radius: 9px;
+    background: rgba(128, 128, 128, 0.07);
+}
+
+/* 色一覧：正方形の見本を格子状に */
+#plannerNoteTextSettings .planner-note-color-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+
+    min-width: 0;
+    margin-top: 4px;
+}
+
+/* 色見本 */
+#plannerNoteTextSettings .planner-note-color-swatch {
+    display: block;
+    flex: 0 0 28px;
+
+    width: 28px;
+    min-width: 28px;
+    height: 28px;
+    min-height: 28px;
+
+    margin: 0;
+    padding: 0;
+
+    border: 2px solid rgba(100, 100, 100, 0.25);
+    border-radius: 5px;
+
+    box-sizing: border-box;
+    box-shadow: none;
+    cursor: pointer;
+}
+
+/* 選択中の色 */
+#plannerNoteTextSettings
+.planner-note-color-swatch.is-selected {
+    outline: 2px solid var(--text, #333333);
+    outline-offset: 2px;
+}
+
+/* 枠線の種類 */
+#plannerNoteTextSettings .planner-note-border-list {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 5px;
+    margin-top: 4px;
+}
+
+#plannerNoteTextSettings .planner-note-border-option {
+    min-width: 0;
+    min-height: 30px;
+
+    margin: 0;
+    padding: 5px 2px;
+
+    border: 1px solid #d8a0b8;
+    border-radius: 7px;
+
+    box-sizing: border-box;
+    font-size: 11px;
+    line-height: 1.2;
+    box-shadow: none;
+}
+
+/* 選択中の枠線 */
+#plannerNoteTextSettings
+.planner-note-border-option.is-selected {
+    background: #f7dce8;
+    border-color: #d65d91;
+    color: #702344;
+    font-weight: 700;
+}
+
+/* プレビュー */
+#plannerNotePreview {
+    position: relative;
+
+    width: 100%;
+    min-height: 48px;
+    max-height: 64px;
+
+    padding: 8px;
+    margin-top: 4px;
+
+    box-sizing: border-box;
+    overflow: hidden;
+
+    border: 2px solid #e8a6c1;
+    border-radius: 8px;
+
+    font-size: 14px;
+}
+
+/* プレビュー内の文字 */
+#plannerNotePreviewText {
+    display: inline-block;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+}
+
+/* 保存・キャンセル */
+#plannerNoteEditorModal .planner-note-editor-actions {
+    position: sticky;
+    bottom: -14px;
+    z-index: 10;
+
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+
+    margin: 8px -14px -14px;
+    padding: 8px 14px 14px;
+
+    background: var(--card-bg, #ffffff);
+}
+
+#plannerNoteEditorModal .planner-note-editor-actions button {
+    min-width: 0;
+    min-height: 40px;
+
+    margin: 0;
+    padding: 8px 5px;
+
+    box-sizing: border-box;
+    border-radius: 9px;
+
+    font-size: 14px;
+}
+
+/* 画面の高さが低いスマホ */
+@media (max-height: 740px) {
+    #plannerNoteEditorModal .planner-note-editor {
+        padding: 10px;
+    }
+
+    #plannerNoteEditorTitle {
+        margin-bottom: 5px;
+        font-size: 17px;
+    }
+
+    #plannerNoteText {
+        min-height: 42px;
+        height: 42px;
+    }
+
+    #plannerNoteTextSettings .planner-note-style-group {
+        padding: 3px 6px;
+        margin: 1px 0;
+    }
+
+    #plannerNoteTextSettings .planner-note-color-swatch {
+        flex-basis: 25px;
+        width: 25px;
+        min-width: 25px;
+        height: 25px;
+        min-height: 25px;
+    }
+
+    #plannerNoteTextSettings .planner-note-border-option {
+        min-height: 27px;
+        padding: 4px 1px;
+        font-size: 10px;
+    }
+
+    #plannerNotePreview {
+        min-height: 40px;
+        max-height: 48px;
+    }
+}
