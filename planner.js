@@ -1138,17 +1138,30 @@ timeline.onclick =
 
                 event.stopPropagation();
 
-                const rect =
-                    board.getBoundingClientRect();
+const notesLayer =
+    timeline.querySelector(".planner-notes-layer");
 
-                // 家族レーン上のタップ位置もボード基準に変換
-                const top =
-                    board.scrollTop +
-                    event.clientY -
-                    rect.top;
+if (!notesLayer) {
+    return;
+}
 
-                const noteTop =
-                    Math.max(15, top);
+const layerRect =
+    notesLayer.getBoundingClientRect();
+
+const noteTop =
+    Math.max(
+        15,
+        event.clientY -
+        layerRect.top
+    );
+
+const noteLeft =
+    Math.max(
+        0,
+        event.clientX -
+        layerRect.left
+    );
+
 
                 const noteMode =
                     plannerNotePlacementMode;
@@ -1176,8 +1189,7 @@ timeline.onclick =
                 Object.assign(placeholder.style, {
                     position: "absolute",
                     top: `${noteTop}px`,
-                    left: "6px",
-                    right: "6px",
+                    left: `${noteLeft}px`,
                     minHeight: "40px",
                     padding: "8px",
                     boxSizing: "border-box",
@@ -1206,14 +1218,7 @@ timeline.onclick =
 
 
 
-                const notesLayer =
-    layout.querySelector(".planner-notes-layer");
-
-if (notesLayer) {
-    notesLayer.appendChild(placeholder);
-} else {
-    board.appendChild(placeholder);
-}
+                
                 board.appendChild(placeholder);
 
                 return;
