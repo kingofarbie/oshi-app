@@ -1130,31 +1130,22 @@ timeline.onclick =
             !event.target.closest(".planner-free-note")
         ){
 
+            // タップした場所に関係なく、基準となるボードを取得
             const board =
                 timeline.querySelector(".planner-board");
 
-            const layout =
-                timeline.querySelector(".planner-layout");
-
-            const noteLayer =
-                layout?.querySelector(".planner-notes-layer");
-
-            if(board && layout && noteLayer){
+            if(board){
 
                 event.stopPropagation();
 
-                /*
-                   タップ位置をメモレイヤー基準に変換
-                   家族レーンの横幅によるずれを防ぐ
-                */
+                const rect =
+                    board.getBoundingClientRect();
 
-                const layerRect =
-                    noteLayer.getBoundingClientRect();
-
+                // 家族レーン上のタップ位置もボード基準に変換
                 const top =
-                    noteLayer.scrollTop +
+                    board.scrollTop +
                     event.clientY -
-                    layerRect.top;
+                    rect.top;
 
                 const noteTop =
                     Math.max(15, top);
@@ -1187,8 +1178,6 @@ timeline.onclick =
                     top: `${noteTop}px`,
                     left: "6px",
                     right: "6px",
-                    width: "auto",
-                    maxWidth: "none",
                     minHeight: "40px",
                     padding: "8px",
                     boxSizing: "border-box",
@@ -1198,8 +1187,7 @@ timeline.onclick =
                     color: "#c2185b",
                     fontSize: "14px",
                     zIndex: "30",
-                    cursor: "pointer",
-                    pointerEvents: "auto"
+                    cursor: "pointer"
                 });
 
                 placeholder.addEventListener(
@@ -1210,12 +1198,13 @@ timeline.onclick =
 
                         openPlannerNoteEditor(noteMode);
 
+                        /* 編集画面を開く前に仮メモを削除 */
                         placeholder.remove();
 
                     }
                 );
 
-                noteLayer.appendChild(placeholder);
+                board.appendChild(placeholder);
 
                 return;
 
