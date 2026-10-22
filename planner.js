@@ -1291,6 +1291,61 @@ return;
 
 
 
+
+/* =====================
+   📝 メモ文字を枠に合わせて変形
+===================== */
+
+function fitPlannerNoteText(element) {
+
+    if (!element) return;
+
+    const textElement =
+        element.querySelector(
+            ".planner-note-text"
+        );
+
+    if (!textElement) return;
+
+    const availableWidth =
+        Math.max(
+            1,
+            element.clientWidth - 18
+        );
+
+    const availableHeight =
+        Math.max(
+            1,
+            element.clientHeight - 18
+        );
+
+    const naturalWidth =
+        textElement.offsetWidth;
+
+    const naturalHeight =
+        textElement.offsetHeight;
+
+    if (
+        naturalWidth <= 0 ||
+        naturalHeight <= 0
+    ) {
+        return;
+    }
+
+    const scaleX =
+        availableWidth / naturalWidth;
+
+    const scaleY =
+        availableHeight / naturalHeight;
+
+    textElement.style.transform =
+        `scale(${scaleX}, ${scaleY})`;
+}
+
+
+
+
+
 /* =====================================================
    📝 1日手帳：保存済み文字メモを表示・ドラッグ移動
 ===================================================== */
@@ -1415,48 +1470,6 @@ element.appendChild(textElement);
             userSelect: "none",
             boxShadow: "0 2px 8px rgba(0,0,0,0.12)"
         });
-
-
-
-
-        /* =====================
-   📝 枠に合わせて文字を縦横変形
-===================== */
-
-function fitPlannerNoteText() {
-
-    const availableWidth =
-        Math.max(1, element.clientWidth - 18);
-
-    const availableHeight =
-        Math.max(1, element.clientHeight - 18);
-
-    const naturalWidth =
-        textElement.offsetWidth;
-
-    const naturalHeight =
-        textElement.offsetHeight;
-
-    if (
-        naturalWidth <= 0 ||
-        naturalHeight <= 0
-    ) {
-        return;
-    }
-
-    const scaleX =
-        availableWidth / naturalWidth;
-
-    const scaleY =
-        availableHeight / naturalHeight;
-
-    textElement.style.transform =
-        `scale(${scaleX}, ${scaleY})`;
-}
-
-
-
-
 
 
 
@@ -1921,7 +1934,7 @@ element.addEventListener(
 
                 element.style.maxWidth = "none";
 
-fitPlannerNoteText();
+fitPlannerNoteText(element);
 
                 event.preventDefault();
                 event.stopPropagation();
@@ -2260,8 +2273,7 @@ fitPlannerNoteText();
 
 layer.appendChild(element);
 
-fitPlannerNoteText();
-
+fitPlannerNoteText(element);
 
     });
 

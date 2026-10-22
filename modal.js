@@ -1136,11 +1136,46 @@ note = {
             note.fontSize = Number(sizeInput ? sizeInput.value : 16) || 16;
             note.color = colorInput ? colorInput.value : "#333333";
 
-            db.save(data);
 
-            closePlannerNoteEditor();
+db.save(data);
 
-            showPlanner(selectedCalendarDate);
+const savedDate = selectedCalendarDate;
+const savedNoteId = note.id;
+
+closePlannerNoteEditor();
+
+showPlanner(savedDate);
+
+/* =====================
+   📝 保存直後に文字をフィット
+===================== */
+
+requestAnimationFrame(() => {
+
+    requestAnimationFrame(() => {
+
+        const timeline =
+            document.getElementById(
+                "plannerTimeline"
+            );
+
+        const noteElement =
+            timeline?.querySelector(
+                ".planner-free-note[data-note-id=\"" +
+                savedNoteId +
+                "\"]"
+            );
+
+        if (noteElement) {
+            fitPlannerNoteText(noteElement);
+        }
+    });
+});
+
+
+
+
+
         };
     }
 
