@@ -1851,7 +1851,7 @@ element.appendChild(textElement);
             fontFamily: note.font || "sans-serif",
 
             /* 文字サイズは固定。枠のサイズ変更で文字をフィット */
-            fontSize: "16px",
+            fontSize: `${Number(note.fontSize) || 16}px`,
 
             whiteSpace: "pre-wrap",
             overflowWrap: "anywhere",
@@ -2322,15 +2322,29 @@ element.addEventListener(
                     )
                 );
 
-                element.style.width =
-                    `${nextWidth}px`;
+element.style.width = `${nextWidth}px`;
+element.style.height = `${nextHeight}px`;
+element.style.maxWidth = "none";
 
-                element.style.height =
-                    `${nextHeight}px`;
+/* =====================
+   文字サイズを枠の変更に連動
+===================== */
 
-                element.style.maxWidth = "none";
+const resizeScale = Math.min(
+    nextWidth / Math.max(1, resizeStartWidth),
+    nextHeight / Math.max(1, resizeStartHeight)
+);
 
+element.style.fontSize =
+    `${Math.max(
+        8,
+        Math.min(72, resizeStartFontSize * resizeScale)
+    )}px`;
+
+/* 文字が枠からはみ出さないよう調整 */
 fitPlannerNoteText(element);
+
+
 
                 event.preventDefault();
                 event.stopPropagation();
@@ -2369,6 +2383,11 @@ fitPlannerNoteText(element);
 
             savedNote.width = element.offsetWidth;
             savedNote.height = element.offsetHeight;
+
+
+            savedNote.fontSize =
+    parseFloat(element.style.fontSize) || 16;
+
 
             db.save(latestData);
 
