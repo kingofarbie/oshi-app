@@ -1296,72 +1296,102 @@ return;
    📝 メモ文字を枠に合わせて変形
 ===================== */
 
+/* =====================
+   📝 メモ文字を枠に合わせて変形
+   ・横と縦を別々に拡大縮小
+   ・雲形は内側の長方形に文字を収める
+===================== */
+
 function fitPlannerNoteText(element) {
 
     if (!element) return;
 
     const textElement =
-        element.querySelector(
-            ".planner-note-text"
-        );
+        element.querySelector(".planner-note-text") ||
+        element.querySelector("#plannerNotePreviewText");
 
     if (!textElement) return;
 
-    const style =
-        element.querySelector(
-            ".planner-note-custom-border"
-        )
-            ? (
-                element.dataset.plannerNoteBorderStyle ||
-                "solid"
+    const isPreview =
+        textElement.id === "plannerNotePreviewText";
+
+    const style = isPreview
+        ? (
+            element.classList.contains(
+                "planner-note-preview-border-cloud"
             )
-            : "solid";
+                ? "cloud"
+                : element.classList.contains(
+                    "planner-note-preview-border-wavy"
+                )
+                    ? "wavy"
+                    : element.classList.contains(
+                        "planner-note-preview-border-zigzag"
+                    )
+                        ? "zigzag"
+                        : "solid"
+        )
+        : (
+            element.dataset.plannerNoteBorderStyle ||
+            "solid"
+        );
 
-    /*
-       枠の形に合わせて内側の余白を確保
-    */
-    let horizontalPadding = 18;
-    let verticalPadding = 18;
+    const width = element.clientWidth;
+    const height = element.clientHeight;
 
-    if (style === "wavy") {
+    if (width <= 0 || height <= 0) return;
 
-        horizontalPadding = 30;
-        verticalPadding = 24;
+    let availableWidth = Math.max(1, width - 18);
+    let availableHeight = Math.max(1, height - 18);
 
-    } else if (style === "zigzag") {
+    /* =====================
+       ☁️ 雲形は中央の長方形内に配置
+    ===================== */
 
-        horizontalPadding = 30;
-        verticalPadding = 24;
+    if (style === "cloud") {
 
-    } else if (style === "cloud") {
+        availableWidth = Math.max(
+            1,
+            width * 0.60
+        );
 
-        horizontalPadding = 100;
-        verticalPadding = 85;
+        availableHeight = Math.max(
+            1,
+            height * 0.50
+        );
 
+        Object.assign(textElement.style, {
+            position: "absolute",
+            left: "20%",
+            top: "25%",
+            width: "max-content",
+            maxWidth: "none",
+            whiteSpace: "pre",
+            overflowWrap: "normal",
+            wordBreak: "normal",
+            transformOrigin: "top left"
+        });
+
+    } else {
+
+        Object.assign(textElement.style, {
+            position: "relative",
+            left: "auto",
+            top: "auto",
+            width: "max-content",
+            maxWidth: "none",
+            whiteSpace: "pre",
+            overflowWrap: "normal",
+            wordBreak: "normal",
+            transformOrigin: "top left"
+        });
     }
 
-    const availableWidth =
-        Math.max(
-            1,
-            element.clientWidth - horizontalPadding
-        );
-
-    const availableHeight =
-        Math.max(
-            1,
-            element.clientHeight - verticalPadding
-        );
-
-    /*
-       拡大縮小前の文字サイズを測定
-    */
+    /* 前回の変形を解除して元の文字寸法を取得 */
     textElement.style.transform = "none";
 
-    const naturalWidth =
-        textElement.offsetWidth;
-
-    const naturalHeight =
-        textElement.offsetHeight;
+    const naturalWidth = textElement.offsetWidth;
+    const naturalHeight = textElement.offsetHeight;
 
     if (
         naturalWidth <= 0 ||
@@ -1370,22 +1400,16 @@ function fitPlannerNoteText(element) {
         return;
     }
 
-    /*
-       縦横比を維持しながら、
-       枠の内側に収まる倍率を計算
-    */
-    const scale =
-        Math.min(
-            1,
-            availableWidth / naturalWidth,
-            availableHeight / naturalHeight
-        );
+    /* 枠内に収めながら縦横別々に変形 */
+    const scaleX =
+        availableWidth / naturalWidth;
+
+    const scaleY =
+        availableHeight / naturalHeight;
 
     textElement.style.transform =
-        `scale(${scale})`;
+        `scale(${scaleX}, ${scaleY})`;
 }
-
-
 
 
 /* =====================
@@ -2326,24 +2350,8 @@ element.style.width = `${nextWidth}px`;
 element.style.height = `${nextHeight}px`;
 element.style.maxWidth = "none";
 
-/* =====================
-   文字サイズを枠の変更に連動
-===================== */
-
-const resizeScale = Math.min(
-    nextWidth / Math.max(1, resizeStartWidth),
-    nextHeight / Math.max(1, resizeStartHeight)
-);
-
-element.style.fontSize =
-    `${Math.max(
-        8,
-        Math.min(72, resizeStartFontSize * resizeScale)
-    )}px`;
-
-/* 文字が枠からはみ出さないよう調整 */
+/* 枠の変更に合わせて文字を縦横変形 */
 fitPlannerNoteText(element);
-
 
 
                 event.preventDefault();
