@@ -1206,14 +1206,8 @@ timeline.onclick =
 
 
 
-                const notesLayer =
-    layout.querySelector(".planner-notes-layer");
-
-if (notesLayer) {
-    notesLayer.appendChild(placeholder);
-} else {
-    board.appendChild(placeholder);
-}
+                
+                board.appendChild(placeholder);
 
                 return;
 
