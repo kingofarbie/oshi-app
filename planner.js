@@ -1444,11 +1444,18 @@ function applyPlannerNoteCustomBorder(
             "svg"
         );
 
-    const width =
-        Math.max(1, element.clientWidth);
+const width =
+    Math.max(
+        1,
+        Number(note.width) || 220
+    );
 
-    const height =
-        Math.max(1, element.clientHeight);
+const height =
+    Math.max(
+        1,
+        Number(note.height) || 60
+    );
+
 
     svg.setAttribute(
         "viewBox",
