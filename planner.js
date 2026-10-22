@@ -1293,13 +1293,11 @@ return;
 
 
 /* =====================
-   📝 メモ文字を枠に合わせて変形
-===================== */
-
-/* =====================
-   📝 メモ文字を枠に合わせて変形
-   ・横と縦を別々に拡大縮小
-   ・雲形は内側の長方形に文字を収める
+   📝 ワードアート風文字変形
+   ・自動折り返しなし
+   ・手動改行は維持
+   ・横幅の上限に合わせて圧縮
+   ・雲形は内側に文字を収める
 ===================== */
 
 function fitPlannerNoteText(element) {
@@ -1317,24 +1315,33 @@ function fitPlannerNoteText(element) {
 
     const style = isPreview
         ? (
-            element.classList.contains(
-                "planner-note-preview-border-cloud"
-            )
+            element.classList.contains("planner-note-preview-border-cloud")
                 ? "cloud"
-                : element.classList.contains(
-                    "planner-note-preview-border-wavy"
-                )
+                : element.classList.contains("planner-note-preview-border-wavy")
                     ? "wavy"
-                    : element.classList.contains(
-                        "planner-note-preview-border-zigzag"
-                    )
+                    : element.classList.contains("planner-note-preview-border-zigzag")
                         ? "zigzag"
                         : "solid"
         )
-        : (
-            element.dataset.plannerNoteBorderStyle ||
-            "solid"
-        );
+        : (element.dataset.plannerNoteBorderStyle || "solid");
+
+    /* 前回の変形を解除して文字本来の寸法を取得 */
+    textElement.style.transform = "none";
+
+    Object.assign(textElement.style, {
+        display: "inline-block",
+        width: "max-content",
+        maxWidth: "none",
+        whiteSpace: "pre",
+        overflowWrap: "normal",
+        wordBreak: "normal",
+        transformOrigin: "top left"
+    });
+
+    const naturalWidth = textElement.scrollWidth;
+    const naturalHeight = textElement.scrollHeight;
+
+    if (naturalWidth <= 0 || naturalHeight <= 0) return;
 
     const width = element.clientWidth;
     const height = element.clientHeight;
@@ -1344,73 +1351,31 @@ function fitPlannerNoteText(element) {
     let availableWidth = Math.max(1, width - 18);
     let availableHeight = Math.max(1, height - 18);
 
-    /* =====================
-       ☁️ 雲形は中央の長方形内に配置
-    ===================== */
-
+    /* 雲形は中央の安全領域に文字を収める */
     if (style === "cloud") {
-
-        availableWidth = Math.max(
-            1,
-            width * 0.60
-        );
-
-        availableHeight = Math.max(
-            1,
-            height * 0.50
-        );
+        availableWidth = Math.max(1, width * 0.60);
+        availableHeight = Math.max(1, height * 0.50);
 
         Object.assign(textElement.style, {
             position: "absolute",
             left: "20%",
-            top: "25%",
-            width: "max-content",
-            maxWidth: "none",
-            whiteSpace: "pre",
-            overflowWrap: "normal",
-            wordBreak: "normal",
-            transformOrigin: "top left"
+            top: "25%"
         });
-
     } else {
-
         Object.assign(textElement.style, {
             position: "relative",
             left: "auto",
-            top: "auto",
-            width: "max-content",
-            maxWidth: "none",
-            whiteSpace: "pre",
-            overflowWrap: "normal",
-            wordBreak: "normal",
-            transformOrigin: "top left"
+            top: "auto"
         });
     }
 
-    /* 前回の変形を解除して元の文字寸法を取得 */
-    textElement.style.transform = "none";
-
-    const naturalWidth = textElement.offsetWidth;
-    const naturalHeight = textElement.offsetHeight;
-
-    if (
-        naturalWidth <= 0 ||
-        naturalHeight <= 0
-    ) {
-        return;
-    }
-
-    /* 枠内に収めながら縦横別々に変形 */
-    const scaleX =
-        availableWidth / naturalWidth;
-
-    const scaleY =
-        availableHeight / naturalHeight;
+    /* 横幅・高さそれぞれに合わせて変形 */
+    const scaleX = Math.min(1, availableWidth / naturalWidth);
+    const scaleY = Math.min(1, availableHeight / naturalHeight);
 
     textElement.style.transform =
         `scale(${scaleX}, ${scaleY})`;
 }
-
 
 /* =====================
    📝 自由メモの特殊な枠線
@@ -2695,6 +2660,21 @@ fitPlannerNoteText(element);
         );
 
 layer.appendChild(element);
+
+
+/* =====================
+   📝 再表示後に文字を枠へフィット
+===================== */
+
+requestAnimationFrame(() => {
+
+    requestAnimationFrame(() => {
+
+        if (element.isConnected) {
+            fitPlannerNoteText(element);
+        }
+    });
+});
 
 fitPlannerNoteText(element);
 
