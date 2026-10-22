@@ -833,20 +833,42 @@
     display: none;
 }
 
-/* 色設定のタイトルが操作できることを示す */
+
+
+
+/* 自由メモ：色見本そのものを開閉ボタンにする */
 
 #plannerNoteTextSettings
 .planner-note-style-group:has(.planner-note-color-list)
-.planner-note-style-title::after {
-    content: " ＋";
-    font-size: 11px;
-    opacity: 0.65;
+.planner-note-color-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
 }
 
-/* 開いているときはマイナス表示 */
+/* 閉じているときは選択中の色だけ表示 */
 
 #plannerNoteTextSettings
-.planner-note-style-group.is-color-open
-.planner-note-style-title::after {
-    content: " −";
+.planner-note-style-group:not(.is-color-open)
+.planner-note-color-swatch:not(.is-selected) {
+    display: none;
 }
+
+/* 色見本をタップしやすくする */
+
+#plannerNoteTextSettings
+.planner-note-color-swatch {
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+
+
+
+
+
+
+
+
+
+

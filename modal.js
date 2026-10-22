@@ -1643,74 +1643,74 @@ function initializePlannerNoteEditor() {
         });
 
 
-        /* =========================
-           色見本の選択
-        ========================= */
 
-        textSettings
-            .querySelectorAll(
-                ".planner-note-color-swatch"
-            )
-            .forEach(button => {
+/* =========================
+   色見本の開閉・選択
+========================= */
 
-                button.onclick = function() {
+textSettings
+    .querySelectorAll(
+        ".planner-note-color-swatch"
+    )
+    .forEach(button => {
 
-                    const groupName =
-                        button.dataset.colorGroup;
+        button.onclick = function() {
 
-                    const color =
-                        button.dataset.color;
+            const groupName =
+                button.dataset.colorGroup;
 
-                    const inputIds = {
-                        text: "plannerNoteColor",
-                        background:
-                            "plannerNoteBackgroundColor",
-                        border:
-                            "plannerNoteBorderColor"
-                    };
+            const color =
+                button.dataset.color;
 
-                    const input =
-                        document.getElementById(
-                            inputIds[groupName]
-                        );
+            const inputIds = {
+                text: "plannerNoteColor",
+                background:
+                    "plannerNoteBackgroundColor",
+                border:
+                    "plannerNoteBorderColor"
+            };
 
-                    if (!input || !color) return;
+            const input =
+                document.getElementById(
+                    inputIds[groupName]
+                );
 
-                    /* 選んだ色を保存 */
+            if (!input || !color) return;
 
-                    input.value = color;
+            const parentGroup =
+                button.closest(
+                    ".planner-note-style-group"
+                );
 
-                    /* 選択後は色一覧を閉じる */
+            if (!parentGroup) return;
 
-                    const parentGroup =
-                        button.closest(
-                            ".planner-note-style-group"
-                        );
+            /* 選択中の色をタップしたら一覧を開閉 */
 
-                    if (parentGroup) {
+            if (button.classList.contains("is-selected")) {
 
-                        parentGroup.classList.remove(
-                            "is-color-open"
-                        );
+                const isOpen =
+                    parentGroup.classList.toggle(
+                        "is-color-open"
+                    );
 
-                        const title =
-                            parentGroup.querySelector(
-                                ".planner-note-style-title"
-                            );
+                return;
+            }
 
-                        if (title) {
-                            title.setAttribute(
-                                "aria-expanded",
-                                "false"
-                            );
-                        }
-                    }
+            /* 別の色を選択 */
 
-                    /* プレビューを即時更新 */
+            input.value = color;
 
-                    updatePlannerNoteEditorPreview();
-                };
-            });
+            /* 色一覧を閉じる */
+
+            parentGroup.classList.remove(
+                "is-color-open"
+            );
+
+            /* プレビューを更新 */
+
+            updatePlannerNoteEditorPreview();
+        };
+    });
 
 
         /* =========================
