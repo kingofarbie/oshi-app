@@ -1145,12 +1145,18 @@ if (!notesLayer) {
     return;
 }
 
+
+
+
+
+
 const layerRect =
     notesLayer.getBoundingClientRect();
 
+/* 保存後と同じ座標基準 */
 const noteTop =
     Math.max(
-        15,
+        0,
         event.clientY -
         layerRect.top
     );
@@ -1162,70 +1168,71 @@ const noteLeft =
         layerRect.left
     );
 
+const noteMode =
+    plannerNotePlacementMode;
 
-                const noteMode =
-                    plannerNotePlacementMode;
+plannerNotePlacementTop =
+    noteTop;
 
-                plannerNotePlacementTop =
-                    noteTop;
+plannerNotePlacementMode = "";
 
-                plannerNotePlacementMode = "";
+plannerCancelEditMode();
 
-                plannerCancelEditMode();
+/* 仮メモを表示 */
+const placeholder =
+    document.createElement("div");
 
-                /* 仮メモを表示 */
+placeholder.className =
+    "planner-free-note planner-free-note-placeholder";
 
-                const placeholder =
-                    document.createElement("div");
+placeholder.textContent =
+    noteMode === "drawing"
+        ? "ここに手書きメモを追加"
+        : "ここにメモを追加";
 
-                placeholder.className =
-                    "planner-free-note planner-free-note-placeholder";
+Object.assign(placeholder.style, {
+    position: "absolute",
+    top: `${noteTop}px`,
+    left: `${noteLeft}px`,
+    width: "180px",
+    height: "60px",
+    minWidth: "100px",
+    minHeight: "40px",
+    padding: "8px",
+    boxSizing: "border-box",
+    border: "2px dashed #e91e63",
+    borderRadius: "8px",
+    background: "#fff0f6",
+    color: "#c2185b",
+    fontFamily: "sans-serif",
+    fontSize: "16px",
+    whiteSpace: "pre-wrap",
+    overflowWrap: "anywhere",
+    zIndex: "31",
+    cursor: "pointer",
+    pointerEvents: "auto"
+});
 
-                placeholder.textContent =
-                    noteMode === "drawing"
-                        ? "ここに手書きメモを追加"
-                        : "ここにメモを追加";
+placeholder.addEventListener(
+    "click",
+    function(noteEvent) {
 
-                Object.assign(placeholder.style, {
-                    position: "absolute",
-                    top: `${noteTop}px`,
-                    left: `${noteLeft}px`,
-                    minHeight: "40px",
-                    padding: "8px",
-                    boxSizing: "border-box",
-                    border: "2px dashed #e91e63",
-                    borderRadius: "8px",
-                    background: "#fff0f6",
-                    color: "#c2185b",
-                    fontSize: "14px",
-                    zIndex: "30",
-                    cursor: "pointer"
-                });
+        noteEvent.stopPropagation();
 
-                placeholder.addEventListener(
-                    "click",
-                    function(noteEvent){
+        openPlannerNoteEditor(noteMode);
 
-                        noteEvent.stopPropagation();
+        placeholder.remove();
+    }
+);
 
-                        openPlannerNoteEditor(noteMode);
+/* 保存後と同じレイヤーに配置 */
+notesLayer.appendChild(placeholder);
 
-                        /* 編集画面を開く前に仮メモを削除 */
-                        placeholder.remove();
+return;
 
-                    }
-                );
+}
+}
 
-
-
-                
-                board.appendChild(placeholder);
-
-                return;
-
-            }
-
-        }
 
 
         /* =====================
