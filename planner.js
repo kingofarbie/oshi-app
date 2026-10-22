@@ -1346,6 +1346,116 @@ function fitPlannerNoteText(element) {
 
 
 
+function applyPlannerNoteCustomBorder(element, textElement, note) {
+
+    const style = note.borderStyle || "solid";
+
+    /* 波型・ギザギザ・雲型以外は何もしない */
+    if (!["wavy", "zigzag", "cloud"].includes(style)) {
+        return;
+    }
+
+    const backgroundColor =
+        note.backgroundColor || "#FFF8FC";
+
+    const borderColor =
+        note.borderColor || "#E8A6C1";
+
+    /* 以前の専用枠があれば削除 */
+    element.querySelector(
+        ".planner-note-custom-border"
+    )?.remove();
+
+    const svgNS = "http://www.w3.org/2000/svg";
+
+    const svg = document.createElementNS(svgNS, "svg");
+
+    svg.setAttribute("viewBox", "0 0 100 100");
+    svg.setAttribute("preserveAspectRatio", "none");
+    svg.setAttribute("aria-hidden", "true");
+    svg.classList.add("planner-note-custom-border");
+
+    Object.assign(svg.style, {
+        position: "absolute",
+        inset: "0",
+        width: "100%",
+        height: "100%",
+        overflow: "visible",
+        pointerEvents: "none",
+        zIndex: "0"
+    });
+
+    const path = document.createElementNS(svgNS, "path");
+
+    let pathData = "";
+
+    if (style === "wavy") {
+
+        pathData =
+            "M 12 5 Q 17 0 22 5 T 42 5 T 62 5 T 82 5 " +
+            "Q 92 5 88 15 T 88 35 T 88 55 T 88 75 " +
+            "Q 92 88 82 88 T 62 88 T 42 88 T 22 88 " +
+            "Q 8 92 12 78 T 12 58 T 12 38 T 12 18 Z";
+
+    } else if (style === "zigzag") {
+
+        pathData =
+            "M 5 5 L 12 2 L 19 5 L 26 2 L 33 5 " +
+            "L 40 2 L 47 5 L 54 2 L 61 5 L 68 2 " +
+            "L 75 5 L 82 2 L 95 5 " +
+            "L 92 14 L 95 23 L 92 32 L 95 41 " +
+            "L 92 50 L 95 59 L 92 68 L 95 77 " +
+            "L 92 86 L 95 95 " +
+            "L 82 92 L 69 95 L 56 92 L 43 95 " +
+            "L 30 92 L 17 95 L 5 92 " +
+            "L 8 81 L 5 70 L 8 59 L 5 48 " +
+            "L 8 37 L 5 26 L 8 15 Z";
+
+    } else {
+
+        pathData =
+            "M 18 8 C 22 1 30 2 33 8 " +
+            "C 39 1 47 2 50 8 " +
+            "C 57 1 65 2 68 8 " +
+            "C 78 3 86 10 84 18 " +
+            "C 94 22 94 31 87 36 " +
+            "C 95 43 94 52 87 57 " +
+            "C 94 65 89 73 82 75 " +
+            "C 83 86 73 91 65 84 " +
+            "C 58 92 49 91 45 84 " +
+            "C 37 92 28 89 27 82 " +
+            "C 17 88 9 81 13 73 " +
+            "C 4 68 5 59 12 54 " +
+            "C 4 47 6 39 13 35 " +
+            "C 5 27 9 18 17 17 Z";
+    }
+
+    path.setAttribute("d", pathData);
+    path.setAttribute("fill", backgroundColor);
+    path.setAttribute("stroke", borderColor);
+    path.setAttribute("stroke-width", "2");
+    path.setAttribute("stroke-linejoin", "round");
+    path.setAttribute("vector-effect", "non-scaling-stroke");
+
+    svg.appendChild(path);
+
+    /* 文字より後ろに枠を配置 */
+    element.insertBefore(svg, textElement);
+
+    Object.assign(textElement.style, {
+        position: "relative",
+        zIndex: "1"
+    });
+
+    /* 通常の四角い枠は消して、専用形状を表示 */
+    element.style.border = "none";
+    element.style.borderRadius = "0";
+    element.style.background = "transparent";
+}
+
+
+
+
 /* =====================================================
    📝 1日手帳：保存済み文字メモを表示・ドラッグ移動
 ===================================================== */
@@ -1440,37 +1550,81 @@ element.appendChild(textElement);
 
 
 
+
+        /* =====================
+           📝 メモの基本スタイル
+        ===================== */
+
+        const noteBorderStyle =
+            note.borderStyle || "solid";
+
+        const noteBorderColor =
+            note.borderColor || "#e8a6c1";
+
+        const noteBackgroundColor =
+            note.backgroundColor || "#fff8fc";
+
+        const borderWidth =
+            noteBorderStyle === "thick" ||
+            noteBorderStyle === "double"
+                ? 3
+                : 1;
+
+        const normalBorderStyle =
+            ["solid", "dashed", "dotted", "double"]
+                .includes(noteBorderStyle)
+                ? noteBorderStyle
+                : "solid";
+
         Object.assign(element.style, {
+            
             position: "absolute",
+
             transform:
                 `rotate(${Number(note.rotation) || 0}deg)`,
+
             top: `${Math.max(0, Number(note.top) || 0)}px`,
             left: `${Math.max(0, Number(note.left) || 6)}px`,
+
             width: `${Number(note.width) || 220}px`,
             maxWidth: "calc(100% - 12px)",
+
             height: note.height
                 ? `${Number(note.height)}px`
                 : "auto",
+
             minWidth: "100px",
             minHeight: "40px",
+
             padding: "8px",
             boxSizing: "border-box",
-            border: "1px solid #e8a6c1",
+
+            border:
+                `${borderWidth}px ${normalBorderStyle} ${noteBorderColor}`,
+
             borderRadius: "8px",
-            background: "#fff8fc",
+
+            background: noteBackgroundColor,
             color: note.color || "#333333",
             fontFamily: note.font || "sans-serif",
-            fontSize: `${Number(note.fontSize) || 16}px`,
+
+            /* 文字サイズは固定。枠のサイズ変更で文字をフィット */
+            fontSize: "16px",
+
             whiteSpace: "pre-wrap",
             overflowWrap: "anywhere",
+
             zIndex: "31",
             cursor: "grab",
             pointerEvents: "auto",
             touchAction: "none",
             userSelect: "none",
+
             boxShadow: "0 2px 8px rgba(0,0,0,0.12)"
         });
 
+        applyPlannerNoteCustomBorder(element, textElement, note);
+        
 
 
         /* =====================

@@ -268,54 +268,176 @@
             📝 自由メモ
         </h2>
 
-        <!-- 文字メモ設定 -->
-        <div id="plannerNoteTextSettings">
+<!-- 文字メモ設定 -->
+    <div id="plannerNoteTextSettings">
 
-            <label for="plannerNoteText">
-                メモ内容
-            </label>
+        <!-- メモ内容 -->
+        <label for="plannerNoteText">
+            メモ内容
+        </label>
 
-            <textarea
-                id="plannerNoteText"
-                rows="4"
-                placeholder="ここにメモを追加"
-            ></textarea>
+        <textarea
+            id="plannerNoteText"
+            rows="4"
+            placeholder="ここにメモを追加"
+        ></textarea>
 
-            <label for="plannerNoteFont">
-                フォント
-            </label>
 
-            <select id="plannerNoteFont">
-                <option value="sans-serif">ゴシック体</option>
-                <option value="serif">明朝体</option>
-                <option value="system-ui">システム標準</option>
-            </select>
+        <!-- フォント -->
+        <label
+            for="plannerNoteFont"
+            class="planner-note-font-label"
+        >
+            フォント
+        </label>
 
-            <label for="plannerNoteFontSize">
-                文字サイズ
-            </label>
+        <select id="plannerNoteFont">
+            <option value="sans-serif">ゴシック体</option>
+            <option value="serif">明朝体</option>
+            <option value="system-ui">システム標準</option>
+            <option value="ui-rounded, sans-serif">丸ゴシック風</option>
+            <option value="monospace">等幅フォント</option>
+            <option value="cursive">手書き風</option>
+            <option value="fantasy">装飾フォント</option>
+        </select>
 
-            <select id="plannerNoteFontSize">
-                <option value="12">小</option>
-                <option value="16" selected>標準</option>
-                <option value="20">大</option>
-                <option value="24">特大</option>
-            </select>
 
-            <label for="plannerNoteColor">
+        <!-- 文字色 -->
+        <div class="planner-note-style-group">
+
+            <div class="planner-note-style-title">
                 文字色
-            </label>
+            </div>
 
-            <select id="plannerNoteColor">
-                <option value="#333333">黒</option>
-                <option value="#e91e63">ピンク</option>
-                <option value="#2196f3">青</option>
-                <option value="#4caf50">緑</option>
-                <option value="#9c27b0">紫</option>
-                <option value="#ff9800">オレンジ</option>
-            </select>
+            <input
+                type="hidden"
+                id="plannerNoteColor"
+                value="#333333"
+            >
+
+            <div class="planner-note-color-list">
+
+                <button type="button" class="planner-note-color-swatch" data-color-group="text" data-color="#333333" style="background:#333333" aria-label="黒" aria-pressed="true"></button>
+                <button type="button" class="planner-note-color-swatch" data-color-group="text" data-color="#E91E63" style="background:#E91E63" aria-label="ピンク" aria-pressed="false"></button>
+                <button type="button" class="planner-note-color-swatch" data-color-group="text" data-color="#2196F3" style="background:#2196F3" aria-label="青" aria-pressed="false"></button>
+                <button type="button" class="planner-note-color-swatch" data-color-group="text" data-color="#4CAF50" style="background:#4CAF50" aria-label="緑" aria-pressed="false"></button>
+                <button type="button" class="planner-note-color-swatch" data-color-group="text" data-color="#9C27B0" style="background:#9C27B0" aria-label="紫" aria-pressed="false"></button>
+                <button type="button" class="planner-note-color-swatch" data-color-group="text" data-color="#FF9800" style="background:#FF9800" aria-label="オレンジ" aria-pressed="false"></button>
+                <button type="button" class="planner-note-color-swatch" data-color-group="text" data-color="#FFFFFF" style="background:#FFFFFF" aria-label="白" aria-pressed="false"></button>
+
+            </div>
 
         </div>
+
+
+        <!-- 背景色 -->
+        <div class="planner-note-style-group">
+
+            <div class="planner-note-style-title">
+                背景色
+            </div>
+
+            <input
+                type="hidden"
+                id="plannerNoteBackgroundColor"
+                value="#FFF8FC"
+            >
+
+            <div class="planner-note-color-list">
+
+                <button type="button" class="planner-note-color-swatch" data-color-group="background" data-color="#FFF8FC" style="background:#FFF8FC" aria-label="薄いピンク" aria-pressed="true"></button>
+                <button type="button" class="planner-note-color-swatch" data-color-group="background" data-color="#FFFFFF" style="background:#FFFFFF" aria-label="白" aria-pressed="false"></button>
+                <button type="button" class="planner-note-color-swatch" data-color-group="background" data-color="#FFF1D6" style="background:#FFF1D6" aria-label="クリーム" aria-pressed="false"></button>
+                <button type="button" class="planner-note-color-swatch" data-color-group="background" data-color="#FFF9B8" style="background:#FFF9B8" aria-label="黄色" aria-pressed="false"></button>
+                <button type="button" class="planner-note-color-swatch" data-color-group="background" data-color="#E4F5E8" style="background:#E4F5E8" aria-label="薄い緑" aria-pressed="false"></button>
+                <button type="button" class="planner-note-color-swatch" data-color-group="background" data-color="#E4F2FF" style="background:#E4F2FF" aria-label="薄い青" aria-pressed="false"></button>
+                <button type="button" class="planner-note-color-swatch" data-color-group="background" data-color="#F0E5FF" style="background:#F0E5FF" aria-label="薄い紫" aria-pressed="false"></button>
+
+            </div>
+
+        </div>
+
+
+        <!-- 枠線の種類 -->
+        <div class="planner-note-style-group">
+
+            <div class="planner-note-style-title">
+                枠線の種類
+            </div>
+
+            <input
+                type="hidden"
+                id="plannerNoteBorderStyle"
+                value="solid"
+            >
+
+            <div class="planner-note-border-list">
+
+                <button type="button" class="planner-note-border-option" data-border-style="solid" aria-pressed="true">通常</button>
+                <button type="button" class="planner-note-border-option" data-border-style="dashed" aria-pressed="false">破線</button>
+                <button type="button" class="planner-note-border-option" data-border-style="dotted" aria-pressed="false">点線</button>
+                <button type="button" class="planner-note-border-option" data-border-style="thick" aria-pressed="false">太枠</button>
+                <button type="button" class="planner-note-border-option" data-border-style="double" aria-pressed="false">二重線</button>
+                <button type="button" class="planner-note-border-option" data-border-style="wavy" aria-pressed="false">波型</button>
+                <button type="button" class="planner-note-border-option" data-border-style="zigzag" aria-pressed="false">ギザギザ</button>
+                <button type="button" class="planner-note-border-option" data-border-style="cloud" aria-pressed="false">雲型</button>
+
+            </div>
+
+        </div>
+
+
+        <!-- 枠線の色 -->
+        <div class="planner-note-style-group">
+
+            <div class="planner-note-style-title">
+                枠線の色
+            </div>
+
+            <input
+                type="hidden"
+                id="plannerNoteBorderColor"
+                value="#E8A6C1"
+            >
+
+            <div class="planner-note-color-list">
+
+                <button type="button" class="planner-note-color-swatch" data-color-group="border" data-color="#E8A6C1" style="background:#E8A6C1" aria-label="ピンク" aria-pressed="true"></button>
+                <button type="button" class="planner-note-color-swatch" data-color-group="border" data-color="#78BCE8" style="background:#78BCE8" aria-label="青" aria-pressed="false"></button>
+                <button type="button" class="planner-note-color-swatch" data-color-group="border" data-color="#B49AE8" style="background:#B49AE8" aria-label="紫" aria-pressed="false"></button>
+                <button type="button" class="planner-note-color-swatch" data-color-group="border" data-color="#B8B8B8" style="background:#B8B8B8" aria-label="グレー" aria-pressed="false"></button>
+                <button type="button" class="planner-note-color-swatch" data-color-group="border" data-color="#E85B76" style="background:#E85B76" aria-label="濃いピンク" aria-pressed="false"></button>
+                <button type="button" class="planner-note-color-swatch" data-color-group="border" data-color="#55A878" style="background:#55A878" aria-label="緑" aria-pressed="false"></button>
+                <button type="button" class="planner-note-color-swatch" data-color-group="border" data-color="#333333" style="background:#333333" aria-label="黒" aria-pressed="false"></button>
+
+            </div>
+
+        </div>
+
+
+        <!-- リアルタイムプレビュー -->
+        <div class="planner-note-style-group">
+
+            <div class="planner-note-style-title">
+                プレビュー
+            </div>
+
+            <div
+                id="plannerNotePreview"
+                class="planner-note-preview"
+            >
+                <span
+                    id="plannerNotePreviewText"
+                    class="planner-note-text"
+                >メモの見本 ♡</span>
+            </div>
+
+        </div>
+
+    </div>
+
+
+
 
         <!-- 手書きメモ用の説明 -->
         <div
