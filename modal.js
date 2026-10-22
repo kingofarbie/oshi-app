@@ -1384,6 +1384,7 @@ requestAnimationFrame(() => {
 ===================================================== */
 
 
+
 function initializePlannerNoteEditor() {
 
     const saveButton =
@@ -1482,7 +1483,13 @@ function initializePlannerNoteEditor() {
                 data.plannerNotes = [];
             }
 
+            const font =
+                fontInput
+                    ? fontInput.value
+                    : "sans-serif";
+
             let note = null;
+            let isNewNote = false;
 
             if (plannerNoteEditingId !== null) {
 
@@ -1502,6 +1509,8 @@ function initializePlannerNoteEditor() {
 
             } else {
 
+                isNewNote = true;
+
                 note = {
                     id: "planner-note-" + Date.now(),
                     date: selectedCalendarDate,
@@ -1516,14 +1525,86 @@ function initializePlannerNoteEditor() {
                 data.plannerNotes.push(note);
             }
 
+            /* =========================
+               文字の横幅を計算
+               新規メモのみ初期幅を設定
+               手動改行は行ごとに計測
+            ========================= */
+
+            if (isNewNote) {
+
+                const measureCanvas =
+                    document.createElement("canvas");
+
+                const measureContext =
+                    measureCanvas.getContext("2d");
+
+                if (measureContext) {
+
+                    measureContext.font =
+                        `16px ${font}`;
+
+                    const lines =
+                        text.split("\n");
+
+                    const naturalWidth =
+                        Math.max(
+                            1,
+                            ...lines.map(line =>
+                                measureContext.measureText(
+                                    line || " "
+                                ).width
+                            )
+                        );
+
+                    const timeline =
+                        document.getElementById(
+                            "plannerTimeline"
+                        );
+
+                    const layout =
+                        timeline?.querySelector(
+                            ".planner-layout"
+                        );
+
+                    const times =
+                        timeline?.querySelector(
+                            ".planner-times"
+                        );
+
+                    const availableWidth =
+                        layout
+                            ? layout.clientWidth -
+                                (times?.offsetWidth || 0) -
+                                note.left - 12
+                            : 220;
+
+                    const maxWidth =
+                        Math.max(
+                            100,
+                            Math.min(
+                                220,
+                                availableWidth
+                            )
+                        );
+
+                    note.width =
+                        Math.max(
+                            100,
+                            Math.min(
+                                maxWidth,
+                                Math.ceil(
+                                    naturalWidth + 18
+                                )
+                            )
+                        );
+                }
+            }
+
             note.date = selectedCalendarDate;
             note.type = "text";
             note.text = text;
-
-            note.font =
-                fontInput
-                    ? fontInput.value
-                    : "sans-serif";
+            note.font = font;
 
             note.color =
                 colorInput
@@ -1557,7 +1638,7 @@ function initializePlannerNoteEditor() {
 
             showPlanner(savedDate);
 
-            /* 保存直後に文字をフィット */
+            /* 保存後に文字をフィット */
 
             requestAnimationFrame(() => {
 
@@ -1632,8 +1713,6 @@ function initializePlannerNoteEditor() {
                     ".planner-note-color-list"
                 );
 
-            /* 色一覧があるグループだけ対象 */
-
             if (!title || !colorList) return;
 
             title.style.cursor = "pointer";
@@ -1643,8 +1722,6 @@ function initializePlannerNoteEditor() {
                 "aria-expanded",
                 "false"
             );
-
-            /* タイトルをタップして開閉 */
 
             title.onclick = function() {
 
@@ -1658,8 +1735,6 @@ function initializePlannerNoteEditor() {
                     String(isOpen)
                 );
             };
-
-            /* キーボード操作にも対応 */
 
             title.onkeydown = function(event) {
 
@@ -1676,74 +1751,68 @@ function initializePlannerNoteEditor() {
         });
 
 
+        /* =========================
+           色見本の開閉・選択
+        ========================= */
 
-/* =========================
-   色見本の開閉・選択
-========================= */
+        textSettings
+            .querySelectorAll(
+                ".planner-note-color-swatch"
+            )
+            .forEach(button => {
 
-textSettings
-    .querySelectorAll(
-        ".planner-note-color-swatch"
-    )
-    .forEach(button => {
+                button.onclick = function() {
 
-        button.onclick = function() {
+                    const groupName =
+                        button.dataset.colorGroup;
 
-            const groupName =
-                button.dataset.colorGroup;
+                    const color =
+                        button.dataset.color;
 
-            const color =
-                button.dataset.color;
+                    const inputIds = {
+                        text: "plannerNoteColor",
+                        background:
+                            "plannerNoteBackgroundColor",
+                        border:
+                            "plannerNoteBorderColor"
+                    };
 
-            const inputIds = {
-                text: "plannerNoteColor",
-                background:
-                    "plannerNoteBackgroundColor",
-                border:
-                    "plannerNoteBorderColor"
-            };
+                    const input =
+                        document.getElementById(
+                            inputIds[groupName]
+                        );
 
-            const input =
-                document.getElementById(
-                    inputIds[groupName]
-                );
+                    if (!input || !color) return;
 
-            if (!input || !color) return;
+                    const parentGroup =
+                        button.closest(
+                            ".planner-note-style-group"
+                        );
 
-            const parentGroup =
-                button.closest(
-                    ".planner-note-style-group"
-                );
+                    if (!parentGroup) return;
 
-            if (!parentGroup) return;
+                    if (
+                        button.classList.contains(
+                            "is-selected"
+                        )
+                    ) {
 
-            /* 選択中の色をタップしたら一覧を開閉 */
+                        parentGroup.classList.toggle(
+                            "is-color-open"
+                        );
 
-            if (button.classList.contains("is-selected")) {
+                        return;
+                    }
 
-                const isOpen =
-                    parentGroup.classList.toggle(
+                    input.value = color;
+
+                    parentGroup.classList.remove(
                         "is-color-open"
                     );
 
-                return;
-            }
-
-            /* 別の色を選択 */
-
-            input.value = color;
-
-            /* 色一覧を閉じる */
-
-            parentGroup.classList.remove(
-                "is-color-open"
-            );
-
-            /* プレビューを更新 */
-
-            updatePlannerNoteEditorPreview();
-        };
-    });
+                    updatePlannerNoteEditorPreview();
+                };
+            });
 
 
         /* =========================
@@ -1779,6 +1848,7 @@ textSettings
 
     updatePlannerNoteEditorPreview();
 }
+
 
 
 
