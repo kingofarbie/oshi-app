@@ -1358,7 +1358,32 @@ Object.assign(layer.style, {
             "メモを選択。もう一度タップすると編集"
         );
 
-        element.textContent = note.text || "";
+
+
+/* =====================
+   📝 変形できる文字部分
+===================== */
+
+const textElement =
+    document.createElement("span");
+
+textElement.className =
+    "planner-note-text";
+
+textElement.textContent =
+    note.text || "";
+
+Object.assign(textElement.style, {
+    display: "inline-block",
+    width: "max-content",
+    whiteSpace: "pre",
+    transformOrigin: "top left",
+    verticalAlign: "top"
+});
+
+element.appendChild(textElement);
+
+
 
         Object.assign(element.style, {
             position: "absolute",
@@ -1390,6 +1415,50 @@ Object.assign(layer.style, {
             userSelect: "none",
             boxShadow: "0 2px 8px rgba(0,0,0,0.12)"
         });
+
+
+
+
+        /* =====================
+   📝 枠に合わせて文字を縦横変形
+===================== */
+
+function fitPlannerNoteText() {
+
+    const availableWidth =
+        Math.max(1, element.clientWidth - 18);
+
+    const availableHeight =
+        Math.max(1, element.clientHeight - 18);
+
+    const naturalWidth =
+        textElement.offsetWidth;
+
+    const naturalHeight =
+        textElement.offsetHeight;
+
+    if (
+        naturalWidth <= 0 ||
+        naturalHeight <= 0
+    ) {
+        return;
+    }
+
+    const scaleX =
+        availableWidth / naturalWidth;
+
+    const scaleY =
+        availableHeight / naturalHeight;
+
+    textElement.style.transform =
+        `scale(${scaleX}, ${scaleY})`;
+}
+
+
+
+
+
+
 
         /* =====================
            ✕ 削除ボタン
@@ -1852,33 +1921,7 @@ element.addEventListener(
 
                 element.style.maxWidth = "none";
 
-                const scale =
-                    nextWidth / resizeStartWidth;
-
-                const desiredFontSize =
-                    resizeStartFontSize * scale * scale;
-
-                element.style.fontSize =
-                    `${Math.max(6, desiredFontSize)}px`;
-
-                while (
-                    element.scrollHeight > element.clientHeight ||
-                    element.scrollWidth > element.clientWidth
-                ) {
-
-                    const currentFontSize =
-                        parseFloat(element.style.fontSize);
-
-                    if (currentFontSize <= 6) {
-                        break;
-                    }
-
-                    element.style.fontSize =
-                        `${Math.max(
-                            6,
-                            currentFontSize - 1
-                        )}px`;
-                }
+fitPlannerNoteText();
 
                 event.preventDefault();
                 event.stopPropagation();
@@ -2215,7 +2258,11 @@ element.addEventListener(
             }
         );
 
-        layer.appendChild(element);
+layer.appendChild(element);
+
+fitPlannerNoteText();
+
+
     });
 
     /* 予定ボードと家族レーンより手前に配置 */
