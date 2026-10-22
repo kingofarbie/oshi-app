@@ -1114,12 +1114,17 @@ function initializePlannerNoteEditor() {
 
             } else {
 
-                note = {
-                    id: "planner-note-" + Date.now(),
-                    date: selectedCalendarDate,
-                    top: plannerNotePlacementTop,
-                    type: "text"
-                };
+note = {
+    id: "planner-note-" + Date.now(),
+    date: selectedCalendarDate,
+    top: plannerNotePlacementTop,
+    left: 6,
+    width: 180,
+    height: 60,
+    rotation: 0,
+    type: "text"
+};
+
 
                 data.plannerNotes.push(note);
             }
