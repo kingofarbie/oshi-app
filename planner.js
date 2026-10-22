@@ -1309,6 +1309,7 @@ function renderPlannerNotes(date) {
 
     layer.className = "planner-notes-layer";
 
+
     Object.assign(layer.style, {
         position: "absolute",
         top: `${board.offsetTop}px`,
@@ -1317,7 +1318,8 @@ function renderPlannerNotes(date) {
         height: `${board.offsetHeight}px`,
         overflow: "visible",
         pointerEvents: "none",
-        zIndex: "30"
+        zIndex: "30",
+        boxSizing: "border-box"
     });
 
     
