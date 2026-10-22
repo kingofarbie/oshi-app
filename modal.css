@@ -821,3 +821,32 @@
         max-height: 48px;
     }
 }
+
+
+
+
+/* 自由メモ：閉じている色一覧は選択色だけ表示 */
+
+#plannerNoteTextSettings
+.planner-note-style-group:not(.is-color-open)
+.planner-note-color-swatch:not(.is-selected) {
+    display: none;
+}
+
+/* 色設定のタイトルが操作できることを示す */
+
+#plannerNoteTextSettings
+.planner-note-style-group:has(.planner-note-color-list)
+.planner-note-style-title::after {
+    content: " ＋";
+    font-size: 11px;
+    opacity: 0.65;
+}
+
+/* 開いているときはマイナス表示 */
+
+#plannerNoteTextSettings
+.planner-note-style-group.is-color-open
+.planner-note-style-title::after {
+    content: " −";
+}
