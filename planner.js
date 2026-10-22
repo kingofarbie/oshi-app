@@ -1307,17 +1307,55 @@ function fitPlannerNoteText(element) {
 
     if (!textElement) return;
 
+    const style =
+        element.querySelector(
+            ".planner-note-custom-border"
+        )
+            ? (
+                element.dataset.plannerNoteBorderStyle ||
+                "solid"
+            )
+            : "solid";
+
+    /*
+       枠の形に合わせて内側の余白を確保
+    */
+    let horizontalPadding = 18;
+    let verticalPadding = 18;
+
+    if (style === "wavy") {
+
+        horizontalPadding = 30;
+        verticalPadding = 24;
+
+    } else if (style === "zigzag") {
+
+        horizontalPadding = 30;
+        verticalPadding = 24;
+
+    } else if (style === "cloud") {
+
+        horizontalPadding = 44;
+        verticalPadding = 38;
+
+    }
+
     const availableWidth =
         Math.max(
             1,
-            element.clientWidth - 18
+            element.clientWidth - horizontalPadding
         );
 
     const availableHeight =
         Math.max(
             1,
-            element.clientHeight - 18
+            element.clientHeight - verticalPadding
         );
+
+    /*
+       拡大縮小前の文字サイズを測定
+    */
+    textElement.style.transform = "none";
 
     const naturalWidth =
         textElement.offsetWidth;
@@ -1332,25 +1370,29 @@ function fitPlannerNoteText(element) {
         return;
     }
 
-    const scaleX =
-        availableWidth / naturalWidth;
-
-    const scaleY =
-        availableHeight / naturalHeight;
+    /*
+       縦横比を維持しながら、
+       枠の内側に収まる倍率を計算
+    */
+    const scale =
+        Math.min(
+            1,
+            availableWidth / naturalWidth,
+            availableHeight / naturalHeight
+        );
 
     textElement.style.transform =
-        `scale(${scaleX}, ${scaleY})`;
+        `scale(${scale})`;
 }
-
 
 
 
 
 /* =====================
    📝 自由メモの特殊な枠線
-   ・均等な半円のもこもこ
-   ・均等な三角形のギザギザ
-   ・文字の安全範囲を確保した雲型
+   ・辺の長さに応じた均等配置
+   ・文字と枠の重なりを軽減
+   ・背景色と枠線色を維持
 ===================== */
 
 function applyPlannerNoteCustomBorder(
@@ -1362,10 +1404,21 @@ function applyPlannerNoteCustomBorder(
     const style =
         note.borderStyle || "solid";
 
-    /* 特殊な枠線以外は通常表示 */
+    /* 通常枠の場合 */
     if (
         !["wavy", "zigzag", "cloud"].includes(style)
     ) {
+        element.querySelector(
+            ".planner-note-custom-border"
+        )?.remove();
+
+        delete element.dataset.plannerNoteBorderStyle;
+
+        element.style.border = "";
+        element.style.borderRadius = "";
+        element.style.background = "";
+        element.style.padding = "";
+
         return;
     }
 
@@ -1375,7 +1428,9 @@ function applyPlannerNoteCustomBorder(
     const borderColor =
         note.borderColor || "#E8A6C1";
 
-    /* 古い特殊枠を削除 */
+    element.dataset.plannerNoteBorderStyle =
+        style;
+
     element.querySelector(
         ".planner-note-custom-border"
     )?.remove();
@@ -1389,9 +1444,15 @@ function applyPlannerNoteCustomBorder(
             "svg"
         );
 
+    const width =
+        Math.max(1, element.clientWidth);
+
+    const height =
+        Math.max(1, element.clientHeight);
+
     svg.setAttribute(
         "viewBox",
-        "0 0 100 100"
+        `0 0 ${width} ${height}`
     );
 
     svg.setAttribute(
@@ -1413,7 +1474,7 @@ function applyPlannerNoteCustomBorder(
         inset: "0",
         width: "100%",
         height: "100%",
-        overflow: "visible",
+        overflow: "hidden",
         pointerEvents: "none",
         zIndex: "0"
     });
@@ -1426,270 +1487,174 @@ function applyPlannerNoteCustomBorder(
 
     let pathData = "";
 
-    /* =====================
-       🌸 均等な半円のもこもこ
-    ===================== */
+    /*
+       均等な波型・ギザギザの辺を生成
+       count は辺の長さから個別に計算
+    */
+    function makeEdge(
+        x1,
+        y1,
+        x2,
+        y2,
+        count,
+        depth,
+        type
+    ) {
 
-    if (style === "wavy") {
+        const dx = (x2 - x1) / count;
+        const dy = (y2 - y1) / count;
 
-        const radius = 5;
-        const step = radius * 2;
+        let result = "";
 
-        const points = [];
+        for (let i = 0; i < count; i++) {
 
-        /*
-           上辺：半円を均等に配置
-        */
-        pathData = "M 5 10";
+            const sx = x1 + dx * i;
+            const sy = y1 + dy * i;
 
-        for (
-            let x = 5;
-            x < 95;
-            x += step
-        ) {
+            const ex = x1 + dx * (i + 1);
+            const ey = y1 + dy * (i + 1);
 
-            const nextX =
-                Math.min(x + step, 95);
+            const mx = (sx + ex) / 2;
+            const my = (sy + ey) / 2;
 
-            const midX =
-                (x + nextX) / 2;
+            /*
+               辺の外側に向く方向を決める
+            */
+            let ox = 0;
+            let oy = 0;
 
-            pathData +=
-                ` Q ${midX} 0 ${nextX} 10`;
+            if (y1 === y2) {
+                oy = y1 < height / 2 ? -depth : depth;
+            } else {
+                ox = x1 < width / 2 ? -depth : depth;
+            }
 
+            if (type === "wavy") {
+
+                result +=
+                    ` Q ${mx + ox} ${my + oy} ${ex} ${ey}`;
+
+            } else {
+
+                result +=
+                    ` L ${mx + ox} ${my + oy}` +
+                    ` L ${ex} ${ey}`;
+
+            }
         }
 
-        /*
-           右辺：半円を均等に配置
-        */
-        for (
-            let y = 10;
-            y < 95;
-            y += step
-        ) {
+        return result;
+    }
 
-            const nextY =
-                Math.min(y + step, 95);
+    if (
+        style === "wavy" ||
+        style === "zigzag"
+    ) {
 
-            const midY =
-                (y + nextY) / 2;
+        const inset = 9;
+        const depth = 5;
 
-            pathData +=
-                ` Q 100 ${midY} 90 ${nextY}`;
-
-        }
+        const left = inset;
+        const right = width - inset;
+        const top = inset;
+        const bottom = height - inset;
 
         /*
-           下辺：逆向きの半円
+           約18pxごとに配置。
+           縦辺は縦辺の長さだけで数を計算する。
         */
-        for (
-            let x = 95;
-            x > 5;
-            x -= step
-        ) {
+        const spacing = 18;
 
-            const nextX =
-                Math.max(x - step, 5);
+        const horizontalCount =
+            Math.max(
+                1,
+                Math.floor(
+                    (right - left) / spacing
+                )
+            );
 
-            const midX =
-                (x + nextX) / 2;
+        const verticalCount =
+            Math.max(
+                1,
+                Math.floor(
+                    (bottom - top) / spacing
+                )
+            );
 
-            pathData +=
-                ` Q ${midX} 100 ${nextX} 90`;
+        const type =
+            style === "wavy"
+                ? "wavy"
+                : "zigzag";
 
-        }
+        pathData =
+            `M ${left} ${top}`;
 
-        /*
-           左辺：逆向きの半円
-        */
-        for (
-            let y = 90;
-            y > 10;
-            y -= step
-        ) {
+        pathData += makeEdge(
+            left, top,
+            right, top,
+            horizontalCount,
+            depth,
+            type
+        );
 
-            const nextY =
-                Math.max(y - step, 10);
+        pathData += makeEdge(
+            right, top,
+            right, bottom,
+            verticalCount,
+            depth,
+            type
+        );
 
-            const midY =
-                (y + nextY) / 2;
+        pathData += makeEdge(
+            right, bottom,
+            left, bottom,
+            horizontalCount,
+            depth,
+            type
+        );
 
-            pathData +=
-                ` Q 0 ${midY} 10 ${nextY}`;
-
-        }
+        pathData += makeEdge(
+            left, bottom,
+            left, top,
+            verticalCount,
+            depth,
+            type
+        );
 
         pathData += " Z";
 
-    }
-
-    /* =====================
-       ⚡ 均等な三角形のギザギザ
-    ===================== */
-
-    else if (style === "zigzag") {
-
-        const points = [];
-
-        const start = 10;
-        const end = 90;
-        const step = 5;
+    } else {
 
         /*
-           上辺
+           雲型の外枠
         */
-        points.push([start, 10]);
-
-        for (
-            let x = start;
-            x < end;
-            x += step
-        ) {
-
-            points.push([
-                Math.min(x + step / 2, end),
-                3
-            ]);
-
-            points.push([
-                Math.min(x + step, end),
-                10
-            ]);
-
-        }
-
-        /*
-           右辺
-        */
-        for (
-            let y = 10;
-            y < end;
-            y += step
-        ) {
-
-            points.push([
-                97,
-                Math.min(y + step / 2, end)
-            ]);
-
-            points.push([
-                90,
-                Math.min(y + step, end)
-            ]);
-
-        }
-
-        /*
-           下辺
-        */
-        for (
-            let x = end;
-            x > start;
-            x -= step
-        ) {
-
-            points.push([
-                Math.max(x - step / 2, start),
-                97
-            ]);
-
-            points.push([
-                Math.max(x - step, start),
-                90
-            ]);
-
-        }
-
-        /*
-           左辺
-        */
-        for (
-            let y = end;
-            y > start;
-            y -= step
-        ) {
-
-            points.push([
-                3,
-                Math.max(y - step / 2, start)
-            ]);
-
-            points.push([
-                10,
-                Math.max(y - step, start)
-            ]);
-
-        }
-
         pathData =
-            points
-                .map((point, index) =>
-                    `${index === 0 ? "M" : "L"} ${point[0]} ${point[1]}`
-                )
-                .join(" ") + " Z";
+            `M ${width * 0.20} ${height * 0.16} ` +
+            `C ${width * 0.18} ${height * 0.04}, ${width * 0.31} ${height * 0.03}, ${width * 0.35} ${height * 0.13} ` +
+            `C ${width * 0.40} ${height * 0.02}, ${width * 0.48} ${height * 0.03}, ${width * 0.50} ${height * 0.13} ` +
+            `C ${width * 0.59} ${height * 0.02}, ${width * 0.68} ${height * 0.04}, ${width * 0.70} ${height * 0.14} ` +
+            `C ${width * 0.83} ${height * 0.04}, ${width * 0.93} ${height * 0.14}, ${width * 0.87} ${height * 0.25} ` +
+            `C ${width * 0.98} ${height * 0.30}, ${width * 0.97} ${height * 0.40}, ${width * 0.88} ${height * 0.46} ` +
+            `C ${width * 0.98} ${height * 0.56}, ${width * 0.95} ${height * 0.66}, ${width * 0.85} ${height * 0.70} ` +
+            `C ${width * 0.91} ${height * 0.84}, ${width * 0.78} ${height * 0.93}, ${width * 0.67} ${height * 0.85} ` +
+            `C ${width * 0.59} ${height * 0.96}, ${width * 0.49} ${height * 0.94}, ${width * 0.45} ${height * 0.85} ` +
+            `C ${width * 0.35} ${height * 0.95}, ${width * 0.26} ${height * 0.91}, ${width * 0.26} ${height * 0.83} ` +
+            `C ${width * 0.13} ${height * 0.93}, ${width * 0.05} ${height * 0.82}, ${width * 0.12} ${height * 0.72} ` +
+            `C ${width * 0.02} ${height * 0.65}, ${width * 0.04} ${height * 0.55}, ${width * 0.12} ${height * 0.51} ` +
+            `C ${width * 0.03} ${height * 0.42}, ${width * 0.05} ${height * 0.32}, ${width * 0.13} ${height * 0.29} ` +
+            `C ${width * 0.06} ${height * 0.20}, ${width * 0.12} ${height * 0.14}, ${width * 0.20} ${height * 0.16} Z`;
 
     }
 
-    /* =====================
-       ☁️ 雲型
-    ===================== */
-
-    else {
-
-        pathData =
-            "M 20 12 " +
-            "C 20 5 28 3 34 9 " +
-            "C 39 2 47 2 50 9 " +
-            "C 56 2 65 3 68 10 " +
-            "C 77 4 86 10 84 18 " +
-            "C 95 20 96 30 88 36 " +
-            "C 97 43 96 52 88 57 " +
-            "C 96 65 91 74 83 76 " +
-            "C 84 86 74 93 65 85 " +
-            "C 58 94 49 93 45 85 " +
-            "C 37 93 28 91 27 83 " +
-            "C 17 90 8 83 13 74 " +
-            "C 4 68 5 59 12 54 " +
-            "C 4 47 6 39 13 35 " +
-            "C 5 27 10 18 20 18 Z";
-
-    }
-
-    path.setAttribute(
-        "d",
-        pathData
-    );
-
-    path.setAttribute(
-        "fill",
-        backgroundColor
-    );
-
-    path.setAttribute(
-        "stroke",
-        borderColor
-    );
-
-    path.setAttribute(
-        "stroke-width",
-        "1.5"
-    );
-
-    path.setAttribute(
-        "stroke-linejoin",
-        "round"
-    );
-
-    path.setAttribute(
-        "vector-effect",
-        "non-scaling-stroke"
-    );
+    path.setAttribute("d", pathData);
+    path.setAttribute("fill", backgroundColor);
+    path.setAttribute("stroke", borderColor);
+    path.setAttribute("stroke-width", "2");
+    path.setAttribute("stroke-linejoin", "round");
+    path.setAttribute("vector-effect", "non-scaling-stroke");
 
     svg.appendChild(path);
 
-    /*
-       文字より後ろに枠を配置
-    */
     element.insertBefore(
         svg,
         textElement
@@ -1700,37 +1665,33 @@ function applyPlannerNoteCustomBorder(
         zIndex: "1"
     });
 
-    /*
-       通常の四角い枠を消す
-    */
     element.style.border = "none";
     element.style.borderRadius = "0";
     element.style.background = "transparent";
 
     /*
-       雲型は文字を内側に収める
-       他の形は既存の文字配置を維持
+       文字を枠の突起から離す
     */
     if (style === "cloud") {
 
-        element.style.padding =
-            "14px 18px";
+        element.style.padding = "14px 18px";
 
-        textElement.style.maxWidth =
-            "100%";
+        Object.assign(textElement.style, {
+            maxWidth: "100%",
+            whiteSpace: "pre-wrap",
+            overflowWrap: "anywhere",
+            boxSizing: "border-box"
+        });
 
-        textElement.style.whiteSpace =
-            "pre-wrap";
+    } else {
 
-        textElement.style.overflowWrap =
-            "anywhere";
-
-        textElement.style.boxSizing =
-            "border-box";
+        element.style.padding = "8px 14px";
 
     }
 
 }
+
+
 
 
 /* =====================================================
