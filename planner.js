@@ -1289,26 +1289,46 @@ return;
 
     /* =====================
        ✍️ 手書き機能を接続
-       予定表の描画後に実行
+       予定表の描画完了後に接続
     ===================== */
 
     requestAnimationFrame(() => {
 
+        const layout =
+            timeline.querySelector(".planner-layout");
+
         if (
-            typeof window.handwritingCheckPage === "function"
+            !layout ||
+            typeof window.handwritingAttach !== "function"
         ) {
-            window.handwritingCheckPage();
+
+            console.warn(
+                "手書き機能を接続できません",
+                {
+                    layoutFound: !!layout,
+                    attachAvailable:
+                        typeof window.handwritingAttach === "function",
+                    date: date
+                }
+            );
+
+            return;
+
         }
-        else if (
-            typeof window.handwritingStart === "function"
-        ) {
-            window.handwritingStart();
-        }
+
+        window.handwritingAttach({
+
+            planner: planner,
+            timeline: timeline,
+            layout: layout,
+            pageType: "planner",
+            pageId: date
+
+        });
 
     });
 
 }
-
 
 /* =====================
    📝 ワードアート風文字変形
