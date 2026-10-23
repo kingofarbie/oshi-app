@@ -2125,59 +2125,6 @@ element.appendChild(textElement);
             }
         );
 
-element.addEventListener(
-    "pointermove",
-    function(event) {
-
-        if (
-            !dragging ||
-            event.pointerId !== activePointerId
-        ) {
-            return;
-        }
-
-        const dx = event.clientX - startX;
-        const dy = event.clientY - startY;
-
-        if (
-            !moved &&
-            Math.abs(dx) < 5 &&
-            Math.abs(dy) < 5
-        ) {
-            return;
-        }
-
-        moved = true;
-
-        const layerRect =
-            layer.getBoundingClientRect();
-
-        /*
-           レイヤーの幅で移動を制限せず、
-           画面上のドラッグ位置をそのまま座標に変換
-        */
-
-        const nextLeft = Math.max(
-            0,
-            event.clientX -
-                layerRect.left -
-                grabOffsetX
-        );
-
-        const nextTop = Math.max(
-            0,
-            event.clientY -
-                layerRect.top -
-                grabOffsetY
-        );
-
-        element.style.left = `${nextLeft}px`;
-        element.style.top = `${nextTop}px`;
-
-        event.preventDefault();
-        event.stopPropagation();
-    }
-);
 
 
 
