@@ -464,13 +464,93 @@
 
 
 
-        <!-- 手書きメモ用の説明 -->
-        <div
-            id="plannerNoteDrawingSettings"
-            style="display:none;"
+
+<!-- 手書きメモ設定 -->
+<div
+    id="plannerNoteDrawingSettings"
+    class="planner-note-drawing-settings"
+    style="display:none;"
+>
+    <!-- 描画ツール -->
+    <div class="planner-drawing-toolbar">
+
+        <label for="plannerDrawingColor">
+            ペンの色
+        </label>
+
+        <input
+            type="color"
+            id="plannerDrawingColor"
+            value="#222222"
         >
-            手書きメモの編集画面は次の段階で追加します。
-        </div>
+
+        <label for="plannerDrawingWidth">
+            太さ
+        </label>
+
+        <input
+            type="range"
+            id="plannerDrawingWidth"
+            min="1"
+            max="20"
+            value="3"
+        >
+
+        <span id="plannerDrawingWidthValue">3</span>
+
+        <button
+            type="button"
+            id="plannerDrawingPenButton"
+            aria-pressed="true"
+        >
+            ✏️ ペン
+        </button>
+
+        <button
+            type="button"
+            id="plannerDrawingEraserButton"
+            aria-pressed="false"
+        >
+            🩹 消しゴム
+        </button>
+
+        <button
+            type="button"
+            id="plannerDrawingUndoButton"
+        >
+            ↩️ 戻す
+        </button>
+
+        <button
+            type="button"
+            id="plannerDrawingRedoButton"
+        >
+            ↪️ やり直す
+        </button>
+
+        <button
+            type="button"
+            id="plannerDrawingClearButton"
+        >
+            🗑️ 全消去
+        </button>
+
+    </div>
+
+    <!-- 手書きキャンバス -->
+    <div class="planner-drawing-canvas-wrap">
+        <canvas
+            id="plannerNoteDrawingCanvas"
+            aria-label="手書きメモの描画エリア"
+        ></canvas>
+    </div>
+
+    <p class="planner-drawing-help">
+        指やペンで自由に書けます。
+    </p>
+</div>
+
+
 
         <div class="planner-note-editor-actions">
 

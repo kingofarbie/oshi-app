@@ -1373,6 +1373,14 @@ updatePlannerNoteEditorPreview();
 
 modal.style.display = "flex";
 
+if (mode === "drawing") {
+
+    requestAnimationFrame(() => {
+        plannerNoteDrawingInitCanvas();
+    });
+
+}
+
 requestAnimationFrame(() => {
     updatePlannerNoteEditorPreview();
 });
@@ -1382,9 +1390,6 @@ requestAnimationFrame(() => {
 /* =====================================================
 📝 自由メモ編集：イベント初期化
 ===================================================== */
-
-
-
 function initializePlannerNoteEditor() {
 
     const saveButton =
@@ -1849,10 +1854,6 @@ function initializePlannerNoteEditor() {
     updatePlannerNoteEditorPreview();
 }
 
-
-
-
-
 /* =====================================================
 📝 自由メモ編集画面を閉じる
 ===================================================== */
@@ -1869,3 +1870,453 @@ if (modal) {
 }
 
 }
+
+
+
+/* =====================================================
+   ✍️ 手書きメモ専用キャンバス
+   ・ページ全体の手書き機能とは独立
+   ・ペン / 消しゴム / 戻す / やり直す / 全消去
+===================================================== */
+
+let plannerNoteDrawingStrokes = [];
+let plannerNoteDrawingUndoStack = [];
+let plannerNoteDrawingRedoStack = [];
+
+let plannerNoteDrawingTool = "pen";
+let plannerNoteDrawingCurrentStroke = null;
+let plannerNoteDrawingInitialized = false;
+
+
+/* =====================
+   キャンバスを準備
+===================== */
+
+function plannerNoteDrawingInitCanvas() {
+
+    const canvas = document.getElementById(
+        "plannerNoteDrawingCanvas"
+    );
+
+    if (!canvas) return;
+
+    const wrap = canvas.parentElement;
+
+    if (!wrap) return;
+
+    wrap.style.width = "100%";
+    wrap.style.height = "320px";
+    wrap.style.border = "1px solid #ccc";
+    wrap.style.borderRadius = "10px";
+    wrap.style.background = "#fff";
+    wrap.style.overflow = "hidden";
+    wrap.style.touchAction = "none";
+
+    canvas.style.display = "block";
+    canvas.style.width = "100%";
+    canvas.style.height = "100%";
+    canvas.style.touchAction = "none";
+    canvas.style.cursor = "crosshair";
+
+    if (!plannerNoteDrawingInitialized) {
+
+        plannerNoteDrawingInitialized = true;
+
+        canvas.addEventListener(
+            "pointerdown",
+            plannerNoteDrawingStart
+        );
+
+        canvas.addEventListener(
+            "pointermove",
+            plannerNoteDrawingMove
+        );
+
+        canvas.addEventListener(
+            "pointerup",
+            plannerNoteDrawingEnd
+        );
+
+        canvas.addEventListener(
+            "pointercancel",
+            plannerNoteDrawingEnd
+        );
+
+        document.getElementById(
+            "plannerDrawingPenButton"
+        )?.addEventListener("click", () => {
+
+            plannerNoteDrawingTool = "pen";
+
+            plannerNoteDrawingUpdateToolButtons();
+
+        });
+
+        document.getElementById(
+            "plannerDrawingEraserButton"
+        )?.addEventListener("click", () => {
+
+            plannerNoteDrawingTool = "eraser";
+
+            plannerNoteDrawingUpdateToolButtons();
+
+        });
+
+        document.getElementById(
+            "plannerDrawingUndoButton"
+        )?.addEventListener("click", () => {
+
+            if (!plannerNoteDrawingStrokes.length) return;
+
+            plannerNoteDrawingUndoStack.push(
+                plannerNoteDrawingStrokes.pop()
+            );
+
+            plannerNoteDrawingRender();
+
+        });
+
+        document.getElementById(
+            "plannerDrawingRedoButton"
+        )?.addEventListener("click", () => {
+
+            if (!plannerNoteDrawingUndoStack.length) return;
+
+            plannerNoteDrawingStrokes.push(
+                plannerNoteDrawingUndoStack.pop()
+            );
+
+            plannerNoteDrawingRender();
+
+        });
+
+        document.getElementById(
+            "plannerDrawingClearButton"
+        )?.addEventListener("click", () => {
+
+            if (!plannerNoteDrawingStrokes.length) return;
+
+            if (!confirm("手書き内容をすべて消去しますか？")) {
+                return;
+            }
+
+            plannerNoteDrawingUndoStack.push(
+                ...plannerNoteDrawingStrokes
+            );
+
+            plannerNoteDrawingStrokes = [];
+
+            plannerNoteDrawingRender();
+
+        });
+
+        document.getElementById(
+            "plannerDrawingWidth"
+        )?.addEventListener("input", event => {
+
+            const value = document.getElementById(
+                "plannerDrawingWidthValue"
+            );
+
+            if (value) {
+                value.textContent = event.target.value;
+            }
+
+        });
+
+    }
+
+    plannerNoteDrawingResizeCanvas();
+
+}
+
+
+/* =====================
+   キャンバスの解像度設定
+===================== */
+
+function plannerNoteDrawingResizeCanvas() {
+
+    const canvas = document.getElementById(
+        "plannerNoteDrawingCanvas"
+    );
+
+    if (!canvas) return;
+
+    const rect = canvas.getBoundingClientRect();
+
+    if (!rect.width || !rect.height) return;
+
+    const dpr = window.devicePixelRatio || 1;
+
+    canvas.width = Math.round(rect.width * dpr);
+    canvas.height = Math.round(rect.height * dpr);
+
+    plannerNoteDrawingRender();
+
+}
+
+
+/* =====================
+   描画開始
+===================== */
+
+function plannerNoteDrawingStart(event) {
+
+    if (event.button !== undefined && event.button !== 0) {
+        return;
+    }
+
+    const canvas = event.currentTarget;
+    const rect = canvas.getBoundingClientRect();
+
+    plannerNoteDrawingCurrentStroke = {
+        tool: plannerNoteDrawingTool,
+        color: document.getElementById(
+            "plannerDrawingColor"
+        )?.value || "#222222",
+        width: Number(
+            document.getElementById(
+                "plannerDrawingWidth"
+            )?.value || 3
+        ),
+        points: [{
+            x: (event.clientX - rect.left) / rect.width,
+            y: (event.clientY - rect.top) / rect.height
+        }]
+    };
+
+    plannerNoteDrawingUndoStack = [];
+    plannerNoteDrawingRedoStack = [];
+
+    try {
+        canvas.setPointerCapture(event.pointerId);
+    } catch (_) {}
+
+    event.preventDefault();
+
+    plannerNoteDrawingRenderCurrent();
+
+}
+
+
+/* =====================
+   描画中
+===================== */
+
+function plannerNoteDrawingMove(event) {
+
+    if (!plannerNoteDrawingCurrentStroke) return;
+
+    const canvas = event.currentTarget;
+    const rect = canvas.getBoundingClientRect();
+
+    plannerNoteDrawingCurrentStroke.points.push({
+        x: Math.max(
+            0,
+            Math.min(1, (event.clientX - rect.left) / rect.width)
+        ),
+        y: Math.max(
+            0,
+            Math.min(1, (event.clientY - rect.top) / rect.height)
+        )
+    });
+
+    event.preventDefault();
+
+    plannerNoteDrawingRenderCurrent();
+
+}
+
+
+/* =====================
+   描画終了
+===================== */
+
+function plannerNoteDrawingEnd() {
+
+    if (!plannerNoteDrawingCurrentStroke) return;
+
+    plannerNoteDrawingStrokes.push(
+        plannerNoteDrawingCurrentStroke
+    );
+
+    plannerNoteDrawingCurrentStroke = null;
+
+    plannerNoteDrawingRender();
+
+}
+
+
+/* =====================
+   線を描画
+===================== */
+
+function plannerNoteDrawingDrawStroke(
+    context,
+    stroke,
+    width,
+    height
+) {
+
+    if (!stroke.points || !stroke.points.length) return;
+
+    context.save();
+
+    if (stroke.tool === "eraser") {
+        context.globalCompositeOperation = "destination-out";
+    } else {
+        context.globalCompositeOperation = "source-over";
+    }
+
+    context.strokeStyle = stroke.color || "#222222";
+    context.fillStyle = stroke.color || "#222222";
+    context.lineWidth = Number(stroke.width) || 3;
+    context.lineCap = "round";
+    context.lineJoin = "round";
+
+    const points = stroke.points;
+
+    if (points.length === 1) {
+
+        context.beginPath();
+
+        context.arc(
+            points[0].x * width,
+            points[0].y * height,
+            context.lineWidth / 2,
+            0,
+            Math.PI * 2
+        );
+
+        context.fill();
+
+    } else {
+
+        context.beginPath();
+
+        context.moveTo(
+            points[0].x * width,
+            points[0].y * height
+        );
+
+        for (let i = 1; i < points.length; i++) {
+
+            context.lineTo(
+                points[i].x * width,
+                points[i].y * height
+            );
+
+        }
+
+        context.stroke();
+
+    }
+
+    context.restore();
+
+}
+
+
+/* =====================
+   保存済みの線を再描画
+===================== */
+
+function plannerNoteDrawingRender() {
+
+    const canvas = document.getElementById(
+        "plannerNoteDrawingCanvas"
+    );
+
+    if (!canvas) return;
+
+    const context = canvas.getContext("2d");
+
+    if (!context) return;
+
+    const rect = canvas.getBoundingClientRect();
+
+    if (!rect.width || !rect.height) return;
+
+    const dpr = window.devicePixelRatio || 1;
+
+    context.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    context.clearRect(
+        0,
+        0,
+        rect.width,
+        rect.height
+    );
+
+    plannerNoteDrawingStrokes.forEach(stroke => {
+
+        plannerNoteDrawingDrawStroke(
+            context,
+            stroke,
+            rect.width,
+            rect.height
+        );
+
+    });
+
+    if (plannerNoteDrawingCurrentStroke) {
+
+        plannerNoteDrawingDrawStroke(
+            context,
+            plannerNoteDrawingCurrentStroke,
+            rect.width,
+            rect.height
+        );
+
+    }
+
+}
+
+
+/* =====================
+   描画中の線を表示
+===================== */
+
+function plannerNoteDrawingRenderCurrent() {
+
+    plannerNoteDrawingRender();
+
+}
+
+
+/* =====================
+   選択中のツールを表示
+===================== */
+
+function plannerNoteDrawingUpdateToolButtons() {
+
+    const pen = document.getElementById(
+        "plannerDrawingPenButton"
+    );
+
+    const eraser = document.getElementById(
+        "plannerDrawingEraserButton"
+    );
+
+    if (pen) {
+
+        pen.setAttribute(
+            "aria-pressed",
+            String(plannerNoteDrawingTool === "pen")
+        );
+
+    }
+
+    if (eraser) {
+
+        eraser.setAttribute(
+            "aria-pressed",
+            String(plannerNoteDrawingTool === "eraser")
+        );
+
+    }
+
+}
+
+
