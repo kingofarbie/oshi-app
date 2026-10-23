@@ -1377,8 +1377,6 @@ function fitPlannerNoteText(element) {
         `scale(${scaleX}, ${scaleY})`;
 }
 
-
-
 /* =====================
    📝 自由メモの特殊な枠線
    ・辺の長さに応じた均等配置
@@ -2670,9 +2668,6 @@ fitPlannerNoteText(element);
     /* 予定ボードと家族レーンより手前に配置 */
     layout.appendChild(layer);
 
-
-
-    
     /* メモ以外をタップしたら操作ボタンを隠す */
     if (!layout.dataset.noteOutsideTapBound) {
 
