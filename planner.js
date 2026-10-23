@@ -2277,15 +2277,25 @@ element.addEventListener(
 
         /* =====================
            ↔ サイズ変更処理
+           スタンプと同じ座標補正
         ===================== */
 
         let resizing = false;
         let resizePointerId = null;
+
         let resizeStartX = 0;
         let resizeStartY = 0;
+
         let resizeStartWidth = 0;
         let resizeStartHeight = 0;
-        let resizeStartFontSize = 16;
+
+        let resizeScaleX = 1;
+        let resizeScaleY = 1;
+
+
+        /* =====================
+           サイズ変更開始
+        ===================== */
 
         resizeHandle.addEventListener(
             "pointerdown",
@@ -2301,19 +2311,47 @@ element.addEventListener(
                 event.preventDefault();
                 event.stopPropagation();
 
-                const rect =
-                    element.getBoundingClientRect();
+                const layerRect =
+                    layer.getBoundingClientRect();
+
+                /*
+                   画面上の表示倍率を計算
+                */
+
+                resizeScaleX =
+                    layer.offsetWidth > 0
+                        ? layerRect.width /
+                            layer.offsetWidth
+                        : 1;
+
+                resizeScaleY =
+                    layer.offsetHeight > 0
+                        ? layerRect.height /
+                            layer.offsetHeight
+                        : 1;
+
+                if (resizeScaleX <= 0) {
+                    resizeScaleX = 1;
+                }
+
+                if (resizeScaleY <= 0) {
+                    resizeScaleY = 1;
+                }
 
                 resizePointerId = event.pointerId;
+
                 resizeStartX = event.clientX;
                 resizeStartY = event.clientY;
-                resizeStartWidth = rect.width;
-                resizeStartHeight = rect.height;
 
-                resizeStartFontSize =
-                    parseFloat(
-                        getComputedStyle(element).fontSize
-                    ) || 16;
+                /*
+                   表示倍率補正前のサイズを取得
+                */
+
+                resizeStartWidth =
+                    element.offsetWidth;
+
+                resizeStartHeight =
+                    element.offsetHeight;
 
                 resizing = true;
 
@@ -2322,6 +2360,11 @@ element.addEventListener(
                 );
             }
         );
+
+
+        /* =====================
+           サイズ変更中
+        ===================== */
 
         resizeHandle.addEventListener(
             "pointermove",
@@ -2334,19 +2377,35 @@ element.addEventListener(
                     return;
                 }
 
-                const dx = event.clientX - resizeStartX;
-                const dy = event.clientY - resizeStartY;
+                event.preventDefault();
+                event.stopPropagation();
+
+                /*
+                   指の移動距離を内部座標に変換
+                */
+
+                const dx =
+                    (event.clientX - resizeStartX) /
+                    resizeScaleX;
+
+                const dy =
+                    (event.clientY - resizeStartY) /
+                    resizeScaleY;
+
+                const currentLeft =
+                    parseFloat(element.style.left) || 0;
+
+                const currentTop =
+                    parseFloat(element.style.top) || 0;
 
                 const maxWidth = Math.max(
                     100,
-                    layer.clientWidth -
-                        (parseFloat(element.style.left) || 0)
+                    layer.clientWidth - currentLeft
                 );
 
                 const maxHeight = Math.max(
                     40,
-                    layer.clientHeight -
-                        (parseFloat(element.style.top) || 0)
+                    layer.clientHeight - currentTop
                 );
 
                 const nextWidth = Math.max(
@@ -2365,18 +2424,26 @@ element.addEventListener(
                     )
                 );
 
-element.style.width = `${nextWidth}px`;
-element.style.height = `${nextHeight}px`;
-element.style.maxWidth = "none";
+                element.style.width =
+                    `${nextWidth}px`;
 
-/* 枠の変更に合わせて文字を縦横変形 */
-fitPlannerNoteText(element);
+                element.style.height =
+                    `${nextHeight}px`;
 
+                element.style.maxWidth = "none";
 
-                event.preventDefault();
-                event.stopPropagation();
+                /*
+                   既存の文字変形処理を維持
+                */
+
+                fitPlannerNoteText(element);
             }
         );
+
+
+        /* =====================
+           サイズ変更終了・保存
+        ===================== */
 
         function finishNoteResize(event) {
 
@@ -2399,22 +2466,27 @@ fitPlannerNoteText(element);
 
             const savedNote = savedNotes.find(
                 item =>
-                    String(item.id) === String(note.id)
+                    String(item.id) ===
+                    String(note.id)
             );
 
             if (!savedNote) {
-                alert("メモのサイズを保存できませんでした。");
+                alert(
+                    "メモのサイズを保存できませんでした。"
+                );
+
                 showPlanner(date);
                 return;
             }
 
-            savedNote.width = element.offsetWidth;
-            savedNote.height = element.offsetHeight;
+            savedNote.width =
+                element.offsetWidth;
 
+            savedNote.height =
+                element.offsetHeight;
 
             savedNote.fontSize =
-    parseFloat(element.style.fontSize) || 16;
-
+                parseFloat(element.style.fontSize) || 16;
 
             db.save(latestData);
 
@@ -2422,6 +2494,7 @@ fitPlannerNoteText(element);
 
             event.stopPropagation();
         }
+
 
         resizeHandle.addEventListener(
             "pointerup",
@@ -2436,10 +2509,13 @@ fitPlannerNoteText(element);
         resizeHandle.addEventListener(
             "click",
             function(event) {
+
                 event.preventDefault();
                 event.stopPropagation();
             }
         );
+
+
 
         /* =====================
            メモの移動処理
