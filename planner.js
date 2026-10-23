@@ -2951,6 +2951,7 @@ let plannerDirectDrawing = null;
 /* 保存済み手書きメモの表示 */
 
 /* 保存済み手書きメモの表示 */
+
 function renderPlannerDrawings(date) {
 
     const timeline =
@@ -2964,20 +2965,29 @@ function renderPlannerDrawings(date) {
 
     if (!timeline || !layout || !board) return;
 
-    /* 既存の描画レイヤーを削除 */
+    /* =====================
+       前回の描画レイヤーを削除
+    ===================== */
+
     layout
         .querySelectorAll(".planner-drawings-layer")
         .forEach(layer => layer.remove());
 
+    /* =====================
+       時間軸と家族レーンを含む範囲
+    ===================== */
+
     const familyLanes =
         layout.querySelector(".planner-family-lanes");
 
-    const boardRect = board.getBoundingClientRect();
+    const boardRect =
+        board.getBoundingClientRect();
 
     const familyRect =
         familyLanes?.getBoundingClientRect();
 
-    const layoutRect = layout.getBoundingClientRect();
+    const layoutRect =
+        layout.getBoundingClientRect();
 
     const bounds = {
         left: Math.min(
@@ -3008,6 +3018,10 @@ function renderPlannerDrawings(date) {
         Math.round(bounds.bottom - bounds.top)
     );
 
+    /* =====================
+       保存データ
+    ===================== */
+
     const data = db.load();
 
     const drawings =
@@ -3016,14 +3030,26 @@ function renderPlannerDrawings(date) {
             note.type === "drawing"
         );
 
+    /* =====================
+       描画レイヤー
+    ===================== */
+
     const layer = document.createElement("div");
 
     layer.className = "planner-drawings-layer";
 
     Object.assign(layer.style, {
         position: "absolute",
-        top: `${bounds.top - layoutRect.top + layout.scrollTop}px`,
-        left: `${bounds.left - layoutRect.left + layout.scrollLeft}px`,
+        top: `${
+            bounds.top -
+            layoutRect.top +
+            layout.scrollTop
+        }px`,
+        left: `${
+            bounds.left -
+            layoutRect.left +
+            layout.scrollLeft
+        }px`,
         width: `${width}px`,
         height: `${height}px`,
         overflow: "visible",
@@ -3031,36 +3057,118 @@ function renderPlannerDrawings(date) {
         zIndex: "32"
     });
 
-    drawings.forEach(note => {
+    /* 選択中のグループ */
+    let selectedGroup = null;
 
-        const canvas = document.createElement("canvas");
+    /* =====================
+       選択解除
+    ===================== */
 
-        canvas.className = "planner-drawing-note";
+    function clearSelection() {
 
-        const noteWidth = Number(note.width) || 180;
-        const noteHeight = Number(note.height) || 120;
+        layer
+            .querySelectorAll(".planner-drawing-group")
+            .forEach(group => {
 
-        Object.assign(canvas.style, {
-            position: "absolute",
-            top: `${Number(note.top) || 0}px`,
-            left: `${Number(note.left) || 0}px`,
-            width: `${noteWidth}px`,
-            height: `${noteHeight}px`,
-            pointerEvents: "none"
-        });
+                group.dataset.editMode = "false";
 
-        layer.appendChild(canvas);
+                group.style.outline = "none";
 
-        const ratio = window.devicePixelRatio || 1;
+                group
+                    .querySelectorAll(
+                        ".planner-drawing-handle"
+                    )
+                    .forEach(handle => {
+                        handle.style.display = "none";
+                    });
+            });
 
-        canvas.width = Math.round(noteWidth * ratio);
-        canvas.height = Math.round(noteHeight * ratio);
+        selectedGroup = null;
+    }
+
+    /* =====================
+       選択状態にする
+    ===================== */
+
+    function selectGroup(group) {
+
+        clearSelection();
+
+        selectedGroup = group;
+
+        group.dataset.editMode = "true";
+
+        group.style.outline =
+            "2px dashed #ec6a9b";
+
+        group
+            .querySelectorAll(
+                ".planner-drawing-handle"
+            )
+            .forEach(handle => {
+                handle.style.display = "flex";
+            });
+    }
+
+    /* =====================
+       保存データを更新
+    ===================== */
+
+    function updateDrawing(noteId, updates) {
+
+        const latestData = db.load();
+
+        if (!Array.isArray(latestData.plannerNotes)) {
+            return;
+        }
+
+        const target =
+            latestData.plannerNotes.find(note =>
+                note.id === noteId &&
+                note.date === date &&
+                note.type === "drawing"
+            );
+
+        if (!target) return;
+
+        Object.assign(target, updates);
+
+        db.save(latestData);
+    }
+
+    /* =====================
+       キャンバス再描画
+    ===================== */
+
+    function redrawCanvas(canvas, noteWidth, noteHeight, strokes) {
+
+        const ratio =
+            window.devicePixelRatio || 1;
+
+        canvas.width =
+            Math.max(1, Math.round(noteWidth * ratio));
+
+        canvas.height =
+            Math.max(1, Math.round(noteHeight * ratio));
+
+        canvas.style.width =
+            `${noteWidth}px`;
+
+        canvas.style.height =
+            `${noteHeight}px`;
 
         const context = canvas.getContext("2d");
 
-        context.scale(ratio, ratio);
+        context.setTransform(
+            ratio, 0, 0, ratio, 0, 0
+        );
 
-        (note.strokes || []).forEach(stroke => {
+        context.clearRect(
+            0, 0, noteWidth, noteHeight
+        );
+
+        (strokes || []).forEach(stroke => {
+
             plannerNoteDrawingDrawStroke(
                 context,
                 stroke,
@@ -3068,10 +3176,632 @@ function renderPlannerDrawings(date) {
                 noteHeight
             );
         });
+    }
+
+    /* =====================
+       各手書きグループを作成
+    ===================== */
+
+    drawings.forEach(note => {
+
+        const noteWidth =
+            Math.max(30, Number(note.width) || 180);
+
+        const noteHeight =
+            Math.max(30, Number(note.height) || 120);
+
+        const noteTop =
+            Number(note.top) || 0;
+
+        const noteLeft =
+            Number(note.left) || 0;
+
+        const rotation =
+            Number(note.rotation) || 0;
+
+        /* グループ全体を包む枠 */
+        const group = document.createElement("div");
+
+        group.className = "planner-drawing-group";
+
+        group.dataset.noteId = note.id;
+        group.dataset.editMode = "false";
+        group.tabIndex = 0;
+        group.setAttribute("role", "button");
+        group.setAttribute(
+            "aria-label",
+            "手書きグループ。タップして選択"
+        );
+
+        Object.assign(group.style, {
+            position: "absolute",
+            top: `${noteTop}px`,
+            left: `${noteLeft}px`,
+            width: `${noteWidth}px`,
+            height: `${noteHeight}px`,
+            boxSizing: "border-box",
+            transform: `rotate(${rotation}deg)`,
+            transformOrigin: "center center",
+            outline: "none",
+            cursor: "grab",
+            pointerEvents: "auto",
+            touchAction: "none",
+            userSelect: "none",
+            WebkitUserSelect: "none",
+            zIndex: "33"
+        });
+
+        /* 手書きキャンバス */
+        const canvas = document.createElement("canvas");
+
+        canvas.className = "planner-drawing-group-canvas";
+
+        Object.assign(canvas.style, {
+            position: "absolute",
+            inset: "0",
+            display: "block",
+            pointerEvents: "none"
+        });
+
+        group.appendChild(canvas);
+
+        redrawCanvas(
+            canvas,
+            noteWidth,
+            noteHeight,
+            note.strokes
+        );
+
+        /* =====================
+           操作用ハンドル
+        ===================== */
+
+        function createHandle(
+            className,
+            symbol,
+            position
+        ) {
+
+            const handle =
+                document.createElement("button");
+
+            handle.type = "button";
+            handle.className =
+                `planner-drawing-handle ${className}`;
+
+            handle.textContent = symbol;
+            handle.setAttribute("aria-label", symbol);
+
+            Object.assign(handle.style, {
+                position: "absolute",
+                display: "none",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "30px",
+                height: "30px",
+                padding: "0",
+                border: "2px solid white",
+                borderRadius: "50%",
+                background: "#ec6a9b",
+                color: "#ffffff",
+                fontSize: "17px",
+                lineHeight: "1",
+                boxShadow: "0 1px 5px #0004",
+                zIndex: "5",
+                cursor: "pointer",
+                touchAction: "none"
+            });
+
+            Object.assign(handle.style, position);
+
+            group.appendChild(handle);
+
+            return handle;
+        }
+
+        /* 左上：削除 */
+        const deleteHandle = createHandle(
+            "planner-drawing-delete",
+            "×",
+            {
+                top: "-15px",
+                left: "-15px"
+            }
+        );
+
+        /* 右下：サイズ変更 */
+        const resizeHandle = createHandle(
+            "planner-drawing-resize",
+            "↘",
+            {
+                right: "-15px",
+                bottom: "-15px"
+            }
+        );
+
+        /* 右上：回転 */
+        const rotateHandle = createHandle(
+            "planner-drawing-rotate",
+            "⟳",
+            {
+                top: "-15px",
+                right: "-15px"
+            }
+        );
+
+        /* =====================
+           削除
+        ===================== */
+
+        deleteHandle.addEventListener(
+            "pointerdown",
+            event => {
+                event.stopPropagation();
+            }
+        );
+
+        deleteHandle.addEventListener("click", event => {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            if (!confirm("この手書きグループを削除しますか？")) {
+                return;
+            }
+
+            const latestData = db.load();
+
+            latestData.plannerNotes =
+                (latestData.plannerNotes || []).filter(item =>
+                    item.id !== note.id
+                );
+
+            db.save(latestData);
+
+            showPlanner(date);
+        });
+
+        /* =====================
+           グループ移動
+        ===================== */
+
+        let dragState = null;
+
+        group.addEventListener("pointerdown", event => {
+
+            if (event.button !== undefined && event.button !== 0) {
+                return;
+            }
+
+            if (
+                event.target.closest(
+                    ".planner-drawing-handle"
+                )
+            ) {
+                return;
+            }
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            selectGroup(group);
+
+            const layerRect =
+                layer.getBoundingClientRect();
+
+            const scaleX =
+                layerRect.width /
+                Math.max(1, layer.offsetWidth);
+
+            const scaleY =
+                layerRect.height /
+                Math.max(1, layer.offsetHeight);
+
+            dragState = {
+                pointerId: event.pointerId,
+                startX: event.clientX,
+                startY: event.clientY,
+                startLeft: parseFloat(group.style.left) || 0,
+                startTop: parseFloat(group.style.top) || 0,
+                scaleX: scaleX || 1,
+                scaleY: scaleY || 1,
+                moved: false
+            };
+
+            try {
+                group.setPointerCapture(event.pointerId);
+            } catch (_) {}
+        });
+
+        group.addEventListener("pointermove", event => {
+
+            if (
+                !dragState ||
+                event.pointerId !== dragState.pointerId
+            ) {
+                return;
+            }
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            const dx =
+                (event.clientX - dragState.startX) /
+                dragState.scaleX;
+
+            const dy =
+                (event.clientY - dragState.startY) /
+                dragState.scaleY;
+
+            if (
+                Math.abs(dx) > 2 ||
+                Math.abs(dy) > 2
+            ) {
+                dragState.moved = true;
+            }
+
+            const nextLeft = Math.max(
+                0,
+                Math.min(
+                    layer.clientWidth - group.offsetWidth,
+                    dragState.startLeft + dx
+                )
+            );
+
+            const nextTop = Math.max(
+                0,
+                Math.min(
+                    layer.clientHeight - group.offsetHeight,
+                    dragState.startTop + dy
+                )
+            );
+
+            group.style.left = `${nextLeft}px`;
+            group.style.top = `${nextTop}px`;
+        });
+
+        function finishDrag(event) {
+
+            if (
+                !dragState ||
+                (
+                    event &&
+                    event.pointerId !== dragState.pointerId
+                )
+            ) {
+                return;
+            }
+
+            const finished = dragState;
+
+            dragState = null;
+
+            if (finished.moved) {
+
+                group.dataset.dragged = "true";
+
+                updateDrawing(note.id, {
+                    left: parseFloat(group.style.left) || 0,
+                    top: parseFloat(group.style.top) || 0
+                });
+            }
+        }
+
+        group.addEventListener("pointerup", finishDrag);
+        group.addEventListener("pointercancel", finishDrag);
+
+        /* =====================
+           サイズ変更
+        ===================== */
+
+        resizeHandle.addEventListener(
+            "pointerdown",
+            event => {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                selectGroup(group);
+
+                const layerRect =
+                    layer.getBoundingClientRect();
+
+                const scaleX =
+                    layerRect.width /
+                    Math.max(1, layer.offsetWidth);
+
+                const scaleY =
+                    layerRect.height /
+                    Math.max(1, layer.offsetHeight);
+
+                const rect =
+                    group.getBoundingClientRect();
+
+                resizeHandle.setPointerCapture(
+                    event.pointerId
+                );
+
+                resizeHandle.dataset.pointerId =
+                    String(event.pointerId);
+
+                resizeHandle._resizeState = {
+                    startX: event.clientX,
+                    startY: event.clientY,
+                    startWidth: parseFloat(group.style.width),
+                    startHeight: parseFloat(group.style.height),
+                    startLeft: parseFloat(group.style.left) || 0,
+                    startTop: parseFloat(group.style.top) || 0,
+                    scaleX: scaleX || 1,
+                    scaleY: scaleY || 1,
+                    rectWidth: rect.width,
+                    rectHeight: rect.height
+                };
+            }
+        );
+
+        resizeHandle.addEventListener("pointermove", event => {
+
+            const state = resizeHandle._resizeState;
+
+            if (
+                !state ||
+                String(event.pointerId) !==
+                    resizeHandle.dataset.pointerId
+            ) {
+                return;
+            }
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            const dx =
+                (event.clientX - state.startX) /
+                state.scaleX;
+
+            const dy =
+                (event.clientY - state.startY) /
+                state.scaleY;
+
+            const nextWidth = Math.max(
+                40,
+                Math.min(
+                    layer.clientWidth,
+                    state.startWidth + dx
+                )
+            );
+
+            const nextHeight = Math.max(
+                40,
+                Math.min(
+                    layer.clientHeight,
+                    state.startHeight + dy
+                )
+            );
+
+            group.style.width = `${nextWidth}px`;
+            group.style.height = `${nextHeight}px`;
+
+            redrawCanvas(
+                canvas,
+                nextWidth,
+                nextHeight,
+                note.strokes
+            );
+        });
+
+        function finishResize(event) {
+
+            const state = resizeHandle._resizeState;
+
+            if (
+                !state ||
+                String(event.pointerId) !==
+                    resizeHandle.dataset.pointerId
+            ) {
+                return;
+            }
+
+            resizeHandle._resizeState = null;
+
+            updateDrawing(note.id, {
+                width: parseFloat(group.style.width),
+                height: parseFloat(group.style.height)
+            });
+        }
+
+        resizeHandle.addEventListener("pointerup", finishResize);
+        resizeHandle.addEventListener("pointercancel", finishResize);
+
+        /* =====================
+           回転
+        ===================== */
+
+        rotateHandle.addEventListener(
+            "pointerdown",
+            event => {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                selectGroup(group);
+
+                const rect =
+                    group.getBoundingClientRect();
+
+                rotateHandle.setPointerCapture(
+                    event.pointerId
+                );
+
+                const centerX =
+                    rect.left + rect.width / 2;
+
+                const centerY =
+                    rect.top + rect.height / 2;
+
+                rotateHandle.dataset.pointerId =
+                    String(event.pointerId);
+
+                rotateHandle._rotateState = {
+                    centerX,
+                    centerY,
+                    startAngle: Math.atan2(
+                        event.clientY - centerY,
+                        event.clientX - centerX
+                    ) * 180 / Math.PI,
+                    startRotation:
+                        parseFloat(
+                            (group.style.transform.match(
+                                /rotate\(([-\d.]+)deg\)/
+                            ) || [])[1]
+                        ) || 0
+                };
+            }
+        );
+
+        rotateHandle.addEventListener("pointermove", event => {
+
+            const state = rotateHandle._rotateState;
+
+            if (
+                !state ||
+                String(event.pointerId) !==
+                    rotateHandle.dataset.pointerId
+            ) {
+                return;
+            }
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            const currentAngle =
+                Math.atan2(
+                    event.clientY - state.centerY,
+                    event.clientX - state.centerX
+                ) * 180 / Math.PI;
+
+            const nextRotation =
+                state.startRotation +
+                currentAngle -
+                state.startAngle;
+
+            group.style.transform =
+                `rotate(${nextRotation}deg)`;
+        });
+
+        function finishRotate(event) {
+
+            const state = rotateHandle._rotateState;
+
+            if (
+                !state ||
+                String(event.pointerId) !==
+                    rotateHandle.dataset.pointerId
+            ) {
+                return;
+            }
+
+            rotateHandle._rotateState = null;
+
+            const match =
+                group.style.transform.match(
+                    /rotate\(([-\d.]+)deg\)/
+                );
+
+            updateDrawing(note.id, {
+                rotation: match
+                    ? Number(match[1])
+                    : 0
+            });
+        }
+
+        rotateHandle.addEventListener("pointerup", finishRotate);
+        rotateHandle.addEventListener("pointercancel", finishRotate);
+
+        /* =====================
+           タップで選択
+        ===================== */
+
+        group.addEventListener("click", event => {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            if (
+                group.dataset.dragged === "true"
+            ) {
+                group.dataset.dragged = "false";
+                return;
+            }
+
+            selectGroup(group);
+        });
+
+        /* キーボードでも選択可能 */
+        group.addEventListener("keydown", event => {
+
+            if (
+                event.key === "Enter" ||
+                event.key === " "
+            ) {
+                event.preventDefault();
+                selectGroup(group);
+            }
+        });
+
+        layer.appendChild(group);
     });
 
+    /* =====================
+       レイヤーを表示
+    ===================== */
+
     layout.appendChild(layer);
+
+    /* =====================
+       レイヤー外をタップしたら選択解除
+    ===================== */
+
+    if (layout.dataset.drawingOutsideTapBound !== "true") {
+
+        layout.dataset.drawingOutsideTapBound = "true";
+
+        layout.addEventListener("pointerdown", event => {
+
+            if (
+                !event.target.closest(
+                    ".planner-drawing-group"
+                )
+            ) {
+                const currentLayer =
+                    layout.querySelector(
+                        ".planner-drawings-layer"
+                    );
+
+                if (currentLayer) {
+
+                    currentLayer
+                        .querySelectorAll(
+                            ".planner-drawing-group"
+                        )
+                        .forEach(group => {
+
+                            group.dataset.editMode = "false";
+                            group.style.outline = "none";
+
+                            group
+                                .querySelectorAll(
+                                    ".planner-drawing-handle"
+                                )
+                                .forEach(handle => {
+                                    handle.style.display = "none";
+                                });
+                        });
+                }
+            }
+        });
+    }
 }
+
 
 
 
