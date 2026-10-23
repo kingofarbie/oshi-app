@@ -1348,8 +1348,18 @@ function fitPlannerNoteText(element) {
 
     if (width <= 0 || height <= 0) return;
 
-    let availableWidth = Math.max(1, width - 18);
-    let availableHeight = Math.max(1, height - 18);
+let availableWidth = Math.max(1, width - 36);
+let availableHeight = Math.max(1, height - 32);
+
+/* 波線・ギザギザの突起と文字が重ならないようにする */
+if (style === "wavy" || style === "zigzag") {
+    availableWidth = Math.max(1, width - 40);
+    availableHeight = Math.max(1, height - 36);
+}
+
+
+
+
 
     /* 雲形は中央の安全領域に文字を収める */
     if (style === "cloud") {
