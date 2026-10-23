@@ -1399,6 +1399,7 @@ function plannerDirectDrawingStart() {
             return;
         }
 
+
         /* 保存 */
         if (action === "save") {
 
@@ -1411,6 +1412,95 @@ function plannerDirectDrawingStart() {
                 return;
             }
 
+            /* =====================
+               ✂️ 実際に書いた範囲を計算
+            ===================== */
+
+            const padding = 8;
+
+            let minX = session.width;
+            let minY = session.height;
+            let maxX = 0;
+            let maxY = 0;
+
+            session.strokes.forEach(stroke => {
+
+                if (
+                    !Array.isArray(stroke.points) ||
+                    stroke.points.length === 0
+                ) {
+                    return;
+                }
+
+                const radius =
+                    (Number(stroke.width) || 3) / 2;
+
+                stroke.points.forEach(point => {
+
+                    const x = point.x * session.width;
+                    const y = point.y * session.height;
+
+                    minX = Math.min(minX, x - radius);
+                    minY = Math.min(minY, y - radius);
+                    maxX = Math.max(maxX, x + radius);
+                    maxY = Math.max(maxY, y + radius);
+
+                });
+
+            });
+
+            minX = Math.max(0, minX - padding);
+            minY = Math.max(0, minY - padding);
+
+            maxX = Math.min(
+                session.width,
+                maxX + padding
+            );
+
+            maxY = Math.min(
+                session.height,
+                maxY + padding
+            );
+
+            const drawingWidth =
+                Math.max(1, maxX - minX);
+
+            const drawingHeight =
+                Math.max(1, maxY - minY);
+
+            /* =====================
+               📐 座標を切り取った範囲に変換
+            ===================== */
+
+            const croppedStrokes =
+                JSON.parse(
+                    JSON.stringify(session.strokes)
+                );
+
+            croppedStrokes.forEach(stroke => {
+
+                stroke.points.forEach(point => {
+
+                    point.x =
+                        (
+                            point.x * session.width -
+                            minX
+                        ) / drawingWidth;
+
+                    point.y =
+                        (
+                            point.y * session.height -
+                            minY
+                        ) / drawingHeight;
+
+                });
+
+            });
+
+            /* =====================
+               💾 保存
+            ===================== */
+
             const data = db.load();
 
             if (!Array.isArray(data.plannerNotes)) {
@@ -1418,20 +1508,26 @@ function plannerDirectDrawingStart() {
             }
 
             data.plannerNotes.push({
+
                 id: "drawing-" +
                     Date.now() + "-" +
                     Math.random().toString(36).slice(2, 9),
 
                 date: session.date,
                 type: "drawing",
-                top: 0,
-                left: 0,
-                width: session.width,
-                height: session.height,
+
+                top: minY,
+                left: minX,
+
+                width: drawingWidth,
+                height: drawingHeight,
+
                 rotation: 0,
-                strokes: JSON.parse(
-                    JSON.stringify(session.strokes)
-                )
+
+                boundsTight: true,
+
+                strokes: croppedStrokes
+
             });
 
             db.save(data);
@@ -1442,6 +1538,9 @@ function plannerDirectDrawingStart() {
 
             showPlanner(savedDate);
         }
+
+        
+
     });
 
     /* 背後の予定操作・スワイプにイベントを渡さない */
