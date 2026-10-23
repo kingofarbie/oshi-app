@@ -847,8 +847,12 @@ function openPlannerHandwriting() {
 
 
 
+
 /* =====================================================
-   ✍️ 1日手帳・時間軸への直接手書き
+   ✍️ 1日手帳・直接手書き
+   ・時間軸に直接描画
+   ・左端固定のアイコンツールバー
+   ・保存 / キャンセル
 ===================================================== */
 
 function plannerDirectDrawingStart() {
@@ -867,7 +871,7 @@ function plannerDirectDrawingStart() {
         return;
     }
 
-    plannerDirectDrawingStop(false);
+    plannerDirectDrawingStop();
 
     const date =
         localStorage.getItem("oshi_last_planner_date");
@@ -877,12 +881,14 @@ function plannerDirectDrawingStart() {
         return;
     }
 
-    const rect = board.getBoundingClientRect();
+    const boardRect = board.getBoundingClientRect();
 
-    const width = Math.max(1, Math.round(rect.width));
-    const height = Math.max(1, Math.round(rect.height));
+    const width = Math.max(1, Math.round(boardRect.width));
+    const height = Math.max(1, Math.round(boardRect.height));
 
+    /* 描画レイヤー */
     const layer = document.createElement("div");
+
     layer.className = "planner-direct-drawing-session";
 
     Object.assign(layer.style, {
@@ -907,83 +913,121 @@ function plannerDirectDrawingStart() {
         width: "100%",
         height: "100%",
         touchAction: "none",
-        cursor: "crosshair"
+        cursor: "crosshair",
+        pointerEvents: "auto"
     });
 
     layer.appendChild(canvas);
+    layout.appendChild(layer);
 
+    /* 左端固定・アイコンのみのツールバー */
     const toolbar = document.createElement("div");
+
     toolbar.className = "planner-direct-drawing-toolbar";
 
     Object.assign(toolbar.style, {
-        position: "absolute",
-        top: "8px",
-        left: "8px",
-        zIndex: "92",
+        position: "fixed",
+        top: "110px",
+        left: "4px",
+        zIndex: "9999",
         display: "flex",
-        flexWrap: "wrap",
-        gap: "6px",
+        flexDirection: "column",
         alignItems: "center",
-        padding: "8px",
-        borderRadius: "10px",
+        gap: "5px",
+        padding: "6px 4px",
+        borderRadius: "12px",
         background: "#ffffff",
         border: "1px solid #dddddd",
-        boxShadow: "0 2px 8px #0002",
-        maxWidth: "calc(100% - 16px)"
+        boxShadow: "0 2px 8px #0002"
     });
 
     toolbar.innerHTML = `
-        <label style="display:flex;align-items:center;gap:4px">
-            <span>色</span>
+        <button type="button"
+                data-draw-tool="pen"
+                title="ペン"
+                aria-label="ペン"
+                style="font-size:21px">✏️</button>
+
+        <button type="button"
+                data-draw-tool="eraser"
+                title="消しゴム"
+                aria-label="消しゴム"
+                style="font-size:21px">🩹</button>
+
+        <label title="色"
+               aria-label="色"
+               style="position:relative;display:flex;align-items:center;justify-content:center;width:34px;height:34px">
+            🎨
             <input type="color"
                    class="planner-direct-drawing-color"
-                   value="#222222">
+                   value="#222222"
+                   aria-label="ペンの色"
+                   style="position:absolute;inset:0;width:100%;height:100%;opacity:0.01;cursor:pointer">
         </label>
 
-        <label style="display:flex;align-items:center;gap:4px">
-            <span>太さ</span>
-            <select class="planner-direct-drawing-width">
-                <option value="2">細</option>
-                <option value="4" selected>中</option>
-                <option value="7">太</option>
-                <option value="12">極太</option>
-            </select>
-        </label>
+        <select class="planner-direct-drawing-width"
+                title="線の太さ"
+                aria-label="線の太さ"
+                style="width:36px;height:32px;padding:0;font-size:13px">
+            <option value="2">細</option>
+            <option value="4" selected>中</option>
+            <option value="7">太</option>
+            <option value="12">極</option>
+        </select>
 
         <button type="button"
-                class="planner-direct-drawing-eraser">
-            消しゴム
-        </button>
+                data-draw-action="undo"
+                title="取り消し"
+                aria-label="取り消し"
+                style="font-size:21px">↶</button>
 
         <button type="button"
-                class="planner-direct-drawing-undo">
-            取り消し
-        </button>
+                data-draw-action="clear"
+                title="全消去"
+                aria-label="全消去"
+                style="font-size:21px">🗑️</button>
 
         <button type="button"
-                class="planner-direct-drawing-clear">
-            全消去
-        </button>
+                data-draw-action="save"
+                title="保存して終了"
+                aria-label="保存して終了"
+                style="font-size:23px">💾</button>
 
         <button type="button"
-                class="planner-direct-drawing-save">
-            保存
-        </button>
-
-        <button type="button"
-                class="planner-direct-drawing-cancel">
-            キャンセル
-        </button>
+                data-draw-action="cancel"
+                title="保存せず終了"
+                aria-label="保存せず終了"
+                style="font-size:23px">✕</button>
     `;
 
-    layer.appendChild(toolbar);
-    layout.appendChild(layer);
+    Object.assign(
+        toolbar.querySelectorAll("button").length
+            ? toolbar.querySelectorAll("button")
+            : [],
+        {}
+    );
+
+    toolbar.querySelectorAll("button").forEach(button => {
+        Object.assign(button.style, {
+            width: "36px",
+            height: "36px",
+            padding: "0",
+            border: "none",
+            borderRadius: "8px",
+            background: "#f5f5f5",
+            cursor: "pointer",
+            touchAction: "manipulation"
+        });
+    });
+
+    document.body.appendChild(toolbar);
 
     const context = canvas.getContext("2d");
 
     const session = {
         date,
         layer,
+        toolbar,
         canvas,
         context,
         width,
@@ -998,12 +1042,7 @@ function plannerDirectDrawingStart() {
 
     function redraw() {
 
-        context.clearRect(
-            0,
-            0,
-            canvas.width,
-            canvas.height
-        );
+        context.clearRect(0, 0, width, height);
 
         session.strokes.forEach(stroke => {
             plannerNoteDrawingDrawStroke(
@@ -1026,29 +1065,35 @@ function plannerDirectDrawingStart() {
 
     function getPoint(event) {
 
-        const canvasRect =
-            canvas.getBoundingClientRect();
+        const rect = canvas.getBoundingClientRect();
 
         return {
             x: Math.max(
                 0,
-                Math.min(
-                    1,
-                    (event.clientX - canvasRect.left) /
-                    canvasRect.width
-                )
+                Math.min(1, (event.clientX - rect.left) / rect.width)
             ),
             y: Math.max(
                 0,
-                Math.min(
-                    1,
-                    (event.clientY - canvasRect.top) /
-                    canvasRect.height
-                )
+                Math.min(1, (event.clientY - rect.top) / rect.height)
             )
         };
     }
 
+    /* ペン・消しゴムの切り替え */
+    toolbar.querySelectorAll("[data-draw-tool]").forEach(button => {
+
+        button.addEventListener("click", () => {
+
+            session.tool = button.dataset.drawTool;
+
+            toolbar.querySelectorAll("[data-draw-tool]").forEach(item => {
+                item.style.background =
+                    item === button ? "#f8bbd0" : "#f5f5f5";
+            });
+        });
+    });
+
+    /* 描画開始 */
     canvas.addEventListener("pointerdown", event => {
 
         if (plannerDirectDrawing !== session) return;
@@ -1061,10 +1106,9 @@ function plannerDirectDrawingStart() {
 
         session.currentStroke = {
             tool: session.tool,
-            color:
-                toolbar.querySelector(
-                    ".planner-direct-drawing-color"
-                ).value,
+            color: toolbar.querySelector(
+                ".planner-direct-drawing-color"
+            ).value,
             width: Number(
                 toolbar.querySelector(
                     ".planner-direct-drawing-width"
@@ -1079,8 +1123,9 @@ function plannerDirectDrawingStart() {
 
         redraw();
 
-    }, true);
+    });
 
+    /* 描画中 */
     canvas.addEventListener("pointermove", event => {
 
         if (
@@ -1098,17 +1143,20 @@ function plannerDirectDrawingStart() {
 
         redraw();
 
-    }, true);
+    });
 
     function finishStroke(event) {
 
         if (
             plannerDirectDrawing !== session ||
-            !session.currentStroke ||
-            (
-                event &&
-                event.pointerId !== session.pointerId
-            )
+            !session.currentStroke
+        ) {
+            return;
+        }
+
+        if (
+            event &&
+            event.pointerId !== session.pointerId
         ) {
             return;
         }
@@ -1120,109 +1168,106 @@ function plannerDirectDrawingStart() {
         }
 
         session.strokes.push(session.currentStroke);
+
         session.currentStroke = null;
         session.pointerId = null;
 
         redraw();
     }
 
-    canvas.addEventListener("pointerup", finishStroke, true);
-    canvas.addEventListener("pointercancel", finishStroke, true);
+    canvas.addEventListener("pointerup", finishStroke);
+    canvas.addEventListener("pointercancel", finishStroke);
 
-    toolbar.querySelector(
-        ".planner-direct-drawing-eraser"
-    ).addEventListener("click", () => {
+    /* ツールバーの操作 */
+    toolbar.addEventListener("click", event => {
 
-        session.tool =
-            session.tool === "eraser" ? "pen" : "eraser";
+        const button = event.target.closest("button");
 
-        toolbar.querySelector(
-            ".planner-direct-drawing-eraser"
-        ).textContent =
-            session.tool === "eraser"
-                ? "ペンに戻す"
-                : "消しゴム";
-    });
+        if (!button) return;
 
-    toolbar.querySelector(
-        ".planner-direct-drawing-undo"
-    ).addEventListener("click", () => {
+        const action = button.dataset.drawAction;
 
-        session.strokes.pop();
-        redraw();
-    });
+        if (action === "undo") {
 
-    toolbar.querySelector(
-        ".planner-direct-drawing-clear"
-    ).addEventListener("click", () => {
-
-        if (!confirm("描いた線をすべて消しますか？")) {
+            session.strokes.pop();
+            redraw();
             return;
         }
 
-        session.strokes = [];
-        session.currentStroke = null;
-        redraw();
-    });
+        if (action === "clear") {
 
-    toolbar.querySelector(
-        ".planner-direct-drawing-save"
-    ).addEventListener("click", () => {
+            if (!confirm("描いた線をすべて消しますか？")) {
+                return;
+            }
 
-        if (session.currentStroke) {
-            finishStroke();
-        }
+            session.strokes = [];
+            session.currentStroke = null;
 
-        if (session.strokes.length === 0) {
-            alert("線を描いてから保存してください。");
+            redraw();
             return;
         }
 
-        const data = db.load();
+        if (action === "cancel") {
 
-        if (!Array.isArray(data.plannerNotes)) {
-            data.plannerNotes = [];
+            if (confirm("保存せずに終了しますか？")) {
+                plannerDirectDrawingStop();
+            }
+
+            return;
         }
 
-        data.plannerNotes.push({
-            id: "drawing-" +
-                Date.now() + "-" +
-                Math.random().toString(36).slice(2, 9),
+        if (action === "save") {
 
-            date: session.date,
-            type: "drawing",
-            top: 0,
-            left: 0,
-            width: session.width,
-            height: session.height,
-            rotation: 0,
-            strokes: JSON.parse(
-                JSON.stringify(session.strokes)
-            )
-        });
+            if (session.currentStroke) {
+                finishStroke();
+            }
 
-        db.save(data);
+            if (session.strokes.length === 0) {
+                alert("線を描いてから保存してください。");
+                return;
+            }
 
-        plannerDirectDrawingStop(false);
+            const data = db.load();
 
-        showPlanner(session.date);
-    });
+            if (!Array.isArray(data.plannerNotes)) {
+                data.plannerNotes = [];
+            }
 
-    toolbar.querySelector(
-        ".planner-direct-drawing-cancel"
-    ).addEventListener("click", () => {
+            data.plannerNotes.push({
+                id: "drawing-" +
+                    Date.now() + "-" +
+                    Math.random().toString(36).slice(2, 9),
 
-        if (confirm("保存せずに終了しますか？")) {
-            plannerDirectDrawingStop(false);
+                date: session.date,
+                type: "drawing",
+                top: 0,
+                left: 0,
+                width: session.width,
+                height: session.height,
+                rotation: 0,
+                strokes: JSON.parse(
+                    JSON.stringify(session.strokes)
+                )
+            });
+
+            db.save(data);
+
+            const savedDate = session.date;
+
+            plannerDirectDrawingStop();
+
+            showPlanner(savedDate);
         }
     });
 
+    /* 背後の予定操作・スワイプにイベントを渡さない */
     [
+        "pointerdown",
+        "pointermove",
+        "pointerup",
+        "pointercancel",
         "click",
         "dblclick",
-        "pointerdown",
-        "pointerup",
-        "pointermove",
         "touchstart",
         "touchmove",
         "touchend"
@@ -1230,12 +1275,11 @@ function plannerDirectDrawingStart() {
 
         layer.addEventListener(type, event => {
             event.stopPropagation();
-        }, true);
+        });
     });
 
     redraw();
 }
-
 
 /* 直接描画モードの終了 */
 function plannerDirectDrawingStop() {
@@ -1245,10 +1289,10 @@ function plannerDirectDrawingStop() {
     if (!session) return;
 
     session.layer?.remove();
+    session.toolbar?.remove();
 
     plannerDirectDrawing = null;
 }
-
 
 /* =====================================================
    🎨 1日手帳：マイスタンプ
