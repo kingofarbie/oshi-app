@@ -875,6 +875,19 @@ function plannerDirectDrawingStart() {
 
     plannerDirectDrawingStop();
 
+    /* 手書き編集中はページのスクロールを禁止 */
+if (!window.plannerDrawingScrollLock) {
+
+    window.plannerDrawingScrollLock = {
+        bodyOverflow: document.body.style.overflow,
+        htmlOverflow: document.documentElement.style.overflow
+    };
+}
+
+document.body.style.overflow = "hidden";
+document.documentElement.style.overflow = "hidden";
+
+
     const date =
         localStorage.getItem("oshi_last_planner_date");
 
@@ -1691,13 +1704,28 @@ function plannerDirectDrawingStop() {
 
     const session = plannerDirectDrawing;
 
-    if (!session) return;
-
-    session.layer?.remove();
-    session.toolbar?.remove();
+    if (session) {
+        session.layer?.remove();
+        session.toolbar?.remove();
+    }
 
     plannerDirectDrawing = null;
+
+    /* 手書き終了時にスクロールを元に戻す */
+    const lock = window.plannerDrawingScrollLock;
+
+    if (lock) {
+
+        document.body.style.overflow =
+            lock.bodyOverflow;
+
+        document.documentElement.style.overflow =
+            lock.htmlOverflow;
+
+        delete window.plannerDrawingScrollLock;
+    }
 }
+
 
 /* =====================================================
    🎨 1日手帳：マイスタンプ
