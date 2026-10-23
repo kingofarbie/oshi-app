@@ -1160,3 +1160,67 @@
     }
 
 }
+
+
+
+/* 手書きメモ：操作アイコンをアイコンだけにする */
+
+.planner-drawing-action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.planner-drawing-action-buttons button,
+.planner-drawing-action-buttons button[aria-pressed="true"] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 28px;
+    width: 28px;
+    height: 36px;
+
+    margin: 0;
+    padding: 0;
+
+    border: none;
+    border-radius: 0;
+
+    background: transparent;
+    box-shadow: none;
+
+    font-size: 21px;
+    line-height: 1;
+
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.planner-drawing-action-buttons button:active {
+    transform: scale(0.92);
+    background: transparent;
+}
+
+.planner-drawing-action-buttons button:focus-visible {
+    outline: 2px solid #6c63ff;
+    outline-offset: 2px;
+}
+
+/* スマートフォンでもアイコンだけにする */
+@media (max-width: 480px) {
+    .planner-drawing-action-buttons {
+        gap: 7px;
+    }
+
+    .planner-drawing-action-buttons button,
+    .planner-drawing-action-buttons button[aria-pressed="true"] {
+        flex-basis: 27px;
+        width: 27px;
+        height: 36px;
+        font-size: 20px;
+    }
+}
+
+
+

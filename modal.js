@@ -2105,6 +2105,25 @@ function plannerNoteDrawingInitCanvas() {
 
         });
 
+
+                /* =====================
+           色を選んだ後にフォーカスを外す
+        ===================== */
+
+        document.getElementById(
+            "plannerDrawingColor"
+        )?.addEventListener("change", () => {
+
+            document.getElementById(
+                "plannerDrawingColor"
+            )?.blur();
+
+        });
+
+
+
+
+
     }
 
     plannerNoteDrawingResizeCanvas();
