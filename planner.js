@@ -2047,6 +2047,9 @@ element.appendChild(textElement);
 
         element.dataset.editMode = "false";
 
+        element.dataset.rotation =
+    String(Number(note.rotation) || 0);
+
         /* =====================
            編集モード切り替え
         ===================== */
@@ -2175,6 +2178,44 @@ element.addEventListener(
         event.stopPropagation();
     }
 );
+
+
+
+
+        rotateHandle.addEventListener(
+            "pointermove",
+            function(event) {
+
+                if (
+                    !rotating ||
+                    event.pointerId !== rotatePointerId
+                ) {
+                    return;
+                }
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                const currentAngle = Math.atan2(
+                    event.clientY - rotateCenterY,
+                    event.clientX - rotateCenterX
+                );
+
+                const nextRotation =
+                    rotateInitialValue +
+                    (currentAngle - rotateStartAngle) *
+                    180 / Math.PI;
+
+                element.dataset.rotation =
+                    String(nextRotation);
+
+                element.style.transform =
+                    `rotate(${nextRotation}deg)`;
+            }
+        );
+
+
+
 
         function finishNoteRotation(event) {
 
