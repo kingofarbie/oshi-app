@@ -1348,9 +1348,11 @@ function handwritingStart() {
     window.handwritingAttach =
         handwritingAttach;
 
+    window.handwritingCheckPage =
+        handwritingCheckPage;
+
     window.handwritingStart =
         handwritingStart;
-
 
     /* =====================================================
        🚀 初期化
