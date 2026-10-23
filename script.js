@@ -1063,11 +1063,15 @@ Object.assign(toolbar.style, {
                 aria-label="保存">💾</button>
 
 
+
 <button type="button"
         data-draw-action="cancel"
         title="キャンセル"
         aria-label="キャンセル"
-        style="color:#111111;font-weight:900">✕</button>
+        style="position:relative;width:34px;height:34px;border:none;background:#f5f5f5;border-radius:5px">
+    <span style="position:absolute;left:7px;top:16px;width:20px;height:3px;background:#111;transform:rotate(45deg);border-radius:2px"></span>
+    <span style="position:absolute;left:7px;top:16px;width:20px;height:3px;background:#111;transform:rotate(-45deg);border-radius:2px"></span>
+</button>
 
 
 
