@@ -1285,44 +1285,42 @@
     }
 
 
+    function handwritingStart() {
 
-function handwritingStart() {
+        handwritingCheckPage();
 
-    // すでに存在する画面があれば接続
-    handwritingCheckPage();
+        const timeline =
+            document.getElementById("plannerTimeline");
 
-    // body全体を監視し、あとから読み込まれる
-    // 1日手帳の画面にも対応する
-    if (
-        !handwritingMutationObserver &&
-        typeof MutationObserver !== "undefined" &&
-        document.body
-    ) {
+        if (
+            timeline &&
+            !handwritingMutationObserver &&
+            typeof MutationObserver !== "undefined"
+        ) {
 
-        handwritingMutationObserver =
-            new MutationObserver(function () {
+            handwritingMutationObserver =
+                new MutationObserver(function () {
 
-                handwritingCheckPage();
+                    handwritingCheckPage();
 
-            });
+                });
 
-        handwritingMutationObserver.observe(
-            document.body,
-            {
-                childList: true,
-                subtree: true
-            }
+            handwritingMutationObserver.observe(
+                timeline,
+                {
+                    childList: true,
+                    subtree: true
+                }
+            );
+
+        }
+
+        window.addEventListener(
+            "resize",
+            handwritingResizeCanvas
         );
 
     }
-
-    // 画面サイズ変更時に描画エリアを調整
-    window.addEventListener(
-        "resize",
-        handwritingResizeCanvas
-    );
-
-}
 
 
     /* =====================================================
