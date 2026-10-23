@@ -1862,9 +1862,9 @@ element.appendChild(textElement);
             cursor: "grab",
             pointerEvents: "auto",
             touchAction: "none",
-            userSelect: "none",
-
-            boxShadow: "0 2px 8px rgba(0,0,0,0.12)"
+            userSelect: "none",        
+            boxShadow: "none"
+        
         });
 
         applyPlannerNoteCustomBorder(element, textElement, note);
