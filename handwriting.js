@@ -1287,9 +1287,6 @@
 
 function handwritingStart() {
 
-    // 読み込み済みの画面に手書き機能を接続
-    handwritingCheckPage();
-
     // 画面サイズ変更の監視は一度だけ登録
     if (!handwritingResizeListenerAdded) {
 
@@ -1301,6 +1298,31 @@ function handwritingStart() {
         handwritingResizeListenerAdded = true;
 
     }
+
+    const target = handwritingGetTarget();
+
+    if (!target) {
+
+        console.warn(
+            "手書き機能：表示対象が見つかりません",
+            {
+                dayPlanner: !!document.getElementById("dayPlanner"),
+                plannerTimeline: !!document.getElementById("plannerTimeline"),
+                plannerLayout: !!document.querySelector(
+                    "#plannerTimeline .planner-layout"
+                ),
+                selectedCalendarDate:
+                    typeof selectedCalendarDate !== "undefined"
+                        ? selectedCalendarDate
+                        : "未定義"
+            }
+        );
+
+        return;
+
+    }
+
+    handwritingAttach(target);
 
 }
 
