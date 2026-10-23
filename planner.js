@@ -2662,21 +2662,17 @@ fitPlannerNoteText(element);
         );
 
 layer.appendChild(element);
-});
 
-layout.appendChild(layer);
+fitPlannerNoteText(element);
 
-/* 画面に配置してから文字の変形を復元 */
-layer.querySelectorAll(".planner-note-text").forEach(textElement => {
-    const noteElement = textElement.parentElement;
+    });
 
-    if (noteElement) {
-        fitPlannerNoteText(noteElement);
-    }
-});
+    /* 予定ボードと家族レーンより手前に配置 */
+    layout.appendChild(layer);
 
 
 
+    
     /* メモ以外をタップしたら操作ボタンを隠す */
     if (!layout.dataset.noteOutsideTapBound) {
 
