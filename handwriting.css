@@ -1,0 +1,365 @@
+
+/* =====================================================
+   ✍️ 共通手書き機能
+   handwriting.css
+
+   ・時間軸と予定ボード全体に描画
+   ・スマートフォン対応
+   ・既存の予定、自由メモ、スタンプのCSSに干渉しない
+===================================================== */
+
+
+/* =====================================================
+   🧰 操作バー
+===================================================== */
+
+.handwriting-toolbar {
+
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 10px;
+
+    margin: 8px 0;
+
+    background: #fff8fc;
+
+    border: 1px solid #f2c5dc;
+
+    border-radius: 12px;
+
+    color: #4a3440;
+
+    font-family: sans-serif;
+
+    font-size: 14px;
+
+    z-index: 120;
+
+}
+
+
+/* =====================================================
+   🔘 操作ボタン
+===================================================== */
+
+.handwriting-toolbar button {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 4px;
+
+    min-height: 38px;
+
+    padding: 7px 11px;
+
+    border: 1px solid #e4c6d6;
+
+    border-radius: 9px;
+
+    background: #ffffff;
+
+    color: #493440;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    line-height: 1.4;
+
+    white-space: nowrap;
+
+    cursor: pointer;
+
+    -webkit-tap-highlight-color: transparent;
+
+    touch-action: manipulation;
+
+}
+
+
+/* 選択中のツール */
+
+.handwriting-toolbar button[aria-pressed="true"] {
+
+    background: #fce4f0;
+
+    border-color: #e78bb8;
+
+    color: #a52268;
+
+}
+
+
+/* 手書きON */
+
+.handwriting-toolbar
+[data-handwriting-action="toggle"][aria-pressed="true"] {
+
+    background: #e7f7ed;
+
+    border-color: #80c99a;
+
+    color: #176b38;
+
+}
+
+
+/* 押したとき */
+
+.handwriting-toolbar button:active {
+
+    transform: scale(0.97);
+
+}
+
+
+/* キーボード操作時 */
+
+.handwriting-toolbar button:focus-visible,
+.handwriting-toolbar input:focus-visible {
+
+    outline: 2px solid #d94b93;
+
+    outline-offset: 2px;
+
+}
+
+
+/* =====================================================
+   🎨 色・太さの設定
+===================================================== */
+
+.handwriting-toolbar label {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    min-height: 38px;
+
+    font-size: 13px;
+
+    white-space: nowrap;
+
+}
+
+
+.handwriting-toolbar
+[data-handwriting-color] {
+
+    width: 38px;
+
+    height: 34px;
+
+    padding: 2px;
+
+    border: 1px solid #e4c6d6;
+
+    border-radius: 8px;
+
+    background: #ffffff;
+
+    cursor: pointer;
+
+}
+
+
+.handwriting-toolbar
+[data-handwriting-width] {
+
+    width: 90px;
+
+    max-width: 25vw;
+
+    margin: 0;
+
+    accent-color: #df5b9b;
+
+    cursor: pointer;
+
+}
+
+
+.handwriting-toolbar
+[data-handwriting-width-value] {
+
+    min-width: 18px;
+
+    text-align: center;
+
+    font-variant-numeric: tabular-nums;
+
+}
+
+
+/* =====================================================
+   💬 保存状態
+===================================================== */
+
+.handwriting-status {
+
+    flex-basis: 100%;
+
+    min-height: 1.4em;
+
+    color: #76576a;
+
+    font-size: 12px;
+
+    line-height: 1.4;
+
+    overflow-wrap: anywhere;
+
+}
+
+
+/* =====================================================
+   🖼️ 描画レイヤー
+
+   planner.js が作る .planner-layout 全体に重ねる。
+   左側の時間表示にも描画できるようにする。
+===================================================== */
+
+.planner-layout {
+
+    position: relative;
+
+}
+
+
+.handwriting-canvas {
+
+    position: absolute;
+
+    top: 0;
+
+    left: 0;
+
+    display: block;
+
+    width: 100%;
+
+    height: 100%;
+
+    margin: 0;
+
+    padding: 0;
+
+    border: 0;
+
+    background: transparent;
+
+    z-index: 90;
+
+    pointer-events: none;
+
+    touch-action: none;
+
+    user-select: none;
+
+    -webkit-user-select: none;
+
+    -webkit-touch-callout: none;
+
+}
+
+
+/* =====================================================
+   📱 スマートフォン
+===================================================== */
+
+@media (max-width: 600px) {
+
+    .handwriting-toolbar {
+
+        gap: 6px;
+
+        padding: 8px;
+
+        border-radius: 10px;
+
+        font-size: 13px;
+
+    }
+
+
+    .handwriting-toolbar button {
+
+        min-height: 36px;
+
+        padding: 7px 9px;
+
+        font-size: 12px;
+
+    }
+
+
+    .handwriting-toolbar label {
+
+        gap: 4px;
+
+        font-size: 12px;
+
+    }
+
+
+    .handwriting-toolbar
+    [data-handwriting-color] {
+
+        width: 34px;
+
+        height: 32px;
+
+    }
+
+
+    .handwriting-toolbar
+    [data-handwriting-width] {
+
+        width: 68px;
+
+    }
+
+
+    .handwriting-status {
+
+        font-size: 11px;
+
+    }
+
+}
+
+
+/* =====================================================
+   🖥️ マウス・キーボード操作
+===================================================== */
+
+@media (hover: hover) and (pointer: fine) {
+
+    .handwriting-toolbar button:hover {
+
+        border-color: #df8db8;
+
+        background: #fff0f7;
+
+    }
+
+}
