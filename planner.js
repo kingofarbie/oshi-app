@@ -1286,46 +1286,6 @@ return;
 
     setupPlannerSwipe();
 
-    /* =====================
-       ✍️ 手書き機能を接続
-       予定表の描画完了後に接続
-    ===================== */
-
-    requestAnimationFrame(() => {
-
-        const layout =
-            timeline.querySelector(".planner-layout");
-
-        if (
-            !layout ||
-            typeof window.handwritingAttach !== "function"
-        ) {
-
-            console.warn(
-                "手書き機能を接続できません",
-                {
-                    layoutFound: !!layout,
-                    attachAvailable:
-                        typeof window.handwritingAttach === "function",
-                    date: date
-                }
-            );
-
-            return;
-
-        }
-
-        window.handwritingAttach({
-
-            planner: planner,
-            timeline: timeline,
-            layout: layout,
-            pageType: "planner",
-            pageId: date
-
-        });
-
-    });
 
 }
 
