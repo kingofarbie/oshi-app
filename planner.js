@@ -1287,8 +1287,15 @@ return;
 
     setupPlannerSwipe();
 
-}
+    /* =====================
+       ✍️ 手書き機能を接続
+    ===================== */
 
+    if (typeof window.handwritingStart === "function") {
+        window.handwritingStart();
+    }
+
+}
 
 
 
