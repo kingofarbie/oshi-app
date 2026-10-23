@@ -1582,7 +1582,7 @@ const height =
         const verticalCount =
             Math.max(
                 1,
-                Math.floor(
+                Math.ceil(
                     (bottom - top) / spacing
                 )
             );
