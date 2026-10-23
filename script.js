@@ -967,23 +967,53 @@ function plannerDirectDrawingStart() {
 
     toolbar.className = "planner-direct-drawing-toolbar";
 
-    Object.assign(toolbar.style, {
-        position: "fixed",
-        top: "0px",
-        left: "0px",
-        zIndex: "9999",
-        display: "grid",
-        gridTemplateColumns: "repeat(4, 34px)",
-        gridTemplateRows: "repeat(2, 34px)",
-        gap: "1px",
-        alignItems: "center",
-        justifyItems: "center",
-        padding: "2px",
-        borderRadius: "0 0 8px 0",
-        background: "#ffffff",
-        border: "1px solid #dddddd",
-        boxShadow: "0 2px 6px #0002"
-    });
+
+const titleElement =
+    document.querySelector("#plannerTitle");
+
+const dateTitle =
+    titleElement?.querySelector(".planner-date-title");
+
+const holidayTitle =
+    titleElement?.querySelector(".planner-holiday");
+
+const titleRect =
+    titleElement?.getBoundingClientRect();
+
+const dateRect =
+    dateTitle?.getBoundingClientRect();
+
+const holidayRect =
+    holidayTitle?.getBoundingClientRect();
+
+const toolbarTop = Math.ceil(
+    Math.max(
+        titleRect?.bottom ?? 0,
+        dateRect?.bottom ?? 0,
+        holidayRect?.bottom ?? 0
+    ) + 4
+);
+
+Object.assign(toolbar.style, {
+    position: "fixed",
+    top: `${toolbarTop}px`,
+    left: "4px",
+    zIndex: "9999",
+    display: "grid",
+    gridTemplateColumns: "repeat(4, 34px)",
+    gridTemplateRows: "repeat(2, 34px)",
+    gap: "1px",
+    alignItems: "center",
+    justifyItems: "center",
+    padding: "2px",
+    borderRadius: "8px",
+    background: "#ffffff",
+    border: "1px solid #dddddd",
+    boxShadow: "0 2px 6px #0002"
+});
+
+
+    
 
     toolbar.innerHTML = `
         <button type="button"
@@ -1032,10 +1062,15 @@ function plannerDirectDrawingStart() {
                 title="保存"
                 aria-label="保存">💾</button>
 
-        <button type="button"
-                data-draw-action="cancel"
-                title="キャンセル"
-                aria-label="キャンセル">✕</button>
+
+<button type="button"
+        data-draw-action="cancel"
+        title="キャンセル"
+        aria-label="キャンセル"
+        style="color:#111111;font-weight:900">✕</button>
+
+
+
     `;
 
     toolbar.querySelectorAll("button").forEach(button => {
