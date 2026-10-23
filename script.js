@@ -1146,11 +1146,130 @@ function plannerDirectDrawingStart() {
         });
     });
 
+
     toolbar.appendChild(historyMenu);
     document.body.appendChild(toolbar);
 
+    /* =====================
+       🖐️ ツールバーを独立してドラッグ移動
+    ===================== */
+
+    let toolbarDragState = null;
+
+    toolbar.addEventListener("pointerdown", event => {
+
+        /* ボタンや入力欄の操作では移動しない */
+        if (
+            event.target.closest(
+                "button, input, select, label"
+            )
+        ) {
+            return;
+        }
+
+        if (
+            event.button !== undefined &&
+            event.button !== 0
+        ) {
+            return;
+        }
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        const rect = toolbar.getBoundingClientRect();
+
+        toolbarDragState = {
+            pointerId: event.pointerId,
+            startX: event.clientX,
+            startY: event.clientY,
+            startLeft: rect.left,
+            startTop: rect.top,
+            moved: false
+        };
+
+        try {
+            toolbar.setPointerCapture(event.pointerId);
+        } catch (_) {}
+    });
+
+    toolbar.addEventListener("pointermove", event => {
+
+        if (
+            !toolbarDragState ||
+            event.pointerId !== toolbarDragState.pointerId
+        ) {
+            return;
+        }
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        const dx =
+            event.clientX - toolbarDragState.startX;
+
+        const dy =
+            event.clientY - toolbarDragState.startY;
+
+        if (
+            Math.abs(dx) > 3 ||
+            Math.abs(dy) > 3
+        ) {
+            toolbarDragState.moved = true;
+        }
+
+        if (!toolbarDragState.moved) return;
+
+        const maxLeft =
+            Math.max(0, window.innerWidth - toolbar.offsetWidth);
+
+        const maxTop =
+            Math.max(0, window.innerHeight - toolbar.offsetHeight);
+
+        toolbar.style.left = `${
+            Math.max(
+                0,
+                Math.min(
+                    maxLeft,
+                    toolbarDragState.startLeft + dx
+                )
+            )
+        }px`;
+
+        toolbar.style.top = `${
+            Math.max(
+                0,
+                Math.min(
+                    maxTop,
+                    toolbarDragState.startTop + dy
+                )
+            )
+        }px`;
+    });
+
+    function finishToolbarDrag(event) {
+
+        if (
+            !toolbarDragState ||
+            (
+                event &&
+                event.pointerId !== toolbarDragState.pointerId
+            )
+        ) {
+            return;
+        }
+
+        toolbarDragState = null;
+    }
+
+    toolbar.addEventListener("pointerup", finishToolbarDrag);
+    toolbar.addEventListener("pointercancel", finishToolbarDrag);
+
     const context = canvas.getContext("2d");
 
+
+
+    
     const session = {
         date,
         layer,
@@ -1539,7 +1658,7 @@ function plannerDirectDrawingStart() {
             showPlanner(savedDate);
         }
 
-        
+
 
     });
 
