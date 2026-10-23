@@ -1285,43 +1285,45 @@
     }
 
 
-    function handwritingStart() {
+function handwritingStart() {
 
-        handwritingCheckPage();
+    // すでに存在する画面があれば接続
+    handwritingCheckPage();
 
-        const timeline =
-            document.getElementById("plannerTimeline");
+    // 1日手帳の読み込み先だけを監視
+    const container =
+        document.getElementById("plannerContainer");
 
-        if (
-            timeline &&
-            !handwritingMutationObserver &&
-            typeof MutationObserver !== "undefined"
-        ) {
+    if (
+        container &&
+        !handwritingMutationObserver &&
+        typeof MutationObserver !== "undefined"
+    ) {
 
-            handwritingMutationObserver =
-                new MutationObserver(function () {
+        handwritingMutationObserver =
+            new MutationObserver(function () {
 
-                    handwritingCheckPage();
+                handwritingCheckPage();
 
-                });
+            });
 
-            handwritingMutationObserver.observe(
-                timeline,
-                {
-                    childList: true,
-                    subtree: true
-                }
-            );
-
-        }
-
-        window.addEventListener(
-            "resize",
-            handwritingResizeCanvas
+        handwritingMutationObserver.observe(
+            container,
+            {
+                childList: true,
+                subtree: true
+            }
         );
 
     }
 
+    // 画面サイズ変更時に描画エリアを調整
+    window.addEventListener(
+        "resize",
+        handwritingResizeCanvas
+    );
+
+}
 
     /* =====================================================
        🌐 共通機能として公開
