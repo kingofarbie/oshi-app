@@ -1035,12 +1035,11 @@ plannerFamilyRenderLanes();
 
 renderPlannerNotes(date);
 
-/* =====================
-   🎨 スタンプ表示
-===================== */
+/* ✍️ 保存済み手書きメモを表示 */
+renderPlannerDrawings(date);
 
+/* 🎨 スタンプ表示 */
 renderPlannerStickers(date);
-
 
 
 
@@ -1734,8 +1733,6 @@ const height =
     }
 
 }
-
-
 
 
 /* =====================================================
@@ -2977,6 +2974,112 @@ function showPlannerNoteMenu(noteId) {
     }
 
 }
+
+
+
+
+/* =====================================================
+   ✍️ 1日手帳の直接手書きメモ
+   ・日付ごとに保存
+   ・文字メモとは別管理
+   ・既存の plannerNotes を利用
+===================================================== */
+
+let plannerDirectDrawing = null;
+
+
+/* 保存済み手書きメモの表示 */
+function renderPlannerDrawings(date) {
+
+    const timeline =
+        document.getElementById("plannerTimeline");
+
+    const layout =
+        timeline?.querySelector(".planner-layout");
+
+    const board =
+        timeline?.querySelector(".planner-board");
+
+    if (!timeline || !layout || !board) return;
+
+    /* 既存の描画レイヤーを削除 */
+    layout
+        .querySelectorAll(".planner-drawings-layer")
+        .forEach(layer => layer.remove());
+
+    const data = db.load();
+
+    const drawings =
+        (data.plannerNotes || []).filter(note =>
+            note.date === date &&
+            note.type === "drawing"
+        );
+
+    const layer = document.createElement("div");
+
+    layer.className = "planner-drawings-layer";
+
+    Object.assign(layer.style, {
+        position: "absolute",
+        top: `${board.offsetTop}px`,
+        left: `${board.offsetLeft}px`,
+        width: `${board.offsetWidth}px`,
+        height: `${board.offsetHeight}px`,
+        overflow: "visible",
+        pointerEvents: "none",
+        zIndex: "32"
+    });
+
+    drawings.forEach(note => {
+
+        const canvas = document.createElement("canvas");
+
+        canvas.className = "planner-drawing-note";
+
+        Object.assign(canvas.style, {
+            position: "absolute",
+            top: `${Number(note.top) || 0}px`,
+            left: `${Number(note.left) || 0}px`,
+            width: `${Number(note.width) || 180}px`,
+            height: `${Number(note.height) || 120}px`,
+            pointerEvents: "none"
+        });
+
+        layer.appendChild(canvas);
+
+        const width = Number(note.width) || 180;
+        const height = Number(note.height) || 120;
+
+        canvas.width = width * (window.devicePixelRatio || 1);
+        canvas.height = height * (window.devicePixelRatio || 1);
+
+        const context = canvas.getContext("2d");
+
+        context.scale(
+            window.devicePixelRatio || 1,
+            window.devicePixelRatio || 1
+        );
+
+        (note.strokes || []).forEach(stroke => {
+            plannerNoteDrawingDrawStroke(
+                context,
+                stroke,
+                width,
+                height
+            );
+        });
+    });
+
+    layout.appendChild(layer);
+}
+
+
+
+
+
+
+
+
 
 
 /* =================================

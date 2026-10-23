@@ -1003,6 +1003,10 @@
    ✍️ 手書きメモのツールバー
 ===================================================== */
 
+/* =====================
+   ツールバー全体
+===================== */
+
 .planner-drawing-toolbar {
     display: flex;
     align-items: center;
@@ -1064,7 +1068,10 @@
     border-radius: 7px;
     background: #fff;
     cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
 }
+
+/* 選択中の太さ */
 
 .planner-drawing-width-button.is-active {
     border: 2px solid #6c63ff;
@@ -1097,73 +1104,18 @@
     height: 12px;
 }
 
-/* =====================
-   操作アイコン
-===================== */
+/* 太さ見本のタップ反応 */
 
-.planner-drawing-action-buttons {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.planner-drawing-action-buttons button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex: 0 0 36px;
-    width: 36px;
-    height: 36px;
-    padding: 0;
-    box-sizing: border-box;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background: #fff;
-    font-size: 19px;
-    line-height: 1;
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
-}
-
-.planner-drawing-action-buttons button[aria-pressed="true"] {
-    border: 2px solid #6c63ff;
-    background: #f0efff;
-}
-
-.planner-drawing-action-buttons button:active,
 .planner-drawing-width-button:active {
     transform: scale(0.96);
 }
 
-/* スマートフォン向け */
-
-@media (max-width: 480px) {
-
-    .planner-drawing-toolbar {
-        gap: 6px;
-    }
-
-    .planner-drawing-action-buttons {
-        gap: 3px;
-    }
-
-    .planner-drawing-action-buttons button {
-        flex-basis: 34px;
-        width: 34px;
-        height: 36px;
-        font-size: 18px;
-    }
-
-    .planner-drawing-width-button {
-        flex-basis: 32px;
-        width: 32px;
-    }
-
-}
-
-
-
-/* 手書きメモ：操作アイコンをアイコンだけにする */
+/* =====================
+   操作アイコン
+   ・背景なし
+   ・枠線なし
+   ・影なし
+===================== */
 
 .planner-drawing-action-buttons {
     display: flex;
@@ -1172,13 +1124,20 @@
 }
 
 .planner-drawing-action-buttons button,
-.planner-drawing-action-buttons button[aria-pressed="true"] {
+.planner-drawing-action-buttons button:hover,
+.planner-drawing-action-buttons button:active,
+.planner-drawing-action-buttons button[aria-pressed="true"],
+.planner-drawing-action-buttons button[aria-pressed="false"] {
+    appearance: none;
+    -webkit-appearance: none;
+
     display: inline-flex;
     align-items: center;
     justify-content: center;
 
     flex: 0 0 28px;
     width: 28px;
+    min-width: 28px;
     height: 36px;
 
     margin: 0;
@@ -1187,8 +1146,10 @@
     border: none;
     border-radius: 0;
 
-    background: transparent;
-    box-shadow: none;
+    background: transparent !important;
+    background-color: transparent !important;
+
+    box-shadow: none !important;
 
     font-size: 21px;
     line-height: 1;
@@ -1197,30 +1158,52 @@
     -webkit-tap-highlight-color: transparent;
 }
 
+/* タップ時も背景を付けない */
+
 .planner-drawing-action-buttons button:active {
     transform: scale(0.92);
-    background: transparent;
 }
+
+/* キーボード操作時のフォーカス表示 */
 
 .planner-drawing-action-buttons button:focus-visible {
     outline: 2px solid #6c63ff;
     outline-offset: 2px;
 }
 
-/* スマートフォンでもアイコンだけにする */
+/* =====================
+   スマートフォン向け
+===================== */
+
 @media (max-width: 480px) {
+
+    .planner-drawing-toolbar {
+        gap: 6px;
+    }
+
+    .planner-drawing-width-options {
+        gap: 3px;
+    }
+
+    .planner-drawing-width-button {
+        flex-basis: 32px;
+        width: 32px;
+    }
+
     .planner-drawing-action-buttons {
         gap: 7px;
     }
 
     .planner-drawing-action-buttons button,
-    .planner-drawing-action-buttons button[aria-pressed="true"] {
+    .planner-drawing-action-buttons button:hover,
+    .planner-drawing-action-buttons button:active,
+    .planner-drawing-action-buttons button[aria-pressed="true"],
+    .planner-drawing-action-buttons button[aria-pressed="false"] {
         flex-basis: 27px;
         width: 27px;
+        min-width: 27px;
         height: 36px;
         font-size: 20px;
     }
+
 }
-
-
-

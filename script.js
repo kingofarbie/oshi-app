@@ -832,9 +832,421 @@ function openPlannerMemo() {
     plannerNotePlacementMode = "text";
 }
 
+
 function openPlannerHandwriting() {
+
     closePlannerAddMenu();
-    plannerNotePlacementMode = "drawing";
+
+    plannerNotePlacementMode = "";
+
+    plannerDirectDrawingStart();
+}
+
+
+
+
+
+
+/* =====================================================
+   ✍️ 1日手帳・時間軸への直接手書き
+===================================================== */
+
+function plannerDirectDrawingStart() {
+
+    const timeline =
+        document.getElementById("plannerTimeline");
+
+    const layout =
+        timeline?.querySelector(".planner-layout");
+
+    const board =
+        timeline?.querySelector(".planner-board");
+
+    if (!timeline || !layout || !board) {
+        alert("時間軸を表示できませんでした。");
+        return;
+    }
+
+    plannerDirectDrawingStop(false);
+
+    const date =
+        localStorage.getItem("oshi_last_planner_date");
+
+    if (!date) {
+        alert("手書きする日付を確認できませんでした。");
+        return;
+    }
+
+    const rect = board.getBoundingClientRect();
+
+    const width = Math.max(1, Math.round(rect.width));
+    const height = Math.max(1, Math.round(rect.height));
+
+    const layer = document.createElement("div");
+    layer.className = "planner-direct-drawing-session";
+
+    Object.assign(layer.style, {
+        position: "absolute",
+        top: `${board.offsetTop}px`,
+        left: `${board.offsetLeft}px`,
+        width: `${width}px`,
+        height: `${height}px`,
+        zIndex: "90",
+        pointerEvents: "auto",
+        touchAction: "none",
+        background: "transparent"
+    });
+
+    const canvas = document.createElement("canvas");
+
+    canvas.width = width;
+    canvas.height = height;
+
+    Object.assign(canvas.style, {
+        display: "block",
+        width: "100%",
+        height: "100%",
+        touchAction: "none",
+        cursor: "crosshair"
+    });
+
+    layer.appendChild(canvas);
+
+    const toolbar = document.createElement("div");
+    toolbar.className = "planner-direct-drawing-toolbar";
+
+    Object.assign(toolbar.style, {
+        position: "absolute",
+        top: "8px",
+        left: "8px",
+        zIndex: "92",
+        display: "flex",
+        flexWrap: "wrap",
+        gap: "6px",
+        alignItems: "center",
+        padding: "8px",
+        borderRadius: "10px",
+        background: "#ffffff",
+        border: "1px solid #dddddd",
+        boxShadow: "0 2px 8px #0002",
+        maxWidth: "calc(100% - 16px)"
+    });
+
+    toolbar.innerHTML = `
+        <label style="display:flex;align-items:center;gap:4px">
+            <span>色</span>
+            <input type="color"
+                   class="planner-direct-drawing-color"
+                   value="#222222">
+        </label>
+
+        <label style="display:flex;align-items:center;gap:4px">
+            <span>太さ</span>
+            <select class="planner-direct-drawing-width">
+                <option value="2">細</option>
+                <option value="4" selected>中</option>
+                <option value="7">太</option>
+                <option value="12">極太</option>
+            </select>
+        </label>
+
+        <button type="button"
+                class="planner-direct-drawing-eraser">
+            消しゴム
+        </button>
+
+        <button type="button"
+                class="planner-direct-drawing-undo">
+            取り消し
+        </button>
+
+        <button type="button"
+                class="planner-direct-drawing-clear">
+            全消去
+        </button>
+
+        <button type="button"
+                class="planner-direct-drawing-save">
+            保存
+        </button>
+
+        <button type="button"
+                class="planner-direct-drawing-cancel">
+            キャンセル
+        </button>
+    `;
+
+    layer.appendChild(toolbar);
+    layout.appendChild(layer);
+
+    const context = canvas.getContext("2d");
+
+    const session = {
+        date,
+        layer,
+        canvas,
+        context,
+        width,
+        height,
+        strokes: [],
+        currentStroke: null,
+        tool: "pen",
+        pointerId: null
+    };
+
+    plannerDirectDrawing = session;
+
+    function redraw() {
+
+        context.clearRect(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+        );
+
+        session.strokes.forEach(stroke => {
+            plannerNoteDrawingDrawStroke(
+                context,
+                stroke,
+                width,
+                height
+            );
+        });
+
+        if (session.currentStroke) {
+            plannerNoteDrawingDrawStroke(
+                context,
+                session.currentStroke,
+                width,
+                height
+            );
+        }
+    }
+
+    function getPoint(event) {
+
+        const canvasRect =
+            canvas.getBoundingClientRect();
+
+        return {
+            x: Math.max(
+                0,
+                Math.min(
+                    1,
+                    (event.clientX - canvasRect.left) /
+                    canvasRect.width
+                )
+            ),
+            y: Math.max(
+                0,
+                Math.min(
+                    1,
+                    (event.clientY - canvasRect.top) /
+                    canvasRect.height
+                )
+            )
+        };
+    }
+
+    canvas.addEventListener("pointerdown", event => {
+
+        if (plannerDirectDrawing !== session) return;
+        if (event.button !== undefined && event.button !== 0) return;
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        session.pointerId = event.pointerId;
+
+        session.currentStroke = {
+            tool: session.tool,
+            color:
+                toolbar.querySelector(
+                    ".planner-direct-drawing-color"
+                ).value,
+            width: Number(
+                toolbar.querySelector(
+                    ".planner-direct-drawing-width"
+                ).value
+            ),
+            points: [getPoint(event)]
+        };
+
+        try {
+            canvas.setPointerCapture(event.pointerId);
+        } catch (_) {}
+
+        redraw();
+
+    }, true);
+
+    canvas.addEventListener("pointermove", event => {
+
+        if (
+            plannerDirectDrawing !== session ||
+            !session.currentStroke ||
+            event.pointerId !== session.pointerId
+        ) {
+            return;
+        }
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        session.currentStroke.points.push(getPoint(event));
+
+        redraw();
+
+    }, true);
+
+    function finishStroke(event) {
+
+        if (
+            plannerDirectDrawing !== session ||
+            !session.currentStroke ||
+            (
+                event &&
+                event.pointerId !== session.pointerId
+            )
+        ) {
+            return;
+        }
+
+        if (session.currentStroke.points.length === 1) {
+            session.currentStroke.points.push({
+                ...session.currentStroke.points[0]
+            });
+        }
+
+        session.strokes.push(session.currentStroke);
+        session.currentStroke = null;
+        session.pointerId = null;
+
+        redraw();
+    }
+
+    canvas.addEventListener("pointerup", finishStroke, true);
+    canvas.addEventListener("pointercancel", finishStroke, true);
+
+    toolbar.querySelector(
+        ".planner-direct-drawing-eraser"
+    ).addEventListener("click", () => {
+
+        session.tool =
+            session.tool === "eraser" ? "pen" : "eraser";
+
+        toolbar.querySelector(
+            ".planner-direct-drawing-eraser"
+        ).textContent =
+            session.tool === "eraser"
+                ? "ペンに戻す"
+                : "消しゴム";
+    });
+
+    toolbar.querySelector(
+        ".planner-direct-drawing-undo"
+    ).addEventListener("click", () => {
+
+        session.strokes.pop();
+        redraw();
+    });
+
+    toolbar.querySelector(
+        ".planner-direct-drawing-clear"
+    ).addEventListener("click", () => {
+
+        if (!confirm("描いた線をすべて消しますか？")) {
+            return;
+        }
+
+        session.strokes = [];
+        session.currentStroke = null;
+        redraw();
+    });
+
+    toolbar.querySelector(
+        ".planner-direct-drawing-save"
+    ).addEventListener("click", () => {
+
+        if (session.currentStroke) {
+            finishStroke();
+        }
+
+        if (session.strokes.length === 0) {
+            alert("線を描いてから保存してください。");
+            return;
+        }
+
+        const data = db.load();
+
+        if (!Array.isArray(data.plannerNotes)) {
+            data.plannerNotes = [];
+        }
+
+        data.plannerNotes.push({
+            id: "drawing-" +
+                Date.now() + "-" +
+                Math.random().toString(36).slice(2, 9),
+
+            date: session.date,
+            type: "drawing",
+            top: 0,
+            left: 0,
+            width: session.width,
+            height: session.height,
+            rotation: 0,
+            strokes: JSON.parse(
+                JSON.stringify(session.strokes)
+            )
+        });
+
+        db.save(data);
+
+        plannerDirectDrawingStop(false);
+
+        showPlanner(session.date);
+    });
+
+    toolbar.querySelector(
+        ".planner-direct-drawing-cancel"
+    ).addEventListener("click", () => {
+
+        if (confirm("保存せずに終了しますか？")) {
+            plannerDirectDrawingStop(false);
+        }
+    });
+
+    [
+        "click",
+        "dblclick",
+        "pointerdown",
+        "pointerup",
+        "pointermove",
+        "touchstart",
+        "touchmove",
+        "touchend"
+    ].forEach(type => {
+
+        layer.addEventListener(type, event => {
+            event.stopPropagation();
+        }, true);
+    });
+
+    redraw();
+}
+
+
+/* 直接描画モードの終了 */
+function plannerDirectDrawingStop() {
+
+    const session = plannerDirectDrawing;
+
+    if (!session) return;
+
+    session.layer?.remove();
+
+    plannerDirectDrawing = null;
 }
 
 
