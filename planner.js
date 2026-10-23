@@ -1377,6 +1377,8 @@ function fitPlannerNoteText(element) {
         `scale(${scaleX}, ${scaleY})`;
 }
 
+
+
 /* =====================
    📝 自由メモの特殊な枠線
    ・辺の長さに応じた均等配置
@@ -2660,28 +2662,20 @@ fitPlannerNoteText(element);
         );
 
 layer.appendChild(element);
-
-
-/* =====================
-   📝 再表示後に文字を枠へフィット
-===================== */
-
-requestAnimationFrame(() => {
-
-    requestAnimationFrame(() => {
-
-        if (element.isConnected) {
-            fitPlannerNoteText(element);
-        }
-    });
 });
 
-fitPlannerNoteText(element);
+layout.appendChild(layer);
 
-    });
+/* 画面に配置してから文字の変形を復元 */
+layer.querySelectorAll(".planner-note-text").forEach(textElement => {
+    const noteElement = textElement.parentElement;
 
-    /* 予定ボードと家族レーンより手前に配置 */
-    layout.appendChild(layer);
+    if (noteElement) {
+        fitPlannerNoteText(noteElement);
+    }
+});
+
+
 
     /* メモ以外をタップしたら操作ボタンを隠す */
     if (!layout.dataset.noteOutsideTapBound) {
