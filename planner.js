@@ -2521,13 +2521,17 @@ element.addEventListener(
            メモの移動処理
         ===================== */
 
-        let startX = 0;
-        let startY = 0;
-        let grabOffsetX = 0;
-        let grabOffsetY = 0;
-        let dragging = false;
-        let moved = false;
-        let activePointerId = null;
+let startX = 0;
+let startY = 0;
+let grabOffsetX = 0;
+let grabOffsetY = 0;
+let dragging = false;
+let moved = false;
+let activePointerId = null;
+
+let dragScaleX = 1;
+let dragScaleY = 1;
+
 
         element.addEventListener(
             "pointerdown",
@@ -2551,10 +2555,32 @@ element.addEventListener(
                     return;
                 }
 
-                activePointerId = event.pointerId;
+const currentBoard =
+    element.closest(".planner-board");
 
-                startX = event.clientX;
-                startY = event.clientY;
+if (!currentBoard) return;
+
+const boardRect =
+    currentBoard.getBoundingClientRect();
+
+dragScaleX =
+    currentBoard.offsetWidth > 0
+        ? boardRect.width / currentBoard.offsetWidth
+        : 1;
+
+dragScaleY =
+    currentBoard.offsetHeight > 0
+        ? boardRect.height / currentBoard.offsetHeight
+        : 1;
+
+if (!dragScaleX) dragScaleX = 1;
+if (!dragScaleY) dragScaleY = 1;
+
+activePointerId = event.pointerId;
+
+startX = event.clientX;
+startY = event.clientY;
+
 
                 const noteRect =
                     element.getBoundingClientRect();
