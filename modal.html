@@ -472,70 +472,141 @@
     style="display:none;"
 >
     <!-- 描画ツール -->
-    <div class="planner-drawing-toolbar">
 
-        <label for="plannerDrawingColor">
-            ペンの色
-        </label>
+<div class="planner-drawing-toolbar">
 
+    <!-- ペンの色 -->
+    <label
+        for="plannerDrawingColor"
+        class="planner-drawing-color-label"
+        title="ペンの色"
+        aria-label="ペンの色"
+    >
         <input
             type="color"
             id="plannerDrawingColor"
             value="#222222"
+            title="ペンの色"
         >
+    </label>
 
-        <label for="plannerDrawingWidth">
-            太さ
-        </label>
-
-        <input
-            type="range"
-            id="plannerDrawingWidth"
-            min="1"
-            max="20"
-            value="3"
+    <!-- ペンの太さ -->
+    <div
+        class="planner-drawing-width-options"
+        role="group"
+        aria-label="ペンの太さ"
+    >
+        <button
+            type="button"
+            class="planner-drawing-width-button"
+            data-width="2"
+            aria-label="細い"
+            title="細い"
         >
+            <span class="planner-drawing-width-preview thin"></span>
+        </button>
 
-        <span id="plannerDrawingWidthValue">3</span>
+        <button
+            type="button"
+            class="planner-drawing-width-button is-active"
+            data-width="4"
+            aria-label="普通"
+            title="普通"
+        >
+            <span class="planner-drawing-width-preview normal"></span>
+        </button>
+
+        <button
+            type="button"
+            class="planner-drawing-width-button"
+            data-width="7"
+            aria-label="太い"
+            title="太い"
+        >
+            <span class="planner-drawing-width-preview thick"></span>
+        </button>
+
+        <button
+            type="button"
+            class="planner-drawing-width-button"
+            data-width="12"
+            aria-label="極太"
+            title="極太"
+        >
+            <span class="planner-drawing-width-preview extra-thick"></span>
+        </button>
+    </div>
+
+    <!-- 操作アイコン -->
+    <div class="planner-drawing-action-buttons">
 
         <button
             type="button"
             id="plannerDrawingPenButton"
+            aria-label="ペン"
+            title="ペン"
             aria-pressed="true"
         >
-            ✏️ ペン
+            ✏️
         </button>
 
         <button
             type="button"
             id="plannerDrawingEraserButton"
+            aria-label="消しゴム"
+            title="消しゴム"
             aria-pressed="false"
         >
-            🩹 消しゴム
+            🩹
         </button>
 
         <button
             type="button"
             id="plannerDrawingUndoButton"
+            aria-label="戻す"
+            title="戻す"
         >
-            ↩️ 戻す
+            ↩️
         </button>
 
         <button
             type="button"
             id="plannerDrawingRedoButton"
+            aria-label="やり直す"
+            title="やり直す"
         >
-            ↪️ やり直す
+            ↪️
         </button>
 
         <button
             type="button"
             id="plannerDrawingClearButton"
+            aria-label="全消去"
+            title="全消去"
         >
-            🗑️ 全消去
+            🗑️
         </button>
 
     </div>
+
+    <!-- 描画処理が参照する太さの値 -->
+    <input
+        type="range"
+        id="plannerDrawingWidth"
+        min="1"
+        max="20"
+        value="4"
+        hidden
+    >
+
+    <span
+        id="plannerDrawingWidthValue"
+        hidden
+    >4</span>
+
+</div>
+
+
 
     <!-- 手書きキャンバス -->
     <div class="planner-drawing-canvas-wrap">

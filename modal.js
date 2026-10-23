@@ -1892,6 +1892,7 @@ let plannerNoteDrawingInitialized = false;
    キャンバスを準備
 ===================== */
 
+
 function plannerNoteDrawingInitCanvas() {
 
     const canvas = document.getElementById(
@@ -1922,6 +1923,10 @@ function plannerNoteDrawingInitCanvas() {
 
         plannerNoteDrawingInitialized = true;
 
+        /* =====================
+           キャンバスの描画操作
+        ===================== */
+
         canvas.addEventListener(
             "pointerdown",
             plannerNoteDrawingStart
@@ -1942,6 +1947,10 @@ function plannerNoteDrawingInitCanvas() {
             plannerNoteDrawingEnd
         );
 
+        /* =====================
+           ペン
+        ===================== */
+
         document.getElementById(
             "plannerDrawingPenButton"
         )?.addEventListener("click", () => {
@@ -1952,6 +1961,10 @@ function plannerNoteDrawingInitCanvas() {
 
         });
 
+        /* =====================
+           消しゴム
+        ===================== */
+
         document.getElementById(
             "plannerDrawingEraserButton"
         )?.addEventListener("click", () => {
@@ -1961,6 +1974,10 @@ function plannerNoteDrawingInitCanvas() {
             plannerNoteDrawingUpdateToolButtons();
 
         });
+
+        /* =====================
+           元に戻す
+        ===================== */
 
         document.getElementById(
             "plannerDrawingUndoButton"
@@ -1976,6 +1993,10 @@ function plannerNoteDrawingInitCanvas() {
 
         });
 
+        /* =====================
+           やり直す
+        ===================== */
+
         document.getElementById(
             "plannerDrawingRedoButton"
         )?.addEventListener("click", () => {
@@ -1989,6 +2010,10 @@ function plannerNoteDrawingInitCanvas() {
             plannerNoteDrawingRender();
 
         });
+
+        /* =====================
+           全消去
+        ===================== */
 
         document.getElementById(
             "plannerDrawingClearButton"
@@ -2010,17 +2035,73 @@ function plannerNoteDrawingInitCanvas() {
 
         });
 
-        document.getElementById(
-            "plannerDrawingWidth"
-        )?.addEventListener("input", event => {
+        /* =====================
+           ペンの太さを選択
+        ===================== */
 
-            const value = document.getElementById(
-                "plannerDrawingWidthValue"
+        document.querySelectorAll(
+            ".planner-drawing-width-button"
+        ).forEach(button => {
+
+            button.addEventListener("click", () => {
+
+                const width = Number(
+                    button.dataset.width
+                );
+
+                if (!Number.isFinite(width) || width <= 0) {
+                    return;
+                }
+
+                const widthInput = document.getElementById(
+                    "plannerDrawingWidth"
+                );
+
+                if (widthInput) {
+                    widthInput.value = String(width);
+                }
+
+                const widthValue = document.getElementById(
+                    "plannerDrawingWidthValue"
+                );
+
+                if (widthValue) {
+                    widthValue.textContent = String(width);
+                }
+
+                document.querySelectorAll(
+                    ".planner-drawing-width-button"
+                ).forEach(item => {
+
+                    item.classList.toggle(
+                        "is-active",
+                        item === button
+                    );
+
+                });
+
+            });
+
+        });
+
+        /* =====================
+           初期の太さを反映
+        ===================== */
+
+        const initialWidth = Number(
+            document.getElementById(
+                "plannerDrawingWidth"
+            )?.value || 4
+        );
+
+        document.querySelectorAll(
+            ".planner-drawing-width-button"
+        ).forEach(button => {
+
+            button.classList.toggle(
+                "is-active",
+                Number(button.dataset.width) === initialWidth
             );
-
-            if (value) {
-                value.textContent = event.target.value;
-            }
 
         });
 
@@ -2029,6 +2110,7 @@ function plannerNoteDrawingInitCanvas() {
     plannerNoteDrawingResizeCanvas();
 
 }
+
 
 
 /* =====================
