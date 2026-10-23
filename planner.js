@@ -2521,17 +2521,28 @@ element.addEventListener(
            メモの移動処理
         ===================== */
 
-let startX = 0;
-let startY = 0;
-let grabOffsetX = 0;
-let grabOffsetY = 0;
-let dragging = false;
-let moved = false;
-let activePointerId = null;
+        /* =====================
+           メモの移動処理
+           スタンプと同じ移動方式
+        ===================== */
 
-let dragScaleX = 1;
-let dragScaleY = 1;
+        let startX = 0;
+        let startY = 0;
 
+        let originalLeft = 0;
+        let originalTop = 0;
+
+        let dragging = false;
+        let moved = false;
+        let activePointerId = null;
+
+        let dragScaleX = 1;
+        let dragScaleY = 1;
+
+
+        /* =====================
+           移動開始
+        ===================== */
 
         element.addEventListener(
             "pointerdown",
@@ -2555,41 +2566,47 @@ let dragScaleY = 1;
                     return;
                 }
 
-const currentBoard =
-    element.closest(".planner-board");
+                event.preventDefault();
+                event.stopPropagation();
 
-if (!currentBoard) return;
+                /*
+                   メモの配置基準である
+                   レイヤーの表示倍率を計算
+                */
 
-const boardRect =
-    currentBoard.getBoundingClientRect();
+                const layerRect =
+                    layer.getBoundingClientRect();
 
-dragScaleX =
-    currentBoard.offsetWidth > 0
-        ? boardRect.width / currentBoard.offsetWidth
-        : 1;
+                dragScaleX =
+                    layer.offsetWidth > 0
+                        ? layerRect.width /
+                            layer.offsetWidth
+                        : 1;
 
-dragScaleY =
-    currentBoard.offsetHeight > 0
-        ? boardRect.height / currentBoard.offsetHeight
-        : 1;
+                dragScaleY =
+                    layer.offsetHeight > 0
+                        ? layerRect.height /
+                            layer.offsetHeight
+                        : 1;
 
-if (!dragScaleX) dragScaleX = 1;
-if (!dragScaleY) dragScaleY = 1;
+                if (dragScaleX <= 0) {
+                    dragScaleX = 1;
+                }
 
-activePointerId = event.pointerId;
+                if (dragScaleY <= 0) {
+                    dragScaleY = 1;
+                }
 
-startX = event.clientX;
-startY = event.clientY;
+                activePointerId = event.pointerId;
 
+                startX = event.clientX;
+                startY = event.clientY;
 
-                const noteRect =
-                    element.getBoundingClientRect();
+                originalLeft =
+                    parseFloat(element.style.left) || 0;
 
-                grabOffsetX =
-                    event.clientX - noteRect.left;
-
-                grabOffsetY =
-                    event.clientY - noteRect.top;
+                originalTop =
+                    parseFloat(element.style.top) || 0;
 
                 dragging = true;
                 moved = false;
@@ -2600,11 +2617,13 @@ startY = event.clientY;
                 element.setPointerCapture(
                     event.pointerId
                 );
-
-                event.preventDefault();
-                event.stopPropagation();
             }
         );
+
+
+        /* =====================
+           移動中
+        ===================== */
 
         element.addEventListener(
             "pointermove",
@@ -2617,39 +2636,54 @@ startY = event.clientY;
                     return;
                 }
 
-                const dx = event.clientX - startX;
-                const dy = event.clientY - startY;
+                event.preventDefault();
+                event.stopPropagation();
 
+                const rawDeltaX =
+                    event.clientX - startX;
+
+                const rawDeltaY =
+                    event.clientY - startY;
+
+                /* 少しの指の揺れでは移動しない */
                 if (
                     !moved &&
-                    Math.abs(dx) < 5 &&
-                    Math.abs(dy) < 5
+                    Math.abs(rawDeltaX) < 5 &&
+                    Math.abs(rawDeltaY) < 5
                 ) {
                     return;
                 }
 
                 moved = true;
 
-                const layerRect =
-                    layer.getBoundingClientRect();
+                /*
+                   指の移動距離を
+                   レイヤー内部の座標に変換
+                */
+
+                const deltaX =
+                    rawDeltaX / dragScaleX;
+
+                const deltaY =
+                    rawDeltaY / dragScaleY;
 
                 const maxLeft = Math.max(
                     0,
-                    layer.clientWidth - element.offsetWidth
+                    layer.clientWidth -
+                        element.offsetWidth
                 );
 
                 const maxTop = Math.max(
                     0,
-                    layer.clientHeight - element.offsetHeight
+                    layer.clientHeight -
+                        element.offsetHeight
                 );
 
                 const nextLeft = Math.max(
                     0,
                     Math.min(
                         maxLeft,
-                        event.clientX -
-                            layerRect.left -
-                            grabOffsetX
+                        originalLeft + deltaX
                     )
                 );
 
@@ -2657,19 +2691,22 @@ startY = event.clientY;
                     0,
                     Math.min(
                         maxTop,
-                        event.clientY -
-                            layerRect.top -
-                            grabOffsetY
+                        originalTop + deltaY
                     )
                 );
 
-                element.style.left = `${nextLeft}px`;
-                element.style.top = `${nextTop}px`;
+                element.style.left =
+                    `${nextLeft}px`;
 
-                event.preventDefault();
-                event.stopPropagation();
+                element.style.top =
+                    `${nextTop}px`;
             }
         );
+
+
+        /* =====================
+           移動終了・保存
+        ===================== */
 
         function finishNoteDrag(event) {
 
@@ -2705,7 +2742,8 @@ startY = event.clientY;
 
             const savedNote = savedNotes.find(
                 item =>
-                    String(item.id) === String(note.id)
+                    String(item.id) ===
+                    String(note.id)
             );
 
             if (!savedNote) {
@@ -2733,6 +2771,8 @@ startY = event.clientY;
             "pointercancel",
             finishNoteDrag
         );
+
+
 
         /* =====================
            1回タップ：操作ボタン表示
