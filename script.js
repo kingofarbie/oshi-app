@@ -2167,6 +2167,17 @@ async function loadHtml(id, file){
         container.innerHTML = html;
 
 
+        // 1日手帳の読み込み完了後に手書き機能を接続
+if (
+    id === "plannerContainer" &&
+    typeof window.handwritingStart === "function"
+) {
+
+    window.handwritingStart();
+
+}
+
+
     } catch(error){
 
         console.error(

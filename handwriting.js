@@ -55,8 +55,8 @@
     let handwritingLoadVersion = 0;
 
     let handwritingResizeObserver = null;
-    let handwritingMutationObserver = null;
 
+    let handwritingResizeListenerAdded = false;
     const handwritingCanvasState = new WeakMap();
 
 
@@ -1285,43 +1285,24 @@
     }
 
 
-    function handwritingStart() {
+function handwritingStart() {
 
-        handwritingCheckPage();
+    // 読み込み済みの画面に手書き機能を接続
+    handwritingCheckPage();
 
-        const timeline =
-            document.getElementById("plannerTimeline");
-
-        if (
-            timeline &&
-            !handwritingMutationObserver &&
-            typeof MutationObserver !== "undefined"
-        ) {
-
-            handwritingMutationObserver =
-                new MutationObserver(function () {
-
-                    handwritingCheckPage();
-
-                });
-
-            handwritingMutationObserver.observe(
-                timeline,
-                {
-                    childList: true,
-                    subtree: true
-                }
-            );
-
-        }
+    // 画面サイズ変更の監視は一度だけ登録
+    if (!handwritingResizeListenerAdded) {
 
         window.addEventListener(
             "resize",
             handwritingResizeCanvas
         );
 
+        handwritingResizeListenerAdded = true;
+
     }
 
+}
 
     /* =====================================================
        🌐 共通機能として公開
