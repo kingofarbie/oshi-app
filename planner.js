@@ -1289,14 +1289,25 @@ return;
 
     /* =====================
        ✍️ 手書き機能を接続
+       予定表の描画後に実行
     ===================== */
 
-    if (typeof window.handwritingStart === "function") {
-        window.handwritingStart();
-    }
+    requestAnimationFrame(() => {
+
+        if (
+            typeof window.handwritingCheckPage === "function"
+        ) {
+            window.handwritingCheckPage();
+        }
+        else if (
+            typeof window.handwritingStart === "function"
+        ) {
+            window.handwritingStart();
+        }
+
+    });
 
 }
-
 
 
 /* =====================
