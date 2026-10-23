@@ -1531,7 +1531,7 @@ function initializePlannerNoteEditor() {
                手動改行は行ごとに計測
             ========================= */
 
-            if (isNewNote) {
+             if (isNewNote || note.text !== text) {
 
                 const measureCanvas =
                     document.createElement("canvas");

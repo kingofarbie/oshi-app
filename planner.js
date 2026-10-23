@@ -1325,7 +1325,7 @@ function fitPlannerNoteText(element) {
         )
         : (element.dataset.plannerNoteBorderStyle || "solid");
 
-    /* 前回の変形を解除して文字本来の寸法を取得 */
+    /* 変形前の文字本来の寸法を取得 */
     textElement.style.transform = "none";
 
     Object.assign(textElement.style, {
@@ -1338,8 +1338,8 @@ function fitPlannerNoteText(element) {
         transformOrigin: "top left"
     });
 
-    const naturalWidth = textElement.scrollWidth;
-    const naturalHeight = textElement.scrollHeight;
+    const naturalWidth = textElement.offsetWidth;
+    const naturalHeight = textElement.offsetHeight;
 
     if (naturalWidth <= 0 || naturalHeight <= 0) return;
 
@@ -1353,6 +1353,7 @@ function fitPlannerNoteText(element) {
 
     /* 雲形は中央の安全領域に文字を収める */
     if (style === "cloud") {
+
         availableWidth = Math.max(1, width * 0.60);
         availableHeight = Math.max(1, height * 0.50);
 
@@ -1361,7 +1362,9 @@ function fitPlannerNoteText(element) {
             left: "20%",
             top: "25%"
         });
+
     } else {
+
         Object.assign(textElement.style, {
             position: "relative",
             left: "auto",
@@ -1369,9 +1372,9 @@ function fitPlannerNoteText(element) {
         });
     }
 
-    /* 横幅・高さそれぞれに合わせて変形 */
-    const scaleX = Math.min(1, availableWidth / naturalWidth);
-    const scaleY = Math.min(1, availableHeight / naturalHeight);
+    /* 枠に合わせて文字を縦横に拡大・縮小 */
+    const scaleX = availableWidth / naturalWidth;
+    const scaleY = availableHeight / naturalHeight;
 
     textElement.style.transform =
         `scale(${scaleX}, ${scaleY})`;
@@ -2661,12 +2664,29 @@ fitPlannerNoteText(element);
 
 layer.appendChild(element);
 
-fitPlannerNoteText(element);
 
     });
 
     /* 予定ボードと家族レーンより手前に配置 */
     layout.appendChild(layer);
+
+
+
+    
+requestAnimationFrame(() => {
+
+    layer.querySelectorAll(
+        ".planner-free-note"
+    ).forEach(noteElement => {
+
+        fitPlannerNoteText(noteElement);
+
+    });
+
+});
+
+
+
 
     /* メモ以外をタップしたら操作ボタンを隠す */
     if (!layout.dataset.noteOutsideTapBound) {
