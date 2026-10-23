@@ -3384,8 +3384,6 @@ function renderPlannerDrawings(date) {
             event.preventDefault();
             event.stopPropagation();
 
-            selectGroup(group);
-
             const layerRect =
                 layer.getBoundingClientRect();
 
@@ -3412,6 +3410,31 @@ function renderPlannerDrawings(date) {
                 group.setPointerCapture(event.pointerId);
             } catch (_) {}
         });
+
+
+                /* =====================
+           📱 タッチ操作が日付スワイプへ伝わるのを防ぐ
+        ===================== */
+
+        ["touchstart", "touchmove", "touchend", "touchcancel"]
+            .forEach(type => {
+
+                group.addEventListener(
+                    type,
+                    event => {
+                        event.stopPropagation();
+
+                        if (type === "touchmove") {
+                            event.preventDefault();
+                        }
+                    },
+                    { passive: false }
+                );
+
+            });
+
+
+
 
         group.addEventListener("pointermove", event => {
 
@@ -3981,13 +4004,16 @@ function setupPlannerSwipe(){
 
         if(event.touches.length !== 1) return;
 
-        if(event.target.closest(".planner-event")) return;
+        if(event.target.closest(
+            ".planner-event, .planner-drawing-group"
+        )) return;
 
         if(event.target.closest(
             ".planner-stickers-layer, .planner-free-note, .memory-photo-box, .memory-photo, video, textarea, input, select, button"
         )){
             return;
         }
+
 
         plannerSwipeStartX =
             event.touches[0].clientX;
@@ -4006,13 +4032,16 @@ function setupPlannerSwipe(){
 
         if(!selectedCalendarDate) return;
 
-        if(event.target.closest(".planner-event")) return;
+        if(event.target.closest(
+            ".planner-event, .planner-drawing-group"
+        )) return;
 
         if(event.target.closest(
             ".planner-stickers-layer, .planner-free-note, .memory-photo-box, .memory-photo, video, textarea, input, select, button"
         )){
             return;
         }
+
 
         const diffX =
             event.changedTouches[0].clientX -
