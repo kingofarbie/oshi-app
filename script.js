@@ -1169,9 +1169,14 @@ document.documentElement.style.overflow = "hidden";
 
     let toolbarDragState = null;
 
+    /* スマホでもドラッグ操作できるようにする */
+    toolbar.style.touchAction = "auto";
+    toolbar.style.userSelect = "none";
+    toolbar.style.webkitUserSelect = "none";
+
     toolbar.addEventListener("pointerdown", event => {
 
-        /* ボタンや入力欄の操作では移動しない */
+        /* ボタンや入力欄は通常操作を優先 */
         if (
             event.target.closest(
                 "button, input, select, label"
@@ -1197,8 +1202,7 @@ document.documentElement.style.overflow = "hidden";
             startX: event.clientX,
             startY: event.clientY,
             startLeft: rect.left,
-            startTop: rect.top,
-            moved: false
+            startTop: rect.top
         };
 
         try {
@@ -1224,40 +1228,35 @@ document.documentElement.style.overflow = "hidden";
         const dy =
             event.clientY - toolbarDragState.startY;
 
-        if (
-            Math.abs(dx) > 3 ||
-            Math.abs(dy) > 3
-        ) {
-            toolbarDragState.moved = true;
-        }
-
-        if (!toolbarDragState.moved) return;
-
         const maxLeft =
-            Math.max(0, window.innerWidth - toolbar.offsetWidth);
+            Math.max(
+                0,
+                window.innerWidth - toolbar.offsetWidth
+            );
 
         const maxTop =
-            Math.max(0, window.innerHeight - toolbar.offsetHeight);
-
-        toolbar.style.left = `${
             Math.max(
+                0,
+                window.innerHeight - toolbar.offsetHeight
+            );
+
+        toolbar.style.left =
+            `${Math.max(
                 0,
                 Math.min(
                     maxLeft,
                     toolbarDragState.startLeft + dx
                 )
-            )
-        }px`;
+            )}px`;
 
-        toolbar.style.top = `${
-            Math.max(
+        toolbar.style.top =
+            `${Math.max(
                 0,
                 Math.min(
                     maxTop,
                     toolbarDragState.startTop + dy
                 )
-            )
-        }px`;
+            )}px`;
     });
 
     function finishToolbarDrag(event) {
@@ -1275,13 +1274,25 @@ document.documentElement.style.overflow = "hidden";
         toolbarDragState = null;
     }
 
-    toolbar.addEventListener("pointerup", finishToolbarDrag);
-    toolbar.addEventListener("pointercancel", finishToolbarDrag);
+    toolbar.addEventListener(
+        "pointerup",
+        finishToolbarDrag
+    );
+
+    toolbar.addEventListener(
+        "pointercancel",
+        finishToolbarDrag
+    );
+
+    toolbar.addEventListener(
+        "lostpointercapture",
+        finishToolbarDrag
+    );
+
+
+
 
     const context = canvas.getContext("2d");
-
-
-
     
     const session = {
         date,
