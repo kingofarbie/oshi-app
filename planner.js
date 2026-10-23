@@ -1354,7 +1354,7 @@ let availableHeight = Math.max(1, height - 32);
 /* 波線・ギザギザの突起と文字が重ならないようにする */
 if (style === "wavy" || style === "zigzag") {
     availableWidth = Math.max(1, width - 40);
-    availableHeight = Math.max(1, height - 36);
+    availableHeight = Math.max(1, height - 26);
 }
 
 
