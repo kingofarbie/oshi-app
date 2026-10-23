@@ -856,6 +856,7 @@ function openPlannerHandwriting() {
 ===================================================== */
 
 
+
 function plannerDirectDrawingStart() {
 
     const timeline =
@@ -967,53 +968,50 @@ function plannerDirectDrawingStart() {
 
     toolbar.className = "planner-direct-drawing-toolbar";
 
+    const titleElement =
+        document.querySelector("#plannerTitle");
 
-const titleElement =
-    document.querySelector("#plannerTitle");
+    const dateTitle =
+        titleElement?.querySelector(".planner-date-title");
 
-const dateTitle =
-    titleElement?.querySelector(".planner-date-title");
+    const holidayTitle =
+        titleElement?.querySelector(".planner-holiday");
 
-const holidayTitle =
-    titleElement?.querySelector(".planner-holiday");
+    const titleRect =
+        titleElement?.getBoundingClientRect();
 
-const titleRect =
-    titleElement?.getBoundingClientRect();
+    const dateRect =
+        dateTitle?.getBoundingClientRect();
 
-const dateRect =
-    dateTitle?.getBoundingClientRect();
+    const holidayRect =
+        holidayTitle?.getBoundingClientRect();
 
-const holidayRect =
-    holidayTitle?.getBoundingClientRect();
+    const toolbarTop = Math.ceil(
+        Math.max(
+            titleRect?.bottom ?? 0,
+            dateRect?.bottom ?? 0,
+            holidayRect?.bottom ?? 0
+        ) + 4
+    );
 
-const toolbarTop = Math.ceil(
-    Math.max(
-        titleRect?.bottom ?? 0,
-        dateRect?.bottom ?? 0,
-        holidayRect?.bottom ?? 0
-    ) + 4
-);
-
-Object.assign(toolbar.style, {
-    position: "fixed",
-    top: `${toolbarTop}px`,
-    left: "4px",
-    zIndex: "9999",
-    display: "grid",
-    gridTemplateColumns: "repeat(4, 34px)",
-    gridTemplateRows: "repeat(2, 34px)",
-    gap: "1px",
-    alignItems: "center",
-    justifyItems: "center",
-    padding: "2px",
-    borderRadius: "8px",
-    background: "#ffffff",
-    border: "1px solid #dddddd",
-    boxShadow: "0 2px 6px #0002"
-});
-
-
-    
+    Object.assign(toolbar.style, {
+        position: "fixed",
+        top: `${toolbarTop}px`,
+        left: "4px",
+        zIndex: "9999",
+        display: "grid",
+        gridTemplateColumns: "repeat(4, 34px)",
+        gridTemplateRows: "repeat(2, 34px)",
+        gap: "1px",
+        alignItems: "center",
+        justifyItems: "center",
+        padding: "2px",
+        borderRadius: "8px",
+        background: "#ffffff",
+        border: "1px solid #dddddd",
+        boxShadow: "0 2px 6px #0002",
+        overflow: "visible"
+    });
 
     toolbar.innerHTML = `
         <button type="button"
@@ -1048,9 +1046,9 @@ Object.assign(toolbar.style, {
         </select>
 
         <button type="button"
-                data-draw-action="undo"
-                title="1つ戻す"
-                aria-label="1つ戻す">↶</button>
+                data-draw-action="history-toggle"
+                title="戻す・やり直す"
+                aria-label="戻す・やり直す">↔️</button>
 
         <button type="button"
                 data-draw-action="clear"
@@ -1062,19 +1060,14 @@ Object.assign(toolbar.style, {
                 title="保存"
                 aria-label="保存">💾</button>
 
-
-
-<button type="button"
-        data-draw-action="cancel"
-        title="キャンセル"
-        aria-label="キャンセル"
-        style="position:relative;width:34px;height:34px;border:none;background:#f5f5f5;border-radius:5px">
-    <span style="position:absolute;left:7px;top:16px;width:20px;height:3px;background:#111;transform:rotate(45deg);border-radius:2px"></span>
-    <span style="position:absolute;left:7px;top:16px;width:20px;height:3px;background:#111;transform:rotate(-45deg);border-radius:2px"></span>
-</button>
-
-
-
+        <button type="button"
+                data-draw-action="cancel"
+                title="キャンセル"
+                aria-label="キャンセル"
+                style="position:relative;width:34px;height:34px;border:none;background:#f5f5f5;border-radius:5px">
+            <span style="position:absolute;left:7px;top:16px;width:20px;height:3px;background:#111;transform:rotate(45deg);border-radius:2px"></span>
+            <span style="position:absolute;left:7px;top:16px;width:20px;height:3px;background:#111;transform:rotate(-45deg);border-radius:2px"></span>
+        </button>
     `;
 
     toolbar.querySelectorAll("button").forEach(button => {
@@ -1095,6 +1088,65 @@ Object.assign(toolbar.style, {
         });
     });
 
+    /* ↩️・↪️の浮き出しメニュー
+       absolute配置なので元の8個の配置を崩さない */
+    const historyMenu = document.createElement("div");
+
+    historyMenu.className = "planner-drawing-history-menu";
+
+    Object.assign(historyMenu.style, {
+        position: "absolute",
+        left: "2px",
+        top: "calc(100% + 5px)",
+        display: "flex",
+        gap: "5px",
+        padding: "4px",
+        borderRadius: "8px",
+        background: "#ffffff",
+        border: "1px solid #dddddd",
+        boxShadow: "0 3px 10px #0002",
+        maxHeight: "0",
+        opacity: "0",
+        overflow: "hidden",
+        transform: "translateY(-8px)",
+        pointerEvents: "none",
+        transition:
+            "max-height .22s ease, opacity .22s ease, transform .22s ease",
+        boxSizing: "border-box"
+    });
+
+    historyMenu.innerHTML = `
+        <button type="button"
+                data-draw-action="undo"
+                title="戻す"
+                aria-label="戻す">↩️</button>
+
+        <button type="button"
+                data-draw-action="redo"
+                title="やり直す"
+                aria-label="やり直す">↪️</button>
+    `;
+
+    historyMenu.querySelectorAll("button").forEach(button => {
+        Object.assign(button.style, {
+            flex: "0 0 34px",
+            width: "34px",
+            height: "34px",
+            boxSizing: "border-box",
+            padding: "0",
+            border: "none",
+            borderRadius: "5px",
+            background: "#f5f5f5",
+            color: "#222222",
+            fontSize: "22px",
+            fontWeight: "bold",
+            lineHeight: "1",
+            cursor: "pointer",
+            touchAction: "manipulation"
+        });
+    });
+
+    toolbar.appendChild(historyMenu);
     document.body.appendChild(toolbar);
 
     const context = canvas.getContext("2d");
@@ -1108,6 +1160,7 @@ Object.assign(toolbar.style, {
         width,
         height,
         strokes: [],
+        redoStrokes: [],
         currentStroke: null,
         tool: "pen",
         pointerId: null
@@ -1242,6 +1295,10 @@ Object.assign(toolbar.style, {
 
         session.strokes.push(session.currentStroke);
 
+        /* 新しく描いた線がある場合、
+           以前のやり直し履歴は無効にする */
+        session.redoStrokes = [];
+
         session.currentStroke = null;
         session.pointerId = null;
 
@@ -1260,12 +1317,63 @@ Object.assign(toolbar.style, {
 
         const action = button.dataset.drawAction;
 
-        if (action === "undo") {
-            session.strokes.pop();
-            redraw();
+        /* ↔️で履歴メニューを開閉 */
+        if (action === "history-toggle") {
+
+            const isOpen =
+                historyMenu.dataset.open === "true";
+
+            historyMenu.dataset.open =
+                isOpen ? "false" : "true";
+
+            historyMenu.style.maxHeight =
+                isOpen ? "0" : "42px";
+
+            historyMenu.style.opacity =
+                isOpen ? "0" : "1";
+
+            historyMenu.style.transform =
+                isOpen
+                    ? "translateY(-8px)"
+                    : "translateY(0)";
+
+            historyMenu.style.pointerEvents =
+                isOpen ? "none" : "auto";
+
             return;
         }
 
+        /* ↩️ 最後の線を戻す */
+        if (action === "undo") {
+
+            if (session.currentStroke) {
+                finishStroke();
+            }
+
+            if (session.strokes.length > 0) {
+                session.redoStrokes.push(
+                    session.strokes.pop()
+                );
+                redraw();
+            }
+
+            return;
+        }
+
+        /* ↪️ 戻した線を復元 */
+        if (action === "redo") {
+
+            if (session.redoStrokes.length > 0) {
+                session.strokes.push(
+                    session.redoStrokes.pop()
+                );
+                redraw();
+            }
+
+            return;
+        }
+
+        /* 全消去 */
         if (action === "clear") {
 
             if (!confirm("描いた線をすべて消しますか？")) {
@@ -1273,12 +1381,15 @@ Object.assign(toolbar.style, {
             }
 
             session.strokes = [];
+            session.redoStrokes = [];
             session.currentStroke = null;
+            session.pointerId = null;
 
             redraw();
             return;
         }
 
+        /* キャンセル */
         if (action === "cancel") {
 
             if (confirm("保存せずに終了しますか？")) {
@@ -1288,6 +1399,7 @@ Object.assign(toolbar.style, {
             return;
         }
 
+        /* 保存 */
         if (action === "save") {
 
             if (session.currentStroke) {
@@ -1352,6 +1464,7 @@ Object.assign(toolbar.style, {
 
     redraw();
 }
+
 
 
 
