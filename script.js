@@ -855,6 +855,7 @@ function openPlannerHandwriting() {
    ・保存 / キャンセル
 ===================================================== */
 
+
 function plannerDirectDrawingStart() {
 
     const timeline =
@@ -864,7 +865,7 @@ function plannerDirectDrawingStart() {
         timeline?.querySelector(".planner-layout");
 
     const board =
-        timeline?.querySelector(".planner-board");
+        layout?.querySelector(".planner-board");
 
     if (!timeline || !layout || !board) {
         alert("時間軸を表示できませんでした。");
@@ -881,10 +882,51 @@ function plannerDirectDrawingStart() {
         return;
     }
 
+    /* 時間軸と家族レーンを含む描画範囲 */
     const boardRect = board.getBoundingClientRect();
 
-    const width = Math.max(1, Math.round(boardRect.width));
-    const height = Math.max(1, Math.round(boardRect.height));
+    const familyLanes =
+        layout.querySelector(".planner-family-lanes");
+
+    const familyRect =
+        familyLanes?.getBoundingClientRect();
+
+    const layoutRect = layout.getBoundingClientRect();
+
+    const bounds = {
+        left: Math.min(
+            boardRect.left,
+            familyRect ? familyRect.left : boardRect.left
+        ),
+        top: Math.min(
+            boardRect.top,
+            familyRect ? familyRect.top : boardRect.top
+        ),
+        right: Math.max(
+            boardRect.right,
+            familyRect ? familyRect.right : boardRect.right
+        ),
+        bottom: Math.max(
+            boardRect.bottom,
+            familyRect ? familyRect.bottom : boardRect.bottom
+        )
+    };
+
+    const width = Math.max(
+        1,
+        Math.round(bounds.right - bounds.left)
+    );
+
+    const height = Math.max(
+        1,
+        Math.round(bounds.bottom - bounds.top)
+    );
+
+    const layerTop =
+        bounds.top - layoutRect.top + layout.scrollTop;
+
+    const layerLeft =
+        bounds.left - layoutRect.left + layout.scrollLeft;
 
     /* 描画レイヤー */
     const layer = document.createElement("div");
@@ -893,8 +935,8 @@ function plannerDirectDrawingStart() {
 
     Object.assign(layer.style, {
         position: "absolute",
-        top: `${board.offsetTop}px`,
-        left: `${board.offsetLeft}px`,
+        top: `${layerTop}px`,
+        left: `${layerLeft}px`,
         width: `${width}px`,
         height: `${height}px`,
         zIndex: "90",
@@ -927,32 +969,32 @@ function plannerDirectDrawingStart() {
 
     Object.assign(toolbar.style, {
         position: "fixed",
-        top: "110px",
-        left: "4px",
+        top: "0px",
+        left: "0px",
         zIndex: "9999",
-        display: "flex",
-        flexDirection: "column",
+        display: "grid",
+        gridTemplateColumns: "repeat(4, 34px)",
+        gridTemplateRows: "repeat(2, 34px)",
+        gap: "1px",
         alignItems: "center",
-        gap: "5px",
-        padding: "6px 4px",
-        borderRadius: "12px",
+        justifyItems: "center",
+        padding: "2px",
+        borderRadius: "0 0 8px 0",
         background: "#ffffff",
         border: "1px solid #dddddd",
-        boxShadow: "0 2px 8px #0002"
+        boxShadow: "0 2px 6px #0002"
     });
 
     toolbar.innerHTML = `
         <button type="button"
                 data-draw-tool="pen"
                 title="ペン"
-                aria-label="ペン"
-                style="font-size:21px">✏️</button>
+                aria-label="ペン">✏️</button>
 
         <button type="button"
                 data-draw-tool="eraser"
                 title="消しゴム"
-                aria-label="消しゴム"
-                style="font-size:21px">🩹</button>
+                aria-label="消しゴム">🩹</button>
 
         <label title="色"
                aria-label="色"
@@ -968,7 +1010,7 @@ function plannerDirectDrawingStart() {
         <select class="planner-direct-drawing-width"
                 title="線の太さ"
                 aria-label="線の太さ"
-                style="width:36px;height:32px;padding:0;font-size:13px">
+                style="width:34px;height:30px;padding:0;font-size:12px">
             <option value="2">細</option>
             <option value="4" selected>中</option>
             <option value="7">太</option>
@@ -977,44 +1019,38 @@ function plannerDirectDrawingStart() {
 
         <button type="button"
                 data-draw-action="undo"
-                title="取り消し"
-                aria-label="取り消し"
-                style="font-size:21px">↶</button>
+                title="1つ戻す"
+                aria-label="1つ戻す">↶</button>
 
         <button type="button"
                 data-draw-action="clear"
                 title="全消去"
-                aria-label="全消去"
-                style="font-size:21px">🗑️</button>
+                aria-label="全消去">🗑</button>
 
         <button type="button"
                 data-draw-action="save"
-                title="保存して終了"
-                aria-label="保存して終了"
-                style="font-size:23px">💾</button>
+                title="保存"
+                aria-label="保存">💾</button>
 
         <button type="button"
                 data-draw-action="cancel"
-                title="保存せず終了"
-                aria-label="保存せず終了"
-                style="font-size:23px">✕</button>
+                title="キャンセル"
+                aria-label="キャンセル">✕</button>
     `;
-
-    Object.assign(
-        toolbar.querySelectorAll("button").length
-            ? toolbar.querySelectorAll("button")
-            : [],
-        {}
-    );
 
     toolbar.querySelectorAll("button").forEach(button => {
         Object.assign(button.style, {
-            width: "36px",
-            height: "36px",
+            width: "34px",
+            height: "34px",
+            boxSizing: "border-box",
             padding: "0",
             border: "none",
-            borderRadius: "8px",
+            borderRadius: "5px",
             background: "#f5f5f5",
+            color: "#222222",
+            fontSize: "22px",
+            fontWeight: "bold",
+            lineHeight: "1",
             cursor: "pointer",
             touchAction: "manipulation"
         });
@@ -1122,7 +1158,6 @@ function plannerDirectDrawingStart() {
         } catch (_) {}
 
         redraw();
-
     });
 
     /* 描画中 */
@@ -1142,7 +1177,6 @@ function plannerDirectDrawingStart() {
         session.currentStroke.points.push(getPoint(event));
 
         redraw();
-
     });
 
     function finishStroke(event) {
@@ -1188,7 +1222,6 @@ function plannerDirectDrawingStart() {
         const action = button.dataset.drawAction;
 
         if (action === "undo") {
-
             session.strokes.pop();
             redraw();
             return;
@@ -1280,6 +1313,8 @@ function plannerDirectDrawingStart() {
 
     redraw();
 }
+
+
 
 /* 直接描画モードの終了 */
 function plannerDirectDrawingStop() {

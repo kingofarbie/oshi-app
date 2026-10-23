@@ -2989,6 +2989,8 @@ let plannerDirectDrawing = null;
 
 
 /* 保存済み手書きメモの表示 */
+
+/* 保存済み手書きメモの表示 */
 function renderPlannerDrawings(date) {
 
     const timeline =
@@ -2998,7 +3000,7 @@ function renderPlannerDrawings(date) {
         timeline?.querySelector(".planner-layout");
 
     const board =
-        timeline?.querySelector(".planner-board");
+        layout?.querySelector(".planner-board");
 
     if (!timeline || !layout || !board) return;
 
@@ -3006,6 +3008,45 @@ function renderPlannerDrawings(date) {
     layout
         .querySelectorAll(".planner-drawings-layer")
         .forEach(layer => layer.remove());
+
+    const familyLanes =
+        layout.querySelector(".planner-family-lanes");
+
+    const boardRect = board.getBoundingClientRect();
+
+    const familyRect =
+        familyLanes?.getBoundingClientRect();
+
+    const layoutRect = layout.getBoundingClientRect();
+
+    const bounds = {
+        left: Math.min(
+            boardRect.left,
+            familyRect ? familyRect.left : boardRect.left
+        ),
+        top: Math.min(
+            boardRect.top,
+            familyRect ? familyRect.top : boardRect.top
+        ),
+        right: Math.max(
+            boardRect.right,
+            familyRect ? familyRect.right : boardRect.right
+        ),
+        bottom: Math.max(
+            boardRect.bottom,
+            familyRect ? familyRect.bottom : boardRect.bottom
+        )
+    };
+
+    const width = Math.max(
+        1,
+        Math.round(bounds.right - bounds.left)
+    );
+
+    const height = Math.max(
+        1,
+        Math.round(bounds.bottom - bounds.top)
+    );
 
     const data = db.load();
 
@@ -3021,10 +3062,10 @@ function renderPlannerDrawings(date) {
 
     Object.assign(layer.style, {
         position: "absolute",
-        top: `${board.offsetTop}px`,
-        left: `${board.offsetLeft}px`,
-        width: `${board.offsetWidth}px`,
-        height: `${board.offsetHeight}px`,
+        top: `${bounds.top - layoutRect.top + layout.scrollTop}px`,
+        left: `${bounds.left - layoutRect.left + layout.scrollLeft}px`,
+        width: `${width}px`,
+        height: `${height}px`,
         overflow: "visible",
         pointerEvents: "none",
         zIndex: "32"
@@ -3036,36 +3077,35 @@ function renderPlannerDrawings(date) {
 
         canvas.className = "planner-drawing-note";
 
+        const noteWidth = Number(note.width) || 180;
+        const noteHeight = Number(note.height) || 120;
+
         Object.assign(canvas.style, {
             position: "absolute",
             top: `${Number(note.top) || 0}px`,
             left: `${Number(note.left) || 0}px`,
-            width: `${Number(note.width) || 180}px`,
-            height: `${Number(note.height) || 120}px`,
+            width: `${noteWidth}px`,
+            height: `${noteHeight}px`,
             pointerEvents: "none"
         });
 
         layer.appendChild(canvas);
 
-        const width = Number(note.width) || 180;
-        const height = Number(note.height) || 120;
+        const ratio = window.devicePixelRatio || 1;
 
-        canvas.width = width * (window.devicePixelRatio || 1);
-        canvas.height = height * (window.devicePixelRatio || 1);
+        canvas.width = Math.round(noteWidth * ratio);
+        canvas.height = Math.round(noteHeight * ratio);
 
         const context = canvas.getContext("2d");
 
-        context.scale(
-            window.devicePixelRatio || 1,
-            window.devicePixelRatio || 1
-        );
+        context.scale(ratio, ratio);
 
         (note.strokes || []).forEach(stroke => {
             plannerNoteDrawingDrawStroke(
                 context,
                 stroke,
-                width,
-                height
+                noteWidth,
+                noteHeight
             );
         });
     });
