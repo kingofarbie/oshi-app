@@ -29,7 +29,7 @@
 #plannerTitle{
     position:sticky;
     top:0;
-    z-index:20;
+    z-index:100;
 
     margin:0 0 16px 0;
     padding:12px 8px;
