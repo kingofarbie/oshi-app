@@ -1349,7 +1349,7 @@ function fitPlannerNoteText(element) {
     if (width <= 0 || height <= 0) return;
 
 let availableWidth = Math.max(1, width - 36);
-let availableHeight = Math.max(1, height - 32);
+let availableHeight = Math.max(1, height - 22);
 
 /* 波線・ギザギザの突起と文字が重ならないようにする */
 if (style === "wavy" || style === "zigzag") {
