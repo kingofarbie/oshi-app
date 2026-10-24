@@ -4194,72 +4194,204 @@ function plannerEventMouseLeave(){
 ===================== */
 
 
-function plannerEventTap(event, id){
+/* =====================================================
+   📌 展開中の個人予定を元に戻す
+===================================================== */
 
-    if(event.target.closest(".planner-event-actions")){
+function plannerCollapseExpandedEvent(eventBox) {
+
+    if (!eventBox) return;
+
+    const displayHeight =
+        Number(eventBox.dataset.displayHeight);
+
+    const originalTop =
+        Number(eventBox.dataset.originalTop);
+
+    if (
+        !Number.isFinite(displayHeight) ||
+        !Number.isFinite(originalTop)
+    ) {
         return;
     }
 
-    if(plannerLongPressTriggered){
+    eventBox.style.height = `${displayHeight}px`;
+    eventBox.style.top = `${originalTop}px`;
+
+    eventBox.style.left =
+        eventBox.dataset.originalLeft;
+
+    eventBox.style.right =
+        eventBox.dataset.originalRight;
+
+    eventBox.style.width =
+        eventBox.dataset.originalWidth;
+
+    eventBox.style.zIndex =
+        eventBox.dataset.originalZIndex || "";
+
+    eventBox.classList.remove(
+        "planner-event-expanded",
+        "planner-event-compact"
+    );
+}
+
+
+/* =====================================================
+   📌 個人予定の外側をタップしたら閉じる
+===================================================== */
+
+if (
+    !document.documentElement.dataset
+        .plannerExpandedEventCloseBound
+) {
+
+    document.documentElement.dataset
+        .plannerExpandedEventCloseBound = "true";
+
+    document.addEventListener("click", function(event) {
+
+        if (
+            event.target.closest(".planner-event")
+        ) {
+            return;
+        }
+
+        document
+            .querySelectorAll(
+                ".planner-event-expanded"
+            )
+            .forEach(eventBox => {
+
+                plannerCollapseExpandedEvent(
+                    eventBox
+                );
+
+            });
+
+    });
+}
+
+
+/* =====================================================
+   📌 個人予定タップ：展開・元に戻す
+===================================================== */
+
+function plannerEventTap(event, id) {
+
+    if (
+        event.target.closest(
+            ".planner-event-actions"
+        )
+    ) {
+        return;
+    }
+
+    if (plannerLongPressTriggered) {
         plannerLongPressTriggered = false;
         return;
     }
 
     const eventBox = event.currentTarget;
-    if(!eventBox) return;
 
-    const displayHeight = Number(eventBox.dataset.displayHeight);
-    const originalTop = Number(eventBox.dataset.originalTop);
+    if (!eventBox) return;
 
-    if(!Number.isFinite(displayHeight) ||
-       !Number.isFinite(originalTop)){
+    const displayHeight =
+        Number(eventBox.dataset.displayHeight);
+
+    const originalTop =
+        Number(eventBox.dataset.originalTop);
+
+    if (
+        !Number.isFinite(displayHeight) ||
+        !Number.isFinite(originalTop)
+    ) {
         return;
     }
 
-    /* 再タップ：幅・高さ・位置を元に戻す */
-    if(eventBox.classList.contains("planner-event-expanded")){
+    /* 同じ予定を再タップしたら閉じる */
+    if (
+        eventBox.classList.contains(
+            "planner-event-expanded"
+        )
+    ) {
 
-        eventBox.style.height = `${displayHeight}px`;
-        eventBox.style.top = `${originalTop}px`;
-
-        eventBox.style.left = eventBox.dataset.originalLeft;
-        eventBox.style.right = eventBox.dataset.originalRight;
-        eventBox.style.width = eventBox.dataset.originalWidth;
-
-        eventBox.classList.remove(
-            "planner-event-expanded",
-            "planner-event-compact"
-        );
-
-        eventBox.style.zIndex =
-            eventBox.dataset.originalZIndex || "";
+        plannerCollapseExpandedEvent(eventBox);
 
         return;
     }
 
-    /* 元の幅・位置・重なり順を保存 */
-    if(eventBox.dataset.originalLeft === undefined){
-        eventBox.dataset.originalLeft = eventBox.style.left;
-        eventBox.dataset.originalRight = eventBox.style.right;
-        eventBox.dataset.originalWidth = eventBox.style.width;
-        eventBox.dataset.originalZIndex = eventBox.style.zIndex || "";
+    /* ほかの展開中の予定を先に閉じる */
+    document
+        .querySelectorAll(
+            ".planner-event-expanded"
+        )
+        .forEach(otherBox => {
+
+            if (otherBox !== eventBox) {
+
+                plannerCollapseExpandedEvent(
+                    otherBox
+                );
+
+            }
+
+        });
+
+    /* 元の表示状態を保存 */
+    if (
+        eventBox.dataset.originalLeft === undefined
+    ) {
+
+        eventBox.dataset.originalLeft =
+            eventBox.style.left;
+
+        eventBox.dataset.originalRight =
+            eventBox.style.right;
+
+        eventBox.dataset.originalWidth =
+            eventBox.style.width;
+
+        eventBox.dataset.originalZIndex =
+            eventBox.style.zIndex || "";
+
     }
 
-    const board = eventBox.closest(".planner-board");
-    if(!board) return;
+    const board =
+        eventBox.closest(".planner-board");
 
-    /* ほかの付箋の重なり順を復元 */
-    board.querySelectorAll(".planner-event").forEach(box => {
-        if(box !== eventBox){
-            box.style.zIndex =
-                box.dataset.originalZIndex || "";
-        }
-    });
+    const layout =
+        eventBox.closest(".planner-layout");
 
-    /* 内容が全部表示される高さを計算 */
-    const displayHeightNow =
-        Number(eventBox.dataset.displayHeight) || 40;
+    if (!board || !layout) return;
 
+    /* 展開前の位置を取得 */
+    const boardRect =
+        board.getBoundingClientRect();
+
+    const layoutRect =
+        layout.getBoundingClientRect();
+
+    const eventRect =
+        eventBox.getBoundingClientRect();
+
+    const currentLeft =
+        eventRect.left - boardRect.left;
+
+    /*
+       個人予定ボードの右端ではなく、
+       家族レーンを含むレイアウトの右端まで広げる
+    */
+    const rightGap = 6;
+
+    const expandedWidth = Math.max(
+        eventRect.width,
+        layoutRect.right -
+            eventRect.left -
+            rightGap
+    );
+
+    /* 内容が読める高さを計算 */
     const actualHeight =
         Number(eventBox.dataset.actualHeight) || 0;
 
@@ -4267,43 +4399,41 @@ function plannerEventTap(event, id){
         eventBox.scrollHeight;
 
     const expandedHeight = Math.max(
-        displayHeightNow,
+        displayHeight,
         actualHeight,
         contentHeight
     );
 
-    /* 展開前の横位置を取得 */
-    const boardRect = board.getBoundingClientRect();
-    const eventRect = eventBox.getBoundingClientRect();
-
-    const currentLeft = eventRect.left - boardRect.left;
-
-    /*
-     * 右端は個人予定ボードの右端に合わせる。
-     * 家族レーン側へはみ出さず、時間軸にも重ねない。
-     */
-    const rightGap = 6;
-    const expandedWidth = Math.max(
-        eventRect.width,
-        boardRect.right - eventRect.left - rightGap
-    );
-
-    /* 元の開始位置・展開方向は維持 */
+    /* 上方向に展開する予定の設定を維持 */
     let expandedTop = originalTop;
 
-    if(eventBox.dataset.expandDirection === "up"){
+    if (
+        eventBox.dataset.expandDirection === "up"
+    ) {
+
         expandedTop = Math.max(
             15,
-            originalTop - (expandedHeight - displayHeightNow)
+            originalTop -
+                (expandedHeight - displayHeight)
         );
+
     }
 
-    eventBox.style.left = `${currentLeft}px`;
-    eventBox.style.right = "auto";
-    eventBox.style.width = `${expandedWidth}px`;
+    /* 展開 */
+    eventBox.style.left =
+        `${currentLeft}px`;
 
-    eventBox.style.height = `${expandedHeight}px`;
-    eventBox.style.top = `${expandedTop}px`;
+    eventBox.style.right = "auto";
+
+    eventBox.style.width =
+        `${expandedWidth}px`;
+
+    eventBox.style.height =
+        `${expandedHeight}px`;
+
+    eventBox.style.top =
+        `${expandedTop}px`;
+
     eventBox.style.zIndex = "9999";
 
     eventBox.classList.add(
@@ -4311,7 +4441,6 @@ function plannerEventTap(event, id){
         "planner-event-compact"
     );
 }
-
 
 
 /* =====================
