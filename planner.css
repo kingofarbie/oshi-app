@@ -205,31 +205,6 @@
 }
 
 
-/* =====================
-   付箋右上折れ
-===================== */
-
-.planner-event::after{
-    content:"";
-
-    position:absolute;
-
-    top:0;
-    right:0;
-
-    width:18px;
-    height:18px;
-
-    background:var(--card);
-
-    transform:
-        translate(9px,-9px)
-        rotate(45deg);
-
-    box-shadow:
-        -2px 2px 4px rgba(0,0,0,0.12);
-}
-
 
 /* =====================
    終了済み
@@ -1142,22 +1117,50 @@
     overflow: visible !important;
 }
 
+
+
+/* =========================================
+   📌 付箋の右上折り目
+   ・本体の角丸は維持
+   ・円弧と三角形を重ねて表現
+   ・カードの overflow に依存しない
+========================================= */
+
+/* 白い円弧の下地 */
+.planner-event::before {
+    content: "";
+    position: absolute;
+
+    top: 0;
+    right: 0;
+
+    width: 18px;
+    height: 18px;
+
+    background: var(--card);
+
+    border-radius: 0 0 0 18px;
+
+    pointer-events: none;
+}
+
+/* 付箋と同じ色の折り目 */
 .planner-event::after {
     content: "";
     position: absolute;
+
     top: 0;
     right: 0;
+
     width: 18px;
     height: 18px;
-    background: var(--surface);
-    transform: translate(9px, -9px) rotate(45deg);
-    box-shadow: -2px 2px 4px rgba(0, 0, 0, 0.12);
 
-    /* 展開後も、展開前と同じ三角形に切り抜く */
+    background: var(--surface);
+
     clip-path: polygon(
-        0 100%,
-        100% 100%,
-        50% 50%
+        0 0,
+        100% 0,
+        100% 100%
     );
 
     pointer-events: none;
