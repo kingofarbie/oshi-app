@@ -1153,15 +1153,33 @@
     box-shadow: none !important;
 }
 
+
+
+
 /* =========================================
-   📌 選択中も右上の折り曲げを通常表示に統一
+   📌 右上の折り曲げ
+   通常時・選択時・展開時を完全統一
 ========================================= */
 
-.planner-event-editing::after {
-    display: none !important;
-}
-
+.planner-event::after,
+.planner-event-editing::after,
 .planner-event-expanded::after {
-    display: block !important;
-    box-shadow: -2px 2px 4px rgba(0,0,0,0.12);
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    right: 0;
+
+    width: 18px;
+    height: 18px;
+
+    background: var(--card);
+
+    transform:
+        translate(9px, -9px)
+        rotate(45deg);
+
+    box-shadow:
+        -2px 2px 4px rgba(0,0,0,0.12);
 }
