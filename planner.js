@@ -4289,27 +4289,30 @@ if (
     document.documentElement.dataset
         .plannerExpandedEventCloseBound = "true";
 
-    document.addEventListener("click", function(event) {
+document.addEventListener("click", function(event) {
 
-        if (
-            event.target.closest(".planner-event")
-        ) {
-            return;
-        }
+    /* 予定カードをタップした場合は何もしない */
+    if (
+        event.target.closest(".planner-event")
+    ) {
+        return;
+    }
 
-        document
-            .querySelectorAll(
-                ".planner-event-expanded"
-            )
-            .forEach(eventBox => {
+    /* 展開中の予定を取得 */
+    const expandedEvents =
+        document.querySelectorAll(
+            ".planner-event-expanded"
+        );
 
-                plannerCollapseExpandedEvent(
-                    eventBox
-                );
+    expandedEvents.forEach(eventBox => {
 
-            });
+        plannerCollapseExpandedEvent(eventBox);
 
     });
+
+}, true);
+
+
 }
 
 
