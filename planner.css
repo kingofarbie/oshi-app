@@ -1141,3 +1141,14 @@
 .planner-layout:has(.planner-event-expanded) {
     overflow: visible !important;
 }
+
+
+
+/* =========================================
+   📌 選択中の付箋
+   右上の折り曲げ部分の影を通常時と統一
+========================================= */
+
+.planner-event-editing::after {
+    box-shadow: none !important;
+}
