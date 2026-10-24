@@ -931,6 +931,8 @@ for(
                 data-event-end="${eventEnd.getTime()}"
                 data-overlap-short="${item.offsetRight ? "true" : "false"}"
                 data-overlap-lane="${item.overlapLane}"
+data-vertical-offset="${item.verticalOffset}"
+
 
                 style="
                     top:${displayTop}px;
@@ -4403,18 +4405,23 @@ function plannerEventTap(event, id) {
         contentHeight
     );
 
-    /* 元の時間位置を基準に展開 */
-    let expandedTop = originalTop;
+let expandedTop = originalTop;
 
-    if (
-        eventBox.dataset.expandDirection === "up"
-    ) {
-        expandedTop = Math.max(
-            15,
-            originalTop -
-                (expandedHeight - displayHeight)
-        );
-    }
+/* 重なり回避で移動した予定は、
+   展開時に上方向へ移動させない */
+if (
+    eventBox.dataset.expandDirection === "up" &&
+    Number(eventBox.dataset.overlapLane) === 0 &&
+    Number(eventBox.dataset.verticalOffset || 0) === 0
+) {
+    expandedTop = Math.max(
+        15,
+        originalTop -
+            (expandedHeight - displayHeight)
+    );
+}
+
+
 
     /* 展開 */
     eventBox.style.left =
@@ -4438,6 +4445,9 @@ function plannerEventTap(event, id) {
         "planner-event-compact"
     );
 }
+
+
+
 
 /* =====================
    長押し
