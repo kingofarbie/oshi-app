@@ -4220,25 +4220,60 @@ function plannerCollapseExpandedEvent(eventBox) {
         return;
     }
 
-    eventBox.style.height = `${displayHeight}px`;
-    eventBox.style.top = `${originalTop}px`;
+    /* 元の親と位置を取得 */
+    const originalParent =
+        eventBox._plannerOriginalParent;
 
-    eventBox.style.left =
-        eventBox.dataset.originalLeft;
+    const originalNextSibling =
+        eventBox._plannerOriginalNextSibling;
 
-    eventBox.style.right =
-        eventBox.dataset.originalRight;
+    /* 元の表示位置・サイズに戻す */
+    eventBox.style.top =
+        `${originalTop}px`;
 
-    eventBox.style.width =
-        eventBox.dataset.originalWidth;
+    eventBox.style.height =
+        `${displayHeight}px`;
 
-    eventBox.style.zIndex =
-        eventBox.dataset.originalZIndex || "";
+    /* 前面表示のために変更した横幅などを戻す */
+    if (eventBox._plannerOriginalStyles) {
 
+        const styles =
+            eventBox._plannerOriginalStyles;
+
+        eventBox.style.left = styles.left;
+        eventBox.style.right = styles.right;
+        eventBox.style.width = styles.width;
+        eventBox.style.zIndex = styles.zIndex;
+    }
+
+    /* 元の親要素へ戻す */
+    if (originalParent) {
+
+        if (
+            originalNextSibling &&
+            originalNextSibling.parentNode ===
+                originalParent
+        ) {
+            originalParent.insertBefore(
+                eventBox,
+                originalNextSibling
+            );
+
+        } else {
+            originalParent.appendChild(eventBox);
+        }
+    }
+
+    /* 展開状態を解除 */
     eventBox.classList.remove(
         "planner-event-expanded",
         "planner-event-compact"
     );
+
+    /* 次回の展開に備えて保存情報を消す */
+    delete eventBox._plannerOriginalParent;
+    delete eventBox._plannerOriginalNextSibling;
+    delete eventBox._plannerOriginalStyles;
 }
 
 
@@ -4314,7 +4349,7 @@ function plannerEventTap(event, id) {
         return;
     }
 
-    /* 同じ予定を再タップしたら閉じる */
+    /* 同じ予定を再タップしたら元に戻す */
     if (
         eventBox.classList.contains(
             "planner-event-expanded"
@@ -4324,7 +4359,7 @@ function plannerEventTap(event, id) {
         return;
     }
 
-    /* ほかの展開中の予定を閉じる */
+    /* ほかの展開中の予定を先に元へ戻す */
     document
         .querySelectorAll(
             ".planner-event-expanded"
@@ -4338,23 +4373,6 @@ function plannerEventTap(event, id) {
             }
         });
 
-    /* 元の表示状態を保存 */
-    if (
-        eventBox.dataset.originalLeft === undefined
-    ) {
-        eventBox.dataset.originalLeft =
-            eventBox.style.left;
-
-        eventBox.dataset.originalRight =
-            eventBox.style.right;
-
-        eventBox.dataset.originalWidth =
-            eventBox.style.width;
-
-        eventBox.dataset.originalZIndex =
-            eventBox.style.zIndex || "";
-    }
-
     const board =
         eventBox.closest(".planner-board");
 
@@ -4363,36 +4381,60 @@ function plannerEventTap(event, id) {
 
     if (!board || !layout) return;
 
-    /*
-       元のCSS位置を使用する。
-       展開前の画面座標から再計算しない。
-    */
-    const originalLeft =
-        parseFloat(eventBox.dataset.originalLeft);
+    /* 展開前の実際の表示位置を取得 */
+    const eventRect =
+        eventBox.getBoundingClientRect();
 
-    const currentLeft =
-        Number.isFinite(originalLeft)
-            ? originalLeft
-            : 10;
-
-    /* 家族レーンを含むレイアウトの右端まで広げる */
     const layoutRect =
         layout.getBoundingClientRect();
 
-    const boardRect =
-        board.getBoundingClientRect();
+    /* 元の親と兄弟位置を保存 */
+    eventBox._plannerOriginalParent =
+        eventBox.parentNode;
 
-    const rightGap = 6;
+    eventBox._plannerOriginalNextSibling =
+        eventBox.nextSibling;
 
-    const expandedWidth = Math.max(
-        eventBox.offsetWidth,
-        layoutRect.right -
-            boardRect.left -
-            currentLeft -
-            rightGap
-    );
+    /* 元のインラインスタイルを保存 */
+    eventBox._plannerOriginalStyles = {
+        left: eventBox.style.left,
+        right: eventBox.style.right,
+        width: eventBox.style.width,
+        zIndex: eventBox.style.zIndex
+    };
 
-    /* 内容が読める高さを計算 */
+    /* 前面レイヤーを取得。なければ作成 */
+    let frontLayer =
+        board.querySelector(
+            ":scope > .planner-event-front-layer"
+        );
+
+    if (!frontLayer) {
+
+        frontLayer =
+            document.createElement("div");
+
+        frontLayer.className =
+            "planner-event-front-layer";
+
+        board.appendChild(frontLayer);
+    }
+
+    /*
+       予定カード自体を前面レイヤーへ移す。
+       レイヤーは同じ .planner-board 内にあるため、
+       top の時間軸計算はそのまま引き継がれる。
+    */
+    frontLayer.appendChild(eventBox);
+
+    /*
+       top は再計算しない。
+       元の時間軸上の位置をそのまま維持する。
+    */
+    eventBox.style.top =
+        `${originalTop}px`;
+
+    /* 内容を表示するための高さだけを調整 */
     const actualHeight =
         Number(eventBox.dataset.actualHeight) || 0;
 
@@ -4405,39 +4447,28 @@ function plannerEventTap(event, id) {
         contentHeight
     );
 
-let expandedTop = originalTop;
+    eventBox.style.height =
+        `${expandedHeight}px`;
 
-/* 重なり回避で移動した予定は、
-   展開時に上方向へ移動させない */
-if (
-    eventBox.dataset.expandDirection === "up" &&
-    Number(eventBox.dataset.overlapLane) === 0 &&
-    Number(eventBox.dataset.verticalOffset || 0) === 0
-) {
-    expandedTop = Math.max(
-        15,
-        originalTop -
-            (expandedHeight - displayHeight)
+    /*
+       横幅は家族レーン側まで広げる。
+       左端の位置は元のまま変更しない。
+    */
+    const rightGap = 6;
+
+    const expandedWidth = Math.max(
+        eventRect.width,
+        layoutRect.right -
+            eventRect.left -
+            rightGap
     );
-}
-
-
-
-    /* 展開 */
-    eventBox.style.left =
-        `${currentLeft}px`;
 
     eventBox.style.right = "auto";
 
     eventBox.style.width =
         `${expandedWidth}px`;
 
-    eventBox.style.height =
-        `${expandedHeight}px`;
-
-    eventBox.style.top =
-        `${expandedTop}px`;
-
+    /* 前面表示 */
     eventBox.style.zIndex = "9999";
 
     eventBox.classList.add(
