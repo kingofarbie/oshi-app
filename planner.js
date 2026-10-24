@@ -742,6 +742,8 @@ for(
         const displayTop =
             top + item.verticalOffset;
 
+            const originalTimeTop = top;
+
         const finished =
             eventEnd < now;
 
@@ -920,7 +922,7 @@ for(
                 data-occurrence-date="${e.occurrenceDate || e.start.slice(0, 10)}"
                 data-actual-height="${actualHeight}"
                 data-display-height="${displayHeight}"
-                data-original-top="${displayTop}"
+                data-original-top="${originalTimeTop}"
                 data-expand-direction="${expandDirection}"
                 data-segment-start="${segmentStart.getTime()}"
                 data-segment-end="${segmentEnd.getTime()}"
