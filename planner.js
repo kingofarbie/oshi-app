@@ -4562,41 +4562,67 @@ function plannerEnterEditMode(id){
 ===================== */
 
 
+
 function plannerCancelEditMode(){
+
+    /* =====================================
+       📌 編集モード・展開状態を解除
+    ===================================== */
 
     document.querySelectorAll(".planner-event").forEach(el => {
 
+        /* 展開中なら前面レイヤーから元に戻す */
+        if (
+            el.classList.contains(
+                "planner-event-expanded"
+            ) &&
+            typeof plannerCollapseExpandedEvent === "function"
+        ) {
+            plannerCollapseExpandedEvent(el);
+        }
+
+        /* 編集モードを解除 */
         el.classList.remove(
             "planner-event-editing",
             "planner-event-compact",
             "planner-event-expanded"
         );
 
+        /* 元の高さと位置を復元 */
         const displayHeight =
             Number(el.dataset.displayHeight);
 
         const originalTop =
             Number(el.dataset.originalTop);
 
-        if(Number.isFinite(displayHeight)){
-            el.style.height = `${displayHeight}px`;
+        if (Number.isFinite(displayHeight)) {
+            el.style.height =
+                `${displayHeight}px`;
         }
 
-        if(Number.isFinite(originalTop)){
-            el.style.top = `${originalTop}px`;
+        if (Number.isFinite(originalTop)) {
+            el.style.top =
+                `${originalTop}px`;
         }
 
-        /* 展開した横幅も元に戻す */
-        if(el.dataset.originalLeft !== undefined){
-            el.style.left = el.dataset.originalLeft;
-            el.style.right = el.dataset.originalRight;
-            el.style.width = el.dataset.originalWidth;
+        /* 横幅なども元に戻す */
+        if (el.dataset.originalLeft !== undefined) {
+
+            el.style.left =
+                el.dataset.originalLeft;
+
+            el.style.right =
+                el.dataset.originalRight;
+
+            el.style.width =
+                el.dataset.originalWidth;
 
             el.style.zIndex =
                 el.dataset.originalZIndex || "";
         }
     });
 }
+
 
 
 
