@@ -1139,6 +1139,7 @@
     height: 16px;
 
     background: #fff;
+    
     border-radius: 0 0 0 16px;
 
     pointer-events: none;
@@ -1157,8 +1158,7 @@
     height: 16px;
 
     /* 付箋本体と同じ背景色 */
-background: var(--accent-soft);
-
+    background: var(--accent-soft) !important;
 
     /* 直角は左下 */
     clip-path: polygon(
