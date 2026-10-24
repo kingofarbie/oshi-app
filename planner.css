@@ -1131,15 +1131,15 @@
     content: "";
     position: absolute;
 
-    top: 0;
-    right: 0;
+    top: 1;
+    right: 1;
 
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
 
     background: var(--card);
 
-    border-radius: 0 0 0 18px;
+    border-radius: 0 0 0 16px;
 
     pointer-events: none;
 }
