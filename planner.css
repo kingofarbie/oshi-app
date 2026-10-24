@@ -1157,7 +1157,8 @@
     height: 16px;
 
     /* 付箋本体と同じ背景色 */
-    background: var(--surface);
+background: var(--accent-soft);
+
 
     /* 直角は左下 */
     clip-path: polygon(
