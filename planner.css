@@ -1146,7 +1146,6 @@
     z-index: 1;
 }
 
-/* ② 付箋と同じ色の直角二等辺三角形 */
 .planner-event::after {
     content: "";
     position: absolute;
@@ -1157,10 +1156,8 @@
     width: 16px;
     height: 16px;
 
-    /* 付箋本体と同じ背景色 */
-    background: var(--accent-soft) !important;
+    background: inherit;
 
-    /* 直角は左下 */
     clip-path: polygon(
         0 0,
         0 100%,
