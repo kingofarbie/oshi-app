@@ -1121,13 +1121,12 @@
 
 /* =========================================
    📌 付箋の右上折り目
-   ・白い円弧の直角は左下
-   ・三角形の直角も左下
-   ・三角形は付箋本体と同じ色
-   ・両方とも付箋の内側に配置
+   ・白い円弧
+   ・付箋と同じ色の三角形
+   ・展開前／展開後で共通
 ========================================= */
 
-/* ① 白い円弧 */
+/* 白い円弧 */
 .planner-event::before {
     content: "";
     position: absolute;
@@ -1139,13 +1138,13 @@
     height: 16px;
 
     background: #fff;
-    
     border-radius: 0 0 0 16px;
 
     pointer-events: none;
     z-index: 1;
 }
 
+/* 付箋と同じ色の直角三角形 */
 .planner-event::after {
     content: "";
     position: absolute;
@@ -1166,13 +1165,4 @@
 
     pointer-events: none;
     z-index: 2;
-}
-
-
-
-/* 展開中の付箋：折り目を角丸から少し離す */
-.planner-event-expanded::before,
-.planner-event-expanded::after {
-    top: 4px;
-    right: 4px;
 }
