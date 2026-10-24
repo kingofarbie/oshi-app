@@ -1142,28 +1142,23 @@
     overflow: visible !important;
 }
 
-/* =========================================
-   📌 右上の折り曲げ
-   通常時・選択時・展開時で同じ形にする
-========================================= */
-
 .planner-event::after {
     content: "";
-
     position: absolute;
-
     top: 0;
     right: 0;
-
     width: 18px;
     height: 18px;
-
     background: var(--card);
+    transform: translate(9px, -9px) rotate(45deg);
+    box-shadow: -2px 2px 4px rgba(0, 0, 0, 0.12);
 
-    transform:
-        translate(9px, -9px)
-        rotate(45deg);
+    /* 展開後も、展開前と同じ三角形に切り抜く */
+    clip-path: polygon(
+        0 100%,
+        100% 100%,
+        50% 50%
+    );
 
-    box-shadow:
-        -2px 2px 4px rgba(0, 0, 0, 0.12);
+    pointer-events: none;
 }
