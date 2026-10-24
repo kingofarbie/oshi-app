@@ -1131,8 +1131,8 @@
     content: "";
     position: absolute;
 
-    top: 1;
-    right: 1;
+    top: 2px;
+    right: 1px;
 
     width: 16px;
     height: 16px;
