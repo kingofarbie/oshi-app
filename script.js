@@ -4155,12 +4155,113 @@ async function plannerCreateScheduleImage(includeFamily) {
         exportRoot.appendChild(timelineClone);
         document.body.appendChild(exportRoot);
 
+
         // レイアウト計算を待つ
         await new Promise(resolve =>
             requestAnimationFrame(() =>
                 requestAnimationFrame(resolve)
             )
         );
+
+        // ========================================
+        // ✍️ 共有画像用の手書きメモを再描画
+        // Canvasの描画内容はcloneNodeでは複製されないため、
+        // 保存データから複製側のCanvasに描き直す
+        // ========================================
+
+        const drawingData = db.load();
+
+        const drawingNotes = Array.isArray(
+            drawingData?.plannerNotes
+        )
+            ? drawingData.plannerNotes
+            : [];
+
+        timelineClone.querySelectorAll(
+            ".planner-drawing-group"
+        ).forEach(group => {
+
+            const noteId = group.dataset.noteId;
+
+            const note = drawingNotes.find(item =>
+                String(item.id) === String(noteId) &&
+                item.type === "drawing"
+            );
+
+            const drawingCanvas = group.querySelector(
+                ".planner-drawing-group-canvas"
+            );
+
+            if (
+                !note ||
+                !drawingCanvas ||
+                typeof plannerNoteDrawingDrawStroke !== "function"
+            ) {
+                return;
+            }
+
+            const noteWidth = Math.max(
+                30,
+                Number(note.width) || 180
+            );
+
+            const noteHeight = Math.max(
+                30,
+                Number(note.height) || 120
+            );
+
+            const pixelRatio = window.devicePixelRatio || 1;
+
+            drawingCanvas.width = Math.max(
+                1,
+                Math.round(noteWidth * pixelRatio)
+            );
+
+            drawingCanvas.height = Math.max(
+                1,
+                Math.round(noteHeight * pixelRatio)
+            );
+
+            drawingCanvas.style.width =
+                noteWidth + "px";
+
+            drawingCanvas.style.height =
+                noteHeight + "px";
+
+            const context = drawingCanvas.getContext("2d");
+
+            if (!context) {
+                return;
+            }
+
+            context.setTransform(
+                pixelRatio,
+                0,
+                0,
+                pixelRatio,
+                0,
+                0
+            );
+
+            context.clearRect(
+                0,
+                0,
+                noteWidth,
+                noteHeight
+            );
+
+            (Array.isArray(note.strokes) ? note.strokes : [])
+                .forEach(stroke => {
+                    plannerNoteDrawingDrawStroke(
+                        context,
+                        stroke,
+                        noteWidth,
+                        noteHeight
+                    );
+                });
+        });
+
+        
 
         // ヘッダーの下端を実際の表示位置から計測する
         const rootRect = exportRoot.getBoundingClientRect();
