@@ -1167,3 +1167,12 @@
     pointer-events: none;
     z-index: 2;
 }
+
+
+
+/* 展開中の付箋：折り目を角丸から少し離す */
+.planner-event-expanded::before,
+.planner-event-expanded::after {
+    top: 4px;
+    right: 4px;
+}
