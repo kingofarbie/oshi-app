@@ -1121,39 +1121,40 @@
 
 /* =========================================
    📌 付箋の右上折り目
-   ・本体の角丸は維持
-   ・円弧と三角形を重ねて表現
-   ・カードの overflow に依存しない
+   ・円弧と三角形は付箋の内側
+   ・枠線を隠さない
+   ・三角形の直角頂点も内側
 ========================================= */
 
-/* 白い円弧の下地 */
+/* ① 白い円弧 */
 .planner-event::before {
     content: "";
     position: absolute;
 
-    top: 5px;
+    top: 1px;
     right: 1px;
 
     width: 16px;
     height: 16px;
 
-    background: var(--card);
+    background: #fff;
 
     border-radius: 0 0 0 16px;
 
     pointer-events: none;
+    z-index: 1;
 }
 
-/* 付箋と同じ色の折り目 */
+/* ② 付箋と同じ色の直角二等辺三角形 */
 .planner-event::after {
     content: "";
     position: absolute;
 
-    top: 0;
-    right: 0;
+    top: 1px;
+    right: 1px;
 
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
 
     background: var(--surface);
 
@@ -1164,4 +1165,5 @@
     );
 
     pointer-events: none;
+    z-index: 2;
 }
