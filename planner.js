@@ -922,7 +922,8 @@ for(
                 data-occurrence-date="${e.occurrenceDate || e.start.slice(0, 10)}"
                 data-actual-height="${actualHeight}"
                 data-display-height="${displayHeight}"
-                data-original-top="${originalTimeTop}"
+                data-original-top="${displayTop}"
+                
                 data-expand-direction="${expandDirection}"
                 data-segment-start="${segmentStart.getTime()}"
                 data-segment-end="${segmentEnd.getTime()}"
