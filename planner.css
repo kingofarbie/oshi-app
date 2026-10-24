@@ -1149,7 +1149,7 @@
     right: 0;
     width: 18px;
     height: 18px;
-    background: var(--card);
+    background: var(--surface);
     transform: translate(9px, -9px) rotate(45deg);
     box-shadow: -2px 2px 4px rgba(0, 0, 0, 0.12);
 
