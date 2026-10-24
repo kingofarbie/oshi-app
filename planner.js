@@ -4315,13 +4315,11 @@ function plannerEventTap(event, id) {
             "planner-event-expanded"
         )
     ) {
-
         plannerCollapseExpandedEvent(eventBox);
-
         return;
     }
 
-    /* ほかの展開中の予定を先に閉じる */
+    /* ほかの展開中の予定を閉じる */
     document
         .querySelectorAll(
             ".planner-event-expanded"
@@ -4329,20 +4327,16 @@ function plannerEventTap(event, id) {
         .forEach(otherBox => {
 
             if (otherBox !== eventBox) {
-
                 plannerCollapseExpandedEvent(
                     otherBox
                 );
-
             }
-
         });
 
     /* 元の表示状態を保存 */
     if (
         eventBox.dataset.originalLeft === undefined
     ) {
-
         eventBox.dataset.originalLeft =
             eventBox.style.left;
 
@@ -4354,7 +4348,6 @@ function plannerEventTap(event, id) {
 
         eventBox.dataset.originalZIndex =
             eventBox.style.zIndex || "";
-
     }
 
     const board =
@@ -4365,29 +4358,32 @@ function plannerEventTap(event, id) {
 
     if (!board || !layout) return;
 
-    /* 展開前の位置を取得 */
-    const boardRect =
-        board.getBoundingClientRect();
+    /*
+       元のCSS位置を使用する。
+       展開前の画面座標から再計算しない。
+    */
+    const originalLeft =
+        parseFloat(eventBox.dataset.originalLeft);
 
+    const currentLeft =
+        Number.isFinite(originalLeft)
+            ? originalLeft
+            : 10;
+
+    /* 家族レーンを含むレイアウトの右端まで広げる */
     const layoutRect =
         layout.getBoundingClientRect();
 
-    const eventRect =
-        eventBox.getBoundingClientRect();
+    const boardRect =
+        board.getBoundingClientRect();
 
-    const currentLeft =
-        eventRect.left - boardRect.left;
-
-    /*
-       個人予定ボードの右端ではなく、
-       家族レーンを含むレイアウトの右端まで広げる
-    */
     const rightGap = 6;
 
     const expandedWidth = Math.max(
-        eventRect.width,
+        eventBox.offsetWidth,
         layoutRect.right -
-            eventRect.left -
+            boardRect.left -
+            currentLeft -
             rightGap
     );
 
@@ -4404,19 +4400,17 @@ function plannerEventTap(event, id) {
         contentHeight
     );
 
-    /* 上方向に展開する予定の設定を維持 */
+    /* 元の時間位置を基準に展開 */
     let expandedTop = originalTop;
 
     if (
         eventBox.dataset.expandDirection === "up"
     ) {
-
         expandedTop = Math.max(
             15,
             originalTop -
                 (expandedHeight - displayHeight)
         );
-
     }
 
     /* 展開 */
@@ -4441,7 +4435,6 @@ function plannerEventTap(event, id) {
         "planner-event-compact"
     );
 }
-
 
 /* =====================
    長押し
