@@ -1142,17 +1142,12 @@
     overflow: visible !important;
 }
 
-
-
-
 /* =========================================
    📌 右上の折り曲げ
-   通常時・選択時・展開時を完全統一
+   通常時・選択時・展開時で同じ形にする
 ========================================= */
 
-.planner-event::after,
-.planner-event-editing::after,
-.planner-event-expanded::after {
+.planner-event::after {
     content: "";
 
     position: absolute;
@@ -1170,34 +1165,5 @@
         rotate(45deg);
 
     box-shadow:
-        -2px 2px 4px rgba(0,0,0,0.12);
-}
-
-
-/* =========================================
-   📌 タップ展開中の右上の折り曲げ
-   ひし形全体が見えないよう三角形にする
-========================================= */
-
-.planner-event-expanded::after {
-    top: 0;
-    right: 0;
-
-    width: 18px;
-    height: 18px;
-
-    transform: none;
-
-    clip-path: polygon(
-        0 0,
-        100% 0,
-        100% 100%
-    );
-
-    box-shadow: none;
-
-    filter:
-        drop-shadow(
-            -1px 1px 1px rgba(0, 0, 0, 0.15)
-        );
+        -2px 2px 4px rgba(0, 0, 0, 0.12);
 }
