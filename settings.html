@@ -108,7 +108,21 @@
 
 <div class="settings-section" id="pageBackgroundSettings">
 
-    <h3>🎨 ページ別背景デザイン</h3>
+    <h3
+        class="settings-toggle"
+        onclick="togglePageBackgroundSettings()"
+        role="button"
+        tabindex="0"
+        aria-expanded="false"
+        aria-controls="pageBackgroundContent"
+        onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();togglePageBackgroundSettings();}"
+    >
+        🎨 ページ別背景デザイン
+        <span id="pageBackgroundArrow">▼</span>
+    </h3>
+
+    <div id="pageBackgroundContent" hidden>
+
 
     <p>
         ページごとに好きな背景を選べます。
@@ -196,6 +210,8 @@
 
     <p id="pageBackgroundMessage" aria-live="polite"></p>
 
+        </div>
+        
 </div>
 
 

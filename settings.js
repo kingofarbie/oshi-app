@@ -636,3 +636,37 @@ async function applyAllPageBackgrounds() {
         alert("背景設定を保存できませんでした。もう一度お試しください。");
     }
 }
+
+
+/* =====================================================
+   🎨 ページ別背景設定の開閉
+===================================================== */
+
+function togglePageBackgroundSettings() {
+
+    const content = document.getElementById(
+        "pageBackgroundContent"
+    );
+
+    const heading = document.querySelector(
+        "#pageBackgroundSettings .settings-toggle"
+    );
+
+    const arrow = document.getElementById(
+        "pageBackgroundArrow"
+    );
+
+    if (!content || !heading || !arrow) return;
+
+    const isOpening = content.hidden;
+
+    content.hidden = !isOpening;
+
+    heading.setAttribute(
+        "aria-expanded",
+        String(isOpening)
+    );
+
+    arrow.textContent = isOpening ? "▲" : "▼";
+}
+
