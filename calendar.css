@@ -238,13 +238,12 @@ box-sizing:border-box;
 ========================= */
 
 .empty-day{
-    background:var(--surface);
+    background:var(--card);
 
     cursor:default;
 
-    opacity:.65;
+    opacity:1;
 }
-
 
 /* =========================
    選択日表示
