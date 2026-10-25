@@ -1,0 +1,224 @@
+
+/* =====================================================
+   🎨 選べる背景デザイン
+   available-bg.css
+
+   ・5種類の背景デザイン
+   ・CSSのみで表示（外部画像・ライブラリ不要）
+   ・背景を適用した要素の中だけに作用
+   ・既存のテーマ設定やカードデザインには干渉しない
+===================================================== */
+
+
+/* =====================================================
+   🌸 1. ゆめかわパステル
+   ラベンダー × 水色 × ピンク
+===================================================== */
+
+.available-bg-pastel {
+    background-color: #fffaff;
+
+    background-image:
+        radial-gradient(
+            ellipse at 8% 12%,
+            rgba(237, 214, 250, 0.72),
+            transparent 34%
+        ),
+        radial-gradient(
+            ellipse at 92% 24%,
+            rgba(202, 231, 250, 0.72),
+            transparent 32%
+        ),
+        radial-gradient(
+            ellipse at 50% 92%,
+            rgba(255, 220, 239, 0.65),
+            transparent 38%
+        ),
+        linear-gradient(
+            145deg,
+            #fffaff 0%,
+            #f9f4ff 48%,
+            #fff5fa 100%
+        );
+}
+
+
+/* =====================================================
+   🌌 2. 星空ファンタジー
+   夜空 × 星の光 × パープル
+===================================================== */
+
+.available-bg-starry {
+    background-color: #171327;
+
+    background-image:
+        radial-gradient(
+            circle at 12% 15%,
+            rgba(255, 255, 255, 0.95) 0 1px,
+            transparent 2px
+        ),
+        radial-gradient(
+            circle at 78% 12%,
+            rgba(222, 214, 255, 0.95) 0 1px,
+            transparent 2px
+        ),
+        radial-gradient(
+            circle at 36% 32%,
+            rgba(255, 255, 255, 0.85) 0 1px,
+            transparent 2px
+        ),
+        radial-gradient(
+            circle at 88% 44%,
+            rgba(202, 216, 255, 0.9) 0 1px,
+            transparent 2px
+        ),
+        radial-gradient(
+            circle at 18% 68%,
+            rgba(255, 255, 255, 0.8) 0 1px,
+            transparent 2px
+        ),
+        radial-gradient(
+            circle at 65% 82%,
+            rgba(222, 214, 255, 0.9) 0 1px,
+            transparent 2px
+        ),
+        radial-gradient(
+            ellipse at 15% 10%,
+            rgba(120, 91, 180, 0.38),
+            transparent 40%
+        ),
+        radial-gradient(
+            ellipse at 85% 70%,
+            rgba(89, 115, 183, 0.3),
+            transparent 42%
+        ),
+        linear-gradient(
+            160deg,
+            #171327 0%,
+            #211b38 55%,
+            #151a30 100%
+        );
+
+    color: #ffffff;
+}
+
+
+/* =====================================================
+   🌿 3. ボタニカル
+   ミント × クリーム × やさしいグリーン
+===================================================== */
+
+.available-bg-botanical {
+    background-color: #fbfff9;
+
+    background-image:
+        radial-gradient(
+            ellipse at 5% 12%,
+            rgba(190, 231, 202, 0.6),
+            transparent 34%
+        ),
+        radial-gradient(
+            ellipse at 95% 35%,
+            rgba(215, 240, 211, 0.65),
+            transparent 36%
+        ),
+        radial-gradient(
+            ellipse at 45% 95%,
+            rgba(255, 238, 205, 0.55),
+            transparent 40%
+        ),
+        linear-gradient(
+            145deg,
+            #fbfff9 0%,
+            #f2fbf0 52%,
+            #fffdf5 100%
+        );
+}
+
+
+/* =====================================================
+   🍑 4. ピーチロマンス
+   ピンク × ピーチ × ミルキーホワイト
+===================================================== */
+
+.available-bg-peach {
+    background-color: #fff9f7;
+
+    background-image:
+        radial-gradient(
+            ellipse at 10% 15%,
+            rgba(255, 205, 216, 0.65),
+            transparent 35%
+        ),
+        radial-gradient(
+            ellipse at 92% 25%,
+            rgba(255, 220, 190, 0.7),
+            transparent 34%
+        ),
+        radial-gradient(
+            ellipse at 55% 95%,
+            rgba(255, 230, 238, 0.72),
+            transparent 42%
+        ),
+        linear-gradient(
+            145deg,
+            #fff9f7 0%,
+            #fff1ed 48%,
+            #fff7fb 100%
+        );
+}
+
+
+/* =====================================================
+   🌈 5. オーロラ
+   ブルー × パープル × シルバー
+===================================================== */
+
+.available-bg-aurora {
+    background-color: #f7f8ff;
+
+    background-image:
+        radial-gradient(
+            ellipse at 12% 12%,
+            rgba(161, 204, 255, 0.62),
+            transparent 38%
+        ),
+        radial-gradient(
+            ellipse at 88% 18%,
+            rgba(210, 181, 255, 0.62),
+            transparent 36%
+        ),
+        radial-gradient(
+            ellipse at 50% 65%,
+            rgba(182, 229, 242, 0.5),
+            transparent 42%
+        ),
+        radial-gradient(
+            ellipse at 85% 95%,
+            rgba(232, 220, 255, 0.65),
+            transparent 38%
+        ),
+        linear-gradient(
+            145deg,
+            #f7f8ff 0%,
+            #f0f3ff 48%,
+            #f9f5ff 100%
+        );
+}
+
+
+/* =====================================================
+   📱 スマートフォン対応
+
+   背景を適用する要素が画面全体を覆えるようにする。
+   高さは各ページの既存レイアウトに任せる。
+===================================================== */
+
+.available-bg-pastel,
+.available-bg-starry,
+.available-bg-botanical,
+.available-bg-peach,
+.available-bg-aurora {
+    background-repeat: no-repeat;
+    background-size: cover;
+}

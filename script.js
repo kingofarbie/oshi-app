@@ -428,6 +428,10 @@ if(pageId === 'oshiPage'){
 
 }
 
+
+
+
+
 /* =====================
    推し候補表示
 ===================== */
@@ -2844,13 +2848,15 @@ async function(){
         "calendar.html"
     );
 
-    await loadHtml(
-        "settingsContainer",
-        "settings.html"
-    );
+await loadHtml("settingsContainer", "settings.html");
 
-    initFavoritePhotoSettings();
-    refreshCurrentTheme();
+initFavoritePhotoSettings();
+
+/* 🎨 保存済みのページ別背景を反映 */
+await loadPageBackgroundSettings();
+
+refreshCurrentTheme();
+
 
 
     await loadHtml(
@@ -5554,6 +5560,9 @@ function openSettingsFromMenu(){
     setHomeMenuButton("close");
 
 }
+
+
+
 
 function closeSettingsFromMenu(){
 
