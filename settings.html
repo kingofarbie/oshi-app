@@ -102,6 +102,7 @@
 
 
 
+
 <!-- =====================
      🎨 ページ別背景デザイン
 ===================== -->
@@ -122,96 +123,116 @@
         class="setting-content"
         style="display:none;">
 
-    <p>
-        ページごとに好きな背景を選べます。
-        一括設定すると、5ページすべてに同じ背景が適用されます。
-    </p>
+        <p>
+            ページごとに好きな背景を選べます。
+            一括設定すると、5ページすべてに同じ背景が適用されます。
+        </p>
 
-    <div class="page-background-item">
-        <label for="bg-home">🏠 ホーム</label>
-        <select id="bg-home" onchange="changePageBackground('home', this.value)">
-            <option value="none">現在のテーマ背景</option>
-            <option value="pastel">🌸 ゆめかわパステル</option>
-            <option value="starry">🌌 星空ファンタジー</option>
-            <option value="botanical">🌿 ボタニカル</option>
-            <option value="peach">🍑 ピーチロマンス</option>
-            <option value="aurora">🌈 オーロラ</option>
-        </select>
-    </div>
-
-    <div class="page-background-item">
-        <label for="bg-planner">📖 1日手帳</label>
-        <select id="bg-planner" onchange="changePageBackground('plannerPage', this.value)">
-            <option value="none">現在のテーマ背景</option>
-            <option value="pastel">🌸 ゆめかわパステル</option>
-            <option value="starry">🌌 星空ファンタジー</option>
-            <option value="botanical">🌿 ボタニカル</option>
-            <option value="peach">🍑 ピーチロマンス</option>
-            <option value="aurora">🌈 オーロラ</option>
-        </select>
-    </div>
-
-    <div class="page-background-item">
-        <label for="bg-calendar">🗓️ カレンダー</label>
-        <select id="bg-calendar" onchange="changePageBackground('calendarPage', this.value)">
-            <option value="none">現在のテーマ背景</option>
-            <option value="pastel">🌸 ゆめかわパステル</option>
-            <option value="starry">🌌 星空ファンタジー</option>
-            <option value="botanical">🌿 ボタニカル</option>
-            <option value="peach">🍑 ピーチロマンス</option>
-            <option value="aurora">🌈 オーロラ</option>
-        </select>
-    </div>
-
-    <div class="page-background-item">
-        <label for="bg-oshi">💖 推し</label>
-        <select id="bg-oshi" onchange="changePageBackground('oshiPage', this.value)">
-            <option value="none">現在のテーマ背景</option>
-            <option value="pastel">🌸 ゆめかわパステル</option>
-            <option value="starry">🌌 星空ファンタジー</option>
-            <option value="botanical">🌿 ボタニカル</option>
-            <option value="peach">🍑 ピーチロマンス</option>
-            <option value="aurora">🌈 オーロラ</option>
-        </select>
-    </div>
-
-    <div class="page-background-item">
-        <label for="bg-money">💰 お金</label>
-        <select id="bg-money" onchange="changePageBackground('moneyPage', this.value)">
-            <option value="none">現在のテーマ背景</option>
-            <option value="pastel">🌸 ゆめかわパステル</option>
-            <option value="starry">🌌 星空ファンタジー</option>
-            <option value="botanical">🌿 ボタニカル</option>
-            <option value="peach">🍑 ピーチロマンス</option>
-            <option value="aurora">🌈 オーロラ</option>
-        </select>
-    </div>
-
-    <hr>
-
-    <h4>✨ 5ページまとめて一括設定</h4>
-
-    <label for="bg-all">全ページに適用する背景</label>
-
-    <select id="bg-all">
-        <option value="none">現在のテーマ背景</option>
-        <option value="pastel">🌸 ゆめかわパステル</option>
-        <option value="starry">🌌 星空ファンタジー</option>
-        <option value="botanical">🌿 ボタニカル</option>
-        <option value="peach">🍑 ピーチロマンス</option>
-        <option value="aurora">🌈 オーロラ</option>
-    </select>
-
-    <button type="button" onclick="applyAllPageBackgrounds()">
-        5ページに一括適用
-    </button>
-
-    <p id="pageBackgroundMessage" aria-live="polite"></p>
-
+        <!-- ホーム -->
+        <div class="page-background-item">
+            <label for="bg-home">🏠 ホーム</label>
+            <select
+                id="bg-home"
+                onchange="changePageBackground('home', this.value)">
+                <option value="none">現在のテーマ背景</option>
+                <option value="pastel">🌸 ゆめかわパステル</option>
+                <option value="starry">🌌 星空ファンタジー</option>
+                <option value="botanical">🌿 ボタニカル</option>
+                <option value="peach">🍑 ピーチロマンス</option>
+                <option value="aurora">🌈 オーロラ</option>
+            </select>
         </div>
 
-</div>
+        <!-- 1日手帳 -->
+        <div class="page-background-item">
+            <label for="bg-planner">📖 1日手帳</label>
+            <select
+                id="bg-planner"
+                onchange="changePageBackground('plannerPage', this.value)">
+                <option value="none">現在のテーマ背景</option>
+                <option value="pastel">🌸 ゆめかわパステル</option>
+                <option value="starry">🌌 星空ファンタジー</option>
+                <option value="botanical">🌿 ボタニカル</option>
+                <option value="peach">🍑 ピーチロマンス</option>
+                <option value="aurora">🌈 オーロラ</option>
+            </select>
+        </div>
 
+        <!-- カレンダー -->
+        <div class="page-background-item">
+            <label for="bg-calendar">🗓️ カレンダー</label>
+            <select
+                id="bg-calendar"
+                onchange="changePageBackground('calendarPage', this.value)">
+                <option value="none">現在のテーマ背景</option>
+                <option value="pastel">🌸 ゆめかわパステル</option>
+                <option value="starry">🌌 星空ファンタジー</option>
+                <option value="botanical">🌿 ボタニカル</option>
+                <option value="peach">🍑 ピーチロマンス</option>
+                <option value="aurora">🌈 オーロラ</option>
+            </select>
+        </div>
+
+        <!-- 推し -->
+        <div class="page-background-item">
+            <label for="bg-oshi">💖 推し</label>
+            <select
+                id="bg-oshi"
+                onchange="changePageBackground('oshiPage', this.value)">
+                <option value="none">現在のテーマ背景</option>
+                <option value="pastel">🌸 ゆめかわパステル</option>
+                <option value="starry">🌌 星空ファンタジー</option>
+                <option value="botanical">🌿 ボタニカル</option>
+                <option value="peach">🍑 ピーチロマンス</option>
+                <option value="aurora">🌈 オーロラ</option>
+            </select>
+        </div>
+
+        <!-- お金 -->
+        <div class="page-background-item">
+            <label for="bg-money">💰 お金</label>
+            <select
+                id="bg-money"
+                onchange="changePageBackground('moneyPage', this.value)">
+                <option value="none">現在のテーマ背景</option>
+                <option value="pastel">🌸 ゆめかわパステル</option>
+                <option value="starry">🌌 星空ファンタジー</option>
+                <option value="botanical">🌿 ボタニカル</option>
+                <option value="peach">🍑 ピーチロマンス</option>
+                <option value="aurora">🌈 オーロラ</option>
+            </select>
+        </div>
+
+        <hr>
+
+        <!-- 一括設定 -->
+        <h4>✨ 5ページまとめて一括設定</h4>
+
+        <label for="bg-all">全ページに適用する背景</label>
+
+        <select id="bg-all">
+            <option value="none">現在のテーマ背景</option>
+            <option value="pastel">🌸 ゆめかわパステル</option>
+            <option value="starry">🌌 星空ファンタジー</option>
+            <option value="botanical">🌿 ボタニカル</option>
+            <option value="peach">🍑 ピーチロマンス</option>
+            <option value="aurora">🌈 オーロラ</option>
+        </select>
+
+        <button
+            type="button"
+            onclick="applyAllPageBackgrounds()">
+            5ページに一括適用
+        </button>
+
+        <p
+            id="pageBackgroundMessage"
+            aria-live="polite">
+        </p>
+
+    </div>
+
+</div>
 
 
 
@@ -588,14 +609,9 @@ placeholder="テンプレート名（例：ライブ）">
 
 </button>
 
-
-
 <div id="categoryMenu"
 class="setting-content"
 style="display:none;">
-
-
-
 
 
 <p>
