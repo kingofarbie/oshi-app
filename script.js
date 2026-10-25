@@ -2473,8 +2473,10 @@ const menus = [
     "notificationMenu",
     "favoritePhotoMenu",
     "templateMenu",
-    "categoryMenu"
+    "categoryMenu",
+    "pageBackgroundContent"
 ];
+
 
     menus.forEach(id=>{
 
