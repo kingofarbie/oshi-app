@@ -553,16 +553,21 @@ ${more}
 
 
 
-    html += `
+// 月末の空白マスを追加
+const totalCells = first.getDay() + last.getDate();
+const trailingCells = (7 - (totalCells % 7)) % 7;
+
+for (let i = 0; i < trailingCells; i++) {
+    html += `<div class="empty-day"></div>`;
+}
+
+html += `
 
 </div>
 
 `;
 
-
-
 area.innerHTML = html;
-
 
 /* =====================
    カレンダー月スワイプ
