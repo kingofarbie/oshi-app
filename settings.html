@@ -102,27 +102,25 @@
 
 
 
-<!-- =====================================================
-     🎨 ページ別背景設定
-===================================================== -->
+<!-- =====================
+     🎨 ページ別背景デザイン
+===================== -->
 
-<div class="settings-section" id="pageBackgroundSettings">
+<div class="card setting-item" id="pageBackgroundSettings">
 
-    <h3
-        class="settings-toggle"
-        onclick="togglePageBackgroundSettings()"
-        role="button"
-        tabindex="0"
-        aria-expanded="false"
-        aria-controls="pageBackgroundContent"
-        onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();togglePageBackgroundSettings();}"
-    >
+    <button
+        type="button"
+        onclick="toggleSetting('pageBackgroundContent')">
+
+        <span id="pageBackgroundContentIcon">＋</span>
         🎨 ページ別背景デザイン
-        <span id="pageBackgroundArrow">▼</span>
-    </h3>
 
-    <div id="pageBackgroundContent" hidden>
+    </button>
 
+    <div
+        id="pageBackgroundContent"
+        class="setting-content"
+        style="display:none;">
 
     <p>
         ページごとに好きな背景を選べます。
@@ -211,7 +209,7 @@
     <p id="pageBackgroundMessage" aria-live="polite"></p>
 
         </div>
-        
+
 </div>
 
 
