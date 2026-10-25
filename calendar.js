@@ -343,16 +343,13 @@ const holidays =
 
 
 
-    for(
-        let i = 0;
-        i < first.getDay();
-        i++
-    ){
-
-        html += `<div></div>`;
-
-    }
-
+for (
+    let i = 0;
+    i < first.getDay();
+    i++
+) {
+    html += `<div class="empty-day"></div>`;
+}
 
 
 
