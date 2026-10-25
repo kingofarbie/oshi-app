@@ -2461,104 +2461,85 @@ function deleteEvent(id){
 let openSettingMenu = null;
 
 
-function toggleSetting(menuId){
 
-const menus = [
-    "planMenu",
-    "themeMenu",
-    "holidayMenu",
-    "memorialMenu",
-    "appTitleMenu",
-    "anniversaryMenu",
-    "notificationMenu",
-    "favoritePhotoMenu",
-    "templateMenu",
-    "categoryMenu",
-    "pageBackgroundContent"
-];
+function toggleSetting(menuId) {
 
+    const menus = [
+        "planMenu",
+        "themeMenu",
+        "holidayMenu",
+        "memorialMenu",
+        "appTitleMenu",
+        "anniversaryMenu",
+        "notificationMenu",
+        "favoritePhotoMenu",
+        "templateMenu",
+        "categoryMenu",
+        "pageBackgroundContent"
+    ];
 
-    menus.forEach(id=>{
+    // IDに対応するアイコンを取得
+    function getSettingIcon(id) {
 
-        const menu =
-            document.getElementById(id);
-
-
-        if(!menu) return;
-
-
-        const icon =
-            document.getElementById(
-                id.replace("Menu","Icon")
+        if (id === "pageBackgroundContent") {
+            return document.getElementById(
+                "pageBackgroundContentIcon"
             );
+        }
 
+        return document.getElementById(
+            id.replace("Menu", "Icon")
+        );
+    }
 
-        if(id === menuId){
+    menus.forEach(id => {
 
-            if(
-                menu.style.display === "block"
-            ){
+        const menu = document.getElementById(id);
 
-                menu.style.display =
-                    "none";
+        if (!menu) return;
 
+        const icon = getSettingIcon(id);
 
-                if(icon)
-                    icon.textContent = "＋";
+        if (id !== menuId) return;
 
+        if (menu.style.display === "block") {
 
-                openSettingMenu = null;
+            menu.style.display = "none";
 
-
-            }else{
-
-                // 他を閉じる
-                menus.forEach(otherId=>{
-
-                    const other =
-                        document.getElementById(otherId);
-
-
-                    if(other){
-
-                        other.style.display =
-                            "none";
-
-                    }
-
-
-                    const otherIcon =
-                        document.getElementById(
-                            otherId.replace("Menu","Icon")
-                        );
-
-
-                    if(otherIcon){
-
-                        otherIcon.textContent =
-                            "＋";
-
-                    }
-
-                });
-
-
-
-                menu.style.display =
-                    "block";
-
-
-                if(icon)
-                    icon.textContent =
-                        "−";
-
-
-                openSettingMenu =
-                    menuId;
-
+            if (icon) {
+                icon.textContent = "＋";
             }
 
+            openSettingMenu = null;
 
+        } else {
+
+            // ほかの設定を閉じる
+            menus.forEach(otherId => {
+
+                const other =
+                    document.getElementById(otherId);
+
+                if (other) {
+                    other.style.display = "none";
+                }
+
+                const otherIcon =
+                    getSettingIcon(otherId);
+
+                if (otherIcon) {
+                    otherIcon.textContent = "＋";
+                }
+
+            });
+
+            menu.style.display = "block";
+
+            if (icon) {
+                icon.textContent = "−";
+            }
+
+            openSettingMenu = menuId;
         }
 
     });
