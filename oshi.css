@@ -487,10 +487,36 @@
     height: 40px;
     min-width: 40px;
     padding: 0;
+
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 26px;
+
+    font-size: 30px;
     line-height: 1;
+    font-weight: normal;
+
+    color: inherit;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+
     flex-shrink: 0;
+}
+
+
+/* 推しリストのタイトルと＋を同じ段に配置 */
+.page-header:has(.oshi-add-icon-btn) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    gap: 8px;
+}
+
+.page-header:has(.oshi-add-icon-btn) .page-title {
+    margin: 0;
+    flex: 1;
+    min-width: 0;
 }
