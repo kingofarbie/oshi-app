@@ -11,57 +11,186 @@ oshi-details-2.js
 💗 プロフィール表示
 ========================================================= */
 
+
+/* =========================================================
+💗 プロフィール表示
+・登録された日付から経過日数を自動計算
+・日付未登録の場合は「未登録」と表示
+・既存の保存データ、写真機能には手を加えない
+========================================================= */
+
 function renderOshiProfile2(oshiId) {
 
-if (!oshiId) {
-    return;
-}
-
-const data = db.load();
-
-const oshi = (data.oshiList || []).find(
-    item => String(item.id) === String(oshiId)
-);
-
-if (!oshi) {
-    return;
-}
-
-const detail =
-    data.oshiDetails?.[oshiId] || {};
-
-const profile =
-    detail.profile || {};
-
-const setText = (elementId, value, fallback = "未登録") => {
-
-    const element = document.getElementById(elementId);
-
-    if (!element) {
+    if (!oshiId) {
         return;
     }
 
-    element.textContent =
-        value == null || String(value).trim() === ""
-            ? fallback
-            : String(value);
+    const data = db.load();
 
-};
+    const oshi = (data.oshiList || []).find(
+        item => String(item.id) === String(oshiId)
+    );
 
-setText("oshiHomeName", oshi.name, "—");
-setText("oshiHomeGenre", oshi.genre, "—");
+    if (!oshi) {
+        return;
+    }
 
-setText("oshiHomeBirthday", profile.birthday);
-setText("oshiHomeStartDate", profile.activityStartDate);
-setText("oshiHomeFormationDate", profile.formationDate);
+    const detail =
+        data.oshiDetails?.[oshiId] || {};
 
-setText(
-    "oshiHomeMessage",
-    profile.favoritePoints,
-    "好きなところも、心に残った瞬間も。ここに少しずつ集めていこう。"
-);
+    const profile =
+        detail.profile || {};
+
+
+    /* =====================
+       通常の文字表示
+    ===================== */
+
+    const setText = (
+        elementId,
+        value,
+        fallback = "未登録"
+    ) => {
+
+        const element =
+            document.getElementById(elementId);
+
+        if (!element) {
+            return;
+        }
+
+        element.textContent =
+            value == null || String(value).trim() === ""
+                ? fallback
+                : String(value);
+    };
+
+
+    /* =====================
+       日付と経過日数の表示
+    ===================== */
+
+    const setDateAndDays = (
+        elementId,
+        dateValue,
+        description
+    ) => {
+
+        const element =
+            document.getElementById(elementId);
+
+        if (!element) {
+            return;
+        }
+
+        if (!dateValue) {
+            element.textContent = "未登録";
+            return;
+        }
+
+        // YYYY-MM-DD 形式の日付だけを受け付ける
+        const match =
+            /^(\d{4})-(\d{2})-(\d{2})$/.exec(
+                String(dateValue)
+            );
+
+        if (!match) {
+            element.textContent = "未登録";
+            return;
+        }
+
+        const year = Number(match[1]);
+        const month = Number(match[2]);
+        const day = Number(match[3]);
+
+        const dateNumber =
+            Date.UTC(year, month - 1, day);
+
+        const checkedDate =
+            new Date(dateNumber);
+
+        // 実在する日付か確認
+        if (
+            checkedDate.getUTCFullYear() !== year ||
+            checkedDate.getUTCMonth() !== month - 1 ||
+            checkedDate.getUTCDate() !== day
+        ) {
+            element.textContent = "未登録";
+            return;
+        }
+
+        // 今日の日付をローカル時間で取得
+        const today = new Date();
+
+        const todayNumber = Date.UTC(
+            today.getFullYear(),
+            today.getMonth(),
+            today.getDate()
+        );
+
+        const difference =
+            Math.floor(
+                (todayNumber - dateNumber) /
+                86400000
+            );
+
+        // 日付を日本語形式で表示
+        const formattedDate =
+            `${year}年${month}月${day}日`;
+
+        if (difference < 0) {
+
+            element.textContent =
+                `${formattedDate}（あと${Math.abs(difference)}日）`;
+
+            return;
+        }
+
+        // 登録日当日を「1日目」とする
+        const elapsedDays = difference + 1;
+
+        element.textContent =
+            `${formattedDate}（${description}${elapsedDays}日目）`;
+    };
+
+
+    /* =====================
+       プロフィール情報
+    ===================== */
+
+    setText("oshiHomeName", oshi.name, "—");
+
+    setText("oshiHomeGenre", oshi.genre, "—");
+
+    setDateAndDays(
+        "oshiHomeBirthday",
+        profile.birthday,
+        "生まれて"
+    );
+
+    setDateAndDays(
+        "oshiHomeStartDate",
+        profile.activityStartDate,
+        "推し始めて"
+    );
+
+    setDateAndDays(
+        "oshiHomeFormationDate",
+        profile.formationDate,
+        "結成・デビューから"
+    );
+
+    setText(
+        "oshiHomeMessage",
+        profile.favoritePoints,
+        "好きなところも、心に残った瞬間も。ここに少しずつ集めていこう。"
+    );
 
 }
+
+
+
+
 
 
 
