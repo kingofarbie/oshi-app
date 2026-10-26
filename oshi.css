@@ -498,7 +498,7 @@
     font-weight: normal;
 
     /* テーマのボタン色を上書き */
-    color: var(--text-color, #333) !important;
+    color: inherit !important;
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
@@ -513,7 +513,7 @@
 .page-header .oshi-add-icon-btn:hover,
 .page-header .oshi-add-icon-btn:active,
 .page-header .oshi-add-icon-btn:focus {
-    color: var(--text-color, #333) !important;
+    color: inherit !important;
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
