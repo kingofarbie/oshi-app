@@ -1943,3 +1943,143 @@
         animation: none;
     }
 }
+
+
+
+/* =====================================================
+   💗 プロフィール編集画面
+   ・入力欄を見やすくする
+   ・保存 / キャンセルボタンを整える
+   ・スマートフォンでも横にはみ出さない
+===================================================== */
+
+#oshiDetailPage .oshi-profile-edit-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+    margin-top: 18px;
+}
+
+#oshiDetailPage .oshi-profile-edit-field label {
+    color: #8067a5;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.7;
+}
+
+#oshiDetailPage .oshi-profile-edit-field input,
+#oshiDetailPage .oshi-profile-edit-field textarea {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    padding: 12px;
+    border: 1px solid #e4d7f2;
+    border-radius: 13px;
+    outline: none;
+    background: #fffaff;
+    color: #66567f;
+    font: inherit;
+    font-size: 14px;
+    line-height: 1.7;
+    box-shadow: inset 0 1px 3px rgba(133, 113, 180, .05);
+}
+
+#oshiDetailPage .oshi-profile-edit-field textarea {
+    min-height: 110px;
+    resize: vertical;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+#oshiDetailPage .oshi-profile-edit-field input:focus,
+#oshiDetailPage .oshi-profile-edit-field textarea:focus {
+    border-color: #b9a1df;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(185, 161, 223, .16);
+}
+
+#oshiDetailPage .oshi-profile-edit-field input[type="date"] {
+    min-height: 46px;
+    color-scheme: light;
+}
+
+#oshiDetailPage .oshi-profile-edit-field input::placeholder,
+#oshiDetailPage .oshi-profile-edit-field textarea::placeholder {
+    color: #b4a7c3;
+    opacity: 1;
+}
+
+#oshiDetailPage .oshi-profile-edit-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 10px;
+    margin-top: 24px;
+}
+
+#oshiDetailPage .oshi-profile-edit-actions button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    min-height: 46px;
+    padding: 10px 8px;
+    border: 1px solid #e2d4f2;
+    border-radius: 14px;
+    background: #fff;
+    color: #8067a5;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+#oshiDetailPage .oshi-profile-edit-actions button:first-child {
+    border-color: transparent;
+    background: linear-gradient(
+        110deg,
+        #c5a9ed,
+        #b5cafa,
+        #e9bce0
+    );
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(167, 140, 207, .16);
+}
+
+#oshiDetailPage .oshi-profile-edit-actions button:active,
+#oshiDetailPage .oshi-profile-edit-button:active {
+    transform: scale(.98);
+}
+
+#oshiDetailPage .oshi-profile-edit-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 46px;
+    margin-top: 18px;
+    padding: 11px 14px;
+    border: 1px solid #e4d7f2;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #fbf5ff, #f1f7ff);
+    color: #8067a5;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+#oshiDetailPage #oshiProfileEditor[hidden],
+#oshiDetailPage #oshiProfileView[hidden] {
+    display: none !important;
+}
+
+@media (max-width: 360px) {
+    #oshiDetailPage .oshi-profile-edit-actions {
+        gap: 7px;
+    }
+
+    #oshiDetailPage .oshi-profile-edit-actions button {
+        font-size: 12px;
+    }
+}
