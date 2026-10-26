@@ -2083,3 +2083,122 @@
         font-size: 12px;
     }
 }
+
+
+/* =====================================================
+   💗 プロフィール通常表示のデザイン調整
+   ・項目名と日付を見やすくする
+   ・日付欄をふんわりパステル調にする
+   ・スマートフォンの表示崩れを防ぐ
+===================================================== */
+
+#oshiDetailPage .oshi-home-profile-details {
+    gap: 7px;
+}
+
+#oshiDetailPage .oshi-home-profile-row {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    padding: 13px 12px;
+    border: 1px solid #f0e7f8;
+    border-radius: 14px;
+    background: linear-gradient(
+        110deg,
+        #fffaff,
+        #f8f7ff 60%,
+        #f4faff
+    );
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+#oshiDetailPage .oshi-home-profile-label {
+    min-width: 0;
+    color: #927da9;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+#oshiDetailPage .oshi-home-profile-value {
+    min-width: 0;
+    color: #725b91;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.9;
+    text-align: right;
+    overflow-wrap: anywhere;
+    word-break: normal;
+}
+
+#oshiDetailPage .oshi-home-profile-row:has(
+    #oshiHomeBirthday,
+    #oshiHomeStartDate,
+    #oshiHomeFormationDate
+) .oshi-home-profile-value {
+    color: #8067a5;
+}
+
+#oshiDetailPage .oshi-home-profile-note {
+    margin-top: 15px;
+    border: 1px solid #f0e5f8;
+    background: linear-gradient(135deg, #fff5fc, #f3f7ff);
+}
+
+@media (max-width: 360px) {
+    #oshiDetailPage .oshi-home-profile-row {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+        gap: 7px;
+        padding: 11px 9px;
+        font-size: 11px;
+    }
+
+    #oshiDetailPage .oshi-home-profile-value {
+        font-size: 11px;
+    }
+}
+
+
+
+/* =====================================================
+   💗 好きなところ・メッセージ
+   ・ふんわりパステル調
+   ・文章を読みやすく表示
+   ・長い文章もスマホ内に収める
+===================================================== */
+
+#oshiDetailPage .oshi-home-profile-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 16px;
+    padding: 15px;
+    border: 1px solid #f0e4fa;
+    border-radius: 16px;
+    background: linear-gradient(
+        135deg,
+        #fff4fb,
+        #f8f4ff 55%,
+        #f0f8ff
+    );
+    color: #806b98;
+    line-height: 1.9;
+    overflow-wrap: anywhere;
+    box-shadow: 0 3px 10px rgba(180, 150, 210, 0.08);
+}
+
+#oshiDetailPage .oshi-home-profile-note * {
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+}
+
+#oshiDetailPage #oshiHomeMessage {
+    color: #806b98;
+    font-size: 13px;
+    line-height: 2;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    word-break: normal;
+}
