@@ -498,7 +498,7 @@
     font-weight: normal;
 
     /* テーマのボタン色を上書き */
-    color: var(--accent) !important;
+        color: var(--accent) !important;
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
@@ -538,4 +538,18 @@
     margin: 0;
     flex: 1;
     min-width: 0;
+}
+
+
+/* ゆめかわ星空：推しリストの＋をタイトルと同じ色にする */
+
+body.theme-dreamy-star .page-header .oshi-add-icon-btn,
+body.theme-dreamy-star .page-header .oshi-add-icon-btn:hover,
+body.theme-dreamy-star .page-header .oshi-add-icon-btn:active,
+body.theme-dreamy-star .page-header .oshi-add-icon-btn:focus {
+    color: var(--accent) !important;
+    -webkit-text-fill-color: var(--accent) !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
 }
