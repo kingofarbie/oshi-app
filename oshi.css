@@ -479,7 +479,8 @@
 
 
 /* =========================
-   推しリスト：登録アイコン
+   推しリスト：＋アイコン
+   このボタンだけ個別指定
 ========================= */
 
 .page-header .oshi-add-icon-btn {
@@ -496,14 +497,32 @@
     line-height: 1;
     font-weight: normal;
 
-    color: inherit;
-    background: transparent;
-    border: none;
-    box-shadow: none;
+    /* テーマのボタン色を上書き */
+    color: var(--text-color, #333) !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
     border-radius: 0;
 
+    -webkit-appearance: none;
+    appearance: none;
     flex-shrink: 0;
 }
+
+/* 押したときも背景色を付けない */
+.page-header .oshi-add-icon-btn:hover,
+.page-header .oshi-add-icon-btn:active,
+.page-header .oshi-add-icon-btn:focus {
+    color: var(--text-color, #333) !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+
+
+
+
 
 
 /* 推しリストのタイトルと＋を同じ段に配置 */
