@@ -95,17 +95,22 @@
     <!-- =========================================
          推しプロフィール
     ========================================== -->
-    <section class="oshi-profile-card oshi-home-profile-section"
-             id="oshiHomeProfile">
 
-        <div class="oshi-home-section-heading">
-            <span class="oshi-home-section-icon">💗</span>
-            <div>
-                <p class="oshi-home-section-en">PROFILE</p>
-                <h2>大好きな推しについて</h2>
-            </div>
-            <span class="oshi-home-heading-decoration">✧</span>
+<section class="oshi-profile-card oshi-home-profile-section"
+         id="oshiHomeProfile">
+
+    <div class="oshi-home-section-heading">
+        <span class="oshi-home-section-icon">💗</span>
+        <div>
+            <p class="oshi-home-section-en">PROFILE</p>
+            <h2>大好きな推しについて</h2>
         </div>
+        <span class="oshi-home-heading-decoration">✧</span>
+    </div>
+
+    <!-- 通常表示 -->
+
+    <div id="oshiProfileView">
 
         <div class="oshi-home-message-card">
             <span class="oshi-home-message-mark">“</span>
@@ -117,37 +122,130 @@
         </div>
 
         <div class="oshi-home-profile-details">
+
             <div class="oshi-home-profile-row">
                 <span class="oshi-home-profile-label">お名前</span>
-                <span class="oshi-home-profile-value" id="oshiHomeName">—</span>
+                <span class="oshi-home-profile-value"
+                      id="oshiHomeName">—</span>
             </div>
 
             <div class="oshi-home-profile-row">
                 <span class="oshi-home-profile-label">ジャンル</span>
-                <span class="oshi-home-profile-value" id="oshiHomeGenre">—</span>
+                <span class="oshi-home-profile-value"
+                      id="oshiHomeGenre">—</span>
             </div>
 
             <div class="oshi-home-profile-row">
                 <span class="oshi-home-profile-label">誕生日</span>
-                <span class="oshi-home-profile-value" id="oshiHomeBirthday">未登録</span>
+                <span class="oshi-home-profile-value"
+                      id="oshiHomeBirthday">未登録</span>
             </div>
 
             <div class="oshi-home-profile-row">
                 <span class="oshi-home-profile-label">活動開始日</span>
-                <span class="oshi-home-profile-value" id="oshiHomeStartDate">未登録</span>
+                <span class="oshi-home-profile-value"
+                      id="oshiHomeStartDate">未登録</span>
             </div>
 
             <div class="oshi-home-profile-row">
                 <span class="oshi-home-profile-label">結成・デビュー</span>
-                <span class="oshi-home-profile-value" id="oshiHomeFormationDate">未登録</span>
+                <span class="oshi-home-profile-value"
+                      id="oshiHomeFormationDate">未登録</span>
             </div>
+
         </div>
 
         <div class="oshi-home-profile-note">
             <span>✿</span>
             <p>推しのことを知るたびに、ここも少しずつ育てていこう。</p>
         </div>
-    </section>
+
+        <button type="button"
+                class="oshi-profile-edit-button"
+                onclick="openOshiProfileEditor()">
+            ✏️ プロフィールを編集
+        </button>
+
+    </div>
+
+
+    <!-- 編集表示：最初は非表示 -->
+
+    <div id="oshiProfileEditor" hidden>
+
+        <div class="oshi-profile-edit-field">
+
+            <label for="oshiProfileFavoritePoints">
+                💗 好きなところ・メッセージ
+            </label>
+
+            <textarea
+                id="oshiProfileFavoritePoints"
+                rows="4"
+                maxlength="2000"
+                placeholder="好きなところや、心に残った瞬間を書こう♡"
+            ></textarea>
+
+        </div>
+
+        <div class="oshi-profile-edit-field">
+
+            <label for="oshiProfileBirthday">
+                🎂 誕生日
+            </label>
+
+            <input
+                type="date"
+                id="oshiProfileBirthday"
+            >
+
+        </div>
+
+        <div class="oshi-profile-edit-field">
+
+            <label for="oshiProfileStartDate">
+                💗 活動開始日・推し始めた日
+            </label>
+
+            <input
+                type="date"
+                id="oshiProfileStartDate"
+            >
+
+        </div>
+
+        <div class="oshi-profile-edit-field">
+
+            <label for="oshiProfileFormationDate">
+                ✨ 結成日・デビュー日
+            </label>
+
+            <input
+                type="date"
+                id="oshiProfileFormationDate"
+            >
+
+        </div>
+
+        <div class="oshi-profile-edit-actions">
+
+            <button type="button"
+                    onclick="saveOshiProfile()">
+                💾 保存
+            </button>
+
+            <button type="button"
+                    onclick="cancelOshiProfileEdit()">
+                キャンセル
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
 
     <!-- =========================================
          ページ内ナビゲーション

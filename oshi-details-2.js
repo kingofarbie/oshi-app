@@ -62,3 +62,143 @@ setText(
 );
 
 }
+
+
+
+/* =====================================================
+   💗 推しプロフィール編集
+===================================================== */
+
+function openOshiProfileEditor() {
+
+    const container =
+        document.getElementById("oshiContainer");
+
+    const oshiId =
+        container?.dataset.oshiId;
+
+    if (!oshiId) return;
+
+    const data = db.load();
+
+    const detail =
+        data.oshiDetails?.[oshiId] || {};
+
+    const profile =
+        detail.profile || {};
+
+    const view =
+        document.getElementById("oshiProfileView");
+
+    const editor =
+        document.getElementById("oshiProfileEditor");
+
+    if (!view || !editor) return;
+
+    document.getElementById(
+        "oshiProfileFavoritePoints"
+    ).value = profile.favoritePoints || "";
+
+    document.getElementById(
+        "oshiProfileBirthday"
+    ).value = profile.birthday || "";
+
+    document.getElementById(
+        "oshiProfileStartDate"
+    ).value = profile.activityStartDate || "";
+
+    document.getElementById(
+        "oshiProfileFormationDate"
+    ).value = profile.formationDate || "";
+
+    view.hidden = true;
+    editor.hidden = false;
+}
+
+
+/* =====================
+   保存
+===================== */
+
+function saveOshiProfile() {
+
+    const container =
+        document.getElementById("oshiContainer");
+
+    const oshiId =
+        container?.dataset.oshiId;
+
+    if (!oshiId) return;
+
+    const data = db.load();
+
+    if (!data.oshiDetails) {
+        data.oshiDetails = {};
+    }
+
+    if (!data.oshiDetails[oshiId]) {
+        data.oshiDetails[oshiId] = {};
+    }
+
+    const detail =
+        data.oshiDetails[oshiId];
+
+    if (!detail.profile) {
+        detail.profile = {};
+    }
+
+    detail.profile.favoritePoints =
+        document.getElementById(
+            "oshiProfileFavoritePoints"
+        ).value;
+
+    detail.profile.birthday =
+        document.getElementById(
+            "oshiProfileBirthday"
+        ).value;
+
+    detail.profile.activityStartDate =
+        document.getElementById(
+            "oshiProfileStartDate"
+        ).value;
+
+    detail.profile.formationDate =
+        document.getElementById(
+            "oshiProfileFormationDate"
+        ).value;
+
+    db.save(data);
+
+    renderOshiProfile2(oshiId);
+
+    document.getElementById(
+        "oshiProfileEditor"
+    ).hidden = true;
+
+    document.getElementById(
+        "oshiProfileView"
+    ).hidden = false;
+}
+
+
+/* =====================
+   キャンセル
+===================== */
+
+function cancelOshiProfileEdit() {
+
+    const view =
+        document.getElementById("oshiProfileView");
+
+    const editor =
+        document.getElementById("oshiProfileEditor");
+
+    if (!view || !editor) return;
+
+    editor.hidden = true;
+    view.hidden = false;
+
+}
+
+
+
