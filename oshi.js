@@ -596,26 +596,49 @@ function renderOshiList(){
                         </div>
 
 
+
                         <!-- =====================
-                             削除
+                             編集・削除
                         ====================== -->
 
-                        <button
-                            type="button"
-                            class="oshi-list-delete"
-                            title="リストから削除"
-                            onclick="
-                                event.stopPropagation();
+                        <div class="oshi-list-card-management">
 
-                                removeOshiFromList(
-                                    '${oshi.id}'
-                                );
-                            ">
+                            <!-- 編集 -->
 
-                            ✕
+                            <button
+                                type="button"
+                                class="oshi-list-edit"
+                                title="推し情報を編集"
+                                aria-label="推し情報を編集"
+                                onclick="
+                                    event.stopPropagation();
 
-                        </button>
+                                    openOshiEditModal('${oshi.id}');
+                                ">
 
+                                ✏️
+
+                            </button>
+
+
+                            <!-- 削除 -->
+
+                            <button
+                                type="button"
+                                class="oshi-list-delete"
+                                title="リストから削除"
+                                aria-label="リストから削除"
+                                onclick="
+                                    event.stopPropagation();
+
+                                    removeOshiFromList('${oshi.id}');
+                                ">
+
+                                ✕
+
+                            </button>
+
+                        </div>
 
                     </div>
 
