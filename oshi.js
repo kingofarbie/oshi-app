@@ -1782,10 +1782,11 @@ async function openOshiRecord(id) {
     const container =
         document.getElementById("oshiContainer");
 
-    if (!container) return;
+    if (!container) {
+        console.error("oshiContainer が見つかりません。");
+        return;
+    }
 
-    // 推しIDが渡されなかった場合は、
-    // 詳細ページを開いている推しのIDを使う
     const oshiId =
         id || container.dataset.oshiId;
 
@@ -1799,40 +1800,55 @@ async function openOshiRecord(id) {
         const response =
             await fetch("./oshi-record.html");
 
-        if (!response.ok) {
-            throw new Error(
-                "推し活記録ページを読み込めませんでした。"
-            );
-        }
-
         const html = await response.text();
 
-        container.innerHTML = html;
-
-        const recordPage =
-            document.getElementById("oshiRecordPage");
-
-        if (!recordPage) {
-            throw new Error(
-                "推し活記録ページが見つかりません。"
+        if (!response.ok) {
+            console.error(
+                "oshi-record.html の読み込みに失敗:",
+                response.status,
+                html
             );
+
+            alert("記録ページの読み込みに失敗しました。");
+            return;
         }
 
-        recordPage.classList.add("active");
+        container.innerHTML = html;
 
         container.dataset.oshiId = oshiId;
         container.dataset.oshiRecordMode = "view";
 
+        const recordPage =
+            container.querySelector("#oshiRecordPage");
+
+        if (recordPage) {
+            recordPage.classList.add("active");
+        }
+
+        const title =
+            container.querySelector("#oshiRecordTitle");
+
+        if (title) {
+            const data = await db.load();
+
+            const oshi = data.oshiList?.find(
+                item => item.id === oshiId
+            );
+
+            if (oshi) {
+                title.textContent =
+                    oshi.name + " の推し活記録";
+            }
+        }
+
     } catch (error) {
 
         console.error(
-            "推し活記録ページの表示エラー:",
+            "推し活記録ページのエラー:",
             error
         );
 
-        alert(
-            "推し活記録ページを開けませんでした。"
-        );
+        alert("記録ページを開けませんでした。");
     }
 }
 
