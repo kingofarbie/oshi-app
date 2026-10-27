@@ -384,6 +384,14 @@ async function saveOshiActivity() {
    📝 記録一覧を表示
 ===================================================== */
 
+
+/* =====================================================
+   💖 推し活記録一覧
+   ・カードをタップ → 詳細表示
+   ・✏️ → 編集
+   ・✕ → 削除
+===================================================== */
+
 async function renderOshiActivityList(oshiId) {
 
     const container =
@@ -403,17 +411,14 @@ async function renderOshiActivityList(oshiId) {
 
     if (records.length === 0) {
 
-        const empty =
-            document.createElement("div");
+        const empty = document.createElement("div");
 
         empty.className = "oshi-activity-empty";
-
         empty.textContent =
             "💖 まだ推し活記録がありません\n" +
             "ライブやグッズ購入などを記録してみましょう";
 
         list.appendChild(empty);
-
         return;
     }
 
@@ -421,69 +426,316 @@ async function renderOshiActivityList(oshiId) {
         [...records].sort((a, b) => {
 
             const dateA =
-                a.fields?.oshiActivityLiveDate ||
-                a.fields?.oshiActivityMediaDate ||
-                a.fields?.oshiActivityWorkDate ||
-                a.fields?.oshiActivityGoodsDate ||
-                a.fields?.oshiActivityTripDate ||
-                a.fields?.oshiActivityMemoryDate ||
-                a.fields?.oshiActivityFirstDate ||
+                getOshiActivityRecordDate(a) ||
                 a.createdAt || "";
 
             const dateB =
-                b.fields?.oshiActivityLiveDate ||
-                b.fields?.oshiActivityMediaDate ||
-                b.fields?.oshiActivityWorkDate ||
-                b.fields?.oshiActivityGoodsDate ||
-                b.fields?.oshiActivityTripDate ||
-                b.fields?.oshiActivityMemoryDate ||
-                b.fields?.oshiActivityFirstDate ||
+                getOshiActivityRecordDate(b) ||
                 b.createdAt || "";
 
             return dateB.localeCompare(dateA);
         });
 
+    const icons = {
+        live: "🎤",
+        media: "🎬",
+        work: "🎭",
+        goods: "🛍️",
+        trip: "✈️",
+        memory: "💖",
+        first: "🌟"
+    };
+
     sortedRecords.forEach(record => {
 
-        const fields = record.fields || {};
+        const card = document.createElement("article");
+        card.className = "oshi-activity-card";
 
-        const item =
-            document.createElement("button");
+        const main = document.createElement("button");
+        main.type = "button";
+        main.className = "oshi-activity-main";
+        main.setAttribute(
+            "aria-label",
+            getOshiActivityRecordTitle(record) + " の詳細を見る"
+        );
 
-        item.type = "button";
-        item.className = "oshi-activity-item";
+        const icon = document.createElement("span");
+        icon.className = "oshi-activity-card-icon";
+        icon.textContent = icons[record.type] || "💖";
 
-        const heading =
-            document.createElement("strong");
+        const info = document.createElement("span");
+        info.className = "oshi-activity-card-info";
 
-        heading.textContent =
+        const title = document.createElement("strong");
+        title.className = "oshi-activity-card-title";
+        title.textContent =
             getOshiActivityRecordTitle(record);
 
-        const date =
-            document.createElement("span");
-
+        const date = document.createElement("span");
         date.className = "oshi-activity-date";
-
         date.textContent =
             getOshiActivityRecordDate(record);
 
-        const detail =
-            document.createElement("span");
-
-        detail.className = "oshi-activity-summary";
-
-        detail.textContent =
+        const summary = document.createElement("span");
+        summary.className = "oshi-activity-summary";
+        summary.textContent =
             getOshiActivityRecordSummary(record);
 
-        item.append(heading, date, detail);
+        info.append(title, date);
 
-        item.addEventListener("click", () => {
+        if (summary.textContent) {
+            info.appendChild(summary);
+        }
+
+        const arrow = document.createElement("span");
+        arrow.className = "oshi-activity-card-arrow";
+        arrow.textContent = "›";
+        arrow.setAttribute("aria-hidden", "true");
+
+        main.append(icon, info, arrow);
+
+        main.addEventListener("click", () => {
+            showOshiActivityDetail(record);
+        });
+
+        const actions = document.createElement("div");
+        actions.className = "oshi-activity-card-actions";
+
+        const editButton = document.createElement("button");
+        editButton.type = "button";
+        editButton.className = "oshi-activity-action";
+        editButton.textContent = "✏️";
+        editButton.title = "記録を編集";
+        editButton.setAttribute("aria-label", "記録を編集");
+
+        editButton.addEventListener("click", event => {
+            event.stopPropagation();
             editOshiActivity(record.id);
         });
 
-        list.appendChild(item);
+        const deleteButton = document.createElement("button");
+        deleteButton.type = "button";
+        deleteButton.className =
+            "oshi-activity-action oshi-activity-delete";
+        deleteButton.textContent = "✕";
+        deleteButton.title = "記録を削除";
+        deleteButton.setAttribute("aria-label", "記録を削除");
+
+        deleteButton.addEventListener("click", event => {
+            event.stopPropagation();
+            deleteOshiActivityById(record.id);
+        });
+
+        actions.append(editButton, deleteButton);
+        card.append(main, actions);
+        list.appendChild(card);
     });
 }
+
+
+/* =====================================================
+   💖 活動の詳細表示
+===================================================== */
+
+function showOshiActivityDetail(record) {
+
+    const container =
+        document.getElementById("oshiContainer");
+
+    if (!container || !record) return;
+
+    let modal =
+        container.querySelector("#oshiActivityDetailModal");
+
+    if (!modal) {
+
+        modal = document.createElement("div");
+        modal.id = "oshiActivityDetailModal";
+        modal.className = "oshi-activity-detail-overlay";
+
+        const panel = document.createElement("section");
+        panel.className = "oshi-activity-detail-panel";
+        panel.setAttribute("role", "dialog");
+        panel.setAttribute("aria-modal", "true");
+        panel.setAttribute("aria-labelledby", "oshiActivityDetailTitle");
+
+        const header = document.createElement("div");
+        header.className = "oshi-activity-detail-header";
+
+        const heading = document.createElement("h3");
+        heading.id = "oshiActivityDetailTitle";
+
+        const close = document.createElement("button");
+        close.type = "button";
+        close.className = "oshi-activity-detail-close";
+        close.textContent = "✕";
+        close.title = "閉じる";
+        close.addEventListener("click", () => {
+            modal.classList.remove("show");
+        });
+
+        header.append(heading, close);
+
+        const body = document.createElement("div");
+        body.id = "oshiActivityDetailBody";
+        body.className = "oshi-activity-detail-body";
+
+        panel.append(header, body);
+        modal.appendChild(panel);
+
+        modal.addEventListener("click", event => {
+            if (event.target === modal) {
+                modal.classList.remove("show");
+            }
+        });
+
+        container.appendChild(modal);
+    }
+
+    const heading =
+        modal.querySelector("#oshiActivityDetailTitle");
+
+    const body =
+        modal.querySelector("#oshiActivityDetailBody");
+
+    const fields = record.fields || {};
+
+    const labels = {
+        oshiActivityLiveDate: "日付",
+        oshiActivityLiveName: "ライブ名",
+        oshiActivityLiveVenue: "会場",
+        oshiActivityLiveSeat: "座席",
+        oshiActivityLiveMemo: "感想・メモ",
+
+        oshiActivityMediaName: "作品・メディア名",
+        oshiActivityMediaDate: "日付",
+        oshiActivityMediaWatched: "視聴状況",
+        oshiActivityMediaMemo: "感想・メモ",
+
+        oshiActivityWorkDate: "日付",
+        oshiActivityWorkName: "作品名",
+        oshiActivityWorkEdition: "作品・公演の情報",
+        oshiActivityWorkMemo: "感想・メモ",
+
+        oshiActivityGoodsDate: "購入日",
+        oshiActivityGoodsName: "グッズ名",
+        oshiActivityGoodsPrice: "金額",
+        oshiActivityGoodsPlace: "購入場所",
+
+        oshiActivityTripDate: "日付",
+        oshiActivityTripDestination: "行き先",
+        oshiActivityTripTransport: "交通手段",
+        oshiActivityTripHotel: "宿泊先",
+        oshiActivityTripMemo: "旅行メモ",
+
+        oshiActivityMemoryDate: "日付",
+        oshiActivityMemoryMemo: "思い出・メモ",
+
+        oshiActivityFirstType: "初めての出来事",
+        oshiActivityFirstDate: "日付",
+        oshiActivityFirstMemo: "メモ"
+    };
+
+    heading.textContent =
+        getOshiActivityRecordTitle(record);
+
+    body.replaceChildren();
+
+    const typeLabel =
+        OSHI_ACTIVITY_TYPES[record.type]?.label ||
+        "推し活記録";
+
+    const typeBadge = document.createElement("span");
+    typeBadge.className = "oshi-activity-detail-type";
+    typeBadge.textContent = typeLabel;
+    body.appendChild(typeBadge);
+
+    Object.entries(fields).forEach(([id, value]) => {
+
+        if (
+            value === "" ||
+            value === null ||
+            value === undefined
+        ) {
+            return;
+        }
+
+        const row = document.createElement("div");
+        row.className = "oshi-activity-detail-row";
+
+        const label = document.createElement("div");
+        label.className = "oshi-activity-detail-label";
+        label.textContent = labels[id] || id;
+
+        const text = document.createElement("div");
+        text.className = "oshi-activity-detail-value";
+
+        if (id === "oshiActivityMediaWatched") {
+            text.textContent = value ? "視聴済み" : "未視聴";
+        } else if (
+            id === "oshiActivityFirstType" &&
+            typeof value === "string"
+        ) {
+            const select =
+                container.querySelector("#oshiActivityFirstType");
+
+            const option = Array.from(
+                select?.options || []
+            ).find(item => item.value === value);
+
+            text.textContent =
+                option?.textContent || value;
+        } else {
+            text.textContent = String(value);
+        }
+
+        row.append(label, text);
+        body.appendChild(row);
+    });
+
+    modal.classList.add("show");
+}
+
+
+/* =====================================================
+   🗑️ 一覧から記録を削除
+===================================================== */
+
+async function deleteOshiActivityById(activityId) {
+
+    const oshiId = getOshiActivityTargetId();
+
+    if (!oshiId || !activityId) return;
+
+    if (!confirm("この推し活記録を削除しますか？")) {
+        return;
+    }
+
+    const data = await db.load();
+
+    const records =
+        data?.oshiRecords?.[oshiId];
+
+    if (!Array.isArray(records)) return;
+
+    data.oshiRecords[oshiId] =
+        records.filter(item => item.id !== activityId);
+
+    await db.save(data);
+
+    const detailModal =
+        document.querySelector(
+            "#oshiContainer #oshiActivityDetailModal"
+        );
+
+    if (detailModal) {
+        detailModal.classList.remove("show");
+    }
+
+    await renderOshiActivityList(oshiId);
+}
+
+
 
 
 /* =====================================================
