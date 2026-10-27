@@ -348,3 +348,134 @@
     white-space: pre-wrap;
     overflow-wrap: anywhere;
 }
+
+
+
+
+/* =====================================================
+   💖 推し活記録入力モーダル
+   スマホ画面内に収めて、モーダル内部をスクロール
+===================================================== */
+
+#oshiActivityModal {
+    box-sizing: border-box;
+    padding: 10px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+}
+
+#oshiActivityModal .oshi-activity-modal {
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 500px;
+    max-height: calc(100vh - 20px);
+    max-height: calc(100dvh - 20px);
+    margin: 0 auto;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+}
+
+#oshiActivityModal .oshi-activity-modal-header {
+    position: sticky;
+    top: -20px;
+    z-index: 5;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+
+    box-sizing: border-box;
+    width: 100%;
+    padding: 10px 12px;
+
+    background: var(--card, #fff);
+    border-bottom: 1px solid var(--border, #f0dce7);
+}
+
+#oshiActivityModal .oshi-activity-modal-header h2 {
+    min-width: 0;
+    margin: 0;
+    font-size: 18px;
+}
+
+#oshiActivityModal .oshi-activity-modal-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 0 0 auto;
+    gap: 6px;
+}
+
+#oshiActivityModal .oshi-activity-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 40px;
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
+    padding: 0;
+
+    border: 1px solid var(--border, #f0dce7);
+    border-radius: 10px;
+    background: var(--card, #fff);
+    color: var(--text, #333);
+
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+#oshiActivityModal .oshi-activity-icon-btn:active {
+    transform: scale(0.94);
+}
+
+#oshiActivityModal .oshi-activity-icon-btn[title="保存"] {
+    background: #fff0f6;
+}
+
+#oshiActivityModal .oshi-activity-icon-btn.delete-btn {
+    color: #b84b69;
+    background: #fff4f5;
+}
+
+@media (max-width: 380px) {
+    #oshiActivityModal {
+        padding: 6px;
+    }
+
+    #oshiActivityModal .oshi-activity-modal {
+        max-height: calc(100vh - 12px);
+        max-height: calc(100dvh - 12px);
+    }
+
+    #oshiActivityModal .oshi-activity-modal-header {
+        gap: 4px;
+        padding: 8px;
+    }
+
+    #oshiActivityModal .oshi-activity-modal-actions {
+        gap: 4px;
+    }
+
+    #oshiActivityModal .oshi-activity-icon-btn {
+        flex-basis: 36px;
+        width: 36px;
+        min-width: 36px;
+        height: 36px;
+        font-size: 18px;
+    }
+}
