@@ -259,3 +259,131 @@
     </div>
 
 </div>
+
+
+
+
+
+<!-- =========================
+     推し情報編集モーダル
+========================= -->
+
+<div
+    id="oshiEditModal"
+    class="modal">
+
+    <div class="modal-content oshi-register-modal">
+
+        <h2>✏️ 推し情報を編集</h2>
+
+        <input
+            type="hidden"
+            id="oshiEditId">
+
+        <!-- 名前 -->
+
+        <div class="event-form-row">
+
+            <label for="oshiEditName">
+                名前・名称
+            </label>
+
+            <input
+                type="text"
+                id="oshiEditName"
+                placeholder="名前・名称">
+
+        </div>
+
+        <!-- ローマ字 -->
+
+        <div class="event-form-row">
+
+            <label for="oshiEditReading">
+                ローマ字
+            </label>
+
+            <input
+                type="text"
+                id="oshiEditReading"
+                placeholder="並べ替え用のローマ字"
+                autocomplete="off"
+                autocapitalize="none"
+                spellcheck="false">
+
+        </div>
+
+        <!-- ジャンル -->
+
+        <div class="event-form-row">
+
+            <label for="oshiEditGenre">
+                ジャンル
+            </label>
+
+            <select id="oshiEditGenre">
+
+                <option value="artists">
+                    🎤 アーティスト
+                </option>
+
+                <option value="sports">
+                    ⚽ スポーツ
+                </option>
+
+                <option value="other">
+                    その他
+                </option>
+
+            </select>
+
+        </div>
+
+        <!-- 個人 / 団体 -->
+
+        <div class="event-form-row">
+
+            <label for="oshiEditType">
+                区分
+            </label>
+
+            <select id="oshiEditType">
+
+                <option value="individual">
+                    👤 個人
+                </option>
+
+                <option value="group">
+                    👥 団体
+                </option>
+
+            </select>
+
+        </div>
+
+        <!-- ボタン -->
+
+        <div class="event-modal-buttons">
+
+            <button
+                type="button"
+                class="save-btn"
+                onclick="saveOshiEdit()">
+
+                💾 保存
+
+            </button>
+
+            <button
+                type="button"
+                onclick="closeOshiEditModal()">
+
+                キャンセル
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>

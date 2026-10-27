@@ -706,6 +706,184 @@ function removeOshiFromList(id){
 }
 
 
+
+/* =====================================================
+   ✏️ 推し情報の編集
+===================================================== */
+
+
+/* =====================
+   編集画面を開く
+===================== */
+
+function openOshiEditModal(id){
+
+    const data =
+        db.load();
+
+    const oshi =
+        (data.oshiList || [])
+        .find(
+            item =>
+                item.id === id
+        );
+
+    if(!oshi){
+
+        alert(
+            "編集する推し情報が見つかりません。"
+        );
+
+        return;
+
+    }
+
+
+    document.getElementById(
+        "oshiEditId"
+    ).value = oshi.id;
+
+    document.getElementById(
+        "oshiEditName"
+    ).value = oshi.name || "";
+
+    document.getElementById(
+        "oshiEditReading"
+    ).value =
+        oshi.reading || oshi.name || "";
+
+    document.getElementById(
+        "oshiEditGenre"
+    ).value =
+        oshi.genre || "other";
+
+    document.getElementById(
+        "oshiEditType"
+    ).value =
+        oshi.type || "individual";
+
+
+    document.getElementById(
+        "oshiEditModal"
+    ).classList.add("show");
+
+}
+
+
+/* =====================
+   編集内容を保存
+===================== */
+
+function saveOshiEdit(){
+
+    const id =
+        document.getElementById(
+            "oshiEditId"
+        ).value;
+
+    const name =
+        document.getElementById(
+            "oshiEditName"
+        ).value.trim();
+
+    const reading =
+        document.getElementById(
+            "oshiEditReading"
+        ).value.trim();
+
+    const genre =
+        document.getElementById(
+            "oshiEditGenre"
+        ).value;
+
+    const type =
+        document.getElementById(
+            "oshiEditType"
+        ).value;
+
+
+    if(!name){
+
+        alert(
+            "名前・名称を入力してください。"
+        );
+
+        return;
+
+    }
+
+
+    const data =
+        db.load();
+
+    const oshi =
+        (data.oshiList || [])
+        .find(
+            item =>
+                item.id === id
+        );
+
+
+    if(!oshi){
+
+        alert(
+            "編集する推し情報が見つかりません。"
+        );
+
+        return;
+
+    }
+
+
+    /* 基本情報だけを更新 */
+
+    oshi.name =
+        name;
+
+    oshi.reading =
+        reading || name;
+
+    oshi.genre =
+        genre || "other";
+
+    oshi.type =
+        type || "individual";
+
+
+    /* 既存の詳細データ・写真などは変更しない */
+
+    db.save(data);
+
+
+    closeOshiEditModal();
+
+
+    renderOshiList();
+
+
+    alert(
+        "推し情報を保存しました。"
+    );
+
+}
+
+
+/* =====================
+   編集画面を閉じる
+===================== */
+
+function closeOshiEditModal(){
+
+    document.getElementById(
+        "oshiEditModal"
+    )?.classList.remove("show");
+
+}
+
+
+
+
+
 /* =========================
    絞り込み・並べ替え
 ========================= */
