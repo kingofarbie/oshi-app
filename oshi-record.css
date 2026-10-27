@@ -375,8 +375,11 @@
     box-sizing: border-box;
     width: 100%;
     max-width: 500px;
-    max-height: calc(100vh - 20px);
-    max-height: calc(100dvh - 20px);
+
+    max-height: 80vh;
+max-height: 80dvh;
+
+
     margin: 0 auto;
 
     overflow-x: hidden;
