@@ -1818,6 +1818,8 @@ async function openOshiRecord(id) {
         container.dataset.oshiId = oshiId;
         container.dataset.oshiRecordMode = "view";
 
+        initOshiRecordPage(oshiId);
+
         const recordPage =
             container.querySelector("#oshiRecordPage");
 
@@ -1966,4 +1968,85 @@ function closeOshiRecord(){
 
         });
 
+}
+
+
+
+
+/* =====================================================
+   📝 推し活記録ページの初期化
+===================================================== */
+
+async function initOshiRecordPage(oshiId) {
+
+    const container =
+        document.getElementById("oshiContainer");
+
+    if (!container || !oshiId) return;
+
+    const typeSelect =
+        container.querySelector("#oshiActivityType");
+
+    const modal =
+        container.querySelector("#oshiActivityModal");
+
+    // 記録の種類ごとの入力欄
+    const fieldGroups = [
+        "live",
+        "media",
+        "work",
+        "goods",
+        "trip",
+        "memory",
+        "first"
+    ];
+
+    function updateActivityFields() {
+
+        const selectedType = typeSelect?.value;
+
+        fieldGroups.forEach(type => {
+
+            const group = container.querySelector(
+                "#oshiActivity" +
+                type.charAt(0).toUpperCase() +
+                type.slice(1) +
+                "Fields"
+            );
+
+            if (!group) return;
+
+            group.hidden = type !== selectedType;
+        });
+    }
+
+    if (typeSelect) {
+        typeSelect.onchange = updateActivityFields;
+        updateActivityFields();
+    }
+
+    // 記録ページのタイトル
+    try {
+
+        const data = await db.load();
+
+        const oshi = data.oshiList?.find(
+            item => item.id === oshiId
+        );
+
+        const title =
+            container.querySelector("#oshiRecordTitle");
+
+        if (title && oshi) {
+            title.textContent =
+                oshi.name + " の推し活記録";
+        }
+
+    } catch (error) {
+
+        console.error(
+            "推し活記録のタイトル取得エラー:",
+            error
+        );
+    }
 }
