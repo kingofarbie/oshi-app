@@ -572,3 +572,13 @@ body.theme-dreamy-star .page-header .oshi-add-icon-btn:focus {
     border: none !important;
     box-shadow: none !important;
 }
+
+
+
+/* =========================
+   モーダル表示
+========================= */
+
+.modal.show {
+    display: block;
+}
