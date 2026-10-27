@@ -718,9 +718,21 @@ function removeOshiFromList(id){
 
 function openOshiEditModal(id){
 
+    console.log(
+        "編集ボタンが押されました",
+        id
+    );
+
+    console.log(
+        "編集モーダル:",
+        document.getElementById("oshiEditModal")
+    );
+
     const data =
         db.load();
 
+
+        
     const oshi =
         (data.oshiList || [])
         .find(
