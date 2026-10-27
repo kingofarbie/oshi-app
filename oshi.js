@@ -1818,7 +1818,7 @@ async function openOshiRecord(id) {
         container.dataset.oshiId = oshiId;
         container.dataset.oshiRecordMode = "view";
 
-        initOshiRecordPage(oshiId);
+        await initOshiRecordPage(oshiId);
 
         const recordPage =
             container.querySelector("#oshiRecordPage");
