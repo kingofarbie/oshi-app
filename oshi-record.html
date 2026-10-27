@@ -43,6 +43,74 @@
 
     <!-- 記録一覧 -->
 
+    
+<!-- =========================
+     🔎 推し活記録の検索・絞り込み
+========================= -->
+
+<div class="oshi-activity-filters">
+
+    <div class="event-form-row">
+        <label for="oshiActivitySearch">🔎 キーワード検索</label>
+        <input
+            type="search"
+            id="oshiActivitySearch"
+            placeholder="記録名・会場・作品名・感想など">
+    </div>
+
+    <div class="event-form-row">
+        <label for="oshiActivityFilterType">📂 記録の種類</label>
+        <select id="oshiActivityFilterType">
+            <option value="">すべての種類</option>
+            <option value="live">🎤 ライブ参加</option>
+            <option value="media">📺 テレビ・配信</option>
+            <option value="work">💿 CD・DVD・作品</option>
+            <option value="goods">🛍️ グッズ購入</option>
+            <option value="trip">✈️ 遠征</option>
+            <option value="memory">💖 推し活の思い出</option>
+            <option value="first">⭐ 初めての記録</option>
+        </select>
+    </div>
+
+    <div class="event-form-row">
+        <label for="oshiActivityFilterTag">🏷️ タグ</label>
+        <select id="oshiActivityFilterTag">
+            <option value="">すべてのタグ</option>
+        </select>
+    </div>
+
+    <div class="event-form-row">
+        <label for="oshiActivityFilterMonth">📅 年月</label>
+        <input
+            type="month"
+            id="oshiActivityFilterMonth">
+    </div>
+
+    <div class="oshi-activity-filter-actions">
+        <button
+            type="button"
+            class="text-btn"
+            id="oshiActivitySortButton"
+            data-sort="newest">
+            ↓ 新しい順
+        </button>
+
+        <button
+            type="button"
+            class="text-btn"
+            id="oshiActivityClearFilters">
+            条件をクリア
+        </button>
+    </div>
+
+</div>
+
+
+
+
+
+
+
     <div
         id="oshiActivityList"
         class="oshi-activity-list">
@@ -183,6 +251,30 @@
 
         </div>
 
+
+        
+<!-- =========================
+     🏷️ 自由タグ
+========================= -->
+
+<div class="oshi-activity-tag-section">
+
+    <div class="event-form-row">
+        <label for="oshiActivityTags">
+            🏷️ タグ
+        </label>
+
+        <input
+            type="text"
+            id="oshiActivityTags"
+            placeholder="例：初参戦、遠征、記念日">
+
+        <small>
+            複数のタグは「、」または「,」で区切れます。
+        </small>
+    </div>
+
+</div>
 
 
         <!-- =====================

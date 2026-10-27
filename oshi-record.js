@@ -275,29 +275,23 @@ function getOshiActivityFormValues(type) {
 }
 
 
+
 /* =====================================================
    📝 記録を保存・更新
+   ・既存データを維持
+   ・タグの保存、編集に対応
 ===================================================== */
-
 async function saveOshiActivity() {
-
-    const container =
-        document.getElementById("oshiContainer");
-
-    const modal =
-        container?.querySelector("#oshiActivityModal");
-
-    const oshiId =
-        getOshiActivityTargetId();
+    const container = document.getElementById("oshiContainer");
+    const modal = container?.querySelector("#oshiActivityModal");
+    const oshiId = getOshiActivityTargetId();
 
     if (!container || !modal || !oshiId) {
         alert("推しの情報を取得できませんでした。");
         return;
     }
 
-    const typeSelect =
-        modal.querySelector("#oshiActivityType");
-
+    const typeSelect = modal.querySelector("#oshiActivityType");
     const type = typeSelect?.value;
 
     if (!OSHI_ACTIVITY_TYPES[type]) {
@@ -305,10 +299,21 @@ async function saveOshiActivity() {
         return;
     }
 
-    const fields =
-        getOshiActivityFormValues(type);
+    const fields = getOshiActivityFormValues(type);
 
     if (!fields) return;
+
+    // 🏷️ タグを取得して整理
+    const tagsInput = modal.querySelector("#oshiActivityTags");
+
+    const tags = tagsInput
+        ? [...new Set(
+            tagsInput.value
+                .split(/[,、，]/)
+                .map(tag => tag.trim())
+                .filter(Boolean)
+        )]
+        : [];
 
     const data = await db.load();
 
@@ -325,50 +330,35 @@ async function saveOshiActivity() {
         data.oshiRecords[oshiId] = [];
     }
 
-    const records =
-        data.oshiRecords[oshiId];
-
-    const editId =
-        modal.dataset.editActivityId;
-
+    const records = data.oshiRecords[oshiId];
+    const editId = modal.dataset.editActivityId;
     const now = new Date().toISOString();
 
     if (editId) {
+        const index = records.findIndex(item => item.id === editId);
 
-        const index =
-            records.findIndex(
-                item => item.id === editId
-            );
-
-        if (index !== -1) {
-
-            records[index] = {
-                ...records[index],
-                type,
-                fields,
-                updatedAt: now
-            };
-
-        } else {
-
+        if (index === -1) {
             alert("編集する記録が見つかりません。");
             return;
         }
 
+        records[index] = {
+            ...records[index],
+            type,
+            fields,
+            tags,
+            updatedAt: now
+        };
     } else {
-
         records.push({
-
-            id:
-                Date.now().toString(36) +
+            id: Date.now().toString(36) +
                 Math.random().toString(36).slice(2),
-
             oshiId,
             type,
             fields,
+            tags,
             createdAt: now,
             updatedAt: now
-
         });
     }
 
@@ -378,6 +368,7 @@ async function saveOshiActivity() {
 
     await renderOshiActivityList(oshiId);
 }
+
 
 
 /* =====================================================
@@ -865,53 +856,43 @@ function getOshiActivityRecordSummary(record) {
 }
 
 
+
 /* =====================================================
    📝 記録を編集
+   ・既存の入力項目を復元
+   ・保存済みタグを復元
+   ・既存の添付ファイル入力を勝手に変更しない
 ===================================================== */
-
 async function editOshiActivity(activityId) {
-
-    const container =
-        document.getElementById("oshiContainer");
-
-    const modal =
-        container?.querySelector("#oshiActivityModal");
-
-    const oshiId =
-        getOshiActivityTargetId();
+    const container = document.getElementById("oshiContainer");
+    const modal = container?.querySelector("#oshiActivityModal");
+    const oshiId = getOshiActivityTargetId();
 
     if (!container || !modal || !oshiId) return;
 
     const data = await db.load();
+    const records = data?.oshiRecords?.[oshiId] || [];
 
-    const records =
-        data?.oshiRecords?.[oshiId] || [];
-
-    const record =
-        records.find(item => item.id === activityId);
+    const record = records.find(item => item.id === activityId);
 
     if (!record) {
         alert("記録が見つかりません。");
         return;
     }
 
-    const typeSelect =
-        modal.querySelector("#oshiActivityType");
+    const typeSelect = modal.querySelector("#oshiActivityType");
 
     if (typeSelect) {
         typeSelect.value = record.type;
-        typeSelect.onchange =
-            updateOshiActivityTypeFields;
+        typeSelect.onchange = updateOshiActivityTypeFields;
     }
 
     const fields = record.fields || {};
 
+    // 📝 各種類の入力項目を復元
     Object.keys(OSHI_ACTIVITY_TYPES).forEach(type => {
-
         OSHI_ACTIVITY_TYPES[type].fields.forEach(id => {
-
-            const input =
-                modal.querySelector("#" + id);
+            const input = modal.querySelector("#" + id);
 
             if (!input) return;
 
@@ -923,10 +904,18 @@ async function editOshiActivity(activityId) {
         });
     });
 
+    // 🏷️ 保存済みタグを復元
+    const tagsInput = modal.querySelector("#oshiActivityTags");
+
+    if (tagsInput) {
+        tagsInput.value = Array.isArray(record.tags)
+            ? record.tags.join("、")
+            : "";
+    }
+
     modal.dataset.editActivityId = record.id;
 
-    const deleteButton =
-        modal.querySelector(".delete-btn");
+    const deleteButton = modal.querySelector(".delete-btn");
 
     if (deleteButton) {
         deleteButton.style.display = "";
@@ -936,6 +925,7 @@ async function editOshiActivity(activityId) {
 
     modal.classList.add("show");
 }
+
 
 
 /* =====================================================
