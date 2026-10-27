@@ -14,3 +14,142 @@
 .oshi-record-close-btn {
     margin-left: auto;
 }
+
+
+
+
+/* =====================================================
+   💖 推し活記録一覧
+===================================================== */
+
+#oshiContainer #oshiActivityList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 16px;
+    padding-bottom: 24px;
+}
+
+/* 記録カード */
+
+#oshiContainer .oshi-activity-item {
+    display: grid;
+    grid-template-columns: 46px minmax(0, 1fr) 20px;
+    grid-template-rows: auto auto;
+    align-items: center;
+    column-gap: 12px;
+    row-gap: 5px;
+
+    width: 100%;
+    min-width: 0;
+    padding: 15px;
+
+    text-align: left;
+    font: inherit;
+    color: inherit;
+
+    background: var(--card-bg, #fff);
+    border: 1px solid #f0dce7;
+    border-radius: 16px;
+
+    box-shadow: 0 3px 10px rgba(100, 50, 80, 0.06);
+
+    cursor: pointer;
+    transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+/* 左側の種類アイコン */
+
+#oshiContainer .oshi-activity-item::before {
+    content: "💖";
+    grid-column: 1;
+    grid-row: 1 / 3;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 46px;
+    height: 46px;
+
+    background: #fff0f6;
+    border-radius: 14px;
+    font-size: 23px;
+}
+
+/* タイトル */
+
+#oshiContainer .oshi-activity-item strong {
+    grid-column: 2;
+    grid-row: 1;
+
+    display: block;
+    min-width: 0;
+
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.5;
+
+    overflow-wrap: anywhere;
+}
+
+/* 日付 */
+
+#oshiContainer .oshi-activity-item .oshi-activity-date {
+    grid-column: 2;
+    grid-row: 2;
+
+    font-size: 12px;
+    color: #bd5b8a;
+}
+
+/* 補足情報 */
+
+#oshiContainer .oshi-activity-item .oshi-activity-summary {
+    grid-column: 2;
+    grid-row: 3;
+
+    min-width: 0;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #777;
+
+    overflow-wrap: anywhere;
+}
+
+/* 右側の矢印 */
+
+#oshiContainer .oshi-activity-item::after {
+    content: "›";
+    grid-column: 3;
+    grid-row: 1 / 4;
+
+    justify-self: center;
+    font-size: 25px;
+    color: #c58aa8;
+}
+
+/* タップ時 */
+
+#oshiContainer .oshi-activity-item:active {
+    transform: scale(0.985);
+    box-shadow: 0 1px 5px rgba(100, 50, 80, 0.08);
+}
+
+/* 記録がない場合 */
+
+#oshiContainer .oshi-activity-empty {
+    padding: 28px 16px;
+    text-align: center;
+    white-space: pre-line;
+
+    color: #927b89;
+    background: #fff8fb;
+    border: 1px dashed #e9c9da;
+    border-radius: 16px;
+
+    font-size: 14px;
+    line-height: 1.9;
+}
