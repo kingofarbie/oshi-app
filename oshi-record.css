@@ -461,8 +461,12 @@ max-height: 80dvh;
     }
 
     #oshiActivityModal .oshi-activity-modal {
-        max-height: calc(100vh - 12px);
-        max-height: calc(100dvh - 12px);
+
+
+    max-height: 80vh;
+max-height: 80dvh;
+
+
     }
 
     #oshiActivityModal .oshi-activity-modal-header {
