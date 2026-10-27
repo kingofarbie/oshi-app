@@ -718,21 +718,9 @@ function removeOshiFromList(id){
 
 function openOshiEditModal(id){
 
-    console.log(
-        "編集ボタンが押されました",
-        id
-    );
-
-    console.log(
-        "編集モーダル:",
-        document.getElementById("oshiEditModal")
-    );
-
     const data =
         db.load();
 
-
-        
     const oshi =
         (data.oshiList || [])
         .find(
@@ -1788,128 +1776,68 @@ function initOshiReadingHelper(){
    推し活記録ページを開く
 ========================= */
 
-function openOshiRecord(id){
 
-    console.log(
-        "★ 推し活記録を開く:",
-        id
-    );
+async function openOshiRecord(id) {
 
     const container =
-        document.getElementById(
-            "oshiContainer"
-        );
+        document.getElementById("oshiContainer");
 
-    if(!container){
+    if (!container) return;
 
-        console.error(
-            "★ oshiContainer が見つかりません"
-        );
+    // 推しIDが渡されなかった場合は、
+    // 詳細ページを開いている推しのIDを使う
+    const oshiId =
+        id || container.dataset.oshiId;
 
+    if (!oshiId) {
+        alert("推しの情報を取得できませんでした。");
         return;
-
     }
 
-    fetch("oshi-record.html")
+    try {
 
-        .then(response => {
+        const response =
+            await fetch("./oshi-record.html");
 
-            if(!response.ok){
-
-                throw new Error(
-                    "oshi-record.html の読み込みに失敗しました"
-                );
-
-            }
-
-            return response.text();
-
-        })
-
-        .then(html => {
-
-            container.innerHTML =
-                html;
-
-
-            /* =====================
-               推しページを表示
-            ===================== */
-
-            const oshiPage =
-                document.getElementById(
-                    "oshiPage"
-                );
-
-            if(oshiPage){
-
-                oshiPage.classList.add(
-                    "active"
-                );
-
-            }
-
-
-            /* =====================
-               記録ページを表示
-            ===================== */
-
-            const recordPage =
-                document.getElementById(
-                    "oshiRecordPage"
-                );
-
-            if(recordPage){
-
-                recordPage.classList.add(
-                    "active"
-                );
-
-            }
-
-
-            /* =====================
-               現在の推しID
-            ===================== */
-
-            container.dataset.oshiId =
-                id;
-
-
-            container.dataset.oshiRecordMode =
-                "view";
-
-
-            console.log(
-                "★ 推し活記録ページ表示:",
-                id
+        if (!response.ok) {
+            throw new Error(
+                "推し活記録ページを読み込めませんでした。"
             );
+        }
 
-        })
+        const html = await response.text();
 
-        .catch(error => {
+        container.innerHTML = html;
 
-            console.error(
-                "★ 推し活記録読み込みエラー:",
-                error
+        const recordPage =
+            document.getElementById("oshiRecordPage");
+
+        if (!recordPage) {
+            throw new Error(
+                "推し活記録ページが見つかりません。"
             );
+        }
 
-            container.innerHTML = `
+        recordPage.classList.add("active");
 
-                <div class="card">
+        container.dataset.oshiId = oshiId;
+        container.dataset.oshiRecordMode = "view";
 
-                    <p>
-                        推し活記録ページを
-                        読み込めませんでした。
-                    </p>
+    } catch (error) {
 
-                </div>
+        console.error(
+            "推し活記録ページの表示エラー:",
+            error
+        );
 
-            `;
-
-        });
-
+        alert(
+            "推し活記録ページを開けませんでした。"
+        );
+    }
 }
+
+
+
 
 /* =========================
    推し活記録ページを閉じる
