@@ -489,3 +489,12 @@ max-height: 70dvh;
         font-size: 18px;
     }
 }
+
+
+/* 推し活記録：入力モーダル内の写真の横はみ出し防止 */
+#oshiActivityModal img,
+#oshiActivityModal video {
+    max-width: 100%;
+    height: auto;
+    box-sizing: border-box;
+}
