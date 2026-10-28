@@ -1,4 +1,3 @@
-
 /* =====================================================
    📝 推し活記録
    oshi-record.js
@@ -9,8 +8,10 @@
    ・新しい順 / 古い順
    ・写真、動画を IndexedDB に保存
    ・詳細画面で写真、動画をプレビュー
+   ・編集画面で登録済み添付ファイルを表示
+   ・添付ファイルの追加、個別削除
+   ・削除は記録保存成功後に実行
    ・記録削除時に専用添付ファイルも削除
-   ・タグのない既存記録にも対応
 ===================================================== */
 
 
@@ -85,6 +86,17 @@ const OSHI_ACTIVITY_TYPES = {
 
 
 /* =====================================================
+   📎 添付ファイルの入力欄
+===================================================== */
+
+const OSHI_ACTIVITY_MEDIA_INPUTS = {
+    live: "oshiActivityLivePhoto",
+    goods: "oshiActivityGoodsPhoto",
+    memory: "oshiActivityMemoryPhoto"
+};
+
+
+/* =====================================================
    📝 推しID
 ===================================================== */
 
@@ -119,6 +131,14 @@ async function initOshiRecordPage(oshiId) {
     }
 
     setupOshiActivityFilters();
+
+    const modal =
+        container.querySelector("#oshiActivityModal");
+
+    if (modal) {
+        setupOshiActivityMediaInputs(modal);
+    }
+
     await renderOshiActivityList(oshiId);
 }
 
@@ -303,6 +323,382 @@ function updateOshiActivityTypeFields() {
 
 
 /* =====================================================
+   📎 プレビュー用URLの解放
+===================================================== */
+
+function revokeOshiActivityEditPreviewURLs(modal) {
+    if (!modal?._oshiActivityEditURLs) return;
+
+    modal._oshiActivityEditURLs.forEach(url => {
+        try {
+            URL.revokeObjectURL(url);
+        } catch (error) {
+            console.warn("プレビューURLを解放できませんでした。", error);
+        }
+    });
+
+    modal._oshiActivityEditURLs = [];
+}
+
+
+/* =====================================================
+   📎 添付ファイルのプレビュー欄を準備
+   HTMLへの追加は不要
+===================================================== */
+
+function setupOshiActivityMediaInputs(modal) {
+    if (!modal) return;
+
+    Object.entries(OSHI_ACTIVITY_MEDIA_INPUTS).forEach(
+        ([type, inputId]) => {
+            const input = modal.querySelector("#" + inputId);
+
+            if (!input) return;
+
+            let preview = modal.querySelector(
+                "#" + inputId + "Preview"
+            );
+
+            if (!preview) {
+                preview = document.createElement("div");
+                preview.id = inputId + "Preview";
+                preview.className =
+                    "oshi-activity-edit-media-preview";
+
+                input.parentElement.appendChild(preview);
+            }
+
+            if (input.dataset.mediaHandlerReady === "true") {
+                return;
+            }
+
+            input.dataset.mediaHandlerReady = "true";
+
+            input.addEventListener("change", () => {
+                renderOshiActivityEditMedia(modal);
+            });
+        }
+    );
+
+    if (!modal.dataset.mediaPreviewStyleReady) {
+        const style = document.createElement("style");
+
+        style.dataset.oshiActivityMediaStyle = "true";
+
+        style.textContent = `
+            .oshi-activity-edit-media-preview {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 10px;
+                width: 100%;
+                margin-top: 10px;
+                box-sizing: border-box;
+            }
+
+            .oshi-activity-edit-media-item {
+                min-width: 0;
+                overflow: hidden;
+                padding: 8px;
+                border: 1px solid rgba(150, 120, 150, 0.25);
+                border-radius: 12px;
+                box-sizing: border-box;
+            }
+
+            .oshi-activity-edit-media-item img,
+            .oshi-activity-edit-media-item video {
+                display: block;
+                width: 100%;
+                max-width: 100%;
+                max-height: 180px;
+                object-fit: contain;
+                border-radius: 8px;
+                box-sizing: border-box;
+            }
+
+            .oshi-activity-edit-media-name {
+                display: block;
+                overflow-wrap: anywhere;
+                margin-top: 6px;
+                font-size: 12px;
+            }
+
+            .oshi-activity-edit-media-actions {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 6px;
+                margin-top: 8px;
+            }
+
+            .oshi-activity-edit-media-actions button {
+                flex: 1 1 auto;
+                min-height: 34px;
+                padding: 5px 8px;
+                border: 1px solid rgba(150, 120, 150, 0.35);
+                border-radius: 8px;
+                background: var(--card-bg, #fff);
+                color: inherit;
+                font-size: 12px;
+                cursor: pointer;
+            }
+
+            .oshi-activity-edit-media-empty {
+                grid-column: 1 / -1;
+                margin: 0;
+                padding: 10px;
+                color: var(--text-secondary, #777);
+                font-size: 13px;
+            }
+        `;
+
+        document.head.appendChild(style);
+        modal.dataset.mediaPreviewStyleReady = "true";
+    }
+}
+
+
+/* =====================================================
+   📎 現在の編集対象メディアを取得
+===================================================== */
+
+function getOshiActivityEditingMedia(modal) {
+    return Array.isArray(modal?._oshiActivityEditingMedia)
+        ? modal._oshiActivityEditingMedia
+        : [];
+}
+
+
+/* =====================================================
+   📎 削除予定の添付ファイルIDを取得
+===================================================== */
+
+function getOshiActivityRemovedMediaIds(modal) {
+    try {
+        const ids = JSON.parse(
+            modal?.dataset.removedMediaIds || "[]"
+        );
+
+        return Array.isArray(ids) ? ids : [];
+    } catch {
+        return [];
+    }
+}
+
+
+/* =====================================================
+   📎 削除予定の添付ファイルIDを保存
+===================================================== */
+
+function setOshiActivityRemovedMediaIds(modal, ids) {
+    modal.dataset.removedMediaIds =
+        JSON.stringify([...new Set(ids)]);
+}
+
+
+/* =====================================================
+   📎 編集画面の写真・動画を表示
+===================================================== */
+
+async function renderOshiActivityEditMedia(modal) {
+    if (!modal) return;
+
+    setupOshiActivityMediaInputs(modal);
+
+    const renderToken =
+        (modal._oshiActivityMediaRenderToken || 0) + 1;
+
+    modal._oshiActivityMediaRenderToken = renderToken;
+
+    revokeOshiActivityEditPreviewURLs(modal);
+
+    const type =
+        modal.querySelector("#oshiActivityType")?.value || "live";
+
+    const inputId = OSHI_ACTIVITY_MEDIA_INPUTS[type];
+
+    const input = inputId
+        ? modal.querySelector("#" + inputId)
+        : null;
+
+    const preview = inputId
+        ? modal.querySelector("#" + inputId + "Preview")
+        : null;
+
+    Object.values(OSHI_ACTIVITY_MEDIA_INPUTS).forEach(id => {
+        const otherPreview = modal.querySelector("#" + id + "Preview");
+
+        if (otherPreview && otherPreview !== preview) {
+            otherPreview.replaceChildren();
+        }
+    });
+
+    if (!preview || !input) return;
+
+    preview.replaceChildren();
+
+    const removedIds = getOshiActivityRemovedMediaIds(modal);
+
+    const existingMedia =
+        getOshiActivityEditingMedia(modal).filter(
+            media => !removedIds.includes(media.id)
+        );
+
+    const selectedFiles =
+        Array.from(input.files || []);
+
+    if (!existingMedia.length && !selectedFiles.length) {
+        const empty = document.createElement("p");
+        empty.className = "oshi-activity-edit-media-empty";
+        empty.textContent = "登録されている写真・動画はありません。";
+        preview.appendChild(empty);
+        return;
+    }
+
+    for (const attachment of existingMedia) {
+        if (modal._oshiActivityMediaRenderToken !== renderToken) {
+            return;
+        }
+
+        const item = document.createElement("div");
+        item.className = "oshi-activity-edit-media-item";
+
+        try {
+            const savedMedia = await getMediaFile(attachment.id);
+
+            if (modal._oshiActivityMediaRenderToken !== renderToken) {
+                return;
+            }
+
+            if (!savedMedia) {
+                const missing = document.createElement("p");
+                missing.textContent =
+                    "この添付ファイルを読み込めませんでした。";
+                item.appendChild(missing);
+            } else {
+                const url = createMediaURL(savedMedia);
+
+                if (url) {
+                    modal._oshiActivityEditURLs =
+                        modal._oshiActivityEditURLs || [];
+
+                    modal._oshiActivityEditURLs.push(url);
+
+                    if (
+                        attachment.type === "video" ||
+                        savedMedia.type === "video"
+                    ) {
+                        const video = document.createElement("video");
+                        video.src = url;
+                        video.controls = true;
+                        video.preload = "metadata";
+                        video.playsInline = true;
+                        item.appendChild(video);
+                    } else {
+                        const image = document.createElement("img");
+                        image.src = url;
+                        image.alt = attachment.name || "登録済みの写真";
+                        image.loading = "lazy";
+                        item.appendChild(image);
+                    }
+                }
+            }
+        } catch (error) {
+            console.error("編集画面の添付ファイル表示に失敗しました。", error);
+
+            const errorText = document.createElement("p");
+            errorText.textContent = "添付ファイルを表示できませんでした。";
+            item.appendChild(errorText);
+        }
+
+        const name = document.createElement("small");
+        name.className = "oshi-activity-edit-media-name";
+        name.textContent = attachment.name || "登録済みファイル";
+        item.appendChild(name);
+
+        const actions = document.createElement("div");
+        actions.className = "oshi-activity-edit-media-actions";
+
+        const removeButton = document.createElement("button");
+        removeButton.type = "button";
+        removeButton.textContent = "🗑️ この写真を削除";
+
+        removeButton.addEventListener("click", () => {
+            const ids = getOshiActivityRemovedMediaIds(modal);
+            ids.push(attachment.id);
+            setOshiActivityRemovedMediaIds(modal, ids);
+
+            renderOshiActivityEditMedia(modal);
+        });
+
+        actions.appendChild(removeButton);
+        item.appendChild(actions);
+        preview.appendChild(item);
+    }
+
+    selectedFiles.forEach((file, index) => {
+        if (modal._oshiActivityMediaRenderToken !== renderToken) {
+            return;
+        }
+
+        const item = document.createElement("div");
+        item.className = "oshi-activity-edit-media-item";
+
+        const url = URL.createObjectURL(file);
+
+        modal._oshiActivityEditURLs =
+            modal._oshiActivityEditURLs || [];
+
+        modal._oshiActivityEditURLs.push(url);
+
+        if (file.type.startsWith("video/")) {
+            const video = document.createElement("video");
+            video.src = url;
+            video.controls = true;
+            video.preload = "metadata";
+            video.playsInline = true;
+            item.appendChild(video);
+        } else if (file.type.startsWith("image/")) {
+            const image = document.createElement("img");
+            image.src = url;
+            image.alt = file.name;
+            image.loading = "lazy";
+            item.appendChild(image);
+        }
+
+        const name = document.createElement("small");
+        name.className = "oshi-activity-edit-media-name";
+        name.textContent = "追加予定：" + file.name;
+        item.appendChild(name);
+
+        const actions = document.createElement("div");
+        actions.className = "oshi-activity-edit-media-actions";
+
+        const removeButton = document.createElement("button");
+        removeButton.type = "button";
+        removeButton.textContent = "追加を取り消す";
+
+        removeButton.addEventListener("click", () => {
+            const currentFiles = Array.from(input.files || []);
+            currentFiles.splice(index, 1);
+
+            const transfer = new DataTransfer();
+
+            currentFiles.forEach(currentFile => {
+                transfer.items.add(currentFile);
+            });
+
+            input.files = transfer.files;
+
+            renderOshiActivityEditMedia(modal);
+        });
+
+        actions.appendChild(removeButton);
+        item.appendChild(actions);
+        preview.appendChild(item);
+    });
+}
+
+
+/* =====================================================
    📝 新規記録モーダルを開く
 ===================================================== */
 
@@ -318,6 +714,9 @@ function openOshiActivityModal() {
         return;
     }
 
+    setupOshiActivityMediaInputs(modal);
+    revokeOshiActivityEditPreviewURLs(modal);
+
     modal.querySelectorAll(
         "input:not([type='file']), textarea, select"
     ).forEach(control => {
@@ -330,12 +729,14 @@ function openOshiActivityModal() {
         }
     });
 
-    // ファイル選択欄は新規記録用に空にする
     modal.querySelectorAll("input[type='file']").forEach(input => {
         input.value = "";
     });
 
     delete modal.dataset.editActivityId;
+
+    modal._oshiActivityEditingMedia = [];
+    modal.dataset.removedMediaIds = "[]";
 
     const deleteButton =
         modal.querySelector(".delete-btn");
@@ -348,10 +749,15 @@ function openOshiActivityModal() {
         modal.querySelector("#oshiActivityType");
 
     if (typeSelect) {
-        typeSelect.onchange = updateOshiActivityTypeFields;
+        typeSelect.onchange = () => {
+            updateOshiActivityTypeFields();
+            renderOshiActivityEditMedia(modal);
+        };
     }
 
     updateOshiActivityTypeFields();
+    renderOshiActivityEditMedia(modal);
+
     modal.classList.add("show");
 }
 
@@ -366,6 +772,7 @@ function closeOshiActivityModal() {
     );
 
     if (modal) {
+        revokeOshiActivityEditPreviewURLs(modal);
         modal.classList.remove("show");
     }
 }
@@ -401,7 +808,6 @@ function getOshiActivityFormValues(type) {
 
 /* =====================================================
    📎 添付ファイルを保存
-   media-db.js の既存関数を利用
 ===================================================== */
 
 async function saveOshiActivityAttachments(type, recordId) {
@@ -410,52 +816,46 @@ async function saveOshiActivityAttachments(type, recordId) {
 
     if (!container) return [];
 
-    const inputIds = {
-        live: ["oshiActivityLivePhoto"],
-        goods: ["oshiActivityGoodsPhoto"],
-        memory: ["oshiActivityMemoryPhoto"]
-    };
+    const inputId = OSHI_ACTIVITY_MEDIA_INPUTS[type];
+    const input = inputId
+        ? container.querySelector("#" + inputId)
+        : null;
 
-    const ids = inputIds[type] || [];
     const savedAttachments = [];
 
-    for (const inputId of ids) {
-        const input = container.querySelector("#" + inputId);
+    if (!input?.files?.length) return savedAttachments;
 
-        if (!input?.files?.length) continue;
+    for (const file of Array.from(input.files)) {
+        const isVideo = file.type.startsWith("video/");
+        const isImage = file.type.startsWith("image/");
 
-        for (const file of Array.from(input.files)) {
-            const isVideo = file.type.startsWith("video/");
-            const isImage = file.type.startsWith("image/");
-
-            if (!isImage && !(type === "memory" && isVideo)) {
-                continue;
-            }
-
-            const mediaId =
-                "oshi-activity-" +
-                recordId + "-" +
-                Date.now().toString(36) + "-" +
-                Math.random().toString(36).slice(2);
-
-            const mediaType = isVideo ? "video" : "photo";
-
-            if (typeof saveMediaFile !== "function") {
-                throw new Error(
-                    "media-db.js の saveMediaFile() が見つかりません。"
-                );
-            }
-
-            await saveMediaFile(mediaId, file, mediaType);
-
-            savedAttachments.push({
-                id: mediaId,
-                type: mediaType,
-                name: file.name,
-                mimeType: file.type || "",
-                recordId
-            });
+        if (!isImage && !(type === "memory" && isVideo)) {
+            continue;
         }
+
+        const mediaId =
+            "oshi-activity-" +
+            recordId + "-" +
+            Date.now().toString(36) + "-" +
+            Math.random().toString(36).slice(2);
+
+        const mediaType = isVideo ? "video" : "photo";
+
+        if (typeof saveMediaFile !== "function") {
+            throw new Error(
+                "media-db.js の saveMediaFile() が見つかりません。"
+            );
+        }
+
+        await saveMediaFile(mediaId, file, mediaType);
+
+        savedAttachments.push({
+            id: mediaId,
+            type: mediaType,
+            name: file.name,
+            mimeType: file.type || "",
+            recordId
+        });
     }
 
     return savedAttachments;
@@ -534,6 +934,7 @@ async function saveOshiActivity() {
 
     let record;
     let isNew = false;
+    let oldRecord = null;
 
     if (editId) {
         const index = records.findIndex(item => item.id === editId);
@@ -543,8 +944,10 @@ async function saveOshiActivity() {
             return;
         }
 
+        oldRecord = records[index];
+
         record = {
-            ...records[index],
+            ...oldRecord,
             type,
             fields,
             tags,
@@ -568,16 +971,22 @@ async function saveOshiActivity() {
 
     let newAttachments = [];
 
+    const removedIds =
+        getOshiActivityRemovedMediaIds(modal);
+
     try {
-        // 新しく選択されたファイルだけを追加する
+        // 新しく選択されたファイルを保存
         newAttachments =
             await saveOshiActivityAttachments(type, record.id);
 
         const existingAttachments =
             Array.isArray(record.media) ? record.media : [];
 
+        // 削除対象を除き、新しい添付ファイルを追加
         record.media = [
-            ...existingAttachments,
+            ...existingAttachments.filter(
+                media => !removedIds.includes(media.id)
+            ),
             ...newAttachments
         ];
 
@@ -593,7 +1002,8 @@ async function saveOshiActivity() {
     } catch (error) {
         console.error("推し活記録の保存に失敗しました。", error);
 
-        // DBへの保存が失敗した場合、新規添付分を後片付けする
+        // 新規添付ファイルのみ後片付けする。
+        // 既存ファイルは削除しない。
         await rollbackOshiActivityAttachments(newAttachments);
 
         alert(
@@ -601,6 +1011,23 @@ async function saveOshiActivity() {
             "入力内容や通信状態を確認して、もう一度お試しください。"
         );
         return;
+    }
+
+    // 記録の保存が成功した後で、削除対象のファイルを削除
+    if (
+        removedIds.length &&
+        typeof deleteMediaFile === "function"
+    ) {
+        for (const mediaId of removedIds) {
+            try {
+                await deleteMediaFile(mediaId);
+            } catch (error) {
+                console.error(
+                    "削除対象の添付ファイルを削除できませんでした。",
+                    error
+                );
+            }
+        }
     }
 
     closeOshiActivityModal();
@@ -629,7 +1056,6 @@ async function renderOshiActivityList(oshiId) {
 
     list.replaceChildren();
 
-    // タグ選択肢は、絞り込み前の全記録から作る
     updateOshiActivityTagFilter(records);
 
     if (records.length === 0) {
@@ -891,7 +1317,6 @@ async function showOshiActivityDetail(record) {
         container.appendChild(modal);
     }
 
-    // 前の詳細表示で作った URL を解放
     revokeOshiActivityDetailURLs(modal);
 
     const heading =
@@ -908,31 +1333,25 @@ async function showOshiActivityDetail(record) {
         oshiActivityLiveVenue: "会場",
         oshiActivityLiveSeat: "座席",
         oshiActivityLiveMemo: "感想・メモ",
-
         oshiActivityMediaName: "番組名",
         oshiActivityMediaDate: "放送日",
         oshiActivityMediaWatched: "視聴状況",
         oshiActivityMediaMemo: "感想・メモ",
-
         oshiActivityWorkDate: "購入日",
         oshiActivityWorkName: "作品名",
         oshiActivityWorkEdition: "仕様",
         oshiActivityWorkMemo: "感想・メモ",
-
         oshiActivityGoodsDate: "購入日",
         oshiActivityGoodsName: "商品",
         oshiActivityGoodsPrice: "金額",
         oshiActivityGoodsPlace: "購入場所",
-
         oshiActivityTripDate: "日程",
         oshiActivityTripDestination: "行き先",
         oshiActivityTripTransport: "交通費",
         oshiActivityTripHotel: "宿泊費",
         oshiActivityTripMemo: "感想",
-
         oshiActivityMemoryDate: "日付",
         oshiActivityMemoryMemo: "コメント",
-
         oshiActivityFirstType: "種類",
         oshiActivityFirstDate: "日付",
         oshiActivityFirstMemo: "メモ"
@@ -947,7 +1366,6 @@ async function showOshiActivityDetail(record) {
         OSHI_ACTIVITY_TYPES[record.type]?.label || "推し活記録";
     body.appendChild(typeBadge);
 
-    // タグ表示
     const tags = normalizeOshiActivityTags(record.tags);
 
     if (tags.length) {
@@ -999,7 +1417,6 @@ async function showOshiActivityDetail(record) {
         body.appendChild(row);
     });
 
-    // 添付ファイルのプレビュー
     const attachments =
         Array.isArray(record.media) ? record.media : [];
 
@@ -1021,8 +1438,10 @@ async function showOshiActivityDetail(record) {
             item.className = "oshi-activity-detail-media-item";
 
             try {
-                if (typeof getMediaFile !== "function" ||
-                    typeof createMediaURL !== "function") {
+                if (
+                    typeof getMediaFile !== "function" ||
+                    typeof createMediaURL !== "function"
+                ) {
                     throw new Error("メディア保存機能を利用できません。");
                 }
 
@@ -1048,8 +1467,10 @@ async function showOshiActivityDetail(record) {
 
                 modal._oshiActivityObjectURLs.push(url);
 
-                if (attachment.type === "video" ||
-                    savedMedia.type === "video") {
+                if (
+                    attachment.type === "video" ||
+                    savedMedia.type === "video"
+                ) {
                     const video = document.createElement("video");
                     video.src = url;
                     video.controls = true;
@@ -1300,6 +1721,8 @@ async function editOshiActivity(activityId) {
 
     if (!container || !modal || !oshiId) return;
 
+    setupOshiActivityMediaInputs(modal);
+
     const data = await db.load();
     const records = data?.oshiRecords?.[oshiId] || [];
 
@@ -1310,12 +1733,18 @@ async function editOshiActivity(activityId) {
         return;
     }
 
+    revokeOshiActivityEditPreviewURLs(modal);
+
     const typeSelect =
         modal.querySelector("#oshiActivityType");
 
     if (typeSelect) {
         typeSelect.value = record.type;
-        typeSelect.onchange = updateOshiActivityTypeFields;
+
+        typeSelect.onchange = () => {
+            updateOshiActivityTypeFields();
+            renderOshiActivityEditMedia(modal);
+        };
     }
 
     const fields = record.fields || {};
@@ -1343,12 +1772,16 @@ async function editOshiActivity(activityId) {
         ).join("、");
     }
 
-    // ブラウザーの仕様上、既存ファイルを入力欄へ再設定しない。
-    // 何も選ばず保存すれば、保存済み添付ファイルは維持される。
     modal.querySelectorAll("input[type='file']").forEach(input => {
         input.value = "";
     });
 
+    modal._oshiActivityEditingMedia =
+        Array.isArray(record.media)
+            ? record.media.map(media => ({ ...media }))
+            : [];
+
+    modal.dataset.removedMediaIds = "[]";
     modal.dataset.editActivityId = record.id;
 
     const deleteButton =
@@ -1359,6 +1792,9 @@ async function editOshiActivity(activityId) {
     }
 
     updateOshiActivityTypeFields();
+
+    await renderOshiActivityEditMedia(modal);
+
     modal.classList.add("show");
 }
 
