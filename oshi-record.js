@@ -498,6 +498,7 @@ function setOshiActivityRemovedMediaIds(modal, ids) {
    📎 編集画面の写真・動画を表示
 ===================================================== */
 
+
 async function renderOshiActivityEditMedia(modal) {
     if (!modal) return;
 
@@ -524,7 +525,8 @@ async function renderOshiActivityEditMedia(modal) {
         : null;
 
     Object.values(OSHI_ACTIVITY_MEDIA_INPUTS).forEach(id => {
-        const otherPreview = modal.querySelector("#" + id + "Preview");
+        const otherPreview =
+            modal.querySelector("#" + id + "Preview");
 
         if (otherPreview && otherPreview !== preview) {
             otherPreview.replaceChildren();
@@ -535,7 +537,8 @@ async function renderOshiActivityEditMedia(modal) {
 
     preview.replaceChildren();
 
-    const removedIds = getOshiActivityRemovedMediaIds(modal);
+    const removedIds =
+        getOshiActivityRemovedMediaIds(modal);
 
     const existingMedia =
         getOshiActivityEditingMedia(modal).filter(
@@ -548,10 +551,32 @@ async function renderOshiActivityEditMedia(modal) {
     if (!existingMedia.length && !selectedFiles.length) {
         const empty = document.createElement("p");
         empty.className = "oshi-activity-edit-media-empty";
-        empty.textContent = "登録されている写真・動画はありません。";
+        empty.textContent =
+            "登録されている写真・動画はありません。";
+
         preview.appendChild(empty);
         return;
     }
+
+    /* =========================
+       📐 プレビューの表示設定
+    ========================= */
+
+    function setPreviewMediaStyle(element) {
+        element.style.display = "block";
+        element.style.width = "100%";
+        element.style.height = "auto";
+        element.style.maxWidth = "100%";
+        element.style.maxHeight = "220px";
+        element.style.objectFit = "contain";
+        element.style.aspectRatio = "auto";
+        element.style.boxSizing = "border-box";
+        element.style.borderRadius = "8px";
+    }
+
+    /* =========================
+       📷 登録済み写真・動画
+    ========================= */
 
     for (const attachment of existingMedia) {
         if (modal._oshiActivityMediaRenderToken !== renderToken) {
@@ -562,7 +587,8 @@ async function renderOshiActivityEditMedia(modal) {
         item.className = "oshi-activity-edit-media-item";
 
         try {
-            const savedMedia = await getMediaFile(attachment.id);
+            const savedMedia =
+                await getMediaFile(attachment.id);
 
             if (modal._oshiActivityMediaRenderToken !== renderToken) {
                 return;
@@ -572,6 +598,7 @@ async function renderOshiActivityEditMedia(modal) {
                 const missing = document.createElement("p");
                 missing.textContent =
                     "この添付ファイルを読み込めませんでした。";
+
                 item.appendChild(missing);
             } else {
                 const url = createMediaURL(savedMedia);
@@ -586,32 +613,50 @@ async function renderOshiActivityEditMedia(modal) {
                         attachment.type === "video" ||
                         savedMedia.type === "video"
                     ) {
-                        const video = document.createElement("video");
+                        const video =
+                            document.createElement("video");
+
                         video.src = url;
                         video.controls = true;
                         video.preload = "metadata";
                         video.playsInline = true;
+
+                        setPreviewMediaStyle(video);
+
                         item.appendChild(video);
                     } else {
-                        const image = document.createElement("img");
+                        const image =
+                            document.createElement("img");
+
                         image.src = url;
-                        image.alt = attachment.name || "登録済みの写真";
+                        image.alt =
+                            attachment.name || "登録済みの写真";
                         image.loading = "lazy";
+
+                        setPreviewMediaStyle(image);
+
                         item.appendChild(image);
                     }
                 }
             }
         } catch (error) {
-            console.error("編集画面の添付ファイル表示に失敗しました。", error);
+            console.error(
+                "編集画面の添付ファイル表示に失敗しました。",
+                error
+            );
 
             const errorText = document.createElement("p");
-            errorText.textContent = "添付ファイルを表示できませんでした。";
+            errorText.textContent =
+                "添付ファイルを表示できませんでした。";
+
             item.appendChild(errorText);
         }
 
         const name = document.createElement("small");
         name.className = "oshi-activity-edit-media-name";
-        name.textContent = attachment.name || "登録済みファイル";
+        name.textContent =
+            attachment.name || "登録済みファイル";
+
         item.appendChild(name);
 
         const actions = document.createElement("div");
@@ -622,8 +667,22 @@ async function renderOshiActivityEditMedia(modal) {
         removeButton.textContent = "🗑️ この写真を削除";
 
         removeButton.addEventListener("click", () => {
-            const ids = getOshiActivityRemovedMediaIds(modal);
-            ids.push(attachment.id);
+            if (
+                !confirm(
+                    "この写真・動画を削除予定にしますか？\n\n" +
+                    "実際の削除は、記録の保存ボタンを押した後に行われます。"
+                )
+            ) {
+                return;
+            }
+
+            const ids =
+                getOshiActivityRemovedMediaIds(modal);
+
+            if (!ids.includes(attachment.id)) {
+                ids.push(attachment.id);
+            }
+
             setOshiActivityRemovedMediaIds(modal, ids);
 
             renderOshiActivityEditMedia(modal);
@@ -633,6 +692,10 @@ async function renderOshiActivityEditMedia(modal) {
         item.appendChild(actions);
         preview.appendChild(item);
     }
+
+    /* =========================
+       🆕 追加予定の写真・動画
+    ========================= */
 
     selectedFiles.forEach((file, index) => {
         if (modal._oshiActivityMediaRenderToken !== renderToken) {
@@ -651,22 +714,31 @@ async function renderOshiActivityEditMedia(modal) {
 
         if (file.type.startsWith("video/")) {
             const video = document.createElement("video");
+
             video.src = url;
             video.controls = true;
             video.preload = "metadata";
             video.playsInline = true;
+
+            setPreviewMediaStyle(video);
+
             item.appendChild(video);
         } else if (file.type.startsWith("image/")) {
             const image = document.createElement("img");
+
             image.src = url;
             image.alt = file.name;
             image.loading = "lazy";
+
+            setPreviewMediaStyle(image);
+
             item.appendChild(image);
         }
 
         const name = document.createElement("small");
         name.className = "oshi-activity-edit-media-name";
         name.textContent = "追加予定：" + file.name;
+
         item.appendChild(name);
 
         const actions = document.createElement("div");
@@ -677,7 +749,9 @@ async function renderOshiActivityEditMedia(modal) {
         removeButton.textContent = "追加を取り消す";
 
         removeButton.addEventListener("click", () => {
-            const currentFiles = Array.from(input.files || []);
+            const currentFiles =
+                Array.from(input.files || []);
+
             currentFiles.splice(index, 1);
 
             const transfer = new DataTransfer();
@@ -696,6 +770,8 @@ async function renderOshiActivityEditMedia(modal) {
         preview.appendChild(item);
     });
 }
+
+
 
 
 /* =====================================================
