@@ -392,11 +392,19 @@ function setupOshiActivityMediaInputs(modal) {
     gap: 10px;
     width: 100%;
     min-width: 0;
+    max-width: none;
+    justify-self: stretch;
     align-self: stretch;
     margin-top: 10px;
     box-sizing: border-box;
 }
-    
+
+.oshi-activity-edit-media-preview > .oshi-activity-edit-media-item {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    box-sizing: border-box;
+}    
 
 
             .oshi-activity-edit-media-item {
