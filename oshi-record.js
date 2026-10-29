@@ -388,14 +388,15 @@ function setupOshiActivityMediaInputs(modal) {
         style.textContent = `
 .oshi-activity-edit-media-preview {
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 10px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
     width: 100%;
     min-width: 0;
     align-self: stretch;
     margin-top: 10px;
     box-sizing: border-box;
-}                
+}    
+
 
             .oshi-activity-edit-media-item {
                 min-width: 0;
