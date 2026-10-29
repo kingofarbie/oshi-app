@@ -362,10 +362,17 @@ function setupOshiActivityMediaInputs(modal) {
             if (!preview) {
                 preview = document.createElement("div");
                 preview.id = inputId + "Preview";
-                preview.className =
-                    "oshi-activity-edit-media-preview";
 
-                input.parentElement.appendChild(preview);
+
+preview.className =
+    "oshi-activity-edit-media-preview";
+
+preview.style.gridColumn = "1 / -1";
+preview.style.width = "100%";
+preview.style.minWidth = "0";
+
+input.parentElement.appendChild(preview);
+
             }
 
             if (input.dataset.mediaHandlerReady === "true") {
