@@ -562,17 +562,19 @@ async function renderOshiActivityEditMedia(modal) {
        📐 プレビューの表示設定
     ========================= */
 
-    function setPreviewMediaStyle(element) {
-        element.style.display = "block";
-        element.style.width = "100%";
-        element.style.height = "auto";
-        element.style.maxWidth = "100%";
-        element.style.maxHeight = "220px";
-        element.style.objectFit = "contain";
-        element.style.aspectRatio = "auto";
-        element.style.boxSizing = "border-box";
-        element.style.borderRadius = "8px";
-    }
+function setPreviewMediaStyle(element) {
+    element.style.display = "block";
+    element.style.width = "100%";
+    element.style.height = "160px";
+    element.style.maxWidth = "100%";
+    element.style.maxHeight = "160px";
+    element.style.objectFit = "contain";
+    element.style.aspectRatio = "auto";
+    element.style.boxSizing = "border-box";
+    element.style.borderRadius = "8px";
+    element.style.flexShrink = "0";
+}
+
 
     /* =========================
        📷 登録済み写真・動画
