@@ -1280,22 +1280,12 @@ async function renderOshiActivityList(oshiId) {
         return;
     }
 
-    const icons = {
-        live: "🎤",
-        media: "📺",
-        work: "💿",
-        goods: "🛍️",
-        trip: "✈️",
-        memory: "💖",
-        first: "🌟"
-    };
-
     filtered.forEach(record => {
         const card = document.createElement("article");
         card.className = "oshi-activity-card";
 
         /* =====================
-           メイン情報
+           タイトル・日付
         ===================== */
 
         const main = document.createElement("button");
@@ -1306,10 +1296,6 @@ async function renderOshiActivityList(oshiId) {
             "aria-label",
             getOshiActivityRecordTitle(record) + " の詳細を見る"
         );
-
-        const icon = document.createElement("span");
-        icon.className = "oshi-activity-card-icon";
-        icon.textContent = icons[record.type] || "💖";
 
         const info = document.createElement("span");
         info.className = "oshi-activity-card-info";
@@ -1322,22 +1308,8 @@ async function renderOshiActivityList(oshiId) {
         date.className = "oshi-activity-date";
         date.textContent = getOshiActivityRecordDate(record);
 
-        const summary = document.createElement("span");
-        summary.className = "oshi-activity-summary";
-        summary.textContent = getOshiActivityRecordSummary(record);
-
         info.append(title, date);
-
-        if (summary.textContent) {
-            info.appendChild(summary);
-        }
-
-        const arrow = document.createElement("span");
-        arrow.className = "oshi-activity-card-arrow";
-        arrow.textContent = "›";
-        arrow.setAttribute("aria-hidden", "true");
-
-        main.append(icon, info, arrow);
+        main.appendChild(info);
 
         main.addEventListener("click", () => {
             showOshiActivityDetail(record);
@@ -1346,7 +1318,7 @@ async function renderOshiActivityList(oshiId) {
         card.appendChild(main);
 
         /* =====================
-           タグ・操作ボタンの下段
+           タグ・操作ボタン
         ===================== */
 
         const bottom = document.createElement("div");
@@ -1407,7 +1379,6 @@ async function renderOshiActivityList(oshiId) {
         list.appendChild(card);
     });
 }
-
 
 /* =====================================================
    💖 記録の詳細表示
