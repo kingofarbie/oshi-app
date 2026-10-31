@@ -601,7 +601,7 @@ max-height: 70dvh;
     min-height: 0;
     height: auto;
 
-    gap: 6px;
+    gap: 0px;
     margin: 0;
     padding: 0 5px;
 
