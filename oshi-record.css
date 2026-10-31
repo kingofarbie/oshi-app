@@ -165,7 +165,7 @@
 #oshiContainer .oshi-activity-card {
     display: flex;
     align-items: stretch;
-    gap: 8px;
+    gap: 4px;
     padding: 10px;
     border: 1px solid #f0dce7;
     border-radius: 16px;
@@ -575,7 +575,7 @@ max-height: 70dvh;
 #oshiContainer .oshi-activity-card {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 2px;
     width: 100%;
     min-width: 0;
     padding: 10px;
