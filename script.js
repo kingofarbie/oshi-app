@@ -176,31 +176,36 @@ localStorage.setItem(
 
 if(pageId === 'calendarPage'){
 
+    const container =
+        document.getElementById(
+            "calendarContainer"
+        );
+
     /*
-       カレンダーHTMLを再読み込みして
-       DOM構造を確実に復元する
+       通常カレンダーがまだ読み込まれていない場合だけ
+       HTMLを読み込む
     */
 
-    setTimeout(() => {
+    if(
+        container &&
+        !container.querySelector("#calendar")
+    ){
 
-        if(
-            typeof loadCalendarHTML ===
-            'function'
-        ){
+        loadCalendarHTML();
 
-            loadCalendarHTML();
+    }else{
 
-        }else{
+        /*
+           すでに表示用DOMがある場合は
+           HTMLを作り直さず、内容だけ更新
+        */
 
-            console.error(
-                "❌ loadCalendarHTML() が見つかりません"
-            );
+        renderCalendar();
 
-        }
-
-    }, 50);
+    }
 
 }
+
 
     /* =====================
        1日手帳
