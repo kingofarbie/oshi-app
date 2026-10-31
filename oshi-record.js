@@ -1169,6 +1169,7 @@ async function saveOshiActivity() {
    📝 記録一覧
 ===================================================== */
 
+
 async function renderOshiActivityList(oshiId) {
     const container =
         document.getElementById("oshiContainer");
@@ -1293,9 +1294,14 @@ async function renderOshiActivityList(oshiId) {
         const card = document.createElement("article");
         card.className = "oshi-activity-card";
 
+        /* =====================
+           メイン情報
+        ===================== */
+
         const main = document.createElement("button");
         main.type = "button";
         main.className = "oshi-activity-main";
+
         main.setAttribute(
             "aria-label",
             getOshiActivityRecordTitle(record) + " の詳細を見る"
@@ -1326,33 +1332,43 @@ async function renderOshiActivityList(oshiId) {
             info.appendChild(summary);
         }
 
-        main.append(icon, info);
-
         const arrow = document.createElement("span");
         arrow.className = "oshi-activity-card-arrow";
         arrow.textContent = "›";
         arrow.setAttribute("aria-hidden", "true");
-        main.appendChild(arrow);
+
+        main.append(icon, info, arrow);
 
         main.addEventListener("click", () => {
             showOshiActivityDetail(record);
         });
 
+        card.appendChild(main);
+
+        /* =====================
+           タグ・操作ボタンの下段
+        ===================== */
+
+        const bottom = document.createElement("div");
+        bottom.className = "oshi-activity-card-bottom";
+
         const tags = normalizeOshiActivityTags(record.tags);
 
-        if (tags.length) {
-            const tagList = document.createElement("div");
-            tagList.className = "oshi-activity-card-tags";
+        const tagList = document.createElement("div");
+        tagList.className = "oshi-activity-card-tags";
 
-            tags.forEach(tag => {
-                const chip = document.createElement("span");
-                chip.className = "oshi-activity-tag";
-                chip.textContent = "🏷️ " + tag;
-                tagList.appendChild(chip);
-            });
+        tags.forEach(tag => {
+            const chip = document.createElement("span");
+            chip.className = "oshi-activity-tag";
+            chip.textContent = "🏷️ " + tag;
+            tagList.appendChild(chip);
+        });
 
-            card.appendChild(tagList);
-        }
+        bottom.appendChild(tagList);
+
+        /* =====================
+           編集・削除ボタン
+        ===================== */
 
         const actions = document.createElement("div");
         actions.className = "oshi-activity-card-actions";
@@ -1363,6 +1379,7 @@ async function renderOshiActivityList(oshiId) {
         editButton.textContent = "✏️";
         editButton.title = "記録を編集";
         editButton.setAttribute("aria-label", "記録を編集");
+
         editButton.addEventListener("click", event => {
             event.stopPropagation();
             editOshiActivity(record.id);
@@ -1372,16 +1389,21 @@ async function renderOshiActivityList(oshiId) {
         deleteButton.type = "button";
         deleteButton.className =
             "oshi-activity-action oshi-activity-delete";
+
         deleteButton.textContent = "✕";
         deleteButton.title = "記録を削除";
         deleteButton.setAttribute("aria-label", "記録を削除");
+
         deleteButton.addEventListener("click", event => {
             event.stopPropagation();
             deleteOshiActivityById(record.id);
         });
 
         actions.append(editButton, deleteButton);
-        card.append(main, actions);
+        bottom.appendChild(actions);
+
+        card.appendChild(bottom);
+
         list.appendChild(card);
     });
 }
