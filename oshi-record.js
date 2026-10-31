@@ -582,17 +582,52 @@ async function renderOshiActivityEditMedia(modal) {
        📐 プレビューの表示設定
     ========================= */
 
-function setPreviewMediaStyle(element) {
-    element.style.display = "block";
-    element.style.width = "100%";
-    element.style.height = "auto";
-    element.style.maxWidth = "100%";
-    element.style.maxHeight = "180px";
-    element.style.minWidth = "0";
-    element.style.objectFit = "contain";
-    element.style.boxSizing = "border-box";
-    element.style.borderRadius = "8px";
-}
+    function setPreviewMediaStyle(element) {
+        element.style.display = "block";
+        element.style.width = "100%";
+        element.style.height = "auto";
+        element.style.maxWidth = "100%";
+        element.style.maxHeight = "180px";
+        element.style.minWidth = "0";
+        element.style.objectFit = "contain";
+        element.style.boxSizing = "border-box";
+        element.style.borderRadius = "8px";
+    }
+
+    /* =========================
+       ❌ 右上の削除ボタン
+    ========================= */
+
+    function createRemoveButton(onRemove) {
+        const button = document.createElement("button");
+
+        button.type = "button";
+        button.className = "oshi-activity-edit-media-remove";
+        button.textContent = "×";
+        button.setAttribute("aria-label", "写真・動画を削除");
+
+        button.style.position = "absolute";
+        button.style.top = "5px";
+        button.style.right = "5px";
+        button.style.zIndex = "2";
+        button.style.width = "28px";
+        button.style.height = "28px";
+        button.style.padding = "0";
+        button.style.display = "flex";
+        button.style.alignItems = "center";
+        button.style.justifyContent = "center";
+        button.style.border = "none";
+        button.style.borderRadius = "50%";
+        button.style.background = "rgba(40, 30, 40, 0.75)";
+        button.style.color = "#fff";
+        button.style.fontSize = "22px";
+        button.style.lineHeight = "1";
+        button.style.cursor = "pointer";
+
+        button.addEventListener("click", onRemove);
+
+        return button;
+    }
 
     /* =========================
        📷 登録済み写真・動画
@@ -603,12 +638,12 @@ function setPreviewMediaStyle(element) {
             return;
         }
 
-const item = document.createElement("div");
-item.className = "oshi-activity-edit-media-item";
-item.style.width = "100%";
-item.style.minWidth = "0";
-item.style.boxSizing = "border-box";
-
+        const item = document.createElement("div");
+        item.className = "oshi-activity-edit-media-item";
+        item.style.position = "relative";
+        item.style.width = "100%";
+        item.style.minWidth = "0";
+        item.style.boxSizing = "border-box";
 
         try {
             const savedMedia =
@@ -683,14 +718,7 @@ item.style.boxSizing = "border-box";
 
         item.appendChild(name);
 
-        const actions = document.createElement("div");
-        actions.className = "oshi-activity-edit-media-actions";
-
-        const removeButton = document.createElement("button");
-        removeButton.type = "button";
-        removeButton.textContent = "🗑️ この写真を削除";
-
-        removeButton.addEventListener("click", () => {
+        const removeButton = createRemoveButton(() => {
             if (
                 !confirm(
                     "この写真・動画を削除予定にしますか？\n\n" +
@@ -712,8 +740,7 @@ item.style.boxSizing = "border-box";
             renderOshiActivityEditMedia(modal);
         });
 
-        actions.appendChild(removeButton);
-        item.appendChild(actions);
+        item.appendChild(removeButton);
         preview.appendChild(item);
     }
 
@@ -728,6 +755,10 @@ item.style.boxSizing = "border-box";
 
         const item = document.createElement("div");
         item.className = "oshi-activity-edit-media-item";
+        item.style.position = "relative";
+        item.style.width = "100%";
+        item.style.minWidth = "0";
+        item.style.boxSizing = "border-box";
 
         const url = URL.createObjectURL(file);
 
@@ -765,14 +796,15 @@ item.style.boxSizing = "border-box";
 
         item.appendChild(name);
 
-        const actions = document.createElement("div");
-        actions.className = "oshi-activity-edit-media-actions";
+        const removeButton = createRemoveButton(() => {
+            if (
+                !confirm(
+                    "この写真・動画の追加を取り消しますか？"
+                )
+            ) {
+                return;
+            }
 
-        const removeButton = document.createElement("button");
-        removeButton.type = "button";
-        removeButton.textContent = "追加を取り消す";
-
-        removeButton.addEventListener("click", () => {
             const currentFiles =
                 Array.from(input.files || []);
 
@@ -789,13 +821,10 @@ item.style.boxSizing = "border-box";
             renderOshiActivityEditMedia(modal);
         });
 
-        actions.appendChild(removeButton);
-        item.appendChild(actions);
+        item.appendChild(removeButton);
         preview.appendChild(item);
     });
 }
-
-
 
 
 /* =====================================================
