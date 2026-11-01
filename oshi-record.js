@@ -144,10 +144,51 @@ async function initOshiRecordPage(oshiId) {
 
 
 /* =====================================================
+   🔎 推し活記録・検索メニュー開閉
+===================================================== */
+
+function toggleOshiActivityFilters() {
+
+    const container =
+        document.getElementById("oshiContainer");
+
+    if (!container) return;
+
+    const filters =
+        container.querySelector("#oshiActivityFilters");
+
+    const button =
+        container.querySelector("#oshiRecordSearchToggle");
+
+    if (!filters || !button) return;
+
+    const isOpen =
+        filters.style.display !== "none";
+
+    filters.style.display =
+        isOpen ? "none" : "";
+
+    button.setAttribute(
+        "aria-expanded",
+        String(!isOpen)
+    );
+
+    button.setAttribute(
+        "aria-label",
+        isOpen
+            ? "検索メニューを開く"
+            : "検索メニューを閉じる"
+    );
+}
+
+
+
+/* =====================================================
    🔎 検索・絞り込みのイベント設定
 ===================================================== */
 
 function setupOshiActivityFilters() {
+
     const container =
         document.getElementById("oshiContainer");
 
@@ -165,8 +206,11 @@ function setupOshiActivityFilters() {
     const monthFilter =
         container.querySelector("#oshiActivityFilterMonth");
 
-    const sortButton =
-        container.querySelector("#oshiActivitySortButton");
+    const newestButton =
+        container.querySelector("#oshiActivitySortNewest");
+
+    const oldestButton =
+        container.querySelector("#oshiActivitySortOldest");
 
     const clearButton =
         container.querySelector("#oshiActivityClearFilters");
@@ -175,63 +219,86 @@ function setupOshiActivityFilters() {
         renderOshiActivityList(getOshiActivityTargetId());
     };
 
+    if (!container.dataset.oshiActivitySort) {
+        container.dataset.oshiActivitySort = "newest";
+    }
+
     if (search) search.oninput = refresh;
     if (typeFilter) typeFilter.onchange = refresh;
     if (tagFilter) tagFilter.onchange = refresh;
     if (monthFilter) monthFilter.onchange = refresh;
 
-    if (sortButton) {
-        if (!sortButton.dataset.sort) {
-            sortButton.dataset.sort = "newest";
-        }
+    if (newestButton) {
+        newestButton.onclick = () => {
+            container.dataset.oshiActivitySort = "newest";
+            updateOshiActivitySortButtons();
+            refresh();
+        };
+    }
 
-        updateOshiActivitySortButton();
-
-        sortButton.onclick = () => {
-            sortButton.dataset.sort =
-                sortButton.dataset.sort === "newest"
-                    ? "oldest"
-                    : "newest";
-
-            updateOshiActivitySortButton();
+    if (oldestButton) {
+        oldestButton.onclick = () => {
+            container.dataset.oshiActivitySort = "oldest";
+            updateOshiActivitySortButtons();
             refresh();
         };
     }
 
     if (clearButton) {
         clearButton.onclick = () => {
+
             if (search) search.value = "";
             if (typeFilter) typeFilter.value = "";
             if (tagFilter) tagFilter.value = "";
             if (monthFilter) monthFilter.value = "";
 
-            if (sortButton) {
-                sortButton.dataset.sort = "newest";
-            }
+            container.dataset.oshiActivitySort = "newest";
 
-            updateOshiActivitySortButton();
+            updateOshiActivitySortButtons();
             refresh();
         };
     }
+
+    updateOshiActivitySortButtons();
 }
+
 
 
 /* =====================================================
    🔽 並べ替えボタン表示
 ===================================================== */
 
-function updateOshiActivitySortButton() {
-    const button = document.querySelector(
-        "#oshiContainer #oshiActivitySortButton"
-    );
+function updateOshiActivitySortButtons() {
 
-    if (!button) return;
+    const container =
+        document.getElementById("oshiContainer");
 
-    button.textContent =
-        button.dataset.sort === "oldest"
-            ? "↑ 古い順"
-            : "↓ 新しい順";
+    if (!container) return;
+
+    const newestButton =
+        container.querySelector("#oshiActivitySortNewest");
+
+    const oldestButton =
+        container.querySelector("#oshiActivitySortOldest");
+
+    const sortOrder =
+        container.dataset.oshiActivitySort || "newest";
+
+    if (newestButton) {
+        newestButton.setAttribute(
+            "aria-pressed",
+            String(sortOrder === "newest")
+        );
+    }
+
+    if (oldestButton) {
+        oldestButton.setAttribute(
+            "aria-pressed",
+            String(sortOrder === "oldest")
+        );
+    }
 }
+
 
 
 /* =====================================================
@@ -1211,9 +1278,8 @@ async function renderOshiActivityList(oshiId) {
     const monthFilter =
         container.querySelector("#oshiActivityFilterMonth")?.value || "";
 
-    const sortOrder =
-        container.querySelector("#oshiActivitySortButton")
-            ?.dataset.sort || "newest";
+const sortOrder =
+    container.dataset.oshiActivitySort || "newest";
 
     const filtered = records.filter(record => {
         if (typeFilter && record.type !== typeFilter) {
