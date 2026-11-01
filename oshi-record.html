@@ -14,36 +14,42 @@
             💖 <span id="oshiRecordTitle">推し活記録</span>
         </h3>
 
-        <div class="oshi-record-header-actions">
+<div class="oshi-record-header-actions">
 
-            <!-- 記録追加 -->
+    <!-- 記録追加 -->
+    <button
+        type="button"
+        class="icon-btn oshi-record-add-btn"
+        title="記録する"
+        aria-label="記録する"
+        onclick="openOshiActivityModal()">
+        ＋
+    </button>
 
-            <button
-                type="button"
-                class="icon-btn oshi-record-add-btn"
-                title="記録する"
-                aria-label="記録する"
-                onclick="openOshiActivityModal()">
+    <!-- 検索メニュー開閉 -->
+    <button
+        type="button"
+        class="icon-btn oshi-record-search-btn"
+        id="oshiRecordSearchToggle"
+        title="検索メニュー"
+        aria-label="検索メニューを開く"
+        aria-expanded="false"
+        onclick="toggleOshiActivityFilters()">
+        🔎
+    </button>
 
-                ＋
+    <!-- ページを閉じる -->
+    <button
+        type="button"
+        class="icon-btn oshi-record-close-btn"
+        title="閉じる"
+        aria-label="閉じる"
+        onclick="closeOshiRecord()">
+        ✕
+    </button>
 
-            </button>
+</div>
 
-
-            <!-- ページを閉じる -->
-
-            <button
-                type="button"
-                class="icon-btn oshi-record-close-btn"
-                title="閉じる"
-                aria-label="閉じる"
-                onclick="closeOshiRecord()">
-
-                ✕
-
-            </button>
-
-        </div>
 
     </div>
 
@@ -52,7 +58,11 @@
          🔎 推し活記録の検索・絞り込み
     ========================= -->
 
-    <div class="oshi-activity-filters">
+<div class="oshi-activity-filters"
+     id="oshiActivityFilters"
+     style="display:none;">
+
+
 
         <div class="event-form-row">
 
@@ -118,29 +128,34 @@
         </div>
 
 
-        <div class="oshi-activity-filter-actions">
+<div class="oshi-activity-filter-actions">
 
-            <button
-                type="button"
-                class="text-btn"
-                id="oshiActivitySortButton"
-                data-sort="newest">
+    <button
+        type="button"
+        class="text-btn"
+        id="oshiActivitySortNewest"
+        aria-pressed="true">
+        ↓ 新しい順
+    </button>
 
-                ↓ 新しい順
+    <button
+        type="button"
+        class="text-btn"
+        id="oshiActivitySortOldest"
+        aria-pressed="false">
+        ↑ 古い順
+    </button>
 
-            </button>
+    <button
+        type="button"
+        class="text-btn"
+        id="oshiActivityClearFilters">
+        条件クリア
+    </button>
+
+</div>
 
 
-            <button
-                type="button"
-                class="text-btn"
-                id="oshiActivityClearFilters">
-
-                条件をクリア
-
-            </button>
-
-        </div>
 
     </div>
 
