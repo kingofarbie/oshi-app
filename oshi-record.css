@@ -696,3 +696,25 @@ max-height: 70dvh;
     align-items: center;
     justify-content: center;
 }
+
+
+/* =====================================================
+   🔎 推し活記録・検索メニュー
+===================================================== */
+
+#oshiContainer .oshi-activity-filter-actions {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    width: 100%;
+}
+
+#oshiContainer .oshi-activity-filter-actions button {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 8px 4px;
+    white-space: nowrap;
+    font-size: 12px;
+}
