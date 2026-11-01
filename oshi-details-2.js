@@ -331,3 +331,414 @@ function cancelOshiProfileEdit() {
 
 
 
+/* =====================================================
+   🔗 推し公式リンク・SNS管理
+===================================================== */
+
+
+/* =========================
+   サービス一覧
+========================= */
+
+const OSHI_HOME_LINK_SERVICES = [
+
+    "X",
+    "Instagram",
+    "TikTok",
+    "YouTube",
+    "Facebook",
+    "Weverse",
+    "Weibo",
+    "その他"
+
+];
+
+
+/* =========================
+   現在の編集データ
+========================= */
+
+let oshiHomeLinksDraft = [];
+
+
+/* =========================
+   リンク編集画面を開く
+========================= */
+
+function openOshiHomeLinksEditor() {
+
+    const container =
+        document.getElementById("oshiContainer");
+
+    const oshiId =
+        container?.dataset.oshiId;
+
+    if (!oshiId) return;
+
+    const data = db.load();
+
+    const detail =
+        data.oshiDetails?.[oshiId] || {};
+
+    oshiHomeLinksDraft =
+        Array.isArray(detail.links)
+            ? detail.links.map(link => ({
+                ...link
+            }))
+            : [];
+
+    renderOshiHomeLinksEditor();
+
+    document.getElementById(
+        "oshiHomeLinksList"
+    ).hidden = true;
+
+    document.getElementById(
+        "oshiHomeLinksEditButton"
+    ).hidden = true;
+
+    document.getElementById(
+        "oshiHomeLinksEditor"
+    ).hidden = false;
+}
+
+
+/* =========================
+   編集欄の表示
+========================= */
+
+function renderOshiHomeLinksEditor() {
+
+    const list =
+        document.getElementById(
+            "oshiHomeLinksEditList"
+        );
+
+    if (!list) return;
+
+    list.innerHTML = "";
+
+    oshiHomeLinksDraft.forEach(
+        (link, index) => {
+
+            const item =
+                document.createElement("div");
+
+            item.className =
+                "oshi-home-link-edit-item";
+
+            const select =
+                document.createElement("select");
+
+            OSHI_HOME_LINK_SERVICES.forEach(
+                service => {
+
+                    const option =
+                        document.createElement("option");
+
+                    option.value = service;
+                    option.textContent = service;
+
+                    select.appendChild(option);
+
+                }
+            );
+
+            select.value =
+                OSHI_HOME_LINK_SERVICES.includes(
+                    link.service
+                )
+                    ? link.service
+                    : "その他";
+
+            const nameInput =
+                document.createElement("input");
+
+            nameInput.type = "text";
+            nameInput.placeholder = "サイト名";
+            nameInput.value =
+                link.service === "その他"
+                    ? link.name || ""
+                    : link.service || "";
+
+            nameInput.hidden =
+                select.value !== "その他";
+
+            const urlInput =
+                document.createElement("input");
+
+            urlInput.type = "url";
+            urlInput.placeholder =
+                "https://example.com";
+
+            urlInput.value =
+                link.url || "";
+
+            select.addEventListener(
+                "change",
+                () => {
+
+                    nameInput.hidden =
+                        select.value !== "その他";
+
+                    if (
+                        select.value !== "その他"
+                    ) {
+
+                        nameInput.value =
+                            select.value;
+
+                    }
+
+                    oshiHomeLinksDraft[index].service =
+                        select.value;
+
+                    oshiHomeLinksDraft[index].name =
+                        nameInput.value;
+
+                }
+            );
+
+            nameInput.addEventListener(
+                "input",
+                () => {
+
+                    oshiHomeLinksDraft[index].name =
+                        nameInput.value;
+
+                }
+            );
+
+            urlInput.addEventListener(
+                "input",
+                () => {
+
+                    oshiHomeLinksDraft[index].url =
+                        urlInput.value;
+
+                }
+            );
+
+            const deleteButton =
+                document.createElement("button");
+
+            deleteButton.type = "button";
+            deleteButton.textContent = "🗑️ 削除";
+
+            deleteButton.addEventListener(
+                "click",
+                () => {
+
+                    oshiHomeLinksDraft.splice(
+                        index,
+                        1
+                    );
+
+                    renderOshiHomeLinksEditor();
+
+                }
+            );
+
+            item.appendChild(select);
+            item.appendChild(nameInput);
+            item.appendChild(urlInput);
+            item.appendChild(deleteButton);
+
+            list.appendChild(item);
+
+        }
+    );
+
+}
+
+
+/* =========================
+   リンクを追加
+========================= */
+
+function addOshiHomeLink() {
+
+    oshiHomeLinksDraft.push({
+
+        service: "X",
+        name: "X",
+        url: ""
+
+    });
+
+    renderOshiHomeLinksEditor();
+
+}
+
+
+/* =========================
+   リンクを保存
+========================= */
+
+function saveOshiHomeLinks() {
+
+    const container =
+        document.getElementById("oshiContainer");
+
+    const oshiId =
+        container?.dataset.oshiId;
+
+    if (!oshiId) return;
+
+    const data = db.load();
+
+    if (!data.oshiDetails) {
+        data.oshiDetails = {};
+    }
+
+    if (!data.oshiDetails[oshiId]) {
+        data.oshiDetails[oshiId] = {};
+    }
+
+    const links =
+        oshiHomeLinksDraft
+        .map(link => ({
+            service: link.service,
+            name: link.name,
+            url: link.url.trim()
+        }))
+        .filter(link => link.url);
+
+    data.oshiDetails[oshiId].links =
+        links;
+
+    db.save(data);
+
+    renderOshiHomeLinks(oshiId);
+
+    document.getElementById(
+        "oshiHomeLinksEditor"
+    ).hidden = true;
+
+    document.getElementById(
+        "oshiHomeLinksList"
+    ).hidden = false;
+
+    document.getElementById(
+        "oshiHomeLinksEditButton"
+    ).hidden = false;
+
+}
+
+
+/* =========================
+   編集キャンセル
+========================= */
+
+function cancelOshiHomeLinksEdit() {
+
+    const container =
+        document.getElementById("oshiContainer");
+
+    const oshiId =
+        container?.dataset.oshiId;
+
+    if (!oshiId) return;
+
+    document.getElementById(
+        "oshiHomeLinksEditor"
+    ).hidden = true;
+
+    document.getElementById(
+        "oshiHomeLinksList"
+    ).hidden = false;
+
+    document.getElementById(
+        "oshiHomeLinksEditButton"
+    ).hidden = false;
+
+    renderOshiHomeLinks(oshiId);
+
+}
+
+
+/* =========================
+   登録リンクの表示
+========================= */
+
+function renderOshiHomeLinks(oshiId) {
+
+    const list =
+        document.getElementById(
+            "oshiHomeLinksList"
+        );
+
+    if (!list) return;
+
+    const data = db.load();
+
+    const links =
+        data.oshiDetails?.[oshiId]?.links || [];
+
+    list.innerHTML = "";
+
+    if (!links.length) {
+
+        const empty =
+            document.createElement("span");
+
+        empty.className =
+            "oshi-home-links-empty";
+
+        empty.textContent =
+            "公式サイトやSNSを登録してみよう♡";
+
+        list.appendChild(empty);
+
+        return;
+
+    }
+
+    links.forEach(link => {
+
+        const button =
+            document.createElement("button");
+
+        button.type = "button";
+        button.className =
+            "oshi-home-link-button";
+
+        button.textContent =
+            link.name || link.service;
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                let url;
+
+                try {
+
+                    url = new URL(link.url);
+
+                } catch {
+
+                    return;
+
+                }
+
+                if (
+                    url.protocol !== "https:" &&
+                    url.protocol !== "http:"
+                ) return;
+
+                window.open(
+                    url.href,
+                    "_blank",
+                    "noopener,noreferrer"
+                );
+
+            }
+        );
+
+        list.appendChild(button);
+
+    });
+
+}
+

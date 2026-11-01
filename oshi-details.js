@@ -480,6 +480,11 @@ function initOshiDetailsPage(
     );
 
 
+    renderOshiHomeLinks(
+    id
+);
+
+
     /* =========================
        写真 input
     ========================= */
@@ -496,6 +501,7 @@ function initOshiDetailsPage(
 
 
 }
+
 
 
 /* =========================================================

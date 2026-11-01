@@ -395,29 +395,93 @@
         </div>
     </section>
 
-    <!-- =========================================
-         公式リンク・SNS
-    ========================================== -->
-    <section class="oshi-home-content-section" id="oshiHomeLinks">
 
-        <div class="oshi-home-section-heading">
-            <span class="oshi-home-section-icon">🔗</span>
-            <div>
-                <p class="oshi-home-section-en">LINKS</p>
-                <h2>推しに会いに行く</h2>
-            </div>
+
+
+<!-- =========================================
+     公式リンク・SNS
+========================================== -->
+<section class="oshi-home-content-section" id="oshiHomeLinks">
+
+    <div class="oshi-home-section-heading">
+        <span class="oshi-home-section-icon">🔗</span>
+        <div>
+            <p class="oshi-home-section-en">LINKS</p>
+            <h2>推しに会いに行く</h2>
+        </div>
+    </div>
+
+    <div class="oshi-home-links-card">
+
+        <p>公式サイトやSNSへのリンクをまとめておこう。</p>
+
+        <!-- 登録済みリンクの表示 -->
+        <div
+            id="oshiHomeLinksList"
+            class="oshi-sns-list oshi-home-sns-list"
+        >
+            <span class="oshi-home-links-empty">
+                公式サイトやSNSを登録してみよう♡
+            </span>
         </div>
 
-        <div class="oshi-home-links-card">
-            <p>公式サイトやSNSへのリンクをまとめておこう。</p>
+        <!-- リンク編集画面 -->
+        <div
+            id="oshiHomeLinksEditor"
+            class="oshi-home-links-editor"
+            hidden
+        >
 
-            <div class="oshi-sns-list oshi-home-sns-list">
-                <span class="oshi-home-links-empty">
-                    公式リンクは、登録済みの情報に合わせて表示します。
-                </span>
+            <div class="oshi-home-links-editor-heading">
+                <span>✦</span>
+                <strong>公式リンクを編集</strong>
             </div>
+
+            <div id="oshiHomeLinksEditList"></div>
+
+            <button
+                type="button"
+                class="oshi-home-links-add-button"
+                onclick="addOshiHomeLink()"
+            >
+                ＋ リンクを追加
+            </button>
+
+            <div class="oshi-home-links-edit-actions">
+
+                <button
+                    type="button"
+                    onclick="saveOshiHomeLinks()"
+                >
+                    💾 保存
+                </button>
+
+                <button
+                    type="button"
+                    onclick="cancelOshiHomeLinksEdit()"
+                >
+                    キャンセル
+                </button>
+
+            </div>
+
         </div>
-    </section>
+
+        <!-- 編集開始ボタン -->
+        <button
+            type="button"
+            id="oshiHomeLinksEditButton"
+            class="oshi-profile-edit-button"
+            onclick="openOshiHomeLinksEditor()"
+        >
+            ✏️ リンクを編集
+        </button>
+
+    </div>
+
+</section>
+
+
 
     <!-- =========================================
          ページ下部

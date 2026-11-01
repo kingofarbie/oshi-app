@@ -2202,3 +2202,107 @@
     overflow-wrap: anywhere;
     word-break: normal;
 }
+
+
+
+
+/* =====================================================
+   🔗 推し公式リンク・SNS
+===================================================== */
+
+.oshi-home-links-editor {
+    margin-top: 18px;
+}
+
+.oshi-home-links-editor-heading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+    color: var(--text-color, #75566f);
+}
+
+.oshi-home-link-edit-item {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    padding: 14px;
+    margin-bottom: 12px;
+    border: 1px solid rgba(190, 150, 190, 0.3);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.55);
+}
+
+.oshi-home-link-edit-item select,
+.oshi-home-link-edit-item input {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    padding: 11px 12px;
+    border: 1px solid rgba(180, 145, 180, 0.35);
+    border-radius: 10px;
+    background: #fff;
+    color: #55445a;
+    font-size: 14px;
+}
+
+.oshi-home-link-edit-item button {
+    align-self: flex-end;
+    padding: 7px 12px;
+    border: none;
+    border-radius: 9px;
+    background: #fff0f2;
+    color: #b65d78;
+    cursor: pointer;
+}
+
+.oshi-home-links-add-button {
+    width: 100%;
+    padding: 12px;
+    border: 1px dashed rgba(180, 130, 180, 0.55);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.5);
+    color: #936b91;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.oshi-home-links-edit-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.oshi-home-links-edit-actions button {
+    flex: 1;
+    min-width: 0;
+    padding: 12px 8px;
+    border: none;
+    border-radius: 12px;
+    background: #f4e5f1;
+    color: #75566f;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.oshi-home-links-edit-actions button:first-child {
+    background: #e9d5ed;
+}
+
+.oshi-home-link-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 5px;
+    padding: 10px 16px;
+    border: 1px solid rgba(180, 145, 190, 0.35);
+    border-radius: 20px;
+    background: #fff;
+    color: #75566f;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.oshi-home-link-button:active {
+    transform: scale(0.97);
+}
