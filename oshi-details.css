@@ -2397,13 +2397,12 @@
 
     border-radius: 50%;
 
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 252, 255, 0.9);
+    color: #C49BCB;
 
-    color: #a47aab;
     font-size: 25px;
     font-weight: 700;
 }
-
 
 /* サービス名 */
 
@@ -2462,23 +2461,6 @@
         border-radius: 16px;
     }
 
-
-    .oshi-home-link-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    width: 38px;
-    height: 38px;
-
-    border-radius: 50%;
-
-    background: rgba(255, 252, 255, 0.9);
-    color: #C49BCB;
-
-    font-size: 25px;
-    font-weight: 700;
-}
 
 
     .oshi-home-link-name {
