@@ -2379,10 +2379,13 @@ background:
 
     border-radius: 50%;
 
-    background: #E6D3F0 !important;
     color: #C49BCB;
 
-    
+    background: linear-gradient(
+    145deg,
+    #F0DDF8,
+    #E2C8F0
+) !important;
 
     font-size: 25px;
     font-weight: 700;
