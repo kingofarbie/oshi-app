@@ -2462,11 +2462,24 @@
         border-radius: 16px;
     }
 
+
     .oshi-home-link-icon {
-        width: 32px;
-        height: 32px;
-        font-size: 22px;
-    }
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 38px;
+    height: 38px;
+
+    border-radius: 50%;
+
+    background: rgba(255, 252, 255, 0.9);
+    color: #C49BCB;
+
+    font-size: 25px;
+    font-weight: 700;
+}
+
 
     .oshi-home-link-name {
         font-size: 11px;
