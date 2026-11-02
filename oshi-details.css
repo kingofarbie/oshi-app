@@ -2289,26 +2289,6 @@
     background: #e9d5ed;
 }
 
-.oshi-home-link-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    margin: 5px;
-    padding: 10px 16px;
-    border: 1px solid rgba(180, 145, 190, 0.35);
-    border-radius: 20px;
-    background: #fff;
-    color: #75566f;
-    font-size: 14px;
-    cursor: pointer;
-}
-
-.oshi-home-link-button:active {
-    transform: scale(0.97);
-}
-
-
-
 
 
 
@@ -2365,13 +2345,15 @@
     border: 1px solid rgba(205, 164, 205, 0.55);
     border-radius: 20px;
 
-    background:
-        linear-gradient(
-            145deg,
-            #fffaff,
-            #f5e8f5
-        );
+background:
+    linear-gradient(
+        145deg,
+        #ffffff,
+        #fffaff,
+        #fdf7ff
+    ) !important;
 
+    
     box-shadow:
         0 4px 10px rgba(160, 120, 165, 0.13),
         inset 0 1px 2px rgba(255, 255, 255, 0.9);
