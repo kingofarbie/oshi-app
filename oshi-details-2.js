@@ -783,7 +783,6 @@ function renderOshiHomeLinks(oshiId) {
 
     }
 
-
     /* =========================
        サービスアイコン
     ========================= */
@@ -791,23 +790,15 @@ function renderOshiHomeLinks(oshiId) {
     const serviceIcons = {
 
         "X": "𝕏",
-
         "Instagram": "◎",
-
         "TikTok": "♪",
-
         "YouTube": "▶",
-
         "Facebook": "f",
-
         "Weverse": "♡",
-
         "Weibo": "◉",
-
         "その他": "✦"
 
     };
-
 
     /* =========================
        リンクタイル
@@ -821,7 +812,6 @@ function renderOshiHomeLinks(oshiId) {
         card.className =
             "oshi-home-link-card";
 
-
         /* 正方形ボタン */
 
         const button =
@@ -831,7 +821,6 @@ function renderOshiHomeLinks(oshiId) {
 
         button.className =
             "oshi-home-link-button";
-
 
         /* アイコン */
 
@@ -844,6 +833,19 @@ function renderOshiHomeLinks(oshiId) {
         icon.textContent =
             serviceIcons[link.service] || "✦";
 
+        /* 🌸 ゆめかわカラーを直接指定 */
+
+        icon.style.setProperty(
+            "color",
+            "#C49BCB",
+            "important"
+        );
+
+        icon.style.setProperty(
+            "background-color",
+            "#FFFCFF",
+            "important"
+        );
 
         /* サービス名 */
 
@@ -856,10 +858,8 @@ function renderOshiHomeLinks(oshiId) {
         name.textContent =
             link.name || link.service || "サイト";
 
-
         button.appendChild(icon);
         button.appendChild(name);
-
 
         /* リンク先を開く */
 
@@ -893,7 +893,6 @@ function renderOshiHomeLinks(oshiId) {
             }
         );
 
-
         /* ひと言 */
 
         const description =
@@ -905,7 +904,6 @@ function renderOshiHomeLinks(oshiId) {
         description.textContent =
             link.description || "\u00A0";
 
-
         card.appendChild(button);
         card.appendChild(description);
 
@@ -914,5 +912,4 @@ function renderOshiHomeLinks(oshiId) {
     });
 
 }
-
 
