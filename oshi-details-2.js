@@ -407,6 +407,7 @@ function openOshiHomeLinksEditor() {
    編集欄の表示
 ========================= */
 
+
 function renderOshiHomeLinksEditor() {
 
     const list =
@@ -426,6 +427,11 @@ function renderOshiHomeLinksEditor() {
 
             item.className =
                 "oshi-home-link-edit-item";
+
+
+            /* =========================
+               サービス選択
+            ========================= */
 
             const select =
                 document.createElement("select");
@@ -451,11 +457,17 @@ function renderOshiHomeLinksEditor() {
                     ? link.service
                     : "その他";
 
+
+            /* =========================
+               その他のサイト名
+            ========================= */
+
             const nameInput =
                 document.createElement("input");
 
             nameInput.type = "text";
             nameInput.placeholder = "サイト名";
+
             nameInput.value =
                 link.service === "その他"
                     ? link.name || ""
@@ -464,15 +476,44 @@ function renderOshiHomeLinksEditor() {
             nameInput.hidden =
                 select.value !== "その他";
 
+
+            /* =========================
+               URL
+            ========================= */
+
             const urlInput =
                 document.createElement("input");
 
             urlInput.type = "url";
+
             urlInput.placeholder =
                 "https://example.com";
 
             urlInput.value =
                 link.url || "";
+
+
+            /* =========================
+               ひと言
+            ========================= */
+
+            const descriptionInput =
+                document.createElement("input");
+
+            descriptionInput.type = "text";
+
+            descriptionInput.placeholder =
+                "公式・個人など（5文字以内）";
+
+            descriptionInput.maxLength = 5;
+
+            descriptionInput.value =
+                link.description || "";
+
+
+            /* =========================
+               サービス変更
+            ========================= */
 
             select.addEventListener(
                 "change",
@@ -499,6 +540,11 @@ function renderOshiHomeLinksEditor() {
                 }
             );
 
+
+            /* =========================
+               サイト名変更
+            ========================= */
+
             nameInput.addEventListener(
                 "input",
                 () => {
@@ -508,6 +554,11 @@ function renderOshiHomeLinksEditor() {
 
                 }
             );
+
+
+            /* =========================
+               URL変更
+            ========================= */
 
             urlInput.addEventListener(
                 "input",
@@ -519,11 +570,33 @@ function renderOshiHomeLinksEditor() {
                 }
             );
 
+
+            /* =========================
+               ひと言変更
+            ========================= */
+
+            descriptionInput.addEventListener(
+                "input",
+                () => {
+
+                    oshiHomeLinksDraft[index].description =
+                        descriptionInput.value;
+
+                }
+            );
+
+
+            /* =========================
+               削除
+            ========================= */
+
             const deleteButton =
                 document.createElement("button");
 
             deleteButton.type = "button";
-            deleteButton.textContent = "🗑️ 削除";
+
+            deleteButton.textContent =
+                "🗑️ 削除";
 
             deleteButton.addEventListener(
                 "click",
@@ -539,9 +612,15 @@ function renderOshiHomeLinksEditor() {
                 }
             );
 
+
+            /* =========================
+               編集欄に追加
+            ========================= */
+
             item.appendChild(select);
             item.appendChild(nameInput);
             item.appendChild(urlInput);
+            item.appendChild(descriptionInput);
             item.appendChild(deleteButton);
 
             list.appendChild(item);
@@ -598,9 +677,18 @@ function saveOshiHomeLinks() {
     const links =
         oshiHomeLinksDraft
         .map(link => ({
+
             service: link.service,
+
             name: link.name,
-            url: link.url.trim()
+
+            url: link.url.trim(),
+
+            description:
+                (link.description || "")
+                .trim()
+                .slice(0, 5)
+
         }))
         .filter(link => link.url);
 
@@ -661,6 +749,7 @@ function cancelOshiHomeLinksEdit() {
    登録リンクの表示
 ========================= */
 
+
 function renderOshiHomeLinks(oshiId) {
 
     const list =
@@ -694,17 +783,85 @@ function renderOshiHomeLinks(oshiId) {
 
     }
 
+
+    /* =========================
+       サービスアイコン
+    ========================= */
+
+    const serviceIcons = {
+
+        "X": "𝕏",
+
+        "Instagram": "◎",
+
+        "TikTok": "♪",
+
+        "YouTube": "▶",
+
+        "Facebook": "f",
+
+        "Weverse": "♡",
+
+        "Weibo": "◉",
+
+        "その他": "✦"
+
+    };
+
+
+    /* =========================
+       リンクタイル
+    ========================= */
+
     links.forEach(link => {
+
+        const card =
+            document.createElement("div");
+
+        card.className =
+            "oshi-home-link-card";
+
+
+        /* 正方形ボタン */
 
         const button =
             document.createElement("button");
 
         button.type = "button";
+
         button.className =
             "oshi-home-link-button";
 
-        button.textContent =
-            link.name || link.service;
+
+        /* アイコン */
+
+        const icon =
+            document.createElement("span");
+
+        icon.className =
+            "oshi-home-link-icon";
+
+        icon.textContent =
+            serviceIcons[link.service] || "✦";
+
+
+        /* サービス名 */
+
+        const name =
+            document.createElement("span");
+
+        name.className =
+            "oshi-home-link-name";
+
+        name.textContent =
+            link.name || link.service || "サイト";
+
+
+        button.appendChild(icon);
+        button.appendChild(name);
+
+
+        /* リンク先を開く */
 
         button.addEventListener(
             "click",
@@ -736,9 +893,26 @@ function renderOshiHomeLinks(oshiId) {
             }
         );
 
-        list.appendChild(button);
+
+        /* ひと言 */
+
+        const description =
+            document.createElement("span");
+
+        description.className =
+            "oshi-home-link-description";
+
+        description.textContent =
+            link.description || "\u00A0";
+
+
+        card.appendChild(button);
+        card.appendChild(description);
+
+        list.appendChild(card);
 
     });
 
 }
+
 
