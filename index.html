@@ -287,6 +287,31 @@
             <input type="text" id="event-title" placeholder="イベント名">
         </div>
 
+        
+<!-- =====================
+     💖 推しとの連携
+===================== -->
+
+<div class="event-form-row" id="event-oshi-row">
+
+    <label for="event-oshi">
+        💖 関連する推し
+    </label>
+
+    <select id="event-oshi">
+        <option value="">推しを指定しない</option>
+    </select>
+
+    <p
+        id="event-oshi-guide"
+        style="display:none;"
+    >
+        推しを追加すると、予定と連携できるようになります♡
+    </p>
+
+</div>
+
+
         <div class="event-form-row">
             <label for="event-start">開始時間</label>
             <input type="datetime-local" id="event-start">

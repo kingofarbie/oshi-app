@@ -776,6 +776,9 @@ function openEventForm(){
 
     loadTemplateSelect();
 
+    // 💖 推し選択欄を生成
+    renderEventOshiSelect();
+
     document.getElementById("event-start").value =
         selectedCalendarDate + "T12:00";
 
@@ -786,7 +789,6 @@ function openEventForm(){
         "block";
 
 }
-
 
 
 // =====================
@@ -2070,6 +2072,82 @@ function selectPlannerSticker(stickerId) {
 }
 
 
+
+
+
+
+/* =========================
+   💖 予定フォームの推し選択
+========================= */
+
+function renderEventOshiSelect(){
+
+    const select =
+        document.getElementById("event-oshi");
+
+    const guide =
+        document.getElementById("event-oshi-guide");
+
+    if(!select || !guide) return;
+
+
+    // 推し一覧を取得
+    const data = db.load();
+
+    const oshiList =
+        (data.oshiList || [])
+        .filter(oshi => oshi.listed !== false);
+
+
+    // 選択欄を初期化
+    select.innerHTML = "";
+
+
+    // 推しがいない場合
+    if(oshiList.length === 0){
+
+        select.style.display = "none";
+
+        guide.style.display = "block";
+
+        return;
+
+    }
+
+
+    // 推しがいる場合
+    select.style.display = "";
+
+    guide.style.display = "none";
+
+
+    // 推しを指定しない選択肢
+    const defaultOption =
+        document.createElement("option");
+
+    defaultOption.value = "";
+
+    defaultOption.textContent =
+        "推しを指定しない";
+
+    select.appendChild(defaultOption);
+
+
+    // 登録済みの推しを追加
+    oshiList.forEach(oshi => {
+
+        const option =
+            document.createElement("option");
+
+        option.value = oshi.id;
+
+        option.textContent = oshi.name;
+
+        select.appendChild(option);
+
+    });
+
+}
 
 
 /* =====================
