@@ -3214,21 +3214,74 @@ function openEventSelectModal(){
             "eventSelectList"
         );
 
+    if(!list) return;
 
-const events =
-    db.load().events
-    .filter(
-        e =>
-            e.start &&
-            e.start.startsWith(menuDate)
-    )
-    .sort(
-        (a,b) =>
-            new Date(a.start) -
-            new Date(b.start)
+
+    // 保存されている予定を取得
+    const allEvents =
+        db.load().events || [];
+
+
+    // 推し別カレンダーの場合は対象の推しに限定
+    const currentOshiId =
+        window.currentCalendarOshiId
+            ? String(window.currentCalendarOshiId)
+            : null;
+
+    const events =
+        currentOshiId
+            ? allEvents.filter(e =>
+                String(e.oshiId || "") === currentOshiId
+            )
+            : allEvents;
+
+
+    // 長押しした日の範囲
+    const rangeStart =
+        new Date(menuDate + "T00:00:00");
+
+    const rangeEnd =
+        new Date(rangeStart);
+
+    rangeEnd.setDate(
+        rangeEnd.getDate() + 1
     );
 
-    if(events.length === 0){
+
+    // 選択日に発生する予定を取得
+    const occurrences =
+        events.flatMap(event => {
+
+            return getRecurringEventOccurrences(
+                event,
+                rangeStart,
+                rangeEnd
+            )
+
+            .filter(occurrence =>
+                occurrence.occurrenceDate === menuDate
+            )
+
+            .map(occurrence => ({
+
+                ...event,
+
+                occurrenceStart:
+                    occurrence.start
+
+            }));
+
+        })
+
+        .sort(
+            (a, b) =>
+                a.occurrenceStart -
+                b.occurrenceStart
+        );
+
+
+    // 予定がない場合
+    if(occurrences.length === 0){
 
         alert("予定がありません");
 
@@ -3237,9 +3290,10 @@ const events =
     }
 
 
+    // 編集候補を表示
     list.innerHTML =
 
-    events.map(e=>`
+    occurrences.map(e=>`
 
         <button
         onclick="selectEvent(${e.id})">
@@ -3258,6 +3312,7 @@ const events =
     ).style.display = "block";
 
 }
+
 
 function closeEventSelectModal(){
 
