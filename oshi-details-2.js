@@ -192,8 +192,6 @@ function renderOshiProfile2(oshiId) {
 
 
 
-
-
 /* =====================================================
    💗 推しプロフィール編集
 ===================================================== */
@@ -910,6 +908,52 @@ function renderOshiHomeLinks(oshiId) {
         list.appendChild(card);
 
     });
+
+}
+
+
+
+/* 推しページ内のカレンダー導線 */
+/* =========================
+   📅 推し別カレンダーを開く
+========================= */
+
+function oshiHomeOpenCalendar(){
+
+    const container =
+        document.getElementById(
+            "oshiContainer"
+        );
+
+    if(!container){
+
+        console.error(
+            "★ oshiContainer が見つかりません"
+        );
+
+        return;
+
+    }
+
+    const oshiId =
+        container.dataset.oshiId;
+
+    if(!oshiId){
+
+        console.error(
+            "★ 推しIDを取得できません"
+        );
+
+        return;
+
+    }
+
+    console.log(
+        "★ 推し別カレンダーを開く:",
+        oshiId
+    );
+
+    switchTab("calendarPage");
 
 }
 
