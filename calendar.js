@@ -967,6 +967,7 @@ function changeMonth(value){
 ===================== */
 
 
+
 function selectCalendarDate(date){
 
     console.log("📅 ===============================");
@@ -1157,9 +1158,8 @@ function selectCalendarDate(date){
         selectedCalendarDate
     );
 
-
     console.log(
-        "📅 window.selectedCalendarDate 設定:",
+        "📅 selectedCalendarDate:",
         window.selectedCalendarDate
     );
 
@@ -1223,19 +1223,36 @@ function selectCalendarDate(date){
 
 
     /* =====================
-       1日手帳へ
+       📅 推し別・通常カレンダーの分岐
     ===================== */
 
-    switchTab(
-        "plannerPage",
-        null,
-        true
-    );
+    if(window.currentCalendarOshiId){
+
+        // 推し別カレンダーでは画面移動しない
+        // 選択日の予定一覧をカレンダー内に表示
+
+        updateSelectedDateArea();
+
+        console.log(
+            "📅 推し別カレンダーにとどまります"
+        );
+
+    }else{
+
+        // 通常カレンダーは従来どおり1日手帳へ
+
+        switchTab(
+            "plannerPage",
+            null,
+            true
+        );
+
+    }
 
 
     /* =====================
        🎥 動画表示
-       
+
        movie.js が読み込まれていて
        renderDayMovies が存在する場合だけ実行
     ===================== */
@@ -1273,6 +1290,8 @@ function selectCalendarDate(date){
 
 }
 
+
+
 /* =====================
    選択日の表示更新
 ===================== */
@@ -1280,29 +1299,44 @@ function updateSelectedDateArea(){
 
     const area =
         document.getElementById(
-            'selected-event-area'
+            "selected-event-area"
         );
 
-    if(!area)
-        return;
+    if(!area) return;
 
-    if(!selectedCalendarDate){
+    // 推し別カレンダー以外では非表示
+    if(!window.currentCalendarOshiId){
 
-        area.innerHTML =
-        `
-        📌 日付を選択してください
-        `;
+        area.style.display = "none";
 
         return;
 
     }
 
-    // 選択日の文字表示は削除
-    area.innerHTML = "";
+    // 推し別カレンダーでは表示
+    area.style.display = "block";
+
+    const list =
+        document.getElementById(
+            "selected-date-events"
+        );
+
+    if(!list) return;
+
+    if(!selectedCalendarDate){
+
+        list.innerHTML =
+            "📌 日付を選択してください";
+
+        return;
+
+    }
 
     displaySelectedDateEvents();
 
 }
+
+
 
 
 /* =====================
@@ -1338,7 +1372,7 @@ const events = currentOshiId
     : allEvents;
 
 
-    
+
 
     const list =
         events
