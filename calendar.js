@@ -1374,21 +1374,59 @@ const events = currentOshiId
 
 
 
-    const list =
-        events
-        .filter(
-            e =>
-                selectedCalendarDate &&
-                e.start &&
-                e.start.startsWith(
-                    selectedCalendarDate
-                )
-        )
-        .sort(
-            (a,b) =>
-                new Date(a.start) -
-                new Date(b.start)
-        );
+const rangeStart =
+    new Date(
+        selectedCalendarDate + "T00:00:00"
+    );
+
+const rangeEnd =
+    new Date(rangeStart);
+
+rangeEnd.setDate(
+    rangeEnd.getDate() + 1
+);
+
+
+const list =
+    events.flatMap(event => {
+
+        const occurrences =
+            getRecurringEventOccurrences(
+                event,
+                rangeStart,
+                rangeEnd
+            );
+
+        return occurrences
+
+            // 選択した日付に発生する予定だけにする
+            .filter(occurrence =>
+                occurrence.occurrenceDate ===
+                selectedCalendarDate
+            )
+
+            // 元の予定情報を残しながら、
+            // 表示用の発生日時を追加する
+            .map(occurrence => ({
+
+                ...event,
+
+                occurrenceStart:
+                    occurrence.start,
+
+                occurrenceEnd:
+                    occurrence.end
+
+            }));
+
+    })
+
+    .sort(
+        (a, b) =>
+            a.occurrenceStart -
+            b.occurrenceStart
+    );
+
 
 
     if(list.length === 0){
