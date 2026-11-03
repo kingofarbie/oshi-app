@@ -1304,6 +1304,7 @@ function updateSelectedDateArea(){
 
 }
 
+
 /* =====================
    選択日の予定表示
 ===================== */
@@ -1322,9 +1323,22 @@ function displaySelectedDateEvents(){
     if(!box) return;
 
 
-    const events =
-        db.load().events || [];
+const allEvents =
+    db.load().events || [];
 
+const currentOshiId =
+    window.currentCalendarOshiId
+        ? String(window.currentCalendarOshiId)
+        : null;
+
+const events = currentOshiId
+    ? allEvents.filter(e =>
+        String(e.oshiId || "") === currentOshiId
+    )
+    : allEvents;
+
+
+    
 
     const list =
         events
