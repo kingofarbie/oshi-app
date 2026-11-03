@@ -2155,6 +2155,7 @@ function renderEventOshiSelect(){
 ===================== */
 
 
+
 function saveEvent(){
 
     const start =
@@ -2173,6 +2174,10 @@ function saveEvent(){
 
         title:
         document.getElementById('event-title').value,
+
+        // 💖 関連する推しIDを保存
+        oshiId:
+        document.getElementById('event-oshi')?.value || null,
 
         start:
         start,
