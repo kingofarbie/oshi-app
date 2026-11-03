@@ -3263,6 +3263,14 @@ function selectEvent(id){
 
     document.getElementById("event-category").value = event.category;
     document.getElementById("event-title").value = event.title;
+
+    // 💖 推し選択欄を生成
+    renderEventOshiSelect();
+
+    // 💖 登録済みの推しを復元
+    document.getElementById("event-oshi").value =
+        event.oshiId || "";
+
     document.getElementById("event-start").value = event.start || "";
     document.getElementById("event-end").value = event.end || "";
     document.getElementById("event-place").value = event.place || "";
@@ -3277,13 +3285,10 @@ function selectEvent(id){
         : [];
 
     renderChecklistEditor();
-    
+
     loadTemplateSelect();
-    
+
     document.getElementById("templateSelect").value = "";
-
-
-
 
     document.getElementById("eventFormModal").style.display = "block";
 
