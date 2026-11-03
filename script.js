@@ -176,6 +176,24 @@ localStorage.setItem(
 
 if(pageId === 'calendarPage'){
 
+
+        // 通常のカレンダータブから開いた場合は
+    // 推し別表示を解除する
+    if(
+        event &&
+        event.currentTarget &&
+        event.currentTarget.classList.contains("tab")
+    ){
+
+        window.currentCalendarOshiId = null;
+
+    }
+
+
+
+
+
+
     /*
        カレンダーHTMLを再読み込みして
        DOM構造を確実に復元する

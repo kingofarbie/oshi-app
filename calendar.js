@@ -248,7 +248,19 @@ async function renderCalendar(){
 
     
 
-const events = db.load().events || [];
+const allEvents = db.load().events || [];
+
+const currentOshiId =
+    window.currentCalendarOshiId
+        ? String(window.currentCalendarOshiId)
+        : null;
+
+const events = currentOshiId
+    ? allEvents.filter(event =>
+        String(event.oshiId || "") === currentOshiId
+    )
+    : allEvents;
+
 
 // =====================
 // 🔁 この月に表示する予定を作成（DBには保存しない）
