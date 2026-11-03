@@ -948,12 +948,15 @@ function oshiHomeOpenCalendar(){
 
     }
 
+    // 📅 推し別表示対象を保存
+    window.currentCalendarOshiId =
+        String(oshiId);
+
     console.log(
-        "★ 推し別カレンダーを開く:",
-        oshiId
+        "★ 推し別カレンダー:",
+        window.currentCalendarOshiId
     );
 
     switchTab("calendarPage");
 
 }
-
