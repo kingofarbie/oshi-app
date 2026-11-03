@@ -1928,12 +1928,65 @@ function openCopySelectModal(){
             "copyEventList"
         );
 
-    const events =
-        db.load().events.filter(
-            e => e.start && e.start.startsWith(menuDate)
-        );
+    if(!list) return;
 
-    if(events.length === 0){
+
+    const data =
+        db.load();
+
+    const allEvents =
+        data.events || [];
+
+
+    // 推し別カレンダーの場合は対象の推しに限定
+    const currentOshiId =
+        window.currentCalendarOshiId
+            ? String(window.currentCalendarOshiId)
+            : null;
+
+    const events =
+        currentOshiId
+            ? allEvents.filter(e =>
+                String(e.oshiId || "") === currentOshiId
+            )
+            : allEvents;
+
+
+    // 長押しした日の範囲
+    const rangeStart =
+        new Date(menuDate + "T00:00:00");
+
+    const rangeEnd =
+        new Date(rangeStart);
+
+    rangeEnd.setDate(
+        rangeEnd.getDate() + 1
+    );
+
+
+    // 選択日の繰り返し予定も取得
+    const occurrences =
+        events.flatMap(event => {
+
+            return getRecurringEventOccurrences(
+                event,
+                rangeStart,
+                rangeEnd
+            )
+
+            .filter(occurrence =>
+                occurrence.occurrenceDate === menuDate
+            )
+
+            .map(occurrence => ({
+                ...event,
+                occurrenceDate: occurrence.occurrenceDate
+            }));
+
+        });
+
+
+    if(occurrences.length === 0){
 
         alert("予定がありません");
 
@@ -1941,9 +1994,10 @@ function openCopySelectModal(){
 
     }
 
+
     list.innerHTML =
 
-    events.map(e=>`
+    occurrences.map(e=>`
 
     <label>
 
@@ -1961,11 +2015,14 @@ function openCopySelectModal(){
 
     `).join('');
 
+
     document.getElementById(
         "copySelectModal"
     ).style.display="block";
 
 }
+
+
 
 function closeCopySelectModal(){
 
