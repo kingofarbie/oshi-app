@@ -644,19 +644,28 @@
 </section>
 
 <script>
+    
 /* 推しページ内のカレンダー導線 */
 function oshiHomeOpenCalendar() {
+
     if (typeof switchTab === "function") {
-        switchTab("calendar");
+
+        switchTab("calendarPage");
+
         return;
+
     }
 
-    const calendarTab = document.querySelector(
-        '[data-tab="calendar"], #calendarTab, [onclick*="calendar"]'
-    );
+    const calendarTab =
+        document.querySelector(
+            '[onclick*="calendarPage"]'
+        );
 
     if (calendarTab) {
         calendarTab.click();
     }
+
 }
+
+
 </script>
