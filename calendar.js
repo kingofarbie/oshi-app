@@ -1732,27 +1732,15 @@ function deleteEventFromMenu(){
 
 }
 
+
+
 function copyEventFromMenu(){
 
     closeDayMenu();
 
-    const events =
-        db.load().events.filter(
-            e => e.start && e.start.startsWith(menuDate)
-        );
-
-    if(events.length === 0){
-
-        alert("予定がありません");
-
-        return;
-
-    }
-
     openCopySelectModal();
 
 }
-
 
 
 function openDeleteSelectModal() {
