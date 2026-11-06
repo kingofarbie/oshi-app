@@ -1035,7 +1035,6 @@ function renderMoneyPeriodSummary(data){
 
     });
 
-
 }
 
 
@@ -1184,12 +1183,6 @@ function openOshiMoney(){
 
 /* =====================================================
    ⭐ 推し活費ページ表示
-   ※一覧表示の本実装は次の段階
-===================================================== */
-
-
-/* =====================================================
-   ⭐ 推し活費ページ表示
 ===================================================== */
 
 let oshiMoneyCurrentPeriod = "month";
@@ -1294,7 +1287,7 @@ function renderOshiMoneyPage(){
 
 
     /* =====================
-       全体合計
+       総合計
     ===================== */
 
     const grandTotal =
@@ -1340,6 +1333,32 @@ function renderOshiMoneyPage(){
 
 
     /* =====================
+       推し表示枠の取得・初期化
+    ===================== */
+
+    if(
+        !Array.isArray(
+            data.money.oshiDisplaySlots
+        )
+    ){
+
+        data.money.oshiDisplaySlots = [
+            null,
+            null,
+            null,
+            null,
+            null
+        ];
+
+        db.save(data);
+
+    }
+
+    const slots =
+        data.money.oshiDisplaySlots;
+
+
+    /* =====================
        推し一覧表示
     ===================== */
 
@@ -1355,29 +1374,11 @@ function renderOshiMoneyPage(){
     container.innerHTML = "";
 
 
-    /*
-       登録中の推しは表示する。
-
-       登録解除済みの推しも、
-       過去の支出があれば表示する。
-    */
-
-    const displayOshiList =
-        oshiList.filter(oshi => {
-
-            return (
-                oshi.listed !== false ||
-                (totals[oshi.id] || 0) > 0
-            );
-
-        });
-
-
     /* =====================
-       推し未登録
+       推し登録がない場合
     ===================== */
 
-    if(displayOshiList.length === 0){
+    if(oshiList.length === 0){
 
         const empty =
             document.createElement("div");
@@ -1386,47 +1387,120 @@ function renderOshiMoneyPage(){
             "money-empty-message";
 
         empty.textContent =
-            "登録されている推しはいません";
+            "先に「推し」ページで推しを登録してください";
 
         container.appendChild(empty);
-
-        return;
 
     }
 
 
     /* =====================
-       推し別の行を作成
+       表示枠を作成
     ===================== */
 
-    displayOshiList.forEach(oshi => {
+    slots.forEach((selectedId,index) => {
 
-        const button =
-            document.createElement("button");
+        const row =
+            document.createElement("div");
 
-        button.type = "button";
-
-        button.className =
+        row.className =
             "oshi-money-person";
 
-        button.addEventListener(
-            "click",
-            () => openOshiMoneyDetail(oshi.id)
+
+        /* =====================
+           推し番号
+        ===================== */
+
+        const number =
+            document.createElement("span");
+
+        number.className =
+            "oshi-money-person-name";
+
+        number.textContent =
+            "⭐ 推し" +
+            (index + 1);
+
+
+        /* =====================
+           推し選択
+        ===================== */
+
+        const select =
+            document.createElement("select");
+
+        select.className =
+            "oshi-money-select";
+
+        select.style.minWidth = "0";
+        select.style.maxWidth = "100%";
+        select.style.flex = "1";
+
+
+        const placeholder =
+            document.createElement("option");
+
+        placeholder.value = "";
+
+        placeholder.textContent =
+            "推しを選択";
+
+        select.appendChild(placeholder);
+
+
+        const usedIds =
+            slots.filter((id,slotIndex) => {
+
+                return (
+                    id &&
+                    slotIndex !== index
+                );
+
+            });
+
+
+        oshiList.forEach(oshi => {
+
+            if(
+                usedIds.includes(oshi.id)
+            ){
+                return;
+            }
+
+            const option =
+                document.createElement("option");
+
+            option.value =
+                oshi.id;
+
+            option.textContent =
+                oshi.name || "名前未設定";
+
+            select.appendChild(option);
+
+        });
+
+
+        select.value =
+            selectedId || "";
+
+
+        select.addEventListener(
+            "change",
+            () => {
+
+                changeOshiMoneySlot(
+                    index,
+                    select.value
+                );
+
+            }
         );
 
 
-        const name =
-            document.createElement("span");
-
-        name.className =
-            "oshi-money-person-name";
-
-        name.textContent =
-            "⭐ " + (
-                oshi.name ||
-                "名前未設定"
-            );
-
+        /* =====================
+           金額
+        ===================== */
 
         const amount =
             document.createElement("span");
@@ -1434,28 +1508,254 @@ function renderOshiMoneyPage(){
         amount.className =
             "oshi-money-person-value";
 
+
         amount.textContent =
             displayMoney(
-                totals[oshi.id] || 0
+                selectedId
+                    ? totals[selectedId] || 0
+                    : 0
             );
 
 
-        const arrow =
-            document.createElement("span");
+        /* =====================
+           詳細ボタン
+        ===================== */
 
-        arrow.className =
+        const detail =
+            document.createElement("button");
+
+        detail.type = "button";
+
+        detail.className =
             "oshi-money-arrow";
 
-        arrow.textContent = "›";
+        detail.textContent = "›";
+
+        detail.disabled =
+            !selectedId;
+
+        detail.addEventListener(
+            "click",
+            () => {
+
+                if(selectedId){
+
+                    openOshiMoneyDetail(
+                        selectedId
+                    );
+
+                }
+
+            }
+        );
 
 
-        button.appendChild(name);
-        button.appendChild(amount);
-        button.appendChild(arrow);
+        row.appendChild(number);
+        row.appendChild(select);
+        row.appendChild(amount);
+        row.appendChild(detail);
 
-        container.appendChild(button);
+        container.appendChild(row);
 
     });
+
+
+    /* =====================
+       推し追加ボタン
+    ===================== */
+
+    const addButton =
+        document.createElement("button");
+
+    addButton.type = "button";
+
+    addButton.className =
+        "money-small-btn";
+
+    addButton.textContent =
+        "＋ 推しを追加";
+
+    addButton.style.marginTop = "12px";
+
+
+    const unassignedOshi =
+        oshiList.filter(oshi => {
+
+            return !slots.includes(oshi.id);
+
+        });
+
+
+    addButton.disabled =
+        unassignedOshi.length === 0;
+
+
+    addButton.addEventListener(
+        "click",
+        addOshiMoneySlot
+    );
+
+
+    container.appendChild(addButton);
+
+}
+
+
+/* =====================================================
+   ⭐ 推し枠に推しを割り当てる
+===================================================== */
+
+function changeOshiMoneySlot(index,oshiId){
+
+    const data = db.load();
+
+    if(!data.money){
+        return;
+    }
+
+    if(
+        !Array.isArray(
+            data.money.oshiDisplaySlots
+        )
+    ){
+        return;
+    }
+
+
+    const slots =
+        data.money.oshiDisplaySlots;
+
+
+    if(
+        index < 0 ||
+        index >= slots.length
+    ){
+        return;
+    }
+
+
+    /* =====================
+       登録済みの推しか確認
+    ===================== */
+
+    if(oshiId){
+
+        const exists =
+            (data.oshiList || []).some(
+                oshi => oshi.id === oshiId
+            );
+
+        if(!exists){
+            alert(
+                "登録済みの推しを選択してください"
+            );
+
+            renderOshiMoneyPage();
+
+            return;
+        }
+
+
+        /* 重複登録防止 */
+
+        const duplicate =
+            slots.some(
+                (id,slotIndex) => {
+
+                    return (
+                        id === oshiId &&
+                        slotIndex !== index
+                    );
+
+                }
+            );
+
+        if(duplicate){
+
+            alert(
+                "この推しはすでに選択されています"
+            );
+
+            renderOshiMoneyPage();
+
+            return;
+
+        }
+
+    }
+
+
+    slots[index] =
+        oshiId || null;
+
+
+    db.save(data);
+
+    renderOshiMoneyPage();
+
+}
+
+
+/* =====================================================
+   ⭐ 推し表示枠を追加
+===================================================== */
+
+function addOshiMoneySlot(){
+
+    const data = db.load();
+
+    if(!data.money){
+        return;
+    }
+
+    if(
+        !Array.isArray(
+            data.money.oshiDisplaySlots
+        )
+    ){
+
+        data.money.oshiDisplaySlots = [
+            null,
+            null,
+            null,
+            null,
+            null
+        ];
+
+    }
+
+
+    const slots =
+        data.money.oshiDisplaySlots;
+
+    const oshiList =
+        data.oshiList || [];
+
+
+    const available =
+        oshiList.some(oshi => {
+
+            return !slots.includes(oshi.id);
+
+        });
+
+
+    if(!available){
+
+        alert(
+            "選択できる未設定の推しがいません"
+        );
+
+        return;
+
+    }
+
+
+    slots.push(null);
+
+    db.save(data);
+
+    renderOshiMoneyPage();
 
 }
 
@@ -1472,7 +1772,8 @@ function changeOshiMoneyPeriod(period){
         return;
     }
 
-    oshiMoneyCurrentPeriod = period;
+    oshiMoneyCurrentPeriod =
+        period;
 
 
     document.querySelectorAll(
@@ -1494,7 +1795,6 @@ function changeOshiMoneyPeriod(period){
 
 /* =====================================================
    ⭐ 推し別明細
-   詳細画面は次の段階で実装
 ===================================================== */
 
 function openOshiMoneyDetail(oshiId){
@@ -1509,7 +1809,6 @@ function openOshiMoneyDetail(oshiId){
     );
 
 }
-
 
 
 /* =====================================================
