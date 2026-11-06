@@ -1187,13 +1187,329 @@ function openOshiMoney(){
    ※一覧表示の本実装は次の段階
 ===================================================== */
 
+
+/* =====================================================
+   ⭐ 推し活費ページ表示
+===================================================== */
+
+let oshiMoneyCurrentPeriod = "month";
+
+
 function renderOshiMoneyPage(){
 
     console.log(
         "★ 推し活費ページ表示"
     );
 
+    const data = db.load();
+
+    if(!data.money){
+        return;
+    }
+
+    const records =
+        data.money.records || [];
+
+    const oshiList =
+        data.oshiList || [];
+
+    const today =
+        getMoneyToday();
+
+    const currentYear =
+        today.year;
+
+    const currentMonth =
+        getMoneyCurrentMonthKey();
+
+
+    /* =====================
+       期間に応じた明細取得
+    ===================== */
+
+    const oshiRecords =
+        records.filter(record => {
+
+            if(!isOshiMoneyRecord(record,data)){
+                return false;
+            }
+
+            const date =
+                getMoneyRecordDate(record);
+
+            if(!date){
+                return false;
+            }
+
+            if(
+                oshiMoneyCurrentPeriod === "month"
+            ){
+
+                return (
+                    getMoneyMonthKey(date) ===
+                    currentMonth
+                );
+
+            }
+
+            if(
+                oshiMoneyCurrentPeriod === "year"
+            ){
+
+                return isMoneyRecordInYear(
+                    record,
+                    currentYear
+                );
+
+            }
+
+            return true;
+
+        });
+
+
+    /* =====================
+       推し別集計
+    ===================== */
+
+    const totals = {};
+
+    oshiRecords.forEach(record => {
+
+        const oshiId =
+            record.oshiId;
+
+        if(!oshiId){
+            return;
+        }
+
+        if(!totals[oshiId]){
+            totals[oshiId] = 0;
+        }
+
+        totals[oshiId] +=
+            getMoneyRecordAmount(record);
+
+    });
+
+
+    /* =====================
+       全体合計
+    ===================== */
+
+    const grandTotal =
+        oshiRecords.reduce(
+            (total,record) => {
+
+                return (
+                    total +
+                    getMoneyRecordAmount(record)
+                );
+
+            },
+            0
+        );
+
+
+    /* =====================
+       合計表示
+    ===================== */
+
+    const periodLabels = {
+
+        month:"今月の推し活費",
+        year:"今年の推し活費",
+        all:"累計の推し活費"
+
+    };
+
+    setMoneyText(
+        "oshiMoneyTotalLabel",
+        periodLabels[oshiMoneyCurrentPeriod]
+    );
+
+    setMoneyText(
+        "oshiMoneyTotalValue",
+        displayMoney(grandTotal)
+    );
+
+    setMoneyText(
+        "oshiMoneyGrandTotal",
+        displayMoney(grandTotal)
+    );
+
+
+    /* =====================
+       推し一覧表示
+    ===================== */
+
+    const container =
+        document.getElementById(
+            "oshiMoneyPersonList"
+        );
+
+    if(!container){
+        return;
+    }
+
+    container.innerHTML = "";
+
+
+    /*
+       登録中の推しは表示する。
+
+       登録解除済みの推しも、
+       過去の支出があれば表示する。
+    */
+
+    const displayOshiList =
+        oshiList.filter(oshi => {
+
+            return (
+                oshi.listed !== false ||
+                (totals[oshi.id] || 0) > 0
+            );
+
+        });
+
+
+    /* =====================
+       推し未登録
+    ===================== */
+
+    if(displayOshiList.length === 0){
+
+        const empty =
+            document.createElement("div");
+
+        empty.className =
+            "money-empty-message";
+
+        empty.textContent =
+            "登録されている推しはいません";
+
+        container.appendChild(empty);
+
+        return;
+
+    }
+
+
+    /* =====================
+       推し別の行を作成
+    ===================== */
+
+    displayOshiList.forEach(oshi => {
+
+        const button =
+            document.createElement("button");
+
+        button.type = "button";
+
+        button.className =
+            "oshi-money-person";
+
+        button.addEventListener(
+            "click",
+            () => openOshiMoneyDetail(oshi.id)
+        );
+
+
+        const name =
+            document.createElement("span");
+
+        name.className =
+            "oshi-money-person-name";
+
+        name.textContent =
+            "⭐ " + (
+                oshi.name ||
+                "名前未設定"
+            );
+
+
+        const amount =
+            document.createElement("span");
+
+        amount.className =
+            "oshi-money-person-value";
+
+        amount.textContent =
+            displayMoney(
+                totals[oshi.id] || 0
+            );
+
+
+        const arrow =
+            document.createElement("span");
+
+        arrow.className =
+            "oshi-money-arrow";
+
+        arrow.textContent = "›";
+
+
+        button.appendChild(name);
+        button.appendChild(amount);
+        button.appendChild(arrow);
+
+        container.appendChild(button);
+
+    });
+
 }
+
+
+/* =====================================================
+   ⭐ 推し活費の期間切り替え
+===================================================== */
+
+function changeOshiMoneyPeriod(period){
+
+    if(
+        !["month","year","all"].includes(period)
+    ){
+        return;
+    }
+
+    oshiMoneyCurrentPeriod = period;
+
+
+    document.querySelectorAll(
+        ".oshi-money-period button"
+    ).forEach(button => {
+
+        button.classList.toggle(
+            "active",
+            button.dataset.period === period
+        );
+
+    });
+
+
+    renderOshiMoneyPage();
+
+}
+
+
+/* =====================================================
+   ⭐ 推し別明細
+   詳細画面は次の段階で実装
+===================================================== */
+
+function openOshiMoneyDetail(oshiId){
+
+    console.log(
+        "★ 推し別明細:",
+        oshiId
+    );
+
+    alert(
+        "推し別の支出明細画面は次の段階で実装します。"
+    );
+
+}
+
 
 
 /* =====================================================
