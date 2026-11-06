@@ -7,6 +7,220 @@ const DB_KEY = 'oshi_app_data';
 
 
 /* =====================
+   💰 お金カテゴリ初期設定
+===================== */
+
+function createDefaultMoneyCategories(){
+
+    return [
+
+        // 収入
+        {
+            id:"income_salary",
+            type:"income",
+            name:"給与",
+            icon:"💼",
+            scope:"household",
+            isDefault:true,
+            active:true
+        },
+        {
+            id:"income_temporary",
+            type:"income",
+            name:"臨時収入",
+            icon:"💰",
+            scope:"household",
+            isDefault:true,
+            active:true
+        },
+        {
+            id:"income_side",
+            type:"income",
+            name:"副収入",
+            icon:"✨",
+            scope:"household",
+            isDefault:true,
+            active:true
+        },
+        {
+            id:"income_other",
+            type:"income",
+            name:"その他",
+            icon:"📦",
+            scope:"household",
+            isDefault:true,
+            active:true
+        },
+
+
+        // 支出
+        {
+            id:"expense_food",
+            type:"expense",
+            name:"食費",
+            icon:"🍚",
+            scope:"household",
+            isDefault:true,
+            active:true
+        },
+        {
+            id:"expense_daily",
+            type:"expense",
+            name:"日用品",
+            icon:"🧻",
+            scope:"household",
+            isDefault:true,
+            active:true
+        },
+        {
+            id:"expense_utility",
+            type:"expense",
+            name:"光熱費",
+            icon:"💡",
+            scope:"household",
+            isDefault:true,
+            active:true
+        },
+        {
+            id:"expense_communication",
+            type:"expense",
+            name:"通信費",
+            icon:"📱",
+            scope:"household",
+            isDefault:true,
+            active:true
+        },
+        {
+            id:"expense_transport",
+            type:"expense",
+            name:"交通費",
+            icon:"🚃",
+            scope:"household",
+            isDefault:true,
+            active:true
+        },
+        {
+            id:"expense_medical",
+            type:"expense",
+            name:"医療費",
+            icon:"🏥",
+            scope:"household",
+            isDefault:true,
+            active:true
+        },
+        {
+            id:"expense_social",
+            type:"expense",
+            name:"交際費",
+            icon:"🎁",
+            scope:"household",
+            isDefault:true,
+            active:true
+        },
+        {
+            id:"expense_entertainment",
+            type:"expense",
+            name:"娯楽費",
+            icon:"🎮",
+            scope:"household",
+            isDefault:true,
+            active:true
+        },
+        {
+            id:"expense_oshi",
+            type:"expense",
+            name:"推し活費",
+            icon:"💖",
+            scope:"oshi",
+            isDefault:true,
+            active:true
+        },
+        {
+            id:"expense_other",
+            type:"expense",
+            name:"その他",
+            icon:"📦",
+            scope:"household",
+            isDefault:true,
+            active:true
+        }
+
+    ];
+
+}
+
+
+/* =====================
+   ⭐ 推し活費の内訳
+===================== */
+
+function createDefaultOshiCategories(){
+
+    return [
+
+        {
+            id:"oshi_goods",
+            name:"グッズ",
+            icon:"🛍️",
+            isDefault:true,
+            active:true
+        },
+        {
+            id:"oshi_live",
+            name:"ライブ",
+            icon:"🎤",
+            isDefault:true,
+            active:true
+        },
+        {
+            id:"oshi_ticket",
+            name:"チケット",
+            icon:"🎫",
+            isDefault:true,
+            active:true
+        },
+        {
+            id:"oshi_transport",
+            name:"交通費",
+            icon:"🚃",
+            isDefault:true,
+            active:true
+        },
+        {
+            id:"oshi_hotel",
+            name:"宿泊費",
+            icon:"🏨",
+            isDefault:true,
+            active:true
+        },
+        {
+            id:"oshi_fc",
+            name:"ファンクラブ",
+            icon:"💌",
+            isDefault:true,
+            active:true
+        },
+        {
+            id:"oshi_streaming",
+            name:"配信・映像",
+            icon:"📺",
+            isDefault:true,
+            active:true
+        },
+        {
+            id:"oshi_other",
+            name:"その他",
+            icon:"⭐",
+            isDefault:true,
+            active:true
+        }
+
+    ];
+
+}
+
+
+/* =====================
    💰 お金データ初期設定
 ===================== */
 
@@ -14,20 +228,21 @@ function createDefaultMoneyData(){
 
     return {
 
-        // 収入・支出の明細
-        records: [],
+        records:[],
 
-        // 収入・支出カテゴリ
-        categories: [],
+        categories:
+            createDefaultMoneyCategories(),
 
-        // 月ごとの予算・設定
-        monthlySettings: {},
+        oshiCategories:
+            createDefaultOshiCategories(),
 
-        // 月ごとの繰越情報
-        carryovers: {},
+        monthlySettings:{},
 
-        // 繰越金額の手動調整
-        adjustments: {}
+        carryovers:{},
+
+        adjustments:{},
+
+        categorySetupVersion:1
 
     };
 
@@ -130,7 +345,7 @@ const db={
         let updated = false;
 
 
-        // moneyが存在しない場合だけ追加
+        // moneyが存在しない場合
         if(
             !data.money ||
             typeof data.money !== "object"
@@ -146,6 +361,8 @@ const db={
             const defaultMoney =
                 createDefaultMoneyData();
 
+
+            // 不足している項目だけ補完
             Object.keys(defaultMoney).forEach(key=>{
 
                 if(
@@ -162,10 +379,28 @@ const db={
 
             });
 
+
+            // 初回カテゴリ登録
+            if(
+                !data.money.categorySetupVersion
+            ){
+
+                data.money.categories =
+                    createDefaultMoneyCategories();
+
+                data.money.oshiCategories =
+                    createDefaultOshiCategories();
+
+                data.money.categorySetupVersion = 1;
+
+                updated = true;
+
+            }
+
         }
 
 
-        // 既存設定の不足項目を補完
+        // settingsがない場合
         if(!data.settings){
 
             data.settings =
