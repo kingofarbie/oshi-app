@@ -1,3 +1,4 @@
+
 <!-- oshi-money.html -->
 
 <div class="oshi-money-page">
@@ -27,33 +28,57 @@
 
     <div class="oshi-money-period">
 
-        <button class="active">
+        <button
+            type="button"
+            class="active"
+            data-period="month"
+            onclick="changeOshiMoneyPeriod('month')">
+
             今月
+
         </button>
 
-        <button>
+        <button
+            type="button"
+            data-period="year"
+            onclick="changeOshiMoneyPeriod('year')">
+
             今年
+
         </button>
 
-        <button>
+        <button
+            type="button"
+            data-period="all"
+            onclick="changeOshiMoneyPeriod('all')">
+
             累計
+
         </button>
 
     </div>
 
 
     <!-- =====================
-         今月の推し活費
+         推し活費合計
     ====================== -->
 
     <div class="oshi-money-total card">
 
-        <div class="oshi-money-total-label">
+        <div
+            class="oshi-money-total-label"
+            id="oshiMoneyTotalLabel">
+
             今月の推し活費
+
         </div>
 
-        <div class="oshi-money-total-value">
+        <div
+            class="oshi-money-total-value"
+            id="oshiMoneyTotalValue">
+
             ¥0
+
         </div>
 
     </div>
@@ -69,115 +94,13 @@
             ⭐ 推し別
         </h3>
 
+        <div id="oshiMoneyPersonList">
 
-        <!-- 推し① -->
+            <div class="money-empty-message">
+                推しを読み込んでいます
+            </div>
 
-        <button
-            type="button"
-            class="oshi-money-person"
-            onclick="openOshiMoneyDetail('oshi_1')">
-
-            <span class="oshi-money-person-name">
-                ⭐ 推し①
-            </span>
-
-            <span class="oshi-money-person-value">
-                ¥0
-            </span>
-
-            <span class="oshi-money-arrow">
-                ›
-            </span>
-
-        </button>
-
-
-        <!-- 推し② -->
-
-        <button
-            type="button"
-            class="oshi-money-person"
-            onclick="openOshiMoneyDetail('oshi_2')">
-
-            <span class="oshi-money-person-name">
-                ⭐ 推し②
-            </span>
-
-            <span class="oshi-money-person-value">
-                ¥0
-            </span>
-
-            <span class="oshi-money-arrow">
-                ›
-            </span>
-
-        </button>
-
-
-        <!-- 推し③ -->
-
-        <button
-            type="button"
-            class="oshi-money-person"
-            onclick="openOshiMoneyDetail('oshi_3')">
-
-            <span class="oshi-money-person-name">
-                ⭐ 推し③
-            </span>
-
-            <span class="oshi-money-person-value">
-                ¥0
-            </span>
-
-            <span class="oshi-money-arrow">
-                ›
-            </span>
-
-        </button>
-
-
-        <!-- 推し④ -->
-
-        <button
-            type="button"
-            class="oshi-money-person"
-            onclick="openOshiMoneyDetail('oshi_4')">
-
-            <span class="oshi-money-person-name">
-                ⭐ 推し④
-            </span>
-
-            <span class="oshi-money-person-value">
-                ¥0
-            </span>
-
-            <span class="oshi-money-arrow">
-                ›
-            </span>
-
-        </button>
-
-
-        <!-- 推し⑤ -->
-
-        <button
-            type="button"
-            class="oshi-money-person"
-            onclick="openOshiMoneyDetail('oshi_5')">
-
-            <span class="oshi-money-person-name">
-                ⭐ 推し⑤
-            </span>
-
-            <span class="oshi-money-person-value">
-                ¥0
-            </span>
-
-            <span class="oshi-money-arrow">
-                ›
-            </span>
-
-        </button>
+        </div>
 
     </div>
 
@@ -192,7 +115,7 @@
             ⭐ 推し活費総合計
         </div>
 
-        <strong>
+        <strong id="oshiMoneyGrandTotal">
             ¥0
         </strong>
 
