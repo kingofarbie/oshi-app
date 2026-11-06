@@ -1,7 +1,42 @@
+
 /* =====================
    DB
 ===================== */
+
 const DB_KEY = 'oshi_app_data';
+
+
+/* =====================
+   💰 お金データ初期設定
+===================== */
+
+function createDefaultMoneyData(){
+
+    return {
+
+        // 収入・支出の明細
+        records: [],
+
+        // 収入・支出カテゴリ
+        categories: [],
+
+        // 月ごとの予算・設定
+        monthlySettings: {},
+
+        // 月ごとの繰越情報
+        carryovers: {},
+
+        // 繰越金額の手動調整
+        adjustments: {}
+
+    };
+
+}
+
+
+/* =====================
+   初期データ
+===================== */
 
 const DEFAULT_DB = {
 
@@ -25,7 +60,7 @@ const DEFAULT_DB = {
     },
 
     events:[],
-    
+
     dayMemories:{},
 
     oshiList:[],
@@ -46,86 +81,159 @@ const DEFAULT_DB = {
             name:"試合",
             icon:"🏆"
         }
-    ]
+    ],
+
+    money:createDefaultMoneyData()
 
 };
 
 
+/* =====================
+   DB本体
+===================== */
+
 const db={
 
-load(){
 
-    const data = localStorage.getItem(DB_KEY);
+    /* =====================
+       データ読み込み
+    ===================== */
 
-    if(data){
-        return JSON.parse(data);
-    }
+    load(){
 
-    const defaultData = {
-
-        settings:{
-            plan:"free",
-            notifications:{}
-        },
-
-        events:[],
-
-        oshiList:[],
-
-        categories:[],
-
-        checklistTemplates:[]
-    };
-
-    localStorage.setItem(
-        DB_KEY,
-        JSON.stringify(defaultData)
-    );
-
-    return defaultData;
-
-},
+        const saved =
+            localStorage.getItem(DB_KEY);
 
 
-save(data){
+        // 保存データがない場合
+        if(!saved){
+
+            const defaultData =
+                JSON.parse(
+                    JSON.stringify(DEFAULT_DB)
+                );
+
+            localStorage.setItem(
+                DB_KEY,
+                JSON.stringify(defaultData)
+            );
+
+            return defaultData;
+
+        }
 
 
-    const json =
-        JSON.stringify(data);
+        const data =
+            JSON.parse(saved);
 
 
-
-    try{
-
-        localStorage.setItem(
-            DB_KEY,
-            json
-        );
+        let updated = false;
 
 
-    }catch(error){
+        // moneyが存在しない場合だけ追加
+        if(
+            !data.money ||
+            typeof data.money !== "object"
+        ){
 
-        alert(
-            "localStorage保存エラー\n\n" +
-            "名前：" +
-            error.name +
-            "\n\n" +
-            "内容：" +
-            error.message
-        );
+            data.money =
+                createDefaultMoneyData();
 
-        console.error(
-            "localStorage保存エラー:",
-            error
-        );
+            updated = true;
 
-    }
+        }else{
 
-},
+            const defaultMoney =
+                createDefaultMoneyData();
+
+            Object.keys(defaultMoney).forEach(key=>{
+
+                if(
+                    data.money[key] === undefined ||
+                    data.money[key] === null
+                ){
+
+                    data.money[key] =
+                        defaultMoney[key];
+
+                    updated = true;
+
+                }
+
+            });
+
+        }
 
 
+        // 既存設定の不足項目を補完
+        if(!data.settings){
+
+            data.settings =
+                JSON.parse(
+                    JSON.stringify(
+                        DEFAULT_DB.settings
+                    )
+                );
+
+            updated = true;
+
+        }
 
 
+        // 補完した場合だけ保存
+        if(updated){
+
+            this.save(data);
+
+        }
+
+
+        return data;
+
+    },
+
+
+    /* =====================
+       データ保存
+    ===================== */
+
+    save(data){
+
+        const json =
+            JSON.stringify(data);
+
+
+        try{
+
+            localStorage.setItem(
+                DB_KEY,
+                json
+            );
+
+        }catch(error){
+
+            alert(
+                "localStorage保存エラー\n\n" +
+                "名前：" +
+                error.name +
+                "\n\n" +
+                "内容：" +
+                error.message
+            );
+
+            console.error(
+                "localStorage保存エラー:",
+                error
+            );
+
+        }
+
+    },
+
+
+    /* =====================
+       予定追加
+    ===================== */
 
     addEvent(event){
 
@@ -154,6 +262,11 @@ save(data){
 
     },
 
+
+    /* =====================
+       予定更新
+    ===================== */
+
     updateEvent(event){
 
         const data=this.load();
@@ -172,6 +285,11 @@ save(data){
 
     },
 
+
+    /* =====================
+       予定削除
+    ===================== */
+
     deleteEvent(id){
 
         const data=this.load();
@@ -183,6 +301,11 @@ save(data){
         this.save(data);
 
     },
+
+
+    /* =====================
+       推し追加
+    ===================== */
 
     addOshi(masterId){
 
@@ -226,6 +349,11 @@ save(data){
         return true;
 
     },
+
+
+    /* =====================
+       推し削除
+    ===================== */
 
     deleteOshi(id){
 
