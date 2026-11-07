@@ -3588,13 +3588,89 @@ function openMoneyRecordForm(type) {
 
 
 
-function openMoneyBudgetSettings(){
+function openMoneyBudgetSettings() {
 
-    alert(
-        "予算設定画面は次の段階で実装します。"
+    const data = db.load();
+
+    if (!data.money) {
+        data.money = {};
+    }
+
+    if (!data.money.monthlySettings) {
+        data.money.monthlySettings = {};
+    }
+
+    const monthKey = getMoneyCurrentMonthKey();
+
+    const currentBudget = getMoneyBudget(data, monthKey);
+
+    const currentValue =
+        currentBudget !== null &&
+        currentBudget !== undefined
+            ? currentBudget
+            : "";
+
+    const input = prompt(
+        "今月の支出予算を入力してください。\n\n" +
+        "例：200000\n\n" +
+        "現在の予算：" +
+        (currentValue !== ""
+            ? Number(currentValue).toLocaleString("ja-JP") + "円"
+            : "未設定"),
+        currentValue
     );
 
+    if (input === null) {
+        return;
+    }
+
+    const normalizedInput =
+        String(input).replace(/[,\s円￥¥]/g, "");
+
+    if (
+        normalizedInput === "" ||
+        !/^\d+$/.test(normalizedInput)
+    ) {
+        alert("0以上の数字で入力してください。");
+        return;
+    }
+
+    const budget = Number(normalizedInput);
+
+    if (!Number.isSafeInteger(budget)) {
+        alert("金額が大きすぎます。");
+        return;
+    }
+
+    const oldSetting =
+        data.money.monthlySettings[monthKey];
+
+    if (
+        oldSetting &&
+        typeof oldSetting === "object"
+    ) {
+
+        data.money.monthlySettings[monthKey] = {
+            ...oldSetting,
+            budget: budget
+        };
+
+    } else {
+
+        data.money.monthlySettings[monthKey] = {
+            budget: budget
+        };
+
+    }
+
+    db.save(data);
+
+    renderMoneyPage();
+
+    alert("今月の予算を保存しました。");
 }
+
+
 
 
 function openMoneyRecordList(){
