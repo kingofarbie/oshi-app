@@ -2327,10 +2327,17 @@ const categories =
     money.categories.length > 0
         ? money.categories
         : createDefaultMoneyCategories();
-            
+
     
     
-    const oshiCategories = money.oshiCategories || [];
+const oshiCategories =
+    Array.isArray(money.oshiCategories) &&
+    money.oshiCategories.length > 0
+        ? money.oshiCategories
+        : createDefaultOshiCategories();    
+    
+    
+    
     const oshiList = (data.oshiList || []).filter(
         oshi => oshi.listed !== false
     );
