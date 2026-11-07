@@ -1598,7 +1598,503 @@ function renderOshiMoneyPage(){
 
     container.appendChild(addButton);
 
+    /* =====================
+       推し活費の内訳管理ボタン
+    ===================== */
+
+    const categoryButton =
+        document.createElement("button");
+
+    categoryButton.type = "button";
+    categoryButton.className = "money-small-btn";
+
+    categoryButton.textContent =
+        "⚙️ 推し活費の内訳を管理";
+
+    categoryButton.style.marginTop = "10px";
+
+    categoryButton.addEventListener(
+        "click",
+        openOshiMoneyCategoryManager
+    );
+
+    container.appendChild(categoryButton);
+
+
+
+
 }
+
+
+
+
+/* =====================================================
+   💖 推し活費の内訳管理
+===================================================== */
+
+function openOshiMoneyCategoryManager(){
+
+    const data = db.load();
+
+    if(!data.money){
+        return;
+    }
+
+    if(!Array.isArray(data.money.oshiCategories)){
+        data.money.oshiCategories = [];
+        db.save(data);
+    }
+
+    const overlay = document.createElement("div");
+
+    overlay.className =
+        "oshi-money-category-overlay";
+
+    overlay.style.cssText = `
+        position:fixed;
+        inset:0;
+        z-index:10001;
+        background:rgba(0,0,0,.55);
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        padding:16px;
+        box-sizing:border-box;
+    `;
+
+    const panel = document.createElement("div");
+
+    panel.style.cssText = `
+        width:100%;
+        max-width:460px;
+        max-height:85vh;
+        overflow-y:auto;
+        background:white;
+        color:#333;
+        border-radius:18px;
+        padding:20px;
+        box-sizing:border-box;
+    `;
+
+    overlay.appendChild(panel);
+
+
+    /* =====================
+       画面描画
+    ===================== */
+
+    function render(){
+
+        const latestData = db.load();
+
+        const categories =
+            latestData.money.oshiCategories || [];
+
+        panel.innerHTML = "";
+
+
+        /* ヘッダー */
+
+        const header = document.createElement("div");
+
+        header.style.cssText = `
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:10px;
+            margin-bottom:12px;
+        `;
+
+        const title = document.createElement("h3");
+
+        title.textContent =
+            "💖 推し活費の内訳管理";
+
+        title.style.cssText = `
+            margin:0;
+            font-size:18px;
+        `;
+
+        const closeButton =
+            document.createElement("button");
+
+        closeButton.type = "button";
+        closeButton.textContent = "✕";
+
+        closeButton.style.cssText = `
+            border:none;
+            background:#f3f3f3;
+            border-radius:50%;
+            width:36px;
+            height:36px;
+            font-size:16px;
+        `;
+
+        closeButton.onclick = () => {
+            overlay.remove();
+            renderOshiMoneyPage();
+        };
+
+        header.append(title, closeButton);
+
+        panel.appendChild(header);
+
+
+        /* 説明 */
+
+        const description =
+            document.createElement("p");
+
+        description.textContent =
+            "内訳項目を追加・編集したり、使わない項目を非表示にできます。";
+
+        description.style.cssText = `
+            font-size:13px;
+            color:#777;
+            line-height:1.6;
+            margin:0 0 18px;
+        `;
+
+        panel.appendChild(description);
+
+
+        /* =====================
+           新規追加
+        ===================== */
+
+        const addButton =
+            document.createElement("button");
+
+        addButton.type = "button";
+
+        addButton.textContent =
+            "＋ 内訳項目を追加";
+
+        addButton.style.cssText = `
+            width:100%;
+            padding:13px;
+            border:none;
+            border-radius:10px;
+            background:#e978a5;
+            color:white;
+            font-weight:bold;
+            font-size:15px;
+            margin-bottom:18px;
+        `;
+
+        addButton.onclick = () => {
+
+            const name = prompt(
+                "追加する内訳の名前を入力してください"
+            );
+
+            if(name === null) return;
+
+            const trimmedName = name.trim();
+
+            if(!trimmedName){
+                alert("項目名を入力してください。");
+                return;
+            }
+
+            const icon = prompt(
+                "アイコンを入力してください。\n\n" +
+                "例：💖 🎁 🎤 🚃\n\n" +
+                "空欄の場合は 💖 になります。"
+            );
+
+            if(icon === null) return;
+
+            const saveData = db.load();
+
+            const newCategory = {
+                id: "oshi_cat_" + Date.now(),
+                name: trimmedName,
+                icon: icon.trim() || "💖",
+                active: true,
+                isDefault: false
+            };
+
+            saveData.money.oshiCategories.push(
+                newCategory
+            );
+
+            db.save(saveData);
+
+            render();
+
+        };
+
+        panel.appendChild(addButton);
+
+
+        /* =====================
+           項目一覧
+        ===================== */
+
+        categories.forEach(category => {
+
+            const row = document.createElement("div");
+
+            row.style.cssText = `
+                display:flex;
+                align-items:center;
+                gap:8px;
+                padding:12px 0;
+                border-top:1px solid #eee;
+                flex-wrap:wrap;
+            `;
+
+
+            /* 項目名 */
+
+            const name = document.createElement("div");
+
+            name.textContent =
+                (category.icon || "💖") +
+                " " +
+                category.name;
+
+            name.style.cssText = `
+                flex:1;
+                min-width:100px;
+                font-weight:bold;
+            `;
+
+            if(category.active === false){
+                name.style.opacity = ".4";
+                name.style.textDecoration = "line-through";
+            }
+
+
+            /* 編集 */
+
+            const editButton =
+                document.createElement("button");
+
+            editButton.type = "button";
+            editButton.textContent = "編集";
+
+            editButton.style.cssText = `
+                padding:7px 10px;
+                border:1px solid #e5a2bd;
+                border-radius:7px;
+                background:#fff5f9;
+                color:#c94c80;
+                font-size:12px;
+            `;
+
+            editButton.onclick = () => {
+
+                const newName = prompt(
+                    "内訳の名前を変更してください",
+                    category.name
+                );
+
+                if(newName === null) return;
+
+                const trimmedName = newName.trim();
+
+                if(!trimmedName){
+                    alert("項目名を入力してください。");
+                    return;
+                }
+
+                const newIcon = prompt(
+                    "アイコンを変更してください",
+                    category.icon || "💖"
+                );
+
+                if(newIcon === null) return;
+
+                const saveData = db.load();
+
+                const target =
+                    saveData.money.oshiCategories.find(
+                        item => item.id === category.id
+                    );
+
+                if(!target) return;
+
+                target.name = trimmedName;
+                target.icon = newIcon.trim() || "💖";
+
+                db.save(saveData);
+
+                render();
+
+            };
+
+
+            /* 有効・停止 */
+
+            const toggleButton =
+                document.createElement("button");
+
+            toggleButton.type = "button";
+
+            toggleButton.textContent =
+                category.active === false
+                    ? "再開"
+                    : "停止";
+
+            toggleButton.style.cssText = `
+                padding:7px 10px;
+                border:1px solid #ddd;
+                border-radius:7px;
+                background:#f7f7f7;
+                color:#555;
+                font-size:12px;
+            `;
+
+            toggleButton.onclick = () => {
+
+                const saveData = db.load();
+
+                const target =
+                    saveData.money.oshiCategories.find(
+                        item => item.id === category.id
+                    );
+
+                if(!target) return;
+
+                target.active =
+                    target.active === false;
+
+                db.save(saveData);
+
+                render();
+
+            };
+
+
+            /* 削除 */
+
+            const deleteButton =
+                document.createElement("button");
+
+            deleteButton.type = "button";
+            deleteButton.textContent = "削除";
+
+            deleteButton.style.cssText = `
+                padding:7px 10px;
+                border:1px solid #ddd;
+                border-radius:7px;
+                background:#f7f7f7;
+                color:#b44;
+                font-size:12px;
+            `;
+
+            deleteButton.onclick = () => {
+
+                const saveData = db.load();
+
+                const usedRecords =
+                    saveData.money.records.filter(
+                        record =>
+                            record.oshiCategoryId === category.id
+                    );
+
+                let message =
+                    "「" + category.name +
+                    "」を削除しますか？";
+
+                if(usedRecords.length > 0){
+
+                    message +=
+                        "\n\n過去の明細 " +
+                        usedRecords.length +
+                        " 件で使用されています。" +
+                        "\n過去の記録を守るため、項目は削除せず非表示にします。";
+
+                }else{
+
+                    message +=
+                        "\n\nこの項目を削除します。";
+
+                }
+
+                if(!confirm(message)) return;
+
+                if(usedRecords.length > 0){
+
+                    const target =
+                        saveData.money.oshiCategories.find(
+                            item => item.id === category.id
+                        );
+
+                    if(target){
+                        target.active = false;
+                    }
+
+                }else{
+
+                    saveData.money.oshiCategories =
+                        saveData.money.oshiCategories.filter(
+                            item => item.id !== category.id
+                        );
+
+                }
+
+                db.save(saveData);
+
+                render();
+
+            };
+
+
+            row.append(
+                name,
+                editButton,
+                toggleButton,
+                deleteButton
+            );
+
+            panel.appendChild(row);
+
+        });
+
+
+        /* 項目なし */
+
+        if(categories.length === 0){
+
+            const empty = document.createElement("p");
+
+            empty.textContent =
+                "内訳項目はまだありません。";
+
+            empty.style.cssText = `
+                text-align:center;
+                color:#888;
+                padding:20px 0;
+            `;
+
+            panel.appendChild(empty);
+
+        }
+
+    }
+
+
+    overlay.addEventListener("click", event => {
+
+        if(event.target === overlay){
+
+            overlay.remove();
+            renderOshiMoneyPage();
+
+        }
+
+    });
+
+    document.body.appendChild(overlay);
+
+    render();
+
+}
+
+
 
 
 /* =====================================================
