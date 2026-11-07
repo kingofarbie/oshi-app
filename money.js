@@ -2312,6 +2312,7 @@ function closeOshiMoney(){
    💰 収入・支出 登録画面
 ===================================================== */
 
+
 function openMoneyRecordForm(type) {
 
     const data = db.load();
@@ -2322,22 +2323,18 @@ function openMoneyRecordForm(type) {
 
     const money = data.money;
 
-const categories =
-    Array.isArray(money.categories) &&
-    money.categories.length > 0
-        ? money.categories
-        : createDefaultMoneyCategories();
+    const categories =
+        Array.isArray(money.categories) &&
+        money.categories.length > 0
+            ? money.categories
+            : createDefaultMoneyCategories();
 
-    
-    
-const oshiCategories =
-    Array.isArray(money.oshiCategories) &&
-    money.oshiCategories.length > 0
-        ? money.oshiCategories
-        : createDefaultOshiCategories();    
-    
-    
-    
+    const oshiCategories =
+        Array.isArray(money.oshiCategories) &&
+        money.oshiCategories.length > 0
+            ? money.oshiCategories
+            : createDefaultOshiCategories();
+
     const oshiList = (data.oshiList || []).filter(
         oshi => oshi.listed !== false
     );
@@ -2346,12 +2343,12 @@ const oshiCategories =
 
     const title = isIncome ? "収入を登録" : "支出を登録";
 
-const now = new Date();
+    const now = new Date();
 
-const dateValue =
-    now.getFullYear() + "-" +
-    String(now.getMonth() + 1).padStart(2, "0") + "-" +
-    String(now.getDate()).padStart(2, "0");
+    const dateValue =
+        now.getFullYear() + "-" +
+        String(now.getMonth() + 1).padStart(2, "0") + "-" +
+        String(now.getDate()).padStart(2, "0");
 
 
     /* =====================
@@ -2414,9 +2411,10 @@ const dateValue =
 
     /* =====================
        入力欄作成
+       親要素を指定可能にする
     ===================== */
 
-    function createField(labelText, element) {
+    function createField(labelText, element, parent = panel) {
 
         const wrapper = document.createElement("label");
 
@@ -2448,8 +2446,9 @@ const dateValue =
 
         wrapper.append(label, element);
 
-        panel.appendChild(wrapper);
+        parent.appendChild(wrapper);
 
+        return wrapper;
     }
 
 
@@ -2514,7 +2513,16 @@ const dateValue =
 
     const oshiArea = document.createElement("div");
 
-    oshiArea.style.display = "none";
+    oshiArea.style.cssText = `
+        display:none;
+        margin-bottom:16px;
+        padding:14px;
+        background:#fff5f9;
+        border-radius:12px;
+    `;
+
+
+    /* 推し選択 */
 
     const oshiSelect = document.createElement("select");
 
@@ -2529,7 +2537,10 @@ const dateValue =
 
     });
 
-    createField("⭐ 推し", oshiSelect);
+    createField("⭐ 推し", oshiSelect, oshiArea);
+
+
+    /* 推し活費の内訳 */
 
     const oshiCategorySelect =
         document.createElement("select");
@@ -2548,12 +2559,12 @@ const dateValue =
 
         });
 
-    createField("💖 推し活費の内訳", oshiCategorySelect);
-
-    oshiArea.append(
-        oshiSelect.parentElement,
-        oshiCategorySelect.parentElement
+    createField(
+        "💖 推し活費の内訳",
+        oshiCategorySelect,
+        oshiArea
     );
+
 
     panel.appendChild(oshiArea);
 
@@ -2584,7 +2595,8 @@ const dateValue =
             category &&
             (
                 category.scope === "oshi" ||
-                category.id === "oshi"
+                category.id === "oshi" ||
+                category.id === "expense_oshi"
             )
         );
 
@@ -2695,7 +2707,6 @@ const dateValue =
             return;
         }
 
-
         if (!Array.isArray(money.records)) {
             money.records = [];
         }
@@ -2718,7 +2729,6 @@ const dateValue =
 
         };
 
-
         if (oshiExpense) {
 
             record.oshiId = oshiSelect.value;
@@ -2727,7 +2737,6 @@ const dateValue =
                 oshiCategorySelect.value;
 
         }
-
 
         money.records.push(record);
 
@@ -2759,6 +2768,10 @@ const dateValue =
     document.body.appendChild(overlay);
 
 }
+
+
+
+
 
 
 function openMoneyBudgetSettings(){
