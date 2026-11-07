@@ -2308,11 +2308,441 @@ function closeOshiMoney(){
    次の段階で実装する操作
 ===================================================== */
 
-function openMoneyRecordForm(type){
+/* =====================================================
+   💰 収入・支出 登録画面
+===================================================== */
 
-    alert(
-        "収入・支出の登録画面は次の段階で実装します。"
+function openMoneyRecordForm(type) {
+
+    const data = db.load();
+
+    if (!data.money) {
+        data.money = {};
+    }
+
+    const money = data.money;
+
+    const categories = money.categories || [];
+    const oshiCategories = money.oshiCategories || [];
+    const oshiList = (data.oshiList || []).filter(
+        oshi => oshi.listed !== false
     );
+
+    const isIncome = type === "income";
+
+    const title = isIncome ? "収入を登録" : "支出を登録";
+
+    const today = getMoneyToday();
+
+    const dateValue =
+        today.getFullYear() + "-" +
+        String(today.getMonth() + 1).padStart(2, "0") + "-" +
+        String(today.getDate()).padStart(2, "0");
+
+
+    /* =====================
+       既存画面を閉じる
+    ===================== */
+
+    const old =
+        document.querySelector(".money-record-overlay");
+
+    if (old) old.remove();
+
+
+    /* =====================
+       オーバーレイ
+    ===================== */
+
+    const overlay = document.createElement("div");
+
+    overlay.className = "money-record-overlay";
+
+    overlay.style.cssText = `
+        position:fixed;
+        inset:0;
+        z-index:10000;
+        background:rgba(0,0,0,.5);
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        padding:16px;
+        box-sizing:border-box;
+    `;
+
+
+    const panel = document.createElement("div");
+
+    panel.style.cssText = `
+        width:100%;
+        max-width:480px;
+        max-height:90vh;
+        overflow-y:auto;
+        background:white;
+        color:#333;
+        border-radius:18px;
+        padding:20px;
+        box-sizing:border-box;
+    `;
+
+
+    const heading = document.createElement("h2");
+
+    heading.textContent = title;
+
+    heading.style.cssText = `
+        margin:0 0 20px;
+        font-size:20px;
+    `;
+
+    panel.appendChild(heading);
+
+
+    /* =====================
+       入力欄作成
+    ===================== */
+
+    function createField(labelText, element) {
+
+        const wrapper = document.createElement("label");
+
+        wrapper.style.cssText = `
+            display:block;
+            margin-bottom:16px;
+            font-size:14px;
+            font-weight:bold;
+        `;
+
+        const label = document.createElement("div");
+
+        label.textContent = labelText;
+
+        label.style.marginBottom = "7px";
+
+        element.style.cssText += `
+            display:block;
+            width:100%;
+            min-height:44px;
+            padding:10px;
+            border:1px solid #ddd;
+            border-radius:9px;
+            box-sizing:border-box;
+            background:white;
+            color:#333;
+            font-size:16px;
+        `;
+
+        wrapper.append(label, element);
+
+        panel.appendChild(wrapper);
+
+    }
+
+
+    /* =====================
+       日付
+    ===================== */
+
+    const dateInput = document.createElement("input");
+
+    dateInput.type = "date";
+    dateInput.value = dateValue;
+
+    createField("📅 日付", dateInput);
+
+
+    /* =====================
+       金額
+    ===================== */
+
+    const amountInput = document.createElement("input");
+
+    amountInput.type = "number";
+    amountInput.min = "1";
+    amountInput.step = "1";
+    amountInput.placeholder = "金額を入力";
+
+    createField("💴 金額（円）", amountInput);
+
+
+    /* =====================
+       カテゴリ
+    ===================== */
+
+    const categorySelect = document.createElement("select");
+
+    const availableCategories = categories.filter(category => {
+
+        if (category.active === false) return false;
+
+        return category.type === type;
+
+    });
+
+    availableCategories.forEach(category => {
+
+        const option = document.createElement("option");
+
+        option.value = category.id;
+        option.textContent =
+            (category.icon || "") + " " + category.name;
+
+        categorySelect.appendChild(option);
+
+    });
+
+    createField("📂 カテゴリ", categorySelect);
+
+
+    /* =====================
+       推し活費の追加項目
+    ===================== */
+
+    const oshiArea = document.createElement("div");
+
+    oshiArea.style.display = "none";
+
+    const oshiSelect = document.createElement("select");
+
+    oshiList.forEach(oshi => {
+
+        const option = document.createElement("option");
+
+        option.value = oshi.id;
+        option.textContent = oshi.name;
+
+        oshiSelect.appendChild(option);
+
+    });
+
+    createField("⭐ 推し", oshiSelect);
+
+    const oshiCategorySelect =
+        document.createElement("select");
+
+    oshiCategories
+        .filter(category => category.active !== false)
+        .forEach(category => {
+
+            const option = document.createElement("option");
+
+            option.value = category.id;
+            option.textContent =
+                (category.icon || "") + " " + category.name;
+
+            oshiCategorySelect.appendChild(option);
+
+        });
+
+    createField("💖 推し活費の内訳", oshiCategorySelect);
+
+    oshiArea.append(
+        oshiSelect.parentElement,
+        oshiCategorySelect.parentElement
+    );
+
+    panel.appendChild(oshiArea);
+
+
+    /* =====================
+       メモ
+    ===================== */
+
+    const memoInput = document.createElement("textarea");
+
+    memoInput.rows = 3;
+    memoInput.placeholder = "内容やメモ（任意）";
+
+    createField("📝 メモ", memoInput);
+
+
+    /* =====================
+       推し活費か判定
+    ===================== */
+
+    function isOshiCategory(categoryId) {
+
+        const category = categories.find(
+            item => item.id === categoryId
+        );
+
+        return !!(
+            category &&
+            (
+                category.scope === "oshi" ||
+                category.id === "oshi"
+            )
+        );
+
+    }
+
+
+    function updateOshiArea() {
+
+        const show =
+            !isIncome &&
+            isOshiCategory(categorySelect.value);
+
+        oshiArea.style.display = show ? "block" : "none";
+
+    }
+
+    categorySelect.addEventListener(
+        "change",
+        updateOshiArea
+    );
+
+    updateOshiArea();
+
+
+    /* =====================
+       ボタン
+    ===================== */
+
+    const buttons = document.createElement("div");
+
+    buttons.style.cssText = `
+        display:flex;
+        gap:10px;
+        margin-top:20px;
+    `;
+
+    const cancelButton = document.createElement("button");
+
+    cancelButton.type = "button";
+    cancelButton.textContent = "キャンセル";
+
+    cancelButton.style.cssText = `
+        flex:1;
+        padding:13px;
+        border:1px solid #ddd;
+        border-radius:10px;
+        background:#f5f5f5;
+        font-size:15px;
+    `;
+
+    cancelButton.onclick = () => overlay.remove();
+
+
+    const saveButton = document.createElement("button");
+
+    saveButton.type = "button";
+    saveButton.textContent = "登録する";
+
+    saveButton.style.cssText = `
+        flex:1;
+        padding:13px;
+        border:none;
+        border-radius:10px;
+        background:#e978a5;
+        color:white;
+        font-weight:bold;
+        font-size:15px;
+    `;
+
+
+    /* =====================
+       保存
+    ===================== */
+
+    saveButton.onclick = () => {
+
+        const amount = Number(amountInput.value);
+
+        if (!dateInput.value) {
+            alert("日付を入力してください");
+            return;
+        }
+
+        if (!Number.isFinite(amount) || amount <= 0) {
+            alert("金額を正しく入力してください");
+            return;
+        }
+
+        if (!categorySelect.value) {
+            alert("カテゴリを選択してください");
+            return;
+        }
+
+        const oshiExpense =
+            !isIncome &&
+            isOshiCategory(categorySelect.value);
+
+        if (oshiExpense && oshiList.length === 0) {
+            alert("先に「推し」ページで推しを登録してください");
+            return;
+        }
+
+        if (
+            oshiExpense &&
+            (!oshiSelect.value || !oshiCategorySelect.value)
+        ) {
+            alert("推しと内訳を選択してください");
+            return;
+        }
+
+
+        if (!Array.isArray(money.records)) {
+            money.records = [];
+        }
+
+        const record = {
+
+            id: "money_" + Date.now(),
+
+            date: dateInput.value,
+
+            type: type,
+
+            amount: amount,
+
+            categoryId: categorySelect.value,
+
+            memo: memoInput.value.trim(),
+
+            createdAt: Date.now()
+
+        };
+
+
+        if (oshiExpense) {
+
+            record.oshiId = oshiSelect.value;
+
+            record.oshiCategoryId =
+                oshiCategorySelect.value;
+
+        }
+
+
+        money.records.push(record);
+
+        db.save(data);
+
+        overlay.remove();
+
+        loadMoneyPage();
+
+        alert("登録しました！");
+
+    };
+
+
+    buttons.append(cancelButton, saveButton);
+
+    panel.appendChild(buttons);
+
+    overlay.appendChild(panel);
+
+    overlay.addEventListener("click", event => {
+
+        if (event.target === overlay) {
+            overlay.remove();
+        }
+
+    });
+
+    document.body.appendChild(overlay);
 
 }
 
