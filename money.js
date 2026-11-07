@@ -2322,7 +2322,14 @@ function openMoneyRecordForm(type) {
 
     const money = data.money;
 
-    const categories = money.categories || [];
+const categories =
+    Array.isArray(money.categories) &&
+    money.categories.length > 0
+        ? money.categories
+        : createDefaultMoneyCategories();
+            
+    
+    
     const oshiCategories = money.oshiCategories || [];
     const oshiList = (data.oshiList || []).filter(
         oshi => oshi.listed !== false
@@ -2338,7 +2345,7 @@ const dateValue =
     now.getFullYear() + "-" +
     String(now.getMonth() + 1).padStart(2, "0") + "-" +
     String(now.getDate()).padStart(2, "0");
-    
+
 
     /* =====================
        既存画面を閉じる
