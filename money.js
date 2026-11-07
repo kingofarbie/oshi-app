@@ -2135,13 +2135,15 @@ function openOshiMoneyDetail(oshiId) {
 
             db.save(saveData);
 
-            editOverlay.remove();
-            overlay.remove();
+editOverlay.remove();
+overlay.remove();
 
-            openOshiMoneyDetail(target.oshiId);
-            loadMoneyPage();
+renderMoneyPage();
+renderOshiMoneyPage();
+openOshiMoneyDetail(target.oshiId);
 
-            alert("明細を更新しました！");
+alert("明細を更新しました！");
+
 
         };
 
@@ -2191,14 +2193,16 @@ function openOshiMoneyDetail(oshiId) {
             return;
         }
 
-        db.save(saveData);
+db.save(saveData);
 
-        overlay.remove();
+overlay.remove();
 
-        openOshiMoneyDetail(oshiId);
-        loadMoneyPage();
+renderMoneyPage();
+renderOshiMoneyPage();
+openOshiMoneyDetail(oshiId);
 
-        alert("明細を削除しました。");
+alert("明細を削除しました。");
+
 
     }
 
