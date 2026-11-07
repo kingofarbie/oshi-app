@@ -1854,10 +1854,13 @@ function openOshiMoneyDetail(oshiId) {
 
         if (
             oshiMoneyCurrentPeriod === "year" &&
-            !isMoneyRecordInYear(
-                record,
-                getMoneyToday().getFullYear()
-            )
+            
+            
+!isMoneyRecordInYear(
+    record,
+    getMoneyToday().year
+)            
+
         ) {
             return false;
         }
@@ -2601,6 +2604,7 @@ function openMoneyRecordForm(type) {
         );
 
     }
+    
 
 
     function updateOshiArea() {
@@ -2612,6 +2616,8 @@ function openMoneyRecordForm(type) {
         oshiArea.style.display = show ? "block" : "none";
 
     }
+
+
 
     categorySelect.addEventListener(
         "change",

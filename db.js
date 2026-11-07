@@ -314,11 +314,11 @@ const db={
        データ読み込み
     ===================== */
 
+
     load(){
 
         const saved =
             localStorage.getItem(DB_KEY);
-
 
         // 保存データがない場合
         if(!saved){
@@ -334,16 +334,12 @@ const db={
             );
 
             return defaultData;
-
         }
-
 
         const data =
             JSON.parse(saved);
 
-
         let updated = false;
-
 
         // moneyが存在しない場合
         if(
@@ -361,8 +357,7 @@ const db={
             const defaultMoney =
                 createDefaultMoneyData();
 
-
-            // 不足している項目だけ補完
+            // 不足項目を補完
             Object.keys(defaultMoney).forEach(key=>{
 
                 if(
@@ -374,31 +369,45 @@ const db={
                         defaultMoney[key];
 
                     updated = true;
-
                 }
 
             });
 
-
-            // 初回カテゴリ登録
+            // 空のカテゴリ一覧を補完
             if(
-                !data.money.categorySetupVersion
+                !Array.isArray(data.money.categories) ||
+                data.money.categories.length === 0
             ){
 
                 data.money.categories =
                     createDefaultMoneyCategories();
 
+                updated = true;
+            }
+
+            // 空の推し活費内訳を補完
+            if(
+                !Array.isArray(data.money.oshiCategories) ||
+                data.money.oshiCategories.length === 0
+            ){
+
                 data.money.oshiCategories =
                     createDefaultOshiCategories();
+
+                updated = true;
+            }
+
+            // 初回設定バージョン
+            if(
+                !data.money.categorySetupVersion
+            ){
 
                 data.money.categorySetupVersion = 1;
 
                 updated = true;
-
             }
 
         }
-
 
         // settingsがない場合
         if(!data.settings){
@@ -411,22 +420,17 @@ const db={
                 );
 
             updated = true;
-
         }
-
 
         // 補完した場合だけ保存
         if(updated){
 
             this.save(data);
-
         }
-
 
         return data;
 
     },
-
 
     /* =====================
        データ保存
