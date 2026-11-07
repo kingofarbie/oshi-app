@@ -1801,46 +1801,33 @@ function changeOshiMoneyPeriod(period){
    ⭐ 推し別・推し活費詳細
 ===================================================== */
 
+
 function openOshiMoneyDetail(oshiId) {
 
     const data = db.load();
-
     const money = data.money || {};
-
     const records = money.records || [];
+    const oshiCategories = money.oshiCategories || [];
+    const moneyCategories = money.categories || [];
 
-    const oshiCategories =
-        money.oshiCategories || [];
+    const oshi = (data.oshiList || []).find(
+        item => item.id === oshiId
+    );
 
-    const moneyCategories =
-        money.categories || [];
-
-    const oshi =
-        (data.oshiList || []).find(
-            item => item.id === oshiId
-        );
-
-    const oshiName =
-        oshi ? oshi.name : "登録解除された推し";
+    const oshiName = oshi
+        ? oshi.name
+        : "登録解除された推し";
 
 
     /* =====================
        期間で絞り込み
     ===================== */
 
-    let filteredRecords = records.filter(record => {
+    const filteredRecords = records.filter(record => {
 
-        if (record.oshiId !== oshiId) {
-            return false;
-        }
-
-        if (!isMoneyExpense(record)) {
-            return false;
-        }
-
-        if (!isOshiMoneyRecord(record, data)) {
-            return false;
-        }
+        if (record.oshiId !== oshiId) return false;
+        if (!isMoneyExpense(record)) return false;
+        if (!isOshiMoneyRecord(record, data)) return false;
 
         if (
             oshiMoneyCurrentPeriod === "month" &&
@@ -1848,22 +1835,15 @@ function openOshiMoneyDetail(oshiId) {
                 record,
                 getMoneyCurrentMonthKey()
             )
-        ) {
-            return false;
-        }
+        ) return false;
 
         if (
             oshiMoneyCurrentPeriod === "year" &&
-            
-            
-!isMoneyRecordInYear(
-    record,
-    getMoneyToday().year
-)            
-
-        ) {
-            return false;
-        }
+            !isMoneyRecordInYear(
+                record,
+                getMoneyToday().year
+            )
+        ) return false;
 
         return true;
 
@@ -1871,64 +1851,381 @@ function openOshiMoneyDetail(oshiId) {
 
 
     /* =====================
-       カテゴリ名を取得
+       カテゴリ名
     ===================== */
 
     function getOshiDetailCategory(record) {
 
-        const oshiCategory =
-            oshiCategories.find(
-                category =>
-                    category.id === record.oshiCategoryId
-            );
+        const category = oshiCategories.find(
+            item => item.id === record.oshiCategoryId
+        );
 
-        if (oshiCategory) {
-            return oshiCategory.name;
-        }
+        if (category) return category.name;
 
-        const moneyCategory =
-            moneyCategories.find(
-                category =>
-                    category.id === record.categoryId
-            );
+        const moneyCategory = moneyCategories.find(
+            item => item.id === record.categoryId
+        );
 
-        if (moneyCategory) {
-            return moneyCategory.name;
-        }
-
-        return "その他";
+        return moneyCategory
+            ? moneyCategory.name
+            : "その他";
     }
 
 
     /* =====================
-       金額を集計
+       編集画面
+    ===================== */
+
+    function openEditForm(recordId) {
+
+        const latestData = db.load();
+        const latestMoney = latestData.money;
+
+        const record = latestMoney.records.find(
+            item => item.id === recordId
+        );
+
+        if (!record) {
+            alert("明細が見つかりません。");
+            return;
+        }
+
+        const editOverlay = document.createElement("div");
+
+        editOverlay.style.cssText = `
+            position:fixed;
+            inset:0;
+            z-index:10002;
+            background:rgba(0,0,0,.6);
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            padding:16px;
+            box-sizing:border-box;
+        `;
+
+        const editPanel = document.createElement("div");
+
+        editPanel.style.cssText = `
+            width:100%;
+            max-width:440px;
+            max-height:90vh;
+            overflow-y:auto;
+            background:white;
+            color:#333;
+            border-radius:18px;
+            padding:20px;
+            box-sizing:border-box;
+        `;
+
+        const heading = document.createElement("h3");
+        heading.textContent = "明細を編集";
+        heading.style.margin = "0 0 18px";
+
+        editPanel.appendChild(heading);
+
+
+        function addInput(labelText, element) {
+
+            const wrapper = document.createElement("label");
+
+            wrapper.style.cssText = `
+                display:block;
+                margin-bottom:15px;
+                font-size:14px;
+                font-weight:bold;
+            `;
+
+            const label = document.createElement("div");
+            label.textContent = labelText;
+            label.style.marginBottom = "7px";
+
+            element.style.cssText += `
+                display:block;
+                width:100%;
+                min-height:44px;
+                padding:10px;
+                border:1px solid #ddd;
+                border-radius:9px;
+                box-sizing:border-box;
+                background:white;
+                color:#333;
+                font-size:16px;
+            `;
+
+            wrapper.append(label, element);
+            editPanel.appendChild(wrapper);
+
+        }
+
+
+        // 日付
+        const dateInput = document.createElement("input");
+        dateInput.type = "date";
+
+        const recordDate = getMoneyRecordDate(record);
+
+        dateInput.value = recordDate
+            ? String(recordDate).slice(0, 10)
+            : "";
+
+        addInput("📅 日付", dateInput);
+
+
+        // 金額
+        const amountInput = document.createElement("input");
+        amountInput.type = "number";
+        amountInput.min = "1";
+        amountInput.step = "1";
+        amountInput.value = getMoneyRecordAmount(record);
+
+        addInput("💴 金額（円）", amountInput);
+
+
+        // 推し
+        const oshiSelect = document.createElement("select");
+
+        const editableOshiList =
+            (latestData.oshiList || []).filter(
+                item =>
+                    item.listed !== false ||
+                    item.id === record.oshiId
+            );
+
+        editableOshiList.forEach(item => {
+
+            const option = document.createElement("option");
+            option.value = item.id;
+            option.textContent = item.name;
+
+            if (item.id === record.oshiId) {
+                option.selected = true;
+            }
+
+            oshiSelect.appendChild(option);
+
+        });
+
+        addInput("⭐ 推し", oshiSelect);
+
+
+        // 内訳
+        const categorySelect = document.createElement("select");
+
+        const editableCategories =
+            (latestMoney.oshiCategories || []).filter(
+                item =>
+                    item.active !== false ||
+                    item.id === record.oshiCategoryId
+            );
+
+        editableCategories.forEach(category => {
+
+            const option = document.createElement("option");
+
+            option.value = category.id;
+            option.textContent =
+                (category.icon || "") + " " + category.name;
+
+            if (category.id === record.oshiCategoryId) {
+                option.selected = true;
+            }
+
+            categorySelect.appendChild(option);
+
+        });
+
+        addInput("💖 推し活費の内訳", categorySelect);
+
+
+        // メモ
+        const memoInput = document.createElement("textarea");
+
+        memoInput.rows = 3;
+        memoInput.value =
+            record.memo ||
+            record.description ||
+            record.title ||
+            "";
+
+        addInput("📝 メモ", memoInput);
+
+
+        // ボタン
+        const buttons = document.createElement("div");
+
+        buttons.style.cssText = `
+            display:flex;
+            gap:10px;
+            margin-top:20px;
+        `;
+
+        const cancelButton = document.createElement("button");
+
+        cancelButton.type = "button";
+        cancelButton.textContent = "キャンセル";
+
+        cancelButton.style.cssText = `
+            flex:1;
+            padding:13px;
+            border:1px solid #ddd;
+            border-radius:10px;
+            background:#f5f5f5;
+        `;
+
+        cancelButton.onclick = () => editOverlay.remove();
+
+
+        const saveButton = document.createElement("button");
+
+        saveButton.type = "button";
+        saveButton.textContent = "変更を保存";
+
+        saveButton.style.cssText = `
+            flex:1;
+            padding:13px;
+            border:none;
+            border-radius:10px;
+            background:#e978a5;
+            color:white;
+            font-weight:bold;
+        `;
+
+
+        saveButton.onclick = () => {
+
+            const amount = Number(amountInput.value);
+
+            if (!dateInput.value) {
+                alert("日付を入力してください");
+                return;
+            }
+
+            if (!Number.isFinite(amount) || amount <= 0) {
+                alert("金額を正しく入力してください");
+                return;
+            }
+
+            if (!oshiSelect.value) {
+                alert("推しを選択してください");
+                return;
+            }
+
+            if (!categorySelect.value) {
+                alert("内訳を選択してください");
+                return;
+            }
+
+            const saveData = db.load();
+
+            const target = saveData.money.records.find(
+                item => item.id === recordId
+            );
+
+            if (!target) {
+                alert("明細が見つかりません。");
+                return;
+            }
+
+            target.date = dateInput.value;
+            target.amount = amount;
+            target.oshiId = oshiSelect.value;
+            target.oshiCategoryId = categorySelect.value;
+            target.memo = memoInput.value.trim();
+
+            db.save(saveData);
+
+            editOverlay.remove();
+            overlay.remove();
+
+            openOshiMoneyDetail(target.oshiId);
+            loadMoneyPage();
+
+            alert("明細を更新しました！");
+
+        };
+
+
+        buttons.append(cancelButton, saveButton);
+        editPanel.appendChild(buttons);
+
+        editOverlay.appendChild(editPanel);
+
+        editOverlay.addEventListener("click", event => {
+
+            if (event.target === editOverlay) {
+                editOverlay.remove();
+            }
+
+        });
+
+        document.body.appendChild(editOverlay);
+
+    }
+
+
+    /* =====================
+       明細削除
+    ===================== */
+
+    function deleteOshiMoneyRecord(recordId) {
+
+        const ok = confirm(
+            "この推し活費の明細を削除しますか？\n\n" +
+            "削除した明細は元に戻せません。"
+        );
+
+        if (!ok) return;
+
+        const saveData = db.load();
+
+        const before = saveData.money.records.length;
+
+        saveData.money.records =
+            saveData.money.records.filter(
+                record => record.id !== recordId
+            );
+
+        if (saveData.money.records.length === before) {
+            alert("明細が見つかりません。");
+            return;
+        }
+
+        db.save(saveData);
+
+        overlay.remove();
+
+        openOshiMoneyDetail(oshiId);
+        loadMoneyPage();
+
+        alert("明細を削除しました。");
+
+    }
+
+
+    /* =====================
+       金額集計
     ===================== */
 
     const categoryGroups = {};
 
     filteredRecords.forEach(record => {
 
-        const categoryName =
-            getOshiDetailCategory(record);
+        const categoryName = getOshiDetailCategory(record);
 
         if (!categoryGroups[categoryName]) {
-
             categoryGroups[categoryName] = {
                 total: 0,
                 records: []
             };
-
         }
 
-        const amount =
-            getMoneyRecordAmount(record);
+        const amount = getMoneyRecordAmount(record);
 
         categoryGroups[categoryName].total += amount;
-
         categoryGroups[categoryName].records.push(record);
 
     });
-
 
     const total = filteredRecords.reduce(
         (sum, record) =>
@@ -1956,248 +2253,200 @@ function openOshiMoneyDetail(oshiId) {
        古い詳細画面を削除
     ===================== */
 
-    const oldOverlay =
-        document.querySelector(
-            ".oshi-money-detail-overlay"
-        );
+    const oldOverlay = document.querySelector(
+        ".oshi-money-detail-overlay"
+    );
 
-    if (oldOverlay) {
-        oldOverlay.remove();
-    }
+    if (oldOverlay) oldOverlay.remove();
 
 
     /* =====================
-       詳細画面を作成
+       詳細画面
     ===================== */
 
-    const overlay =
-        document.createElement("div");
+    const overlay = document.createElement("div");
 
-    overlay.className =
-        "oshi-money-detail-overlay";
+    overlay.className = "oshi-money-detail-overlay";
 
     overlay.style.cssText = `
-        position: fixed;
-        inset: 0;
-        z-index: 10000;
-        background: rgba(0,0,0,0.55);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 16px;
-        box-sizing: border-box;
+        position:fixed;
+        inset:0;
+        z-index:10000;
+        background:rgba(0,0,0,.55);
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        padding:16px;
+        box-sizing:border-box;
     `;
 
-
-    const panel =
-        document.createElement("div");
+    const panel = document.createElement("div");
 
     panel.style.cssText = `
-        width: 100%;
-        max-width: 520px;
-        max-height: 85vh;
-        overflow-y: auto;
-        background: white;
-        border-radius: 18px;
-        padding: 20px;
-        box-sizing: border-box;
-        color: #333;
+        width:100%;
+        max-width:520px;
+        max-height:85vh;
+        overflow-y:auto;
+        background:white;
+        border-radius:18px;
+        padding:20px;
+        box-sizing:border-box;
+        color:#333;
     `;
 
 
-    /* =====================
-       ヘッダー
-    ===================== */
+    /* ヘッダー */
 
-    const header =
-        document.createElement("div");
+    const header = document.createElement("div");
 
     header.style.cssText = `
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 16px;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        gap:10px;
+        margin-bottom:16px;
     `;
 
-    const title =
-        document.createElement("h2");
+    const title = document.createElement("h2");
 
-    title.textContent =
-        "⭐ " + oshiName + " の推し活費";
+    title.textContent = "⭐ " + oshiName + " の推し活費";
 
     title.style.cssText = `
-        font-size: 18px;
-        margin: 0;
+        font-size:18px;
+        margin:0;
     `;
 
-
-    const closeButton =
-        document.createElement("button");
+    const closeButton = document.createElement("button");
 
     closeButton.type = "button";
-
     closeButton.textContent = "✕";
 
     closeButton.style.cssText = `
-        border: none;
-        background: #f3f3f3;
-        border-radius: 50%;
-        width: 36px;
-        height: 36px;
-        font-size: 16px;
-        cursor: pointer;
-        flex-shrink: 0;
+        border:none;
+        background:#f3f3f3;
+        border-radius:50%;
+        width:36px;
+        height:36px;
+        font-size:16px;
+        cursor:pointer;
+        flex-shrink:0;
     `;
 
-    closeButton.onclick = () => {
-        overlay.remove();
-    };
+    closeButton.onclick = () => overlay.remove();
 
     header.append(title, closeButton);
-
     panel.appendChild(header);
 
 
-    /* =====================
-       合計金額
-    ===================== */
+    /* 合計金額 */
 
-    const totalBox =
-        document.createElement("div");
+    const totalBox = document.createElement("div");
 
     totalBox.style.cssText = `
-        background: #fff0f6;
-        border-radius: 14px;
-        padding: 18px;
-        text-align: center;
-        margin-bottom: 20px;
+        background:#fff0f6;
+        border-radius:14px;
+        padding:18px;
+        text-align:center;
+        margin-bottom:20px;
     `;
 
-    const totalLabel =
-        document.createElement("div");
+    const totalLabel = document.createElement("div");
 
-    totalLabel.textContent =
-        periodLabel + "の推し活費";
+    totalLabel.textContent = periodLabel + "の推し活費";
 
     totalLabel.style.cssText = `
-        font-size: 13px;
-        margin-bottom: 8px;
+        font-size:13px;
+        margin-bottom:8px;
     `;
 
-    const totalValue =
-        document.createElement("strong");
+    const totalValue = document.createElement("strong");
 
-    totalValue.textContent =
-        formatMoney(total);
+    totalValue.textContent = formatMoney(total);
 
     totalValue.style.cssText = `
-        font-size: 26px;
-        color: #e75491;
+        font-size:26px;
+        color:#e75491;
     `;
 
     totalBox.append(totalLabel, totalValue);
-
     panel.appendChild(totalBox);
 
 
     /* =====================
-       カテゴリ別内訳
+       カテゴリ別内訳・明細
     ===================== */
 
     Object.entries(categoryGroups).forEach(
         ([categoryName, group]) => {
 
-            const section =
-                document.createElement("section");
+            const section = document.createElement("section");
 
             section.style.cssText = `
-                margin-bottom: 18px;
-                border: 1px solid #eee;
-                border-radius: 12px;
-                overflow: hidden;
+                margin-bottom:18px;
+                border:1px solid #eee;
+                border-radius:12px;
+                overflow:hidden;
             `;
 
-
-            const categoryHeader =
-                document.createElement("div");
+            const categoryHeader = document.createElement("div");
 
             categoryHeader.style.cssText = `
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                gap: 10px;
-                padding: 12px;
-                background: #fff7fa;
-                font-weight: bold;
+                display:flex;
+                justify-content:space-between;
+                align-items:center;
+                gap:10px;
+                padding:12px;
+                background:#fff7fa;
+                font-weight:bold;
             `;
 
-            const categoryTitle =
-                document.createElement("span");
+            const categoryTitle = document.createElement("span");
 
-            categoryTitle.textContent =
-                "💗 " + categoryName;
+            categoryTitle.textContent = "💗 " + categoryName;
 
-            const categoryTotal =
-                document.createElement("strong");
+            const categoryTotal = document.createElement("strong");
 
-            categoryTotal.textContent =
-                formatMoney(group.total);
+            categoryTotal.textContent = formatMoney(group.total);
 
-            categoryHeader.append(
-                categoryTitle,
-                categoryTotal
-            );
-
+            categoryHeader.append(categoryTitle, categoryTotal);
             section.appendChild(categoryHeader);
 
 
-            /* 明細 */
-
             group.records.forEach(record => {
 
-                const row =
-                    document.createElement("div");
+                const row = document.createElement("div");
 
                 row.style.cssText = `
-                    padding: 12px;
-                    border-top: 1px solid #eee;
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    gap: 10px;
+                    padding:12px;
+                    border-top:1px solid #eee;
+                    display:flex;
+                    justify-content:space-between;
+                    align-items:flex-start;
+                    gap:10px;
                 `;
 
-
-                const detail =
-                    document.createElement("div");
+                const detail = document.createElement("div");
 
                 detail.style.cssText = `
-                    min-width: 0;
-                    flex: 1;
+                    min-width:0;
+                    flex:1;
                 `;
 
+                const date = document.createElement("div");
 
-                const date =
-                    document.createElement("div");
+                const recordDate = getMoneyRecordDate(record);
 
-                const recordDate =
-                    getMoneyRecordDate(record);
-
-                date.textContent =
-                    recordDate
-                        ? String(recordDate).slice(0, 10)
-                        : "日付なし";
+                date.textContent = recordDate
+                    ? String(recordDate).slice(0, 10)
+                    : "日付なし";
 
                 date.style.cssText = `
-                    font-size: 12px;
-                    color: #888;
-                    margin-bottom: 4px;
+                    font-size:12px;
+                    color:#888;
+                    margin-bottom:4px;
                 `;
 
-
-                const memo =
-                    document.createElement("div");
+                const memo = document.createElement("div");
 
                 memo.textContent =
                     record.memo ||
@@ -2206,28 +2455,86 @@ function openOshiMoneyDetail(oshiId) {
                     categoryName;
 
                 memo.style.cssText = `
-                    font-size: 14px;
-                    overflow-wrap: anywhere;
+                    font-size:14px;
+                    overflow-wrap:anywhere;
                 `;
-
-
-                const amount =
-                    document.createElement("strong");
-
-                amount.textContent =
-                    formatMoney(
-                        getMoneyRecordAmount(record)
-                    );
-
-                amount.style.cssText = `
-                    white-space: nowrap;
-                    color: #e75491;
-                `;
-
 
                 detail.append(date, memo);
 
-                row.append(detail, amount);
+
+                const right = document.createElement("div");
+
+                right.style.cssText = `
+                    display:flex;
+                    flex-direction:column;
+                    align-items:flex-end;
+                    gap:8px;
+                    flex-shrink:0;
+                `;
+
+                const amount = document.createElement("strong");
+
+                amount.textContent = formatMoney(
+                    getMoneyRecordAmount(record)
+                );
+
+                amount.style.cssText = `
+                    white-space:nowrap;
+                    color:#e75491;
+                `;
+
+
+                const actions = document.createElement("div");
+
+                actions.style.cssText = `
+                    display:flex;
+                    gap:6px;
+                `;
+
+
+                const editButton = document.createElement("button");
+
+                editButton.type = "button";
+                editButton.textContent = "編集";
+
+                editButton.style.cssText = `
+                    padding:6px 10px;
+                    border:1px solid #e5a2bd;
+                    border-radius:7px;
+                    background:#fff5f9;
+                    color:#c94c80;
+                    font-size:12px;
+                `;
+
+                editButton.onclick = () => {
+                    openEditForm(record.id);
+                };
+
+
+                const deleteButton = document.createElement("button");
+
+                deleteButton.type = "button";
+                deleteButton.textContent = "削除";
+
+                deleteButton.style.cssText = `
+                    padding:6px 10px;
+                    border:1px solid #ddd;
+                    border-radius:7px;
+                    background:#f7f7f7;
+                    color:#666;
+                    font-size:12px;
+                `;
+
+                deleteButton.onclick = () => {
+                    deleteOshiMoneyRecord(record.id);
+                };
+
+
+                actions.append(editButton, deleteButton);
+
+                right.append(amount, actions);
+
+                row.append(detail, right);
 
                 section.appendChild(row);
 
@@ -2239,22 +2546,19 @@ function openOshiMoneyDetail(oshiId) {
     );
 
 
-    /* =====================
-       明細がない場合
-    ===================== */
+    /* 明細なし */
 
     if (filteredRecords.length === 0) {
 
-        const empty =
-            document.createElement("p");
+        const empty = document.createElement("p");
 
         empty.textContent =
             "この期間の推し活費はまだありません。";
 
         empty.style.cssText = `
-            text-align: center;
-            color: #888;
-            padding: 25px 10px;
+            text-align:center;
+            color:#888;
+            padding:25px 10px;
         `;
 
         panel.appendChild(empty);
@@ -2262,9 +2566,7 @@ function openOshiMoneyDetail(oshiId) {
     }
 
 
-    /* =====================
-       閉じる
-    ===================== */
+    /* 閉じる */
 
     overlay.appendChild(panel);
 
@@ -2279,6 +2581,12 @@ function openOshiMoneyDetail(oshiId) {
     document.body.appendChild(overlay);
 
 }
+
+
+
+
+
+
 
 /* =====================================================
    ⭐ 推し活費ページを閉じる
@@ -2604,7 +2912,7 @@ function openMoneyRecordForm(type) {
         );
 
     }
-    
+
 
 
     function updateOshiArea() {
