@@ -2332,13 +2332,13 @@ function openMoneyRecordForm(type) {
 
     const title = isIncome ? "収入を登録" : "支出を登録";
 
-    const today = getMoneyToday();
+const now = new Date();
 
-    const dateValue =
-        today.getFullYear() + "-" +
-        String(today.getMonth() + 1).padStart(2, "0") + "-" +
-        String(today.getDate()).padStart(2, "0");
-
+const dateValue =
+    now.getFullYear() + "-" +
+    String(now.getMonth() + 1).padStart(2, "0") + "-" +
+    String(now.getDate()).padStart(2, "0");
+    
 
     /* =====================
        既存画面を閉じる
