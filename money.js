@@ -3133,6 +3133,7 @@ function closeOshiMoney(){
    💰 収入・支出 登録 / 編集フォーム
 ===================================================== */
 
+
 function openMoneyRecordForm(type, recordId = null) {
 
     const data = db.load();
@@ -3330,9 +3331,19 @@ function openMoneyRecordForm(type, recordId = null) {
 
     const availableCategories = categories.filter(category => {
 
-        if (category.active === false) return false;
+        if (category.type !== type) return false;
 
-        return category.type === type;
+        // 通常は有効なカテゴリだけ表示
+        // ただし編集中の明細で使用中なら表示する
+        if (
+            category.active === false &&
+            (!editingRecord ||
+             editingRecord.categoryId !== category.id)
+        ) {
+            return false;
+        }
+
+        return true;
 
     });
 
@@ -3399,7 +3410,21 @@ function openMoneyRecordForm(type, recordId = null) {
         document.createElement("select");
 
     oshiCategories
-        .filter(category => category.active !== false)
+        .filter(category => {
+
+            // 有効な内訳は表示
+            if (category.active !== false) {
+                return true;
+            }
+
+            // 編集中の明細で使用している内訳は
+            // 停止済みでも表示する
+            return !!(
+                editingRecord &&
+                editingRecord.oshiCategoryId === category.id
+            );
+
+        })
         .forEach(category => {
 
             const option = document.createElement("option");
@@ -3678,7 +3703,6 @@ function openMoneyRecordForm(type, recordId = null) {
 
 
 
-
 function openMoneyBudgetSettings() {
 
     const data = db.load();
@@ -3765,13 +3789,23 @@ function openMoneyBudgetSettings() {
 
 
 
+
 function openMoneyCategorySettings() {
 
-    const old = document.querySelector(
-        ".money-category-overlay"
-    );
+    const data = db.load();
 
-    if (old) old.remove();
+    if (!data.money) {
+        data.money = {};
+    }
+
+    if (!Array.isArray(data.money.categories) ||
+        data.money.categories.length === 0) {
+
+        data.money.categories =
+            createDefaultMoneyCategories();
+
+        db.save(data);
+    }
 
     const overlay = document.createElement("div");
 
@@ -3780,12 +3814,12 @@ function openMoneyCategorySettings() {
     overlay.style.cssText = `
         position:fixed;
         inset:0;
-        z-index:10002;
-        background:rgba(0,0,0,.5);
+        z-index:10001;
+        background:rgba(0,0,0,.55);
         display:flex;
         justify-content:center;
         align-items:center;
-        padding:12px;
+        padding:16px;
         box-sizing:border-box;
     `;
 
@@ -3793,455 +3827,358 @@ function openMoneyCategorySettings() {
 
     panel.style.cssText = `
         width:100%;
-        max-width:520px;
-        max-height:90vh;
+        max-width:460px;
+        max-height:85vh;
         overflow-y:auto;
         background:white;
         color:#333;
         border-radius:18px;
-        padding:18px;
+        padding:20px;
         box-sizing:border-box;
     `;
 
-
-    /* =====================
-       ヘッダー
-    ===================== */
-
-    const header = document.createElement("div");
-
-    header.style.cssText = `
-        display:flex;
-        justify-content:space-between;
-        align-items:center;
-        gap:10px;
-        margin-bottom:12px;
-    `;
-
-    const heading = document.createElement("h2");
-
-    heading.textContent = "🏷️ カテゴリ管理";
-    heading.style.cssText = `
-        margin:0;
-        font-size:20px;
-    `;
-
-    const closeButton = document.createElement("button");
-
-    closeButton.type = "button";
-    closeButton.textContent = "閉じる";
-    closeButton.onclick = () => overlay.remove();
-
-    header.append(heading, closeButton);
-
-    panel.appendChild(header);
-
-
-    const description = document.createElement("p");
-
-    description.textContent =
-        "収入・支出のカテゴリを追加・編集できます。";
-
-    description.style.cssText = `
-        margin:0 0 16px;
-        color:#777;
-        font-size:13px;
-        line-height:1.6;
-    `;
-
-    panel.appendChild(description);
+    overlay.appendChild(panel);
 
 
     /* =====================
-       カテゴリ追加ボタン
+       推し活費の判定
     ===================== */
 
-    const addArea = document.createElement("div");
+    function isOshiCategory(category) {
 
-    addArea.style.cssText = `
-        display:grid;
-        grid-template-columns:1fr 1fr;
-        gap:8px;
-        margin-bottom:18px;
-    `;
+        return !!(
+            category &&
+            category.type === "expense" &&
+            (
+                category.scope === "oshi" ||
+                category.id === "oshi" ||
+                category.id === "expense_oshi" ||
+                category.name === "推し活費"
+            )
+        );
 
-    function createAddButton(label, type) {
-
-        const button = document.createElement("button");
-
-        button.type = "button";
-        button.textContent = label;
-
-        button.style.cssText = `
-            min-height:44px;
-            padding:9px;
-            border:0;
-            border-radius:10px;
-            background:#e978a5;
-            color:white;
-            font-weight:bold;
-            font-size:14px;
-        `;
-
-        button.onclick = () => addCategory(type);
-
-        addArea.appendChild(button);
     }
 
-    createAddButton("＋ 収入カテゴリ", "income");
-
-    createAddButton("＋ 支出カテゴリ", "expense");
-
-    panel.appendChild(addArea);
-
 
     /* =====================
-       カテゴリ一覧
+       最新データ取得
     ===================== */
-
-    const categoryList = document.createElement("div");
-
-    panel.appendChild(categoryList);
-
 
     function getLatestCategories() {
 
-        const data = db.load();
+        const latestData = db.load();
 
-        if (!data.money) {
-            data.money = {};
+        if (
+            !latestData.money ||
+            !Array.isArray(latestData.money.categories)
+        ) {
+            return [];
         }
 
-        if (!Array.isArray(data.money.categories)) {
-            data.money.categories = [];
-        }
+        return latestData.money.categories;
 
-        return data.money.categories;
     }
 
+
+    /* =====================
+       保存
+    ===================== */
 
     function saveCategories(categories) {
 
-        const data = db.load();
+        const saveData = db.load();
 
-        if (!data.money) {
-            data.money = {};
+        if (!saveData.money) {
+            saveData.money = {};
         }
 
-        data.money.categories = categories;
+        saveData.money.categories = categories;
 
-        db.save(data);
+        db.save(saveData);
 
-        loadMoneyPage();
+        render();
+
+        if (typeof loadMoneyPage === "function") {
+            loadMoneyPage();
+        }
+
     }
 
 
     /* =====================
-       カテゴリ追加
+       画面描画
     ===================== */
 
-    function addCategory(type) {
-
-        const name = prompt(
-            type === "income"
-                ? "追加する収入カテゴリ名を入力してください"
-                : "追加する支出カテゴリ名を入力してください"
-        );
-
-        if (name === null) return;
-
-        const trimmedName = name.trim();
-
-        if (!trimmedName) {
-            alert("カテゴリ名を入力してください。");
-            return;
-        }
+    function render() {
 
         const categories = getLatestCategories();
 
-        const duplicate = categories.some(category =>
-            category.type === type &&
-            category.name.trim() === trimmedName
-        );
-
-        if (duplicate) {
-            alert("同じ名前のカテゴリがすでにあります。");
-            return;
-        }
-
-        const icon = prompt(
-            "カテゴリのアイコンを入力してください。\n\n" +
-            "例：🍚 🛍️ 🎁\n\n" +
-            "空欄でも登録できます。",
-            ""
-        );
-
-        if (icon === null) return;
-
-        categories.push({
-            id: "money_category_" + Date.now(),
-            type: type,
-            name: trimmedName,
-            icon: icon.trim(),
-            scope: "household",
-            isDefault: false,
-            active: true
-        });
-
-        saveCategories(categories);
-
-        renderCategories();
-
-        alert("カテゴリを追加しました。");
-    }
+        panel.innerHTML = "";
 
 
-    /* =====================
-       カテゴリ編集
-    ===================== */
+        /* ヘッダー */
 
-    function editCategory(categoryId) {
+        const header = document.createElement("div");
 
-        const categories = getLatestCategories();
+        header.style.cssText = `
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:10px;
+            margin-bottom:12px;
+        `;
 
-        const category = categories.find(
-            item => item.id === categoryId
-        );
+        const title = document.createElement("h3");
 
-        if (!category) {
-            alert("カテゴリが見つかりません。");
-            return;
-        }
+        title.textContent = "📂 家計簿カテゴリ管理";
 
-        const name = prompt(
-            "カテゴリ名を変更してください。",
-            category.name
-        );
+        title.style.cssText = `
+            margin:0;
+            font-size:18px;
+        `;
 
-        if (name === null) return;
+        const closeButton =
+            document.createElement("button");
 
-        const trimmedName = name.trim();
+        closeButton.type = "button";
+        closeButton.textContent = "✕";
 
-        if (!trimmedName) {
-            alert("カテゴリ名を入力してください。");
-            return;
-        }
+        closeButton.style.cssText = `
+            border:none;
+            background:#f3f3f3;
+            border-radius:50%;
+            width:36px;
+            height:36px;
+            font-size:16px;
+        `;
 
-        const duplicate = categories.some(item =>
-            item.id !== categoryId &&
-            item.type === category.type &&
-            item.name.trim() === trimmedName
-        );
+        closeButton.onclick = close;
 
-        if (duplicate) {
-            alert("同じ名前のカテゴリがすでにあります。");
-            return;
-        }
+        header.append(title, closeButton);
 
-        const icon = prompt(
-            "アイコンを変更してください。\n\n" +
-            "空欄にするとアイコンなしになります。",
-            category.icon || ""
-        );
-
-        if (icon === null) return;
-
-        category.name = trimmedName;
-        category.icon = icon.trim();
-
-        saveCategories(categories);
-
-        renderCategories();
-
-        alert("カテゴリを変更しました。");
-    }
+        panel.appendChild(header);
 
 
-    /* =====================
-       有効・無効切り替え
-    ===================== */
+        /* 説明 */
 
-    function toggleCategory(categoryId) {
+        const description =
+            document.createElement("p");
 
-        const categories = getLatestCategories();
+        description.textContent =
+            "家計簿で使用する収入・支出カテゴリを管理します。";
 
-        const category = categories.find(
-            item => item.id === categoryId
-        );
+        description.style.cssText = `
+            font-size:13px;
+            color:#777;
+            line-height:1.6;
+            margin:0 0 16px;
+        `;
 
-        if (!category) {
-            alert("カテゴリが見つかりません。");
-            return;
-        }
-
-        const isActive = category.active !== false;
-
-        // 推し活費カテゴリは専用機能で使用するため保護
-        if (
-            isActive &&
-            (
-                category.scope === "oshi" ||
-                category.id === "expense_oshi"
-            )
-        ) {
-            alert(
-                "このカテゴリは推し活費の集計に使用するため、" +
-                "無効化できません。"
-            );
-            return;
-        }
-
-        if (isActive) {
-
-            const confirmed = confirm(
-                "「" + category.name + "」を無効にしますか？\n\n" +
-                "過去の明細データは削除されません。\n" +
-                "新しい明細の登録では選択できなくなります。"
-            );
-
-            if (!confirmed) return;
-
-            category.active = false;
-
-        } else {
-
-            category.active = true;
-
-        }
-
-        saveCategories(categories);
-
-        renderCategories();
-    }
+        panel.appendChild(description);
 
 
-    /* =====================
-       カテゴリ一覧の描画
-    ===================== */
+        /* 新規追加 */
 
-    function renderCategories() {
+        const addArea = document.createElement("div");
 
-        categoryList.innerHTML = "";
+        addArea.style.cssText = `
+            display:flex;
+            gap:8px;
+            margin-bottom:18px;
+        `;
 
-        const categories = getLatestCategories();
+        function createAddButton(type, label) {
 
-        const types = [
-            {
-                type: "income",
-                title: "📥 収入カテゴリ"
-            },
-            {
-                type: "expense",
-                title: "📤 支出カテゴリ"
-            }
-        ];
+            const button =
+                document.createElement("button");
 
-        types.forEach(group => {
+            button.type = "button";
+            button.textContent = label;
 
-            const section = document.createElement("section");
-
-            section.style.cssText = `
-                margin-bottom:20px;
+            button.style.cssText = `
+                flex:1;
+                padding:12px 6px;
+                border:none;
+                border-radius:10px;
+                background:#e978a5;
+                color:white;
+                font-weight:bold;
+                font-size:14px;
             `;
 
-            const title = document.createElement("h3");
+            button.onclick = () => {
 
-            title.textContent = group.title;
+                const name = prompt(
+                    label + "のカテゴリ名を入力してください"
+                );
 
-            title.style.cssText = `
-                margin:0 0 10px;
+                if (name === null) return;
+
+                const trimmedName = name.trim();
+
+                if (!trimmedName) {
+                    alert("カテゴリ名を入力してください。");
+                    return;
+                }
+
+                if (
+                    type === "expense" &&
+                    trimmedName === "推し活費"
+                ) {
+                    alert(
+                        "推し活費は既に専用カテゴリがあります。\n" +
+                        "重複して追加することはできません。"
+                    );
+                    return;
+                }
+
+                const latestCategories =
+                    getLatestCategories();
+
+                const duplicate =
+                    latestCategories.some(category =>
+                        category.type === type &&
+                        category.name.trim() === trimmedName
+                    );
+
+                if (duplicate) {
+                    alert("同じ名前のカテゴリが既にあります。");
+                    return;
+                }
+
+                const icon = prompt(
+                    "アイコンを入力してください。\n" +
+                    "例：🍚 🧻 💡\n" +
+                    "空欄の場合は 📦 になります。"
+                );
+
+                if (icon === null) return;
+
+                latestCategories.push({
+
+                    id: "money_category_" + Date.now(),
+
+                    type: type,
+
+                    name: trimmedName,
+
+                    icon: icon.trim() || "📦",
+
+                    scope: "household",
+
+                    isDefault: false,
+
+                    active: true
+
+                });
+
+                saveCategories(latestCategories);
+
+            };
+
+            return button;
+
+        }
+
+        addArea.append(
+            createAddButton("income", "＋ 収入カテゴリ"),
+            createAddButton("expense", "＋ 支出カテゴリ")
+        );
+
+        panel.appendChild(addArea);
+
+
+        /* カテゴリ一覧 */
+
+        function renderCategoryGroup(type, heading) {
+
+            const section =
+                document.createElement("section");
+
+            section.style.marginBottom = "20px";
+
+            const sectionTitle =
+                document.createElement("h4");
+
+            sectionTitle.textContent = heading;
+
+            sectionTitle.style.cssText = `
+                margin:12px 0;
                 padding-bottom:8px;
-                border-bottom:2px solid #f3d5e1;
-                font-size:16px;
+                border-bottom:2px solid #f2d6e2;
+                font-size:15px;
             `;
 
-            section.appendChild(title);
+            section.appendChild(sectionTitle);
 
             const items = categories.filter(
-                category => category.type === group.type
+                category => category.type === type
             );
 
-            if (items.length === 0) {
-
-                const empty = document.createElement("p");
-
-                empty.textContent =
-                    "カテゴリがありません。";
-
-                empty.style.color = "#999";
-
-                section.appendChild(empty);
-
-            }
-
             items.forEach(category => {
-
-                const active = category.active !== false;
 
                 const row = document.createElement("div");
 
                 row.style.cssText = `
                     display:flex;
                     align-items:center;
-                    gap:8px;
+                    flex-wrap:wrap;
+                    gap:7px;
                     padding:11px 0;
                     border-bottom:1px solid #eee;
-                    opacity:${active ? "1" : ".55"};
                 `;
 
-
-                const info = document.createElement("div");
-
-                info.style.cssText = `
-                    flex:1;
-                    min-width:0;
-                `;
-
-                const name = document.createElement("strong");
+                const name =
+                    document.createElement("div");
 
                 name.textContent =
-                    (category.icon || "") +
+                    (category.icon || "📦") +
                     " " +
                     category.name;
 
                 name.style.cssText = `
-                    display:block;
-                    overflow-wrap:anywhere;
+                    flex:1;
+                    min-width:110px;
                     font-size:14px;
+                    font-weight:bold;
                 `;
 
-                const status = document.createElement("small");
+                if (category.active === false) {
+                    name.style.opacity = ".4";
+                    name.style.textDecoration = "line-through";
+                }
 
-                status.textContent =
-                    active ? "有効" : "無効";
+                const protectedCategory =
+                    isOshiCategory(category);
 
-                status.style.cssText = `
-                    display:block;
-                    margin-top:3px;
-                    color:${active ? "#2d9560" : "#999"};
-                    font-size:11px;
-                `;
 
-                if (category.scope === "oshi") {
+                /* 推し活費の固定表示 */
 
-                    const scope = document.createElement("small");
+                if (protectedCategory) {
 
-                    scope.textContent = "推し活費";
+                    const fixedLabel =
+                        document.createElement("span");
 
-                    scope.style.cssText = `
-                        display:block;
-                        color:#d46b9a;
+                    fixedLabel.textContent = "固定";
+
+                    fixedLabel.style.cssText = `
                         font-size:11px;
+                        color:#c94c80;
+                        background:#fff0f6;
+                        padding:5px 8px;
+                        border-radius:6px;
                     `;
 
-                    info.append(name, scope, status);
+                    row.append(name, fixedLabel);
 
-                } else {
+                    section.appendChild(row);
 
-                    info.append(name, status);
+                    return;
 
                 }
 
+
+                /* 編集 */
 
                 const editButton =
                     document.createElement("button");
@@ -4251,15 +4188,79 @@ function openMoneyCategorySettings() {
 
                 editButton.style.cssText = `
                     padding:7px 10px;
-                    border:1px solid #ddd;
-                    border-radius:8px;
-                    background:white;
+                    border:1px solid #e5a2bd;
+                    border-radius:7px;
+                    background:#fff5f9;
+                    color:#c94c80;
                     font-size:12px;
                 `;
 
-                editButton.onclick = () =>
-                    editCategory(category.id);
+                editButton.onclick = () => {
 
+                    const newName = prompt(
+                        "カテゴリ名を変更してください",
+                        category.name
+                    );
+
+                    if (newName === null) return;
+
+                    const trimmedName = newName.trim();
+
+                    if (!trimmedName) {
+                        alert("カテゴリ名を入力してください。");
+                        return;
+                    }
+
+                    if (
+                        type === "expense" &&
+                        trimmedName === "推し活費"
+                    ) {
+                        alert(
+                            "推し活費は専用カテゴリとして使用されています。"
+                        );
+                        return;
+                    }
+
+                    const latestCategories =
+                        getLatestCategories();
+
+                    const duplicate =
+                        latestCategories.some(item =>
+                            item.id !== category.id &&
+                            item.type === type &&
+                            item.name.trim() === trimmedName
+                        );
+
+                    if (duplicate) {
+                        alert("同じ名前のカテゴリが既にあります。");
+                        return;
+                    }
+
+                    const newIcon = prompt(
+                        "アイコンを変更してください",
+                        category.icon || "📦"
+                    );
+
+                    if (newIcon === null) return;
+
+                    const target =
+                        latestCategories.find(
+                            item => item.id === category.id
+                        );
+
+                    if (!target) return;
+
+                    target.name = trimmedName;
+
+                    target.icon =
+                        newIcon.trim() || "📦";
+
+                    saveCategories(latestCategories);
+
+                };
+
+
+                /* 停止・再開 */
 
                 const toggleButton =
                     document.createElement("button");
@@ -4267,24 +4268,46 @@ function openMoneyCategorySettings() {
                 toggleButton.type = "button";
 
                 toggleButton.textContent =
-                    active ? "無効化" : "再有効化";
+                    category.active === false
+                        ? "再開"
+                        : "停止";
 
                 toggleButton.style.cssText = `
-                    padding:7px 9px;
+                    padding:7px 10px;
                     border:1px solid #ddd;
-                    border-radius:8px;
-                    background:${active ? "#fff5f5" : "#f0fff5"};
-                    color:${active ? "#c55" : "#26834c"};
+                    border-radius:7px;
+                    background:#f7f7f7;
+                    color:#555;
                     font-size:12px;
-                    white-space:nowrap;
                 `;
 
-                toggleButton.onclick = () =>
-                    toggleCategory(category.id);
+                toggleButton.onclick = () => {
+
+                    const latestCategories =
+                        getLatestCategories();
+
+                    const target =
+                        latestCategories.find(
+                            item => item.id === category.id
+                        );
+
+                    if (!target) return;
+
+                    if (isOshiCategory(target)) {
+                        alert("推し活費は停止できません。");
+                        return;
+                    }
+
+                    target.active =
+                        target.active === false;
+
+                    saveCategories(latestCategories);
+
+                };
 
 
                 row.append(
-                    info,
+                    name,
                     editButton,
                     toggleButton
                 );
@@ -4293,26 +4316,66 @@ function openMoneyCategorySettings() {
 
             });
 
-            categoryList.appendChild(section);
 
-        });
+            if (items.length === 0) {
+
+                const empty =
+                    document.createElement("p");
+
+                empty.textContent =
+                    "カテゴリはありません。";
+
+                empty.style.cssText = `
+                    color:#999;
+                    font-size:13px;
+                    padding:10px 0;
+                `;
+
+                section.appendChild(empty);
+
+            }
+
+            panel.appendChild(section);
+
+        }
+
+
+        renderCategoryGroup("income", "💰 収入カテゴリ");
+
+        renderCategoryGroup("expense", "💸 支出カテゴリ");
+
     }
 
 
-    renderCategories();
+    /* =====================
+       閉じる
+    ===================== */
 
-    overlay.appendChild(panel);
+    function close() {
+
+        overlay.remove();
+
+        if (typeof loadMoneyPage === "function") {
+            loadMoneyPage();
+        }
+
+    }
+
 
     overlay.addEventListener("click", event => {
 
         if (event.target === overlay) {
-            overlay.remove();
+            close();
         }
 
     });
 
     document.body.appendChild(overlay);
+
+    render();
+
 }
+
 
 
 
