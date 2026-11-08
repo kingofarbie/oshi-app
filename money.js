@@ -3128,7 +3128,12 @@ function closeOshiMoney(){
 ===================================================== */
 
 
-function openMoneyRecordForm(type) {
+
+/* =====================================================
+   💰 収入・支出 登録 / 編集フォーム
+===================================================== */
+
+function openMoneyRecordForm(type, recordId = null) {
 
     const data = db.load();
 
@@ -3137,6 +3142,19 @@ function openMoneyRecordForm(type) {
     }
 
     const money = data.money;
+
+    if (!Array.isArray(money.records)) {
+        money.records = [];
+    }
+
+    const editingRecord = recordId
+        ? money.records.find(record => record.id === recordId)
+        : null;
+
+    if (recordId && !editingRecord) {
+        alert("編集する明細が見つかりません");
+        return;
+    }
 
     const categories =
         Array.isArray(money.categories) &&
@@ -3156,22 +3174,29 @@ function openMoneyRecordForm(type) {
 
     const isIncome = type === "income";
 
-    const title = isIncome ? "収入を登録" : "支出を登録";
+    const title = editingRecord
+        ? "明細を編集"
+        : (isIncome ? "収入を登録" : "支出を登録");
 
     const now = new Date();
 
-    const dateValue =
+    const today =
         now.getFullYear() + "-" +
         String(now.getMonth() + 1).padStart(2, "0") + "-" +
         String(now.getDate()).padStart(2, "0");
+
+    const dateValue = editingRecord
+        ? getMoneyRecordDate(editingRecord)
+        : today;
 
 
     /* =====================
        既存画面を閉じる
     ===================== */
 
-    const old =
-        document.querySelector(".money-record-overlay");
+    const old = document.querySelector(
+        ".money-record-overlay"
+    );
 
     if (old) old.remove();
 
@@ -3226,7 +3251,6 @@ function openMoneyRecordForm(type) {
 
     /* =====================
        入力欄作成
-       親要素を指定可能にする
     ===================== */
 
     function createField(labelText, element, parent = panel) {
@@ -3274,7 +3298,7 @@ function openMoneyRecordForm(type) {
     const dateInput = document.createElement("input");
 
     dateInput.type = "date";
-    dateInput.value = dateValue;
+    dateInput.value = dateValue || today;
 
     createField("📅 日付", dateInput);
 
@@ -3289,6 +3313,11 @@ function openMoneyRecordForm(type) {
     amountInput.min = "1";
     amountInput.step = "1";
     amountInput.placeholder = "金額を入力";
+
+    if (editingRecord) {
+        amountInput.value =
+            getMoneyRecordAmount(editingRecord);
+    }
 
     createField("💴 金額（円）", amountInput);
 
@@ -3312,12 +3341,17 @@ function openMoneyRecordForm(type) {
         const option = document.createElement("option");
 
         option.value = category.id;
+
         option.textContent =
             (category.icon || "") + " " + category.name;
 
         categorySelect.appendChild(option);
 
     });
+
+    if (editingRecord) {
+        categorySelect.value = editingRecord.categoryId;
+    }
 
     createField("📂 カテゴリ", categorySelect);
 
@@ -3352,6 +3386,10 @@ function openMoneyRecordForm(type) {
 
     });
 
+    if (editingRecord) {
+        oshiSelect.value = editingRecord.oshiId || "";
+    }
+
     createField("⭐ 推し", oshiSelect, oshiArea);
 
 
@@ -3367,6 +3405,7 @@ function openMoneyRecordForm(type) {
             const option = document.createElement("option");
 
             option.value = category.id;
+
             option.textContent =
                 (category.icon || "") + " " + category.name;
 
@@ -3374,12 +3413,16 @@ function openMoneyRecordForm(type) {
 
         });
 
+    if (editingRecord) {
+        oshiCategorySelect.value =
+            editingRecord.oshiCategoryId || "";
+    }
+
     createField(
         "💖 推し活費の内訳",
         oshiCategorySelect,
         oshiArea
     );
-
 
     panel.appendChild(oshiArea);
 
@@ -3392,6 +3435,10 @@ function openMoneyRecordForm(type) {
 
     memoInput.rows = 3;
     memoInput.placeholder = "内容やメモ（任意）";
+
+    if (editingRecord) {
+        memoInput.value = editingRecord.memo || "";
+    }
 
     createField("📝 メモ", memoInput);
 
@@ -3418,18 +3465,16 @@ function openMoneyRecordForm(type) {
     }
 
 
-
     function updateOshiArea() {
 
         const show =
             !isIncome &&
             isOshiCategory(categorySelect.value);
 
-        oshiArea.style.display = show ? "block" : "none";
+        oshiArea.style.display =
+            show ? "block" : "none";
 
     }
-
-
 
     categorySelect.addEventListener(
         "change",
@@ -3451,6 +3496,7 @@ function openMoneyRecordForm(type) {
         margin-top:20px;
     `;
 
+
     const cancelButton = document.createElement("button");
 
     cancelButton.type = "button";
@@ -3471,7 +3517,9 @@ function openMoneyRecordForm(type) {
     const saveButton = document.createElement("button");
 
     saveButton.type = "button";
-    saveButton.textContent = "登録する";
+
+    saveButton.textContent =
+        editingRecord ? "変更を保存" : "登録する";
 
     saveButton.style.cssText = `
         flex:1;
@@ -3525,27 +3573,34 @@ function openMoneyRecordForm(type) {
             return;
         }
 
-        if (!Array.isArray(money.records)) {
-            money.records = [];
-        }
 
-        const record = {
+        /* =====================
+           明細データ作成
+        ===================== */
 
-            id: "money_" + Date.now(),
+        const record = editingRecord
+            ? {
+                ...editingRecord,
+                date: dateInput.value,
+                type: type,
+                amount: amount,
+                categoryId: categorySelect.value,
+                memo: memoInput.value.trim()
+            }
+            : {
+                id: "money_" + Date.now(),
+                date: dateInput.value,
+                type: type,
+                amount: amount,
+                categoryId: categorySelect.value,
+                memo: memoInput.value.trim(),
+                createdAt: Date.now()
+            };
 
-            date: dateInput.value,
 
-            type: type,
-
-            amount: amount,
-
-            categoryId: categorySelect.value,
-
-            memo: memoInput.value.trim(),
-
-            createdAt: Date.now()
-
-        };
+        /* =====================
+           推し活情報
+        ===================== */
 
         if (oshiExpense) {
 
@@ -3554,9 +3609,36 @@ function openMoneyRecordForm(type) {
             record.oshiCategoryId =
                 oshiCategorySelect.value;
 
+        } else {
+
+            delete record.oshiId;
+            delete record.oshiCategoryId;
+
         }
 
-        money.records.push(record);
+
+        /* =====================
+           保存
+        ===================== */
+
+        if (editingRecord) {
+
+            const index = money.records.findIndex(
+                item => item.id === recordId
+            );
+
+            if (index === -1) {
+                alert("編集する明細が見つかりません");
+                return;
+            }
+
+            money.records[index] = record;
+
+        } else {
+
+            money.records.push(record);
+
+        }
 
         db.save(data);
 
@@ -3564,7 +3646,11 @@ function openMoneyRecordForm(type) {
 
         loadMoneyPage();
 
-        alert("登録しました！");
+        alert(
+            editingRecord
+                ? "変更しました！"
+                : "登録しました！"
+        );
 
     };
 
@@ -3586,6 +3672,7 @@ function openMoneyRecordForm(type) {
     document.body.appendChild(overlay);
 
 }
+
 
 
 
@@ -3954,3 +4041,268 @@ function applyMoneyBudgetStatus() {
 }
 
 
+
+/* =====================================================
+   💰 家計明細一覧
+===================================================== */
+
+function openMoneyRecordList() {
+
+    const data = db.load();
+
+    const money = data.money || {};
+
+    const records = Array.isArray(money.records)
+        ? money.records
+        : [];
+
+    const old = document.querySelector(
+        ".money-list-overlay"
+    );
+
+    if (old) old.remove();
+
+    const overlay = document.createElement("div");
+
+    overlay.className = "money-list-overlay";
+
+    overlay.style.cssText = `
+        position:fixed;
+        inset:0;
+        z-index:10001;
+        background:rgba(0,0,0,.5);
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        padding:12px;
+        box-sizing:border-box;
+    `;
+
+    const panel = document.createElement("div");
+
+    panel.style.cssText = `
+        width:100%;
+        max-width:520px;
+        max-height:90vh;
+        overflow-y:auto;
+        background:white;
+        color:#333;
+        border-radius:18px;
+        padding:18px;
+        box-sizing:border-box;
+    `;
+
+    const header = document.createElement("div");
+
+    header.style.cssText = `
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        margin-bottom:16px;
+    `;
+
+    const heading = document.createElement("h2");
+
+    heading.textContent = "💰 家計明細";
+
+    heading.style.margin = "0";
+
+    const closeButton = document.createElement("button");
+
+    closeButton.textContent = "閉じる";
+
+    closeButton.onclick = () => overlay.remove();
+
+    header.append(heading, closeButton);
+
+    panel.appendChild(header);
+
+    const summary = document.createElement("div");
+
+    summary.style.cssText = `
+        padding:12px;
+        background:#fff5f9;
+        border-radius:10px;
+        margin-bottom:14px;
+    `;
+
+    panel.appendChild(summary);
+
+    const list = document.createElement("div");
+
+    panel.appendChild(list);
+
+    function renderList() {
+
+        list.innerHTML = "";
+
+        const sorted = [...records].sort((a, b) => {
+
+            return (
+                new Date(getMoneyRecordDate(b)).getTime() -
+                new Date(getMoneyRecordDate(a)).getTime()
+            );
+
+        });
+
+        const income = sorted
+            .filter(isMoneyIncome)
+            .reduce((sum, record) =>
+                sum + getMoneyRecordAmount(record), 0);
+
+        const expense = sorted
+            .filter(record => !isMoneyIncome(record))
+            .reduce((sum, record) =>
+                sum + getMoneyRecordAmount(record), 0);
+
+        summary.innerHTML = `
+            <div>収入合計：${displayMoney(income)}</div>
+            <div>支出合計：${displayMoney(expense)}</div>
+        `;
+
+        if (sorted.length === 0) {
+
+            list.textContent = "明細はありません";
+
+            return;
+        }
+
+        sorted.forEach(record => {
+
+            const row = document.createElement("div");
+
+            row.style.cssText = `
+                padding:13px 0;
+                border-bottom:1px solid #eee;
+            `;
+
+            const title = document.createElement("strong");
+
+            title.textContent =
+                getMoneyCategoryName(record, data);
+
+            const date = document.createElement("div");
+
+            date.textContent =
+                formatMoneyDate(getMoneyRecordDate(record));
+
+            date.style.cssText = `
+                color:#888;
+                font-size:12px;
+                margin-top:4px;
+            `;
+
+            const amount = document.createElement("strong");
+
+            amount.textContent =
+                (isMoneyIncome(record) ? "+" : "-") +
+                displayMoney(getMoneyRecordAmount(record));
+
+            amount.style.cssText = `
+                display:block;
+                margin-top:5px;
+            `;
+
+            const memo = document.createElement("div");
+
+            memo.textContent = record.memo || "";
+
+            memo.style.cssText = `
+                font-size:13px;
+                margin-top:4px;
+                color:#666;
+                white-space:pre-wrap;
+            `;
+
+            const actions = document.createElement("div");
+
+            actions.style.cssText = `
+                display:flex;
+                justify-content:flex-end;
+                gap:8px;
+                margin-top:10px;
+            `;
+
+            const editButton = document.createElement("button");
+
+            editButton.textContent = "編集";
+
+            editButton.onclick = () => {
+
+                overlay.remove();
+
+                openMoneyRecordForm(
+                    record.type,
+                    record.id
+                );
+
+            };
+
+            const deleteButton = document.createElement("button");
+
+            deleteButton.textContent = "削除";
+
+            deleteButton.style.color = "#dc3545";
+
+            deleteButton.onclick = () => {
+
+                if (!confirm(
+                    "この明細を削除しますか？"
+                )) {
+                    return;
+                }
+
+                const latest = db.load();
+
+                if (!latest.money ||
+                    !Array.isArray(latest.money.records)) {
+                    alert("明細データが見つかりません");
+                    return;
+                }
+
+                latest.money.records =
+                    latest.money.records.filter(
+                        item => item.id !== record.id
+                    );
+
+                db.save(latest);
+
+                overlay.remove();
+
+                loadMoneyPage();
+
+                openMoneyRecordList();
+
+            };
+
+            actions.append(editButton, deleteButton);
+
+            row.append(
+                title,
+                date,
+                amount,
+                memo,
+                actions
+            );
+
+            list.appendChild(row);
+
+        });
+
+    }
+
+    renderList();
+
+    overlay.appendChild(panel);
+
+    overlay.addEventListener("click", event => {
+
+        if (event.target === overlay) {
+            overlay.remove();
+        }
+
+    });
+
+    document.body.appendChild(overlay);
+
+}
