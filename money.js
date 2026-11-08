@@ -3723,11 +3723,12 @@ function renderOshiMoneyBudget(data, monthKey) {
 
     // 今月の推し活費だけを集計
     const used = records
-        .filter(record =>
-            isOshiMoneyRecord(record) &&
-            isMoneyExpense(record) &&
-            isMoneyRecordInMonth(record, monthKey)
-        )
+.filter(record =>
+    isOshiMoneyRecord(record, data) &&
+    isMoneyExpense(record) &&
+    isMoneyRecordInMonth(record, monthKey)
+)
+
         .reduce((total, record) => {
             return total + getMoneyRecordAmount(record);
         }, 0);
