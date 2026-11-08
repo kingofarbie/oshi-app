@@ -673,6 +673,9 @@ function renderMoneyPage(){
         summary.expense
     );
 
+    renderOshiMoneyBudget(data, monthKey);
+
+
 
     /* =====================
        最近の明細
@@ -3697,4 +3700,161 @@ function openMoneyCarryoverSettings(){
         "繰越金設定画面は次の段階で実装します。"
     );
 
+}
+
+
+/* =====================================================
+   ⭐ 推し活予算
+===================================================== */
+
+function renderOshiMoneyBudget(data, monthKey) {
+
+    const money = data.money || {};
+    const records = money.records || [];
+    const settings = money.monthlySettings || {};
+
+    const setting = settings[monthKey];
+
+    const budget =
+        setting && typeof setting === "object" &&
+        setting.oshiBudget !== undefined
+            ? Number(setting.oshiBudget)
+            : null;
+
+    // 今月の推し活費だけを集計
+    const used = records
+        .filter(record =>
+            isOshiMoneyRecord(record) &&
+            isMoneyExpense(record) &&
+            isMoneyRecordInMonth(record, monthKey)
+        )
+        .reduce((total, record) => {
+            return total + getMoneyRecordAmount(record);
+        }, 0);
+
+    setMoneyText(
+        "moneyOshiBudgetTotal",
+        budget === null
+            ? "未設定"
+            : displayMoney(budget)
+    );
+
+    setMoneyText(
+        "moneyOshiBudgetUsed",
+        displayMoney(used)
+    );
+
+    const remaining =
+        budget === null ? null : budget - used;
+
+    setMoneyText(
+        "moneyOshiBudgetRemaining",
+        remaining === null
+            ? "-"
+            : displayMoney(remaining)
+    );
+
+    const percent =
+        budget === null || budget === 0
+            ? 0
+            : Math.round(used / budget * 100);
+
+    const progress =
+        document.getElementById("moneyOshiBudgetProgress");
+
+    if (progress) {
+        progress.style.width =
+            Math.min(percent, 100) + "%";
+    }
+
+    setMoneyText(
+        "moneyOshiBudgetPercent",
+        budget === null
+            ? "予算未設定"
+            : `予算の${percent}%を使用`
+    );
+}
+
+
+/* =====================================================
+   ⭐ 推し活予算設定
+===================================================== */
+
+function openOshiMoneyBudgetSettings() {
+
+    const data = db.load();
+
+    if (!data.money) {
+        data.money = {};
+    }
+
+    if (!data.money.monthlySettings) {
+        data.money.monthlySettings = {};
+    }
+
+    const monthKey = getMoneyCurrentMonthKey();
+
+    const oldSetting =
+        data.money.monthlySettings[monthKey];
+
+    const currentBudget =
+        oldSetting && typeof oldSetting === "object"
+            ? oldSetting.oshiBudget
+            : undefined;
+
+    const input = prompt(
+        "今月の推し活予算を入力してください。\n\n" +
+        "例：30000\n\n" +
+        "現在の予算：" +
+        (currentBudget !== undefined
+            ? Number(currentBudget).toLocaleString("ja-JP") + "円"
+            : "未設定"),
+        currentBudget !== undefined
+            ? String(currentBudget)
+            : ""
+    );
+
+    if (input === null) {
+        return;
+    }
+
+    const normalizedInput =
+        String(input).replace(/[,\s円￥¥]/g, "");
+
+    if (
+        normalizedInput === "" ||
+        !/^\d+$/.test(normalizedInput)
+    ) {
+        alert("0以上の数字で入力してください。");
+        return;
+    }
+
+    const budget = Number(normalizedInput);
+
+    if (!Number.isSafeInteger(budget)) {
+        alert("金額が大きすぎます。");
+        return;
+    }
+
+    let setting = {};
+
+    if (oldSetting && typeof oldSetting === "object") {
+        setting = { ...oldSetting };
+    } else if (
+        typeof oldSetting === "number" &&
+        Number.isFinite(oldSetting)
+    ) {
+        // 以前の家計予算をそのまま引き継ぐ
+        setting.budget = oldSetting;
+    }
+
+    setting.oshiBudget = budget;
+
+    data.money.monthlySettings[monthKey] = setting;
+
+    db.save(data);
+
+    renderMoneyPage();
+
+    alert("推し活予算を保存しました。");
 }
