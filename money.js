@@ -1602,28 +1602,6 @@ function renderOshiMoneyPage(){
 
     container.appendChild(addButton);
 
-    /* =====================
-       推し活費の内訳管理ボタン
-    ===================== */
-
-    const categoryButton =
-        document.createElement("button");
-
-    categoryButton.type = "button";
-    categoryButton.className = "money-small-btn";
-
-    categoryButton.textContent =
-        "⚙️ 推し活費の内訳を管理";
-
-    categoryButton.style.marginTop = "10px";
-
-    categoryButton.addEventListener(
-        "click",
-        openOshiMoneyCategoryManager
-    );
-
-    container.appendChild(categoryButton);
-
 
 
 
@@ -1635,6 +1613,7 @@ function renderOshiMoneyPage(){
 /* =====================================================
    💖 推し活費の内訳管理
 ===================================================== */
+
 
 function openOshiMoneyCategoryManager(){
 

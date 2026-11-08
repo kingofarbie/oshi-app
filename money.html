@@ -513,28 +513,46 @@
          カテゴリ管理
     ====================== -->
 
-    <section class="money-section">
 
-        <div class="money-section-header">
+<section class="money-section">
 
-            <div>
-                <h3>🏷️ カテゴリ管理</h3>
-                <p class="money-section-subtitle">
-                    収入・支出の項目を管理
-                </p>
-            </div>
+    <div class="money-section-header">
+
+        <div>
+            <h3>🏷️ カテゴリ管理</h3>
+            <p class="money-section-subtitle">
+                収入・支出・推し活費の項目を管理
+            </p>
+        </div>
+
+        <div style="
+            display:flex;
+            gap:8px;
+            flex-wrap:wrap;
+            justify-content:flex-end;
+        ">
 
             <button
                 type="button"
                 class="money-small-btn"
                 onclick="openMoneyCategorySettings()"
             >
-                設定
+                生活費カテゴリ
+            </button>
+
+            <button
+                type="button"
+                class="money-small-btn"
+                onclick="openOshiMoneyCategoryManager()"
+            >
+                💖 推し活費の内訳
             </button>
 
         </div>
 
-    </section>
+    </div>
+
+</section>
 
 
     <!-- =====================
