@@ -3764,15 +3764,6 @@ function openMoneyBudgetSettings() {
 
 
 
-function openMoneyRecordList(){
-
-    alert(
-        "明細一覧画面は次の段階で実装します。"
-    );
-
-}
-
-
 function openMoneyCategorySettings(){
 
     alert(
@@ -4046,6 +4037,11 @@ function applyMoneyBudgetStatus() {
    💰 家計明細一覧
 ===================================================== */
 
+
+/* =====================================================
+   💰 家計明細一覧・絞り込み
+===================================================== */
+
 function openMoneyRecordList() {
 
     const data = db.load();
@@ -4056,11 +4052,20 @@ function openMoneyRecordList() {
         ? money.records
         : [];
 
+    const categories = Array.isArray(money.categories)
+        ? money.categories
+        : [];
+
     const old = document.querySelector(
         ".money-list-overlay"
     );
 
     if (old) old.remove();
+
+
+    /* =====================
+       オーバーレイ
+    ===================== */
 
     const overlay = document.createElement("div");
 
@@ -4078,6 +4083,7 @@ function openMoneyRecordList() {
         box-sizing:border-box;
     `;
 
+
     const panel = document.createElement("div");
 
     panel.style.cssText = `
@@ -4091,6 +4097,11 @@ function openMoneyRecordList() {
         padding:18px;
         box-sizing:border-box;
     `;
+
+
+    /* =====================
+       ヘッダー
+    ===================== */
 
     const header = document.createElement("div");
 
@@ -4109,6 +4120,7 @@ function openMoneyRecordList() {
 
     const closeButton = document.createElement("button");
 
+    closeButton.type = "button";
     closeButton.textContent = "閉じる";
 
     closeButton.onclick = () => overlay.remove();
@@ -4117,6 +4129,142 @@ function openMoneyRecordList() {
 
     panel.appendChild(header);
 
+
+    /* =====================
+       絞り込みエリア
+    ===================== */
+
+    const filterArea = document.createElement("div");
+
+    filterArea.style.cssText = `
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:10px;
+        padding:12px;
+        margin-bottom:14px;
+        background:#fff5f9;
+        border-radius:12px;
+    `;
+
+
+    function createFilter(labelText, options) {
+
+        const wrapper = document.createElement("label");
+
+        wrapper.style.cssText = `
+            display:block;
+            min-width:0;
+            font-size:13px;
+            font-weight:bold;
+        `;
+
+        const label = document.createElement("div");
+
+        label.textContent = labelText;
+
+        label.style.marginBottom = "5px";
+
+        const select = document.createElement("select");
+
+        select.style.cssText = `
+            width:100%;
+            min-height:40px;
+            padding:7px;
+            border:1px solid #ddd;
+            border-radius:8px;
+            background:white;
+            color:#333;
+            font-size:14px;
+            box-sizing:border-box;
+        `;
+
+        options.forEach(item => {
+
+            const option = document.createElement("option");
+
+            option.value = item.value;
+            option.textContent = item.label;
+
+            select.appendChild(option);
+
+        });
+
+        wrapper.append(label, select);
+
+        filterArea.appendChild(wrapper);
+
+        return select;
+    }
+
+
+    /* 期間 */
+
+    const periodSelect = createFilter(
+        "📅 期間",
+        [
+            { value: "month", label: "今月" },
+            { value: "lastMonth", label: "先月" },
+            { value: "year", label: "今年" },
+            { value: "all", label: "すべて" }
+        ]
+    );
+
+
+    /* 種類 */
+
+    const typeSelect = createFilter(
+        "📂 種類",
+        [
+            { value: "all", label: "すべて" },
+            { value: "income", label: "収入" },
+            { value: "expense", label: "支出" }
+        ]
+    );
+
+
+    /* カテゴリ */
+
+    const categoryOptions = [
+        { value: "all", label: "すべて" }
+    ];
+
+    categories.forEach(category => {
+
+        if (!category.id) return;
+
+        categoryOptions.push({
+            value: category.id,
+            label:
+                (category.icon || "") +
+                " " +
+                category.name
+        });
+
+    });
+
+    const categorySelect = createFilter(
+        "🏷 カテゴリ",
+        categoryOptions
+    );
+
+
+    /* 並び順 */
+
+    const sortSelect = createFilter(
+        "↕ 並び順",
+        [
+            { value: "new", label: "新しい順" },
+            { value: "old", label: "古い順" }
+        ]
+    );
+
+    panel.appendChild(filterArea);
+
+
+    /* =====================
+       集計表示
+    ===================== */
+
     const summary = document.createElement("div");
 
     summary.style.cssText = `
@@ -4124,50 +4272,198 @@ function openMoneyRecordList() {
         background:#fff5f9;
         border-radius:10px;
         margin-bottom:14px;
+        line-height:1.8;
+        font-size:14px;
     `;
 
     panel.appendChild(summary);
+
+
+    /* =====================
+       明細一覧
+    ===================== */
 
     const list = document.createElement("div");
 
     panel.appendChild(list);
 
+
+    /* =====================
+       絞り込み・表示
+    ===================== */
+
     function renderList() {
 
         list.innerHTML = "";
 
-        const sorted = [...records].sort((a, b) => {
+        const now = new Date();
 
-            return (
-                new Date(getMoneyRecordDate(b)).getTime() -
-                new Date(getMoneyRecordDate(a)).getTime()
+        const currentYear = now.getFullYear();
+
+        const currentMonth =
+            String(now.getMonth() + 1).padStart(2, "0");
+
+        const currentPeriod =
+            currentYear + "-" + currentMonth;
+
+        const previousDate = new Date(
+            currentYear,
+            now.getMonth() - 1,
+            1
+        );
+
+        const previousPeriod =
+            previousDate.getFullYear() + "-" +
+            String(previousDate.getMonth() + 1).padStart(2, "0");
+
+
+        /* =====================
+           条件で絞り込み
+        ===================== */
+
+        let filtered = records.filter(record => {
+
+            const date = String(
+                getMoneyRecordDate(record) || ""
             );
+
+            const recordPeriod = date.slice(0, 7);
+
+            const recordYear = date.slice(0, 4);
+
+
+            /* 期間 */
+
+            if (
+                periodSelect.value === "month" &&
+                recordPeriod !== currentPeriod
+            ) {
+                return false;
+            }
+
+            if (
+                periodSelect.value === "lastMonth" &&
+                recordPeriod !== previousPeriod
+            ) {
+                return false;
+            }
+
+            if (
+                periodSelect.value === "year" &&
+                recordYear !== String(currentYear)
+            ) {
+                return false;
+            }
+
+
+            /* 収入・支出 */
+
+            if (
+                typeSelect.value === "income" &&
+                !isMoneyIncome(record)
+            ) {
+                return false;
+            }
+
+            if (
+                typeSelect.value === "expense" &&
+                isMoneyIncome(record)
+            ) {
+                return false;
+            }
+
+
+            /* カテゴリ */
+
+            if (
+                categorySelect.value !== "all" &&
+                record.categoryId !== categorySelect.value
+            ) {
+                return false;
+            }
+
+            return true;
 
         });
 
-        const income = sorted
+
+        /* =====================
+           並び順
+        ===================== */
+
+        filtered.sort((a, b) => {
+
+            const dateA = String(
+                getMoneyRecordDate(a) || ""
+            );
+
+            const dateB = String(
+                getMoneyRecordDate(b) || ""
+            );
+
+            if (sortSelect.value === "old") {
+                return dateA.localeCompare(dateB);
+            }
+
+            return dateB.localeCompare(dateA);
+
+        });
+
+
+        /* =====================
+           絞り込み後の集計
+        ===================== */
+
+        const income = filtered
             .filter(isMoneyIncome)
             .reduce((sum, record) =>
                 sum + getMoneyRecordAmount(record), 0);
 
-        const expense = sorted
+        const expense = filtered
             .filter(record => !isMoneyIncome(record))
             .reduce((sum, record) =>
                 sum + getMoneyRecordAmount(record), 0);
 
-        summary.innerHTML = `
-            <div>収入合計：${displayMoney(income)}</div>
-            <div>支出合計：${displayMoney(expense)}</div>
-        `;
+        const balance = income - expense;
 
-        if (sorted.length === 0) {
+        summary.textContent =
+            "表示件数：" + filtered.length + "件\n" +
+            "収入合計：" + displayMoney(income) + "\n" +
+            "支出合計：" + displayMoney(expense) + "\n" +
+            "収支：" + (balance >= 0 ? "+" : "") +
+            displayMoney(balance);
 
-            list.textContent = "明細はありません";
+        summary.style.whiteSpace = "pre-line";
+
+
+        /* =====================
+           明細がない場合
+        ===================== */
+
+        if (filtered.length === 0) {
+
+            const empty = document.createElement("div");
+
+            empty.textContent =
+                "該当する明細はありません";
+
+            empty.style.cssText = `
+                padding:25px 10px;
+                text-align:center;
+                color:#888;
+            `;
+
+            list.appendChild(empty);
 
             return;
         }
 
-        sorted.forEach(record => {
+
+        /* =====================
+           明細表示
+        ===================== */
+
+        filtered.forEach(record => {
 
             const row = document.createElement("div");
 
@@ -4176,10 +4472,12 @@ function openMoneyRecordList() {
                 border-bottom:1px solid #eee;
             `;
 
+
             const title = document.createElement("strong");
 
             title.textContent =
                 getMoneyCategoryName(record, data);
+
 
             const date = document.createElement("div");
 
@@ -4192,6 +4490,7 @@ function openMoneyRecordList() {
                 margin-top:4px;
             `;
 
+
             const amount = document.createElement("strong");
 
             amount.textContent =
@@ -4202,6 +4501,7 @@ function openMoneyRecordList() {
                 display:block;
                 margin-top:5px;
             `;
+
 
             const memo = document.createElement("div");
 
@@ -4214,6 +4514,11 @@ function openMoneyRecordList() {
                 white-space:pre-wrap;
             `;
 
+
+            /* =====================
+               編集・削除ボタン
+            ===================== */
+
             const actions = document.createElement("div");
 
             actions.style.cssText = `
@@ -4223,8 +4528,10 @@ function openMoneyRecordList() {
                 margin-top:10px;
             `;
 
+
             const editButton = document.createElement("button");
 
+            editButton.type = "button";
             editButton.textContent = "編集";
 
             editButton.onclick = () => {
@@ -4238,8 +4545,10 @@ function openMoneyRecordList() {
 
             };
 
+
             const deleteButton = document.createElement("button");
 
+            deleteButton.type = "button";
             deleteButton.textContent = "削除";
 
             deleteButton.style.color = "#dc3545";
@@ -4254,8 +4563,10 @@ function openMoneyRecordList() {
 
                 const latest = db.load();
 
-                if (!latest.money ||
-                    !Array.isArray(latest.money.records)) {
+                if (
+                    !latest.money ||
+                    !Array.isArray(latest.money.records)
+                ) {
                     alert("明細データが見つかりません");
                     return;
                 }
@@ -4290,6 +4601,24 @@ function openMoneyRecordList() {
         });
 
     }
+
+
+    /* =====================
+       絞り込み変更時に再表示
+    ===================== */
+
+    periodSelect.addEventListener("change", renderList);
+
+    typeSelect.addEventListener("change", renderList);
+
+    categorySelect.addEventListener("change", renderList);
+
+    sortSelect.addEventListener("change", renderList);
+
+
+    /* =====================
+       表示
+    ===================== */
 
     renderList();
 
