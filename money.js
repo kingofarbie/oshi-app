@@ -675,6 +675,7 @@ function renderMoneyPage(){
 
     renderOshiMoneyBudget(data, monthKey);
 
+    applyMoneyBudgetStatus();
 
 
     /* =====================
@@ -3859,3 +3860,97 @@ function openOshiMoneyBudgetSettings() {
 
     alert("推し活予算を保存しました。");
 }
+
+
+
+
+/* =====================================================
+   💰 予算使用率の警告表示
+===================================================== */
+
+function applyMoneyBudgetStatus() {
+
+    const budgetTypes = [
+        {
+            total: "moneyBudgetTotal",
+            used: "moneyBudgetUsed",
+            remaining: "moneyBudgetRemaining",
+            progress: "moneyBudgetProgress",
+            percent: "moneyBudgetPercent"
+        },
+        {
+            total: "moneyOshiBudgetTotal",
+            used: "moneyOshiBudgetUsed",
+            remaining: "moneyOshiBudgetRemaining",
+            progress: "moneyOshiBudgetProgress",
+            percent: "moneyOshiBudgetPercent"
+        }
+    ];
+
+    budgetTypes.forEach(ids => {
+
+        const totalEl = document.getElementById(ids.total);
+        const usedEl = document.getElementById(ids.used);
+        const remainingEl = document.getElementById(ids.remaining);
+        const progressEl = document.getElementById(ids.progress);
+        const percentEl = document.getElementById(ids.percent);
+
+        if (!totalEl || !usedEl || !percentEl) return;
+
+        const total = Number(
+            totalEl.textContent.replace(/[^\d.-]/g, "")
+        );
+
+        const used = Number(
+            usedEl.textContent.replace(/[^\d.-]/g, "")
+        );
+
+        // 初期状態に戻す
+        percentEl.style.color = "";
+        percentEl.style.fontWeight = "";
+
+        if (remainingEl) {
+            remainingEl.style.color = "";
+        }
+
+        if (progressEl) {
+            progressEl.style.backgroundColor = "";
+        }
+
+        // 予算未設定
+        if (!Number.isFinite(total) || total <= 0) return;
+
+        const rate = used / total * 100;
+
+        if (rate > 100) {
+
+            percentEl.textContent =
+                Math.floor(rate) + "% ⚠ 予算オーバー";
+
+            percentEl.style.color = "#dc3545";
+            percentEl.style.fontWeight = "bold";
+
+            if (remainingEl) {
+                remainingEl.style.color = "#dc3545";
+            }
+
+            if (progressEl) {
+                progressEl.style.backgroundColor = "#dc3545";
+            }
+
+        } else if (rate >= 80) {
+
+            percentEl.textContent =
+                Math.floor(rate) + "% ⚠ 予算に注意";
+
+            percentEl.style.color = "#e69500";
+            percentEl.style.fontWeight = "bold";
+
+            if (progressEl) {
+                progressEl.style.backgroundColor = "#e69500";
+            }
+        }
+    });
+}
+
+
