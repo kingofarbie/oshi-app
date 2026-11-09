@@ -159,21 +159,19 @@
     margin: 0;
 
     border: none;
-    border-radius: 50%;
+    border-radius: 0;
 
-    background: rgba(0,0,0,0.06);
+    background: transparent;
+    box-shadow: none;
 
     font-size: 21px;
     cursor: pointer;
-
-    transition:
-        background 0.2s ease,
-        transform 0.1s ease;
 }
 
 .money-icon-btn:active {
     transform: scale(0.92);
 }
+
 
 
 
