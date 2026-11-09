@@ -1085,9 +1085,15 @@
         0 1px 2px rgba(80, 65, 40, 0.08) !important;
 
     color: #554b3d;
+
+    min-width: 40px !important;
+max-width: 40px !important;
+padding: 0 !important;
+
 }
 
 #moneyContent .money-header-actions .money-icon-btn:active {
     transform: translateY(2px);
     box-shadow: 0 1px 2px rgba(80, 65, 40, 0.15) !important;
 }
+
