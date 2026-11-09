@@ -69,6 +69,7 @@ function getMoneyCurrentMonthKey(){
 }
 
 
+
 function formatMoneyDate(date){
 
     if(!date){
@@ -385,6 +386,114 @@ function getMoneyCarryover(data,monthKey){
 
 
 /* =====================================================
+   前月末残高をコピー
+===================================================== */
+
+function copyPreviousMonthCarryover(){
+
+    const data = db.load();
+
+    const today = getMoneyToday();
+
+    let year = today.year;
+    let month = today.month - 1;
+
+    if(month === 0){
+        year--;
+        month = 12;
+    }
+
+    const previousMonthKey =
+        year + "-" + String(month).padStart(2,"0");
+
+
+    const previousCarryover =
+        getMoneyCarryover(data,previousMonthKey);
+
+    const previousSummary =
+        calculateMoneyMonth(data,previousMonthKey);
+
+    const previousBalance =
+        previousCarryover +
+        previousSummary.income -
+        previousSummary.expense;
+
+
+    const input =
+        document.getElementById("moneyCarryoverInput");
+
+    if(!input){
+        return;
+    }
+
+    input.value = previousBalance;
+
+}
+
+
+/* =====================================================
+   今月の繰越金を保存
+===================================================== */
+
+function saveMoneyCarryover(){
+
+    const input =
+        document.getElementById("moneyCarryoverInput");
+
+    if(!input){
+        return;
+    }
+
+    const value = Number(input.value);
+
+    if(
+        input.value.trim() === "" ||
+        !Number.isFinite(value) ||
+        value < 0
+    ){
+
+        alert("繰越金額を正しく入力してください。");
+        return;
+
+    }
+
+
+    const data = db.load();
+
+    if(!data.money){
+        data.money = {};
+    }
+
+    if(
+        !data.money.carryovers ||
+        typeof data.money.carryovers !== "object" ||
+        Array.isArray(data.money.carryovers)
+    ){
+
+        data.money.carryovers = {};
+
+    }
+
+
+    const monthKey =
+        getMoneyCurrentMonthKey();
+
+
+    data.money.carryovers[monthKey] = value;
+
+
+    db.save(data);
+
+
+    renderMoneyPage();
+
+
+    alert("今月の繰越金を保存しました。");
+
+}
+
+
+/* =====================================================
    今月の予算取得
 ===================================================== */
 
@@ -579,6 +688,29 @@ function renderMoneyPage(){
 
     const carryover =
         getMoneyCarryover(data,monthKey);
+
+        /* =====================
+   繰越金の入力欄
+===================== */
+
+const savedCarryover =
+    data.money.carryovers?.[monthKey];
+
+const carryoverInput =
+    document.getElementById(
+        "moneyCarryoverInput"
+    );
+
+if(carryoverInput){
+
+    carryoverInput.value =
+        savedCarryover &&
+        typeof savedCarryover === "object"
+            ? savedCarryover.amount ?? 0
+            : savedCarryover ?? 0;
+
+}
+
 
 
     const balance =

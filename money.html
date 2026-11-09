@@ -337,64 +337,107 @@
          今月の収支
     ====================== -->
 
-    <section class="money-section">
 
-        <div class="money-section-header">
+<section class="money-section">
 
-            <div>
-                <h3>📊 今月の収支</h3>
-                <p class="money-section-subtitle">
-                    今月のお金の動き
-                </p>
-            </div>
+    <div class="money-section-header">
+
+        <div>
+            <h3>📊 今月の収支</h3>
+            <p class="money-section-subtitle">
+                今月のお金の動き
+            </p>
+        </div>
+
+    </div>
+
+
+    <div class="money-detail-row">
+
+        <span>前月からの繰越</span>
+
+        <strong id="moneyCarryover">
+            ¥0
+        </strong>
+
+    </div>
+
+
+    <!-- 繰越金の編集 -->
+
+    <div class="money-carryover-editor">
+
+        <div class="money-carryover-editor-title">
+            💰 今月の繰越金を設定
+        </div>
+
+        <p class="money-section-subtitle">
+            前月の月末残高をコピーして、必要に応じて修正できます。
+        </p>
+
+        <input
+            type="number"
+            id="moneyCarryoverInput"
+            min="0"
+            step="1"
+            placeholder="繰越金額を入力"
+        >
+
+        <div class="money-carryover-buttons">
+
+            <button
+                type="button"
+                onclick="copyPreviousMonthCarryover()"
+            >
+                前月末残高をコピー
+            </button>
+
+            <button
+                type="button"
+                onclick="saveMoneyCarryover()"
+            >
+                保存
+            </button>
 
         </div>
 
-
-        <div class="money-detail-row">
-
-            <span>前月からの繰越</span>
-
-            <strong id="moneyCarryover">
-                ¥0
-            </strong>
-
-        </div>
+    </div>
 
 
-        <div class="money-detail-row">
+    <div class="money-detail-row">
 
-            <span>収入</span>
+        <span>収入</span>
 
-            <strong id="moneyDetailIncome">
-                ¥0
-            </strong>
+        <strong id="moneyDetailIncome">
+            ¥0
+        </strong>
 
-        </div>
-
-
-        <div class="money-detail-row">
-
-            <span>支出</span>
-
-            <strong id="moneyDetailExpense">
-                ¥0
-            </strong>
-
-        </div>
+    </div>
 
 
-        <div class="money-detail-total">
+    <div class="money-detail-row">
 
-            <span>現在の残高</span>
+        <span>支出</span>
 
-            <strong id="moneyDetailBalance">
-                ¥0
-            </strong>
+        <strong id="moneyDetailExpense">
+            ¥0
+        </strong>
 
-        </div>
+    </div>
 
-    </section>
+
+    <div class="money-detail-total">
+
+        <span>現在の残高</span>
+
+        <strong id="moneyDetailBalance">
+            ¥0
+        </strong>
+
+    </div>
+
+</section>
+
 
 
     <!-- =====================
