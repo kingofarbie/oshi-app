@@ -18,7 +18,7 @@
 ===================================================== */
 
 let moneyVisibilityHidden = false;
-
+let moneyCategoryEditMode = false;
 let moneyCurrentPeriod = "month";
 
 
@@ -1235,13 +1235,24 @@ function updateMoneyVisibilityButton(){
         return;
     }
 
-
     button.textContent =
         moneyVisibilityHidden
-            ? "🙈 金額非表示中"
-            : "👁 金額表示";
+            ? "🙈"
+            : "👁";
+
+    button.title =
+        moneyVisibilityHidden
+            ? "金額を表示する"
+            : "金額を非表示にする";
+
+    button.setAttribute(
+        "aria-label",
+        button.title
+    );
 
 }
+
+
 
 
 /* =====================================================
@@ -5359,5 +5370,31 @@ function openMoneyRecordList() {
     });
 
     document.body.appendChild(overlay);
+
+}
+
+
+
+
+/* =====================================================
+   ⚙️ カテゴリ管理 編集モード
+===================================================== */
+
+function toggleMoneyCategoryEditMode(){
+
+    const moneyContent =
+        document.getElementById("moneyContent");
+
+    if(!moneyContent){
+        return;
+    }
+
+    moneyCategoryEditMode =
+        !moneyCategoryEditMode;
+
+    moneyContent.classList.toggle(
+        "money-category-edit-mode",
+        moneyCategoryEditMode
+    );
 
 }

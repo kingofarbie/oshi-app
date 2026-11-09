@@ -14,14 +14,29 @@
             </p>
         </div>
 
-        <button
-            type="button"
-            class="money-visibility-btn"
-            id="moneyVisibilityBtn"
-            onclick="toggleMoneyVisibility()"
-        >
-            👁 金額表示
-        </button>
+        <div class="money-header-actions">
+
+            <button
+                type="button"
+                class="money-icon-btn"
+                id="moneySettingsBtn"
+                onclick="toggleMoneyCategoryEditMode()"
+                title="カテゴリ管理"
+            >
+                ⚙️
+            </button>
+
+            <button
+                type="button"
+                class="money-icon-btn money-visibility-btn"
+                id="moneyVisibilityBtn"
+                onclick="toggleMoneyVisibility()"
+                title="金額表示・非表示"
+            >
+                👁
+            </button>
+
+        </div>
 
     </header>
 
@@ -406,7 +421,7 @@
 
     </section>
 
-    
+
 
     <!-- =====================
          最近の明細
@@ -536,12 +551,10 @@
             </p>
         </div>
 
-        <div style="
-            display:flex;
-            gap:8px;
-            flex-wrap:wrap;
-            justify-content:flex-end;
-        ">
+        <div
+            class="money-category-actions"
+            id="moneyCategoryActions"
+        >
 
             <button
                 type="button"
@@ -560,7 +573,6 @@
             </button>
 
         </div>
-
     </div>
 
 </section>
