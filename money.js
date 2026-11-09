@@ -790,6 +790,12 @@ setMoneyText(
     displayMoney(summary.balance)
 );    
 
+
+setMoneyText(
+    "moneyDetailBalance",
+    displayMoney(balance)
+);
+
     setMoneyText(
         "moneyCarryoverDisplay",
         displayMoney(carryover)
@@ -834,6 +840,7 @@ setMoneyText(
     updateMoneyVisibilityButton();
 
 }
+
 
 
 /* =====================================================
