@@ -785,10 +785,10 @@ if(carryoverInput){
         displayMoney(summary.expense)
     );
 
-    setMoneyText(
-        "moneyDetailBalance",
-        displayMoney(balance)
-    );
+setMoneyText(
+    "moneyMonthlyBalance",
+    displayMoney(summary.balance)
+);    
 
     setMoneyText(
         "moneyCarryoverDisplay",
