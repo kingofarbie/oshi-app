@@ -1064,3 +1064,16 @@
 .money-category-actions {
     display: flex;
 }
+
+
+
+/* ヘッダーアイコンの背景を完全に消す */
+
+#moneyContent .money-header-actions .money-icon-btn {
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+}
