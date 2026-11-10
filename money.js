@@ -689,29 +689,6 @@ function renderMoneyPage(){
     const carryover =
         getMoneyCarryover(data,monthKey);
 
-        /* =====================
-   繰越金の入力欄
-===================== */
-
-const savedCarryover =
-    data.money.carryovers?.[monthKey];
-
-const carryoverInput =
-    document.getElementById(
-        "moneyCarryoverInput"
-    );
-
-if(carryoverInput){
-
-    carryoverInput.value =
-        savedCarryover &&
-        typeof savedCarryover === "object"
-            ? savedCarryover.amount ?? 0
-            : savedCarryover ?? 0;
-
-}
-
-
 
     const balance =
         carryover +
@@ -5689,6 +5666,75 @@ window.openMoneyCategoryMenu = function(){
 
         </div>
     `;
+
+
+
+
+
+    // =====================
+    // モーダル内の文字・ボタンの色を調整
+    // =====================
+
+    modal.style.color = "#493725";
+
+    // 見出し・ラベル・補足文字
+    modal.querySelectorAll(
+        "h3, h4, label, span"
+    ).forEach(function(el){
+        el.style.color = "#493725";
+    });
+
+    modal.querySelectorAll("p").forEach(function(el){
+        el.style.color = "#685943";
+    });
+
+    // 入力欄
+    modal.querySelectorAll("input").forEach(function(el){
+        el.style.backgroundColor = "#ffffff";
+        el.style.color = "#493725";
+        el.style.borderColor = "#b9a487";
+    });
+
+    // 保存・コピー・閉じるボタン
+    [
+        "moneySettingsSave",
+        "moneySettingsClose",
+        "moneySettingsCopy"
+    ].forEach(function(id){
+
+        const btn = modal.querySelector("#" + id);
+
+        if(!btn) return;
+
+        btn.style.backgroundColor = "#79552f";
+        btn.style.color = "#ffffff";
+        btn.style.border = "1px solid #604020";
+        btn.style.fontWeight = "bold";
+        btn.style.cursor = "pointer";
+
+    });
+
+    // カテゴリ設定ボタン
+    [
+        "moneyCategoryMenuLife",
+        "moneyCategoryMenuOshi"
+    ].forEach(function(id){
+
+        const btn = modal.querySelector("#" + id);
+
+        if(!btn) return;
+
+        btn.style.backgroundColor = "#ead5b5";
+        btn.style.color = "#493725";
+        btn.style.border = "1px solid #b99b70";
+        btn.style.fontWeight = "bold";
+        btn.style.cursor = "pointer";
+
+    });
+
+
+
+
 
     overlay.appendChild(modal);
     document.body.appendChild(overlay);
