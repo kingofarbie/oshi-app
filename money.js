@@ -5547,3 +5547,147 @@ window.openMoneyCategoryMenu = function(){
     };
 
 };
+
+
+/* =====================================================
+   ➕ 収入・支出 登録選択モーダル
+===================================================== */
+
+window.openMoneyRecordMenu = function(){
+
+    const existing =
+        document.getElementById("moneyRecordMenuOverlay");
+
+    if(existing){
+        existing.remove();
+        return;
+    }
+
+    const overlay = document.createElement("div");
+
+    overlay.id = "moneyRecordMenuOverlay";
+
+    overlay.style.cssText = `
+        position: fixed;
+        inset: 0;
+        z-index: 20000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        background: rgba(0,0,0,0.4);
+    `;
+
+    const modal = document.createElement("div");
+
+    modal.style.cssText = `
+        width: 100%;
+        max-width: 340px;
+        padding: 22px;
+        border-radius: 18px;
+        background: #fffdf8;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+        box-sizing: border-box;
+    `;
+
+    modal.innerHTML = `
+        <h3 style="
+            margin: 0 0 20px;
+            text-align: center;
+            color: #554b3d;
+        ">
+            💰 収支を記録
+        </h3>
+
+        <button
+            type="button"
+            id="moneyRecordMenuIncome"
+            style="
+                width: 100%;
+                padding: 14px;
+                margin-bottom: 12px;
+                border: 1px solid #eee3cf;
+                border-radius: 12px;
+                background: #fff8e9;
+                color: #554b3d;
+                font-size: 15px;
+            "
+        >
+            💚 収入を登録
+        </button>
+
+        <button
+            type="button"
+            id="moneyRecordMenuExpense"
+            style="
+                width: 100%;
+                padding: 14px;
+                margin-bottom: 18px;
+                border: 1px solid #eee3cf;
+                border-radius: 12px;
+                background: #fff8e9;
+                color: #554b3d;
+                font-size: 15px;
+            "
+        >
+            💗 支出を登録
+        </button>
+
+        <button
+            type="button"
+            id="moneyRecordMenuClose"
+            style="
+                width: 100%;
+                padding: 10px;
+                border: none;
+                border-radius: 10px;
+                background: #f1eee8;
+                color: #665f55;
+                font-size: 14px;
+            "
+        >
+            閉じる
+        </button>
+    `;
+
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+
+    overlay.addEventListener("click", function(e){
+
+        if(e.target === overlay){
+            overlay.remove();
+        }
+
+    });
+
+    document.getElementById(
+        "moneyRecordMenuIncome"
+    ).onclick = function(){
+
+        overlay.remove();
+
+        window.openMoneyRecordForm("income");
+
+    };
+
+    document.getElementById(
+        "moneyRecordMenuExpense"
+    ).onclick = function(){
+
+        overlay.remove();
+
+        window.openMoneyRecordForm("expense");
+
+    };
+
+    document.getElementById(
+        "moneyRecordMenuClose"
+    ).onclick = function(){
+
+        overlay.remove();
+
+    };
+
+};
+
