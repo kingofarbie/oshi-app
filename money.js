@@ -5405,9 +5405,9 @@ window.toggleMoneyCategoryEditMode = function(){
    ⚙️ カテゴリ管理 選択モーダル
 ===================================================== */
 
+
 window.openMoneyCategoryMenu = function(){
 
-    // すでに開いていたら閉じる
     const existing =
         document.getElementById("moneyCategoryMenuOverlay");
 
@@ -5416,97 +5416,285 @@ window.openMoneyCategoryMenu = function(){
         return;
     }
 
+    const data = db.load();
+
+    const monthKey = getMoneyCurrentMonthKey();
+
+    const setting =
+        data.money?.monthlySettings?.[monthKey];
+
+    const currentBudget =
+        getMoneyBudget(data, monthKey);
+
+    const currentOshiBudget =
+        setting && typeof setting === "object"
+            ? setting.oshiBudget
+            : undefined;
+
+    let currentCarryover =
+        data.money?.carryovers?.[monthKey] ?? 0;
+
+    if(
+        currentCarryover &&
+        typeof currentCarryover === "object"
+    ){
+        currentCarryover =
+            currentCarryover.amount ?? 0;
+    }
+
     const overlay = document.createElement("div");
 
     overlay.id = "moneyCategoryMenuOverlay";
 
     overlay.style.cssText = `
-        position: fixed;
-        inset: 0;
-        z-index: 20000;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-        background: rgba(0,0,0,0.4);
+        position:fixed;
+        inset:0;
+        z-index:20000;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        padding:16px;
+        background:rgba(0,0,0,0.45);
+        box-sizing:border-box;
     `;
 
     const modal = document.createElement("div");
 
     modal.style.cssText = `
-        width: 100%;
-        max-width: 340px;
-        padding: 22px;
-        border-radius: 18px;
-        background: #fffdf8;
-        box-shadow: 0 8px 30px rgba(0,0,0,0.2);
-        box-sizing: border-box;
+        width:100%;
+        max-width:420px;
+        max-height:90vh;
+        overflow-y:auto;
+        padding:20px;
+        border-radius:18px;
+        background:#fffdf8;
+        box-shadow:0 8px 30px rgba(0,0,0,0.2);
+        box-sizing:border-box;
+        color:#554b3d;
     `;
 
     modal.innerHTML = `
-        <h3 style="
-            margin: 0 0 20px;
-            text-align: center;
-            color: #554b3d;
+
+        <div style="
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            margin-bottom:18px;
         ">
-            🏷️ カテゴリ管理
-        </h3>
 
-        <button
-            type="button"
-            id="moneyCategoryMenuLife"
-            style="
-                width: 100%;
-                padding: 14px;
-                margin-bottom: 12px;
-                border: 1px solid #eee3cf;
-                border-radius: 12px;
-                background: #fff8e9;
-                color: #554b3d;
-                font-size: 15px;
-            "
-        >
-            生活費カテゴリ
-        </button>
+            <h3 style="margin:0;font-size:19px;">
+                ⚙️ お金の設定
+            </h3>
 
-        <button
-            type="button"
-            id="moneyCategoryMenuOshi"
-            style="
-                width: 100%;
-                padding: 14px;
-                margin-bottom: 18px;
-                border: 1px solid #eee3cf;
-                border-radius: 12px;
-                background: #fff8e9;
-                color: #554b3d;
-                font-size: 15px;
-            "
-        >
-            💖 推し活費の内訳
-        </button>
+            <div style="display:flex;gap:8px;">
 
-        <button
-            type="button"
-            id="moneyCategoryMenuClose"
-            style="
-                width: 100%;
-                padding: 10px;
-                border: none;
-                border-radius: 10px;
-                background: #f1eee8;
-                color: #665f55;
-                font-size: 14px;
-            "
-        >
-            閉じる
-        </button>
+                <button
+                    type="button"
+                    id="moneySettingsSave"
+                    title="保存"
+                    style="
+                        width:40px;
+                        height:40px;
+                        border:1px solid #eee3cf;
+                        border-radius:10px;
+                        background:#fff2d9;
+                        color:#554b3d;
+                        font-size:20px;
+                    "
+                >💾</button>
+
+                <button
+                    type="button"
+                    id="moneySettingsClose"
+                    title="閉じる"
+                    style="
+                        width:40px;
+                        height:40px;
+                        border:1px solid #eee3cf;
+                        border-radius:10px;
+                        background:#f1eee8;
+                        color:#665f55;
+                        font-size:20px;
+                    "
+                >×</button>
+
+            </div>
+
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:15px;">
+
+            <div>
+                <label style="display:block;font-weight:bold;margin-bottom:7px;">
+                    ■ 今月の予算
+                </label>
+
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <input
+                        type="number"
+                        id="moneySettingsBudget"
+                        min="0"
+                        step="1"
+                        placeholder="金額を入力"
+                        value="${currentBudget ?? ""}"
+                        style="
+                            flex:1;
+                            min-width:0;
+                            padding:11px;
+                            border:1px solid #e5d9c5;
+                            border-radius:9px;
+                            font-size:16px;
+                            box-sizing:border-box;
+                        "
+                    >
+                    <span>円</span>
+                </div>
+            </div>
+
+            <div>
+                <label style="display:block;font-weight:bold;margin-bottom:7px;">
+                    ■ 推し活予算
+                </label>
+
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <input
+                        type="number"
+                        id="moneySettingsOshiBudget"
+                        min="0"
+                        step="1"
+                        placeholder="金額を入力"
+                        value="${currentOshiBudget ?? ""}"
+                        style="
+                            flex:1;
+                            min-width:0;
+                            padding:11px;
+                            border:1px solid #e5d9c5;
+                            border-radius:9px;
+                            font-size:16px;
+                            box-sizing:border-box;
+                        "
+                    >
+                    <span>円</span>
+                </div>
+            </div>
+
+            <div>
+                <label style="display:block;font-weight:bold;margin-bottom:7px;">
+                    ■ 繰越金の設定
+                </label>
+
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <input
+                        type="number"
+                        id="moneySettingsCarryover"
+                        min="0"
+                        step="1"
+                        placeholder="金額を入力"
+                        value="${currentCarryover}"
+                        style="
+                            flex:1;
+                            min-width:0;
+                            padding:11px;
+                            border:1px solid #e5d9c5;
+                            border-radius:9px;
+                            font-size:16px;
+                            box-sizing:border-box;
+                        "
+                    >
+                    <span>円</span>
+                </div>
+
+                <button
+                    type="button"
+                    id="moneySettingsCopy"
+                    style="
+                        width:100%;
+                        margin-top:9px;
+                        padding:10px;
+                        border:1px solid #eee3cf;
+                        border-radius:9px;
+                        background:#fff8e9;
+                        color:#554b3d;
+                        font-size:14px;
+                    "
+                >
+                    前月末残高をコピー
+                </button>
+
+                <p style="
+                    margin:8px 0 0;
+                    font-size:12px;
+                    color:#8b8173;
+                    line-height:1.5;
+                ">
+                    前月の月末残高をコピーして、必要に応じて修正できます。
+                </p>
+            </div>
+
+        </div>
+
+        <div style="
+            margin:18px 0;
+            padding:10px;
+            border-radius:9px;
+            background:#f8f3e9;
+            font-size:12px;
+            line-height:1.6;
+            color:#817665;
+        ">
+            ※ 金額を変更した後、右上の保存アイコンを押すと保存されます。
+        </div>
+
+        <div style="
+            border-top:1px solid #eee3cf;
+            padding-top:16px;
+        ">
+
+            <h4 style="margin:0 0 12px;font-size:16px;">
+                ■ カテゴリ管理
+            </h4>
+
+            <button
+                type="button"
+                id="moneyCategoryMenuLife"
+                style="
+                    width:100%;
+                    padding:13px;
+                    margin-bottom:10px;
+                    border:1px solid #eee3cf;
+                    border-radius:10px;
+                    background:#fff8e9;
+                    color:#554b3d;
+                    font-size:14px;
+                "
+            >
+                🏷️ 生活費カテゴリの設定
+            </button>
+
+            <button
+                type="button"
+                id="moneyCategoryMenuOshi"
+                style="
+                    width:100%;
+                    padding:13px;
+                    border:1px solid #eee3cf;
+                    border-radius:10px;
+                    background:#fff8e9;
+                    color:#554b3d;
+                    font-size:14px;
+                "
+            >
+                💖 推し活費の内訳設定
+            </button>
+
+        </div>
     `;
 
     overlay.appendChild(modal);
     document.body.appendChild(overlay);
 
-    // 背景部分を押したら閉じる
+
+    // 背景タップで閉じる
     overlay.addEventListener("click", function(e){
 
         if(e.target === overlay){
@@ -5514,6 +5702,179 @@ window.openMoneyCategoryMenu = function(){
         }
 
     });
+
+
+    // 閉じる
+    document.getElementById(
+        "moneySettingsClose"
+    ).onclick = function(){
+
+        overlay.remove();
+
+    };
+
+
+    // 前月末残高をコピー
+    document.getElementById(
+        "moneySettingsCopy"
+    ).onclick = function(){
+
+        const today = getMoneyToday();
+
+        let year = today.year;
+        let month = today.month - 1;
+
+        if(month === 0){
+            year--;
+            month = 12;
+        }
+
+        const previousMonthKey =
+            year + "-" + String(month).padStart(2,"0");
+
+        const latestData = db.load();
+
+        const previousCarryover =
+            getMoneyCarryover(
+                latestData,
+                previousMonthKey
+            );
+
+        const previousSummary =
+            calculateMoneyMonth(
+                latestData,
+                previousMonthKey
+            );
+
+        const previousBalance =
+            previousCarryover +
+            previousSummary.income -
+            previousSummary.expense;
+
+        document.getElementById(
+            "moneySettingsCarryover"
+        ).value = previousBalance;
+
+    };
+
+
+    // 3項目をまとめて保存
+    document.getElementById(
+        "moneySettingsSave"
+    ).onclick = function(){
+
+        const budgetInput =
+            document.getElementById(
+                "moneySettingsBudget"
+            );
+
+        const oshiBudgetInput =
+            document.getElementById(
+                "moneySettingsOshiBudget"
+            );
+
+        const carryoverInput =
+            document.getElementById(
+                "moneySettingsCarryover"
+            );
+
+        function readAmount(input){
+
+            const value = input.value.trim();
+
+            if(
+                value === "" ||
+                !/^\d+$/.test(value)
+            ){
+                return null;
+            }
+
+            const number = Number(value);
+
+            if(!Number.isSafeInteger(number)){
+                return null;
+            }
+
+            return number;
+
+        }
+
+        const budget = readAmount(budgetInput);
+        const oshiBudget = readAmount(oshiBudgetInput);
+        const carryover = readAmount(carryoverInput);
+
+        if(budget === null){
+            alert("今月の予算を正しく入力してください。");
+            return;
+        }
+
+        if(oshiBudget === null){
+            alert("推し活予算を正しく入力してください。");
+            return;
+        }
+
+        if(carryover === null){
+            alert("繰越金額を正しく入力してください。");
+            return;
+        }
+
+        const saveData = db.load();
+
+        if(!saveData.money){
+            saveData.money = {};
+        }
+
+        if(!saveData.money.monthlySettings){
+            saveData.money.monthlySettings = {};
+        }
+
+        if(
+            !saveData.money.carryovers ||
+            typeof saveData.money.carryovers !== "object" ||
+            Array.isArray(saveData.money.carryovers)
+        ){
+            saveData.money.carryovers = {};
+        }
+
+        const saveMonthKey =
+            getMoneyCurrentMonthKey();
+
+        const oldSetting =
+            saveData.money.monthlySettings[saveMonthKey];
+
+        let newSetting = {};
+
+        if(
+            oldSetting &&
+            typeof oldSetting === "object"
+        ){
+            newSetting = {...oldSetting};
+        }else if(
+            typeof oldSetting === "number" &&
+            Number.isFinite(oldSetting)
+        ){
+            newSetting.budget = oldSetting;
+        }
+
+        newSetting.budget = budget;
+        newSetting.oshiBudget = oshiBudget;
+
+        saveData.money.monthlySettings[saveMonthKey] =
+            newSetting;
+
+        saveData.money.carryovers[saveMonthKey] =
+            carryover;
+
+        db.save(saveData);
+
+        overlay.remove();
+
+        renderMoneyPage();
+
+        alert("お金の設定を保存しました。");
+
+    };
+
 
     // 生活費カテゴリ
     document.getElementById(
@@ -5526,7 +5887,8 @@ window.openMoneyCategoryMenu = function(){
 
     };
 
-    // 推し活費の内訳
+
+    // 推し活費カテゴリ
     document.getElementById(
         "moneyCategoryMenuOshi"
     ).onclick = function(){
@@ -5534,15 +5896,6 @@ window.openMoneyCategoryMenu = function(){
         overlay.remove();
 
         window.openOshiMoneyCategoryManager();
-
-    };
-
-    // 閉じる
-    document.getElementById(
-        "moneyCategoryMenuClose"
-    ).onclick = function(){
-
-        overlay.remove();
 
     };
 
