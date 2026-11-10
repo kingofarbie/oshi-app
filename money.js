@@ -5398,3 +5398,152 @@ window.toggleMoneyCategoryEditMode = function(){
     );
 
 };
+
+
+
+/* =====================================================
+   ⚙️ カテゴリ管理 選択モーダル
+===================================================== */
+
+window.openMoneyCategoryMenu = function(){
+
+    // すでに開いていたら閉じる
+    const existing =
+        document.getElementById("moneyCategoryMenuOverlay");
+
+    if(existing){
+        existing.remove();
+        return;
+    }
+
+    const overlay = document.createElement("div");
+
+    overlay.id = "moneyCategoryMenuOverlay";
+
+    overlay.style.cssText = `
+        position: fixed;
+        inset: 0;
+        z-index: 20000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        background: rgba(0,0,0,0.4);
+    `;
+
+    const modal = document.createElement("div");
+
+    modal.style.cssText = `
+        width: 100%;
+        max-width: 340px;
+        padding: 22px;
+        border-radius: 18px;
+        background: #fffdf8;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+        box-sizing: border-box;
+    `;
+
+    modal.innerHTML = `
+        <h3 style="
+            margin: 0 0 20px;
+            text-align: center;
+            color: #554b3d;
+        ">
+            🏷️ カテゴリ管理
+        </h3>
+
+        <button
+            type="button"
+            id="moneyCategoryMenuLife"
+            style="
+                width: 100%;
+                padding: 14px;
+                margin-bottom: 12px;
+                border: 1px solid #eee3cf;
+                border-radius: 12px;
+                background: #fff8e9;
+                color: #554b3d;
+                font-size: 15px;
+            "
+        >
+            生活費カテゴリ
+        </button>
+
+        <button
+            type="button"
+            id="moneyCategoryMenuOshi"
+            style="
+                width: 100%;
+                padding: 14px;
+                margin-bottom: 18px;
+                border: 1px solid #eee3cf;
+                border-radius: 12px;
+                background: #fff8e9;
+                color: #554b3d;
+                font-size: 15px;
+            "
+        >
+            💖 推し活費の内訳
+        </button>
+
+        <button
+            type="button"
+            id="moneyCategoryMenuClose"
+            style="
+                width: 100%;
+                padding: 10px;
+                border: none;
+                border-radius: 10px;
+                background: #f1eee8;
+                color: #665f55;
+                font-size: 14px;
+            "
+        >
+            閉じる
+        </button>
+    `;
+
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+
+    // 背景部分を押したら閉じる
+    overlay.addEventListener("click", function(e){
+
+        if(e.target === overlay){
+            overlay.remove();
+        }
+
+    });
+
+    // 生活費カテゴリ
+    document.getElementById(
+        "moneyCategoryMenuLife"
+    ).onclick = function(){
+
+        overlay.remove();
+
+        window.openMoneyCategorySettings();
+
+    };
+
+    // 推し活費の内訳
+    document.getElementById(
+        "moneyCategoryMenuOshi"
+    ).onclick = function(){
+
+        overlay.remove();
+
+        window.openOshiMoneyCategoryManager();
+
+    };
+
+    // 閉じる
+    document.getElementById(
+        "moneyCategoryMenuClose"
+    ).onclick = function(){
+
+        overlay.remove();
+
+    };
+
+};
