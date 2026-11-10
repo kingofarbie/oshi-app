@@ -1150,3 +1150,75 @@ padding: 0 !important;
     white-space: nowrap;
 
 }
+
+
+
+
+
+/* =================================
+   💰 家計予算・推し活予算 横並び
+================================= */
+
+.money-budget-card-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    width: 100%;
+    align-items: stretch;
+}
+
+.money-budget-card-grid > .money-section {
+    width: 100%;
+    min-width: 0;
+    margin-bottom: 0;
+    padding: 14px 10px;
+    box-sizing: border-box;
+}
+
+/* カード内の見出し */
+.money-budget-card-grid .money-section-header {
+    gap: 5px;
+    align-items: flex-start;
+}
+
+.money-budget-card-grid .money-section-header > div {
+    min-width: 0;
+}
+
+.money-budget-card-grid .money-section-header h3 {
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.money-budget-card-grid .money-section-subtitle {
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+/* 設定ボタン */
+.money-budget-card-grid .money-small-btn {
+    flex-shrink: 0;
+}
+
+/* 予算・使用額・残り予算 */
+.money-budget-card-grid .money-budget-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+}
+
+.money-budget-card-grid .money-budget-row span {
+    min-width: 0;
+    white-space: nowrap;
+}
+
+.money-budget-card-grid .money-budget-row strong {
+    min-width: 0;
+    text-align: right;
+    white-space: nowrap;
+}
+
+
+
