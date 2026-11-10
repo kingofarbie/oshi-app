@@ -134,7 +134,9 @@
 
 
 
-    <div class="money-budget-card-grid">
+
+<div class="money-budget-card-grid">
+
     <!-- =====================
          今月の予算
     ====================== -->
@@ -150,63 +152,39 @@
                 </p>
             </div>
 
-            <button
-                type="button"
-                class="money-small-btn"
-                onclick="openMoneyBudgetSettings()"
-            >
-                設定
-            </button>
-
         </div>
-
 
         <div class="money-budget-info">
 
             <div class="money-budget-row">
-
                 <span>予算</span>
-
                 <strong id="moneyBudgetTotal">
                     未設定
                 </strong>
-
             </div>
 
-
             <div class="money-budget-row">
-
                 <span>使用額</span>
-
                 <strong id="moneyBudgetUsed">
                     ¥0
                 </strong>
-
             </div>
 
-
             <div class="money-budget-row">
-
                 <span>残り予算</span>
-
                 <strong id="moneyBudgetRemaining">
                     -
                 </strong>
-
             </div>
 
         </div>
 
-
         <div class="money-budget-progress">
-
             <div
                 class="money-budget-progress-bar"
                 id="moneyBudgetProgress"
             ></div>
-
         </div>
-
 
         <div
             class="money-budget-percent"
@@ -219,122 +197,7 @@
 
 
     <!-- =====================
-     推し活専用予算
-====================== -->
-
-<section class="money-section">
-
-    <div class="money-section-header">
-
-        <div>
-            <h3>⭐ 推し活予算</h3>
-            <p class="money-section-subtitle">
-                推し活費の予算
-            </p>
-        </div>
-
-        <button
-            type="button"
-            class="money-small-btn"
-            onclick="openOshiMoneyBudgetSettings()"
-        >
-            設定
-        </button>
-
-    </div>
-
-    <div class="money-budget-info">
-
-        <div class="money-budget-row">
-            <span>推し活予算</span>
-            <strong id="moneyOshiBudgetTotal">
-                未設定
-            </strong>
-        </div>
-
-        <div class="money-budget-row">
-            <span>使用額</span>
-            <strong id="moneyOshiBudgetUsed">
-                ¥0
-            </strong>
-        </div>
-
-        <div class="money-budget-row">
-            <span>残り予算</span>
-            <strong id="moneyOshiBudgetRemaining">
-                -
-            </strong>
-        </div>
-
-    </div>
-
-    <div class="money-budget-progress">
-
-        <div
-            class="money-budget-progress-bar"
-            id="moneyOshiBudgetProgress"
-        ></div>
-
-    </div>
-
-    <div
-        class="money-budget-percent"
-        id="moneyOshiBudgetPercent"
-    >
-        予算未設定
-    </div>
-
-</section>
-
-
-</div>
-
-
-
-    <!-- =====================
-         推し活費
-    ====================== -->
-
-<section class="money-section money-oshi-section">
-
-    <div class="money-section-header">
-
-        <div>
-            <h3>💖 推し活費</h3>
-            <p class="money-section-subtitle">
-                推し別・内訳別に管理
-            </p>
-        </div>
-
-        <button
-            type="button"
-            class="money-small-btn"
-            onclick="openOshiMoney()"
-        >
-            詳細
-        </button>
-
-    </div>
-
-    <div class="money-oshi-row">
-
-        <span class="money-oshi-name">
-            今月の推し活費
-        </span>
-
-        <strong
-            class="money-oshi-value"
-            id="moneyOshiTotal"
-        >
-            ¥0
-        </strong>
-
-    </div>
-
-</section>
-
-    <!-- =====================
-         繰越金の設定
+         推し活専用予算
     ====================== -->
 
     <section class="money-section">
@@ -342,64 +205,64 @@
         <div class="money-section-header">
 
             <div>
-                <h3>💴 繰越金の設定</h3>
+                <h3>⭐ 推し活予算</h3>
                 <p class="money-section-subtitle">
-                    前月から引き継ぐ金額を設定
+                    推し活費の予算
                 </p>
             </div>
 
-        </div>
-
-        <div class="money-detail-row">
-
-            <span>前月からの繰越</span>
-
-            <strong id="moneyCarryover">
-                ¥0
-            </strong>
-
-        </div>
-
-
-        <div class="money-carryover-editor">
-
-            <div class="money-carryover-editor-title">
-                💰 今月の繰越金を設定
-            </div>
-
-            <p class="money-section-subtitle">
-                前月の月末残高をコピーして、必要に応じて修正できます。
-            </p>
-
-            <input
-                type="number"
-                id="moneyCarryoverInput"
-                min="0"
-                step="1"
-                placeholder="繰越金額を入力"
+            <button
+                type="button"
+                class="money-small-btn"
+                onclick="openOshiMoney()"
             >
+                📊 詳細 ›
+            </button>
 
-            <div class="money-carryover-buttons">
+        </div>
 
-                <button
-                    type="button"
-                    onclick="copyPreviousMonthCarryover()"
-                >
-                    前月末残高をコピー
-                </button>
+        <div class="money-budget-info">
 
-                <button
-                    type="button"
-                    onclick="saveMoneyCarryover()"
-                >
-                    保存
-                </button>
-
+            <div class="money-budget-row">
+                <span>推し活予算</span>
+                <strong id="moneyOshiBudgetTotal">
+                    未設定
+                </strong>
             </div>
 
+            <div class="money-budget-row">
+                <span>使用額</span>
+                <strong id="moneyOshiBudgetUsed">
+                    ¥0
+                </strong>
+            </div>
+
+            <div class="money-budget-row">
+                <span>残り予算</span>
+                <strong id="moneyOshiBudgetRemaining">
+                    -
+                </strong>
+            </div>
+
+        </div>
+
+        <div class="money-budget-progress">
+            <div
+                class="money-budget-progress-bar"
+                id="moneyOshiBudgetProgress"
+            ></div>
+        </div>
+
+        <div
+            class="money-budget-percent"
+            id="moneyOshiBudgetPercent"
+        >
+            予算未設定
         </div>
 
     </section>
+
+</div>
 
 
 
