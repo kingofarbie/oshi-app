@@ -5380,7 +5380,7 @@ function openMoneyRecordList() {
    ⚙️ カテゴリ管理 編集モード
 ===================================================== */
 
-function toggleMoneyCategoryEditMode(){
+window.toggleMoneyCategoryEditMode = function(){
 
     const moneyContent =
         document.getElementById("moneyContent");
@@ -5397,4 +5397,4 @@ function toggleMoneyCategoryEditMode(){
         moneyCategoryEditMode
     );
 
-}
+};
