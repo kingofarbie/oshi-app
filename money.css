@@ -610,10 +610,12 @@
 
     gap: 12px;
 
-    padding: 10px 7px;
+    padding: 4px 7px;
 
     writing-mode: horizontal-tb !important;
 }
+
+
 
 
 .money-detail-row span {
@@ -662,9 +664,9 @@
 
     gap: 12px;
 
-    margin-top: 6px;
+margin-top: 4px;
+padding: 8px 7px 4px;
 
-    padding: 14px 7px 4px;
 
     border-top:
         2px solid rgba(0,0,0,0.12);
