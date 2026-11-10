@@ -5675,67 +5675,43 @@ window.openMoneyCategoryMenu = function(){
     // モーダル内の文字・ボタンの色を調整
     // =====================
 
-    modal.style.color = "#493725";
+    // 文字は黒で統一
+    modal.style.color = "#222222";
 
-    // 見出し・ラベル・補足文字
     modal.querySelectorAll(
-        "h3, h4, label, span"
+        "h3, h4, label, span, p"
     ).forEach(function(el){
-        el.style.color = "#493725";
-    });
-
-    modal.querySelectorAll("p").forEach(function(el){
-        el.style.color = "#685943";
+        el.style.color = "#333333";
     });
 
     // 入力欄
     modal.querySelectorAll("input").forEach(function(el){
         el.style.backgroundColor = "#ffffff";
-        el.style.color = "#493725";
-        el.style.borderColor = "#b9a487";
+        el.style.color = "#222222";
+        el.style.borderColor = "#cccccc";
     });
 
-    // 保存・コピー・閉じるボタン
-    [
-        "moneySettingsSave",
-        "moneySettingsClose",
-        "moneySettingsCopy"
-    ].forEach(function(id){
-
-        const btn = modal.querySelector("#" + id);
-
-        if(!btn) return;
-
-        btn.style.backgroundColor = "#79552f";
-        btn.style.color = "#ffffff";
-        btn.style.border = "1px solid #604020";
+    // ボタンはテーマカラー＋黒文字
+    modal.querySelectorAll("button").forEach(function(btn){
+        btn.style.backgroundColor = "var(--accent)";
+        btn.style.color = "#222222";
+        btn.style.border = "1px solid rgba(0,0,0,0.18)";
         btn.style.fontWeight = "bold";
         btn.style.cursor = "pointer";
-
     });
 
-    // カテゴリ設定ボタン
-    [
-        "moneyCategoryMenuLife",
-        "moneyCategoryMenuOshi"
-    ].forEach(function(id){
+    // 閉じるボタンだけは控えめなグレー
+    const closeBtn = modal.querySelector("#moneySettingsClose");
 
-        const btn = modal.querySelector("#" + id);
-
-        if(!btn) return;
-
-        btn.style.backgroundColor = "#ead5b5";
-        btn.style.color = "#493725";
-        btn.style.border = "1px solid #b99b70";
-        btn.style.fontWeight = "bold";
-        btn.style.cursor = "pointer";
-
-    });
+    if(closeBtn){
+        closeBtn.style.backgroundColor = "#eeeeee";
+        closeBtn.style.color = "#222222";
+    }
 
 
 
 
-
+    
     overlay.appendChild(modal);
     document.body.appendChild(overlay);
 
