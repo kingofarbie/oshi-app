@@ -5700,15 +5700,37 @@ window.openMoneyCategoryMenu = function(){
         btn.style.cursor = "pointer";
     });
 
+
     // 閉じるボタンだけは控えめなグレー
-    const closeBtn = modal.querySelector("#moneySettingsClose");
 
-    if(closeBtn){
-        closeBtn.style.backgroundColor = "#eeeeee";
-        closeBtn.style.color = "#222222";
-    }
+    // 閉じるボタンは黒い×だけ
+    const closeBtn =
+        modal.querySelector("#moneySettingsClose");
 
 
+    // 保存・閉じるボタンは背景なしのアイコンだけ
+    [
+        "moneySettingsSave",
+        "moneySettingsClose"
+    ].forEach(function(id){
+
+        const btn = modal.querySelector("#" + id);
+
+        if(!btn) return;
+
+        btn.style.setProperty("background", "transparent", "important");
+        btn.style.setProperty("border", "none", "important");
+        btn.style.setProperty("color", "#000000", "important");
+        btn.style.setProperty("-webkit-text-fill-color", "#000000", "important");
+        btn.style.setProperty("border-radius", "0", "important");
+        btn.style.setProperty("box-shadow", "none", "important");
+        btn.style.setProperty("text-shadow", "none", "important");
+        btn.style.fontSize = "24px";
+        btn.style.cursor = "pointer";
+
+    });
+
+    
 
 
     
