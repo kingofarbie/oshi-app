@@ -5957,6 +5957,8 @@ window.openMoneyRecordMenu = function(){
 
     modal.style.cssText = `
         width: 100%;
+        position: relative;
+
         max-width: 340px;
         padding: 22px;
         border-radius: 18px;
@@ -6008,21 +6010,33 @@ window.openMoneyRecordMenu = function(){
             💗 支出を登録
         </button>
 
+
         <button
             type="button"
             id="moneyRecordMenuClose"
+            aria-label="閉じる"
             style="
-                width: 100%;
-                padding: 10px;
-                border: none;
-                border-radius: 10px;
-                background: #f1eee8;
-                color: #665f55;
-                font-size: 14px;
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                width: 34px;
+                height: 34px;
+                padding: 0;
+                border: 1px solid #dddddd;
+                border-radius: 50%;
+                background: #eeeeee;
+                color: #222222;
+                font-size: 21px;
+                font-weight: bold;
+                line-height: 1;
+                cursor: pointer;
             "
         >
-            閉じる
+            ×
         </button>
+
+
+
     `;
 
 
