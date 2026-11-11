@@ -5493,7 +5493,7 @@ window.openMoneyCategoryMenu = function(){
                         color:#665f55;
                         font-size:20px;
                     "
-                >×</button>
+                >✕</button>
 
             </div>
 
@@ -5703,7 +5703,7 @@ window.openMoneyCategoryMenu = function(){
 
     // 閉じるボタンだけは控えめなグレー
 
-    // 閉じるボタンは黒い×だけ
+    // 閉じるボタンは黒い✕だけ
     const closeBtn =
         modal.querySelector("#moneySettingsClose");
 
@@ -5730,7 +5730,7 @@ window.openMoneyCategoryMenu = function(){
 
     });
 
-    
+
 
 
     
@@ -6054,7 +6054,7 @@ window.openMoneyRecordMenu = function(){
                 cursor: pointer;
             "
         >
-            ×
+            ✕
         </button>
 
 
@@ -6088,7 +6088,7 @@ window.openMoneyRecordMenu = function(){
     });
 
 
-    // 閉じるボタンは黒い×だけ
+    // 閉じるボタンは黒い✕だけ
     const closeBtn =
         modal.querySelector("#moneyRecordMenuClose");
 
