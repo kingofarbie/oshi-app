@@ -6011,6 +6011,7 @@ window.openMoneyRecordMenu = function(){
         </button>
 
 
+
         <button
             type="button"
             id="moneyRecordMenuClose"
@@ -6022,12 +6023,11 @@ window.openMoneyRecordMenu = function(){
                 width: 34px;
                 height: 34px;
                 padding: 0;
-                border: 1px solid #dddddd;
-                border-radius: 50%;
-                background: #eeeeee;
-                color: #222222;
-                font-size: 21px;
-                font-weight: bold;
+                border: none;
+                background: transparent;
+                color: #000000;
+                font-size: 25px;
+                font-weight: normal;
                 line-height: 1;
                 cursor: pointer;
             "
