@@ -1831,9 +1831,10 @@ function openOshiMoneyCategoryManager(){
         closeButton.textContent = "✕";
 
 closeButton.style.cssText = `
-    border:none;
-    background:transparent;
-    color:#000000;
+    border:none !important;
+    background:transparent !important;
+    color:#000000 !important;
+    -webkit-text-fill-color:#000000 !important;
     width:36px;
     height:36px;
     padding:0;
@@ -1841,10 +1842,10 @@ closeButton.style.cssText = `
     font-weight:normal;
     line-height:1;
     flex-shrink:0;
-    box-shadow:none;
+    box-shadow:none !important;
+    text-shadow:none !important;
     cursor:pointer;
 `;
-
 
         closeButton.onclick = () => {
             overlay.remove();
@@ -2977,9 +2978,10 @@ alert("明細を削除しました。");
     closeButton.textContent = "✕";
 
 closeButton.style.cssText = `
-    border:none;
-    background:transparent;
-    color:#000000;
+    border:none !important;
+    background:transparent !important;
+    color:#000000 !important;
+    -webkit-text-fill-color:#000000 !important;
     width:36px;
     height:36px;
     padding:0;
@@ -2987,10 +2989,10 @@ closeButton.style.cssText = `
     font-weight:normal;
     line-height:1;
     flex-shrink:0;
-    box-shadow:none;
+    box-shadow:none !important;
+    text-shadow:none !important;
     cursor:pointer;
 `;
-
 
     closeButton.onclick = () => overlay.remove();
 
@@ -4101,9 +4103,10 @@ title.style.cssText = `
         closeButton.textContent = "✕";
 
 closeButton.style.cssText = `
-    border:none;
-    background:transparent;
-    color:#000000;
+    border:none !important;
+    background:transparent !important;
+    color:#000000 !important;
+    -webkit-text-fill-color:#000000 !important;
     width:36px;
     height:36px;
     padding:0;
@@ -4111,9 +4114,10 @@ closeButton.style.cssText = `
     font-weight:normal;
     line-height:1;
     flex-shrink:0;
-    box-shadow:none;
+    box-shadow:none !important;
+    text-shadow:none !important;
     cursor:pointer;
-`;        
+`;
 
         closeButton.onclick = close;
 
