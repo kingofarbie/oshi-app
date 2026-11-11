@@ -6025,6 +6025,45 @@ window.openMoneyRecordMenu = function(){
         </button>
     `;
 
+
+
+    
+    // =====================
+    // モーダル内の文字・ボタンの色を調整
+    // =====================
+
+    modal.style.color = "#222222";
+
+    modal.querySelectorAll(
+        "h3, h4, label, span, p"
+    ).forEach(function(el){
+        el.style.color = "#333333";
+    });
+
+    // ボタンはテーマカラー＋黒文字
+    modal.querySelectorAll("button").forEach(function(btn){
+
+        btn.style.backgroundColor = "var(--accent)";
+        btn.style.color = "#222222";
+        btn.style.border = "1px solid rgba(0,0,0,0.18)";
+        btn.style.fontWeight = "bold";
+        btn.style.cursor = "pointer";
+
+    });
+
+    // 閉じるボタンはグレー
+    const closeBtn =
+        modal.querySelector("#moneyRecordMenuClose");
+
+    if(closeBtn){
+        closeBtn.style.backgroundColor = "#eeeeee";
+        closeBtn.style.color = "#222222";
+    }
+
+
+
+
+
     overlay.appendChild(modal);
     document.body.appendChild(overlay);
 
