@@ -1742,6 +1742,7 @@ function renderOshiMoneyPage(){
 ===================================================== */
 
 
+
 function openOshiMoneyCategoryManager(){
 
     const data = db.load();
@@ -1757,8 +1758,7 @@ function openOshiMoneyCategoryManager(){
 
     const overlay = document.createElement("div");
 
-    overlay.className =
-        "oshi-money-category-overlay";
+    overlay.className = "oshi-money-category-overlay";
 
     overlay.style.cssText = `
         position:fixed;
@@ -1779,8 +1779,8 @@ function openOshiMoneyCategoryManager(){
         max-width:460px;
         max-height:85vh;
         overflow-y:auto;
-        background:white;
-        color:#333;
+        background:#ffffff;
+        color:#222222;
         border-radius:18px;
         padding:20px;
         box-sizing:border-box;
@@ -1817,16 +1817,15 @@ function openOshiMoneyCategoryManager(){
 
         const title = document.createElement("h3");
 
-        title.textContent =
-            "💖 推し活費の内訳管理";
+        title.textContent = "💖 推し活費の内訳管理";
 
         title.style.cssText = `
             margin:0;
             font-size:18px;
+            color:#222222;
         `;
 
-        const closeButton =
-            document.createElement("button");
+        const closeButton = document.createElement("button");
 
         closeButton.type = "button";
         closeButton.textContent = "✕";
@@ -1834,10 +1833,13 @@ function openOshiMoneyCategoryManager(){
         closeButton.style.cssText = `
             border:none;
             background:#f3f3f3;
+            color:#222222;
             border-radius:50%;
             width:36px;
             height:36px;
             font-size:16px;
+            flex-shrink:0;
+            cursor:pointer;
         `;
 
         closeButton.onclick = () => {
@@ -1852,15 +1854,14 @@ function openOshiMoneyCategoryManager(){
 
         /* 説明 */
 
-        const description =
-            document.createElement("p");
+        const description = document.createElement("p");
 
         description.textContent =
             "内訳項目を追加・編集したり、使わない項目を非表示にできます。";
 
         description.style.cssText = `
             font-size:13px;
-            color:#777;
+            color:#333333;
             line-height:1.6;
             margin:0 0 18px;
         `;
@@ -1872,24 +1873,23 @@ function openOshiMoneyCategoryManager(){
            新規追加
         ===================== */
 
-        const addButton =
-            document.createElement("button");
+        const addButton = document.createElement("button");
 
         addButton.type = "button";
 
-        addButton.textContent =
-            "＋ 内訳項目を追加";
+        addButton.textContent = "＋ 内訳項目を追加";
 
         addButton.style.cssText = `
             width:100%;
-            padding:13px;
-            border:none;
+            padding:12px;
+            border:1px solid #a92f61;
             border-radius:10px;
-            background:#e978a5;
-            color:white;
+            background:#bd3e70;
+            color:#ffffff;
             font-weight:bold;
-            font-size:15px;
+            font-size:14px;
             margin-bottom:18px;
+            cursor:pointer;
         `;
 
         addButton.onclick = () => {
@@ -1917,6 +1917,25 @@ function openOshiMoneyCategoryManager(){
 
             const saveData = db.load();
 
+            if(!saveData.money){
+                return;
+            }
+
+            if(!Array.isArray(saveData.money.oshiCategories)){
+                saveData.money.oshiCategories = [];
+            }
+
+            const duplicate =
+                saveData.money.oshiCategories.some(
+                    category =>
+                        category.name.trim() === trimmedName
+                );
+
+            if(duplicate){
+                alert("同じ名前の内訳項目が既にあります。");
+                return;
+            }
+
             const newCategory = {
                 id: "oshi_cat_" + Date.now(),
                 name: trimmedName,
@@ -1925,9 +1944,7 @@ function openOshiMoneyCategoryManager(){
                 isDefault: false
             };
 
-            saveData.money.oshiCategories.push(
-                newCategory
-            );
+            saveData.money.oshiCategories.push(newCategory);
 
             db.save(saveData);
 
@@ -1949,10 +1966,12 @@ function openOshiMoneyCategoryManager(){
             row.style.cssText = `
                 display:flex;
                 align-items:center;
-                gap:8px;
-                padding:12px 0;
+                flex-wrap:nowrap;
+                gap:5px;
+                padding:9px 0;
                 border-top:1px solid #eee;
-                flex-wrap:wrap;
+                width:100%;
+                box-sizing:border-box;
             `;
 
 
@@ -1967,8 +1986,13 @@ function openOshiMoneyCategoryManager(){
 
             name.style.cssText = `
                 flex:1;
-                min-width:100px;
+                min-width:0;
+                overflow:hidden;
+                text-overflow:ellipsis;
+                white-space:nowrap;
+                font-size:14px;
                 font-weight:bold;
+                color:#333333;
             `;
 
             if(category.active === false){
@@ -1979,19 +2003,23 @@ function openOshiMoneyCategoryManager(){
 
             /* 編集 */
 
-            const editButton =
-                document.createElement("button");
+            const editButton = document.createElement("button");
 
             editButton.type = "button";
             editButton.textContent = "編集";
 
             editButton.style.cssText = `
-                padding:7px 10px;
-                border:1px solid #e5a2bd;
+                flex:0 0 48px;
+                width:48px;
+                padding:6px 2px;
+                border:1px solid #a92f61;
                 border-radius:7px;
-                background:#fff5f9;
-                color:#c94c80;
-                font-size:12px;
+                background:#c94b7b;
+                color:#ffffff;
+                font-size:11px;
+                font-weight:bold;
+                white-space:nowrap;
+                cursor:pointer;
             `;
 
             editButton.onclick = () => {
@@ -2038,8 +2066,7 @@ function openOshiMoneyCategoryManager(){
 
             /* 有効・停止 */
 
-            const toggleButton =
-                document.createElement("button");
+            const toggleButton = document.createElement("button");
 
             toggleButton.type = "button";
 
@@ -2049,12 +2076,17 @@ function openOshiMoneyCategoryManager(){
                     : "停止";
 
             toggleButton.style.cssText = `
-                padding:7px 10px;
-                border:1px solid #ddd;
+                flex:0 0 48px;
+                width:48px;
+                padding:6px 2px;
+                border:1px solid #444444;
                 border-radius:7px;
-                background:#f7f7f7;
-                color:#555;
-                font-size:12px;
+                background:#555555;
+                color:#ffffff;
+                font-size:11px;
+                font-weight:bold;
+                white-space:nowrap;
+                cursor:pointer;
             `;
 
             toggleButton.onclick = () => {
@@ -2080,19 +2112,23 @@ function openOshiMoneyCategoryManager(){
 
             /* 削除 */
 
-            const deleteButton =
-                document.createElement("button");
+            const deleteButton = document.createElement("button");
 
             deleteButton.type = "button";
             deleteButton.textContent = "削除";
 
             deleteButton.style.cssText = `
-                padding:7px 10px;
-                border:1px solid #ddd;
+                flex:0 0 48px;
+                width:48px;
+                padding:6px 2px;
+                border:1px solid #982626;
                 border-radius:7px;
-                background:#f7f7f7;
-                color:#b44;
-                font-size:12px;
+                background:#b83232;
+                color:#ffffff;
+                font-size:11px;
+                font-weight:bold;
+                white-space:nowrap;
+                cursor:pointer;
             `;
 
             deleteButton.onclick = () => {
@@ -2176,7 +2212,7 @@ function openOshiMoneyCategoryManager(){
 
             empty.style.cssText = `
                 text-align:center;
-                color:#888;
+                color:#555555;
                 padding:20px 0;
             `;
 
@@ -2186,6 +2222,10 @@ function openOshiMoneyCategoryManager(){
 
     }
 
+
+    /* =====================
+       閉じる
+    ===================== */
 
     overlay.addEventListener("click", event => {
 
@@ -2203,6 +2243,7 @@ function openOshiMoneyCategoryManager(){
     render();
 
 }
+
 
 
 
