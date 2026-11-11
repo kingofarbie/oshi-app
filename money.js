@@ -1830,17 +1830,21 @@ function openOshiMoneyCategoryManager(){
         closeButton.type = "button";
         closeButton.textContent = "✕";
 
-        closeButton.style.cssText = `
-            border:none;
-            background:#f3f3f3;
-            color:#222222;
-            border-radius:50%;
-            width:36px;
-            height:36px;
-            font-size:16px;
-            flex-shrink:0;
-            cursor:pointer;
-        `;
+closeButton.style.cssText = `
+    border:none;
+    background:transparent;
+    color:#000000;
+    width:36px;
+    height:36px;
+    padding:0;
+    font-size:23px;
+    font-weight:normal;
+    line-height:1;
+    flex-shrink:0;
+    box-shadow:none;
+    cursor:pointer;
+`;
+
 
         closeButton.onclick = () => {
             overlay.remove();
@@ -2972,16 +2976,21 @@ alert("明細を削除しました。");
     closeButton.type = "button";
     closeButton.textContent = "✕";
 
-    closeButton.style.cssText = `
-        border:none;
-        background:#f3f3f3;
-        border-radius:50%;
-        width:36px;
-        height:36px;
-        font-size:16px;
-        cursor:pointer;
-        flex-shrink:0;
-    `;
+closeButton.style.cssText = `
+    border:none;
+    background:transparent;
+    color:#000000;
+    width:36px;
+    height:36px;
+    padding:0;
+    font-size:23px;
+    font-weight:normal;
+    line-height:1;
+    flex-shrink:0;
+    box-shadow:none;
+    cursor:pointer;
+`;
+
 
     closeButton.onclick = () => overlay.remove();
 
@@ -4091,14 +4100,20 @@ title.style.cssText = `
         closeButton.type = "button";
         closeButton.textContent = "✕";
 
-        closeButton.style.cssText = `
-            border:none;
-            background:#f3f3f3;
-            border-radius:50%;
-            width:36px;
-            height:36px;
-            font-size:16px;
-        `;
+closeButton.style.cssText = `
+    border:none;
+    background:transparent;
+    color:#000000;
+    width:36px;
+    height:36px;
+    padding:0;
+    font-size:23px;
+    font-weight:normal;
+    line-height:1;
+    flex-shrink:0;
+    box-shadow:none;
+    cursor:pointer;
+`;        
 
         closeButton.onclick = close;
 
