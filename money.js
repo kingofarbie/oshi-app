@@ -4225,14 +4225,17 @@ function openMoneyCategorySettings() {
 
                 const row = document.createElement("div");
 
-                row.style.cssText = `
-                    display:flex;
-                    align-items:center;
-                    flex-wrap:wrap;
-                    gap:7px;
-                    padding:11px 0;
-                    border-bottom:1px solid #eee;
-                `;
+row.style.cssText = `
+    display:flex;
+    align-items:center;
+    flex-wrap:nowrap;
+    gap:5px;
+    padding:9px 0;
+    border-bottom:1px solid #eee;
+    width:100%;
+    box-sizing:border-box;
+`;
+
 
                 const name =
                     document.createElement("div");
@@ -4242,12 +4245,18 @@ function openMoneyCategorySettings() {
                     " " +
                     category.name;
 
-                name.style.cssText = `
-                    flex:1;
-                    min-width:110px;
-                    font-size:14px;
-                    font-weight:bold;
-                `;
+name.style.cssText = `
+    flex:1;
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    font-size:14px;
+    font-weight:bold;
+    color:#333333;
+`;
+
+
 
                 if (category.active === false) {
                     name.style.opacity = ".4";
