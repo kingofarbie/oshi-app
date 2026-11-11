@@ -6071,13 +6071,15 @@ window.openMoneyRecordMenu = function(){
         modal.querySelector("#moneyRecordMenuClose");
 
     if(closeBtn){
-        closeBtn.style.backgroundColor = "transparent";
-        closeBtn.style.border = "none";
-        closeBtn.style.color = "#000000";
-        closeBtn.style.borderRadius = "0";
-        closeBtn.style.boxShadow = "none";
+        closeBtn.style.setProperty("background", "transparent", "important");
+        closeBtn.style.setProperty("border", "none", "important");
+        closeBtn.style.setProperty("color", "#000000", "important");
+        closeBtn.style.setProperty("-webkit-text-fill-color", "#000000", "important");
+        closeBtn.style.setProperty("border-radius", "0", "important");
+        closeBtn.style.setProperty("box-shadow", "none", "important");
+        closeBtn.style.setProperty("text-shadow", "none", "important");
+        closeBtn.style.fontSize = "25px";
     }
-
 
 
 
