@@ -3937,7 +3937,7 @@ function openMoneyCategorySettings() {
         max-height:85vh;
         overflow-y:auto;
         background:white;
-        color:#333;
+        color:#222222;
         border-radius:18px;
         padding:20px;
         box-sizing:border-box;
@@ -4038,10 +4038,11 @@ function openMoneyCategorySettings() {
 
         title.textContent = "📂 家計簿カテゴリ管理";
 
-        title.style.cssText = `
-            margin:0;
-            font-size:18px;
-        `;
+title.style.cssText = `
+    margin:0;
+    font-size:18px;
+    color:#222222;
+`;
 
         const closeButton =
             document.createElement("button");
@@ -4075,7 +4076,7 @@ function openMoneyCategorySettings() {
 
         description.style.cssText = `
             font-size:13px;
-            color:#777;
+            color:#333333;
             line-height:1.6;
             margin:0 0 16px;
         `;
@@ -4106,7 +4107,7 @@ function openMoneyCategorySettings() {
                 padding:12px 6px;
                 border:none;
                 border-radius:10px;
-                background:#e978a5;
+                background:#bd3e70;
                 color:white;
                 font-weight:bold;
                 font-size:14px;
@@ -4208,12 +4209,14 @@ function openMoneyCategorySettings() {
 
             sectionTitle.textContent = heading;
 
-            sectionTitle.style.cssText = `
-                margin:12px 0;
-                padding-bottom:8px;
-                border-bottom:2px solid #f2d6e2;
-                font-size:15px;
-            `;
+sectionTitle.style.cssText = `
+    margin:12px 0;
+    padding-bottom:8px;
+    border-bottom:2px solid #f2d6e2;
+    font-size:15px;
+    color:#222222;
+`;
+
 
             section.appendChild(sectionTitle);
 
@@ -4301,14 +4304,20 @@ name.style.cssText = `
                 editButton.type = "button";
                 editButton.textContent = "編集";
 
-                editButton.style.cssText = `
-                    padding:7px 10px;
-                    border:1px solid #e5a2bd;
-                    border-radius:7px;
-                    background:#fff5f9;
-                    color:#c94c80;
-                    font-size:12px;
-                `;
+editButton.style.cssText = `
+    flex:0 0 48px;
+    width:48px;
+    padding:6px 2px;
+    border:1px solid #b94b78;
+    border-radius:7px;
+    background:#c94b7b;
+    color:#ffffff;
+    font-size:11px;
+    font-weight:bold;
+    white-space:nowrap;
+`;
+
+
 
                 editButton.onclick = () => {
 
@@ -4387,14 +4396,19 @@ name.style.cssText = `
                         ? "再開"
                         : "停止";
 
-                toggleButton.style.cssText = `
-                    padding:7px 10px;
-                    border:1px solid #ddd;
-                    border-radius:7px;
-                    background:#f7f7f7;
-                    color:#555;
-                    font-size:12px;
-                `;
+toggleButton.style.cssText = `
+    flex:0 0 48px;
+    width:48px;
+    padding:6px 2px;
+    border:1px solid #777777;
+    border-radius:7px;
+    background:#555555;
+    color:#ffffff;
+    font-size:11px;
+    font-weight:bold;
+    white-space:nowrap;
+`;
+
 
                 toggleButton.onclick = () => {
 
