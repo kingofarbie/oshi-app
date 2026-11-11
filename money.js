@@ -6065,15 +6065,18 @@ window.openMoneyRecordMenu = function(){
 
     });
 
-    // 閉じるボタンはグレー
+
+    // 閉じるボタンは黒い×だけ
     const closeBtn =
         modal.querySelector("#moneyRecordMenuClose");
 
     if(closeBtn){
-        closeBtn.style.backgroundColor = "#eeeeee";
-        closeBtn.style.color = "#222222";
+        closeBtn.style.backgroundColor = "transparent";
+        closeBtn.style.border = "none";
+        closeBtn.style.color = "#000000";
+        closeBtn.style.borderRadius = "0";
+        closeBtn.style.boxShadow = "none";
     }
-
 
 
 
