@@ -3581,7 +3581,8 @@ function closeOshiMoney(){
 
 
 
-function openMoneyRecordForm(type, recordId = null) {
+
+function openMoneyRecordForm(type, recordId = null, returnToList = false) {
 
     const data = db.load();
 
@@ -4143,6 +4144,11 @@ function openMoneyRecordForm(type, recordId = null) {
 
         loadMoneyPage();
 
+        // 家計明細から編集した場合は明細モーダルに戻る
+        if (returnToList) {
+            openMoneyRecordList();
+        }
+
         alert(
             editingRecord
                 ? "変更しました！"
@@ -4169,7 +4175,6 @@ function openMoneyRecordForm(type, recordId = null) {
     document.body.appendChild(overlay);
 
 }
-
 
 
 
@@ -5226,12 +5231,28 @@ function openMoneyRecordList() {
 
     heading.style.margin = "0";
 
-    const closeButton = document.createElement("button");
 
-    closeButton.type = "button";
-    closeButton.textContent = "閉じる";
 
-    closeButton.onclick = () => overlay.remove();
+const closeButton = document.createElement("button");
+
+closeButton.type = "button";
+closeButton.textContent = "✕";
+
+closeButton.style.cssText = `
+    border:none;
+    background:transparent;
+    color:#000000;
+    -webkit-text-fill-color:#000000;
+    font-size:24px;
+    font-weight:normal;
+    width:36px;
+    height:36px;
+    padding:0;
+    cursor:pointer;
+`;
+
+closeButton.onclick = () => overlay.remove();
+
 
     header.append(heading, closeButton);
 
