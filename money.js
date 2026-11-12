@@ -3292,6 +3292,7 @@ function closeOshiMoney(){
 ===================================================== */
 
 
+
 function openMoneyRecordForm(type, recordId = null) {
 
     const data = db.load();
@@ -3396,16 +3397,95 @@ function openMoneyRecordForm(type, recordId = null) {
     `;
 
 
+    /* =====================
+       ヘッダー
+    ===================== */
+
+    const header = document.createElement("div");
+
+    header.style.cssText = `
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:10px;
+        margin-bottom:20px;
+    `;
+
     const heading = document.createElement("h2");
 
     heading.textContent = title;
 
     heading.style.cssText = `
-        margin:0 0 20px;
+        margin:0;
         font-size:20px;
     `;
 
-    panel.appendChild(heading);
+    const headerActions = document.createElement("div");
+
+    headerActions.style.cssText = `
+        display:flex;
+        align-items:center;
+        gap:10px;
+        flex-shrink:0;
+    `;
+
+
+    /* 保存アイコン */
+
+    const saveButton = document.createElement("button");
+
+    saveButton.type = "button";
+    saveButton.textContent = "💾";
+    saveButton.title = "保存";
+    saveButton.setAttribute("aria-label", "保存");
+
+    saveButton.style.cssText = `
+        border:none;
+        background:transparent;
+        color:#000000;
+        width:36px;
+        height:36px;
+        padding:0;
+        font-size:23px;
+        line-height:1;
+        box-shadow:none;
+        cursor:pointer;
+    `;
+
+
+    /* キャンセルアイコン */
+
+    const cancelButton = document.createElement("button");
+
+    cancelButton.type = "button";
+    cancelButton.textContent = "✕";
+    cancelButton.title = "キャンセル";
+    cancelButton.setAttribute("aria-label", "キャンセル");
+
+    cancelButton.style.cssText = `
+        border:none !important;
+        background:transparent !important;
+        color:#000000 !important;
+        -webkit-text-fill-color:#000000 !important;
+        width:36px;
+        height:36px;
+        padding:0;
+        font-size:23px;
+        font-weight:normal;
+        line-height:1;
+        box-shadow:none !important;
+        text-shadow:none !important;
+        cursor:pointer;
+    `;
+
+    cancelButton.onclick = () => overlay.remove();
+
+
+    headerActions.append(saveButton, cancelButton);
+
+    header.append(heading, headerActions);
+
+    panel.appendChild(header);
 
 
     /* =====================
@@ -3491,8 +3571,6 @@ function openMoneyRecordForm(type, recordId = null) {
 
         if (category.type !== type) return false;
 
-        // 通常は有効なカテゴリだけ表示
-        // ただし編集中の明細で使用中なら表示する
         if (
             category.active === false &&
             (!editingRecord ||
@@ -3570,13 +3648,10 @@ function openMoneyRecordForm(type, recordId = null) {
     oshiCategories
         .filter(category => {
 
-            // 有効な内訳は表示
             if (category.active !== false) {
                 return true;
             }
 
-            // 編集中の明細で使用している内訳は
-            // 停止済みでも表示する
             return !!(
                 editingRecord &&
                 editingRecord.oshiCategoryId === category.id
@@ -3665,55 +3740,6 @@ function openMoneyRecordForm(type, recordId = null) {
     );
 
     updateOshiArea();
-
-
-    /* =====================
-       ボタン
-    ===================== */
-
-    const buttons = document.createElement("div");
-
-    buttons.style.cssText = `
-        display:flex;
-        gap:10px;
-        margin-top:20px;
-    `;
-
-
-    const cancelButton = document.createElement("button");
-
-    cancelButton.type = "button";
-    cancelButton.textContent = "キャンセル";
-
-    cancelButton.style.cssText = `
-        flex:1;
-        padding:13px;
-        border:1px solid #ddd;
-        border-radius:10px;
-        background:#f5f5f5;
-        font-size:15px;
-    `;
-
-    cancelButton.onclick = () => overlay.remove();
-
-
-    const saveButton = document.createElement("button");
-
-    saveButton.type = "button";
-
-    saveButton.textContent =
-        editingRecord ? "変更を保存" : "登録する";
-
-    saveButton.style.cssText = `
-        flex:1;
-        padding:13px;
-        border:none;
-        border-radius:10px;
-        background:#e978a5;
-        color:white;
-        font-weight:bold;
-        font-size:15px;
-    `;
 
 
     /* =====================
@@ -3838,9 +3864,9 @@ function openMoneyRecordForm(type, recordId = null) {
     };
 
 
-    buttons.append(cancelButton, saveButton);
-
-    panel.appendChild(buttons);
+    /* =====================
+       表示
+    ===================== */
 
     overlay.appendChild(panel);
 
@@ -3855,6 +3881,7 @@ function openMoneyRecordForm(type, recordId = null) {
     document.body.appendChild(overlay);
 
 }
+
 
 
 
