@@ -1085,13 +1085,13 @@ function renderMoneyPeriodSummary(data){
         const endDate =
             endInput ? endInput.value : "";
 
-        if(!startDate || !endDate){
+if(!startDate || !endDate){
 
-            container.textContent =
-                "開始日と終了日を選択してください";
+    container.innerHTML = "";
 
-            return;
-        }
+    return;
+}
+
 
         if(startDate > endDate){
 
