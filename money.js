@@ -5665,7 +5665,7 @@ closeButton.onclick = () => overlay.remove();
                 openMoneyRecordForm(
                     record.type,
                     record.id,
-                    frue
+                    true
                 );
 
             };
