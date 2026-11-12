@@ -4858,13 +4858,9 @@ function applyMoneyBudgetStatus() {
 
 
 /* =====================================================
-   💰 家計明細一覧
-===================================================== */
-
-
-/* =====================================================
    💰 家計明細一覧・絞り込み
 ===================================================== */
+
 
 function openMoneyRecordList() {
 
@@ -5297,59 +5293,43 @@ function openMoneyRecordList() {
             `;
 
 
+            /* =====================
+               1行目：項目名＋ボタン
+            ===================== */
+
+            const topLine = document.createElement("div");
+
+            topLine.style.cssText = `
+                display:flex;
+                align-items:center;
+                justify-content:space-between;
+                gap:8px;
+                width:100%;
+            `;
+
+
             const title = document.createElement("strong");
 
             title.textContent =
                 getMoneyCategoryName(record, data);
 
-
-            const date = document.createElement("div");
-
-            date.textContent =
-                formatMoneyDate(getMoneyRecordDate(record));
-
-            date.style.cssText = `
-                color:#888;
-                font-size:12px;
-                margin-top:4px;
+            title.style.cssText = `
+                flex:1;
+                min-width:0;
+                overflow-wrap:anywhere;
+                font-size:15px;
             `;
 
 
-            const amount = document.createElement("strong");
-
-            amount.textContent =
-                (isMoneyIncome(record) ? "+" : "-") +
-                displayMoney(getMoneyRecordAmount(record));
-
-            amount.style.cssText = `
-                display:block;
-                margin-top:5px;
-            `;
-
-
-            const memo = document.createElement("div");
-
-            memo.textContent = record.memo || "";
-
-            memo.style.cssText = `
-                font-size:13px;
-                margin-top:4px;
-                color:#666;
-                white-space:pre-wrap;
-            `;
-
-
-            /* =====================
-               編集・削除ボタン
-            ===================== */
+            /* 編集・削除ボタン */
 
             const actions = document.createElement("div");
 
             actions.style.cssText = `
                 display:flex;
-                justify-content:flex-end;
-                gap:8px;
-                margin-top:10px;
+                align-items:center;
+                gap:6px;
+                flex-shrink:0;
             `;
 
 
@@ -5357,6 +5337,18 @@ function openMoneyRecordList() {
 
             editButton.type = "button";
             editButton.textContent = "編集";
+
+            editButton.style.cssText = `
+                padding:6px 10px;
+                border:1px solid #e8bfd0;
+                border-radius:8px;
+                background:#fff0f5;
+                color:#333;
+                -webkit-text-fill-color:#333;
+                font-size:12px;
+                font-weight:bold;
+                white-space:nowrap;
+            `;
 
             editButton.onclick = () => {
 
@@ -5375,7 +5367,17 @@ function openMoneyRecordList() {
             deleteButton.type = "button";
             deleteButton.textContent = "削除";
 
-            deleteButton.style.color = "#dc3545";
+            deleteButton.style.cssText = `
+                padding:6px 10px;
+                border:1px solid #ddd;
+                border-radius:8px;
+                background:#f3f3f3;
+                color:#333;
+                -webkit-text-fill-color:#333;
+                font-size:12px;
+                font-weight:bold;
+                white-space:nowrap;
+            `;
 
             deleteButton.onclick = () => {
 
@@ -5410,14 +5412,73 @@ function openMoneyRecordList() {
 
             };
 
+
             actions.append(editButton, deleteButton);
 
+            topLine.append(title, actions);
+
+
+            /* =====================
+               2行目：日付＋金額
+            ===================== */
+
+            const dateAmountLine = document.createElement("div");
+
+            dateAmountLine.style.cssText = `
+                display:flex;
+                align-items:center;
+                justify-content:space-between;
+                gap:8px;
+                margin-top:5px;
+            `;
+
+
+            const date = document.createElement("div");
+
+            date.textContent =
+                formatMoneyDate(getMoneyRecordDate(record));
+
+            date.style.cssText = `
+                color:#888;
+                font-size:12px;
+            `;
+
+
+            const amount = document.createElement("strong");
+
+            amount.textContent =
+                (isMoneyIncome(record) ? "+" : "-") +
+                displayMoney(getMoneyRecordAmount(record));
+
+            amount.style.cssText = `
+                font-size:15px;
+                white-space:nowrap;
+            `;
+
+
+            dateAmountLine.append(date, amount);
+
+
+            /* =====================
+               3行目：メモ
+            ===================== */
+
+            const memo = document.createElement("div");
+
+            memo.textContent = record.memo || "";
+
+            memo.style.cssText = `
+                font-size:13px;
+                margin-top:4px;
+                color:#666;
+                white-space:pre-wrap;
+            `;
+
+
             row.append(
-                title,
-                date,
-                amount,
-                memo,
-                actions
+                topLine,
+                dateAmountLine,
+                memo
             );
 
             list.appendChild(row);
