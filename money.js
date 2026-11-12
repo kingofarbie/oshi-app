@@ -1796,7 +1796,35 @@ function renderOshiMoneyPage(){
     addButton.textContent =
         "＋ 推しを追加";
 
-    addButton.style.marginTop = "10px";
+
+addButton.style.cssText = `
+    display:block;
+    width:100%;
+    box-sizing:border-box;
+    margin-top:10px;
+    padding:11px 16px;
+    border:1px solid #e8bfd0;
+    border-radius:12px;
+    background:#fff0f5;
+    color:#493725;
+    font-size:14px;
+    font-weight:bold;
+    text-align:center;
+    white-space:nowrap;
+    cursor:pointer;
+    transition:background 0.2s;
+`;
+
+addButton.disabled =
+    slots.length >= oshiList.length;
+
+if(addButton.disabled){
+
+    addButton.style.opacity = "0.5";
+    addButton.style.cursor = "not-allowed";
+
+}
+
 
 
     /* 登録済み推しの人数まで */
