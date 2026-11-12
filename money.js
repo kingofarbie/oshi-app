@@ -3581,7 +3581,6 @@ function closeOshiMoney(){
 
 
 
-
 function openMoneyRecordForm(type, recordId = null, returnToList = false) {
 
     const data = db.load();
@@ -5665,7 +5664,8 @@ closeButton.onclick = () => overlay.remove();
 
                 openMoneyRecordForm(
                     record.type,
-                    record.id
+                    record.id,
+                    frue
                 );
 
             };
