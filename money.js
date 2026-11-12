@@ -2948,13 +2948,17 @@ function openOshiMoneyDetail(oshiId) {
         cancelButton.type = "button";
         cancelButton.textContent = "キャンセル";
 
-        cancelButton.style.cssText = `
-            flex:1;
-            padding:13px;
-            border:1px solid #ddd;
-            border-radius:10px;
-            background:#f5f5f5;
-        `;
+cancelButton.style.cssText = `
+    flex:1;
+    padding:13px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    background:#f5f5f5 !important;
+    color:#000000 !important;
+    -webkit-text-fill-color:#000000 !important;
+    font-weight:bold;
+`;
+
 
         cancelButton.onclick = () => editOverlay.remove();
 
