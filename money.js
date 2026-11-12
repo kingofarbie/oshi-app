@@ -1195,12 +1195,14 @@ function renderMoneyPeriodSummary(data){
 ===================================================== */
 
 
+
 function changeMoneyPeriod(period){
 
     moneyCurrentPeriod = period;
 
+    // 選択中ボタンの切り替え
     document.querySelectorAll(
-        "#moneyContent .money-period-btn"
+        ".money-period-btn"
     ).forEach(button => {
 
         button.classList.toggle(
@@ -1210,15 +1212,20 @@ function changeMoneyPeriod(period){
 
     });
 
-    const customArea = document.getElementById(
-        "moneyCustomPeriod"
-    );
+    // 指定期間の入力欄を表示・非表示
+    const customArea =
+        document.getElementById(
+            "moneyCustomPeriod"
+        );
 
     if(customArea){
+
         customArea.style.display =
             period === "custom" ? "block" : "none";
+
     }
 
+    // 集計を更新
     const data = db.load();
 
     renderMoneyPeriodSummary(data);

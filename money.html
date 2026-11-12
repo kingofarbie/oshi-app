@@ -310,71 +310,140 @@
          期間別集計
     ====================== -->
 
-    <section class="money-section">
 
-        <div class="money-section-header">
+<section class="money-section">
 
-            <div>
-                <h3>📅 期間別集計</h3>
-                <p class="money-section-subtitle">
-                    お金の動きを振り返ろう
-                </p>
-            </div>
-
+    <div class="money-section-header">
+        <div>
+            <h3>📅 期間別集計</h3>
+            <p class="money-section-subtitle">
+                お金の動きを振り返ろう
+            </p>
         </div>
+    </div>
 
+    <div class="money-period-buttons">
 
-        <div class="money-period-buttons">
-
-            <button
-                type="button"
-                class="money-period-btn active"
-                data-period="month"
-                onclick="changeMoneyPeriod('month')"
-            >
-                今月
-            </button>
-
-
-            <button
-                type="button"
-                class="money-period-btn"
-                data-period="year"
-                onclick="changeMoneyPeriod('year')"
-            >
-                年間
-            </button>
-
-
-            <button
-                type="button"
-                class="money-period-btn"
-                data-period="custom"
-                onclick="changeMoneyPeriod('custom')"
-            >
-                指定期間
-            </button>
-
-        </div>
-
-
-        <div
-            id="moneyPeriodSummary"
-            class="money-period-summary"
+        <button
+            type="button"
+            class="money-period-btn active"
+            data-period="month"
+            onclick="changeMoneyPeriod('month')"
         >
+            今月
+        </button>
 
-            <div class="money-detail-row">
-                <span>収入合計</span>
-                <strong>¥0</strong>
-            </div>
+        <button
+            type="button"
+            class="money-period-btn"
+            data-period="year"
+            onclick="changeMoneyPeriod('year')"
+        >
+            年間
+        </button>
 
-            <div class="money-detail-row">
-                <span>支出合計</span>
-                <strong>¥0</strong>
-            </div>
+        <button
+            type="button"
+            class="money-period-btn"
+            data-period="custom"
+            onclick="changeMoneyPeriod('custom')"
+        >
+            指定期間
+        </button>
+
+    </div>
+
+    <!-- 指定期間の選択欄 -->
+    <div
+        id="moneyCustomPeriod"
+        style="display:none; margin-top:16px;"
+    >
+
+        <div style="
+            display:flex;
+            gap:10px;
+            flex-wrap:wrap;
+        ">
+
+            <label style="
+                flex:1;
+                min-width:120px;
+                display:flex;
+                flex-direction:column;
+                gap:6px;
+            ">
+                <span>開始日</span>
+                <input
+                    type="date"
+                    id="moneyPeriodStart"
+                    style="
+                        width:100%;
+                        box-sizing:border-box;
+                        padding:10px;
+                        border:1px solid #ddd;
+                        border-radius:8px;
+                    "
+                >
+            </label>
+
+            <label style="
+                flex:1;
+                min-width:120px;
+                display:flex;
+                flex-direction:column;
+                gap:6px;
+            ">
+                <span>終了日</span>
+                <input
+                    type="date"
+                    id="moneyPeriodEnd"
+                    style="
+                        width:100%;
+                        box-sizing:border-box;
+                        padding:10px;
+                        border:1px solid #ddd;
+                        border-radius:8px;
+                    "
+                >
+            </label>
 
         </div>
 
-    </section>
+        <button
+            type="button"
+            onclick="applyMoneyCustomPeriod()"
+            style="
+                width:100%;
+                margin-top:12px;
+                padding:12px;
+                border:1px solid #e6a9c0;
+                border-radius:10px;
+                background:#f7c8da;
+                color:#493725;
+                font-weight:bold;
+            "
+        >
+            この期間で集計
+        </button>
 
+    </div>
+
+    <div
+        id="moneyPeriodSummary"
+        class="money-period-summary"
+    >
+
+        <div class="money-detail-row">
+            <span>収入合計</span>
+            <strong>¥0</strong>
+        </div>
+
+        <div class="money-detail-row">
+            <span>支出合計</span>
+            <strong>¥0</strong>
+        </div>
+
+    </div>
+
+</section>
 
