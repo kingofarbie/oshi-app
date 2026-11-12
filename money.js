@@ -2684,6 +2684,7 @@ function changeOshiMoneyPeriod(period){
 ===================================================== */
 
 
+
 function openOshiMoneyDetail(oshiId) {
 
     const data = db.load();
@@ -3017,15 +3018,14 @@ function openOshiMoneyDetail(oshiId) {
 
             db.save(saveData);
 
-editOverlay.remove();
-overlay.remove();
+            editOverlay.remove();
+            overlay.remove();
 
-renderMoneyPage();
-renderOshiMoneyPage();
-openOshiMoneyDetail(target.oshiId);
+            renderMoneyPage();
+            renderOshiMoneyPage();
+            openOshiMoneyDetail(target.oshiId);
 
-alert("明細を更新しました！");
-
+            alert("明細を更新しました！");
 
         };
 
@@ -3075,16 +3075,15 @@ alert("明細を更新しました！");
             return;
         }
 
-db.save(saveData);
+        db.save(saveData);
 
-overlay.remove();
+        overlay.remove();
 
-renderMoneyPage();
-renderOshiMoneyPage();
-openOshiMoneyDetail(oshiId);
+        renderMoneyPage();
+        renderOshiMoneyPage();
+        openOshiMoneyDetail(oshiId);
 
-alert("明細を削除しました。");
-
+        alert("明細を削除しました。");
 
     }
 
@@ -3207,22 +3206,22 @@ alert("明細を削除しました。");
     closeButton.type = "button";
     closeButton.textContent = "✕";
 
-closeButton.style.cssText = `
-    border:none !important;
-    background:transparent !important;
-    color:#000000 !important;
-    -webkit-text-fill-color:#000000 !important;
-    width:36px;
-    height:36px;
-    padding:0;
-    font-size:23px;
-    font-weight:normal;
-    line-height:1;
-    flex-shrink:0;
-    box-shadow:none !important;
-    text-shadow:none !important;
-    cursor:pointer;
-`;
+    closeButton.style.cssText = `
+        border:none !important;
+        background:transparent !important;
+        color:#000000 !important;
+        -webkit-text-fill-color:#000000 !important;
+        width:36px;
+        height:36px;
+        padding:0;
+        font-size:23px;
+        font-weight:normal;
+        line-height:1;
+        flex-shrink:0;
+        box-shadow:none !important;
+        text-shadow:none !important;
+        cursor:pointer;
+    `;
 
     closeButton.onclick = () => overlay.remove();
 
@@ -3384,6 +3383,8 @@ closeButton.style.cssText = `
                 `;
 
 
+                /* 編集ボタン：黒文字 */
+
                 const editButton = document.createElement("button");
 
                 editButton.type = "button";
@@ -3393,15 +3394,19 @@ closeButton.style.cssText = `
                     padding:6px 10px;
                     border:1px solid #e5a2bd;
                     border-radius:7px;
-                    background:#fff5f9;
-                    color:#c94c80;
+                    background:#fff5f9 !important;
+                    color:#000000 !important;
+                    -webkit-text-fill-color:#000000 !important;
                     font-size:12px;
+                    font-weight:bold;
                 `;
 
                 editButton.onclick = () => {
                     openEditForm(record.id);
                 };
 
+
+                /* 削除ボタン：黒文字 */
 
                 const deleteButton = document.createElement("button");
 
@@ -3412,9 +3417,11 @@ closeButton.style.cssText = `
                     padding:6px 10px;
                     border:1px solid #ddd;
                     border-radius:7px;
-                    background:#f7f7f7;
-                    color:#666;
+                    background:#f7f7f7 !important;
+                    color:#000000 !important;
+                    -webkit-text-fill-color:#000000 !important;
                     font-size:12px;
+                    font-weight:bold;
                 `;
 
                 deleteButton.onclick = () => {
