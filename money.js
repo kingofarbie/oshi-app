@@ -1320,6 +1320,7 @@ let oshiMoneyCurrentPeriod = "month";
 
 
 
+
 function renderOshiMoneyPage(){
 
     console.log(
@@ -1396,7 +1397,7 @@ function renderOshiMoneyPage(){
 
 
     /* =====================
-       推し別集計
+       推し別集計（選択期間）
     ===================== */
 
     const totals = {};
@@ -1421,11 +1422,38 @@ function renderOshiMoneyPage(){
 
 
     /* =====================
-       総合計
+       期間別合計・全期間累計
     ===================== */
 
-    const grandTotal =
+    // 上部：選択中の期間の合計
+    const periodTotal =
         oshiRecords.reduce(
+            (total,record) => {
+
+                return (
+                    total +
+                    getMoneyRecordAmount(record)
+                );
+
+            },
+            0
+        );
+
+
+    // 下部：全期間の推し活費累計
+    const lifetimeRecords =
+        records.filter(record => {
+
+            return isOshiMoneyRecord(
+                record,
+                data
+            );
+
+        });
+
+
+    const lifetimeTotal =
+        lifetimeRecords.reduce(
             (total,record) => {
 
                 return (
@@ -1455,14 +1483,16 @@ function renderOshiMoneyPage(){
         periodLabels[oshiMoneyCurrentPeriod]
     );
 
+    // 上部：選択期間の合計
     setMoneyText(
         "oshiMoneyTotalValue",
-        displayMoney(grandTotal)
+        displayMoney(periodTotal)
     );
 
+    // 下部：全期間の累計
     setMoneyText(
         "oshiMoneyGrandTotal",
-        displayMoney(grandTotal)
+        displayMoney(lifetimeTotal)
     );
 
 
@@ -1797,85 +1827,85 @@ function renderOshiMoneyPage(){
         "＋ 推しを追加";
 
 
-addButton.style.setProperty(
-    "display", "block", "important"
-);
+    addButton.style.setProperty(
+        "display", "block", "important"
+    );
 
-addButton.style.setProperty(
-    "width", "100%", "important"
-);
+    addButton.style.setProperty(
+        "width", "100%", "important"
+    );
 
-addButton.style.setProperty(
-    "max-width", "100%", "important"
-);
+    addButton.style.setProperty(
+        "max-width", "100%", "important"
+    );
 
-addButton.style.setProperty(
-    "min-width", "0", "important"
-);
+    addButton.style.setProperty(
+        "min-width", "0", "important"
+    );
 
-addButton.style.setProperty(
-    "min-height", "48px", "important"
-);
+    addButton.style.setProperty(
+        "min-height", "48px", "important"
+    );
 
-addButton.style.setProperty(
-    "box-sizing", "border-box", "important"
-);
+    addButton.style.setProperty(
+        "box-sizing", "border-box", "important"
+    );
 
-addButton.style.setProperty(
-    "margin", "12px 0 0 0", "important"
-);
+    addButton.style.setProperty(
+        "margin", "12px 0 0 0", "important"
+    );
 
-addButton.style.setProperty(
-    "padding", "12px 16px", "important"
-);
+    addButton.style.setProperty(
+        "padding", "12px 16px", "important"
+    );
 
-addButton.style.setProperty(
-    "border", "1px solid #e6a9c0", "important"
-);
+    addButton.style.setProperty(
+        "border", "1px solid #e6a9c0", "important"
+    );
 
-addButton.style.setProperty(
-    "border-radius", "12px", "important"
-);
+    addButton.style.setProperty(
+        "border-radius", "12px", "important"
+    );
 
-addButton.style.setProperty(
-    "background", "#f7c8da", "important"
-);
+    addButton.style.setProperty(
+        "background", "#f7c8da", "important"
+    );
 
-addButton.style.setProperty(
-    "color", "#493725", "important"
-);
+    addButton.style.setProperty(
+        "color", "#493725", "important"
+    );
 
-addButton.style.setProperty(
-    "-webkit-text-fill-color", "#493725", "important"
-);
+    addButton.style.setProperty(
+        "-webkit-text-fill-color", "#493725", "important"
+    );
 
-addButton.style.setProperty(
-    "font-size", "15px", "important"
-);
+    addButton.style.setProperty(
+        "font-size", "15px", "important"
+    );
 
-addButton.style.setProperty(
-    "font-weight", "bold", "important"
-);
+    addButton.style.setProperty(
+        "font-weight", "bold", "important"
+    );
 
-addButton.style.setProperty(
-    "text-align", "center", "important"
-);
+    addButton.style.setProperty(
+        "text-align", "center", "important"
+    );
 
-addButton.style.setProperty(
-    "white-space", "normal", "important"
-);
+    addButton.style.setProperty(
+        "white-space", "normal", "important"
+    );
 
-addButton.style.setProperty(
-    "overflow", "visible", "important"
-);
+    addButton.style.setProperty(
+        "overflow", "visible", "important"
+    );
 
-addButton.style.setProperty(
-    "flex", "1 1 100%", "important"
-);
+    addButton.style.setProperty(
+        "flex", "1 1 100%", "important"
+    );
 
-addButton.style.setProperty(
-    "align-self", "stretch", "important"
-);
+    addButton.style.setProperty(
+        "align-self", "stretch", "important"
+    );
 
 
     /* 登録済み推しの人数まで */
@@ -1884,18 +1914,17 @@ addButton.style.setProperty(
         slots.length >= oshiList.length;
 
 
-        if(addButton.disabled){
+    if(addButton.disabled){
 
-    addButton.style.setProperty(
-        "opacity", "0.5", "important"
-    );
+        addButton.style.setProperty(
+            "opacity", "0.5", "important"
+        );
 
-    addButton.style.setProperty(
-        "cursor", "not-allowed", "important"
-    );
+        addButton.style.setProperty(
+            "cursor", "not-allowed", "important"
+        );
 
-}
-
+    }
 
 
     addButton.addEventListener(
@@ -1933,6 +1962,7 @@ addButton.style.setProperty(
     container.appendChild(addButton);
 
 }
+
 
 
 
