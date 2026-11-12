@@ -1797,40 +1797,105 @@ function renderOshiMoneyPage(){
         "＋ 推しを追加";
 
 
-addButton.style.cssText = `
-    display:block;
-    width:100%;
-    box-sizing:border-box;
-    margin-top:10px;
-    padding:11px 16px;
-    border:1px solid #e8bfd0;
-    border-radius:12px;
-    background:#fff0f5;
-    color:#493725;
-    font-size:14px;
-    font-weight:bold;
-    text-align:center;
-    white-space:nowrap;
-    cursor:pointer;
-    transition:background 0.2s;
-`;
+addButton.style.setProperty(
+    "display", "block", "important"
+);
 
-addButton.disabled =
-    slots.length >= oshiList.length;
+addButton.style.setProperty(
+    "width", "100%", "important"
+);
 
-if(addButton.disabled){
+addButton.style.setProperty(
+    "max-width", "100%", "important"
+);
 
-    addButton.style.opacity = "0.5";
-    addButton.style.cursor = "not-allowed";
+addButton.style.setProperty(
+    "min-width", "0", "important"
+);
 
-}
+addButton.style.setProperty(
+    "min-height", "48px", "important"
+);
 
+addButton.style.setProperty(
+    "box-sizing", "border-box", "important"
+);
+
+addButton.style.setProperty(
+    "margin", "12px 0 0 0", "important"
+);
+
+addButton.style.setProperty(
+    "padding", "12px 16px", "important"
+);
+
+addButton.style.setProperty(
+    "border", "1px solid #e6a9c0", "important"
+);
+
+addButton.style.setProperty(
+    "border-radius", "12px", "important"
+);
+
+addButton.style.setProperty(
+    "background", "#f7c8da", "important"
+);
+
+addButton.style.setProperty(
+    "color", "#493725", "important"
+);
+
+addButton.style.setProperty(
+    "-webkit-text-fill-color", "#493725", "important"
+);
+
+addButton.style.setProperty(
+    "font-size", "15px", "important"
+);
+
+addButton.style.setProperty(
+    "font-weight", "bold", "important"
+);
+
+addButton.style.setProperty(
+    "text-align", "center", "important"
+);
+
+addButton.style.setProperty(
+    "white-space", "normal", "important"
+);
+
+addButton.style.setProperty(
+    "overflow", "visible", "important"
+);
+
+addButton.style.setProperty(
+    "flex", "1 1 100%", "important"
+);
+
+addButton.style.setProperty(
+    "align-self", "stretch", "important"
+);
 
 
     /* 登録済み推しの人数まで */
 
     addButton.disabled =
         slots.length >= oshiList.length;
+
+
+        if(addButton.disabled){
+
+    addButton.style.setProperty(
+        "opacity", "0.5", "important"
+    );
+
+    addButton.style.setProperty(
+        "cursor", "not-allowed", "important"
+    );
+
+}
+
 
 
     addButton.addEventListener(
