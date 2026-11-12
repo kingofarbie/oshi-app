@@ -1034,6 +1034,7 @@ function renderMoneyRecentRecords(records,data){
    📅 期間別集計
 ===================================================== */
 
+
 function renderMoneyPeriodSummary(data){
 
     const container =
@@ -1045,46 +1046,82 @@ function renderMoneyPeriodSummary(data){
         return;
     }
 
-
-    const today =
-        getMoneyToday();
-
+    const today = getMoneyToday();
 
     let records = [];
 
-
     if(moneyCurrentPeriod === "month"){
 
-        records =
-            getMoneyMonthRecords(
-                data,
-                getMoneyCurrentMonthKey()
-            );
+        records = getMoneyMonthRecords(
+            data,
+            getMoneyCurrentMonthKey()
+        );
 
     }else if(moneyCurrentPeriod === "year"){
 
-        records =
-            (data.money.records || []).filter(
-                record =>
-                    isMoneyRecordInYear(
-                        record,
-                        today.year
-                    )
+        records = (data.money.records || []).filter(
+            record =>
+                isMoneyRecordInYear(
+                    record,
+                    today.year
+                )
+        );
+
+    }else if(moneyCurrentPeriod === "custom"){
+
+        const startInput =
+            document.getElementById(
+                "moneyPeriodStart"
             );
 
-    }else{
+        const endInput =
+            document.getElementById(
+                "moneyPeriodEnd"
+            );
 
-        container.textContent =
-            "指定期間の集計は、期間選択機能の追加後に表示します";
+        const startDate =
+            startInput ? startInput.value : "";
 
-        return;
+        const endDate =
+            endInput ? endInput.value : "";
+
+        if(!startDate || !endDate){
+
+            container.textContent =
+                "開始日と終了日を選択してください";
+
+            return;
+        }
+
+        if(startDate > endDate){
+
+            container.textContent =
+                "終了日は開始日以降の日付を選択してください";
+
+            return;
+        }
+
+        records = (data.money.records || []).filter(
+            record => {
+
+                const recordDate =
+                    getMoneyRecordDate(record);
+
+                const date =
+                    String(recordDate).slice(0, 10);
+
+                return (
+                    date >= startDate &&
+                    date <= endDate
+                );
+
+            }
+        );
 
     }
 
-
     let income = 0;
     let expense = 0;
-
 
     records.forEach(record => {
 
@@ -1101,9 +1138,7 @@ function renderMoneyPeriodSummary(data){
 
     });
 
-
     container.innerHTML = "";
-
 
     const rows = [
 
@@ -1124,7 +1159,6 @@ function renderMoneyPeriodSummary(data){
 
     ];
 
-
     rows.forEach(item => {
 
         const row =
@@ -1133,20 +1167,17 @@ function renderMoneyPeriodSummary(data){
         row.className =
             "money-detail-row";
 
-
         const label =
             document.createElement("span");
 
         label.textContent =
             item.label;
 
-
         const value =
             document.createElement("strong");
 
         value.textContent =
             displayMoney(item.value);
-
 
         row.appendChild(label);
         row.appendChild(value);
@@ -1158,14 +1189,15 @@ function renderMoneyPeriodSummary(data){
 }
 
 
+
 /* =====================================================
    📅 期間切り替え
 ===================================================== */
 
+
 function changeMoneyPeriod(period){
 
     moneyCurrentPeriod = period;
-
 
     document.querySelectorAll(
         "#moneyContent .money-period-btn"
@@ -1178,6 +1210,14 @@ function changeMoneyPeriod(period){
 
     });
 
+    const customArea = document.getElementById(
+        "moneyCustomPeriod"
+    );
+
+    if(customArea){
+        customArea.style.display =
+            period === "custom" ? "block" : "none";
+    }
 
     const data = db.load();
 
@@ -6558,3 +6598,46 @@ window.openMoneyRecordMenu = function(){
 
 };
 
+
+
+
+function applyMoneyCustomPeriod(){
+
+    const startInput =
+        document.getElementById(
+            "moneyPeriodStart"
+        );
+
+    const endInput =
+        document.getElementById(
+            "moneyPeriodEnd"
+        );
+
+    if(!startInput || !endInput){
+        return;
+    }
+
+    const startDate = startInput.value;
+    const endDate = endInput.value;
+
+    if(!startDate || !endDate){
+
+        alert("開始日と終了日を選択してください");
+
+        return;
+    }
+
+    if(startDate > endDate){
+
+        alert("終了日は開始日以降の日付を選択してください");
+
+        return;
+    }
+
+    moneyCurrentPeriod = "custom";
+
+    const data = db.load();
+
+    renderMoneyPeriodSummary(data);
+
+}
