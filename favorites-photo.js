@@ -2042,6 +2042,7 @@ function favoritePhotoApplyTransform(){
    ⭐ ビューア写真切り替え
 ========================================================= */
 
+
 async function favoritePhotoShow(
     index
 ){
@@ -2049,9 +2050,7 @@ async function favoritePhotoShow(
     if(
         favoritePhotoViewerIds.length === 0
     ){
-
         return;
-
     }
 
 
@@ -2059,21 +2058,16 @@ async function favoritePhotoShow(
      * 最後まで行ったら最初へ
      */
     if(
-        index >=
-        favoritePhotoViewerIds.length
+        index >= favoritePhotoViewerIds.length
     ){
-
         index = 0;
-
     }
 
 
     /*
      * 最初より前なら最後へ
      */
-    if(
-        index < 0
-    ){
+    if(index < 0){
 
         index =
             favoritePhotoViewerIds.length - 1;
@@ -2081,13 +2075,6 @@ async function favoritePhotoShow(
     }
 
 
-    favoritePhotoViewerIndex =
-        index;
-
-
-    /*
-     * 次に表示する写真ID
-     */
     const id =
         favoritePhotoViewerIds[index];
 
@@ -2105,36 +2092,42 @@ async function favoritePhotoShow(
 
 
     if(!favorite){
-
         return;
-
     }
 
 
     /*
-     * =====================================================
      * 写真取得
      *
-     * 推し写真
-     * → IndexedDBから取得
+     * 直接追加写真
+     * → favorite.src
+     *
+     * 推し詳細から登録した写真
+     * → IndexedDB
      *
      * 1日手帳写真
      * → 従来方式
-     * =====================================================
      */
 
     let photo = null;
 
 
     if(
-        favorite.source ===
-        "favorite"
+        favorite.source === "favorite"
     ){
 
-        photo =
-            await favoritePhotoGetOshiData(
-                favorite
-            );
+        if(favorite.src){
+
+            photo = favorite;
+
+        }else{
+
+            photo =
+                await favoritePhotoGetOshiData(
+                    favorite
+                );
+
+        }
 
     }else{
 
@@ -2146,23 +2139,24 @@ async function favoritePhotoShow(
     }
 
 
-    if(!photo){
-
+    if(!photo || !photo.src){
         return;
-
     }
 
 
     /*
-     * 現在写真IDを更新
+     * 表示位置を更新
      */
+    favoritePhotoViewerIndex =
+        index;
+
+
     favoritePhotoViewerCurrentId =
         favorite.id;
 
 
     /*
-     * 写真切り替え時は
-     * ズーム状態をリセット
+     * ズーム状態リセット
      */
     favoritePhotoViewerScale =
         1;
@@ -2197,16 +2191,13 @@ async function favoritePhotoShow(
 
 
     /*
-     * =====================================================
      * ⭐ / 🗑 ボタン切り替え
-     * =====================================================
      */
 
     const favoriteButton =
         document.getElementById(
             "favoritePhotoViewerFavorite"
         );
-
 
     const deleteButton =
         document.getElementById(
@@ -2218,8 +2209,7 @@ async function favoritePhotoShow(
      * 1日手帳由来
      */
     if(
-        favorite.source ===
-        "dayPlanner"
+        favorite.source === "dayPlanner"
     ){
 
         if(favoriteButton){
@@ -2227,11 +2217,6 @@ async function favoritePhotoShow(
             favoriteButton.style.display =
                 "flex";
 
-
-            /*
-             * この写真が解除予定なら ☆
-             * 解除予定でなければ ⭐
-             */
             favoriteButton.textContent =
                 favoritePhotoViewerFavoritePendingIds.includes(
                     String(favorite.id)
@@ -2275,6 +2260,7 @@ async function favoritePhotoShow(
     }
 
 }
+
 
 
 
