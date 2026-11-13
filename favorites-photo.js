@@ -1800,6 +1800,7 @@ function favoritePhotoViewerTouchStart(
    ⭐ ビューアを開く
 ========================================================= */
 
+
 async function favoritePhotoOpenViewer(
     favoriteId
 ){
@@ -1829,26 +1830,34 @@ async function favoritePhotoOpenViewer(
 
 
     /*
-       推し写真
+       ⭐ 直接追加した写真
+       → 保存済みの favorite.src を使う
+
+       推し詳細から登録した写真
        → IndexedDBから取得
+
+       📅 1日手帳写真
+       → 従来方式
     */
 
     if(
-        favorite.source ===
-        "favorite"
+        favorite.source === "favorite"
     ){
 
-        photo =
-            await favoritePhotoGetOshiData(
-                favorite
-            );
+        if(favorite.src){
+
+            photo = favorite;
+
+        }else{
+
+            photo =
+                await favoritePhotoGetOshiData(
+                    favorite
+                );
+
+        }
 
     }else{
-
-        /*
-           1日手帳写真
-           → 従来方式
-        */
 
         photo =
             favoritePhotoGetData(
@@ -1858,14 +1867,12 @@ async function favoritePhotoOpenViewer(
     }
 
 
-    if(!photo){
+    if(!photo || !photo.src){
         return;
     }
 
 
-    /* =====================================================
-       ビューア対象写真
-    ===================================================== */
+    /* ビューア対象写真 */
 
     favoritePhotoViewerIds =
         favorites.map(
@@ -1881,18 +1888,13 @@ async function favoritePhotoOpenViewer(
         favorite.id;
 
 
-    /* =====================================================
-       ⭐ 新しくビューアを開いたら
-       解除予定をリセット
-    ===================================================== */
+    /* 解除予定をリセット */
 
     favoritePhotoViewerFavoritePendingIds =
         [];
 
 
-    /* =====================================================
-       ビューア状態初期化
-    ===================================================== */
+    /* ビューア状態初期化 */
 
     favoritePhotoViewerScale =
         1;
@@ -1913,27 +1915,22 @@ async function favoritePhotoOpenViewer(
         true;
 
 
-    /* =====================================================
-       HTML取得
-    ===================================================== */
+    /* HTML取得 */
 
     const viewer =
         document.getElementById(
             "favoritePhotoViewer"
         );
 
-
     const image =
         document.getElementById(
             "favoritePhotoViewerImage"
         );
 
-
     const favoriteButton =
         document.getElementById(
             "favoritePhotoViewerFavorite"
         );
-
 
     const deleteButton =
         document.getElementById(
@@ -1945,35 +1942,20 @@ async function favoritePhotoOpenViewer(
         !viewer ||
         !image
     ){
-
         return;
-
     }
 
 
-    /* =====================================================
-       写真表示
-    ===================================================== */
+    /* 写真表示 */
 
     image.src =
         photo.src;
 
 
-    /* =====================================================
-       ⭐ / 🗑 ボタン表示制御
-       
-       📅 1日手帳由来
-       → ⭐表示
-       → 🗑非表示
-       
-       ⭐ 直接追加
-       → ⭐非表示
-       → 🗑表示
-    ===================================================== */
+    /* ⭐ / 🗑 ボタン表示制御 */
 
     if(
-        favorite.source ===
-        "dayPlanner"
+        favorite.source === "dayPlanner"
     ){
 
         if(favoriteButton){
@@ -1994,10 +1976,7 @@ async function favoritePhotoOpenViewer(
 
         }
 
-    }
-
-
-    else{
+    }else{
 
         if(favoriteButton){
 
@@ -2017,16 +1996,12 @@ async function favoritePhotoOpenViewer(
     }
 
 
-    /* =====================================================
-       画像位置リセット
-    ===================================================== */
+    /* 画像位置リセット */
 
     favoritePhotoApplyTransform();
 
 
-    /* =====================================================
-       ビューア表示
-    ===================================================== */
+    /* ビューア表示 */
 
     viewer.style.display =
         "flex";
@@ -2036,6 +2011,9 @@ async function favoritePhotoOpenViewer(
         "hidden";
 
 }
+
+
+
 
 /* =========================================================
    ⭐ ビューア画像変形
